@@ -1,10 +1,10 @@
-'use strict'
+const Enum = require('../utils/Enum')
 
 /**
- * @readonly
- * @enum {string}
+ * @typedef {string} OSName
  */
-const OSNames = {
+
+const OSNames = Enum('OSName', {
   Android: 'Android',
   ChromeOS: 'Chrome OS',
   IOS: 'iOS',
@@ -13,7 +13,6 @@ const OSNames = {
   MacOSX: 'Mac OS X',
   Unknown: 'Unknown',
   Windows: 'Windows',
-}
+})
 
-Object.freeze(OSNames)
-exports.OSNames = OSNames
+module.exports = OSNames

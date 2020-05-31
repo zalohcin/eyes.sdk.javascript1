@@ -1,12 +1,16 @@
 'use strict'
-
-const {ArgumentGuard} = require('../utils/ArgumentGuard')
-const {GeneralUtils} = require('../utils/GeneralUtils')
-const {TypeUtils} = require('../utils/TypeUtils')
-const {DateTimeUtils} = require('../utils/DateTimeUtils')
+const ArgumentGuard = require('../utils/ArgumentGuard')
+const GeneralUtils = require('../utils/GeneralUtils')
+const TypeUtils = require('../utils/TypeUtils')
+const DateTimeUtils = require('../utils/DateTimeUtils')
 
 /**
- * @typedef {{id: (string|undefined), name: (string|undefined), startedAt: (Date|string|undefined), sequenceName: (string|undefined), notifyOnCompletion: (boolean|undefined)}} BatchInfoObject
+ * @typedef BatchInfoObject
+ * @prop {string} [id]
+ * @prop {string} [name]
+ * @prop {Data|string} [startedAt]
+ * @prop {string} [sequenceName]
+ * @prop {boolean} [notifyOnCompletion]
  */
 
 /**
@@ -209,4 +213,4 @@ class BatchInfo {
   }
 }
 
-exports.BatchInfo = BatchInfo
+module.exports = BatchInfo

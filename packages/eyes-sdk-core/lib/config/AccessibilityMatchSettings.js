@@ -1,26 +1,30 @@
 'use strict'
+const AccessibilityRegionTypes = require('./AccessibilityRegionType')
+const GeneralUtils = require('../utils/GeneralUtils')
+const ArgumentGuard = require('../utils/ArgumentGuard')
+const Region = require('../geometry/Region')
 
-const {GeneralUtils} = require('../utils/GeneralUtils')
-const {Region} = require('../geometry/Region')
-const {ArgumentGuard} = require('../utils/ArgumentGuard')
-const {AccessibilityRegionType} = require('./AccessibilityRegionType')
+/**
+ * @typedef {import('./AccessibilityRegionType').AccessibilityRegionType} AccessibilityRegionType
+ */
 
 /**
  * Encapsulates Accessibility match settings.
  */
 class AccessibilityMatchSettings {
   /**
-   * @param {number} left
-   * @param {number} top
-   * @param {number} width
-   * @param {number} height
-   * @param {AccessibilityRegionType} [type]
+   * @param {object} settings
+   * @param {number} settings.left
+   * @param {number} settings.top
+   * @param {number} settings.width
+   * @param {number} settings.height
+   * @param {AccessibilityRegionType} [settings.type]
    */
   constructor({left, top, width, height, type} = {}) {
     if (arguments.length > 1) {
       throw new TypeError('Please, use object as a parameter to the constructor!')
     }
-    ArgumentGuard.isValidEnumValue(type, AccessibilityRegionType, false)
+    ArgumentGuard.isValidEnumValue(type, AccessibilityRegionTypes, false)
 
     this._left = left
     this._top = top
@@ -96,7 +100,7 @@ class AccessibilityMatchSettings {
    * @param {AccessibilityRegionType} value
    */
   setType(value) {
-    ArgumentGuard.isValidEnumValue(value, AccessibilityRegionType)
+    ArgumentGuard.isValidEnumValue(value, AccessibilityRegionTypes)
     this._type = value
   }
 
@@ -122,4 +126,4 @@ class AccessibilityMatchSettings {
   }
 }
 
-exports.AccessibilityMatchSettings = AccessibilityMatchSettings
+module.exports = AccessibilityMatchSettings

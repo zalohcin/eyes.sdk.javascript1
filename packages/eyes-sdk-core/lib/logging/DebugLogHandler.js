@@ -2,7 +2,7 @@
 
 const debug = require('debug')
 
-const {LogHandler} = require('./LogHandler')
+const LogHandler = require('./LogHandler')
 
 /**
  * Write log messages to the browser/node console
@@ -41,4 +41,4 @@ class DebugLogHandler extends LogHandler {
   }
 }
 
-exports.DebugLogHandler = DebugLogHandler
+module.exports = DebugLogHandler

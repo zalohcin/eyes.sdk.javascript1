@@ -9,12 +9,13 @@ const {RenderingInfo} = require('./RenderingInfo')
  */
 class RunningSession {
   /**
-   * @param {string} id
-   * @param {string} sessionId
-   * @param {string} batchId
-   * @param {string} baselineId
-   * @param {string} url
-   * @param {RenderingInfo|object} renderingInfo
+   * @param session
+   * @param {string} session.id
+   * @param {string} session.sessionId
+   * @param {string} session.batchId
+   * @param {string} session.baselineId
+   * @param {string} session.url
+   * @param {RenderingInfo|object} session.renderingInfo
    */
   constructor({id, sessionId, batchId, baselineId, url, renderingInfo, isNew} = {}) {
     if (renderingInfo && !(renderingInfo instanceof RenderingInfo)) {
@@ -143,4 +144,4 @@ class RunningSession {
   }
 }
 
-exports.RunningSession = RunningSession
+module.exports = RunningSession

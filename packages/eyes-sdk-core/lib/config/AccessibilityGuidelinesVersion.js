@@ -1,19 +1,15 @@
-'use strict'
+const Enum = require('../utils/Enum')
 
-const {Enum} = require('../utils/Enum')
+/**
+ * @typedef {string} AccessibilityGuidelinesVersion
+ */
 
 /**
  * The spec version for which to check the image visual accessibility level.
- *
- * @readonly
- * @enum {string}
  */
-const AccessibilityGuidelinesVersion = {
+const AccessibilityGuidelinesVersions = Enum('AccessibilityGuidelinesVersion', {
   WCAG_2_0: 'WCAG_2_0',
   WCAG_2_1: 'WCAG_2_1',
-}
+})
 
-exports.AccessibilityGuidelinesVersion = Enum(
-  'AccessibilityGuidelinesVersion',
-  AccessibilityGuidelinesVersion,
-)
+module.exports = AccessibilityGuidelinesVersions

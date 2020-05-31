@@ -1,6 +1,6 @@
 'use strict'
 /**
- * @typedef {import('../logging/Logger').Logger} Logger
+ * @typedef {import('../logging/Logger')} Logger
  * @typedef {import('./EyesWrappedDriver')} EyesWrappedDriver
  * @typedef {import('./EyesWrappedDriver').UnwrappedDriver} UnwrappedDriver
  * @typedef {import('./EyesWrappedElement')} EyesWrappedElement
@@ -11,12 +11,12 @@
 
 /**
  * The object which implements the lowest-level functions to work with element finder
- * @typedef {Object} SpecsElementFinder
- * @property {(driver: UnwrappedDriver, selector: SupportedSelector) => EyesWrappedElement} findElement - return found element
- * @property {(driver: UnwrappedDriver, selector: SupportedSelector) => EyesWrappedElement} findElements - return found elements
- * @property {(logger: Logger, driver: EyesWrappedDriver, element: SupportedElement, selector: SupportedSelector) => EyesWrappedElement} createElement - return wrapped element instance
- * @property {(selector: EyesSelector) => SupportedSelector} toSupportedSelector - translate cross SDK selector to SDK specific selector
- * @property {(selector: SupportedSelector) => EyesSelector} toEyesSelector - translate SDK specific selector to cross SDK selector
+ * @typedef SpecsElementFinder
+ * @prop {(driver: UnwrappedDriver, selector: SupportedSelector) => EyesWrappedElement} findElement - return found element
+ * @prop {(driver: UnwrappedDriver, selector: SupportedSelector) => EyesWrappedElement} findElements - return found elements
+ * @prop {(logger: Logger, driver: EyesWrappedDriver, element: SupportedElement, selector: SupportedSelector) => EyesWrappedElement} createElement - return wrapped element instance
+ * @prop {(selector: EyesSelector) => SupportedSelector} toSupportedSelector - translate cross SDK selector to SDK specific selector
+ * @prop {(selector: SupportedSelector) => EyesSelector} toEyesSelector - translate SDK specific selector to cross SDK selector
  */
 
 class EyesElementFinder {

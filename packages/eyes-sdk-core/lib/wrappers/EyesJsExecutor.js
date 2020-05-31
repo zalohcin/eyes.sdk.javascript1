@@ -2,15 +2,15 @@
 const EyesWrappedElement = require('./EyesWrappedElement')
 
 /**
- * @typedef {import('../logging/Logger').Logger} Logger
+ * @typedef {import('../logging/Logger')} Logger
  * @typedef {import('./EyesWrappedDriver')} EyesWrappedDriver
  */
 
 /**
  * The object which implements the lowest-level functions to work with element finder
- * @typedef {Object} SpecsJsExecutor
- * @property {(driver: UnwrappedDriver, script: string|Function, ...args) => Promise<*>} executeScript - execute script and return result
- * @property {(driver: UnwrappedDriver, ms: number) => Promise<void>} sleep - makes the driver sleep for the given amount of time in ms
+ * @typedef SpecsJsExecutor
+ * @prop {(driver: UnwrappedDriver, script: string|Function, ...args) => Promise<*>} executeScript - execute script and return result
+ * @prop {(driver: UnwrappedDriver, ms: number) => Promise<void>} sleep - makes the driver sleep for the given amount of time in ms
  */
 
 class EyesJsExecutor {

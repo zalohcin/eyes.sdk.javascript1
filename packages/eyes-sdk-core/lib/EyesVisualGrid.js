@@ -1,18 +1,33 @@
 'use strict'
 
-const {BrowserType} = require('./config/BrowserType')
-const {Configuration} = require('./config/Configuration')
-const {TypeUtils} = require('./utils/TypeUtils')
-const {ArgumentGuard} = require('./utils/ArgumentGuard')
-const {RectangleSize} = require('./geometry/RectangleSize')
+const BrowserType = require('./config/BrowserType')
+const Configuration = require('./config/Configuration')
+const TypeUtils = require('./utils/TypeUtils')
+const ArgumentGuard = require('./utils/ArgumentGuard')
+const RectangleSize = require('./geometry/RectangleSize')
 const TestResultsFormatter = require('./TestResultsFormatter')
-const {MatchResult} = require('./match/MatchResult')
-const {CorsIframeHandler, CorsIframeHandle} = require('./capture/CorsIframeHandler')
-const {VisualGridRunner} = require('./runner/VisualGridRunner')
+const MatchResult = require('./match/MatchResult')
+const CorsIframeHandler = require('./capture/CorsIframeHandler')
+const CorsIframeHandles = require('./capture/CorsIframeHandles')
+const VisualGridRunner = require('./runner/VisualGridRunner')
 const EyesUtils = require('./EyesUtils')
 const EyesCore = require('./EyesCore')
 
+/**
+ * @typedef {import('./capture/CorsIframeHandles').CorsIframeHandle} CorsIframeHandle
+ */
+
 class EyesVisualGrid extends EyesCore {
+  /**
+   * Create a specialized version of this class
+   * @param {Object} implementations - implementations of related classes
+   * @param {string} implementations.agentId - base agent id
+   * @param {EyesWrappedDriver} implementations.WrappedDriver - implementation for {@link EyesWrappedDriver}
+   * @param {EyesWrappedElement} implementations.WrappedElement - implementation for {@link EyesWrappedElement}
+   * @param {DriverCheckSettings} implementations.CheckSettings - specialized version of {@link DriverCheckSettings}
+   * @param {VisualGridClient} implementations.VisualGridClient - visual grid client
+   * @return {typeof EyesVisualGrid} specialized version of this class
+   */
   static specialize({agentId, WrappedDriver, WrappedElement, CheckSettings, VisualGridClient}) {
     return class extends EyesVisualGrid {
       static get WrappedDriver() {
@@ -51,7 +66,7 @@ class EyesVisualGrid extends EyesCore {
     /** @type {boolean} */ this._isOpen = false
     /** @type {boolean} */ this._isVisualGrid = true
     /** @type {EyesJsExecutor} */ this._jsExecutor = undefined
-    /** @type {CorsIframeHandle} */ this._corsIframeHandle = CorsIframeHandle.BLANK
+    /** @type {CorsIframeHandle} */ this._corsIframeHandle = CorsIframeHandles.BLANK
 
     /** @function */ this._checkWindowCommand = undefined
     /** @function */ this._closeCommand = undefined
@@ -179,7 +194,7 @@ class EyesVisualGrid extends EyesCore {
         executeScript: this._executor.executeScript.bind(this._executor),
       })
       const {cdt, url, resourceContents, resourceUrls, frames} = pageDomResults
-      if (this.getCorsIframeHandle() === CorsIframeHandle.BLANK) {
+      if (this.getCorsIframeHandle() === CorsIframeHandles.BLANK) {
         CorsIframeHandler.blankCorsIframeSrcOfCdt(cdt, frames)
       }
       // this._logger.verbose(`Dom extracted  (${checkSettings.toString()})   $$$$$$$$$$$$`)

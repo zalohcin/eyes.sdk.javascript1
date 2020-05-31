@@ -1,31 +1,6 @@
 'use strict'
-
 const {URL} = require('url')
 
-/**
- * @readonly
- * @enum {string}
- */
-const CorsIframeHandle = {
-  /**
-   * We should REMOVE the SRC attribute of the iframe
-   */
-  BLANK: 'BLANK',
-
-  /**
-   * Not to do anything
-   */
-  KEEP: 'KEEP',
-
-  /**
-   *
-   */
-  SNAPSHOT: 'SNAPSHOT',
-}
-
-/**
- * @ignore
- */
 class CorsIframeHandler {
   /**
    * @param {object} json
@@ -73,6 +48,4 @@ class CorsIframeHandler {
   }
 }
 
-Object.freeze(CorsIframeHandle)
-exports.CorsIframeHandle = CorsIframeHandle
-exports.CorsIframeHandler = CorsIframeHandler
+module.exports = CorsIframeHandler

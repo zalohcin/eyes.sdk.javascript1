@@ -24,4 +24,4 @@ class EyesError extends Error {
   }
 }
 
-exports.EyesError = EyesError
+module.exports = EyesError

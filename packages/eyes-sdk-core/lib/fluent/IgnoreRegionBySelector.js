@@ -1,7 +1,7 @@
 'use strict'
 
 const {CoordinatesType, Region} = require('../..')
-const {GetRegion} = require('./GetRegion')
+const GetRegion = require('./GetRegion')
 const EyesUtils = require('../EyesUtils')
 
 /**
@@ -9,9 +9,9 @@ const EyesUtils = require('../EyesUtils')
  * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
  * @typedef {import('../EyesClassic')} EyesClassic
  *
- * @typedef {Object} PersistedRegions
- * @property {string} type - selector type (css or xpath)
- * @property {string} selector - selector itself
+ * @typedef PersistedRegions
+ * @prop {string} type - selector type (css or xpath)
+ * @prop {string} selector - selector itself
  */
 
 class IgnoreRegionBySelector extends GetRegion {

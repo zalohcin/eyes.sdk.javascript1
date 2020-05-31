@@ -1,13 +1,13 @@
 'use strict'
+const Enum = require('./utils/Enum')
 
 /**
  * @readonly
  * @enum {string}
  */
-const AccessibilityStatus = {
+const AccessibilityStatus = Enum('AccessibilityStatus', {
   Passed: 'Passed',
   Failed: 'Failed',
-}
+})
 
-Object.freeze(AccessibilityStatus)
 exports.AccessibilityStatus = AccessibilityStatus

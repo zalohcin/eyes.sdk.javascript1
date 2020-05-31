@@ -10,7 +10,7 @@ const {
   MutableImage,
 } = require('../..')
 
-const {NullCutProvider} = require('../cropping/NullCutProvider')
+const NullCutProvider = require('../cropping/NullCutProvider')
 const NullRegionPositionCompensation = require('../positioning/NullRegionPositionCompensation')
 
 const MIN_SCREENSHOT_PART_HEIGHT = 10
@@ -378,4 +378,4 @@ class FullPageCaptureAlgorithm {
   }
 }
 
-exports.FullPageCaptureAlgorithm = FullPageCaptureAlgorithm
+module.exports = FullPageCaptureAlgorithm

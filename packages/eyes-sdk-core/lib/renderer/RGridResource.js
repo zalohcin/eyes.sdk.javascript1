@@ -8,9 +8,10 @@ const VISUAL_GRID_MAX_BUFFER_SIZE = 15 * 1000000
 
 class RGridResource {
   /**
-   * @param {string} [url]
-   * @param {string} [contentType]
-   * @param {Buffer} [content]
+   * @param data
+   * @param {string} [data.url]
+   * @param {string} [data.contentType]
+   * @param {Buffer} [data.content]
    */
   constructor({url, contentType, content} = {}) {
     this._url = url
@@ -105,4 +106,4 @@ class RGridResource {
   }
 }
 
-exports.RGridResource = RGridResource
+module.exports = RGridResource

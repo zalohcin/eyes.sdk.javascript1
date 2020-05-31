@@ -4,9 +4,10 @@ const {GeneralUtils, DateTimeUtils} = require('../..')
 
 class BatchInfo {
   /**
-   * @param {string} id
-   * @param {string} name
-   * @param {Date|string} startedAt
+   * @param info
+   * @param {string} info.id
+   * @param {string} info.name
+   * @param {Date|string} info.startedAt
    */
   constructor({id, name, startedAt} = {}) {
     if (startedAt && !(startedAt instanceof Date)) {
@@ -75,4 +76,4 @@ class BatchInfo {
   }
 }
 
-exports.BatchInfo = BatchInfo
+module.exports = BatchInfo

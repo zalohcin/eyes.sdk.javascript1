@@ -98,4 +98,4 @@ class EyesScreenshot {
   }
 }
 
-exports.EyesScreenshot = EyesScreenshot
+module.exports = EyesScreenshot

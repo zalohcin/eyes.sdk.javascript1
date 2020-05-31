@@ -16,5 +16,4 @@ class GetAccessibilityRegion {
     throw new TypeError('The method is not implemented!')
   }
 }
-
-exports.GetAccessibilityRegion = GetAccessibilityRegion
+module.exports = GetAccessibilityRegion

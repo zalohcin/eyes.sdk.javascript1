@@ -1,6 +1,6 @@
 'use strict'
 
-const {ImageProvider} = require('./ImageProvider')
+const ImageProvider = require('./ImageProvider')
 
 /**
  * An image provider based on WebDriver's interface.

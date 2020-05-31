@@ -20,4 +20,4 @@ class GetSelector {
   }
 }
 
-exports.GetSelector = GetSelector
+module.exports = GetSelector

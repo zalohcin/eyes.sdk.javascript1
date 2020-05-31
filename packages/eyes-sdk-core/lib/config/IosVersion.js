@@ -1,14 +1,14 @@
-'use strict'
+const Enum = require('../utils/Enum')
+
+/**
+ * @typedef {string} IosVersion
+ */
 
 /**
  * iOS version for visual-grid rendering
- *
- * @readonly
- * @enum {string}
  */
-const IosVersion = {
+const IosVersions = Enum('IosVersion', {
   Latest: 'latest',
-}
+})
 
-Object.freeze(IosVersion)
-exports.IosVersion = IosVersion
+module.exports = IosVersions

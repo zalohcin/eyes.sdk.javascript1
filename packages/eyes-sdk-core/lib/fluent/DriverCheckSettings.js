@@ -1,6 +1,6 @@
 'use strict'
-const {Region} = require('../geometry/Region')
-const {CoordinatesType} = require('../geometry/CoordinatesType')
+const Region = require('../geometry/Region')
+const CoordinatesType = require('../geometry/CoordinatesType')
 const CheckSettings = require('./CheckSettings')
 const TargetRegionByElement = require('./TargetRegionByElement')
 const IgnoreRegionBySelector = require('./IgnoreRegionBySelector')

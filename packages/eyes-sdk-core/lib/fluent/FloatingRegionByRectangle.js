@@ -1,7 +1,7 @@
 'use strict'
 
-const {FloatingMatchSettings} = require('../..')
-const {GetFloatingRegion} = require('./GetFloatingRegion')
+const FloatingMatchSettings = require('../..')
+const GetFloatingRegion = require('./GetFloatingRegion')
 
 /**
  * @ignore
@@ -56,4 +56,4 @@ class FloatingRegionByRectangle extends GetFloatingRegion {
   }
 }
 
-exports.FloatingRegionByRectangle = FloatingRegionByRectangle
+module.exports = FloatingRegionByRectangle

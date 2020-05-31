@@ -1,35 +1,35 @@
 'use strict'
-const {StitchMode} = require('./config/StitchMode')
-const {TypeUtils} = require('./utils/TypeUtils')
-const {ArgumentGuard} = require('./utils/ArgumentGuard')
-const {CoordinatesType} = require('./geometry/CoordinatesType')
-const {Region} = require('./geometry/Region')
-const {Location} = require('./geometry/Location')
-const {RectangleSize} = require('./geometry/RectangleSize')
-const {UserAgent} = require('./useragent/UserAgent')
-const {ReadOnlyPropertyHandler} = require('./handler/ReadOnlyPropertyHandler')
-const {SimplePropertyHandler} = require('./handler/SimplePropertyHandler')
-const {FailureReports} = require('./FailureReports')
-const {TestFailedError} = require('./errors/TestFailedError')
-const {MatchResult} = require('./match/MatchResult')
-const {FullPageCaptureAlgorithm} = require('./capture/FullPageCaptureAlgorithm')
+const StitchMode = require('./config/StitchMode')
+const TypeUtils = require('./utils/TypeUtils')
+const ArgumentGuard = require('./utils/ArgumentGuard')
+const CoordinatesType = require('./geometry/CoordinatesType')
+const Region = require('./geometry/Region')
+const Location = require('./geometry/Location')
+const RectangleSize = require('./geometry/RectangleSize')
+const UserAgent = require('./useragent/UserAgent')
+const ReadOnlyPropertyHandler = require('./handler/ReadOnlyPropertyHandler')
+const SimplePropertyHandler = require('./handler/SimplePropertyHandler')
+const FailureReports = require('./FailureReports')
+const TestFailedError = require('./errors/TestFailedError')
+const MatchResult = require('./match/MatchResult')
+const FullPageCaptureAlgorithm = require('./capture/FullPageCaptureAlgorithm')
 const EyesScreenshot = require('./capture/EyesScreenshotNew')
 const EyesScreenshotFactory = require('./capture/EyesScreenshotFactory')
 const ImageProviderFactory = require('./capture/ImageProviderFactory')
 const NullRegionProvider = require('./positioning/NullRegionProvider')
 const RegionProvider = require('./positioning/RegionProvider')
-const {NullCutProvider} = require('./cropping/NullCutProvider')
-const {NullScaleProvider} = require('./scaling/NullScaleProvider')
-const {ScaleProviderIdentityFactory} = require('./scaling/ScaleProviderIdentityFactory')
-const {ContextBasedScaleProviderFactory} = require('./scaling/ContextBasedScaleProviderFactory')
-const {FixedScaleProviderFactory} = require('./scaling/FixedScaleProviderFactory')
+const NullCutProvider = require('./cropping/NullCutProvider')
+const NullScaleProvider = require('./scaling/NullScaleProvider')
+const ScaleProviderIdentityFactory = require('./scaling/ScaleProviderIdentityFactory')
+const ContextBasedScaleProviderFactory = require('./scaling/ContextBasedScaleProviderFactory')
+const FixedScaleProviderFactory = require('./scaling/FixedScaleProviderFactory')
 const RegionPositionCompensationFactory = require('./positioning/RegionPositionCompensationFactory')
 const CssTranslatePositionProvider = require('./positioning/CssTranslatePositionProvider')
 const ScrollPositionProvider = require('./positioning/ScrollPositionProvider')
 const CssTranslateElementPositionProvider = require('./positioning/CssTranslateElementPositionProvider')
 const ScrollElementPositionProvider = require('./positioning/ScrollElementPositionProvider')
-const {ClassicRunner} = require('./runner/ClassicRunner')
-const {DomCapture} = require('./DomCapture')
+const ClassicRunner = require('./runner/ClassicRunner')
+const DomCapture = require('./DomCapture')
 const EyesUtils = require('./EyesUtils')
 const EyesCore = require('./EyesCore')
 
@@ -50,10 +50,11 @@ class EyesClassic extends EyesCore {
   /**
    * Create a specialized version of this class
    * @param {Object} implementations - implementations of related classes
+   * @param {string} implementations.agentId - base agent id
    * @param {EyesWrappedDriver} implementations.WrappedDriver - implementation for {@link EyesWrappedDriver}
    * @param {EyesWrappedElement} implementations.WrappedElement - implementation for {@link EyesWrappedElement}
    * @param {DriverCheckSettings} implementations.CheckSettings - specialized version of {@link DriverCheckSettings}
-   * @return {EyesClassic} specialized version of this class
+   * @return {typeof EyesClassic} specialized version of this class
    */
   static specialize({agentId, WrappedDriver, WrappedElement, CheckSettings}) {
     return class extends EyesClassic {

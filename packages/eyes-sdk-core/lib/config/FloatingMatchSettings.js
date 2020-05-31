@@ -1,21 +1,21 @@
 'use strict'
-
-const {GeneralUtils} = require('../utils/GeneralUtils')
-const {Region} = require('../geometry/Region')
+const GeneralUtils = require('../utils/GeneralUtils')
+const Region = require('../geometry/Region')
 
 /**
  * Encapsulates floating match settings for the a session.
  */
 class FloatingMatchSettings {
   /**
-   * @param {number} left
-   * @param {number} top
-   * @param {number} width
-   * @param {number} height
-   * @param {number} maxUpOffset
-   * @param {number} maxDownOffset
-   * @param {number} maxLeftOffset
-   * @param {number} maxRightOffset
+   * @param settings
+   * @param {number} settings.left
+   * @param {number} settings.top
+   * @param {number} settings.width
+   * @param {number} settings.height
+   * @param {number} settings.maxUpOffset
+   * @param {number} settings.maxDownOffset
+   * @param {number} settings.maxLeftOffset
+   * @param {number} settings.maxRightOffset
    */
   constructor({
     left,
@@ -175,4 +175,4 @@ class FloatingMatchSettings {
   }
 }
 
-exports.FloatingMatchSettings = FloatingMatchSettings
+module.exports = FloatingMatchSettings

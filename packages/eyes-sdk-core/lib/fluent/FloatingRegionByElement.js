@@ -1,7 +1,7 @@
 'use strict'
 
 const {FloatingMatchSettings, CoordinatesType} = require('../..')
-const {GetFloatingRegion} = require('./GetFloatingRegion')
+const GetFloatingRegion = require('./GetFloatingRegion')
 const EyesUtils = require('../EyesUtils')
 
 /**
@@ -9,13 +9,13 @@ const EyesUtils = require('../EyesUtils')
  * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
  * @typedef {import('../EyesClassic')} EyesClassic
  *
- * @typedef {Object} FloatingPersistedRegions
- * @property {string} type - selector type (css or xpath)
- * @property {string} selector - selector itself
- * @property {number} maxUpOffset - up offset
- * @property {number} maxDownOffset - down offset
- * @property {number} maxLeftOffset - left offset
- * @property {number} maxRightOffset - right offset
+ * @typedef FloatingPersistedRegions
+ * @prop {string} type - selector type (css or xpath)
+ * @prop {string} selector - selector itself
+ * @prop {number} maxUpOffset - up offset
+ * @prop {number} maxDownOffset - down offset
+ * @prop {number} maxLeftOffset - left offset
+ * @prop {number} maxRightOffset - right offset
  */
 
 class FloatingRegionByElement extends GetFloatingRegion {
