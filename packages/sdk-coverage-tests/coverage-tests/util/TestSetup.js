@@ -34,7 +34,7 @@ const Browsers = {
   },
 }
 
-const batch = new BatchInfo('JS Coverage Tests - eyes-selenium')
+const batch = new BatchInfo(process.env.APPLITOOLS_BATCH_NAME || 'JS Coverage Tests')
 
 function getEyes({isVisualGrid, isCssStitching, configuration} = {}) {
   const eyes = new Eyes(isVisualGrid ? new VisualGridRunner(10) : undefined)
@@ -43,6 +43,7 @@ function getEyes({isVisualGrid, isCssStitching, configuration} = {}) {
       batch,
       branchName: 'master',
       parentBranchName: 'master',
+      dontCloseBatches: true,
     }),
   )
   if (isCssStitching) {

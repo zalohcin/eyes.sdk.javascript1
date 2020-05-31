@@ -12,16 +12,15 @@ describe('JS Coverage Tests - Selenium 4', async () => {
     let driver
 
     before(async () => {
-      const sauceOptions = {
-        screenResolution: '1920x1080',
-        username: process.env.SAUCE_USERNAME,
-        accesskey: process.env.SAUCE_ACCESS_KEY,
-      }
       const capabilities = {
         browserName: 'MicrosoftEdge',
         browserVersion: '18',
         platformName: 'Windows 10',
-        'sauce:options': sauceOptions,
+        'sauce:options': {
+          screenResolution: '1920x1080',
+          username: process.env.SAUCE_USERNAME,
+          accesskey: process.env.SAUCE_ACCESS_KEY,
+        },
       }
       driver = await spec.build({capabilities, serverUrl: sauceUrl})
       eyes = getEyes()
@@ -48,17 +47,15 @@ describe('JS Coverage Tests - Selenium 4', async () => {
     let driver
 
     before(async () => {
-      const sauceOptions = {
-        screenResolution: '1920x1080',
-        username: process.env.SAUCE_USERNAME,
-        accesskey: process.env.SAUCE_ACCESS_KEY,
-      }
       const capabilities = {
-        browserName: 'MicrosoftEdge',
-        browserVersion: '18',
+        browserName: 'internet explorer',
+        browserVersion: '11.285',
         platformName: 'Windows 10',
-        'sauce:options': sauceOptions,
-        ...sauceOptions, // for wdio4
+        'sauce:options': {
+          screenResolution: '1920x1080',
+          username: process.env.SAUCE_USERNAME,
+          accesskey: process.env.SAUCE_ACCESS_KEY,
+        },
       }
       driver = await spec.build({capabilities, serverUrl: sauceUrl})
       eyes = getEyes()

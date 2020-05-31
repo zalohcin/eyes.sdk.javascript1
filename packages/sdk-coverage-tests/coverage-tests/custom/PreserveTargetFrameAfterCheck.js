@@ -1,41 +1,28 @@
 'use strict'
 
-const chromedriver = require('chromedriver')
-const {remote} = require('webdriverio')
 const assert = require('assert')
-const {Eyes, Target, By, BatchInfo} = require('../../../index')
+const cwd = process.cwd()
+const path = require('path')
+const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
+const {Target} = require(cwd)
+const {getEyes, Browsers} = require('../util/TestSetup')
 
 describe('PreserveTargetFrameAfterCheck', () => {
-  let browser, eyes, batch
+  let driver, eyes
 
   async function getDocumentElement() {
-    const {value: element} = await browser.execute('return window.document')
+    const {value: element} = await spec.executeScript(driver, 'return window.document')
     return element
   }
 
   before(async () => {
-    await chromedriver.start([], true)
-    batch = new BatchInfo('PreserveTargetFrameAfterCheck')
-    browser = remote({
-      desiredCapabilities: {
-        browserName: 'chrome',
-        chromeOptions: {
-          args: ['disable-infobars', 'headless'],
-        },
-      },
-      logLevel: 'error',
-      port: 9515,
-      path: '/',
-    })
-    await browser.init()
-    await browser.url('https://applitools.github.io/demo/TestPages/FramesAndRegionsPage/')
+    driver = await spec.build({capabilities: Browsers.chrome()})
+    await spec.visit(driver, 'https://applitools.github.io/demo/TestPages/FramesAndRegionsPage/')
   })
 
   beforeEach(async () => {
-    await browser.frame(null)
-    eyes = new Eyes()
-    eyes.setHideScrollbars(true)
-    eyes.setBatch(batch)
+    await spec.switchToFrame(driver)
+    eyes = getEyes()
   })
 
   afterEach(async () => {
@@ -43,13 +30,12 @@ describe('PreserveTargetFrameAfterCheck', () => {
   })
 
   after(async () => {
-    await browser.end()
-    chromedriver.stop()
+    await spec.cleanup(driver)
   })
 
   it('CheckWindow_WrappedDriver', async function() {
-    const driver = await eyes.open(browser, this.test.parent.title, this.test.title)
-    await driver.frame('frame-main')
+    const wrappedDriver = await eyes.open(driver, this.test.parent.title, this.test.title)
+    await spec.switchToFrame(wrappedDriver, 'frame-main')
 
     const frameElementBeforeCheck = await getDocumentElement()
     await eyes.check('window', Target.window())
@@ -61,8 +47,9 @@ describe('PreserveTargetFrameAfterCheck', () => {
   })
 
   it('CheckWindow_UnwrappedDriver', async function() {
-    await eyes.open(browser, this.test.parent.title, this.test.title)
-    await browser.frame('frame-main')
+    await eyes.open(driver, this.test.parent.title, this.test.title)
+    const el = await spec.findElement(driver, '[name="frame-main"]')
+    await spec.switchToFrame(driver, el)
 
     const frameElementBeforeCheck = await getDocumentElement()
     await eyes.check('window', Target.window())
@@ -74,8 +61,8 @@ describe('PreserveTargetFrameAfterCheck', () => {
   })
 
   it('CheckNestedFrame_WrappedDriver', async function() {
-    const driver = await eyes.open(browser, this.test.parent.title, this.test.title)
-    await driver.frame('frame-main')
+    const wrappedDriver = await eyes.open(driver, this.test.parent.title, this.test.title)
+    await spec.switchToFrame(wrappedDriver, 'frame-main')
 
     const frameElementBeforeCheck = await getDocumentElement()
     await eyes.check('nested frame', Target.frame('frame-comb').frame('frame-image'))
@@ -87,8 +74,9 @@ describe('PreserveTargetFrameAfterCheck', () => {
   })
 
   it('CheckNestedFrame_UnwrappedDriver', async function() {
-    await eyes.open(browser, this.test.parent.title, this.test.title)
-    await browser.frame('frame-main')
+    await eyes.open(driver, this.test.parent.title, this.test.title)
+    const el = await spec.findElement(driver, '[name="frame-main"]')
+    await spec.switchToFrame(driver, el)
 
     const frameElementBeforeCheck = await getDocumentElement()
     await eyes.check('nested frame', Target.frame('frame-comb').frame('frame-image'))
@@ -100,13 +88,13 @@ describe('PreserveTargetFrameAfterCheck', () => {
   })
 
   it('CheckRegionInsideFrameBySelector_WrappedDriver', async function() {
-    const driver = await eyes.open(browser, this.test.parent.title, this.test.title)
-    await driver.frame('frame-main')
-    await driver.frame('frame-comb')
-    await driver.frame('frame-image')
+    const wrappedDriver = await eyes.open(driver, this.test.parent.title, this.test.title)
+    await spec.switchToFrame(wrappedDriver, 'frame-main')
+    await spec.switchToFrame(wrappedDriver, 'frame-comb')
+    await spec.switchToFrame(wrappedDriver, 'frame-image')
 
     const frameElementBeforeCheck = await getDocumentElement()
-    await eyes.check('region', Target.region(By.id('image')))
+    await eyes.check('region', Target.region('#image'))
     const frameElementAfterCheck = await getDocumentElement()
 
     assert.deepStrictEqual(frameElementAfterCheck, frameElementBeforeCheck)
@@ -115,13 +103,13 @@ describe('PreserveTargetFrameAfterCheck', () => {
   })
 
   it('CheckRegionInsideFrameBySelector_UnwrappedDriver', async function() {
-    await eyes.open(browser, this.test.parent.title, this.test.title)
-    await browser.frame('frame-main')
-    await browser.frame('frame-comb')
-    await browser.frame('frame-image')
+    await eyes.open(driver, this.test.parent.title, this.test.title)
+    await spec.switchToFrame(driver, await spec.findElement(driver, '[name="frame-main"]'))
+    await spec.switchToFrame(driver, await spec.findElement(driver, '[name="frame-comb"]'))
+    await spec.switchToFrame(driver, await spec.findElement(driver, '[name="frame-image"]'))
 
     const frameElementBeforeCheck = await getDocumentElement()
-    await eyes.check('region', Target.region(By.id('image')))
+    await eyes.check('region', Target.region('#image'))
     const frameElementAfterCheck = await getDocumentElement()
 
     assert.deepStrictEqual(frameElementAfterCheck, frameElementBeforeCheck)
@@ -130,12 +118,12 @@ describe('PreserveTargetFrameAfterCheck', () => {
   })
 
   it('CheckRegionInsideFrameByElement_WrappedDriver', async function() {
-    const driver = await eyes.open(browser, this.test.parent.title, this.test.title)
-    await driver.frame('frame-main')
-    await driver.frame('frame-comb')
-    await driver.frame('frame-image')
+    const wrappedDriver = await eyes.open(driver, this.test.parent.title, this.test.title)
+    await spec.switchToFrame(wrappedDriver, 'frame-main')
+    await spec.switchToFrame(wrappedDriver, 'frame-comb')
+    await spec.switchToFrame(wrappedDriver, 'frame-image')
 
-    const element = await driver.element('#image')
+    const element = await spec.findElement(wrappedDriver, '#image')
 
     const frameElementBeforeCheck = await getDocumentElement()
     await eyes.check('region', Target.region(element))
@@ -147,12 +135,12 @@ describe('PreserveTargetFrameAfterCheck', () => {
   })
 
   it('CheckRegionInsideFrameByElement_UnwrappedDriver', async function() {
-    await eyes.open(browser, this.test.parent.title, this.test.title)
-    await browser.frame('frame-main')
-    await browser.frame('frame-comb')
-    await browser.frame('frame-image')
+    await eyes.open(driver, this.test.parent.title, this.test.title)
+    await spec.switchToFrame(driver, await spec.findElement(driver, '[name="frame-main"]'))
+    await spec.switchToFrame(driver, await spec.findElement(driver, '[name="frame-comb"]'))
+    await spec.switchToFrame(driver, await spec.findElement(driver, '[name="frame-image"]'))
 
-    const element = await browser.element('#image')
+    const element = await spec.findElement(driver, '#image')
 
     const frameElementBeforeCheck = await getDocumentElement()
     await eyes.check('region', Target.region(element))
@@ -164,9 +152,9 @@ describe('PreserveTargetFrameAfterCheck', () => {
   })
 
   it('CheckFrameFully_WrappedDriver', async function() {
-    const driver = await eyes.open(browser, this.test.parent.title, this.test.title)
-    await driver.frame('frame-main')
-    await driver.frame('frame-comb')
+    const wrappedDriver = await eyes.open(driver, this.test.parent.title, this.test.title)
+    await spec.switchToFrame(wrappedDriver, 'frame-main')
+    await spec.switchToFrame(wrappedDriver, 'frame-comb')
 
     const frameElementBeforeCheck = await getDocumentElement()
     await eyes.check('nested frame fully', Target.frame('frame-image').fully())
@@ -178,9 +166,9 @@ describe('PreserveTargetFrameAfterCheck', () => {
   })
 
   it('CheckFrameFully_UnwrappedDriver', async function() {
-    await eyes.open(browser, this.test.parent.title, this.test.title)
-    await browser.frame('frame-main')
-    await browser.frame('frame-comb')
+    await eyes.open(driver, this.test.parent.title, this.test.title)
+    await spec.switchToFrame(driver, await spec.findElement(driver, '[name="frame-main"]'))
+    await spec.switchToFrame(driver, await spec.findElement(driver, '[name="frame-comb"]'))
 
     const frameElementBeforeCheck = await getDocumentElement()
     await eyes.check('nested frame fully', Target.frame('frame-image').fully())
@@ -192,12 +180,12 @@ describe('PreserveTargetFrameAfterCheck', () => {
   })
 
   it('CheckCORSFrameRegionBySelector_WrappedDriver', async function() {
-    const driver = await eyes.open(browser, this.test.parent.title, this.test.title)
-    await driver.frame('frame-main')
-    await driver.frame('frame-cors')
+    const wrappedDriver = await eyes.open(driver, this.test.parent.title, this.test.title)
+    await spec.switchToFrame(wrappedDriver, 'frame-main')
+    await spec.switchToFrame(wrappedDriver, 'frame-cors')
 
     const frameElementBeforeCheck = await getDocumentElement()
-    await eyes.check('region in cors frame', Target.region(By.id('login-form')))
+    await eyes.check('region in cors frame', Target.region('#login-form'))
     const frameElementAfterCheck = await getDocumentElement()
 
     assert.deepStrictEqual(frameElementAfterCheck, frameElementBeforeCheck)
@@ -206,12 +194,12 @@ describe('PreserveTargetFrameAfterCheck', () => {
   })
 
   it('CheckCORSFrameRegionBySelector_UnwrappedDriver', async function() {
-    await eyes.open(browser, this.test.parent.title, this.test.title)
-    await browser.frame('frame-main')
-    await browser.frame('frame-cors')
+    await eyes.open(driver, this.test.parent.title, this.test.title)
+    await spec.switchToFrame(driver, await spec.findElement(driver, '[name="frame-main"]'))
+    await spec.switchToFrame(driver, await spec.findElement(driver, '[name="frame-cors"]'))
 
     const frameElementBeforeCheck = await getDocumentElement()
-    await eyes.check('region in cors frame', Target.region(By.id('login-form')))
+    await eyes.check('region in cors frame', Target.region('#login-form'))
     const frameElementAfterCheck = await getDocumentElement()
 
     assert.deepStrictEqual(frameElementAfterCheck, frameElementBeforeCheck)
@@ -220,11 +208,11 @@ describe('PreserveTargetFrameAfterCheck', () => {
   })
 
   it('CheckCORSFrameRegionByElement_WrappedDriver', async function() {
-    const driver = await eyes.open(browser, this.test.parent.title, this.test.title)
-    await driver.frame('frame-main')
-    await driver.frame('frame-cors')
+    const wrappedDriver = await eyes.open(driver, this.test.parent.title, this.test.title)
+    await spec.switchToFrame(wrappedDriver, 'frame-main')
+    await spec.switchToFrame(wrappedDriver, 'frame-cors')
 
-    const element = await driver.element('#login-form')
+    const element = await spec.findElement(wrappedDriver, '#login-form')
 
     const frameElementBeforeCheck = await getDocumentElement()
     await eyes.check('region in cors frame', Target.region(element))
@@ -236,11 +224,11 @@ describe('PreserveTargetFrameAfterCheck', () => {
   })
 
   it('CheckCORSFrameRegionByElement_UnwrappedDriver', async function() {
-    await eyes.open(browser, this.test.parent.title, this.test.title)
-    await browser.frame('frame-main')
-    await browser.frame('frame-cors')
+    await eyes.open(driver, this.test.parent.title, this.test.title)
+    await spec.switchToFrame(driver, await spec.findElement(driver, '[name="frame-main"]'))
+    await spec.switchToFrame(driver, await spec.findElement(driver, '[name="frame-cors"]'))
 
-    const element = await browser.element('#login-form')
+    const element = await spec.findElement(driver, '#login-form')
 
     const frameElementBeforeCheck = await getDocumentElement()
     await eyes.check('region in cors frame', Target.region(element))

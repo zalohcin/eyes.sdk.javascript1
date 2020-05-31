@@ -105,7 +105,7 @@ module.exports = {
       fixedPort = 443
     }
     const options = {
-      logLevel: 'error',
+      logLevel: 'silent',
       capabilities: capabilities,
       path: pathname,
       port: fixedPort ? Number(fixedPort) : undefined,

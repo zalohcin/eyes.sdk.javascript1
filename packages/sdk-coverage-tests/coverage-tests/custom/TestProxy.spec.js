@@ -1,9 +1,9 @@
 'use strict'
 const cwd = process.cwd()
 const path = require('path')
-const {getEyes, Browsers, batch} = require('../util/TestSetup')
+const {getEyes, Browsers} = require('../util/TestSetup')
 const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
-const {Configuration, ProxySettings} = require(cwd)
+const {ProxySettings} = require(cwd)
 const childProcess = require('child_process')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
@@ -25,8 +25,7 @@ describe('TestProxy', () => {
     const webDriver = await spec.build({capabilities: Browsers.chrome()})
     const eyes = await getEyes({isVisualGrid: true})
     try {
-      let conf = new Configuration()
-      conf.setBatch(batch)
+      let conf = eyes.getConfiguration()
       conf.setProxy(new ProxySettings('http://127.0.0.1:8080', undefined, undefined, true))
       conf.setAppName('Eyes Selenium SDK - Test Proxy')
       conf.setTestName('proxy test')
@@ -39,6 +38,7 @@ describe('TestProxy', () => {
       await eyes.close()
       await expect(eyes.close()).to.be.rejectedWith(Error, 'IllegalState: Eyes not open')
     } finally {
+      debugger
       await eyes.abortIfNotClosed()
       await spec.cleanup(webDriver)
     }
@@ -48,8 +48,7 @@ describe('TestProxy', () => {
     const webDriver = await spec.build({capabilities: Browsers.chrome()})
     const eyes = await getEyes({isVisualGrid: true})
     try {
-      let conf = new Configuration()
-      conf.setBatch(batch)
+      let conf = eyes.getConfiguration()
       conf.setProxy(new ProxySettings('http://127.0.0.1:8080', undefined, undefined, true))
       conf.setAppName('Eyes Selenium SDK - Test Proxy')
       conf.setTestName('proxy test')

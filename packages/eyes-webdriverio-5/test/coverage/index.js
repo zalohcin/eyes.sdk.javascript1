@@ -26,8 +26,6 @@ function initialize() {
   result.storeHook('vars', 'let runner')
   let baselineTestName
 
-  // TODO: add support --remote runner flag (e.g., options.host) to connect to a remote Selenium Grid
-  // Right now, wdio implicitly connects to http://localhost:4444/wd/hub
   async function _setup(options) {
     baselineTestName = options.baselineTestName
     result.storeHook(
@@ -46,7 +44,7 @@ function initialize() {
       const url = new URL(options.host)
       result.storeHook('beforeEach', `browserOptions.hostname = '${url.hostname}'`)
       result.storeHook('beforeEach', `browserOptions.port = ${url.port}`)
-      result.storeHook('beforeEach', `browserOptions.path = '${url.path || '/'}'`)
+      result.storeHook('beforeEach', `browserOptions.path = '${url.pathname || '/'}'`)
     }
     result.storeHook('beforeEach', `driver = await remote(browserOptions)`)
     result.storeHook(
