@@ -85,6 +85,10 @@
 			"path": "packages/sdk-shared"
 		},
 		{
+			"name": "side-eyes",
+			"path": "packages/side-eyes"
+		},
+		{
 			"name": "visual-grid-client",
 			"path": "packages/visual-grid-client"
 		}
