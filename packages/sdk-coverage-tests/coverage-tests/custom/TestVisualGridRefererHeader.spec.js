@@ -12,7 +12,7 @@ describe('TestVisualGridRefererHeader', () => {
   let driver
 
   before(async () => {
-    const staticPath = path.join(__dirname, '../../fixtures')
+    const staticPath = path.join(__dirname, '../fixtures')
     testServer1 = await testServer({port: 5555, staticPath})
     testServer2 = await testServer({
       staticPath,
