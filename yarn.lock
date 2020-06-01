@@ -115,6 +115,24 @@
     stack-trace "^0.0.10"
     tunnel "0.0.6"
 
+"@applitools/eyes-sdk-core@10.3.1":
+  version "10.3.1"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-10.3.1.tgz#42ca3833ce7451ce02c2dae7195f71e0bb957255"
+  integrity sha512-DmzBXEyEAjojw+j37slsCM8WsKsJ/H1l6FRZIszQpV9k+LgzgOvUtFqD429Bv9y8m5a3WmgHuwOf3g69Wcwj5Q==
+  dependencies:
+    "@applitools/dom-capture" "7.2.0"
+    "@applitools/isomorphic-fetch" "3.0.0"
+    axios "0.19.2"
+    chalk "3.0.0"
+    cosmiconfig "^6.0.0"
+    dateformat "^3.0.3"
+    debug "^4.1.1"
+    deepmerge "^4.2.2"
+    es6-promise-pool "2.5.0"
+    png-async "^0.9.4"
+    stack-trace "^0.0.10"
+    tunnel "0.0.6"
+
 "@applitools/eyes-sdk-core@7.0.0":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-7.0.0.tgz#5360cb8f3eb955965ac2ced0732f0ac0cb74a046"
@@ -278,6 +296,26 @@
   dependencies:
     "@applitools/dom-snapshot" "3.5.2"
     "@applitools/eyes-sdk-core" "10.3.0"
+    "@applitools/feature-flags" "2.1.1"
+    "@applitools/functional-commons" "1.5.4"
+    "@applitools/http-commons" "2.3.12"
+    "@applitools/isomorphic-fetch" "3.0.0"
+    "@applitools/jsdom" "1.0.2"
+    chalk "3.0.0"
+    he "1.2.0"
+    lodash.mapvalues "^4.6.0"
+    mime-types "^2.1.24"
+    mkdirp "^0.5.1"
+    postcss-value-parser "^4.0.2"
+    throat "^5.0.0"
+
+"@applitools/visual-grid-client@14.2.1":
+  version "14.2.1"
+  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-14.2.1.tgz#0f939a37ae0d32288ee40215ebf3b5cd178d1cd1"
+  integrity sha512-3lSG4xX8V85l2ziYVg/Y6XOJFcCeiIjl8uFmh+qcCRxigzUh3dM5OjIi7CcVmbSWKAvDuoBxybZQ+T/K6EOFpw==
+  dependencies:
+    "@applitools/dom-snapshot" "3.5.2"
+    "@applitools/eyes-sdk-core" "10.3.1"
     "@applitools/feature-flags" "2.1.1"
     "@applitools/functional-commons" "1.5.4"
     "@applitools/http-commons" "2.3.12"
@@ -17677,6 +17715,7 @@ select@^1.1.2:
   integrity sha1-DnNQrN7ICxEIUoeG7B1EGNEbOW0=
 
 "selenium-webdriver-3@npm:selenium-webdriver@^3.6.0", selenium-webdriver@3.6.0, selenium-webdriver@^3.0.1, selenium-webdriver@^3.6.0:
+  name selenium-webdriver-3
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/selenium-webdriver/-/selenium-webdriver-3.6.0.tgz#2ba87a1662c020b8988c981ae62cb2a01298eafc"
   integrity sha512-WH7Aldse+2P5bbFBO4Gle/nuQOdVwpHMTL6raL3uuBj/vPG07k6uzt3aiahu352ONBr5xXh0hDlM3LhtXPOC4Q==
