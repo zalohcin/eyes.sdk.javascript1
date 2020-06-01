@@ -1,30 +1,27 @@
 const assert = require('assert')
-const {Runner, WebElement} = require('protractor')
+const {WebElement} = require('protractor')
+const driverSpecs = require('../../src/SpecWrappedDriver')
 const specs = require('../../src/SpecWrappedElement')
 
 describe('SpecWrappedElement', () => {
   let driver
 
   before(async () => {
-    const runner = new Runner({
+    driver = await driverSpecs.build({
       capabilities: {
         browserName: 'chrome',
         'goog:chromeOptions': {
           args: ['headless'],
         },
       },
-      seleniumAddress: 'http://localhost:4444/wd/hub',
-      allScriptsTimeout: 11000,
-      getPageTimeout: 10000,
+      logLevel: 'error',
+      serverUrl: 'http://localhost:4444/wd/hub',
     })
-    driver = await runner.createBrowser().ready
-    driver.by = driver.constructor.By
-    driver.waitForAngularEnabled(false)
     await driver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
   })
 
   after(async () => {
-    await driver.quit()
+    await driverSpecs.cleanup(driver)
   })
 
   it('isCompatible(element)', async () => {
@@ -38,8 +35,18 @@ describe('SpecWrappedElement', () => {
     assert.deepStrictEqual(result, false)
   })
 
+  it('isSelector(string)', async () => {
+    const result = specs.isSelector('div')
+    assert.deepStrictEqual(result, true)
+  })
+
   it('isSelector(by)', async () => {
     const result = specs.isSelector(driver.by.css('div'))
+    assert.deepStrictEqual(result, true)
+  })
+
+  it('isSelector(byNg)', async () => {
+    const result = specs.isSelector(driver.by.model('model'))
     assert.deepStrictEqual(result, true)
   })
 
@@ -56,11 +63,11 @@ describe('SpecWrappedElement', () => {
   it('toSupportedSelector(eyesSelector)', async () => {
     const xpathEyesSelector = {type: 'xpath', selector: '/html[1]/body[1]/div[1]'}
     const xpathResult = specs.toSupportedSelector(xpathEyesSelector)
-    assert.deepStrictEqual(xpathResult, driver.by.xpath(xpathEyesSelector.selector))
+    assert.deepStrictEqual(xpathResult, {xpath: xpathEyesSelector.selector})
 
     const cssEyesSelector = {type: 'css', selector: 'html > body > div'}
     const cssResult = specs.toSupportedSelector(cssEyesSelector)
-    assert.deepStrictEqual(cssResult, driver.by.css(cssEyesSelector.selector))
+    assert.deepStrictEqual(cssResult, {css: cssEyesSelector.selector})
 
     const wrongEyesSelector = {type: 'wrong type', selector: 'wrong selector'}
     const wrongResult = specs.toSupportedSelector(wrongEyesSelector)

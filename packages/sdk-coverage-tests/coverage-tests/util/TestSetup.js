@@ -36,12 +36,12 @@ const Browsers = {
 
 const batch = new BatchInfo(process.env.APPLITOOLS_BATCH_NAME || 'JS Coverage Tests')
 
-function getEyes({isVisualGrid, isCssStitching, configuration} = {}) {
+function getEyes({isVisualGrid, isCssStitching, configuration, branchName = 'master'} = {}) {
   const eyes = new Eyes(isVisualGrid ? new VisualGridRunner(10) : undefined)
   const conf = new Configuration(
     Object.assign({}, configuration, {
       batch,
-      branchName: 'master',
+      branchName,
       parentBranchName: 'master',
       dontCloseBatches: true,
     }),

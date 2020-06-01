@@ -1,30 +1,23 @@
 const assert = require('assert')
-const {Runner} = require('protractor')
 const specs = require('../../src/SpecWrappedDriver')
 
 describe('SpecWrappedDriver', () => {
-  describe.only('headless desktop', async () => {
+  describe('headless desktop', async () => {
     let driver
     const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
 
     before(async () => {
-      const runner = new Runner({
+      driver = await specs.build({
         capabilities: {
           browserName: 'chrome',
           'goog:chromeOptions': {
             args: ['headless'],
           },
         },
-        logLevel: 'ERROR',
-        seleniumAddress: 'http://localhost:4444/wd/hub',
-        allScriptsTimeout: 11000,
-        getPageTimeout: 10000,
+        logLevel: 'error',
+        serverUrl: 'http://localhost:4444/wd/hub',
       })
-      driver = await runner.createBrowser().ready
-      driver.by = driver.constructor.By
-      driver.waitForAngularEnabled(false)
       await driver.get(url)
-      console.log((await driver.findElement(driver.by.css('div'))).constructor)
     })
 
     after(async () => {
@@ -174,24 +167,20 @@ describe('SpecWrappedDriver', () => {
     let driver
 
     before(async () => {
-      const runner = new Runner({
+      driver = await specs.build({
         capabilities: {
           browserName: 'chrome',
           'goog:chromeOptions': {
-            args: ['headless'],
+            args: [],
           },
         },
-        seleniumAddress: 'http://localhost:4444/wd/hub',
-        allScriptsTimeout: 11000,
-        getPageTimeout: 10000,
+        logLevel: 'error',
+        serverUrl: 'http://localhost:4444/wd/hub',
       })
-      driver = await runner.createBrowser().ready
-      driver.by = driver.constructor.By
-      driver.waitForAngularEnabled(false)
     })
 
     after(async () => {
-      await driver.quit()
+      await specs.cleanup(driver)
     })
 
     it('setWindowLocation({x, y})', async () => {
@@ -205,11 +194,11 @@ describe('SpecWrappedDriver', () => {
     })
   })
 
-  describe.skip('mobile browser', async () => {
+  describe('mobile browser', async () => {
     let driver
 
     before(async () => {
-      const runner = new Runner({
+      driver = await specs.build({
         capabilities: {
           username: process.env.SAUCE_USERNAME,
           accessKey: process.env.SAUCE_ACCESS_KEY,
@@ -221,17 +210,13 @@ describe('SpecWrappedDriver', () => {
           browserName: 'Chrome',
           browserVersion: 'latest',
         },
-        seleniumAddress: 'https://ondemand.saucelabs.com/wd/hub',
-        allScriptsTimeout: 11000,
-        getPageTimeout: 10000,
+        logLevel: 'error',
+        serverUrl: 'https://ondemand.saucelabs.com/wd/hub',
       })
-      driver = await runner.createBrowser().ready
-      driver.by = driver.constructor.By
-      driver.waitForAngularEnabled(false)
     })
 
     after(async () => {
-      await driver.quit()
+      await specs.cleanup(driver)
     })
 
     it('isMobile()', async () => {

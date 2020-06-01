@@ -1,5 +1,6 @@
 const ProtractorFrame = require('./ProtractorFrame')
 const ProtractorWrappedElement = require('./ProtractorWrappedElement')
+const {Builder, Runner} = require('protractor')
 // const cmd = require('selenium-webdriver/lib/command')
 
 module.exports = {
@@ -39,14 +40,14 @@ module.exports = {
   },
   async findElement(driver, selector) {
     try {
-      return await driver.findElement(selector)
+      return await driver.$(selector)
     } catch (err) {
       if (err.name === 'NoSuchElementError') return null
       else throw err
     }
   },
   async findElements(driver, selector) {
-    return driver.findElements(selector)
+    return driver.$$(selector)
   },
   async getWindowLocation(driver) {
     const {x, y} = await driver
@@ -121,5 +122,37 @@ module.exports = {
   },
   async visit(driver, url) {
     return driver.get(url)
+  },
+
+  /********* for testing purposes */
+  async build({capabilities, serverUrl = process.env.CVG_TESTS_REMOTE, logLevel}) {
+    const runner = new Runner({
+      capabilities,
+      seleniumAddress: serverUrl,
+      logLevel: logLevel.toUpperCase(),
+      allScriptsTimeout: 11000,
+      getPageTimeout: 10000,
+    })
+    const driver = await runner.createBrowser().ready
+    driver.by = driver.constructor.By
+    driver.waitForAngularEnabled(false)
+    return driver
+  },
+
+  async cleanup(driver) {
+    return driver.quit()
+  },
+
+  async click(_driver, el) {
+    return el.click()
+  },
+
+  async waitUntilDisplayed(driver, selector, timeout) {
+    // const el = await this.findElement(driver, selector)
+    // return driver.wait(until.elementIsVisible(el), timeout)
+  },
+
+  async getElementRect(_driver, el) {
+    return el.getRect()
   },
 }

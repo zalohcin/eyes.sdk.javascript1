@@ -1,5 +1,5 @@
 const {TypeUtils} = require('@applitools/eyes-sdk-core')
-const {WebElement} = require('protractor')
+const {ProtractorBy, WebElement, ElementFinder} = require('protractor')
 
 /**
  * @typedef {import('protractor').Locator} Locator
@@ -7,7 +7,7 @@ const {WebElement} = require('protractor')
 
 /**
  * Supported selector type
- * @typedef {Locator} SupportedSelector
+ * @typedef {Locator|string} SupportedSelector
  */
 
 /**
@@ -17,43 +17,47 @@ const {WebElement} = require('protractor')
 
 /**
  * Unwrapped element supported by framework
- * @typedef {WebElement} UnwrappedElement
+ * @typedef {WebElement|ElementFinder} UnwrappedElement
  */
 
 module.exports = {
   isCompatible(element) {
-    return element instanceof WebElement
+    return element instanceof WebElement || element instanceof ElementFinder
   },
   isSelector(selector) {
     if (!selector) return false
+    const by = new ProtractorBy()
     return (
-      selector instanceof By ||
+      TypeUtils.isString(selector) ||
       TypeUtils.has(selector, ['using', 'value']) ||
-      Object.keys(selector).some(key => key in By)
+      Object.keys(selector).some(key => key in by) ||
+      TypeUtils.isFunction(selector.findElementsOverride)
     )
   },
   toSupportedSelector(selector) {
     if (TypeUtils.has(selector, ['type', 'selector'])) {
-      if (selector.type === 'css') return By.css(selector.selector)
-      else if (selector.type === 'xpath') return By.xpath(selector.selector)
+      if (selector.type === 'css') return {css: selector.selector}
+      else if (selector.type === 'xpath') return {xpath: selector.selector}
     }
     return selector
   },
   toEyesSelector(selector) {
-    if (TypeUtils.has(selector, ['using', 'value'])) {
-      selector = new By(selector.using, selector.value)
-    } else if (TypeUtils.isPlainObject(selector)) {
-      const using = Object.keys(selector).find(using => TypeUtils.has(By, using))
-      if (using) selector = By[using](selector[using])
+    if (!TypeUtils.has(selector, ['using', 'value'])) {
+      const by = new ProtractorBy()
+      if (TypeUtils.isString(selector)) {
+        selector = by.css(selector[using])
+      } else if (TypeUtils.isPlainObject(selector)) {
+        const using = Object.keys(selector).find(using => TypeUtils.has(by, using))
+        if (using) selector = by[using](selector[using])
+      } else {
+        return {selector}
+      }
     }
 
-    if (selector instanceof By) {
-      const {using, value} = selector
-      if (using === 'css selector') return {type: 'css', selector: value}
-      else if (using === 'xpath') return {type: 'xpath', selector: value}
-    }
-
-    return {selector}
+    const {using, value} = selector
+    if (using === 'css selector') return {type: 'css', selector: value}
+    else if (using === 'xpath') return {type: 'xpath', selector: value}
+    else return {selector}
   },
   extractId(element) {
     return element.getId()
