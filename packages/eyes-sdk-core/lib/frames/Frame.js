@@ -212,23 +212,27 @@ class Frame {
       }
       this._logger.verbose('Done! getting the specific frame...')
       this._element = elements[this._reference]
-    } else if (TypeUtils.isString(this._reference)) {
-      this._logger.verbose('Getting frames by name or id...')
-      let element = await EyesUtils.getFrameByNameOrId(
-        this._logger,
-        this._driver.executor,
-        this._reference,
-      )
-      if (!element) {
-        throw new TypeError(`No frame with name or id '${this._reference}' exists!`)
+    } else if (TypeUtils.isString(this._reference) || this.specs.isSelector(this._reference)) {
+      if (TypeUtils.isString(this._reference)) {
+        this._logger.verbose('Getting frames by name or id...')
+        const element = await EyesUtils.getFrameByNameOrId(
+          this._logger,
+          this._driver.executor,
+          this._reference,
+        )
+        if (element) {
+          this._element = this.specs.createElement(this._logger, this._driver, element)
+        }
       }
-      this._element = this.specs.createElement(this._logger, this._driver, element)
-    } else if (this.specs.isSelector(this._reference)) {
-      const element = await this._driver.finder.findElement(this._reference)
-      if (!element) {
-        throw new TypeError(`No frame found by selector '${this._reference}'!`)
+      if (this.specs.isSelector(this._reference)) {
+        const element = await this._driver.finder.findElement(this._reference)
+        if (element) {
+          this._element = element
+        }
       }
-      this._element = element
+      if (!this._element) {
+        throw new TypeError(`No frame with selector, name or id '${this._reference}' exists!`)
+      }
     } else if (this.specs.isCompatibleElement(this._reference)) {
       this._element = this.specs.createElement(this._logger, this._driver, this._reference)
     } else {
