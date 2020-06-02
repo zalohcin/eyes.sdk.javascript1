@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- avoid 404 error in internet explorer due to parallel script executions
 
 ## 11.0.1 - 2020/6/2
 
