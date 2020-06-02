@@ -11,8 +11,16 @@ import Normal from '../../../containers/Normal'
 import uuidv4 from 'uuid/v4'
 jest.mock('../../../../IO/storage')
 import { waitForCompletion } from '../../../../IO/storage'
+import { updateBrowserNamesForBackwardsCompatibility } from '../../../components/VisualGridOptionSelector/options'
 
-describe('Visual grid options', () => {
+describe('Visual grid options utils', () => {
+  it('supports browsername backwards compatibility', () => {
+    const browsers = ['Chrome', 'Edge', 'Firefox']
+    expect(updateBrowserNamesForBackwardsCompatibility(browsers)).toEqual(['Chrome', 'Edge Legacy', 'Firefox'])
+  })
+})
+
+describe('Visual grid options UI', () => {
   beforeAll(() => {
     const mockSuccessResponse = {"devices":[{"deviceName":"iPhone 4"},{"deviceName":"iPhone 5/SE"},{"deviceName":"iPhone 6/7/8"}]};
     const mockJsonPromise = Promise.resolve(mockSuccessResponse);

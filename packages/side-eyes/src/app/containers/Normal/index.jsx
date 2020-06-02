@@ -12,6 +12,7 @@ import VisualGrid from '../../components/VisualGrid'
 import VisualGridEula from '../../components/VisualGridEula'
 import { isExperimentalBrowser } from '../../../background/utils/parsers'
 import './style.css'
+import {updateBrowserNamesForBackwardsCompatibility} from '../../components/VisualGridOptionSelector/options'
 
 export default class Normal extends React.Component {
   static propTypes = {
@@ -104,6 +105,20 @@ export default class Normal extends React.Component {
             settings.selectedBrowsers = settings.selectedBrowsers.filter(
               b => !isExperimentalBrowser(b.toLowerCase())
             )
+            storage.set({
+              ['projectSettings']: {
+                ...projectSettings,
+                [this.props.projectId]: {
+                  ...settings,
+                },
+              },
+            })
+          }
+          if (
+            projectSettings &&
+            projectSettings[this.props.projectId]
+          ) {
+            settings.selectedBrowsers = updateBrowserNamesForBackwardsCompatibility(settings.selectedBrowsers)
             storage.set({
               ['projectSettings']: {
                 ...projectSettings,
