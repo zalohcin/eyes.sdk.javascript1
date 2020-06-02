@@ -23,7 +23,7 @@ function createReport({sdkName, xmlResult, browser, group, sandbox} = {}) {
   return {
     sdk: convertSdkNameToReportName(sdkName),
     group: group ? group : 'selenium',
-    sandbox: sandbox ? sandbox : true,
+    sandbox: sandbox !== undefined ? sandbox : true,
     results: convertJunitXmlToResultSchema({xmlResult, browser}),
   }
 }
