@@ -94,7 +94,7 @@ const GET_ELEMENT_CSS_PROPERTIES = `
 `
 
 const GET_SCROLL_POSITION = `
-  var element = arguments[0] || document.scrollingElement;
+  var element = arguments[0];
   if (element) return [element.scrollLeft, element.scrollTop];
   else {
     var doc = document.documentElement;
@@ -107,7 +107,7 @@ const GET_SCROLL_POSITION = `
 
 const SCROLL_TO = `
   var offset = arguments[0];
-  var element = arguments[1] || document.scrollingElement || document.documentElement;
+  var element = arguments[1] || document.documentElement;
   if (element.scrollTo) {
     element.scrollTo(offset.x, offset.y);
   } else {
@@ -137,16 +137,16 @@ const TRANSLATE_TO = (x, y) => `
 `
 
 const IS_SCROLLABLE = `
-  var element = arguments[0] || document.scrollingElement || document.documentElement;
+  var element = arguments[0] || document.documentElement;
   return element.scrollWidth > element.clientWidth || element.scrollHeight > element.clientHeight
 `
 
 const GET_SCROLL_ROOT_ELEMENT = `
-  return document.scrollingElement || document.documentElement;
+  return document.documentElement;
 `
 
 const MARK_SCROLL_ROOT_ELEMENT = `
-  var element =  arguments[0] || document.scrollingElement || document.documentElement;
+  var element =  arguments[0] || document.documentElement;
   element.setAttribute("data-applitools-scroll", "true");
 `
 

@@ -27,8 +27,8 @@ describe('CheckRegionInFrameLargerThenViewport', () => {
 
   it('CheckRegionInFrameLargerThenViewport', async function() {
     eyes = new getEyes({isCssStitching: true})
-    await spec.visit(driver, 'https://applitools-test-out-of-viewport.surge.sh')
-    await eyes.open(driver, this.test.parent.title, this.test.title)
+    await spec.visit(driver, 'https://applitools.github.io/demo/TestPages/OutOfViewport/')
+    await eyes.open(driver, this.test.parent.title, this.test.title, {width: 800, height: 600})
     await eyes.check(
       'region in frame fully',
       Target.frame('frame-list')
@@ -40,8 +40,9 @@ describe('CheckRegionInFrameLargerThenViewport', () => {
 
   it('CheckRegionInFrameLargerThenViewport_Scroll', async function() {
     eyes = new getEyes()
-    await spec.visit(driver, 'https://applitools-test-out-of-viewport.surge.sh')
-    await eyes.open(driver, this.test.parent.title, this.test.title)
+    await spec.visit(driver, 'https://applitools.github.io/demo/TestPages/OutOfViewport/')
+    await eyes.open(driver, this.test.parent.title, this.test.title, {width: 800, height: 600})
+    eyes.setScrollRootElement('body')
     await eyes.check(
       'region in frame fully',
       Target.frame('frame-list')

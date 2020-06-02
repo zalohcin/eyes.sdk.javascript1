@@ -62,9 +62,9 @@ class MockDriver {
     this.mockScript(EyesJsSnippets.GET_SCROLL_ROOT_ELEMENT, () => {
       const context = this._contexts.get(this._contextId)
       if (!context.document.scrollingElement) {
-        context.scrollingElement = {id: Symbol('scrolling element id')}
+        context.document.scrollingElement = {id: Symbol('scrolling element id')}
       }
-      return context.scrollingElement
+      return context.document.scrollingElement
     })
     this.mockScript(EyesJsSnippets.SCROLL_TO, (offset, element) => {
       let scrollingElement = element
@@ -173,11 +173,14 @@ class MockDriver {
     const elements = this._elements.get(selector)
     return elements ? elements.filter(element => element.parentContextId === this._contextId) : []
   }
-  async switchToFrame(element) {
-    if (element === null) {
+  async switchToFrame(reference) {
+    if (reference === null) {
       return (this._contextId = null)
     }
-    const frame = this._contexts.get(element.contextId)
+    if (TypeUtils.isString(reference)) {
+      reference = await this.findElement(reference)
+    }
+    const frame = this._contexts.get(reference.contextId)
     if (frame && this._contextId === frame.parentId) {
       return (this._contextId = frame.id)
     } else {

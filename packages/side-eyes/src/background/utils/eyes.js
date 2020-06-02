@@ -13,7 +13,6 @@ import ideLogger from './ide-logger'
 import storage from '../../IO/storage'
 import manifest from '../../manifest.json'
 
-export const experimentalBrowserWarningMessage = `IE and Edge are experimental and only support viewports of up to ${maxExperimentalResolution}.`
 const DEFAULT_EYES_API_SERVER = 'https://eyesapi.applitools.com'
 const eyes = {}
 let lastResults = {
@@ -253,16 +252,6 @@ async function createVisualGridEyes(
     devices,
     orientations
   )
-  if (didRemoveResolution) {
-    if (matrix.length) {
-      await ideLogger.warn(experimentalBrowserWarningMessage)
-    } else {
-      throw new Error(
-        `Visual Grid has invalid settings, IE and Edge are experimental and only support viewports of up to ${maxExperimentalResolution}, please make sure there is at least one supported viewport.`
-      )
-    }
-  }
-
   let useDom
   let enablePatterns
 
