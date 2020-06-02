@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 14.4.0 - 2020/6/2
+
 - Unified core
 - updated to @applitools/eyes-sdk-core@11.0.1 (from v10.3.1)
 
