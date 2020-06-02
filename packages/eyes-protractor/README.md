@@ -1,16 +1,16 @@
-@applitools/eyes-selenium
+@applitools/eyes-protractor
 ===================
 
-Applitools Eyes SDK for Selenium WebDriver
+Applitools Eyes SDK for Protractor
 
-[![npm](https://img.shields.io/npm/v/@applitools/eyes-selenium.svg?style=for-the-badge)](https://www.npmjs.com/package/@applitools/eyes-selenium)
+[![npm](https://img.shields.io/npm/v/@applitools/eyes-protractor.svg?style=for-the-badge)](https://www.npmjs.com/package/@applitools/eyes-protractor)
 
 ## Installation
 
-Install eyes-selenium as a local dev dependency in your tested project:
+Install eyes-protractor as a local dev dependency in your tested project:
 
-    npm install selenium-webdriver
-    npm install @applitools/eyes-selenium
+    npm install protractor
+    npm install @applitools/eyes-protractor
 
 ## Usage
 
