@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- added EDGE_CHROMIUM_TWO_VERSIONS_BACK to BrowserType
 
 ## 11.0.2 - 2020/6/2
 
