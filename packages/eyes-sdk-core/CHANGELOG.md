@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 11.0.1 - 2020/6/2
+
 - change document.scrollingElement to document.documentElement as the default scroll root element
 
 ## 11.0.0 - 2020/5/31
