@@ -4,17 +4,17 @@ const {Target, Configuration, BrowserType} = require('../../../index')
 const appName = 'Eyes Selenium SDK - Special Characters Test'
 const batch = getBatch()
 describe(appName, () => {
-  let webDriver, eyes, runner
+  let webDriver, eyes
   beforeEach(async () => {
     webDriver = await getDriver('CHROME')
-    ;({eyes, runner} = await getEyes('VG'))
+    eyes = await getEyes('VG')
   })
   afterEach(async () => {
     await eyes.abortIfNotClosed()
     await webDriver.quit()
   })
 
-  it.skip('TestRenderSpecialCharacters', async () => {
+  it('TestRenderSpecialCharacters', async () => {
     let conf = new Configuration()
     conf.setTestName('Special Characters')
     conf.setAppName(appName)
@@ -28,6 +28,6 @@ describe(appName, () => {
     await webDriver.get('https://applitools.github.io/demo/TestPages/SpecialCharacters/index.html')
     await eyes.check('Test Special Characters', Target.window().fully())
     await eyes.close()
-    await runner.getAllTestResults()
+    await eyes.getRunner().getAllTestResults()
   })
 })

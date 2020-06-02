@@ -11,7 +11,7 @@ const {
 } = require('../../../index')
 const {getDriver} = require('./util/TestSetup')
 const {getApiData} = require('./util/ApiAssertions')
-describe.skip('TestEyesConfiguration', async () => {
+describe('TestEyesConfiguration', async () => {
   let testCases = []
   testCase(false, 'Test sequence', 'Test Sequence Name Env Var')
   testCase(false, 'Test sequence', undefined)

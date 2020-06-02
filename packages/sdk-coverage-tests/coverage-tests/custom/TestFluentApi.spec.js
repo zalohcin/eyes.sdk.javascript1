@@ -14,7 +14,7 @@ describe(appName, () => {
     await spec.cleanup(webDriver)
   })
 
-  describe.skip(`Test`, () => {
+  describe(`Test`, () => {
     beforeEach(async () => {
       webDriver = await spec.build({capabilities: Browsers.chrome()})
       await spec.visit(webDriver, 'https://applitools.github.io/demo/TestPages/FramesTestPage/')
@@ -51,7 +51,7 @@ describe(appName, () => {
       await eyes.close()
     })
 
-    it('TestCheckScrollableModal', async () => {
+    it.skip('TestCheckScrollableModal', async () => {
       let driver = await eyes.open(webDriver, appName, `TestCheckScrollableModal`, {
         width: 700,
         height: 460,

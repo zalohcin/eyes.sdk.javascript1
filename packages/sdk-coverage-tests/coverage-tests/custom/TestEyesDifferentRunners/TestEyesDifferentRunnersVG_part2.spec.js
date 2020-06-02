@@ -35,6 +35,6 @@ describe('TestEyesDifferentRunners VG', () => {
     ['https://ebay.com', MatchLevel.Layout],
   ]
   cases.forEach(testData => {
-    it(testData[0], testCase(...testData))
+    it('TestEyesDifferentRunners', testCase(...testData))
   })
 })

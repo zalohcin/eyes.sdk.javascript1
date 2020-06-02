@@ -76,7 +76,7 @@ describe(appName, () => {
       webDriver = await spec.build({capabilities: Browsers.chrome()})
     }
 
-    it.skip(`Test_GetAllResults_VG`, async () => {
+    it(`Test_GetAllResults_VG`, async () => {
       await beforeEach()
       expect(Test_ThrowBeforeOpen).to.throw('Before Open')
       await afterEach()
@@ -136,7 +136,7 @@ function getConfig() {
   config.addBrowser(900, 600, BrowserType.FIREFOX)
   config.addBrowser(900, 600, BrowserType.IE_10)
   config.addBrowser(900, 600, BrowserType.IE_11)
-  config.addBrowser(900, 600, BrowserType.EDGE)
+  config.addBrowser(900, 600, BrowserType.EDGE_LEGACY)
   config.addDeviceEmulation(DeviceName.iPhone_4, ScreenOrientation.PORTRAIT)
   config.addDeviceEmulation(DeviceName.Galaxy_S5, ScreenOrientation.LANDSCAPE)
   return config

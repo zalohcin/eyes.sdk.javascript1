@@ -4,7 +4,7 @@ const {EyesWebElement, Target, Region, StitchMode} = require('../../../index')
 const {Builder, By} = require('selenium-webdriver')
 const appName = 'TestScrolling'
 
-describe.skip(appName, () => {
+describe(appName, () => {
   describe('ChromeEmulation', () => {
     let eyes, driver
 

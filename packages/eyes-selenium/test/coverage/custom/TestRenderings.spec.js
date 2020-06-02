@@ -27,7 +27,7 @@ describe('TestRenderings', async () => {
     await eyes.abortIfNotClosed()
   })
 
-  it.skip('TestMobileOnly', async () => {
+  it('TestMobileOnly', async () => {
     let conf = new Configuration()
     conf.setTestName('Mobile Render Test')
     conf.setAppName('Visual Grid Render Test')

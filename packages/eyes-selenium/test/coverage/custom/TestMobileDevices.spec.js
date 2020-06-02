@@ -146,19 +146,17 @@ const data = [
   ...addOrientation(iPhoneLandscape, 'Landscape'),
   ...addOrientation(iPhonePortrait, 'Portrait'),
 ]
-describe.skip('TestMobileDevices', () => {
+describe('TestMobileDevices', () => {
   let page = ['mobile', 'desktop', 'scrolled_mobile']
   page.forEach(page => {
     describe(`${page}`, () => {
-      before(function() {
-        if (page === 'desktop') this.skip()
-      })
       data.forEach(device => {
         it(`${device.name}`, async () => {
           let webDriver, eyes
           try {
             webDriver = await new Builder()
               .withCapabilities(getDeviceEmulationCaps(device.mobileEmulation))
+              .usingServer(process.env.CVG_TESTS_REMOTE)
               .build()
             eyes = new Eyes()
             eyes.setBatch(batch)
