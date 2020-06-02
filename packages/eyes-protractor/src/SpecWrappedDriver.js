@@ -1,6 +1,7 @@
+const {TypeUtils} = require('@applitools/eyes-sdk-core')
 const ProtractorFrame = require('./ProtractorFrame')
 const ProtractorWrappedElement = require('./ProtractorWrappedElement')
-const {Builder, Runner} = require('protractor')
+const {Runner, Command, CommandName} = require('protractor')
 // const cmd = require('selenium-webdriver/lib/command')
 
 module.exports = {
@@ -20,11 +21,11 @@ module.exports = {
     return ProtractorWrappedElement.toEyesSelector(selector)
   },
   prepareDriver(driver) {
-    // cmd.Name.SWITCH_TO_PARENT_FRAME = 'switchToParentFrame'
-    // driver
-    //   .getExecutor()
-    //   .defineCommand(cmd.Name.SWITCH_TO_PARENT_FRAME, 'POST', '/session/:sessionId/frame/parent')
-    // return driver
+    CommandName.SWITCH_TO_PARENT_FRAME = 'switchToParentFrame'
+    driver
+      .getExecutor()
+      .defineCommand(CommandName.SWITCH_TO_PARENT_FRAME, 'POST', '/session/:sessionId/frame/parent')
+    return driver
   },
   executeScript(driver, script, ...args) {
     return driver.executeScript(script, ...args)
@@ -36,18 +37,19 @@ module.exports = {
     return driver.switchTo().frame(reference)
   },
   switchToParentFrame(driver) {
-    return driver.schedule(new cmd.Command(cmd.Name.SWITCH_TO_PARENT_FRAME))
+    return driver.schedule(new Command(CommandName.SWITCH_TO_PARENT_FRAME))
   },
   async findElement(driver, selector) {
     try {
-      return await driver.$(selector)
+      if (TypeUtils.isString(selector)) selector = {css: selector}
+      return await driver.findElement(selector)
     } catch (err) {
       if (err.name === 'NoSuchElementError') return null
       else throw err
     }
   },
   async findElements(driver, selector) {
-    return driver.$$(selector)
+    return driver.findElements(selector)
   },
   async getWindowLocation(driver) {
     const {x, y} = await driver
@@ -143,16 +145,20 @@ module.exports = {
     return driver.quit()
   },
 
-  async click(_driver, el) {
-    return el.click()
+  async click(_driver, element) {
+    return element.click()
   },
 
-  async waitUntilDisplayed(driver, selector, timeout) {
-    // const el = await this.findElement(driver, selector)
-    // return driver.wait(until.elementIsVisible(el), timeout)
+  async type(_driver, element, keys) {
+    return element.sendKeys(keys)
   },
 
-  async getElementRect(_driver, el) {
-    return el.getRect()
+  // async waitUntilDisplayed(driver, selector, timeout) {
+  //   // const el = await this.findElement(driver, selector)
+  //   // return driver.wait(until.elementIsVisible(el), timeout)
+  // },
+
+  async getElementRect(_driver, element) {
+    return element.getRect()
   },
 }

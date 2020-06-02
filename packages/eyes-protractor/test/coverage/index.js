@@ -14,8 +14,9 @@ function initialize() {
     `const {
       getEyes,
       Browsers
-    } = require('@applitools/sdk-coverage-tests/coverage-tests/utils/TestSetup)`,
+    } = require('@applitools/sdk-coverage-tests/coverage-tests/util/TestSetup')`,
   )
+  result.storeHook('deps', `const {Target, RectangleSize, Region} = require('../../../index')`)
   result.storeHook('vars', 'let eyes')
   result.storeHook('vars', 'let driver')
   result.storeHook('vars', 'let runner')
@@ -69,7 +70,8 @@ function initialize() {
         )`,
       )
     } else {
-      result.storeCommand(`let checkSettings = Target`)
+      result.storeCommand(`{`)
+      result.storeCommand(`let checkSettings = new Target()`)
       if (Array.isArray(target)) {
         target.forEach(entry => {
           result.storeCommand(`checkSettings.frame(${makeRegionLocator(entry)})`)
@@ -91,6 +93,7 @@ function initialize() {
       }
       result.storeCommand(`checkSettings.fully(${isFully}).timeout(${matchTimeout})`)
       result.storeCommand(`await eyes.check(${tag ? `'${tag}` : undefined}, checkSettings)`)
+      result.storeCommand(`}`)
     }
   }
 
@@ -110,38 +113,39 @@ function initialize() {
     if (isClassicApi) {
       inFrame
         ? result.storeCommand(
-            `await eyes.checkRegionInFrame(By.css('${inFrame}'), By.css('${target}'), ${matchTimeout}, ${
-              tag ? '"' + tag + '"' : undefined
-            }, ${isFully})`,
+            `await eyes.checkRegionInFrame(
+              ${makeRegionLocator(inFrame)},
+              ${makeRegionLocator(target)},
+              ${matchTimeout},
+              ${tag ? `'${tag}'` : undefined},
+              ${isFully}
+            )`,
           )
         : result.storeCommand(
-            `await eyes.checkRegionBy(By.css('${target}'), ${
-              tag ? '"' + tag + '"' : undefined
-            }, ${matchTimeout}, ${isFully})`,
+            `await eyes.checkRegionBy(
+              ${makeRegionLocator(target)},
+              ${tag ? `'${tag}'` : undefined},
+              ${matchTimeout},
+              ${isFully}
+            )`,
           )
     } else {
       result.storeCommand(`{`)
-      result.storeCommand(`let _checkSettings`)
-      if (inFrame) {
-        result.storeCommand(`_checkSettings = Target.frame(By.css('${inFrame}'))`)
-      }
-      if (Array.isArray(target)) {
-        target.forEach((entry, index) => {
-          index === 0
-            ? result.storeCommand(`(_checkSettings = Target.region(${makeRegionLocator(entry)}))`)
-            : result.storeCommand(`_checkSettings.region(${makeRegionLocator(entry)})`)
+      result.storeCommand(`const checkSettings = new Target()`)
+      if (Array.isArray(inFrame)) {
+        inFrame.forEach(entry => {
+          result.storeCommand(`checkSettings.frame(${makeRegionLocator(entry)})`)
         })
-      } else {
-        result.storeCommand(`_checkSettings
-          ? _checkSettings.region(${makeRegionLocator(target)})
-          : (_checkSettings = Target.region(${makeRegionLocator(target)}))`)
+      } else if (inFrame) {
+        result.storeCommand(`checkSettings.frame(${makeRegionLocator(inFrame)})`)
       }
+      result.storeCommand(`checkSettings.region(${makeRegionLocator(target)})`)
       if (ignoreRegion) {
-        result.storeCommand(`_checkSettings.ignoreRegions(${makeRegionLocator(ignoreRegion)})`)
+        result.storeCommand(`checkSettings.ignoreRegions(${makeRegionLocator(ignoreRegion)})`)
       }
       if (floatingRegion) {
         result.storeCommand(
-          `_checkSettings.floatingRegion(
+          `checkSettings.floatingRegion(
             ${makeRegionLocator(floatingRegion.target)},
             ${floatingRegion.maxUp},
             ${floatingRegion.maxDown},
@@ -151,10 +155,10 @@ function initialize() {
         )
       }
       if (isLayout) {
-        result.storeCommand(`_checkSettings.layout()`)
+        result.storeCommand(`checkSettings.layout()`)
       }
-      result.storeCommand(`_checkSettings.fully(${isFully}).timeout(${matchTimeout})`)
-      result.storeCommand(`await eyes.check(${tag ? '"' + tag + '"' : undefined}, _checkSettings)`)
+      result.storeCommand(`checkSettings.fully(${isFully}).timeout(${matchTimeout})`)
+      result.storeCommand(`await eyes.check(${tag ? `'${tag}'` : undefined}, checkSettings)`)
       result.storeCommand(`}`)
     }
   }
@@ -170,25 +174,27 @@ function initialize() {
   } = {}) {
     if (isClassicApi) {
       result.storeCommand(
-        `await eyes.checkWindow(${tag ? '"' + tag + '"' : undefined}, ${matchTimeout}, ${isFully})`,
+        `await eyes.checkWindow(${tag ? `'${tag}'` : undefined}, ${matchTimeout}, ${isFully})`,
       )
     } else {
       result.storeCommand(`{`)
       result.storeCommand(
-        `let _checkSettings = Target.window()
+        `const checkSettings = Target.window()
         .fully(${isFully})
         .ignoreCaret()
         .timeout(${matchTimeout})`,
       )
       if (scrollRootElement) {
-        result.storeCommand(`_checkSettings.scrollRootElement(By.css('${scrollRootElement}'))`)
+        result.storeCommand(
+          `checkSettings.scrollRootElement(${makeRegionLocator(scrollRootElement)})`,
+        )
       }
       if (ignoreRegion) {
-        result.storeCommand(`_checkSettings.ignoreRegions(${makeRegionLocator(ignoreRegion)})`)
+        result.storeCommand(`checkSettings.ignoreRegions(${makeRegionLocator(ignoreRegion)})`)
       }
       if (floatingRegion) {
         result.storeCommand(`
-        _checkSettings.floatingRegion(
+        checkSettings.floatingRegion(
           ${makeRegionLocator(floatingRegion.target)},
           ${floatingRegion.maxUp},
           ${floatingRegion.maxDown},
@@ -196,7 +202,7 @@ function initialize() {
           ${floatingRegion.maxRight},
         )`)
       }
-      result.storeCommand(`await eyes.check(undefined, _checkSettings)`)
+      result.storeCommand(`await eyes.check(${tag ? `'${tag}'` : undefined}, checkSettings)`)
       result.storeCommand(`}`)
     }
   }
@@ -222,22 +228,29 @@ function initialize() {
   }
 
   function scrollDown(pixels) {
-    result.storeCommand(`await driver.executeScript('window.scrollBy(0,${pixels})')`)
+    result.storeCommand(`await specs.executeScript(driver, 'window.scrollBy(0,${pixels})')`)
   }
 
   function switchToFrame(selector) {
     result.storeCommand(`{`)
-    result.storeCommand(`const element = await driver.findElement(By.css('${selector}'))`)
-    result.storeCommand(`await driver.switchTo().frame(element)`)
+    result.storeCommand(
+      `const element = await specs.findElement(driver, ${makeRegionLocator(selector)})`,
+    )
+    result.storeCommand(`await specs.switchToFrame(driver, element)`)
     result.storeCommand(`}`)
   }
 
-  function type(locator, inputText) {
-    result.storeCommand(`await driver.findElement(By.css('${locator}')).sendKeys('${inputText}')`)
+  function type(selector, keys) {
+    result.storeCommand(`{`)
+    result.storeCommand(
+      `const element = await specs.findElement(driver, ${makeRegionLocator(selector)})`,
+    )
+    result.storeCommand(`await specs.type(driver, element, '${keys}')`)
+    result.storeCommand(`}`)
   }
 
   function visit(url) {
-    result.storeCommand(`await driver.get('${url}')`)
+    result.storeCommand(`await specs.visit(driver, '${url}')`)
   }
 
   return {
