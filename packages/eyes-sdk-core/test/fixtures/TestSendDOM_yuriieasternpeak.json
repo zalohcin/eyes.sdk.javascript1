@@ -255,7 +255,7 @@
                 "visibility": "visible"
               },
               "rect": {
-                "width": 283.234375,
+                "width": 269.234375,
                 "height": 184,
                 "top": 73,
                 "left": 413
@@ -292,7 +292,7 @@
                     "visibility": "visible"
                   },
                   "rect": {
-                    "width": 263.234375,
+                    "width": 249.234375,
                     "height": 72,
                     "top": 73,
                     "left": 433
@@ -330,7 +330,7 @@
                         "visibility": "visible"
                       },
                       "rect": {
-                        "width": 260.578125,
+                        "width": 246.578125,
                         "height": 17,
                         "top": 76,
                         "left": 433
@@ -350,7 +350,7 @@
                             "background-image": "none",
                             "background-size": "auto",
                             "border-width": "2px",
-                            "border-color": "rgb(118, 118, 118)",
+                            "border-color": "rgb(0, 0, 0)",
                             "border-style": "inset",
                             "color": "rgb(0, 0, 0)",
                             "display": "inline-block",
@@ -360,11 +360,11 @@
                             "margin": "0px",
                             "opacity": "1",
                             "overflow": "visible",
-                            "padding": "1px 2px",
+                            "padding": "1px 0px",
                             "visibility": "visible"
                           },
                           "rect": {
-                            "width": 209,
+                            "width": 195,
                             "height": 24,
                             "top": 73,
                             "left": 484.578125
@@ -406,7 +406,7 @@
                         "width": 0,
                         "height": 17,
                         "top": 76,
-                        "left": 693.578125
+                        "left": 679.578125
                       },
                       "childNodes": []
                     },
@@ -438,7 +438,7 @@
                         "visibility": "visible"
                       },
                       "rect": {
-                        "width": 263.234375,
+                        "width": 249.234375,
                         "height": 17,
                         "top": 100,
                         "left": 433
@@ -458,7 +458,7 @@
                             "background-image": "none",
                             "background-size": "auto",
                             "border-width": "2px",
-                            "border-color": "rgb(118, 118, 118)",
+                            "border-color": "rgb(0, 0, 0)",
                             "border-style": "inset",
                             "color": "rgb(0, 0, 0)",
                             "display": "inline-block",
@@ -468,11 +468,11 @@
                             "margin": "0px",
                             "opacity": "1",
                             "overflow": "visible",
-                            "padding": "1px 2px",
+                            "padding": "1px 0px",
                             "visibility": "visible"
                           },
                           "rect": {
-                            "width": 209,
+                            "width": 195,
                             "height": 24,
                             "top": 97,
                             "left": 487.234375
@@ -514,7 +514,7 @@
                         "width": 0,
                         "height": 17,
                         "top": 100,
-                        "left": 696.234375
+                        "left": 682.234375
                       },
                       "childNodes": []
                     },
@@ -528,11 +528,11 @@
                         "background-repeat": "repeat",
                         "background-origin": "padding-box",
                         "background-position": "0% 0%",
-                        "background-color": "rgb(239, 239, 239)",
+                        "background-color": "rgb(221, 221, 221)",
                         "background-image": "none",
                         "background-size": "auto",
                         "border-width": "2px",
-                        "border-color": "rgb(118, 118, 118)",
+                        "border-color": "rgb(221, 221, 221)",
                         "border-style": "outset",
                         "color": "rgb(0, 0, 0)",
                         "display": "inline-block",
@@ -597,7 +597,7 @@
                     "visibility": "visible"
                   },
                   "rect": {
-                    "width": 263.234375,
+                    "width": 249.234375,
                     "height": 0,
                     "top": 161,
                     "left": 433
