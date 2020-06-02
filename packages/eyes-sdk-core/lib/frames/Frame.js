@@ -250,11 +250,14 @@ class Frame {
       'clientWidth',
       'clientHeight',
     )
-    const [borderLeftWidth, borderTopWidth] = this._element.getCssProperty(
+    const [borderLeftWidth, borderTopWidth] = await this._element.getCssProperty(
       'border-left-width',
       'border-top-width',
     )
-    const parentScrollLocation = EyesUtils.getScrollLocation(this._logger, this._driver.executor)
+    const parentScrollLocation = await EyesUtils.getScrollLocation(
+      this._logger,
+      this._driver.executor,
+    )
 
     this._size = new RectangleSize(Math.round(rect.getWidth()), Math.round(rect.getHeight()))
     this._innerSize = new RectangleSize(Math.round(clientWidth), Math.round(clientHeight))
