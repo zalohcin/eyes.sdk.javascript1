@@ -1,8 +1,7 @@
 const {TypeUtils} = require('@applitools/eyes-sdk-core')
 const ProtractorFrame = require('./ProtractorFrame')
 const ProtractorWrappedElement = require('./ProtractorWrappedElement')
-const {Runner, Command, CommandName} = require('protractor')
-// const cmd = require('selenium-webdriver/lib/command')
+const {Builder, Runner, Command, CommandName, until} = require('protractor')
 
 module.exports = {
   isEqualFrames(leftFrame, rightFrame) {
@@ -109,6 +108,14 @@ module.exports = {
     const capabilities = await driver.getCapabilities()
     return capabilities.get('platformVersion')
   },
+  async getBrowserName(driver) {
+    const capabilities = await driver.getCapabilities()
+    return capabilities.get('browserName')
+  },
+  async getBrowserVersion(driver) {
+    const capabilities = await driver.getCapabilities()
+    return capabilities.get('browserVersion')
+  },
   async getSessionId(driver) {
     const session = await driver.getSession()
     return session.getId()
@@ -126,11 +133,19 @@ module.exports = {
     return driver.get(url)
   },
 
-  /********* for testing purposes */
-  async build({capabilities, serverUrl = process.env.CVG_TESTS_REMOTE, logLevel}) {
+  /* -------- FOR TESTING PURPOSES -------- */
+
+  async build({capabilities, serverUrl = process.env.CVG_TESTS_REMOTE, logLevel = 'error'}) {
+    if (capabilities['sauce:options']) {
+      capabilities.username = process.env.SAUCE_USERNAME
+      capabilities.accessKey = process.env.SAUCE_ACCESS_KEY
+    }
+    const seleniumWebDriver = await new Builder()
+      .withCapabilities(capabilities)
+      .usingServer(serverUrl)
+      .build()
     const runner = new Runner({
-      capabilities,
-      seleniumAddress: serverUrl,
+      seleniumWebDriver,
       logLevel: logLevel.toUpperCase(),
       allScriptsTimeout: 11000,
       getPageTimeout: 10000,
@@ -140,25 +155,22 @@ module.exports = {
     driver.waitForAngularEnabled(false)
     return driver
   },
-
   async cleanup(driver) {
     return driver.quit()
   },
-
   async click(_driver, element) {
     return element.click()
   },
-
   async type(_driver, element, keys) {
     return element.sendKeys(keys)
   },
-
-  // async waitUntilDisplayed(driver, selector, timeout) {
-  //   // const el = await this.findElement(driver, selector)
-  //   // return driver.wait(until.elementIsVisible(el), timeout)
-  // },
-
+  async waitUntilDisplayed(driver, selector, timeout) {
+    const element = await this.findElement(driver, selector)
+    return driver.wait(until.elementIsVisible(element), timeout)
+  },
   async getElementRect(_driver, element) {
-    return element.getRect()
+    const location = await element.getLocation()
+    const size = await element.getSize()
+    return {...size, ...location}
   },
 }

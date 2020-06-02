@@ -7,7 +7,6 @@ const {Target, Region} = require(cwd)
 
 describe('TestAppiumNative', () => {
   let driver, eyes
-
   afterEach(async () => {
     await spec.cleanup(driver)
     await eyes.abortIfNotClosed()

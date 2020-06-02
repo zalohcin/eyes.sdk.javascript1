@@ -164,6 +164,22 @@ class EyesDriverController {
     return os
   }
   /**
+   * Get browser name
+   * @return {Promise<?string>} browser name if detected, null otherwise
+   */
+  async getBrowserName() {
+    const browserName = await this.specs.getBrowserName(this._driver.unwrapped)
+    return browserName || null
+  }
+  /**
+   * Get browser version
+   * @return {Promise<?string>} browser version if detected, null otherwise
+   */
+  async getBrowserVersion() {
+    const browserVersion = await this.specs.getBrowserVersion(this._driver.unwrapped)
+    return browserVersion || null
+  }
+  /**
    * Get AUT session ID
    * @return {Promise<string>} AUT session ID
    */
