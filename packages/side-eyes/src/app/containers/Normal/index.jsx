@@ -72,6 +72,7 @@ export default class Normal extends React.Component {
         'isFree',
         'projectSettings',
         'experimentalEnabled',
+        'accountInfo',
       ])
       .then(
         ({
@@ -80,6 +81,7 @@ export default class Normal extends React.Component {
           isFree,
           projectSettings,
           experimentalEnabled,
+          accountInfo,
         }) => {
           const settings =
             projectSettings && projectSettings[this.props.projectId]
@@ -88,6 +90,7 @@ export default class Normal extends React.Component {
                   branch: '',
                   parentBranch: '',
                   enableVisualGrid: false,
+                  enableContrastAdvisor: false,
                   enablePatternsDom: false,
                   selectedBrowsers: ['Chrome'],
                   selectedViewportSizes: ['1920x1080'],
@@ -96,6 +99,8 @@ export default class Normal extends React.Component {
                   selectedDeviceOrientations: [],
                   enableAccessibilityValidations: false,
                   accessibilityLevel: 'AA',
+                  accessibilityVersion: '2.0',
+                  accountInfo: {},
                 }
           if (
             !experimentalEnabled &&
@@ -134,6 +139,7 @@ export default class Normal extends React.Component {
             isFree,
             projectSettings: settings,
             isExperimental: experimentalEnabled,
+            accountInfo,
           })
         }
       )
@@ -199,6 +205,51 @@ export default class Normal extends React.Component {
                   isExperimental={this.state.isExperimental}
                 />
               )}
+            {this.state.accountInfo && this.state.accountInfo.features && this.state.accountInfo.features.includes('accessibility') && (
+              <React.Fragment>
+                  <Checkbox
+                    id="enable-accessibility-validations"
+                    label="Enable Contrast Advisor"
+                    checked={
+                      this.state.projectSettings.enableAccessibilityValidations
+                    }
+                    onChange={this.handleCheckboxChange.bind(
+                      this,
+                      'enableAccessibilityValidations'
+                    )}
+                  />
+                  {this.state.projectSettings.enableAccessibilityValidations && (
+                    <div id="accessibility-options">
+                      <Combobox
+                        className="accessibility-option"
+                        label="WCAG Version"
+                        items={['2.0', '2.1']}
+                        selectedItem={this.state.projectSettings.accessibilityVersion}
+                        disabled={
+                          !this.state.projectSettings.enableAccessibilityValidations
+                        }
+                        onChange={this.handleInputChange.bind(
+                          this,
+                          'accessibilityVersion'
+                        )}
+                      />
+                      <Combobox
+                        className="accessibility-option"
+                        label="Conformance Level"
+                        items={['AA', 'AAA']}
+                        selectedItem={this.state.projectSettings.accessibilityLevel}
+                        disabled={
+                          !this.state.projectSettings.enableAccessibilityValidations
+                        }
+                        onChange={this.handleInputChange.bind(
+                          this,
+                          'accessibilityLevel'
+                        )}
+                      />
+                    </div>
+                  )}
+              </React.Fragment>
+            )}
             {this.state.isExperimental && (
               <React.Fragment>
                 <Checkbox
@@ -210,37 +261,6 @@ export default class Normal extends React.Component {
                     'enablePatternsDom'
                   )}
                 />
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'baseline',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <Checkbox
-                    id="enable-accessibility-validations"
-                    label="Accessibility: Check contrast"
-                    checked={
-                      this.state.projectSettings.enableAccessibilityValidations
-                    }
-                    onChange={this.handleCheckboxChange.bind(
-                      this,
-                      'enableAccessibilityValidations'
-                    )}
-                  />
-                  <Combobox
-                    items={['AA', 'AAA']}
-                    selectedItem={this.state.projectSettings.accessibilityLevel}
-                    disabled={
-                      !this.state.projectSettings.enableAccessibilityValidations
-                    }
-                    onChange={this.handleInputChange.bind(
-                      this,
-                      'accessibilityLevel'
-                    )}
-                  />
-                </div>
               </React.Fragment>
             )}
           </React.Fragment>
