@@ -213,8 +213,7 @@ export async function isPatternsDomEnabled() {
 
 export async function getAccessibilityLevel() {
   const settings = await getExtensionSettings()
-  return settings.experimentalEnabled &&
-    settings.projectSettings.enableAccessibilityValidations
+  return settings.projectSettings.enableAccessibilityValidations
     ? settings.projectSettings.accessibilityLevel || 'AA'
     : 'None'
 }
