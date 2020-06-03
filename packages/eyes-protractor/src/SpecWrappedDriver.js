@@ -148,7 +148,7 @@ module.exports = {
     const runner = new Runner({
       seleniumWebDriver,
       logLevel: logLevel.toUpperCase(),
-      allScriptsTimeout: 11000,
+      allScriptsTimeout: 60000,
       getPageTimeout: 10000,
     })
     const driver = await runner.createBrowser().ready
