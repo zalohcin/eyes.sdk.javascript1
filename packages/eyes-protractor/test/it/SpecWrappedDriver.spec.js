@@ -17,6 +17,9 @@ describe('SpecWrappedDriver', () => {
         logLevel: 'error',
         serverUrl: 'http://localhost:4444/wd/hub',
       })
+    })
+
+    beforeEach(async () => {
       await driver.get(url)
     })
 
@@ -70,6 +73,7 @@ describe('SpecWrappedDriver', () => {
     it('findElements(by)', async () => {
       const expected = await driver.findElements(driver.by.css('div'))
       const result = await specs.findElements(driver, driver.by.css('div'))
+      assert.strictEqual(result.length, expected.length)
       await Promise.all(
         expected.map(async (element, index) => {
           assert.strictEqual(await element.getId(), await result[index].getId())
@@ -86,6 +90,28 @@ describe('SpecWrappedDriver', () => {
     it('findElements(byHash)', async () => {
       const expected = await driver.findElements({tagName: 'div'})
       const result = await specs.findElements(driver, {tagName: 'div'})
+      assert.strictEqual(result.length, expected.length)
+      await Promise.all(
+        expected.map(async (element, index) => {
+          assert.strictEqual(await element.getId(), await result[index].getId())
+        }),
+      )
+    })
+
+    it('findElement(byNg)', async () => {
+      await driver.get('https://applitools.github.io/demo/TestPages/AngularPage/')
+      await driver.waitForAngular()
+      const expected = await driver.element(driver.by.model('name'))
+      const result = await specs.findElement(driver, driver.by.model('name'))
+      assert.strictEqual(await result.getId(), await expected.getId())
+    })
+
+    it('findElements(byNg)', async () => {
+      await driver.get('https://applitools.github.io/demo/TestPages/AngularPage/')
+      await driver.waitForAngular()
+      const expected = await driver.element.all(driver.by.model('name'))
+      const result = await specs.findElements(driver, driver.by.model('name'))
+      assert.strictEqual(result.length, expected.length)
       await Promise.all(
         expected.map(async (element, index) => {
           assert.strictEqual(await element.getId(), await result[index].getId())
