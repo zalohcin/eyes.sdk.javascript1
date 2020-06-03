@@ -4,16 +4,15 @@
   "main": "index.js",
   "license": "SEE LICENSE IN LICENSE",
   "scripts": {
-    "test:mocha": "mocha --no-timeouts test/**/*.test.js",
+    "test": "mocha --no-timeouts test/**/*.test.js",
     "eslint:node": "eslint '**/*.js' --ignore-pattern 'src/browser'",
     "eslint:browser": "eslint -c 'src/browser/.eslintrc.json' 'src/browser/**/*.js'",
     "lint": "yarn eslint:node && yarn eslint:browser",
-    "test": "yarn test:mocha && yarn lint",
     "build": "rollup -c rollup.config.js",
     "build:watch": "rollup -c rollup.config.js --watch",
     "surge": "surge test/fixtures applitools-dom-snapshot.surge.sh",
-    "preversion": "bongo preversion",
-    "version": "bongo version",
+    "preversion": "bongo preversion && yarn build && yarn test",
+    "version": "yarn build && git add dist && git commit -m \"[auto] dom-snapshot: dist scripts for v$npm_package_version\" && bongo version",
     "postversion": "bongo postversion --skip-release-notification"
   },
   "engines": {
