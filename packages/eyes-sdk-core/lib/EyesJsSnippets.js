@@ -36,8 +36,8 @@ const GET_ELEMENT_RECT = `
   var computedStyle = window.getComputedStyle(element);
   var isFixed = isFixedElement(element);
   return {
-    x: isFixed ? element.offsetLeft : rect.left + (window.scrollX || window.pageXOffset),
-    y: isFixed ? element.offsetTop : rect.top + (window.scrollY || window.pageYOffset),
+    x: isFixed ? rect.left : rect.left + (window.scrollX || window.pageXOffset),
+    y: isFixed ? rect.top : rect.top + (window.scrollY || window.pageYOffset),
     width: rect.width,
     height: rect.height
   };
