@@ -169,6 +169,13 @@ async function createImagesEyes(
     eyes.setSendDom(true)
   }
 
+  const accessibilitySettings = await getAccessibilitySettings()
+  if (accessibilitySettings) {
+    const config = eyes.getConfiguration();
+    config.setAccessibilityValidation(accessibilitySettings)
+    eyes.setConfiguration(config);
+  }
+
   await eyes.open(appName, testName)
   return eyes
 }
@@ -211,11 +218,14 @@ export async function isPatternsDomEnabled() {
   )
 }
 
-export async function getAccessibilityLevel() {
+async function getAccessibilitySettings() {
   const settings = await getExtensionSettings()
-  return settings.projectSettings.enableAccessibilityValidations
-    ? settings.projectSettings.accessibilityLevel || 'AA'
-    : 'None'
+  if (settings.projectSettings.enableAccessibilityValidations) {
+    return {
+      level: settings.projectSettings.accessibilityLevel,
+      guidelinesVersion: `WCAG_${settings.projectSettings.accessibilityVersion.replace(/\./, '_')}`,
+    }
+  }
 }
 
 async function createVisualGridEyes(
@@ -259,6 +269,8 @@ async function createVisualGridEyes(
     enablePatterns = true
   }
 
+  const accessibilitySettings = await getAccessibilitySettings()
+
   const eyes = await makeVisualGridClient({
     apiKey,
     serverUrl,
@@ -266,6 +278,7 @@ async function createVisualGridEyes(
     showLogs: true,
     useDom,
     enablePatterns,
+    accessibilitySettings,
   }).openEyes({
     appName,
     batchName,
