@@ -1,10 +1,8 @@
 # Changelog
 
 ## Unreleased
-- updated to @applitools/eyes-sdk-core@10.3.1 (from v10.3.0)
-- updated to @applitools/visual-grid-client@14.3.0 (from v14.2.0)
-- updated to @applitools/visual-grid-client@14.3.1 (from v14.3.0)
 
+- fixed 409 conflict error
 - Unified core
 - updated to @applitools/eyes-sdk-core@11.0.3 (from v10.3.1)
 - updated to @applitools/visual-grid-client@14.4.2 (from v14.3.1)
