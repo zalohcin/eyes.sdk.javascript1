@@ -10,7 +10,7 @@ const chaiAsPromised = require('chai-as-promised')
 chai.use(chaiAsPromised)
 const expect = chai.expect
 
-describe('TestProxy', () => {
+describe.skip('TestProxy', () => {
   it('testNetworkThroughProxy', async () => {
     await checkNetworkFailIfNoProxy()
     try {

@@ -1,11 +1,11 @@
-export const browsers = ['Chrome', 'Safari', 'Firefox', 'Edge', 'IE11', 'IE10']
+export const browsers = ['Chrome', 'Safari', 'Firefox', 'Edge Chromium', 'Edge Legacy', 'IE11', 'IE10']
 export const browserIds = { ie10: 'IE_10', ie11: 'IE_11' }
 export const experimentalBrowsers = []
 export const viewportSizes = ['2560x1440', '2048x1536', '1920x1080', '750x1334', '720x1280']
 export const orientations = ['Portrait', 'Landscape']
 
 // Copied from @applitools/eyes-sdk-core/lib/config/DeviceName.js
-// Since it can't easily be loaded into the browser (yet)
+// since it can't easily be loaded into the browser (yet).
 export const DeviceName = {
   Blackberry_PlayBook: 'Blackberry PlayBook',
   BlackBerry_Z30: 'BlackBerry Z30',
@@ -69,4 +69,15 @@ export const DeviceName = {
   Pixel_3_XL: 'Pixel 3 XL',
   Pixel_4: 'Pixel 4',
   Pixel_4_XL: 'Pixel 4 XL',
+}
+
+export function updateBrowserNamesForBackwardsCompatibility(browsers) {
+  return browsers.map(browserName => {
+    switch (browserName) {
+      case 'Edge':
+        return 'Edge Legacy'
+      default:
+        return browserName
+    }
+  })
 }

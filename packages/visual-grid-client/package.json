@@ -1,6 +1,6 @@
 {
   "name": "@applitools/visual-grid-client",
-  "version": "14.3.1",
+  "version": "14.4.2",
   "description": "",
   "keywords": [
     "applitools",
@@ -32,7 +32,7 @@
   ],
   "dependencies": {
     "@applitools/dom-snapshot": "3.5.2",
-    "@applitools/eyes-sdk-core": "11.0.0",
+    "@applitools/eyes-sdk-core": "11.0.3",
     "@applitools/feature-flags": "2.1.1",
     "@applitools/functional-commons": "1.5.4",
     "@applitools/http-commons": "2.3.12",

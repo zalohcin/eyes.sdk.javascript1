@@ -245,17 +245,19 @@ class Frame {
    * @return {this} this frame object
    */
   async refresh() {
-    const [
-      rect,
-      [clientWidth, clientHeight],
-      [borderLeftWidth, borderTopWidth],
-      parentScrollLocation,
-    ] = await Promise.all([
-      this._element.getRect(),
-      this._element.getProperty('clientWidth', 'clientHeight'),
-      this._element.getCssProperty('border-left-width', 'border-top-width'),
-      EyesUtils.getScrollLocation(this._logger, this._driver.executor),
-    ])
+    const rect = await this._element.getRect()
+    const [clientWidth, clientHeight] = await this._element.getProperty(
+      'clientWidth',
+      'clientHeight',
+    )
+    const [borderLeftWidth, borderTopWidth] = await this._element.getCssProperty(
+      'border-left-width',
+      'border-top-width',
+    )
+    const parentScrollLocation = await EyesUtils.getScrollLocation(
+      this._logger,
+      this._driver.executor,
+    )
 
     this._size = new RectangleSize(Math.round(rect.getWidth()), Math.round(rect.getHeight()))
     this._innerSize = new RectangleSize(Math.round(clientWidth), Math.round(clientHeight))

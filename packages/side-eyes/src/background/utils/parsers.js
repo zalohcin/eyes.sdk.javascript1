@@ -3,7 +3,7 @@ import {
   experimentalBrowsers,
   browserIds,
   DeviceName,
-} from '../../app/components/VisualGridOptionSelector/options'
+} from '../../app/components/VisualGrid/options'
 import UAParser from 'ua-parser-js'
 const parser = new UAParser()
 
@@ -23,7 +23,7 @@ export function parseBrowsers(
   const matrix = []
   let didRemoveResolution = false
   browsers.forEach(browser => {
-    const name = browser.toLowerCase()
+    const name = browser.replace(/ /, '').toLowerCase()
     viewports.forEach(viewport => {
       const { width, height } = parseViewport(viewport)
       if (

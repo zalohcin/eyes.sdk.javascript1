@@ -3,6 +3,19 @@
 ## Unreleased
 
 
+## 11.0.3 - 2020/6/3
+
+- added EDGE_CHROMIUM_TWO_VERSIONS_BACK to BrowserType
+- updated to @applitools/dom-capture@7.2.4 (from v7.2.0)
+
+## 11.0.2 - 2020/6/2
+
+- avoid 404 error in internet explorer due to parallel script executions
+
+## 11.0.1 - 2020/6/2
+
+- change document.scrollingElement to document.documentElement as the default scroll root element
+
 ## 11.0.0 - 2020/5/31
 
 - Unified core to power all SDK's

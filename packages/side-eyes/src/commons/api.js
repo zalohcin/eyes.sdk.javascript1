@@ -26,14 +26,13 @@ export async function verifyStoredAPIKey() {
   }
 }
 
-export async function getEmulatedDevices() {
-  try {
-    const response = await fetch('https://render-wus.applitools.com/emulated-devices')
-    if (response.ok) {
-      const {devices} = await response.json()
-      return devices.map(d => d.deviceName)
-    }
-  } catch(error) {
-    throw new Error(error)
+export async function getAccountInfo() {
+  const { apiKey, eyesServer } = await browser.storage.local.get(['apiKey', 'eyesServer'])
+  const response = await fetch(
+    `${new URL('/api/admin/accountinfo', eyesServer || DEFAULT_API_SERVER).href}?accessKey=${apiKey}&format=json`
+  )
+  if (response.ok) {
+    const accountInfo = await response.json()
+    await browser.storage.local.set({ accountInfo })
   }
 }

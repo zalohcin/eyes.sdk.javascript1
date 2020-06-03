@@ -32,7 +32,7 @@ function makeCoverageTests({
   const throwException = true
 
   return {
-    'Test Abort': () => {
+    TestAbortIfNotClosed: () => {
       visit('data:text/html,<p>Test</p>')
       open({appName: 'Test Abort', viewportSize: '1200x800'})
       checkWindow()
@@ -127,7 +127,7 @@ function makeCoverageTests({
       checkRegion('div.page', {isClassicApi: false, isFully: false})
       close(throwException)
     },
-    TestCheckPageWithHeaderFully_Region: () => {
+    TestCheckPageWithHeader_Region_Fully: () => {
       visit('https://applitools.github.io/demo/TestPages/PageWithHeader/index.html')
       open({appName: 'Eyes Selenium SDK - Page With Header', viewportSize})
       checkRegion('div.page', {isClassicApi: false, isFully: true})

@@ -11,27 +11,22 @@ import Normal from '../../../containers/Normal'
 import uuidv4 from 'uuid/v4'
 jest.mock('../../../../IO/storage')
 import { waitForCompletion } from '../../../../IO/storage'
+import { updateBrowserNamesForBackwardsCompatibility } from '../../../components/VisualGrid/options'
 
-describe('Visual grid options', () => {
-  beforeAll(() => {
-    const mockSuccessResponse = {"devices":[{"deviceName":"iPhone 4"},{"deviceName":"iPhone 5/SE"},{"deviceName":"iPhone 6/7/8"}]};
-    const mockJsonPromise = Promise.resolve(mockSuccessResponse);
-    const mockFetchPromise = Promise.resolve({
-      ok: true,
-      json: () => mockJsonPromise,
-    });
-    global.fetch = jest.fn().mockImplementation(() => mockFetchPromise);
+describe('Visual grid options utils', () => {
+  it('supports browsername backwards compatibility', () => {
+    const browsers = ['Chrome', 'Edge', 'Firefox']
+    expect(updateBrowserNamesForBackwardsCompatibility(browsers)).toEqual(['Chrome', 'Edge Legacy', 'Firefox'])
   })
+})
+
+describe('Visual grid options UI', () => {
   beforeEach(async () => {
     doRender()
     await waitForElement(() => findElement('#enable-visual-grid'))
     click('#enable-visual-grid')
   })
   afterEach(cleanup)
-  afterAll(() => {
-    global.fetch.mockClear();
-    delete global.fetch;
-  })
 
   // user flow
 

@@ -2,7 +2,11 @@
 
 ## Unreleased
 
+
+## 1.3.0 - 2020/6/2
+
 - Unified core
+- updated to @applitools/eyes.webdriverio@2.16.0 (from v2.15.0)
 
 ## 1.2.0 - 2020/5/19
 
