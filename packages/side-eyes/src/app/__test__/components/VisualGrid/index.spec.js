@@ -11,7 +11,7 @@ import Normal from '../../../containers/Normal'
 import uuidv4 from 'uuid/v4'
 jest.mock('../../../../IO/storage')
 import { waitForCompletion } from '../../../../IO/storage'
-import { updateBrowserNamesForBackwardsCompatibility } from '../../../components/VisualGridOptionSelector/options'
+import { updateBrowserNamesForBackwardsCompatibility } from '../../../components/VisualGrid/options'
 
 describe('Visual grid options utils', () => {
   it('supports browsername backwards compatibility', () => {
