@@ -1,20 +1,19 @@
 {
   "name": "@applitools/dom-capture",
-  "version": "7.2.1",
+  "version": "7.2.2",
   "main": "index.js",
   "license": "SEE LICENSE IN LICENSE",
   "scripts": {
-    "test:mocha": "mocha --no-timeouts test/**/*.test.js",
+    "test": "mocha --no-timeouts test/**/*.test.js",
     "lint:node": "eslint '**/*.js' --ignore-pattern 'src/browser'",
     "lint:browser": "eslint -c 'src/browser/.eslintrc.json' 'src/browser/**/*.js'",
     "lint": "yarn lint:node && yarn lint:browser",
-    "test": "yarn test:mocha && yarn lint",
     "build": "rollup -c rollup.config.js",
     "build:watch": "rollup -c rollup.config.js --watch",
     "surge": "surge test/fixtures applitools-dom-capture-origin-1.surge.sh && surge test/fixtures applitools-dom-capture-origin-2.surge.sh",
-    "preversion": "bongo preversion",
+    "preversion": "bongo preversion && yarn build && yarn test",
     "version": "bongo version",
-    "postversion": "bongo postversion --skip-release-notification"
+    "postversion": "yarn build && bongo postversion --skip-release-notification"
   },
   "engines": {
     "node": ">=8.9.0"
