@@ -193,7 +193,6 @@ async function check(
     target.withDom(domCap)
     if (location) target.withLocation(location)
   }
-  target.accessibilityValidation(await getAccessibilityLevel())
   const imageResult = await eyes.check(stepName || pathname, target)
   return imageResult ? true : { status: 'undetermined' }
 }
@@ -219,7 +218,6 @@ async function checkWithVisualGrid(
     tag: stepName || pathname,
     sendDOM: (await isDomCaptureEnabled()) || (await isPatternsDomEnabled()),
     matchLevel: eyes.getMatchLevel() || 'Strict',
-    accessibilityValidation: await getAccessibilityLevel(),
     ...params,
   })
 

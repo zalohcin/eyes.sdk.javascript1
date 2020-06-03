@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- fix dist scripts
 
 ## 3.5.2 - 2020/5/6
 

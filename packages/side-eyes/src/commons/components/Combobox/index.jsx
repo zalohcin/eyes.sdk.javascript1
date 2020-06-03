@@ -11,6 +11,8 @@ export default class Combobox extends React.Component {
     items: PropTypes.array.isRequired,
     disabled: PropTypes.bool,
     onChange: PropTypes.func.isRequired,
+    label: PropTypes.string,
+    className: PropTypes.string,
   }
   constructor(props) {
     super(props)
@@ -46,7 +48,20 @@ export default class Combobox extends React.Component {
   }
   render() {
     return (
-      <div>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'baseline',
+          justifyContent: 'space-between',
+        }}
+        className={this.props.className}
+      >
+        {this.props.label && (
+          <div>
+            {this.props.label}
+          </div>
+        )}
         <a
           className={classNames('combobox', { disabled: this.props.disabled })}
           ref={button => {

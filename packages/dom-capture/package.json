@@ -1,19 +1,18 @@
 {
   "name": "@applitools/dom-capture",
-  "version": "7.2.0",
+  "version": "7.2.4",
   "main": "index.js",
   "license": "SEE LICENSE IN LICENSE",
   "scripts": {
-    "test:mocha": "mocha --no-timeouts test/**/*.test.js",
+    "test": "mocha --no-timeouts test/**/*.test.js",
     "lint:node": "eslint '**/*.js' --ignore-pattern 'src/browser'",
     "lint:browser": "eslint -c 'src/browser/.eslintrc.json' 'src/browser/**/*.js'",
     "lint": "yarn lint:node && yarn lint:browser",
-    "test": "yarn test:mocha && yarn lint",
     "build": "rollup -c rollup.config.js",
     "build:watch": "rollup -c rollup.config.js --watch",
     "surge": "surge test/fixtures applitools-dom-capture-origin-1.surge.sh && surge test/fixtures applitools-dom-capture-origin-2.surge.sh",
-    "preversion": "bongo preversion",
-    "version": "bongo version",
+    "preversion": "bongo preversion && yarn build && yarn test",
+    "version": "yarn build && git add dist && git commit -m \"[auto] dom-capture: dist scripts for v$npm_package_version\" && bongo version",
     "postversion": "bongo postversion --skip-release-notification"
   },
   "engines": {
