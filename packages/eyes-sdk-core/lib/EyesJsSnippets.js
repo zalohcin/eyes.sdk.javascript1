@@ -233,7 +233,7 @@ const GET_CURRENT_CONTEXT_INFO = `
   return {
     isRoot: isRoot,
     isCORS: isCORS,
-    document: document.documentElement,
+    contentDocument: document.querySelector('html'),
     selector: selector,
   };
 `

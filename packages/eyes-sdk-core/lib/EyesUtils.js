@@ -664,7 +664,7 @@ async function findFrameByContext(_logger, {executor, context}, contextInfo, com
     const frame = context.frameChain.current
     const contentDocument = await executor.executeScript(EyesJsSnippets.GET_DOCUMENT_ELEMENT)
     await context.frameParent()
-    if (await comparator(contentDocument, contextInfo.document)) return frame
+    if (await comparator(contentDocument, contextInfo.contentDocument)) return frame
   }
 }
 /**
