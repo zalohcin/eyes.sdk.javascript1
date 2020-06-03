@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- fix dist scripts
 
 ## 7.2.2 - 2020/6/3
 
