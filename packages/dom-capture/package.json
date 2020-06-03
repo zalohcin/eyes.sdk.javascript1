@@ -11,7 +11,7 @@
     "build": "rollup -c rollup.config.js",
     "build:watch": "rollup -c rollup.config.js --watch",
     "surge": "surge test/fixtures applitools-dom-capture-origin-1.surge.sh && surge test/fixtures applitools-dom-capture-origin-2.surge.sh",
-    "preversion": "node scripts/pre-version.js && bongo preversion",
+    "preversion": "bongo preversion && yarn build && yarn test",
     "version": "bongo version",
     "postversion": "node scripts/post-version.js && bongo postversion --skip-release-notification"
   },
