@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 11.0.3 - 2020/6/3
+
 - added EDGE_CHROMIUM_TWO_VERSIONS_BACK to BrowserType
 - updated to @applitools/dom-capture@7.2.4 (from v7.2.0)
 
