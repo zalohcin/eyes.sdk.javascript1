@@ -47,10 +47,6 @@ export default {
             test: /\.js$/,
             include: [
               path.resolve(__dirname, 'src'),
-              ///\.\.\/\/\.\.\/\/node_modules\/@applitools\/visual-grid-client/,
-              ///node_modules\/@applitools\/visual-grid-client/,
-              //path.resolve(__dirname, '..'),
-              ///\/visual-grid-client/,
             ],
             use: [
               {
