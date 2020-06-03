@@ -12,8 +12,8 @@
     "build:watch": "rollup -c rollup.config.js --watch",
     "surge": "surge test/fixtures applitools-dom-capture-origin-1.surge.sh && surge test/fixtures applitools-dom-capture-origin-2.surge.sh",
     "preversion": "bongo preversion && yarn build && yarn test",
-    "version": "bongo version",
-    "postversion": "node scripts/post-version.js && bongo postversion --skip-release-notification"
+    "version": "yarn build && git add dist && git commit -m \"[auto] dom-capture: dist scripts for v$npm_package_version\" && bongo version",
+    "postversion": "bongo postversion --skip-release-notification"
   },
   "engines": {
     "node": ">=8.9.0"
