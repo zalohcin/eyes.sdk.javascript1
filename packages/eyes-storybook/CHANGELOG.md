@@ -6,6 +6,8 @@
 - updated to @applitools/visual-grid-client@14.3.1 (from v14.3.0)
 
 - Unified core
+- updated to @applitools/eyes-sdk-core@11.0.3 (from v10.3.1)
+- updated to @applitools/visual-grid-client@14.4.2 (from v14.3.1)
 
 ## 3.7.0 - 2020/5/24
 
