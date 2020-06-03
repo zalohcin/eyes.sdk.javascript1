@@ -21,25 +21,12 @@ describe('Visual grid options utils', () => {
 })
 
 describe('Visual grid options UI', () => {
-  beforeAll(() => {
-    const mockSuccessResponse = {"devices":[{"deviceName":"iPhone 4"},{"deviceName":"iPhone 5/SE"},{"deviceName":"iPhone 6/7/8"}]};
-    const mockJsonPromise = Promise.resolve(mockSuccessResponse);
-    const mockFetchPromise = Promise.resolve({
-      ok: true,
-      json: () => mockJsonPromise,
-    });
-    global.fetch = jest.fn().mockImplementation(() => mockFetchPromise);
-  })
   beforeEach(async () => {
     doRender()
     await waitForElement(() => findElement('#enable-visual-grid'))
     click('#enable-visual-grid')
   })
   afterEach(cleanup)
-  afterAll(() => {
-    global.fetch.mockClear();
-    delete global.fetch;
-  })
 
   // user flow
 
