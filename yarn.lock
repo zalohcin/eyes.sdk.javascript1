@@ -33,36 +33,12 @@
     png-async "^0.9.4"
     stack-trace "^0.0.10"
 
-"@applitools/eyes-common@3.24.0":
-  version "3.24.0"
-  resolved "https://registry.yarnpkg.com/@applitools/eyes-common/-/eyes-common-3.24.0.tgz#15a7e17e92b723487ffa413c87cb88d71ac106c4"
-  integrity sha512-uGlw8sK7XaeBNyt9zRq/uVRtHN51X3fFVTj5jDoYByQe3MCioGUIlTqXJBTKVB1FOXQ2X/jnBvddEmimD96i/g==
-  dependencies:
-    cosmiconfig "^6.0.0"
-    dateformat "^3.0.3"
-    debug "^4.1.1"
-    deepmerge "^4.2.2"
-    png-async "^0.9.4"
-    stack-trace "^0.0.10"
-
 "@applitools/eyes-sdk-core@10.1.2":
   version "10.1.2"
   resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-10.1.2.tgz#9db608eae787c879c9115a1ee9954a059d56eeae"
   integrity sha512-N4nlMlQCe6U8SCyvnyUm/HyZXcRWgpD3+qadKwk6agP/Cw1xg1dbT4A+tnNOenkElk858LJQgUEZi01M5qy7Ng==
   dependencies:
     "@applitools/eyes-common" "3.23.1"
-    "@applitools/isomorphic-fetch" "3.0.0"
-    axios "0.19.2"
-    chalk "3.0.0"
-    es6-promise-pool "2.5.0"
-    tunnel "0.0.6"
-
-"@applitools/eyes-sdk-core@10.2.0":
-  version "10.2.0"
-  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-10.2.0.tgz#d8c22036840c26890519ad6d1b614c4cf4eba06d"
-  integrity sha512-5BKR8yN+7iL3NxMKtTYdgcmXFleSYKwBG+uXLrirEVEcfZnay5PlFzVVf8tRtj4Z8PFDO/nzveVZGLkKgEeO/Q==
-  dependencies:
-    "@applitools/eyes-common" "3.24.0"
     "@applitools/isomorphic-fetch" "3.0.0"
     axios "0.19.2"
     chalk "3.0.0"
