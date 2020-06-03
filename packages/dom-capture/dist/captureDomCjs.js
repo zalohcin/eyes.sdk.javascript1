@@ -1,4 +1,4 @@
-/* @applitools/dom-capture@7.2.2 */
+/* @applitools/dom-capture@7.2.3 */
 'use strict';
 
 const styleProps = [
@@ -442,7 +442,7 @@ async function captureFrame(
 
   // Note: Change the API_VERSION when changing json structure.
   capturedFrame.version = API_VERSION;
-  capturedFrame.scriptVersion = '7.2.2';
+  capturedFrame.scriptVersion = '7.2.3';
 
   const iframePrefix = iframeCors.length ? `${iframeCors.join('\n')}\n` : '';
   const unfetchedPrefix = unfetchedResources.size

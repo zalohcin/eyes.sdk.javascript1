@@ -1,4 +1,4 @@
-/* @applitools/dom-capture@7.2.2 */
+/* @applitools/dom-capture@7.2.3 */
 
 function __captureDom() {
   var captureDom = (function () {
@@ -445,7 +445,7 @@ function __captureDom() {
 
     // Note: Change the API_VERSION when changing json structure.
     capturedFrame.version = API_VERSION;
-    capturedFrame.scriptVersion = '7.2.2';
+    capturedFrame.scriptVersion = '7.2.3';
 
     const iframePrefix = iframeCors.length ? `${iframeCors.join('\n')}\n` : '';
     const unfetchedPrefix = unfetchedResources.size
