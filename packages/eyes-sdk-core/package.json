@@ -31,7 +31,7 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/dom-capture": "7.2.0",
+    "@applitools/dom-capture": "7.2.4",
     "@applitools/isomorphic-fetch": "3.0.0",
     "axios": "0.19.2",
     "chalk": "3.0.0",
