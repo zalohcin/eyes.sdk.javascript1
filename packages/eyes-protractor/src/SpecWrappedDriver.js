@@ -41,14 +41,15 @@ module.exports = {
   async findElement(driver, selector) {
     try {
       if (TypeUtils.isString(selector)) selector = {css: selector}
-      return await driver.findElement(selector)
+      const element = await driver.element(selector)
+      return await element.getWebElement()
     } catch (err) {
       if (err.name === 'NoSuchElementError') return null
       else throw err
     }
   },
   async findElements(driver, selector) {
-    return driver.findElements(selector)
+    return driver.element.all(selector)
   },
   async getWindowLocation(driver) {
     const {x, y} = await driver
