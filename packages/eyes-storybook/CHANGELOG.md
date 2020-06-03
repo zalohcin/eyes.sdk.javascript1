@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 3.7.1 - 2020/6/3
+
 - fixed 409 conflict error
 - Unified core
 - updated to @applitools/eyes-sdk-core@11.0.3 (from v10.3.1)
