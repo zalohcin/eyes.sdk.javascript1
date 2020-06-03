@@ -4,11 +4,9 @@ const sdkName = 'eyes-selenium'
 
 function initialize() {
   const result = makeEmitTracker()
+  result.storeHook('deps', `const cwd = process.cwd()`)
   result.storeHook('deps', `const path = require('path')`)
-  result.storeHook(
-    'deps',
-    `const specs = require(path.resolve(process.cwd(), 'src/SpecWrappedDriver'))`,
-  )
+  result.storeHook('deps', `const specs = require(path.resolve(cwd, 'src/SpecWrappedDriver'))`)
   result.storeHook(
     'deps',
     `const {
@@ -16,7 +14,7 @@ function initialize() {
       Browsers
     } = require('@applitools/sdk-coverage-tests/coverage-tests/util/TestSetup')`,
   )
-  result.storeHook('deps', `const {Target, RectangleSize, Region} = require('../../../index')`)
+  result.storeHook('deps', `const {Target, RectangleSize, Region} = require(cwd)`)
   result.storeHook('vars', 'let eyes')
   result.storeHook('vars', 'let driver')
   result.storeHook('vars', 'let runner')
