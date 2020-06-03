@@ -95,6 +95,9 @@ class MockDriver {
     this.mockScript('return window.devicePixelRatio', () => {
       return 1
     })
+    this.mockScript(EyesJsSnippets.MARK_SCROLL_ROOT_ELEMENT, element => {
+      element.attrs.isApplitoolsScroll = true
+    })
     this.mockScript(EyesJsSnippets.GET_VIEWPORT_SIZE, () => {
       return [this._window.rect.width, this._window.rect.height]
     })
@@ -119,6 +122,7 @@ class MockDriver {
   mockElement(selector, state) {
     const element = {
       id: Symbol('elementId'),
+      attrs: {},
       selector,
       parentId: null,
       parentContextId: null,
