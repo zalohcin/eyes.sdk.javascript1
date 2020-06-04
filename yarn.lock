@@ -9,14 +9,12 @@
   dependencies:
     "@applitools/functional-commons" "^1.5.4"
 
-"@applitools/dom-utils@4.7.17":
-  version "4.7.17"
-  resolved "https://registry.yarnpkg.com/@applitools/dom-utils/-/dom-utils-4.7.17.tgz#c3d18093d5b373e3be57e95ebb3e4c87fca59800"
-  integrity sha512-bSGZiJChZZuzlcvLZhsXAHo1K6aRzXez1QfY3yF3HkMtrtdLJ63h2suAJQxOGvm/Kdvl9Ag78qJxPkcBoPTbCg==
+"@applitools/dom-capture@7.2.0":
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-capture/-/dom-capture-7.2.0.tgz#97c911327e900aaea74a6ab7e9761f74a8f891b5"
+  integrity sha512-9Z7Cbf5+9LdAUE7EdZebgrqO5EJE/h1Z2KHEGu1YWjQXtYjd8QXebNdnULC5yki43pWNrEJl0eqhk94q/l7bgw==
   dependencies:
-    "@applitools/dom-capture" "7.2.0"
-    "@applitools/eyes-common" "3.24.0"
-    axios "^0.19.0"
+    "@applitools/functional-commons" "^1.5.4"
 
 "@applitools/eslint-plugin-compat@^0.7.0":
   version "0.7.0"
@@ -106,17 +104,6 @@
     png-async "^0.9.4"
     stack-trace "^0.0.10"
     tunnel "0.0.6"
-
-"@applitools/eyes-webdriverio@5.11.0":
-  version "5.11.0"
-  resolved "https://registry.yarnpkg.com/@applitools/eyes-webdriverio/-/eyes-webdriverio-5.11.0.tgz#5ddaf9808d798b57f9893350e18ac261056179f8"
-  integrity sha512-mnloccI9dAlpAIUeVUA03Bs0bF9VEs5TfxJ9EOrWjEPifTgoMuxU5Jh81fT7Zeg4TcGuUdna3pr4qnpq4yH3jQ==
-  dependencies:
-    "@applitools/dom-utils" "4.7.17"
-    "@applitools/eyes-sdk-core" "10.2.0"
-    "@applitools/visual-grid-client" "14.1.0"
-    selenium-webdriver "^4.0.0-alpha.5"
-    webdriverio "^5.18.6"
 
 "@applitools/feature-flags@2.1.1":
   version "2.1.1"
@@ -212,26 +199,6 @@
     postcss-value-parser "^4.0.2"
     throat "^5.0.0"
 
-"@applitools/visual-grid-client@14.1.0":
-  version "14.1.0"
-  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-14.1.0.tgz#96c5a3d4e8f57eead700ca22623e8bb337570f2a"
-  integrity sha512-ET4i5TiPECaFBV7f64gJGMsokGmWAwMLJM1i8nwK8oLnbHPUR+k2XDulAc4cuFoT5t1LtjkADKl9o8d0Z4ZgkQ==
-  dependencies:
-    "@applitools/dom-snapshot" "3.5.2"
-    "@applitools/eyes-sdk-core" "10.2.0"
-    "@applitools/feature-flags" "2.1.1"
-    "@applitools/functional-commons" "1.5.4"
-    "@applitools/http-commons" "2.3.12"
-    "@applitools/isomorphic-fetch" "3.0.0"
-    "@applitools/jsdom" "1.0.2"
-    chalk "3.0.0"
-    he "1.2.0"
-    lodash.mapvalues "^4.6.0"
-    mime-types "^2.1.24"
-    mkdirp "^0.5.1"
-    postcss-value-parser "^4.0.2"
-    throat "^5.0.0"
-
 "@applitools/visual-grid-client@14.2.0":
   version "14.2.0"
   resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-14.2.0.tgz#3d26e1f394bf2cf92b6d29e980e174c3226159cb"
@@ -239,26 +206,6 @@
   dependencies:
     "@applitools/dom-snapshot" "3.5.2"
     "@applitools/eyes-sdk-core" "10.3.0"
-    "@applitools/feature-flags" "2.1.1"
-    "@applitools/functional-commons" "1.5.4"
-    "@applitools/http-commons" "2.3.12"
-    "@applitools/isomorphic-fetch" "3.0.0"
-    "@applitools/jsdom" "1.0.2"
-    chalk "3.0.0"
-    he "1.2.0"
-    lodash.mapvalues "^4.6.0"
-    mime-types "^2.1.24"
-    mkdirp "^0.5.1"
-    postcss-value-parser "^4.0.2"
-    throat "^5.0.0"
-
-"@applitools/visual-grid-client@14.2.1":
-  version "14.2.1"
-  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-14.2.1.tgz#0f939a37ae0d32288ee40215ebf3b5cd178d1cd1"
-  integrity sha512-3lSG4xX8V85l2ziYVg/Y6XOJFcCeiIjl8uFmh+qcCRxigzUh3dM5OjIi7CcVmbSWKAvDuoBxybZQ+T/K6EOFpw==
-  dependencies:
-    "@applitools/dom-snapshot" "3.5.2"
-    "@applitools/eyes-sdk-core" "10.3.1"
     "@applitools/feature-flags" "2.1.1"
     "@applitools/functional-commons" "1.5.4"
     "@applitools/http-commons" "2.3.12"

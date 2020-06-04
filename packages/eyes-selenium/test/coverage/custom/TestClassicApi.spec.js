@@ -21,7 +21,7 @@ describe(appName, () => {
 
     it('TestCheckInnerFrame', async () => {
       eyes.hideScrollbars = false
-      let driver = await eyes.open(webDriver, appName, 'TestCheckInnerFrame')
+      let driver = await eyes.open(webDriver, appName, 'TestCheckInnerFrame', {width: 700, height: 460})
       await driver.executeScript(scrollTop)
       await driver.switchTo().defaultContent()
       await driver.switchTo().frame(driver.findElement(By.name('frame1')))
@@ -44,7 +44,7 @@ describe(appName, () => {
 
     it('TestCheckInnerFrame_SCROLL', async () => {
       eyes.hideScrollbars = false
-      let driver = await eyes.open(webDriver, appName, 'TestCheckInnerFrame_SCROLL')
+      let driver = await eyes.open(webDriver, appName, 'TestCheckInnerFrame_SCROLL',  {width: 700, height: 460})
       await driver.executeScript(scrollTop)
       await driver.switchTo().defaultContent()
       await driver.switchTo().frame(driver.findElement(By.name('frame1')))
