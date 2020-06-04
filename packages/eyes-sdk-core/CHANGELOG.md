@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 11.0.4 - 2020/6/4
+
 - fix marking the scroll root element
 - support correct driver API in DomCapture
 
