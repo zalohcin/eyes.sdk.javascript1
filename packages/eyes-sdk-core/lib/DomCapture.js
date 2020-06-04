@@ -2,9 +2,12 @@
 
 const axios = require('axios')
 const {URL} = require('url')
-
-const {ArgumentGuard, Location, GeneralUtils, PerformanceUtils, EyesError} = require('..')
 const {getCaptureDomAndPollScript, getCaptureDomAndPollForIE} = require('@applitools/dom-capture')
+const {ArgumentGuard} = require('./utils/ArgumentGuard')
+const {GeneralUtils} = require('./utils/GeneralUtils')
+const {PerformanceUtils} = require('./utils/PerformanceUtils')
+const {EyesError} = require('./errors/EyesError')
+const {Location} = require('./geometry/Location')
 
 const DomCaptureReturnType = {
   OBJECT: 'OBJECT',
@@ -27,7 +30,7 @@ const DOCUMENT_LOCATION_HREF_SCRIPT = 'return document.location.href'
 class DomCapture {
   /**
    * @param {Logger} logger
-   * @param {EyesWebDriver|WebDriver} driver
+   * @param {EyesWrappedDriver} driver
    */
   constructor(logger, driver, script) {
     this._logger = logger
@@ -37,7 +40,7 @@ class DomCapture {
 
   /**
    * @param {Logger} logger - A Logger instance.
-   * @param {EyesWebDriver|WebDriver} driver
+   * @param {EyesWrappedDriver} driver
    * @param {PositionProvider} [positionProvider]
    * @param {DomCaptureReturnType} [returnType]
    * @return {Promise<string|object>}
@@ -68,28 +71,14 @@ class DomCapture {
     return returnType === DomCaptureReturnType.OBJECT ? JSON.parse(dom) : dom
   }
 
-  async getBrowserName() {
-    // to support an unwrapped driver (for testing)
-    // we only want to call getBrowserName if it's there
-    if (typeof this._driver.getBrowserName === 'function')
-      return await this._driver.getBrowserName()
-  }
-
-  async getBrowserVersion() {
-    // to support an unwrapped driver (for testing)
-    // we only want to call getBrowserVersion if it's there
-    if (typeof this._driver.getBrowserVersion === 'function')
-      return await this._driver.getBrowserVersion()
-  }
-
   async isInternetExplorer() {
-    const browserName = await this.getBrowserName()
+    const browserName = await this._driver.controller.getBrowserName()
     return browserName === 'internet explorer'
   }
 
   async isEdgeClassic() {
-    const browserName = await this.getBrowserName()
-    const browserVersion = await this.getBrowserVersion()
+    const browserName = await this._driver.controller.getBrowserName()
+    const browserVersion = await this._driver.controller.getBrowserVersion()
     if (browserName)
       return browserName.toLowerCase().includes('edge') && Math.floor(browserVersion) <= 44
   }
@@ -115,7 +104,7 @@ class DomCapture {
       script = this._customScript
     }
 
-    const url = await this._driver.getCurrentUrl()
+    const url = await this._driver.controller.getSource()
     return this.getFrameDom(script, url)
   }
 
@@ -136,7 +125,7 @@ class DomCapture {
 
       do {
         this._logger.verbose('executing dom capture')
-        const resultAsString = await this._driver.executeScript(script)
+        const resultAsString = await this._driver.executor.executeScript(script)
         result = JSON.parse(resultAsString)
         await GeneralUtils.sleep(DOM_CAPTURE_PULL_TIMEOUT)
       } while (result.status === SCRIPT_RESPONSE_STATUS.WIP && !isCheckTimerTimedOut)
@@ -223,7 +212,7 @@ class DomCapture {
   }
 
   async getLocation() {
-    return this._driver.executeScript(DOCUMENT_LOCATION_HREF_SCRIPT)
+    return this._driver.executor.executeScript(DOCUMENT_LOCATION_HREF_SCRIPT)
   }
 
   /**
@@ -238,8 +227,10 @@ class DomCapture {
 
     let framesCount = 0
     for (const xpath of xpaths) {
-      const iframeEl = await this._driver.findElementByXPath(`/${xpath}`)
-      await this._driver.switchTo().frame(iframeEl)
+      const iframeEl = await this._driver.finder.findElement(
+        this._driver.specs.toSupportedSelector({type: 'xpath', selector: `/${xpath}`}),
+      )
+      await this._driver.context.frame(iframeEl)
       framesCount += 1
     }
 
@@ -252,7 +243,7 @@ class DomCapture {
    */
   async _switchToParentFrame(switchedToFrameCount) {
     if (switchedToFrameCount > 0) {
-      await this._driver.switchTo().parentFrame()
+      await this._driver.context.frameParent()
       return this._switchToParentFrame(switchedToFrameCount - 1)
     }
 

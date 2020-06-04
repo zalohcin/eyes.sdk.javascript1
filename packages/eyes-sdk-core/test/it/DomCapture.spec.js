@@ -29,7 +29,40 @@ async function captureDom(logger_, driver_, url, testName) {
     await driver_.get(url)
 
     const timeStart = PerformanceUtils.start()
-    const actualDomJsonString = await DomCapture.getFullWindowDom(logger_, driver_)
+    const actualDomJsonString = await DomCapture.getFullWindowDom(logger_, {
+      specs: {
+        toSupportedSelector({type, selector}) {
+          return By[type](selector)
+        },
+      },
+      controller: {
+        async getBrowserName() {
+          const capabilities = await driver_.getCapabilities()
+          return capabilities.get('browserName')
+        },
+        async getBrowserVersion() {
+          const capabilities = await driver_.getCapabilities()
+          return capabilities.get('browserVersion')
+        },
+        async getSource() {
+          return driver_.getCurrentUrl()
+        },
+      },
+      executor: {
+        executeScript: driver_.executeScript.bind(driver_),
+      },
+      finder: {
+        findElement: driver_.findElement.bind(driver_),
+      },
+      context: {
+        frame(reference) {
+          return driver_.switchTo().frame(reference)
+        },
+        frameParent() {
+          return driver_.switchTo().parentFrame()
+        },
+      },
+    })
     logger_.log(`Capturing actual dom took ${timeStart.end().summary}`)
 
     if (process.env.APPLITOOLS_UPDATE_FIXTURES) {

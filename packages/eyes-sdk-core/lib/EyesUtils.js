@@ -506,7 +506,7 @@ async function getScrollRootElement(_logger, executor) {
  * @param {EyesWrappedElement|UnwrappedElement} [element] - element to mark
  */
 async function markScrollRootElement(_logger, executor, element) {
-  return executor.executorScript(EyesJsSnippets.MARK_SCROLL_ROOT_ELEMENT, element)
+  return executor.executeScript(EyesJsSnippets.MARK_SCROLL_ROOT_ELEMENT, element)
 }
 /**
  * Get overflow style property of the specified element
