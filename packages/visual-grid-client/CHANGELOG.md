@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- added chromeEmulationInfo and TS defs for iosDeviceInfo 
 
 ## 14.4.3 - 2020/6/4
 
