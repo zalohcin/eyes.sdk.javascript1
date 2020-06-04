@@ -39,7 +39,6 @@
     "dateformat": "^3.0.3",
     "debug": "^4.1.1",
     "deepmerge": "^4.2.2",
-    "es6-promise-pool": "2.5.0",
     "png-async": "^0.9.4",
     "stack-trace": "^0.0.10",
     "tunnel": "0.0.6"
