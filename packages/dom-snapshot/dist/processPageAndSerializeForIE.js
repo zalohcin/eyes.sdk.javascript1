@@ -1,4 +1,4 @@
-/* @applitools/dom-snapshot@3.5.2 */
+/* @applitools/dom-snapshot@3.5.3 */
 
 function __processPageAndSerializeForIE() {
   var processPageAndSerializeForIE = (function () {
@@ -23403,7 +23403,7 @@ function __processPageAndSerializeForIE() {
               });
               return doProcessPage(doc).then(function (result) {
                 log('processPage end');
-                result.scriptVersion = '3.5.2';
+                result.scriptVersion = '3.5.3';
                 return result;
               });
 

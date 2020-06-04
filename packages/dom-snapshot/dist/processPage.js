@@ -1,4 +1,4 @@
-/* @applitools/dom-snapshot@3.5.2 */
+/* @applitools/dom-snapshot@3.5.3 */
 
 function __processPage() {
   var processPage = (function () {
@@ -13837,7 +13837,7 @@ function __processPage() {
 
     return doProcessPage(doc).then(result => {
       log$$1('processPage end');
-      result.scriptVersion = '3.5.2';
+      result.scriptVersion = '3.5.3';
       return result;
     });
 
