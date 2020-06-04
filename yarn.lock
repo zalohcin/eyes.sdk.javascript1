@@ -81,6 +81,24 @@
     stack-trace "^0.0.10"
     tunnel "0.0.6"
 
+"@applitools/eyes-sdk-core@11.0.2":
+  version "11.0.2"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-11.0.2.tgz#34909560a092b7d0e65695300d4ba97271508d5e"
+  integrity sha512-9I2wSi66vusT7v9/72pgbsjQntQ/iamigcOWotn32vE81vpUUWREKPFDrUqd7CWRoxTM43iHZeXJFLw9OARZ7A==
+  dependencies:
+    "@applitools/dom-capture" "7.2.0"
+    "@applitools/isomorphic-fetch" "3.0.0"
+    axios "0.19.2"
+    chalk "3.0.0"
+    cosmiconfig "^6.0.0"
+    dateformat "^3.0.3"
+    debug "^4.1.1"
+    deepmerge "^4.2.2"
+    es6-promise-pool "2.5.0"
+    png-async "^0.9.4"
+    stack-trace "^0.0.10"
+    tunnel "0.0.6"
+
 "@applitools/feature-flags@2.1.1":
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/@applitools/feature-flags/-/feature-flags-2.1.1.tgz#cf784e3b7ab4f322b0ebe62a5ea45ec56738b2d4"
@@ -202,6 +220,26 @@
   dependencies:
     "@applitools/dom-snapshot" "3.5.2"
     "@applitools/eyes-sdk-core" "10.3.1"
+    "@applitools/feature-flags" "2.1.1"
+    "@applitools/functional-commons" "1.5.4"
+    "@applitools/http-commons" "2.3.12"
+    "@applitools/isomorphic-fetch" "3.0.0"
+    "@applitools/jsdom" "1.0.2"
+    chalk "3.0.0"
+    he "1.2.0"
+    lodash.mapvalues "^4.6.0"
+    mime-types "^2.1.24"
+    mkdirp "^0.5.1"
+    postcss-value-parser "^4.0.2"
+    throat "^5.0.0"
+
+"@applitools/visual-grid-client@14.4.1":
+  version "14.4.1"
+  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-14.4.1.tgz#2476269d8dd620c3f67af38eac2c12d04b446353"
+  integrity sha512-C0L5oGYIr8PdYYXLi/RzShfJ+0IDtvbJfI9SiLjnfCjOLUFN6oEvbIB6Y/euchxqKKJVzzlWXuGs4FcWUh4SKg==
+  dependencies:
+    "@applitools/dom-snapshot" "3.5.2"
+    "@applitools/eyes-sdk-core" "11.0.2"
     "@applitools/feature-flags" "2.1.1"
     "@applitools/functional-commons" "1.5.4"
     "@applitools/http-commons" "2.3.12"

@@ -107,16 +107,22 @@ class EyesBrowsingContext {
    */
   async frameParent(elevation = 1) {
     if (await this._driver.controller.isNative()) return
-    this._logger.verbose(`EyesBrowsingContext.frameParent(${elevation})`)
-    let result
-    while (elevation-- > 0) {
-      result = await this.specs.switchToParentFrame(this._driver.unwrapped)
-      this._logger.verbose('Done! Switching to parent frame..')
-      if (this._frameChain.size > 0) {
-        this._frameChain.pop()
+    try {
+      this._logger.verbose(`EyesBrowsingContext.frameParent(${elevation})`)
+      while (elevation > 0) {
+        await this.specs.switchToParentFrame(this._driver.unwrapped)
+        this._logger.verbose('Done! Switching to parent frame..')
+        if (this._frameChain.size > 0) {
+          this._frameChain.pop()
+        }
+        elevation -= 1
       }
+    } catch (err) {
+      this._logger.verbose('WARNING: error during switch to parent frame', err)
+      const framePath = Array.from(this._frameChain).slice(0, this._frameChain.length - elevation)
+      await this.frameDefault()
+      return this.framesAppend(framePath)
     }
-    return result
   }
   /**
    * Switch to the specified frame path from the top level
