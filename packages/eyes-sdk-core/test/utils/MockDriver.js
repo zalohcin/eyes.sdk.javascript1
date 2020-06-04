@@ -32,9 +32,9 @@ class MockDriver {
       const context = this._contexts.get(this._contextId)
       const isRoot = !this._contextId
       const isCORS = !isRoot && context.isCORS
-      const document = context.document
+      const contentDocument = context.document
       const selector = !isCORS && !isRoot ? context.element.selector : null
-      return {isRoot, isCORS, document, selector}
+      return {isRoot, isCORS, contentDocument, selector}
     })
     this.mockScript(EyesJsSnippets.GET_FRAMES, () => {
       return Array.from(this._contexts.values())
