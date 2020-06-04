@@ -47,8 +47,6 @@ const {SessionEventHandlers} = require('./events/SessionEventHandlers')
 
 const {CheckSettings} = require('./fluent/CheckSettings')
 
-const {RenderWindowTask} = require('./RenderWindowTask')
-
 const {SessionStartInfo} = require('./server/SessionStartInfo')
 const {TestResultsStatus} = require('./TestResultsStatus')
 const {TestResults} = require('./TestResults')
@@ -105,10 +103,6 @@ class EyesBase {
     /** @type {SessionEventHandlers} */
     this._sessionEventHandlers = new SessionEventHandlers()
 
-    /** @type {RenderWindowTask} */ this._renderWindowTask = new RenderWindowTask(
-      this._logger,
-      this._serverConnector,
-    )
     /** @type {MatchWindowTask} */ this._matchWindowTask = undefined
     /** @type {RunningSession} */ this._runningSession = undefined
     /** @type {SessionStartInfo} */ this._sessionStartInfo = undefined

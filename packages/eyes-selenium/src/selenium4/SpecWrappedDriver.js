@@ -114,6 +114,14 @@ module.exports = {
     const capabilities = await driver.getCapabilities()
     return capabilities.get('platformVersion')
   },
+  async getBrowserName(driver) {
+    const capabilities = await driver.getCapabilities()
+    return capabilities.get('browserName')
+  },
+  async getBrowserVersion(driver) {
+    const capabilities = await driver.getCapabilities()
+    return capabilities.get('browserVersion')
+  },
   async getSessionId(driver) {
     const session = await driver.getSession()
     return session.getId()

@@ -506,7 +506,7 @@ async function getScrollRootElement(_logger, executor) {
  * @param {EyesWrappedElement|UnwrappedElement} [element] - element to mark
  */
 async function markScrollRootElement(_logger, executor, element) {
-  return executor.executorScript(EyesJsSnippets.MARK_SCROLL_ROOT_ELEMENT, element)
+  return executor.executeScript(EyesJsSnippets.MARK_SCROLL_ROOT_ELEMENT, element)
 }
 /**
  * Get overflow style property of the specified element
@@ -664,7 +664,7 @@ async function findFrameByContext(_logger, {executor, context}, contextInfo, com
     const frame = context.frameChain.current
     const contentDocument = await executor.executeScript(EyesJsSnippets.GET_DOCUMENT_ELEMENT)
     await context.frameParent()
-    if (await comparator(contentDocument, contextInfo.document)) return frame
+    if (await comparator(contentDocument, contextInfo.contentDocument)) return frame
   }
 }
 /**

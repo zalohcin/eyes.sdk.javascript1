@@ -218,14 +218,18 @@ export async function isPatternsDomEnabled() {
   )
 }
 
-async function getAccessibilitySettings() {
-  const settings = await getExtensionSettings()
+export function makeAccessibilitySettings(settings) {
   if (settings.projectSettings.enableAccessibilityValidations) {
     return {
       level: settings.projectSettings.accessibilityLevel,
       guidelinesVersion: `WCAG_${settings.projectSettings.accessibilityVersion.replace(/\./, '_')}`,
     }
   }
+}
+
+async function getAccessibilitySettings() {
+  const settings = await getExtensionSettings()
+  return makeAccessibilitySettings(settings)
 }
 
 async function createVisualGridEyes(

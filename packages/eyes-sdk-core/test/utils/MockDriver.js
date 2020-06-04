@@ -32,9 +32,9 @@ class MockDriver {
       const context = this._contexts.get(this._contextId)
       const isRoot = !this._contextId
       const isCORS = !isRoot && context.isCORS
-      const document = context.document
+      const contentDocument = context.document
       const selector = !isCORS && !isRoot ? context.element.selector : null
-      return {isRoot, isCORS, document, selector}
+      return {isRoot, isCORS, contentDocument, selector}
     })
     this.mockScript(EyesJsSnippets.GET_FRAMES, () => {
       return Array.from(this._contexts.values())
@@ -95,6 +95,9 @@ class MockDriver {
     this.mockScript('return window.devicePixelRatio', () => {
       return 1
     })
+    this.mockScript(EyesJsSnippets.MARK_SCROLL_ROOT_ELEMENT, element => {
+      element.attrs.isApplitoolsScroll = true
+    })
     this.mockScript(EyesJsSnippets.GET_VIEWPORT_SIZE, () => {
       return [this._window.rect.width, this._window.rect.height]
     })
@@ -119,6 +122,7 @@ class MockDriver {
   mockElement(selector, state) {
     const element = {
       id: Symbol('elementId'),
+      attrs: {},
       selector,
       parentId: null,
       parentContextId: null,

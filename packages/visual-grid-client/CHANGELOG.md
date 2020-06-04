@@ -3,6 +3,15 @@
 ## Unreleased
 
 
+## 14.4.3 - 2020/6/4
+
+- updated to @applitools/eyes-sdk-core@11.0.4 (from v11.0.3)
+
+## 14.4.2 - 2020/6/3
+
+- fixed 409 (Conflict) errors
+- updated to @applitools/eyes-sdk-core@11.0.3 (from v11.0.2)
+
 ## 14.4.1 - 2020/6/2
 
 - updated to @applitools/eyes-sdk-core@11.0.2 (from v11.0.1)

@@ -3,7 +3,7 @@ import {
   experimentalBrowsers,
   browserIds,
   DeviceName,
-} from '../../app/components/VisualGridOptionSelector/options'
+} from '../../app/components/VisualGrid/options'
 import UAParser from 'ua-parser-js'
 const parser = new UAParser()
 

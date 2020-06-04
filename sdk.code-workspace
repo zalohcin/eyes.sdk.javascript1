@@ -17,6 +17,10 @@
 			"path": "packages/eyes-images"
 		},
 		{
+			"name": "eyes-protractor",
+			"path": "packages/eyes-protractor"
+		},
+		{
 			"name": "eyes-sdk-core",
 			"path": "packages/eyes-sdk-core"
 		},

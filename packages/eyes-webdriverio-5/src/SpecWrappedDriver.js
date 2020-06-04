@@ -77,6 +77,12 @@ module.exports = {
   async getPlatformVersion(driver) {
     return driver.capabilities.platformVersion
   },
+  async getBrowserName(driver) {
+    return driver.capabilities.browserName
+  },
+  async getBrowserVersion(driver) {
+    return driver.capabilities.browserVersion
+  },
   async getSessionId(driver) {
     return driver.sessionId
   },

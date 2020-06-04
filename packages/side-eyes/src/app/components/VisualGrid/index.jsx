@@ -12,7 +12,7 @@ import {
   viewportSizes,
   orientations,
   DeviceName,
-} from '../VisualGridOptionSelector/options'
+} from './options'
 import './style.css'
 
 const ALL_BROWSERS = [...browsers, ...experimentalBrowsers]

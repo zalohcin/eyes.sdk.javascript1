@@ -26,6 +26,7 @@ import {
   getResultsUrl,
   hasValidVisualGridSettings,
   getExtensionSettings,
+  makeAccessibilitySettings,
 } from './utils/eyes'
 import { parseViewport, parseMatchLevel } from './utils/parsers'
 import { setupOptions } from './utils/options.js'
@@ -578,10 +579,7 @@ browser.runtime.onMessageExternal.addListener(
             return sendResponse(
               emitCheckWindow(
                 message.language,
-                {
-                  accessibilityLevel:
-                    settings.projectSettings.accessibilityLevel,
-                },
+                undefined,
                 target
               )
             )
@@ -602,10 +600,7 @@ browser.runtime.onMessageExternal.addListener(
                   sendResponse(
                     emitCheckElement(
                       message.language,
-                      {
-                        accessibilityLevel:
-                          settings.projectSettings.accessibilityLevel,
-                      },
+                      undefined,
                       locator,
                       value
                     )
@@ -701,8 +696,7 @@ browser.runtime.onMessageExternal.addListener(
                     baselineEnvName,
                     visualGridOptions,
                     viewportSize,
-                    accessibilityLevel:
-                      settings.projectSettings.accessibilityLevel,
+                    accessibilitySettings: makeAccessibilitySettings(settings),
                   }
                 )
               )
@@ -714,7 +708,7 @@ browser.runtime.onMessageExternal.addListener(
               const isVisualGridEnabled =
                 settings.projectSettings.enableVisualGrid
               return sendResponse(
-                emitDependency(message.language, { isVisualGridEnabled })
+                emitDependency(message.language, { isVisualGridEnabled, hasAccessibilitySettings: !!makeAccessibilitySettings(settings) })
               )
             })
             return true

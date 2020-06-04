@@ -4,7 +4,6 @@ export const experimentalBrowsers = []
 export const viewportSizes = ['2560x1440', '2048x1536', '1920x1080', '750x1334', '720x1280']
 export const orientations = ['Portrait', 'Landscape']
 
-// NOTE: This is needed to get the ENUMs for code-export.
 // Copied from @applitools/eyes-sdk-core/lib/config/DeviceName.js
 // since it can't easily be loaded into the browser (yet).
 export const DeviceName = {

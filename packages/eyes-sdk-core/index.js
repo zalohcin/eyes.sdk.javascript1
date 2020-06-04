@@ -184,7 +184,6 @@ exports.EyesUtils = require('./lib/EyesUtils')
 exports.FailureReports = require('./lib/FailureReports').FailureReports
 exports.MatchSingleWindowTask = require('./lib/MatchSingleWindowTask').MatchSingleWindowTask
 exports.MatchWindowTask = require('./lib/MatchWindowTask').MatchWindowTask
-exports.RenderWindowTask = require('./lib/RenderWindowTask').RenderWindowTask
 exports.TestResults = require('./lib/TestResults').TestResults
 exports.TestResultsError = require('./lib/TestResults').TestResultsError
 exports.AccessibilityStatus = require('./lib/AccessibilityStatus').AccessibilityStatus

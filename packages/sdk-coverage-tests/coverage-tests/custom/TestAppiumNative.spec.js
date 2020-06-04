@@ -5,9 +5,8 @@ const {getEyes, sauceUrl} = require('../util/TestSetup')
 const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
 const {Target, Region} = require(cwd)
 
-describe('TestAppiumNative', () => {
+describe('TestAppiumNative (@native)', () => {
   let driver, eyes
-
   afterEach(async () => {
     await spec.cleanup(driver)
     await eyes.abortIfNotClosed()
