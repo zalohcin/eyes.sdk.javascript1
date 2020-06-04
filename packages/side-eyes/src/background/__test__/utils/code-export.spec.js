@@ -32,7 +32,6 @@ describe('code-export', () => {
             emitCheckWindow(
               language,
               {
-                accessibilityLevel: 'AA',
                 isVisualGridEnabled: true,
               },
               undefined
@@ -45,17 +44,6 @@ describe('code-export', () => {
           ).resolves.toMatchSnapshot()
           expect(
             emitCheckElement(language, undefined, 'By.id("blah")')
-          ).resolves.toMatchSnapshot()
-          expect(
-            emitCheckElement(
-              language,
-              {
-                accessibilityLevel: 'AA',
-                isVisualGridEnabled: true,
-              },
-              'By.id("blah")',
-              undefined
-            )
           ).resolves.toMatchSnapshot()
         })
         it('setMatchLevel', () => {
@@ -92,7 +80,10 @@ describe('code-export', () => {
         it('beforeEach', () => {
           expect(
             emitBeforeEach(language, 'project blah', 'test blah', {
-              accessibilityLevel: 'AA',
+              accessibilitySettings: {
+                level: 'AA',
+                guidelinesVersion: 'WCAG_2_0',
+              }
             })
           ).toMatchSnapshot()
           expect(
@@ -125,7 +116,13 @@ describe('code-export', () => {
         })
         it('dependency', () => {
           expect(
+            emitDependency(language, { isVisualGridEnabled: true, hasAccessibilitySettings: true })
+          ).toMatchSnapshot()
+          expect(
             emitDependency(language, { isVisualGridEnabled: true })
+          ).toMatchSnapshot()
+          expect(
+            emitDependency(language, { hasAccessibilitySettings: true })
           ).toMatchSnapshot()
           expect(emitDependency(language)).toMatchSnapshot()
         })

@@ -2,10 +2,9 @@
 
 function emitCheckWindow(
   language,
-  { accessibilityLevel, isVisualGridEnabled } = {},
+  { isVisualGridEnabled } = {},
   stepName
 ) {
-  accessibilityLevel = accessibilityLevel ? accessibilityLevel : 'None'
   switch (language) {
     case 'java-junit':
       return `eyes.check(Target.window().fully()${
@@ -13,9 +12,9 @@ function emitCheckWindow(
       }${stepName ? `.withName("${stepName}")` : ''});`
     case 'javascript-mocha':
       if (stepName)
-        return `await eyes.check("${stepName}", Target.window().webHook(preRenderHook).accessibilityValidation("${accessibilityLevel}").fully(true))`
+        return `await eyes.check("${stepName}", Target.window().webHook(preRenderHook).fully(true))`
       else
-        return `await eyes.check((new URL(await driver.getCurrentUrl())).pathname, Target.window().webHook(preRenderHook).accessibilityValidation("${accessibilityLevel}").fully(true))`
+        return `await eyes.check((new URL(await driver.getCurrentUrl())).pathname, Target.window().webHook(preRenderHook).fully(true))`
     case 'python-pytest':
       if (stepName)
         return `self.eyes.check("${stepName}", Target.window().fully(True))`
@@ -37,11 +36,10 @@ function emitCheckWindow(
 
 async function emitCheckElement(
   language,
-  { accessibilityLevel, locatorEmitter, isVisualGridEnabled } = {},
+  { locatorEmitter, isVisualGridEnabled } = {},
   _locator,
   stepName
 ) {
-  accessibilityLevel = accessibilityLevel ? accessibilityLevel : 'None'
   const locator = locatorEmitter ? await locatorEmitter(_locator) : _locator
   switch (language) {
     case 'java-junit':
@@ -50,9 +48,9 @@ async function emitCheckElement(
       }${stepName ? `.withName("${stepName}")` : ''});`
     case 'javascript-mocha':
       if (stepName)
-        return `await eyes.check("${stepName}", Target.region(${locator}).webHook(preRenderHook).accessibilityValidation("${accessibilityLevel}"))`
+        return `await eyes.check("${stepName}", Target.region(${locator}).webHook(preRenderHook))`
       else
-        return `await eyes.check((new URL(await driver.getCurrentUrl())).pathname, Target.region(${locator}).webHook(preRenderHook).accessibilityValidation("${accessibilityLevel}"))`
+        return `await eyes.check((new URL(await driver.getCurrentUrl())).pathname, Target.region(${locator}).webHook(preRenderHook))`
     case 'python-pytest':
       if (stepName)
         return `self.eyes.check("${stepName}", Target.region([${locator}]))`
@@ -167,7 +165,7 @@ function emitAfterEach(language, { isVisualGridEnabled } = {}) {
       break
     case 'python-pytest':
       if (isVisualGridEnabled) result += `self.vg_runner.get_all_test_results()`
-      else result += `self.eyes.abort_if_not_closed()`
+      else result += `self.eyes.abort()`
       break
     case 'ruby-rspec':
       if (isVisualGridEnabled)
@@ -207,16 +205,14 @@ function emitBeforeEach(
   language,
   projectName,
   testName,
-  { baselineEnvName, viewportSize, visualGridOptions, accessibilityLevel } = {}
+  { baselineEnvName, viewportSize, visualGridOptions, accessibilitySettings } = {}
 ) {
   let result = ''
-  accessibilityLevel = accessibilityLevel ? accessibilityLevel : 'None'
   switch (language) {
     case 'java-junit':
       if (visualGridOptions) {
         result += `runner = new VisualGridRunner(concurrency);\neyes = new Eyes(runner);\n`
         result += `Configuration config = eyes.getConfiguration();\n`
-        result += `config.setAccessibilityValidation(AccessibilityLevel.${accessibilityLevel});`
         const deviceEmitter = (deviceId, orientation) => {
           deviceId = deviceId.replace(/iPhone_6_7_8_Plus/, 'iPhone6_7_8_Plus')
           return `\nconfig.addDeviceEmulation(DeviceName.${deviceId}, ScreenOrientation.${orientation.toUpperCase()});`
@@ -230,16 +226,18 @@ function emitBeforeEach(
           deviceEmitter,
           browserEmitter,
         })
-        result += `\neyes.setConfiguration(config);`
       } else {
         result += `eyes = new Eyes();`
         result += `\neyes.setApiKey(System.getenv("APPLITOOLS_API_KEY"));`
         result += `\nConfiguration config = eyes.getConfiguration();`
-        result += `\nconfig.setAccessibilityValidation(AccessibilityLevel.${accessibilityLevel});`
-        result += `\neyes.setConfiguration(config);`
         if (baselineEnvName)
           result += `\neyes.setBaseLineEnvName("${baselineEnvName}");`
       }
+      if (accessibilitySettings) {
+        result += `\nAccessibilitySettings settings = new AccessibilitySettings(AccessibilityLevel.${accessibilitySettings.level}, AccessibilityGuidelinesVersion.${accessibilitySettings.guidelinesVersion});`
+        result += `\nconfig.setAccessibilityValidation(settings);`
+      }
+      result += `\neyes.setConfiguration(config);`
       result += `\neyes.open(driver, "${projectName}", "${testName}");`
       break
     case 'javascript-mocha':
@@ -259,9 +257,17 @@ function emitBeforeEach(
           deviceEmitter,
           browserEmitter,
         })
+        if (accessibilitySettings) {
+          result += `\nconfig.setAccessibilityValidation(${JSON.stringify(accessibilitySettings)})`
+        }
         result += `\neyes.setConfiguration(config)`
       } else {
         result += `eyes = new Eyes()`
+        if (accessibilitySettings) {
+          result += `\nconst config = eyes.getConfiguration();`
+          result += `\nconfig.setAccessibilityValidation(${JSON.stringify(accessibilitySettings)})`
+          result += `\neyes.setConfiguration(config);`
+        }
       }
       result += `\neyes.setApiKey(process.env["APPLITOOLS_API_KEY"])`
       if (baselineEnvName)
@@ -269,11 +275,11 @@ function emitBeforeEach(
       result += `\nawait eyes.open(driver, "${projectName}", "${testName}")`
       break
     case 'python-pytest':
+      result += `config = Configuration()\n`
       if (visualGridOptions) {
         result += `concurrency = 10\n`
         result += `self.vg_runner = VisualGridRunner(concurrency)\n`
         result += `self.eyes = Eyes(self.vg_runner)\n`
-        result += `config = Configuration()`
         const deviceEmitter = (deviceId, orientation) => {
           deviceId = deviceId.replace(/iPhone_6_7_8_Plus/, 'iPhone6_7_8_Plus')
           return `\nconfig.add_device_emulation(DeviceName.${deviceId}, ScreenOrientation.${orientation.toUpperCase()})`
@@ -294,6 +300,12 @@ function emitBeforeEach(
       result += `\nself.eyes.api_key = os.environ["APPLITOOLS_API_KEY"]`
       if (baselineEnvName)
         result += `\nself.eyes.baseline_env_name = "${baselineEnvName}"`
+      if (accessibilitySettings) {
+        result += `\nsetting = AccessibilitySettings(
+          AccessibilityLevel.${accessibilitySettings.level}, AccessibilityGuidelinesVersion.${accessibilitySettings.guidelinesVersion}
+        )`
+        result += `\nconfig.accessibility_validation = setting`
+      }
       result += `\nself.eyes.open(self.driver, "${projectName}", "${testName}")`
       break
     case 'ruby-rspec':
@@ -306,7 +318,9 @@ function emitBeforeEach(
         result += `  c.app_name = '${projectName}'\n`
         result += `  c.test_name = '${testName}'\n`
         result += `  c.viewport_size = Applitools::RectangleSize.for('${viewportSize}')\n`
-        result += `  c.accessibility_validation = Applitools::AccessibilityLevel::${accessibilityLevel.toUpperCase()}`
+        if (accessibilitySettings) {
+          result += `  c.accessibility_validation = Applitools::AccessibilitySettings.new(Applitools::AccessibilityLevel::${accessibilitySettings.level}, Applitools::AccessibilityGuidelinesVersion::${accessibilitySettings.guidelinesVersion})`
+        }
         if (baselineEnvName)
           result += `\n  c.baseline_env_name = '${baselineEnvName}'`
         const deviceEmitter = (deviceId, orientation) => {
@@ -332,6 +346,11 @@ function emitBeforeEach(
         result += `\n@eyes.open(driver: @driver)`
       } else {
         result += `@eyes = Applitools::Selenium::Eyes.new`
+        if (accessibilitySettings) {
+          result += `\nconfig = @eyes.get_configuration`
+          result += `\nconfig.accessibility_validation = Applitools::AccessibilitySettings.new(Applitools::AccessibilityLevel::${accessibilitySettings.level}, Applitools::AccessibilityGuidelinesVersion::${accessibilitySettings.guidelinesVersion})`
+          result += `\n@eyes.config = config`
+        }
         result += `\n@eyes.api_key = ENV['APPLITOOLS_API_KEY']`
         if (baselineEnvName)
           result += `\n@eyes.baseline_env_name = '${baselineEnvName}'`
@@ -347,7 +366,10 @@ function emitBeforeEach(
       result += `\nconf.SetTestName("${testName}");`
       result += `\nconf.SetAppName("${projectName}");`
       result += `\nconf.SetViewportSize(new Size(${viewportSize[0]}, ${viewportSize[1]}));`
-      result += `\nconf.AccessibilityValidation = AccessibilityLevel.${accessibilityLevel};`
+      if (accessibilitySettings) {
+        result += `\nAccessibilitySettings settings = new AccessibilitySettings(AccessibilityLevel.${accessibilitySettings.level}, AccessibilityGuidelinesVersion.${accessibilitySettings.guidelinesVersion});`
+        result += `\nconf.SetAccessibilityValidation(settings);`
+      }
       if (baselineEnvName)
         result += `\nconf.SetBaselineEnvName("${baselineEnvName}");`
       if (visualGridOptions) {
@@ -375,13 +397,12 @@ function emitBeforeEach(
   return result
 }
 
-function emitDependency(language, { isVisualGridEnabled } = {}) {
+function emitDependency(language, { isVisualGridEnabled, hasAccessibilitySettings } = {}) {
   let result = ''
   switch (language) {
     case 'java-junit':
       result += `import com.applitools.eyes.selenium.Eyes;`
       result += `\nimport com.applitools.eyes.RectangleSize;`
-      result += `\nimport com.applitools.eyes.AccessibilityLevel;`
       result += `\nimport com.applitools.eyes.selenium.fluent.Target;`
       result += `\nimport com.applitools.eyes.selenium.Configuration;`
       if (isVisualGridEnabled) {
@@ -389,6 +410,11 @@ function emitDependency(language, { isVisualGridEnabled } = {}) {
         result += `\nimport com.applitools.eyes.visualgrid.model.DeviceName;`
         result += `\nimport com.applitools.eyes.visualgrid.model.ScreenOrientation;`
         result += `\nimport com.applitools.eyes.visualgrid.services.VisualGridRunner;`
+      }
+      if (hasAccessibilitySettings) {
+        result += `\nimport com.applitools.eyes.AccessibilitySettings;`
+        result += `\nimport com.applitools.eyes.AccessibilityLevel;`
+        result += `\nimport com.applitools.eyes.AccessibilityGuidelinesVersion;`
       }
       break
     case 'javascript-mocha':
@@ -399,10 +425,13 @@ function emitDependency(language, { isVisualGridEnabled } = {}) {
     case 'python-pytest':
       result += `import os\n`
       result += `from urllib.parse import urlparse\n`
-      result += `from applitools.selenium import (Eyes, Target)\n`
+      result += `from applitools.selenium import (Eyes, Target, Configuration)\n`
       if (isVisualGridEnabled) {
-        result += `from applitools.selenium import (Configuration, BrowserType, DeviceName, ScreenOrientation)\n`
+        result += `from applitools.selenium import (BrowserType, DeviceName, ScreenOrientation)\n`
         result += `from applitools.selenium.visual_grid import VisualGridRunner\n`
+      }
+      if (hasAccessibilitySettings) {
+        result += `from applitools.common.accessibility import (AccessibilitySettings, AccessibilityLevel, AccessibilityGuidelinesVersion)\n`
       }
       break
     case 'ruby-rspec':
