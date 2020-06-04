@@ -2,6 +2,7 @@
 
 ## Unreleased
 - updated to @applitools/eyes-sdk-core@11.0.2 (from v10.2.0)
+- updated to @applitools/eyes-sdk-core@11.0.4 (from v11.0.2)
 
 
 
