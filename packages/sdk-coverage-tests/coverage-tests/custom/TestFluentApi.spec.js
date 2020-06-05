@@ -8,6 +8,7 @@ const {Target, Region} = require(cwd)
 const appName = 'Eyes Selenium SDK - Fluent API'
 describe(appName, () => {
   let webDriver, eyes
+  let testCases = [true, false]
 
   afterEach(async () => {
     await eyes.abortIfNotClosed()
@@ -19,6 +20,21 @@ describe(appName, () => {
       webDriver = await spec.build({capabilities: Browsers.chrome()})
       await spec.visit(webDriver, 'https://applitools.github.io/demo/TestPages/FramesTestPage/')
       eyes = await getEyes({isCssStitching: true})
+    })
+
+    testCases.forEach(ignoreDisplacement => {
+      it('TestIgnoreDisplacements', async () => {
+        await eyes.open(webDriver, appName, `TestIgnoreDisplacements`, {
+          width: 700,
+          height: 460,
+        })
+        await eyes.check(
+          `Fluent - Ignore Displacement = ${ignoreDisplacement}`,
+          Target.window()
+            .ignoreDisplacements(ignoreDisplacement)
+            .fully(),
+        )
+      })
     })
 
     it('TestCheckRegionInFrame2_Fluent', async () => {
@@ -103,6 +119,21 @@ describe(appName, () => {
       webDriver = await spec.build({capabilities: Browsers.chrome()})
       await spec.visit(webDriver, 'https://applitools.github.io/demo/TestPages/FramesTestPage/')
       eyes = await getEyes()
+    })
+
+    testCases.forEach(ignoreDisplacement => {
+      it('TestIgnoreDisplacements', async () => {
+        await eyes.open(webDriver, appName, `TestIgnoreDisplacements_Scroll`, {
+          width: 700,
+          height: 460,
+        })
+        await eyes.check(
+          `Fluent - Ignore Displacement = ${ignoreDisplacement}`,
+          Target.window()
+            .ignoreDisplacements(ignoreDisplacement)
+            .fully(),
+        )
+      })
     })
 
     it('TestCheckRegionInFrame2_Fluent', async () => {
@@ -192,6 +223,21 @@ describe(appName, () => {
       webDriver = await spec.build({capabilities: Browsers.chrome()})
       await spec.visit(webDriver, 'https://applitools.github.io/demo/TestPages/FramesTestPage/')
       eyes = await getEyes({isVisualGrid: true})
+    })
+
+    testCases.forEach(ignoreDisplacement => {
+      it('TestIgnoreDisplacements', async () => {
+        await eyes.open(webDriver, appName, `TestIgnoreDisplacements_VG`, {
+          width: 700,
+          height: 460,
+        })
+        await eyes.check(
+          `Fluent - Ignore Displacement = ${ignoreDisplacement}`,
+          Target.window()
+            .ignoreDisplacements(ignoreDisplacement)
+            .fully(),
+        )
+      })
     })
 
     it('TestCheckScrollableModal', async () => {
