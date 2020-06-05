@@ -4,14 +4,9 @@ const path = require('path')
 const {getEyes, Browsers} = require('../util/TestSetup')
 const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
 const assert = require('assert')
-const {
-  Configuration,
-  Target,
-  BatchInfo,
-  MatchLevel,
-} = require(cwd)
+const {Configuration, Target, BatchInfo, MatchLevel} = require(cwd)
 const {getApiData} = require('../util/ApiAssertions')
-describe.only('TestEyesConfiguration', async () => {
+describe('TestEyesConfiguration', async () => {
   let testCases = []
   testCase(false, 'Test sequence', 'Test Sequence Name Env Var')
   testCase(false, 'Test sequence', undefined)

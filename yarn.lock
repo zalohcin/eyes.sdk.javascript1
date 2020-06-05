@@ -9,6 +9,14 @@
   dependencies:
     "@applitools/functional-commons" "^1.5.4"
 
+"@applitools/dom-snapshot@3.5.2":
+  version "3.5.2"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-3.5.2.tgz#07df10f8ecb74e07ab4f84eec29c6a053dec1f89"
+  integrity sha512-7N5V0kkkyVGbMZb8b3sNJpHHtQ6W+pLJ6uqgArIvcBn75yfkiA30KmTV4i5pAm1T13MyCukntWXL0znMMN7uJg==
+  dependencies:
+    "@applitools/functional-commons" "^1.5.4"
+    css-tree "^1.0.0-alpha.39"
+
 "@applitools/eslint-plugin-compat@^0.7.0":
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@applitools/eslint-plugin-compat/-/eslint-plugin-compat-0.7.0.tgz#61785cfb4156ddbb06141116b7fd381ecf11afea"
