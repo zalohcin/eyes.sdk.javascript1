@@ -4,6 +4,9 @@ const path = require('path')
 const {getEyes, Browsers, batch} = require('../util/TestSetup')
 const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
 const {
+  ScreenOrientation,
+  IosScreenOrientation,
+  IosDeviceName,
   Configuration,
   BrowserType,
   AccessibilityLevel,
@@ -41,6 +44,59 @@ describe('TestVGServerConfigs', () => {
     await eyes.open(webDriver)
     await eyes.close()
     await expect(eyes.close()).to.be.rejectedWith(Error, 'IllegalState: Eyes not open')
+  })
+
+  it(`TestMobileWebVG`, async () => {
+    let conf = new Configuration()
+    conf.addBrowser({
+      iosDeviceInfo: {
+        deviceName: IosDeviceName.iPhone_XR,
+        screenOrientation: IosScreenOrientation.LANDSCAPE_LEFT,
+      },
+    })
+    conf.setSaveFailedTests(false)
+    conf.setSaveNewTests(false)
+    eyes.setConfiguration(conf)
+
+    await spec.visit(webDriver, 'http://applitools.github.io/demo')
+    await eyes.open(webDriver, 'Eyes SDK', 'UFG Mobile Web Happy Flow', {width: 800, height: 600})
+    await eyes.checkWindow()
+    await eyes.close()
+  })
+
+  it(`TestChromeEmulationVG`, async () => {
+    let conf = new Configuration()
+    conf.addBrowser({
+      deviceName: DeviceName.Nexus_10,
+      screenOrientation: ScreenOrientation.LANDSCAPE,
+    })
+    conf.setAppName('Eyes SDK')
+    conf.setTestName('TestChromeEmulationVG')
+    conf.setSaveNewTests(false)
+    eyes.setConfiguration(conf)
+
+    await spec.visit(webDriver, 'http://applitools.github.io/demo')
+    await eyes.open(webDriver)
+    await eyes.checkWindow()
+    await eyes.close()
+  })
+
+  it(`TestDesktopBrowserVG`, async () => {
+    let conf = new Configuration()
+    conf.addBrowser({
+      name: BrowserType.EDGE_CHROMIUM_TWO_VERSIONS_BACK,
+      width: 1024,
+      height: 768,
+    })
+    conf.setAppName('Eyes SDK')
+    conf.setTestName('TestDesktopBrowserVG')
+    conf.setSaveNewTests(false)
+    eyes.setConfiguration(conf)
+
+    await spec.visit(webDriver, 'http://applitools.github.io/demo')
+    await eyes.open(webDriver)
+    await eyes.checkWindow()
+    await eyes.close()
   })
 
   it.skip('TestVGChangeConfigAfterOpen', async () => {
