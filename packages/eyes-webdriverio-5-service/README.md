@@ -18,8 +18,8 @@ Offical Applitools Eyes service for version 5 of the [webdriver.io](https://webd
     + [Using webdriver.io's config file](#using-webdriverio-s-config-file)
 - [Usage](#usage)
   * [Example](#example)
-  * [Using the service vs. direct SDK](#using-the-service-vs-direct-sdk)
   * [Configuration](#configuration)
+  * [Running with the Ultra fast grid](#running-with-the-ultra-fast-grid)
     + [Verbose logging](#verbose-logging)
     + [Override `testName` and `appName`](#override--testname--and--appname-)
     + [Batch completion notifications](#batch-completion-notifications)
@@ -31,6 +31,8 @@ Offical Applitools Eyes service for version 5 of the [webdriver.io](https://webd
     + [`browser.eyesGetConfiguration()`](#-browsereyesgetconfiguration---)
     + [`browser.eyesAddProperty(key, value)`](#-browsereyesaddproperty-key--value--)
     + [`browser.eyesClearProperties()`](#-browsereyesclearproperties---)
+  * [Appendix: Using the service vs. direct SDK](#appendix--using-the-service-vs-direct-sdk)
+
 
 ## Installation
 
