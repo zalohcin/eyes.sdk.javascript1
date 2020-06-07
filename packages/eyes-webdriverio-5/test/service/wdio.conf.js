@@ -1,5 +1,5 @@
 const path = require('path')
-const EyesService = require('../..')
+const {EyesService} = require('../..')
 
 exports.config = {
   //
@@ -113,10 +113,10 @@ exports.config = {
   // your test setup with almost no effort. Unlike plugins, they don't add new
   // commands. Instead, they hook themselves up into the test process.
   // services: ['chromedriver', '@applitools/eyes-webdriverio5-service'],
-  services: ['chromedriver', [EyesService]],
+  services: [[EyesService]],
 
-  port: 9515,
-  path: '/',
+  port: 4444,
+  path: '/wd/hub',
 
   //
   // Framework you want to run your specs with.
