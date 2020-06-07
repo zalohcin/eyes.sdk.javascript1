@@ -1,6 +1,6 @@
 const supportedTests = require('./supported-tests')
 const {makeEmitTracker} = require('@applitools/sdk-coverage-tests')
-const sdkName = 'eyes-selenium'
+const sdkName = 'eyes-protractor'
 
 function initialize() {
   const result = makeEmitTracker()

@@ -14,6 +14,8 @@ function convertSdkNameToReportName(sdkName) {
       return 'js_images'
     case 'eyes-testcafe':
       return 'testcafe'
+    case 'eyes-protractor':
+      return 'js_protractor'
     default:
       throw new Error('Unsupported SDK')
   }
