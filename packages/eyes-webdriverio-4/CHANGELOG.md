@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- added mobile web API support for VG
 
 ## 2.16.0 - 2020/6/2
 

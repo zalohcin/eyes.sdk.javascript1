@@ -1,14 +1,10 @@
 # Change Log
 
 ## Unreleased
-- updated to @applitools/eyes-sdk-core@10.1.2
-- updated to @applitools/visual-grid-client@13.8.1
-- updated to @applitools/eyes-sdk-core@10.3.0 (from v10.2.0)
-- updated to @applitools/visual-grid-client@14.2.0 (from v14.1.0)
-- updated to @applitools/eyes-sdk-core@10.3.1 (from v10.3.0)
-- updated to @applitools/visual-grid-client@14.2.1 (from v14.2.0)
 
-
+- added mobile web API support for VG
+- updated to @applitools/eyes-sdk-core@11.0.4
+- updated to @applitools/visual-grid-client@14.4.3
 
 
 ## 4.38.0 - 2020/6/2
