@@ -1,7 +1,9 @@
 'use strict'
+const path = require('path')
 const chromedriver = require('chromedriver')
 const {URL} = require('url')
-const {Builder, By} = require('selenium-webdriver')
+const cwd = process.cwd()
+const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
 const {
   Eyes,
   ClassicRunner,
@@ -10,13 +12,12 @@ const {
   FileLogHandler,
   Configuration,
   StitchMode,
-  EyesSeleniumUtils,
   DeviceName,
   ScreenOrientation,
   MatchLevel,
   // FileDebugScreenshotsProvider,
-} = require('../index')
-const path = require('path')
+} = require(cwd)
+const {EyesJsBrowserUtils} = require('../../eyes-sdk-core')
 const yargs = require('yargs')
 const args = yargs
   .usage('yarn render <url> [options]')
@@ -246,7 +247,7 @@ if (!url) {
   logger.log(`[render script] process versions: ${JSON.stringify(process.versions)}`)
   console.log('log file at:', logFilePath)
 
-  await driver.get(url)
+  await spec.visit(driver, url)
 
   try {
     await eyes.open(driver, args.appName, url)
@@ -254,7 +255,7 @@ if (!url) {
     let target
 
     if (args.targetElement) {
-      target = Target.region(By.css(args.targetElement))
+      target = Target.region(args.targetElement)
     } else {
       target = Target.window()
     }
@@ -266,14 +267,14 @@ if (!url) {
     if (args.ignoreRegions) {
       target.ignoreRegions.apply(
         target,
-        args.ignoreRegions.split(',').map(s => By.css(s.trim())),
+        args.ignoreRegions.split(',').map(s => s.trim()),
       )
     }
 
     if (args.layoutRegions) {
       target.layoutRegions.apply(
         target,
-        args.layoutRegions.split(',').map(s => By.css(s.trim())),
+        args.layoutRegions.split(',').map(s => s.trim()),
       )
     }
 
@@ -284,7 +285,7 @@ if (!url) {
     // debugger
 
     if (args.scrollPage) {
-      await EyesSeleniumUtils.scrollPage(driver)
+      await EyesJsBrowserUtils.scrollPage(driver)
     }
 
     await eyes.check(args.tag, target)
@@ -301,7 +302,7 @@ if (!url) {
 
     console.log('\nRender results:\n', resultsStr)
   } finally {
-    await driver.quit()
+    await spec.cleanup(driver)
     if (args.webdriverProxy) {
       await chromedriver.stop()
     }
@@ -322,20 +323,17 @@ function buildDriver({
       args: headless ? ['--headless'] : [],
       mobileEmulation: isMobileEmulation ? {deviceName} : undefined,
     },
-    username: process.env.SAUCE_USERNAME,
-    accesskey: process.env.SAUCE_ACCESS_KEY,
     ...driverCapabilities,
   }
 
-  let builder = new Builder().withCapabilities(capabilities).usingServer(driverServer)
-
-  if (webdriverProxy) {
-    builder = builder
-      .usingServer('http://localhost.charlesproxy.com:9515')
-      .usingWebDriverProxy('http://localhost:8888')
+  if (process.env.SAUCE_USERNAME && process.env.SAUCE_ACCESS_KEY) {
+    capabilities['sauce:options'] = {
+      username: process.env.SAUCE_USERNAME,
+      accesskey: process.env.SAUCE_ACCESS_KEY,
+    }
   }
 
-  return builder.build()
+  return spec.build({capabilities, serverUrl: driverServer, webdriverProxy})
 }
 
 function initLog(eyes, filename) {

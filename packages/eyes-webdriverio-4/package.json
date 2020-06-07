@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint '**/*.js'",
+    "render": "node ../sdk-shared/src/render.js",
     "test": "yarn test:unit && yarn test:it && yarn test:e2e",
     "test:tmp": "mocha --no-timeouts test/coverage/custom/* # TEST AND REMOVE SCRIPT AFTER PR 151 MERGE !!",
     "test:e2e": "mocha --no-timeouts \"test/e2e/*.js\"",

@@ -54,6 +54,7 @@
   },
   "scripts": {
     "lint": "eslint '**/*.js'",
+    "render": "node ../sdk-shared/src/render.js",
     "test": "yarn test:unit && yarn test:it && yarn test:e2e",
     "test:e2e": "mocha --no-timeouts \"test/+(TestClassicApi*.js|TestFluentApi*.js|TestVisualGrid*.js)\"",
     "test:it": "mocha --no-timeouts \"test/it/*.js\"",
@@ -62,7 +63,6 @@
     "coverage:sandbox": "coverage-tests create-tests --remote=$CVG_TESTS_REMOTE && yarn test:coverage && coverage-tests process-report",
     "coverage:prod": "coverage-tests create-tests --remote=$CVG_TESTS_REMOTE && yarn test:coverage && coverage-tests process-report --send-report prod",
     "test:coverage": "env APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-webdriverio-5' APPLITOOLS_BATCH_ID=$(uuidgen) XUNIT_FILE=coverage-test-report.xml mocha-parallel-tests --no-timeouts --reporter spec-xunit-file --max-parallel 15 \"{test/coverage/generic/*.spec.js,../sdk-coverage-tests/coverage-tests/custom/**/*.spec.js}\"",
-    "render": "node scripts/render.js",
     "preversion": "bongo preversion && yarn coverage:prod",
     "version": "bongo version",
     "postversion": "bongo postversion",
