@@ -1,6 +1,12 @@
-# Applitools Eyes Service for webdriver.io 5
+<div align="center">
+
+![Applitools Eyes](https://i.ibb.co/3hWJK68/applitools-eyes-logo.png)
+### Applitools Eyes Service for webdriver.io 5
+[![npm](https://img.shields.io/npm/v/@applitools/eyes-webdriverio5-service.svg?style=for-the-badge)](https://www.npmjs.com/package/@applitools/eyes-webdriverio5-service)
 
 Offical Applitools Eyes service for version 5 of the [webdriver.io](https://webdriver.io/) automation framework.
+</div>
+<br/>
 
 ## Table of contents
 
@@ -101,22 +107,6 @@ describe('webdriver.io page', () => {
 })
 ```
 
-### Using the service vs. direct SDK
-
-As users of webdriver.io 5, you may choose to use the SDK directly (package name `@applitools/eyes-webdriverio`). However, using the Applitools Eyes service provides several boilerplate operations and default values, and lets you concentrate on the core logic.
-
-Here are the main differences between the service and the SDK:
-
-1. No need to call `eyes.open` and `eyes.close`. Only `eyes.check` (or its service equivalent, `browser.eyesCheck`) is needed. The `open` and `close` calls are made between different `it`'s, so each functional test that contains visual checkpoints will appear in Eyes dashboard separately.
-
-2. No need to specify `testName` and `appName` in the configuration. These values are automatically extracted from the `it`'s and `describe`'s. The default test name is the containing `it`, and the default app name is the `it`'s containing `describe`.
-
-    _For more information, see [Override `testName` and `appName`](#override--testname--and--appname-) section_.
-
-3. No need to instantiate the `Eyes` class. It is instantiated for you, and configured appropriately from `wdio.conf.js`.
-
-4. Receiving batch notifications when test execution is done. See [Batch notifications](TODO)
-
 ### Configuration
 
 Every configuration parameter that exists in the configuration for Applitools' Eyes SDK for webdriver.io can be specified in the `wdio.conf.js` file (or any other webdriver.io configuration file specified by the user).
@@ -136,6 +126,38 @@ exports.config = {
 ```
 
 _For more information, visit our documentation page: https://applitools.com/docs/api/eyes-sdk/index-gen/class-configuration-webdriverio_sdk5-javascript.html_
+
+### Running with the Ultra fast grid
+
+To run tests with the Ultra fast grid, specify the following in the `wdio.conf.js` file:
+
+```js
+exports.config = {
+  eyes: {
+    useVisualGrid: true,
+    // ...
+  }
+}
+```
+
+To specify which viewport sizes and browsers to render on the Ultra fast grid, use the `browsersInfo` entry in the configuration. For example:
+
+```js
+exports.config = {
+  eyes: {
+    useVisualGrid: true,
+    browsersInfo: [
+      {width: 1200, height: 800, name: 'chrome'},
+      {width: 1200, height: 800, name: 'firefox'},
+      {width: 1200, height: 800, name: 'safari'},
+      {width: 1200, height: 800, name: 'edgechromium'}
+      {width: 1200, height: 800, name: 'ie'}
+      {deviceName: 'Galaxy S9 Plus'}
+    ]
+    // ...
+  }
+}
+```
 
 #### Verbose logging
 
@@ -265,3 +287,19 @@ Adds a custom key name/value property that will be associated with your tests. Y
 #### `browser.eyesClearProperties()`
 
 Clears any custom key name/value properties.
+
+### Appendix: Using the service vs. direct SDK
+
+As users of webdriver.io 5, you may choose to use the SDK directly (package name `@applitools/eyes-webdriverio`). However, using the Applitools Eyes service provides several boilerplate operations and default values, and lets you concentrate on the core logic.
+
+Here are the main differences between the service and the SDK:
+
+1. No need to call `eyes.open` and `eyes.close`. Only `eyes.check` (or its service equivalent, `browser.eyesCheck`) is needed. The `open` and `close` calls are made between different `it`'s, so each functional test that contains visual checkpoints will appear in Eyes dashboard separately.
+
+2. No need to specify `testName` and `appName` in the configuration. These values are automatically extracted from the `it`'s and `describe`'s. The default test name is the containing `it`, and the default app name is the `it`'s containing `describe`.
+
+    _For more information, see [Override `testName` and `appName`](#override--testname--and--appname-) section_.
+
+3. No need to instantiate the `Eyes` class. It is instantiated for you, and configured appropriately from `wdio.conf.js`.
+
+4. Receiving batch notifications when test execution is done. See [Batch notifications](TODO)
