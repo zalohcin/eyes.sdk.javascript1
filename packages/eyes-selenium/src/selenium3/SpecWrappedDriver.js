@@ -148,6 +148,10 @@ module.exports = {
 
   /********* for testing purposes */
   async build({capabilities, serverUrl = process.env.CVG_TESTS_REMOTE}) {
+    if (capabilities['sauce:options']) {
+      capabilities.username = capabilities['sauce:options'].username
+      capabilities.accesskey = capabilities['sauce:options'].accesskey
+    }
     return new Builder()
       .withCapabilities(capabilities)
       .usingServer(serverUrl)
