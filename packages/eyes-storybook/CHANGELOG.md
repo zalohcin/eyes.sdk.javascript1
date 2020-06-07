@@ -3,6 +3,49 @@
 ## Unreleased
 
 
+## 3.7.1 - 2020/6/3
+
+- fixed 409 conflict error
+- Unified core
+- updated to @applitools/eyes-sdk-core@11.0.3 (from v10.3.1)
+- updated to @applitools/visual-grid-client@14.4.2 (from v14.3.1)
+
+## 3.7.0 - 2020/5/24
+
+- add ability to render tests results to XUnit XML (per [Trello 261](https://trello.com/c/ozmI1rav))
+- updated to @applitools/eyes-sdk-core@10.3.0
+- updated to @applitools/visual-grid-client@14.2.0
+
+## 3.6.0 - 2020/5/19
+
+- Support for AccessibilityGuidelinesVersion
+- updated to @applitools/dom-snapshot@3.5.2
+- updated to @applitools/eyes-sdk-core@10.2.0
+- updated to @applitools/visual-grid-client@14.1.0
+
+## 3.5.3 - 2020/5/4
+
+- changed console output to contain story data on errors
+- updated to @applitools/dom-snapshot@3.5.0
+- updated to @applitools/eyes-sdk-core@10.0.1
+- updated to @applitools/visual-grid-client@13.7.6
+
+## 3.5.2 - 2020/4/27
+
+- add edgechromium to types
+- updated to @applitools/visual-grid-client@13.7.2
+
+## 3.5.1 - 2020/4/27
+
+- add edgechromium to readme
+
+## 3.5.0 - 2020/4/26
+
+- support edgelegacy, edgechromium, and edgechromium-one-version-back
+- updated to @applitools/dom-snapshot@3.4.5
+- updated to @applitools/eyes-sdk-core@9.2.1
+- updated to @applitools/visual-grid-client@13.7.1
+
 ## 3.4.0 - 2020/4/1
 
 - Add capability to specify `ignoreDisplacements` (both via global and local configuration). ([Trello](https://trello.com/c/IfkEZ4V3/45-storybook-add-set-get-ignoredisplacements-to-eyes-global-and-fluent))

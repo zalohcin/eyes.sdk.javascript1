@@ -2,7 +2,64 @@
 
 ## Unreleased
 
+- added mobile web API support for VG
+
+## 2.16.0 - 2020/6/2
+
+- Unified core
+- updated to @applitools/eyes-sdk-core@11.0.2 (from v10.3.1)
+- updated to @applitools/visual-grid-client@14.4.1 (from v14.2.1)
+
+## 2.15.0 - 2020/5/19
+
+- Support accessibility validation
+- removed "source" attribute from VG checkWindow
+- updated to @applitools/eyes-sdk-core@10.1.2
+- updated to @applitools/visual-grid-client@14.0.1
+- updated to @applitools/dom-utils@4.7.17
+- updated to @applitools/eyes-sdk-core@10.2.0
+- updated to @applitools/visual-grid-client@14.1.0
+
+## 2.14.1 - 2020/5/12
+
+- added devices to device emulation
+- return support for legacy `element` and `locator` fields in WDIOWrappedElement
+- updated to @applitools/dom-utils@4.7.16
+- updated to @applitools/eyes-sdk-core@10.1.1
+- updated to @applitools/visual-grid-client@13.8.0
+- handle mobile devices during working with frames
+
+## 2.14.0 - 2020/4/30
+
+- support webdriver API in the driver returning from `eyes.open`
+- support both EyesWrappedElement and webdriver.io objects (elements or responses) in all API's ([Trello](https://trello.com/c/JJ5vm3wS/269-frames-shadow-dom-break-region-checking))
+- preserve frame state after check operation ([Trello](https://trello.com/c/R1H28Z9z/218-wdio-45-constant-need-to-switch-to-new-iframe))
+- many bug fixes
+- updated to @applitools/visual-grid-client@13.7.3
+- updated to @applitools/eyes-sdk-core@10.0.0
+- updated to @applitools/visual-grid-client@13.7.5
+
+## 2.13.1 - 2020/4/27
+
+- updated to @applitools/dom-utils@4.7.14
+- updated to @applitools/eyes-sdk-core@9.2.1
+- updated to @applitools/visual-grid-client@13.7.2
+
+## 2.13.0 - 2020/4/26
+
+- support edgelegacy, edgechromium, and edgechromium-one-version-back
+- added emulation devices
+- updated to @applitools/eyes-sdk-core@9.2.0
+- updated to @applitools/visual-grid-client@13.7.0
+- updated to @applitools/dom-utils@4.7.13
+
+## 2.12.9 - 2020/4/22
+
+- fix capture region failures on IE
 - fix returned value from `close` method ([Trello](https://trello.com/c/m6K2Ftd5/277-wdio5-difficulty-getting-test-results-object))
+- updated to @applitools/eyes-sdk-core@9.1.1
+- updated to @applitools/visual-grid-client@13.6.14
+- updated to @applitools/dom-utils@4.7.11
 
 ## 2.12.8 - 2020/4/1
 

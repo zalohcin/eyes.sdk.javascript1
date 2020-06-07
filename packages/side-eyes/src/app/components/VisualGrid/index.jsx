@@ -10,9 +10,9 @@ import {
   browsers,
   experimentalBrowsers,
   viewportSizes,
-  devices,
   orientations,
-} from '../VisualGridOptionSelector/options'
+  DeviceName,
+} from './options'
 import './style.css'
 
 const ALL_BROWSERS = [...browsers, ...experimentalBrowsers]
@@ -33,6 +33,7 @@ export default class VisualGrid extends React.Component {
         orientations: false,
       },
       projectSettings: { ...props.projectSettings },
+      devices: Object.values(DeviceName),
     }
   }
 
@@ -246,7 +247,7 @@ export default class VisualGrid extends React.Component {
                   transform: 'translate(-50%, -50%)',
                 },
               }}
-              options={devices}
+              options={this.state.devices}
               selectedOptions={this.state.projectSettings.selectedDevices}
               removeOption={this.removeDevice.bind(this)}
               onSubmit={this.saveDevices.bind(this)}

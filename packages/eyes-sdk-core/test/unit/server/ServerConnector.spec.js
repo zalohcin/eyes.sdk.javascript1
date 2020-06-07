@@ -1,7 +1,7 @@
 'use strict'
 
 const assert = require('assert')
-const fakeEyesServer = require('@applitools/sdk-fake-eyes-server')
+const {startFakeEyesServer} = require('@applitools/sdk-fake-eyes-server')
 const {ServerConnector, Logger, Configuration, GeneralUtils} = require('../../../')
 const {presult} = require('../../../lib/troubleshoot/utils')
 const logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS)
@@ -16,7 +16,7 @@ function getServerConnector(config = {}) {
 
 describe('ServerConnector', () => {
   it('sends startSession request', async () => {
-    const {port, close} = await fakeEyesServer({logger})
+    const {port, close} = await startFakeEyesServer({logger})
     try {
       const serverUrl = `http://localhost:${port}`
       const serverConnector = getServerConnector({serverUrl})
@@ -48,7 +48,7 @@ describe('ServerConnector', () => {
 
   // [trello] https://trello.com/c/qjmAw1Sc/160-storybook-receiving-an-inconsistent-typeerror
   it("doesn't throw exception on server failure", async () => {
-    const {port, close} = await fakeEyesServer({logger, hangUp: true})
+    const {port, close} = await startFakeEyesServer({logger, hangUp: true})
     try {
       const serverUrl = `http://localhost:${port}`
       const serverConnector = getServerConnector({serverUrl})
@@ -60,7 +60,7 @@ describe('ServerConnector', () => {
   })
 
   it('getUserAgents works', async () => {
-    const {port, close} = await fakeEyesServer({logger})
+    const {port, close} = await startFakeEyesServer({logger})
     try {
       const serverUrl = `http://localhost:${port}`
       const serverConnector = getServerConnector({serverUrl})
@@ -86,6 +86,7 @@ describe('ServerConnector', () => {
   })
 
   it('uploadScreenshot uploads to resultsUrl webhook', async () => {
+    assert.ok(process.env.APPLITOOLS_API_KEY)
     const serverConnector = getServerConnector()
     const renderingInfo = await serverConnector.renderInfo()
     const id = GeneralUtils.guid()
@@ -94,13 +95,53 @@ describe('ServerConnector', () => {
     assert.strictEqual(result, renderingInfo.getResultsUrl().replace('__random__', id))
   })
 
-  it('postDomSnapshot uploads to resultsUrl webhook', async () => {
+  it('uploadScreenshot uses correct retry configuration', async () => {
     const serverConnector = getServerConnector()
-    const renderingInfo = await serverConnector.renderInfo()
+    let actualConfig
+    serverConnector._axios.defaults.adapter = async config => {
+      if (config.url == 'https://eyesapi.applitools.com/api/sessions/renderinfo') {
+        return {
+          status: 200,
+          config,
+          data: {resultsUrl: ''},
+        }
+      } else {
+        actualConfig = config
+        return {
+          status: 201,
+          config,
+        }
+      }
+    }
+    await serverConnector.renderInfo()
+    await serverConnector.uploadScreenshot('id', {})
+    assert.strictEqual(actualConfig.delayBeforeRetry, 500)
+    assert.strictEqual(actualConfig.retry, 5)
+  })
+
+  it('postDomSnapshot uses correct retry configuration', async () => {
+    const serverConnector = getServerConnector()
+    let actualConfig
+    serverConnector._axios.defaults.adapter = async config => {
+      if (config.url == 'https://eyesapi.applitools.com/api/sessions/renderinfo') {
+        return {
+          status: 200,
+          config,
+          data: {resultsUrl: ''},
+        }
+      } else {
+        actualConfig = config
+        return {
+          status: 201,
+          config,
+        }
+      }
+    }
+    await serverConnector.renderInfo()
     const buffer = Buffer.from('something')
-    const id = GeneralUtils.guid()
-    const result = await serverConnector.postDomSnapshot(id, buffer)
-    assert.strictEqual(result, renderingInfo.getResultsUrl().replace('__random__', id))
+    await serverConnector.postDomSnapshot('id', buffer)
+    assert.strictEqual(actualConfig.delayBeforeRetry, 500)
+    assert.strictEqual(actualConfig.retry, 5)
   })
 
   it('long request waits right amount of time', async () => {

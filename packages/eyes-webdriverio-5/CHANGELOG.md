@@ -1,8 +1,46 @@
 # Change Log
 
 ## Unreleased
+- added mobile web API support for VG 
+- updated to @applitools/eyes-sdk-core@11.0.4 (from v11.0.2)
+- updated to @applitools/visual-grid-client@14.4.3 (from v14.4.1)
 
+
+## 5.12.0 - 2020/6/2
+
+- Unified core
+- updated to @applitools/eyes-sdk-core@11.0.2 (from v10.3.1)
+- updated to @applitools/visual-grid-client@14.4.1 (from v14.2.1)
+
+## 5.11.2 - 2020/5/26
+
+- updated to @applitools/eyes-sdk-core@10.3.1 (from v10.3.0)
+- updated to @applitools/visual-grid-client@14.2.1 (from v14.2.0)
+
+## 5.11.1 - 2020/5/25
+
+- updated to @applitools/eyes-sdk-core@10.3.0
+- updated to @applitools/visual-grid-client@14.2.0
+
+## 5.11.0 - 2020/5/19
+
+- Support accessibility validation
+- removed "source" attribute from VG checkWindow
+- fetching resources with "referer" header.
+- added retry for requests failing with a 503 response status
+- added more devices for device emulation
+- updated to @applitools/dom-utils@4.7.17
+- updated to @applitools/eyes-sdk-core@10.2.0
+- updated to @applitools/visual-grid-client@14.1.0
+
+## 5.10.1 - 2020/4/27
+
+- support edgelegacy, edgechromium, and edgechromium-one-version-back
+- added emulation devices
 - fix returned value from `close` method ([Trello](https://trello.com/c/m6K2Ftd5/277-wdio5-difficulty-getting-test-results-object))
+- updated to @applitools/dom-utils@4.7.14
+- updated to @applitools/eyes-sdk-core@9.2.1
+- updated to @applitools/visual-grid-client@13.7.2
 
 ## 5.9.23 - 2020/4/1
 

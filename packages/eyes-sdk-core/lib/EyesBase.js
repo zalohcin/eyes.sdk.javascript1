@@ -17,7 +17,7 @@ const {
   SessionType,
   Configuration,
   GeneralUtils,
-} = require('@applitools/eyes-common')
+} = require('..')
 
 const {AppOutputProvider} = require('./capture/AppOutputProvider')
 const {AppOutputWithScreenshot} = require('./capture/AppOutputWithScreenshot')
@@ -28,7 +28,7 @@ const {NullScaleProvider} = require('./scaling/NullScaleProvider')
 
 const {NullCutProvider} = require('./cropping/NullCutProvider')
 
-const {InvalidPositionProvider} = require('./positioning/InvalidPositionProvider')
+const InvalidPositionProvider = require('./positioning/InvalidPositionProvider')
 
 const {TextTrigger} = require('./triggers/TextTrigger')
 const {MouseTrigger} = require('./triggers/MouseTrigger')
@@ -46,8 +46,6 @@ const {ValidationResult} = require('./events/ValidationResult')
 const {SessionEventHandlers} = require('./events/SessionEventHandlers')
 
 const {CheckSettings} = require('./fluent/CheckSettings')
-
-const {RenderWindowTask} = require('./RenderWindowTask')
 
 const {SessionStartInfo} = require('./server/SessionStartInfo')
 const {TestResultsStatus} = require('./TestResultsStatus')
@@ -105,10 +103,6 @@ class EyesBase {
     /** @type {SessionEventHandlers} */
     this._sessionEventHandlers = new SessionEventHandlers()
 
-    /** @type {RenderWindowTask} */ this._renderWindowTask = new RenderWindowTask(
-      this._logger,
-      this._serverConnector,
-    )
     /** @type {MatchWindowTask} */ this._matchWindowTask = undefined
     /** @type {RunningSession} */ this._runningSession = undefined
     /** @type {SessionStartInfo} */ this._sessionStartInfo = undefined
@@ -2116,6 +2110,8 @@ class EyesBase {
         isMobileDevice = await this._driver.isMobile()
       } else if (typeof this._driver.isMobile === 'object') {
         isMobileDevice = await this._driver.isMobile
+      } else if (typeof this._driver.controller === 'object') {
+        isMobileDevice = await this._driver.controller.isNative()
       }
 
       if (!isMobileDevice && positionProvider) {
@@ -2171,7 +2167,7 @@ class EyesBase {
     const imageLocation = await this.getImageLocation()
     this._logger.verbose('Done getting title, domUrl, imageLocation!')
 
-    if (!domUrl && TypeUtils.getOrDefault(checkSettings.getSendDom(), this.getSendDom())) {
+    if (!domUrl && TypeUtils.getOrDefault(checkSettings.getSendDom(), await this.getSendDom())) {
       // START NOTE (amit): the following is something I'm not proud nor confident of. I copied it from EyesSelenium::getScreenshot, and it is to solve https://trello.com/c/O5sTPAU1. This should be rewritten asap.
       const forceFullPageScreenshot = this._configuration.getForceFullPageScreenshot()
       if ((forceFullPageScreenshot || this._stitchContent) && !isMobileDevice) {

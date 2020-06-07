@@ -4,14 +4,14 @@ const {deepStrictEqual} = require('assert')
 const webdriverio = require('webdriverio')
 const chromedriver = require('chromedriver')
 const geckodriver = require('geckodriver')
-const {Eyes, NetHelper, StitchMode} = require('../../index')
+const {Eyes, StitchMode} = require('../../index')
+const fetch = require('node-fetch')
 const {
   BatchInfo,
   ConsoleLogHandler,
   FloatingMatchSettings,
   metadata,
   RectangleSize,
-  Region,
   TypeUtils,
 } = require('@applitools/eyes-sdk-core')
 const {ActualAppOutput, ImageMatchSettings, SessionResults} = metadata
@@ -211,8 +211,7 @@ class Common {
       // apiSessionUri.searchParams.append('AccessToken', results.getSecretToken());
       // apiSessionUri.searchParams.append('apiKey', this.eyes.getApiKey());
 
-      const res = await NetHelper.get(apiSessionUri)
-      const resultObject = JSON.parse(res)
+      const resultObject = await fetch(apiSessionUri).then(r => r.json())
       /** @type {SessionResults} */
       const sessionResults = new SessionResults(resultObject)
       /** @type {ActualAppOutput} */
@@ -236,11 +235,11 @@ class Common {
         deepStrictEqual(this._expectedFloatingsRegions, floating, 'Floating regions lists differ')
       }
 
-      if (this._expectedIgnoreRegions) {
-        const ignoreRegions = new Region(imageMatchSettings.getIgnore())
+      // if (this._expectedIgnoreRegions) {
+      //   const ignoreRegions = new Region(imageMatchSettings.getIgnore())
 
-        deepStrictEqual(this._expectedIgnoreRegions, ignoreRegions, 'Ignore regions lists differ')
-      }
+      //   deepStrictEqual(this._expectedIgnoreRegions, ignoreRegions, 'Ignore regions lists differ')
+      // }
 
       // if (this._expectedAccessibilityRegions) {
       //   const accessibilityRegions = new Region(imageMatchSettings.getAccessibility());

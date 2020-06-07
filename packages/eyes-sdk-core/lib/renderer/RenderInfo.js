@@ -1,8 +1,12 @@
 'use strict'
 
-const {GeneralUtils, Region} = require('@applitools/eyes-common')
+const {GeneralUtils, Region} = require('../..')
 
 const {EmulationInfo} = require('./EmulationInfo')
+
+/**
+ * @typedef {{iosDeviceInfo: {deviceName: IosDevieName, screenOrientation: (IosScreenOrientation|undefined)})}} IosDeviceInfo
+ */
 
 class RenderInfo {
   /**
@@ -10,10 +14,11 @@ class RenderInfo {
    * @param {number} height
    * @param {string} sizeMode
    * @param {string} selector
-   * @param {Region|object} region
-   * @param {EmulationInfo|object} emulationInfo
+   * @param {Region|Object} region
+   * @param {EmulationInfo|Object} emulationInfo
+   * @param {IosDeviceInfo} iosDeviceInfo
    */
-  constructor({width, height, sizeMode, selector, region, emulationInfo} = {}) {
+  constructor({width, height, sizeMode, selector, region, emulationInfo, iosDeviceInfo} = {}) {
     if (region && !(region instanceof Region)) {
       region = new Region(region)
     }
@@ -28,6 +33,7 @@ class RenderInfo {
     this._selector = selector
     this._region = region
     this._emulationInfo = emulationInfo
+    this._iosDeviceInfo = iosDeviceInfo
   }
 
   /**
@@ -127,14 +133,22 @@ class RenderInfo {
     this._emulationInfo = value
   }
 
+  getIosDeviceInfo() {
+    return this._iosDeviceInfo
+  }
+
   /**
    * @override
    */
   toJSON() {
-    const obj = GeneralUtils.toPlain(this, ['_emulationInfo'])
+    const obj = GeneralUtils.toPlain(this, ['_emulationInfo', '_iosDeviceInfo'])
 
     if (this._emulationInfo) {
       obj.emulationInfo = this._emulationInfo.toJSON()
+    }
+
+    if (this._iosDeviceInfo) {
+      obj.iosDeviceInfo = GeneralUtils.toPlain(this._iosDeviceInfo, undefined, {deviceName: 'name'})
     }
 
     // TODO remove this when rendering-grid changes x/y to left/top

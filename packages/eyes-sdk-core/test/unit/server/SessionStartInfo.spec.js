@@ -14,12 +14,15 @@ const {
   RectangleSize,
   FloatingMatchSettings,
   AccessibilityLevel,
+  AccessibilityGuidelinesVersion,
   AccessibilityRegionType,
   AccessibilityRegionByRectangle,
-  CheckTarget,
+  DriverCheckSettings,
   MatchWindowTask,
 } = require('../../../index')
 const {EyesBaseImpl} = require('../../testUtils')
+
+const CheckSettings = DriverCheckSettings.specialize({WrappedElement: () => {}, Frame: () => {}})
 
 describe('SessionStartInfo', () => {
   it('TestSerialization', () => {
@@ -66,7 +69,10 @@ describe('SessionStartInfo', () => {
             maxRightOffset: 20,
           }),
         ],
-        accessibilityLevel: AccessibilityLevel.AA,
+        accessibilitySettings: {
+          level: AccessibilityLevel.AA,
+          guidelinesVersion: AccessibilityGuidelinesVersion.WCAG_2_0,
+        },
       }),
       branchName: 'some branch',
       parentBranchName: 'parent branch',
@@ -80,7 +86,7 @@ describe('SessionStartInfo', () => {
       properties,
     })
 
-    const actualSerialization = JSON.stringify(sessionStartInfo)
+    const actualSerialization = JSON.stringify(sessionStartInfo, null, 2)
     const expectedSerialization = getResourceAsText('SessionStartInfo_Serialization.json')
     assert.strictEqual(
       actualSerialization,
@@ -99,7 +105,7 @@ describe('SessionStartInfo', () => {
     {useDom: false, enablePatterns: false, ignoreDisplacements: false},
   ].forEach(({useDom, enablePatterns, ignoreDisplacements}) => {
     it(`TestFluentApiSerialization (${useDom}, ${enablePatterns}, ${ignoreDisplacements})`, async () => {
-      const settings = CheckTarget.window()
+      const settings = CheckSettings.window()
         .fully()
         .useDom(useDom)
         .enablePatterns(enablePatterns)
@@ -121,7 +127,7 @@ describe('SessionStartInfo', () => {
     })
 
     it(`TestImageMatchSettingsSerialization_Global (${useDom}, ${enablePatterns}, ${ignoreDisplacements})`, async () => {
-      const settings = CheckTarget.window()
+      const settings = CheckSettings.window()
         .fully()
         .useDom(useDom)
         .enablePatterns(enablePatterns)
@@ -146,7 +152,7 @@ describe('SessionStartInfo', () => {
     })
 
     it(`TestConfigurationSerialization (${useDom}, ${enablePatterns}, ${ignoreDisplacements})`, async () => {
-      const settings = CheckTarget.window().fully()
+      const settings = CheckSettings.window().fully()
 
       const eyes = new EyesBaseImpl()
       const configuration = eyes.getConfiguration()

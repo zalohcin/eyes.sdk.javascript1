@@ -2,12 +2,17 @@ import {
   deviceIds,
   experimentalBrowsers,
   browserIds,
-} from '../../app/components/VisualGridOptionSelector/options'
+  DeviceName,
+} from '../../app/components/VisualGrid/options'
 import UAParser from 'ua-parser-js'
 const parser = new UAParser()
 
 export const maxExperimentalResolution = '1280x1024'
 const parsedMax = parseViewport(maxExperimentalResolution)
+
+function getDeviceId(deviceName) {
+  return Object.keys(DeviceName).find(key => DeviceName[key] === deviceName)
+}
 
 export function parseBrowsers(
   browsers = ['Chrome'],
@@ -18,7 +23,7 @@ export function parseBrowsers(
   const matrix = []
   let didRemoveResolution = false
   browsers.forEach(browser => {
-    const name = browser.toLowerCase()
+    const name = browser.replace(/ /, '').toLowerCase()
     viewports.forEach(viewport => {
       const { width, height } = parseViewport(viewport)
       if (
@@ -45,7 +50,7 @@ export function parseBrowsers(
       matrix.push({
         screenOrientation: orientation.toLowerCase(),
         deviceName: device,
-        deviceId: deviceIds[device],
+        deviceId: getDeviceId(device),
       })
     })
   })

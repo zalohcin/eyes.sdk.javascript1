@@ -2,7 +2,7 @@
 
 const assert = require('assert')
 const EyesSDK = require('../../index')
-const PromiseFactory = require('eyes.utils').PromiseFactory
+const PromiseFactory = require('@applitools/eyes-common-legacy').PromiseFactory
 
 const EyesBase = EyesSDK.EyesBase
 

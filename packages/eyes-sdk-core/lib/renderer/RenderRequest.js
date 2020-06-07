@@ -1,6 +1,6 @@
 'use strict'
 
-const {ArgumentGuard} = require('@applitools/eyes-common')
+const {ArgumentGuard} = require('../..')
 
 /**
  * Encapsulates data required to start render using the RenderingGrid API.
@@ -210,9 +210,11 @@ class RenderRequest {
       object.browser = {
         name: this._browserName,
       }
+    }
 
-      if (this._platform) {
-        object.browser.platform = this._platform
+    if (this._platform) {
+      object.platform = {
+        name: this._platform,
       }
     }
 

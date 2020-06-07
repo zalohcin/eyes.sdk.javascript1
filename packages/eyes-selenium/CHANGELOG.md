@@ -2,11 +2,55 @@
 
 ## Unreleased
 
+- added mobile web API support for VG
+- updated to @applitools/eyes-sdk-core@11.0.4
+- updated to @applitools/visual-grid-client@14.4.3
+
+
+## 4.38.0 - 2020/6/2
+
+- Unified core
+- updated to @applitools/eyes-sdk-core@11.0.2 (from v10.3.0)
+- updated to @applitools/visual-grid-client@14.4.1 (from v14.2.0)
+
+## 4.37.0 - 2020/5/19
+
+- Support for AccessibilityGuidelinesVersion
+- removed "source" attribute from VG checkWindow
+- updated to @applitools/eyes-sdk-core@10.2.0
+- updated to @applitools/visual-grid-client@14.1.0
+- updated to @applitools/dom-utils@4.7.17
+
+## 4.36.1 - 2020/5/17
+
+- fetching resources with "referer" header.
+- updated to @applitools/eyes-sdk-core@10.1.2
+- updated to @applitools/visual-grid-client@14.0.0
+
+## 4.36.0 - 2020/5/12
+
+- added devices to device emulation
+- updated to @applitools/eyes-sdk-core@10.1.1
+- updated to @applitools/dom-utils@4.7.16
+- updated to @applitools/visual-grid-client@13.8.0
+
+## 4.35.0 - 2020/4/27
+
+- support edgelegacy, edgechromium, and edgechromium-one-version-back
+- updated to @applitools/eyes-sdk-core@9.2.1
+- updated to @applitools/visual-grid-client@13.7.2
+- updated to @applitools/dom-utils@4.7.14
+
+## 4.34.0 - 2020/4/26
+
+- added emulation devices
 - support typed selectors
 - support ignore, floating, strict, layout, content, accessibility regions for VG
 - fix returned value from `close` method ([Trello](https://trello.com/c/m6K2Ftd5/277-wdio5-difficulty-getting-test-results-object))
-- updated to @applitools/eyes-sdk-core@9.1.0
-- updated to @applitools/visual-grid-client@13.6.13
+- updated to @applitools/eyes-sdk-core@9.1.1
+- updated to @applitools/dom-utils@4.7.12
+- updated to @applitools/eyes-sdk-core@9.1.2
+- updated to @applitools/visual-grid-client@13.6.15
 
 ## 4.33.31 - 2020/3/31
 

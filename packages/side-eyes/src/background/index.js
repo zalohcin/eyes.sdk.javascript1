@@ -26,6 +26,7 @@ import {
   getResultsUrl,
   hasValidVisualGridSettings,
   getExtensionSettings,
+  makeAccessibilitySettings,
 } from './utils/eyes'
 import { parseViewport, parseMatchLevel } from './utils/parsers'
 import { setupOptions } from './utils/options.js'
@@ -578,10 +579,7 @@ browser.runtime.onMessageExternal.addListener(
             return sendResponse(
               emitCheckWindow(
                 message.language,
-                {
-                  accessibilityLevel:
-                    settings.projectSettings.accessibilityLevel,
-                },
+                undefined,
                 target
               )
             )
@@ -602,10 +600,7 @@ browser.runtime.onMessageExternal.addListener(
                   sendResponse(
                     emitCheckElement(
                       message.language,
-                      {
-                        accessibilityLevel:
-                          settings.projectSettings.accessibilityLevel,
-                      },
+                      undefined,
                       locator,
                       value
                     )
@@ -701,8 +696,7 @@ browser.runtime.onMessageExternal.addListener(
                     baselineEnvName,
                     visualGridOptions,
                     viewportSize,
-                    accessibilityLevel:
-                      settings.projectSettings.accessibilityLevel,
+                    accessibilitySettings: makeAccessibilitySettings(settings),
                   }
                 )
               )
@@ -714,7 +708,7 @@ browser.runtime.onMessageExternal.addListener(
               const isVisualGridEnabled =
                 settings.projectSettings.enableVisualGrid
               return sendResponse(
-                emitDependency(message.language, { isVisualGridEnabled })
+                emitDependency(message.language, { isVisualGridEnabled, hasAccessibilitySettings: !!makeAccessibilitySettings(settings) })
               )
             })
             return true
@@ -756,7 +750,7 @@ browser.runtime.onMessageExternal.addListener(
         }
         case 'config': {
           return sendResponse(
-            `const { Eyes, Target } = require('@applitools/eyes-selenium');global.Target = Target;const { ConsoleLogHandler, BatchInfo } = require('@applitools/eyes-sdk-core');let apiKey = process.env.APPLITOOLS_API_KEY, serverUrl = process.env.APPLITOOLS_SERVER_URL, appName = "${message.project.name}", batchId = configuration.runId, batchName;`
+            `const { Eyes, Target } = require('@applitools/eyes-selenium');global.Target = Target;const { ConsoleLogHandler, BatchInfo, AccessibilityLevel, AccessibilityGuidelinesVersion } = require('@applitools/eyes-sdk-core');let apiKey = process.env.APPLITOOLS_API_KEY, serverUrl = process.env.APPLITOOLS_SERVER_URL, appName = "${message.project.name}", batchId = configuration.runId, batchName;`
           )
         }
         case 'suite': {
@@ -769,7 +763,28 @@ browser.runtime.onMessageExternal.addListener(
           if (hasEyesCommands) {
             return sendResponse({
               beforeAll: `batchName = "${message.suite.name}";`,
-              before: `global.eyes = Eyes.fromBrowserInfo(serverUrl, configuration.params.eyesDisabled, configuration.params.eyesRendering ? { browser: configuration.params.eyesRendering } : undefined);eyes.setApiKey(apiKey);eyes.getBaseAgentId = () => ("eyes.seleniumide.runner." + (eyes._isVisualGrid ? "visualgrid" : "local") + "/${manifest.version}");eyes.setAgentId("eyes.seleniumide.runner." + (eyes._isVisualGrid ? "visualgrid" : "local") + "/${manifest.version}");eyes.setBatch(new BatchInfo(batchName, undefined, batchId));if(!eyes._isVisualGrid){eyes.setHideScrollbars(true);eyes.setStitchMode("CSS");}eyes.setSendDom(configuration.params.eyesDomUploadEnabled === undefined ? true : configuration.params.eyesDomUploadEnabled);if (configuration.params.eyesLogsEnabled) {eyes.setLogHandler(new ConsoleLogHandler(true));}`,
+              before: `global.eyes = Eyes.fromBrowserInfo(serverUrl, configuration.params.eyesDisabled, configuration.params.eyesRendering ? { browser: configuration.params.eyesRendering } : undefined);
+eyes.setApiKey(apiKey);eyes.getBaseAgentId = () => ("eyes.seleniumide.runner." + (eyes._isVisualGrid ? "visualgrid" : "local") + "/${manifest.version}");
+eyes.setAgentId("eyes.seleniumide.runner." + (eyes._isVisualGrid ? "visualgrid" : "local") + "/${manifest.version}");
+eyes.setBatch(new BatchInfo(batchName, undefined, batchId));
+if(!eyes._isVisualGrid) {
+	eyes.setHideScrollbars(true);
+	eyes.setStitchMode("CSS");
+}
+eyes.setSendDom(configuration.params.eyesDomUploadEnabled === undefined ? true : configuration.params.eyesDomUploadEnabled);
+if (configuration.params.eyesLogsEnabled) {
+	eyes.setLogHandler(new ConsoleLogHandler(true));
+}
+if (configuration.params.eyesAccessibilityLevel) {
+	const _config = eyes.getConfiguration();
+	_config.setAccessibilityValidation(
+		{
+			level: AccessibilityLevel[configuration.params.eyesAccessibilityLevel],
+			guidelinesVersion: AccessibilityGuidelinesVersion.WCAG_2_0,
+		}
+	)
+	eyes.setConfiguration(_config);
+}`,
               after:
                 'if (eyes._isOpen) {eyes.getEyesRunner ? await eyes.getEyesRunner().getAllResults() : await eyes.close();}',
             })
@@ -796,7 +811,7 @@ browser.runtime.onMessageExternal.addListener(
           const { command, target, value } = message.command // eslint-disable-line no-unused-vars
           if (command === CommandIds.CheckWindow) {
             return sendResponse(
-              `if (!opts.isNested) {await eyes.check("${target}" || (new URL(await driver.getCurrentUrl())).pathname, Target.window().webHook(preRenderHook).accessibilityValidation(configuration.params.eyesAccessibilityLevel || "None").fully(true));}`
+              `if (!opts.isNested) {await eyes.check("${target}" || (new URL(await driver.getCurrentUrl())).pathname, Target.window().webHook(preRenderHook).fully(true));}`
             )
           } else if (command === CommandIds.CheckElement) {
             sendMessage({
@@ -808,7 +823,7 @@ browser.runtime.onMessageExternal.addListener(
             })
               .then(locator => {
                 sendResponse(
-                  `if (!opts.isNested) {await driver.wait(until.elementLocated(${locator}), configuration.timeout); await eyes.check("${value}" || (new URL(await driver.getCurrentUrl())).pathname, Target.region(${locator}).webHook(preRenderHook).accessibilityValidation(configuration.params.eyesAccessibilityLevel || "None"));}`
+                  `if (!opts.isNested) {await driver.wait(until.elementLocated(${locator}), configuration.timeout); await eyes.check("${value}" || (new URL(await driver.getCurrentUrl())).pathname, Target.region(${locator}).webHook(preRenderHook));}`
                 )
               })
               .catch(console.error) // eslint-disable-line no-console

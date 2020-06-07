@@ -1,6 +1,9 @@
 # Changelog
 
 ## Unreleased
+- updated to @applitools/dom-capture@7.2.4 (from 7.1.3)
+- updated to @applitools/dom-snapshot@3.5.2 (from ^3.0.5)
+- updated to @applitools/visual-grid-client@14.4.3 (from 14.3.1)
 
 ## v1.10.1
 - Updated underlying dependencies to support 10.9 fallback mode ([Trello 242](https://trello.com/c/540knBrZ) and [Trello 255](https://trello.com/c/M9o24k6d))
