@@ -1,6 +1,6 @@
 'use strict'
 
-const {ConsoleLogHandler, Eyes, Target, VisualGridRunner} = require('@applitools/eyes-webdriverio')
+const {ConsoleLogHandler, Eyes, Target, VisualGridRunner} = require('..')
 const VERSION = require('../package.json').version
 
 const DEFAULT_VIEWPORT = {
@@ -173,4 +173,4 @@ class EyesService {
   }
 }
 
-exports.EyesService = EyesService
+module.exports = EyesService

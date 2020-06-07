@@ -1,5 +1,5 @@
 const path = require('path')
-const {EyesService} = require('../index')
+const EyesService = require('../..')
 
 exports.config = {
   //
