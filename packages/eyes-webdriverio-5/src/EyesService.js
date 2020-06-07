@@ -1,6 +1,6 @@
 'use strict'
 
-const {ConsoleLogHandler, Eyes, Target} = require('@applitools/eyes-webdriverio')
+const {ConsoleLogHandler, Eyes, Target} = require('..')
 
 const DEFAULT_VIEWPORT = {
   width: 800,
@@ -162,4 +162,4 @@ class EyesService {
   }
 }
 
-exports.EyesService = EyesService
+module.exports = EyesService
