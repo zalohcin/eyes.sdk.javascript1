@@ -1,9 +1,4 @@
-import {
-  deviceIds,
-  experimentalBrowsers,
-  browserIds,
-  DeviceName,
-} from '../../app/components/VisualGrid/options'
+import { deviceIds, experimentalBrowsers, browserIds, DeviceName } from '../../app/components/VisualGrid/options'
 import UAParser from 'ua-parser-js'
 const parser = new UAParser()
 
@@ -26,12 +21,7 @@ export function parseBrowsers(
     const name = browser.replace(/ /, '').toLowerCase()
     viewports.forEach(viewport => {
       const { width, height } = parseViewport(viewport)
-      if (
-        !(
-          isExperimentalBrowser(name) &&
-          isBiggerResolution(parseViewport(viewport), parsedMax)
-        )
-      ) {
+      if (!(isExperimentalBrowser(name) && isBiggerResolution(parseViewport(viewport), parsedMax))) {
         const result = {
           width,
           height,
@@ -84,9 +74,7 @@ export function parseRegion(region) {
 
 export function parseEnvironment(userAgent, viewport) {
   parser.setUA(userAgent)
-  return `${parser.getBrowser().name} ${parser.getOS().name} ${
-    viewport.width
-  }x${viewport.height}`
+  return `${parser.getBrowser().name} ${parser.getOS().name} ${viewport.width}x${viewport.height}`
 }
 
 export function parseApiServer(server) {
