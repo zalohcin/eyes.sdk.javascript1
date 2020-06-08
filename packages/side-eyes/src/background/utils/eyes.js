@@ -3,8 +3,7 @@ import { makeVisualGridClient } from '@applitools/visual-grid-client'
 import { parseApiServer } from './parsers.js'
 import { browserName } from './userAgent'
 import { getCurrentProject } from './ide-project'
-import { parseBrowsers, parseMatchLevel, maxExperimentalResolution, isExperimentalBrowser } from './parsers'
-import ideLogger from './ide-logger'
+import { parseBrowsers, parseMatchLevel, isExperimentalBrowser } from './parsers'
 import storage from '../../IO/storage'
 import manifest from '../../manifest.json'
 
@@ -221,7 +220,7 @@ async function createVisualGridEyes(
     })
   )
     throw new Error('Incomplete visual grid settings')
-  const { matrix, didRemoveResolution } = parseBrowsers(browsers, viewports, devices, orientations)
+  const { matrix, _didRemoveResolution } = parseBrowsers(browsers, viewports, devices, orientations)
   let useDom
   let enablePatterns
 

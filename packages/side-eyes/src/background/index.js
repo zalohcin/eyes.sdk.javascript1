@@ -510,7 +510,7 @@ browser.runtime.onMessageExternal.addListener((message, _sender, sendResponse) =
         // this command gets hoisted
         return sendResponse(false)
       } else if (command === CommandIds.CheckWindow) {
-        getExtensionSettings().then(settings => {
+        getExtensionSettings().then(_settings => {
           return sendResponse(emitCheckWindow(message.language, undefined, target))
         })
         return true
@@ -524,7 +524,7 @@ browser.runtime.onMessageExternal.addListener((message, _sender, sendResponse) =
           },
         })
           .then(locator => {
-            getExtensionSettings().then(settings => {
+            getExtensionSettings().then(_settings => {
               return sendResponse(sendResponse(emitCheckElement(message.language, undefined, locator, value)))
             })
           })

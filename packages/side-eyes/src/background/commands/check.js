@@ -1,7 +1,7 @@
 import browser from 'webextension-polyfill'
 import Modes from '../../commons/modes'
 import { sendMessage } from '../../IO/message-port'
-import { getEyes, closeEyes, getCommandsForEyes, isPatternsDomEnabled, getAccessibilityLevel } from '../utils/eyes'
+import { getEyes, closeEyes, getCommandsForEyes, isPatternsDomEnabled } from '../utils/eyes'
 import { getExternalState, setExternalState } from '../external-state'
 import { parseEnvironment } from '../utils/parsers'
 import ideLogger from '../utils/ide-logger'
