@@ -7,7 +7,6 @@ const {
   ScreenOrientation,
   IosScreenOrientation,
   IosDeviceName,
-  Configuration,
   BrowserType,
   AccessibilityLevel,
   AccessibilityGuidelinesVersion,
@@ -35,7 +34,7 @@ describe('TestVGServerConfigs', () => {
   })
 
   it(`TestVGDoubleCloseNoCheck`, async () => {
-    let conf = new Configuration()
+    const conf = eyes.getConfiguration()
     conf.setBatch(batch)
     conf.setAppName('app')
     conf.setTestName('test')
@@ -46,8 +45,8 @@ describe('TestVGServerConfigs', () => {
     await expect(eyes.close()).to.be.rejectedWith(Error, 'IllegalState: Eyes not open')
   })
 
-  it(`TestMobileWebVG`, async () => {
-    let conf = new Configuration()
+  it(`TestMobileWeb_VG`, async () => {
+    const conf = eyes.getConfiguration()
     conf.addBrowser({
       iosDeviceInfo: {
         deviceName: IosDeviceName.iPhone_XR,
@@ -59,13 +58,13 @@ describe('TestVGServerConfigs', () => {
     eyes.setConfiguration(conf)
 
     await spec.visit(webDriver, 'http://applitools.github.io/demo')
-    await eyes.open(webDriver, 'Eyes SDK', 'UFG Mobile Web Happy Flow', {width: 800, height: 600})
+    await eyes.open(webDriver, 'Eyes SDK', 'UFG Mobile Happy Flow', {width: 800, height: 600})
     await eyes.checkWindow()
     await eyes.close()
   })
 
-  it(`TestChromeEmulationVG`, async () => {
-    let conf = new Configuration()
+  it(`TestChromeEmulation_VG`, async () => {
+    const conf = eyes.getConfiguration()
     conf.addBrowser({
       deviceName: DeviceName.Nexus_10,
       screenOrientation: ScreenOrientation.LANDSCAPE,
@@ -81,15 +80,16 @@ describe('TestVGServerConfigs', () => {
     await eyes.close()
   })
 
-  it(`TestDesktopBrowserVG`, async () => {
-    let conf = new Configuration()
+  it(`TestChromeEmulationNestedAPI_VG`, async () => {
+    const conf = eyes.getConfiguration()
     conf.addBrowser({
-      name: BrowserType.EDGE_CHROMIUM_TWO_VERSIONS_BACK,
-      width: 1024,
-      height: 768,
+      chromeEmulationInfo: {
+        deviceName: DeviceName.Nexus_10,
+        screenOrientation: ScreenOrientation.LANDSCAPE,
+      },
     })
     conf.setAppName('Eyes SDK')
-    conf.setTestName('TestDesktopBrowserVG')
+    conf.setTestName('TestChromeEmulationVG')
     conf.setSaveNewTests(false)
     eyes.setConfiguration(conf)
 
@@ -99,8 +99,25 @@ describe('TestVGServerConfigs', () => {
     await eyes.close()
   })
 
+  it(`TestDesktopBrowser_VG`, async () => {
+    const conf = eyes.getConfiguration()
+    conf.addBrowser({
+      name: BrowserType.EDGE_CHROMIUM_TWO_VERSIONS_BACK,
+      width: 1024,
+      height: 768,
+    })
+    conf.setAppName('Eyes SDK')
+    conf.setTestName('TestDesktopBrowserVG')
+    eyes.setConfiguration(conf)
+
+    await spec.visit(webDriver, 'http://applitools.github.io/demo')
+    await eyes.open(webDriver)
+    await eyes.checkWindow()
+    await eyes.close()
+  })
+
   it.skip('TestVGChangeConfigAfterOpen', async () => {
-    let conf = new Configuration()
+    const conf = eyes.getConfiguration()
     conf.setBatch(batch)
     conf.setAppName('app')
     conf.setTestName('js test')
