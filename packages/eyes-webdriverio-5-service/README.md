@@ -19,7 +19,7 @@ Offical Applitools Eyes service for version 5 of the [webdriver.io](https://webd
 - [Usage](#usage)
   * [Example](#example)
   * [Configuration](#configuration)
-  * [Running with the Ultra fast grid](#running-with-the-ultra-fast-grid)
+    + [Running with the Ultra fast grid](#running-with-the-ultra-fast-grid)
     + [Verbose logging](#verbose-logging)
     + [Override `testName` and `appName`](#override--testname--and--appname-)
     + [Batch completion notifications](#batch-completion-notifications)
@@ -129,7 +129,7 @@ exports.config = {
 
 _For more information, visit our documentation page: https://applitools.com/docs/api/eyes-sdk/index-gen/class-configuration-webdriverio_sdk5-javascript.html_
 
-### Running with the Ultra fast grid
+#### Running with the Ultra fast grid
 
 To run tests with the Ultra fast grid, specify the following in the `wdio.conf.js` file:
 
@@ -257,17 +257,14 @@ describe('webdriver.io page', () => {
 
 _For more information, visit our documentation page: https://applitools.com/docs/api/eyes-sdk/index-gen/class-testresults-webdriverio_sdk5-javascript.html_
 
-#### `browser.eyesSetScrollRootElement(By)`
+#### `browser.eyesSetScrollRootElement(selector)`
 
 Sets the scroll root element to a specific element on the page. This is the element that will be scrolled when taking a full page screenshot.
 
 For example:
 
 ```js
-const {By} = require('@applitools/eyes-webdriverio5-service')
-
-// ...
-browser.eyesSetScrollRootElement(By.css('.container'))
+browser.eyesSetScrollRootElement('.container')
 ```
 
 #### `browser.eyesSetConfiguration(configuration)`
@@ -304,4 +301,4 @@ Here are the main differences between the service and the SDK:
 
 3. No need to instantiate the `Eyes` class. It is instantiated for you, and configured appropriately from `wdio.conf.js`.
 
-4. Receiving batch notifications when test execution is done. See [Batch notifications](TODO)
+4. Receiving batch completion notifications when test execution is done. See [Batch completion notifications](#batch-completion-notifications).
