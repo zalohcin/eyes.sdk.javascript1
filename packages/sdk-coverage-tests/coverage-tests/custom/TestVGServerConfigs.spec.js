@@ -53,12 +53,10 @@ describe('TestVGServerConfigs', () => {
         screenOrientation: IosScreenOrientation.LANDSCAPE_LEFT,
       },
     })
-    conf.setSaveFailedTests(false)
-    conf.setSaveNewTests(false)
     eyes.setConfiguration(conf)
 
     await spec.visit(webDriver, 'http://applitools.github.io/demo')
-    await eyes.open(webDriver, 'Eyes SDK', 'UFG Mobile Happy Flow', {width: 800, height: 600})
+    await eyes.open(webDriver, 'Eyes SDK', 'UFG Mobile Web Happy Flow', {width: 800, height: 600})
     await eyes.checkWindow()
     await eyes.close()
   })
@@ -69,13 +67,10 @@ describe('TestVGServerConfigs', () => {
       deviceName: DeviceName.Nexus_10,
       screenOrientation: ScreenOrientation.LANDSCAPE,
     })
-    conf.setAppName('Eyes SDK')
-    conf.setTestName('TestChromeEmulationVG')
-    conf.setSaveNewTests(false)
     eyes.setConfiguration(conf)
 
     await spec.visit(webDriver, 'http://applitools.github.io/demo')
-    await eyes.open(webDriver)
+    await eyes.open(webDriver, 'Eyes SDK', 'TestChromeEmulationVG')
     await eyes.checkWindow()
     await eyes.close()
   })
@@ -88,13 +83,10 @@ describe('TestVGServerConfigs', () => {
         screenOrientation: ScreenOrientation.LANDSCAPE,
       },
     })
-    conf.setAppName('Eyes SDK')
-    conf.setTestName('TestChromeEmulationVG')
-    conf.setSaveNewTests(false)
     eyes.setConfiguration(conf)
 
     await spec.visit(webDriver, 'http://applitools.github.io/demo')
-    await eyes.open(webDriver)
+    await eyes.open(webDriver, 'Eyes SDK', 'TestChromeEmulationVG')
     await eyes.checkWindow()
     await eyes.close()
   })
@@ -106,12 +98,10 @@ describe('TestVGServerConfigs', () => {
       width: 1024,
       height: 768,
     })
-    conf.setAppName('Eyes SDK')
-    conf.setTestName('TestDesktopBrowserVG')
     eyes.setConfiguration(conf)
 
     await spec.visit(webDriver, 'http://applitools.github.io/demo')
-    await eyes.open(webDriver)
+    await eyes.open(webDriver, 'Eyes SDK', 'TestDesktopBrowserVG')
     await eyes.checkWindow()
     await eyes.close()
   })
