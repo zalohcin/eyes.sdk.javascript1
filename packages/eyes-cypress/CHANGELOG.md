@@ -1,6 +1,9 @@
 # Changelog
 
 ## Unreleased
+
+## 3.12.0 - 2020/6/9
+
 - Unified core
 - updated to @applitools/dom-snapshot@3.5.3 (from 3.5.2)
 - updated to @applitools/eyes-sdk-core@11.0.5 (from 10.3.1)
