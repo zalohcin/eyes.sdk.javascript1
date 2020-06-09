@@ -45,7 +45,7 @@
   "types": "./typings/index.d.ts",
   "dependencies": {
     "@applitools/eyes-common-legacy": "1.0.1",
-    "@applitools/eyes-sdk-core-legacy": "1.0.0"
+    "@applitools/eyes-sdk-core-legacy": "1.0.1"
   },
   "devDependencies": {
     "@applitools/sdk-release-kit": "0.1.0",

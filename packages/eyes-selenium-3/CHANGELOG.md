@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- updated to @applitools/eyes-sdk-core-legacy@1.0.1 (from 1.0.0)
 
 
 ## 3.9.0 - 2020/5/19
