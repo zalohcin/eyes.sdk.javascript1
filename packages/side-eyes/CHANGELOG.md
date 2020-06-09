@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+
+## v1.11.0
 - updated browser and device list to support new options in the Ultrafast Grid [Trello 337](https://trello.com/c/epkkyC4m)
 - added Contrast Advisor to the UI [Trello 337](https://trello.com/c/epkkyC4m)
 - updated code export to support the new accessibility API [Trello 376](https://trello.com/c/twf0by90)
