@@ -25,7 +25,9 @@ const testedUrl = 'https://applitools.com/docs/topics/overview.html'
 describe(appName, () => {
   let webDriver, eyes, config, runner
   after(async () => {
-    await displayRunInfo(runner)
+    if (process.env.APPLITOOLS_SHOW_LOGS) {
+      await displayRunInfo(runner)
+    }
   })
 
   async function afterEach() {

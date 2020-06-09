@@ -236,7 +236,7 @@ class TestcafeCheckSettings extends CheckSettings {
    * @inheritDoc
    * @param {GetAccessibilityRegion|Region|AccessibilityMatchSettings|By|WebElement|EyesWebElement} regionOrContainer - The
    *   content rectangle or region container
-   * @param {AccessibilityRegionType} [regionType] - Type of accessibility.
+   * @param {AccessibilityRegionType|string} [regionType] - Type of accessibility.
    * @return {this}
    */
   accessibilityRegion(regionOrContainer, regionType) {
