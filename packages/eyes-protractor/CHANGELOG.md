@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- support nested node_modules project structure ([Trello](https://trello.com/c/I1mh1VwH))
 
 ## 1.0.2 - 2020/6/4
 
