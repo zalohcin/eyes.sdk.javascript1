@@ -91,7 +91,7 @@
     "@applitools/dom-capture": "7.2.4",
     "@applitools/dom-snapshot": "3.5.3",
     "@applitools/eyes-images": "4.13.0",
-    "@applitools/visual-grid-client": "14.4.3",
+    "@applitools/visual-grid-client": "14.4.4",
     "buffer": "^5.2.1",
     "classnames": "^2.2.5",
     "fuse.js": "^3.3.0",
