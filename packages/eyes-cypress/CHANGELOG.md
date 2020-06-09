@@ -1,13 +1,10 @@
 # Changelog
 
 ## Unreleased
-- updated to @applitools/visual-grid-client@14.3.0 (from v14.2.1)
-- updated to @applitools/visual-grid-client@14.3.1 (from v14.3.0)
-
 - Unified core
 - updated to @applitools/dom-snapshot@3.5.3 (from 3.5.2)
 - updated to @applitools/eyes-sdk-core@11.0.5 (from 10.3.1)
-- updated to @applitools/visual-grid-client@14.4.4 (from 14.3.1)
+- updated to @applitools/visual-grid-client@14.4.4 (from v14.2.1)
 
 ## 3.11.1 - 2020/5/26
 
