@@ -1,4 +1,5 @@
 'use strict'
+const fs = require('fs')
 const path = require('path')
 const chromedriver = require('chromedriver')
 const {URL} = require('url')
@@ -171,6 +172,12 @@ const args = yargs
     describe: 'batch name',
     type: 'string',
   })
+  .option('run-before', {
+    describe:
+      'path to JavaScript file which exports an async function which should be run before the visual check. The function receives the driver as a parameter so is can perform page interactions.',
+    type: 'string',
+    coerce: processRunBefore,
+  })
   .help().argv
 
 const [url] = args._
@@ -192,6 +199,17 @@ if (!url) {
 
   if (args.webdriverProxy) {
     await chromedriver.start(['--whitelisted-ips=127.0.0.1'], true)
+  }
+
+  let runBeforeFunc
+  if (args.runBefore !== undefined) {
+    if (!fs.existsSync(args.runBefore)) {
+      throw new Error('file specified in --run-before does not exist:', args.runBefore)
+    }
+    runBeforeFunc = require(args.runBefore)
+    if (typeof runBeforeFunc !== 'function') {
+      throw new Error(`exported value from --run-before file is not a function: ${args.runBefore}`)
+    }
   }
 
   const driver = await buildDriver({...args, isMobileEmulation})
@@ -250,6 +268,10 @@ if (!url) {
   await spec.visit(driver, url)
 
   try {
+    if (runBeforeFunc) {
+      await runBeforeFunc(driver)
+    }
+
     await eyes.open(driver, args.appName, url)
 
     let target
@@ -307,7 +329,10 @@ if (!url) {
       await chromedriver.stop()
     }
   }
-})()
+})().catch(ex => {
+  console.log(ex)
+  process.exit(1)
+})
 
 function buildDriver({
   headless,
@@ -416,4 +441,10 @@ function argToString([key, value]) {
   const valueStr = typeof value === 'object' ? JSON.stringify(value) : value
   const shouldShow = !['_', '$0'].includes(key) && key.indexOf('-') === -1 // don't show the entire cli, and show only the camelCase version of each arg
   return shouldShow && `* ${key}: ${valueStr}`
+}
+
+function processRunBefore(str) {
+  if (str.charAt(0) !== '/') str = `./${str}`
+  console.log('str', str)
+  return path.resolve(cwd, str)
 }
