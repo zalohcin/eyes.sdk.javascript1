@@ -702,9 +702,20 @@ async function ensureRegionVisible(
   const viewportRect = await getTopContextViewportRect(logger, {controller, context, executor})
   if (!viewportRect.contains(elementViewportRect)) {
     let remainingOffset = elementFrameRect.getLocation()
-    const scrollRootElement = frameChain.current ? frameChain.current.scrollRootElement : null
-    const actualOffset = await positionProvider.setPosition(remainingOffset, scrollRootElement)
+    const scrollRootElement = frameChain.isEmpty
+      ? context.topContext.scrollRootElement
+      : frameChain.current.scrollRootElement
+
+    const scrollRootOffset = scrollRootElement
+      ? await scrollRootElement.getClientRect().then(rect => rect.getLocation())
+      : Location.ZERO
+
+    const actualOffset = await positionProvider.setPosition(
+      remainingOffset.offsetNegative(scrollRootOffset),
+      scrollRootElement,
+    )
     remainingOffset = remainingOffset.offsetNegative(actualOffset)
+
     await ensureFrameVisible(logger, context, positionProvider, remainingOffset)
     return remainingOffset
   }
@@ -720,19 +731,25 @@ async function ensureRegionVisible(
  */
 async function ensureFrameVisible(_logger, context, positionProvider, offset = Location.ZERO) {
   const frameChain = context.frameChain
+  let remainingOffset = new Location(offset)
   for (let index = frameChain.size - 1; index >= 0; --index) {
     await context.frameParent()
     const prevFrame = frameChain.frameAt(index)
     const currentFrame = frameChain.frameAt(index - 1)
-    offset = offset.offsetByLocation(prevFrame.location)
+    remainingOffset = remainingOffset.offsetByLocation(prevFrame.location)
     const scrollRootElement = currentFrame ? currentFrame.scrollRootElement : null
-    const actualOffset = await positionProvider.setPosition(offset, scrollRootElement)
-    offset = offset.offsetNegative(actualOffset)
-    await GeneralUtils.sleep(20000)
+    const scrollRootOffset = scrollRootElement
+      ? await scrollRootElement.getClientRect().then(rect => rect.getLocation())
+      : Location.ZERO
+    const actualOffset = await positionProvider.setPosition(
+      remainingOffset.offsetNegative(scrollRootOffset),
+      scrollRootElement,
+    )
+    remainingOffset = remainingOffset.offsetNegative(actualOffset)
   }
   // passing array of frame references instead of frame chain to be sure that frame metrics will be re-calculated
   await context.frames(Array.from(frameChain, frame => frame.toReference()))
-  return offset
+  return remainingOffset
 }
 
 module.exports = {
