@@ -1,7 +1,7 @@
 # Change Log
 
 ## Unreleased
-
+- Fix for setting the viewport size in older browser drivers ([Trello 382](https://trello.com/c/UBr0w3UF))
 
  ## 5.13.0 - 2020/6/9
 
