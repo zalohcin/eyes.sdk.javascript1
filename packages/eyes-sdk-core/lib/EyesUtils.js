@@ -382,6 +382,13 @@ async function getMobilePixelRatio(_logger, {controller}, viewportSize) {
   const screenshot = new MutableImage(screenshot64)
   return screenshot.getWidth() / viewportSize.getWidth()
 }
+
+async function getInnerOffsets(_logger, executor, element) {
+  const offsets = await executor.executeScript(EyesJsSnippets.GET_INNER_OFFSETS, element)
+  const scroll = new Location(offsets.scroll)
+  const translate = new Location(offsets.translate)
+  return scroll.offsetByLocation(translate)
+}
 /**
  * Get top-level context scroll position
  * @param {Logger} logger - logger instance
@@ -694,22 +701,12 @@ async function ensureRegionVisible(
   const elementViewportRect = elementFrameRect.offset(frameOffset.getX(), frameOffset.getY())
   const viewportRect = await getTopContextViewportRect(logger, {controller, context, executor})
   if (!viewportRect.contains(elementViewportRect)) {
-    const offset = elementFrameRect.getLocation()
-    const remainingOffset = await ensureFrameVisible(logger, context, positionProvider, offset)
+    let remainingOffset = elementFrameRect.getLocation()
     const scrollRootElement = frameChain.current ? frameChain.current.scrollRootElement : null
-    if (!viewportRect.contains(remainingOffset)) {
-      const actualLocation = await positionProvider.setPosition(remainingOffset, scrollRootElement)
-      return actualLocation
-    } else if (!remainingOffset.equals(Location.ZERO)) {
-      const actualLocation = await positionProvider.setPosition(
-        new Location(
-          Math.min(elementFrameRect.getLeft(), remainingOffset.getX()),
-          Math.min(elementFrameRect.getTop(), remainingOffset.getY()),
-        ),
-        scrollRootElement,
-      )
-      return actualLocation
-    }
+    const actualOffset = await positionProvider.setPosition(remainingOffset, scrollRootElement)
+    remainingOffset = remainingOffset.offsetNegative(actualOffset)
+    await ensureFrameVisible(logger, context, positionProvider, remainingOffset)
+    return remainingOffset
   }
   return Location.ZERO
 }
@@ -731,6 +728,7 @@ async function ensureFrameVisible(_logger, context, positionProvider, offset = L
     const scrollRootElement = currentFrame ? currentFrame.scrollRootElement : null
     const actualOffset = await positionProvider.setPosition(offset, scrollRootElement)
     offset = offset.offsetNegative(actualOffset)
+    await GeneralUtils.sleep(20000)
   }
   // passing array of frame references instead of frame chain to be sure that frame metrics will be re-calculated
   await context.frames(Array.from(frameChain, frame => frame.toReference()))
@@ -750,6 +748,7 @@ module.exports = {
   getElementCssProperties,
   getDevicePixelRatio,
   getMobilePixelRatio,
+  getInnerOffsets,
   getTopContextScrollLocation,
   getScrollLocation,
   scrollTo,

@@ -14,41 +14,12 @@ describe(appName, () => {
     await spec.cleanup(webDriver)
   })
 
-  describe.skip(`Test`, () => {
+  describe(`Test`, () => {
     beforeEach(async () => {
       webDriver = await spec.build({capabilities: Browsers.chrome()})
       await spec.visit(webDriver, 'https://applitools.github.io/demo/TestPages/FramesTestPage/')
       eyes = await getEyes({isCssStitching: true})
-    })
-
-    it('TestCheckRegionInFrame2_Fluent', async () => {
-      await eyes.open(webDriver, appName, `TestCheckRegionInFrame2_Fluent`, {
-        width: 700,
-        height: 460,
-      })
-      await eyes.check(
-        'Fluent - Inner frame div 1',
-        Target.frame('frame1')
-          .region('#inner-frame-div')
-          .fully()
-          .ignoreRegions(new Region(50, 50, 100, 100)),
-      )
-      await eyes.close()
-    })
-
-    it('TestCheckRegionInFrameInFrame_Fluent', async () => {
-      await eyes.open(webDriver, appName, `TestCheckRegionInFrameInFrame_Fluent`, {
-        width: 700,
-        height: 460,
-      })
-      await eyes.check(
-        'Fluent - Region in Frame in Frame',
-        Target.frame('frame1')
-          .frame('frame1-1')
-          .region('img')
-          .fully(),
-      )
-      await eyes.close()
+      eyes.setMatchTimeout(0)
     })
 
     it('TestCheckScrollableModal', async () => {
@@ -67,7 +38,7 @@ describe(appName, () => {
       await eyes.close()
     })
 
-    it.skip(`TestCheckLongIFrameModal`, async () => {
+    it(`TestCheckLongIFrameModal`, async () => {
       let driver = await eyes.open(webDriver, appName, `TestCheckLongIFrameModal`, {
         width: 700,
         height: 460,
@@ -78,11 +49,12 @@ describe(appName, () => {
       await spec.switchToFrame(driver, frame)
       let element = await spec.findElement(driver, 'html')
       let rect = await getElementRect(element)
+      eyes.setScrollRootElement('#modal2')
       await performChecksOnLongRegion(rect, eyes)
       await eyes.close()
     })
 
-    it.skip(`TestCheckLongOutOfBoundsIFrameModal`, async () => {
+    it(`TestCheckLongOutOfBoundsIFrameModal`, async () => {
       let driver = await eyes.open(webDriver, appName, `TestCheckLongOutOfBoundsIFrameModal`, {
         width: 700,
         height: 460,
@@ -93,6 +65,7 @@ describe(appName, () => {
       await spec.switchToFrame(driver, frame)
       let element = await spec.findElement(driver, 'html')
       let rect = await getElementRect(element)
+      eyes.setScrollRootElement('#modal3')
       await performChecksOnLongRegion(rect, eyes)
       await eyes.close()
     })
@@ -103,36 +76,7 @@ describe(appName, () => {
       webDriver = await spec.build({capabilities: Browsers.chrome()})
       await spec.visit(webDriver, 'https://applitools.github.io/demo/TestPages/FramesTestPage/')
       eyes = await getEyes()
-    })
-
-    it('TestCheckRegionInFrame2_Fluent', async () => {
-      await eyes.open(webDriver, appName, `TestCheckRegionInFrame2_Fluent_SCROLL`, {
-        width: 700,
-        height: 460,
-      })
-      await eyes.check(
-        'Fluent - Inner frame div 1',
-        Target.frame('frame1')
-          .region('#inner-frame-div')
-          .fully()
-          .ignoreRegions(new Region(50, 50, 100, 100)),
-      )
-      await eyes.close()
-    })
-
-    it('TestCheckRegionInFrameInFrame_Fluent', async () => {
-      await eyes.open(webDriver, appName, `TestCheckRegionInFrameInFrame_Fluent_SCROLL`, {
-        width: 700,
-        height: 460,
-      })
-      await eyes.check(
-        'Fluent - Region in Frame in Frame',
-        Target.frame('frame1')
-          .frame('frame1-1')
-          .region('img')
-          .fully(),
-      )
-      await eyes.close()
+      eyes.setMatchTimeout(0)
     })
 
     it('TestCheckScrollableModal', async () => {
@@ -151,7 +95,7 @@ describe(appName, () => {
       await eyes.close()
     })
 
-    it.skip(`TestCheckLongIFrameModal`, async () => {
+    it(`TestCheckLongIFrameModal`, async () => {
       let driver = await eyes.open(webDriver, appName, `TestCheckLongIFrameModal_Scroll`, {
         width: 700,
         height: 460,
@@ -162,11 +106,12 @@ describe(appName, () => {
       await spec.switchToFrame(driver, frame)
       let element = await spec.findElement(driver, 'html')
       let rect = await getElementRect(element)
+      eyes.setScrollRootElement('#modal2')
       await performChecksOnLongRegion(rect, eyes)
       await eyes.close()
     })
 
-    it.skip(`TestCheckLongOutOfBoundsIFrameModal`, async () => {
+    it(`TestCheckLongOutOfBoundsIFrameModal`, async () => {
       let driver = await eyes.open(
         webDriver,
         appName,
@@ -182,6 +127,7 @@ describe(appName, () => {
       await spec.switchToFrame(driver, frame)
       let element = await spec.findElement(driver, 'html')
       let rect = await getElementRect(element)
+      eyes.setScrollRootElement('#modal3')
       await performChecksOnLongRegion(rect, eyes)
       await eyes.close()
     })
@@ -242,13 +188,8 @@ describe(appName, () => {
   })
 
   async function getElementRect(el) {
-    try {
-      return spec.getElementRect(webDriver, el)
-    } catch (err) {
-      const size = await el.getSize()
-      const location = await el.getLocation()
-      return {...size, ...location}
-    }
+    await spec.executeScript(webDriver, el => (el.style.overflow = 'hidden'), el)
+    return spec.getElementRect(webDriver, el)
   }
 })
 
@@ -260,6 +201,6 @@ async function performChecksOnLongRegion(rect, eyes) {
     } else {
       region = new Region(rect.x, currentY, rect.width, rect.height - currentY)
     }
-    await eyes.check('Check Long Out of bounds Iframe Modal', Target.region(region))
+    await eyes.check('Check Long Out of bounds Iframe Modal', Target.region(region).fully())
   }
 }

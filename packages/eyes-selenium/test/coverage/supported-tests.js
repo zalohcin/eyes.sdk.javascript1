@@ -301,4 +301,12 @@ module.exports = [
   {name: 'TestCheckFixedRegion_Fully', executionMode: {isVisualGrid: true}},
   {name: 'TestCheckFixedRegion_Fully', executionMode: {isCssStitching: true}},
   {name: 'TestCheckFixedRegion_Fully', executionMode: {isScrollStitching: true}},
+  {name: 'TestSimpleModal', executionMode: {isVisualGrid: true}},
+  {name: 'TestSimpleModal', executionMode: {isCssStitching: true}},
+  {name: 'TestSimpleModal', executionMode: {isScrollStitching: true}},
+  {name: 'TestScrollableModal_Fully', executionMode: {isCssStitching: true}},
+  {name: 'TestScrollableModal_Fully', executionMode: {isScrollStitching: true}},
+  {name: 'TestScrollableContentInModal_Fully', executionMode: {isCssStitching: true}},
+  {name: 'TestScrollableContentInModal_Fully', executionMode: {isScrollStitching: true}},
+  {name: 'TestWindowWithModal_Fully', executionMode: {isScrollStitching: true}},
 ]

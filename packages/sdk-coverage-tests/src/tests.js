@@ -24,6 +24,7 @@ function makeCoverageTests({
   scrollDown,
   switchToFrame,
   _getAllTestResults,
+  click,
   type,
   visit,
 } = {}) {
@@ -372,6 +373,40 @@ function makeCoverageTests({
       visit('http://applitools.github.io/demo/TestPages/fixed-position')
       open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
       checkRegion('#fixed', {isFully: true})
+      close(throwException)
+    },
+    TestSimpleModal: () => {
+      visit('https://applitools.github.io/demo/TestPages/ModalsPage/index.html')
+      open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      click('#open_simple_modal')
+      checkRegion('#simple_modal > .modal-content')
+      close(throwException)
+    },
+    TestScrollableModal_Fully: () => {
+      visit('https://applitools.github.io/demo/TestPages/ModalsPage/index.html')
+      open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      click('#open_scrollable_modal')
+      checkRegion('#scrollable_modal > .modal-content', {
+        scrollRootElement: '#scrollable_modal',
+        isFully: true,
+      })
+      close(throwException)
+    },
+    TestScrollableContentInModal_Fully: () => {
+      visit('https://applitools.github.io/demo/TestPages/ModalsPage/index.html')
+      open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      click('#open_scrollable_content_modal')
+      checkRegion('#scrollable_content_modal > .modal-content', {
+        scrollRootElement: '#scrollable_content_modal',
+        isFully: true,
+      })
+      close(throwException)
+    },
+    TestWindowWithModal_Fully: () => {
+      visit('https://applitools.github.io/demo/TestPages/ModalsPage/index.html')
+      open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      click('#open_scrollable_modal')
+      checkWindow({scrollRootElement: '#scrollable_modal', isFully: true})
       close(throwException)
     },
     //Test_VGTestsCount_1: () => {

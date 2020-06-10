@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- improved support of the regions with fixed position ([Trello](https://trello.com/c/9G1aau4d/357-wdio5-unable-to-capture-scrollable-region)
 
 ## 11.0.5 - 2020/6/9
 

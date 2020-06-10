@@ -135,7 +135,15 @@ function initialize() {
 
   async function checkRegion(
     target,
-    {isClassicApi = false, isFully = false, inFrame, ignoreRegion, tag, matchTimeout} = {},
+    {
+      isClassicApi = false,
+      isFully = false,
+      inFrame,
+      ignoreRegion,
+      tag,
+      matchTimeout,
+      scrollRootElement,
+    } = {},
   ) {
     if (isClassicApi) {
       inFrame
@@ -166,6 +174,11 @@ function initialize() {
       }
       if (ignoreRegion) {
         result.storeCommand(`_checkSettings.ignoreRegions(${makeRegionLocator(ignoreRegion)})`)
+      }
+      if (scrollRootElement) {
+        result.storeCommand(
+          `_checkSettings.scrollRootElement(${makeRegionLocator(scrollRootElement)})`,
+        )
       }
       result.storeCommand(`_checkSettings.fully(${isFully})`)
       result.storeCommand(`await eyes.check(${tag ? '"' + tag + '"' : undefined}, _checkSettings)`)
@@ -245,6 +258,10 @@ function initialize() {
     `)
   }
 
+  async function click(selector) {
+    result.storeCommand(`await driver.$('${selector}').then(el => el.click())`)
+  }
+
   async function type(selector, text) {
     result.storeCommand(`await driver.$('${selector}').then(el => el.setValue('${text}'))`)
   }
@@ -264,6 +281,7 @@ function initialize() {
     getAllTestResults,
     scrollDown,
     switchToFrame,
+    click,
     type,
   }
 }
