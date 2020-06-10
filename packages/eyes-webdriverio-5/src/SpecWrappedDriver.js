@@ -52,11 +52,15 @@ module.exports = {
     return driver.setWindowRect(location.x, location.y, null, null)
   },
   async getWindowSize(driver) {
-    const rect = await driver.getWindowRect()
+    const rect = driver.hasOwnProperty('getWindowRect')
+      ? await driver.getWindowRect()
+      : await driver.getWindowSize()
     return {width: rect.width, height: rect.height}
   },
-  async setWindowSize(driver, size) {
-    return driver.setWindowRect(null, null, size.width, size.height)
+  async setWindowSize(driver, {x, y, width, height} = {}) {
+    return driver.hasOwnProperty('setWindowRect')
+      ? driver.setWindowRect(x, y, width, height)
+      : driver.setWindowSize(width, height)
   },
   async getOrientation(driver) {
     const orientation = await driver.getOrientation()
