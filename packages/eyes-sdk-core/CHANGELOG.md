@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- handle bug when Safari 11(!) take a full page screenshot by default
 
 ## 11.0.5 - 2020/6/9
 
