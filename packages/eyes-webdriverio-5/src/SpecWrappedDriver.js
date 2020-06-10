@@ -57,10 +57,10 @@ module.exports = {
       : await driver.getWindowSize()
     return {width: rect.width, height: rect.height}
   },
-  async setWindowSize(driver, {x, y, width, height} = {}) {
+  async setWindowSize(driver, size) {
     return driver.hasOwnProperty('setWindowRect')
-      ? driver.setWindowRect(x, y, width, height)
-      : driver.setWindowSize(width, height)
+      ? driver.setWindowRect(undefined, undefined, size.width, size.height)
+      : driver.setWindowSize(size.width, size.height)
   },
   async getOrientation(driver) {
     const orientation = await driver.getOrientation()
