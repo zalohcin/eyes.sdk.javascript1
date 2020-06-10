@@ -5,7 +5,7 @@ const {getDriver} = require('../../coverage/custom/util/TestSetup')
 
 describe('SpecWrappedElement Selenium4', () => {
   before(function() {
-    if (process.env.SELENIUM_MAJOR_VERSION !== '4') {
+    if (process.env.APPLITOOLS_SELENIUM_MAJOR_VERSION !== '4') {
       this.skip()
     }
   })
