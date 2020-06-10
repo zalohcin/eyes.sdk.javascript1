@@ -1,5 +1,5 @@
 const {TypeUtils} = require('@applitools/eyes-sdk-core')
-const {ProtractorBy, WebElement, ElementFinder} = require('protractor')
+const {ProtractorBy} = require('protractor')
 
 /**
  * @typedef {import('protractor').Locator} Locator
@@ -22,7 +22,8 @@ const {ProtractorBy, WebElement, ElementFinder} = require('protractor')
 
 module.exports = {
   isCompatible(element) {
-    return element instanceof WebElement || element instanceof ElementFinder
+    const ctorName = element && element.constructor && element.constructor.name
+    return ctorName === 'WebElement' || ctorName === 'ElementFinder'
   },
   isSelector(selector) {
     if (!selector) return false

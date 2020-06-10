@@ -2,8 +2,11 @@
 
 ## Unreleased
 
-- addBrowser can now accept browserInfo object as first argument 
-- fixed iosDeviceInfo in renderRequest and added JSdoc for iosDeviceInfo 
+
+## 11.0.5 - 2020/6/9
+
+- addBrowser can now accept browserInfo object as first argument
+- fixed iosDeviceInfo in renderRequest and added JSdoc for iosDeviceInfo
 
 ## 11.0.4 - 2020/6/4
 

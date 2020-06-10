@@ -493,50 +493,56 @@ exports[`code-export python-pytest commands setViewportSize 1`] = `"self.eyes.vi
 
 exports[`code-export python-pytest hooks afterEach 1`] = `"self.vg_runner.get_all_test_results()"`;
 
-exports[`code-export python-pytest hooks afterEach 2`] = `"self.eyes.abort_if_not_closed()"`;
+exports[`code-export python-pytest hooks afterEach 2`] = `"self.eyes.abort()"`;
 
 exports[`code-export python-pytest hooks beforeEach 1`] = `
-"self.eyes = Eyes()
+"config = Configuration()
+self.eyes = Eyes()
 self.eyes.api_key = os.environ[\\"APPLITOOLS_API_KEY\\"]
-self.eyes.configuration = config
+setting = AccessibilitySettings(
+          AccessibilityLevel.AA, AccessibilityGuidelinesVersion.WCAG_2_0
+        )
+config.accessibility_validation = setting
 self.eyes.open(self.driver, \\"project blah\\", \\"test blah\\")"
 `;
 
 exports[`code-export python-pytest hooks beforeEach 2`] = `
-"self.eyes = Eyes()
+"config = Configuration()
+self.eyes = Eyes()
 self.eyes.api_key = os.environ[\\"APPLITOOLS_API_KEY\\"]
 self.eyes.baseline_env_name = \\"blah\\"
-self.eyes.configuration = config
 self.eyes.open(self.driver, \\"project blah\\", \\"test blah\\")"
 `;
 
 exports[`code-export python-pytest hooks beforeEach 3`] = `
-"concurrency = 10
+"config = Configuration()
+concurrency = 10
 self.vg_runner = VisualGridRunner(concurrency)
 self.eyes = Eyes(self.vg_runner)
-config = Configuration()
+
 config.add_device_emulation(DeviceName.IPAD, ScreenOrientation.PORTRAIT)
-self.eyes.api_key = os.environ[\\"APPLITOOLS_API_KEY\\"]
 self.eyes.configuration = config
+self.eyes.api_key = os.environ[\\"APPLITOOLS_API_KEY\\"]
 self.eyes.open(self.driver, \\"project blah\\", \\"test blah\\")"
 `;
 
 exports[`code-export python-pytest hooks beforeEach 4`] = `
-"concurrency = 10
+"config = Configuration()
+concurrency = 10
 self.vg_runner = VisualGridRunner(concurrency)
 self.eyes = Eyes(self.vg_runner)
-config = Configuration()
+
 config.add_browser(100, 100, BrowserType.CHROME)
-self.eyes.api_key = os.environ[\\"APPLITOOLS_API_KEY\\"]
 self.eyes.configuration = config
+self.eyes.api_key = os.environ[\\"APPLITOOLS_API_KEY\\"]
 self.eyes.open(self.driver, \\"project blah\\", \\"test blah\\")"
 `;
 
 exports[`code-export python-pytest hooks dependency 1`] = `
 "import os
 from urllib.parse import urlparse
-from applitools.selenium import (Eyes, Target)
-from applitools.selenium import (Configuration, BrowserType, DeviceName, ScreenOrientation)
+from applitools.selenium import (Eyes, Target, Configuration)
+from applitools.selenium import (BrowserType, DeviceName, ScreenOrientation)
 from applitools.selenium.visual_grid import VisualGridRunner
 from applitools.common.accessibility import (AccessibilitySettings, AccessibilityLevel, AccessibilityGuidelinesVersion)
 "
@@ -545,8 +551,8 @@ from applitools.common.accessibility import (AccessibilitySettings, Accessibilit
 exports[`code-export python-pytest hooks dependency 2`] = `
 "import os
 from urllib.parse import urlparse
-from applitools.selenium import (Eyes, Target)
-from applitools.selenium import (Configuration, BrowserType, DeviceName, ScreenOrientation)
+from applitools.selenium import (Eyes, Target, Configuration)
+from applitools.selenium import (BrowserType, DeviceName, ScreenOrientation)
 from applitools.selenium.visual_grid import VisualGridRunner
 "
 `;
@@ -554,7 +560,7 @@ from applitools.selenium.visual_grid import VisualGridRunner
 exports[`code-export python-pytest hooks dependency 3`] = `
 "import os
 from urllib.parse import urlparse
-from applitools.selenium import (Eyes, Target)
+from applitools.selenium import (Eyes, Target, Configuration)
 from applitools.common.accessibility import (AccessibilitySettings, AccessibilityLevel, AccessibilityGuidelinesVersion)
 "
 `;
@@ -562,7 +568,7 @@ from applitools.common.accessibility import (AccessibilitySettings, Accessibilit
 exports[`code-export python-pytest hooks dependency 4`] = `
 "import os
 from urllib.parse import urlparse
-from applitools.selenium import (Eyes, Target)
+from applitools.selenium import (Eyes, Target, Configuration)
 "
 `;
 

@@ -2,7 +2,12 @@
 
 ## Unreleased
 
+
+## 2.17.0 - 2020/6/9
+
 - added mobile web API support for VG
+- updated to @applitools/eyes-sdk-core@11.0.5 (from 11.0.4)
+- updated to @applitools/visual-grid-client@14.4.4 (from 14.4.3)
 
 ## 2.16.0 - 2020/6/2
 

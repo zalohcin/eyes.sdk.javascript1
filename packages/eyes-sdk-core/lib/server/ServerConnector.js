@@ -114,10 +114,15 @@ class ServerConnector {
         agentId: getAgentId(),
       })
 
+      const dataLength = axiosConfig.data && axiosConfig.data.length
+      const dataLengthStr = dataLength ? ` and body length ${axiosConfig.data.length}` : ''
+
       this._logger.verbose(
         `axios request interceptor - ${axiosConfig.name} [${axiosConfig.requestId}${
           axiosConfig.originalRequestId ? ` retry of ${axiosConfig.originalRequestId}` : ''
-        }] will now call to ${axiosConfig.url} with params ${JSON.stringify(axiosConfig.params)}`,
+        }] will now call to ${axiosConfig.url} with params ${JSON.stringify(
+          axiosConfig.params,
+        )}${dataLengthStr}`,
       )
 
       await delayRequest({axiosConfig, logger})

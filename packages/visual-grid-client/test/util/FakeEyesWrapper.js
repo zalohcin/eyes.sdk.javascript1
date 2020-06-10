@@ -146,7 +146,7 @@ class FakeEyesWrapper extends EventEmitter {
         emulationInfo && emulationInfo.deviceName
           ? emulationInfo.deviceName
           : iosDeviceInfo
-          ? iosDeviceInfo.name
+          ? iosDeviceInfo.deviceName
           : undefined
 
       return new RenderStatusResults({
