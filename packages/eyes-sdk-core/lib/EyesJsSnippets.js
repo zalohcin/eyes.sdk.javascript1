@@ -113,7 +113,6 @@ const GET_ELEMENT_RECT = `
   var fixedElementRect = fixedElement ? fixedElement.getBoundingClientRect() : null
   var offsetFromFixedElement = fixedElement ? getOffsetFromAncestor(element, fixedElement) : null
   var isFixedElementScrollable = fixedElement ? isScrollableElement(fixedElement) : null
-  console.log(fixedElement, offsetFromFixedElement);
   return {
     x: fixedElement
       ? (fixedElement !== element && isFixedElementScrollable ? offsetFromFixedElement.x + fixedElementRect.left : rect.left)
