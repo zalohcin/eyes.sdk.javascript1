@@ -116,7 +116,7 @@ module.exports = {
       path: pathname,
       port: fixedPort ? Number(fixedPort) : undefined,
       hostname,
-      protocol: protocol.replace(/:$/, ''),
+      protocol: protocol ? protocol.replace(/:$/, '') : undefined,
     }
     return remote(options)
   },
