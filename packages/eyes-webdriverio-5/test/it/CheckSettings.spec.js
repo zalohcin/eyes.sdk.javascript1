@@ -31,6 +31,6 @@ describe('CheckSettings', () => {
     await driver.deleteSession()
   })
   it.skip('specify region by wdio locator', () => {
-    assert.ok(Target.window().ignore({element: driver.$('//XPATHmobileLocator')}))
+    assert.ok(Target.window().ignore(driver.$('//XPATHmobileLocator')))
   })
 })
