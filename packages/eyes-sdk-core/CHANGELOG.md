@@ -3,6 +3,8 @@
 ## Unreleased
 
 - improved support of the regions with fixed position ([Trello](https://trello.com/c/9G1aau4d/357-wdio5-unable-to-capture-scrollable-region)
+- added support of  check settings as a plain object
+- handle bug when Safari 11(!) take a full page screenshot by default
 
 ## 11.0.5 - 2020/6/9
 

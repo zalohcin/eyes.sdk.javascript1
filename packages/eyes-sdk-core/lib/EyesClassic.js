@@ -221,23 +221,29 @@ class EyesClassic extends EyesCore {
     return this._driver
   }
   /**
-   * @param name - name of the test case
-   * @param {DriverCheckSettings} checkSettings - check settings for the described test case
+   * @param {string|DriverCheckSettings} [nameOrCheckSettings] - name of the test case
+   * @param {DriverCheckSettings} [checkSettings] - check settings for the described test case
    * @returns {Promise<MatchResult>}
    */
-  async check(name, checkSettings) {
+  async check(nameOrCheckSettings, checkSettings) {
     if (this._configuration.getIsDisabled()) {
-      this._logger.log(`check('${name}', ${checkSettings}): Ignored`)
+      this._logger.log(`check(${nameOrCheckSettings}, ${checkSettings}): Ignored`)
       return new MatchResult()
     }
     ArgumentGuard.isValidState(this._isOpen, 'Eyes not open')
-    ArgumentGuard.notNull(checkSettings, 'checkSettings')
 
-    this._logger.verbose(`check("${name}", checkSettings) - begin`)
-
-    if (TypeUtils.isNotNull(name)) {
-      checkSettings.withName(name)
+    if (TypeUtils.isNull(checkSettings) && !TypeUtils.isString(nameOrCheckSettings)) {
+      checkSettings = nameOrCheckSettings
+      nameOrCheckSettings = null
     }
+
+    checkSettings = new this.constructor.CheckSettings(checkSettings)
+
+    if (TypeUtils.isString(nameOrCheckSettings)) {
+      checkSettings.withName(nameOrCheckSettings)
+    }
+
+    this._logger.verbose(`check(${nameOrCheckSettings}, checkSettings) - begin`)
 
     checkSettings.ignoreCaret(checkSettings.getIgnoreCaret() || this.getIgnoreCaret())
     this._checkSettings = checkSettings // TODO remove

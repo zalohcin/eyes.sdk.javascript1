@@ -213,6 +213,7 @@ describe('Miscellaneous VG tests', () => {
       expect(logOutput).to.eql([edgeWarning])
     } finally {
       console.log = origConsoleLog
+      console.log(logOutput)
     }
   })
 })
