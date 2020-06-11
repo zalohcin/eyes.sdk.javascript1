@@ -1,6 +1,9 @@
 # Change Log
 
 ## Unreleased
+
+## 5.13.1 - 2020/6/11
+
 - Fix for setting the viewport size in older browser drivers ([Trello 382](https://trello.com/c/UBr0w3UF))
 - updated to @applitools/eyes-sdk-core@11.0.6 (from 11.0.5)
 - updated to @applitools/visual-grid-client@14.4.5 (from 14.4.4)
