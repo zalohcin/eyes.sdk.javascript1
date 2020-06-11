@@ -30,7 +30,9 @@ describe('CheckSettings', () => {
   afterEach(async () => {
     await driver.deleteSession()
   })
-  it.skip('specify region by wdio locator', () => {
-    assert.ok(Target.window().ignore(driver.$('//XPATHmobileLocator')))
+  it('specify region by wdio locator', async () => {
+    await driver.url('about:blank')
+    const el = await driver.$('//html')
+    assert.ok(Target.window().ignore(el))
   })
 })
