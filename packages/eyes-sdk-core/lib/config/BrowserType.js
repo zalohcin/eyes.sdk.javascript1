@@ -1,5 +1,7 @@
 'use strict'
 
+const {Enum} = require('../utils/Enum')
+
 /**
  * @readonly
  * @enum {string}
@@ -20,7 +22,7 @@ const BrowserType = {
   SAFARI_ONE_VERSION_BACK: 'safari-one-version-back',
   SAFARI_TWO_VERSIONS_BACK: 'safari-two-versions-back',
   EDGE_CHROMIUM_ONE_VERSION_BACK: 'edgechromium-one-version-back',
+  EDGE_CHROMIUM_TWO_VERSIONS_BACK: 'edgechromium-two-versions-back',
 }
 
-Object.freeze(BrowserType)
-exports.BrowserType = BrowserType
+exports.BrowserType = Enum('BrowserType', BrowserType)

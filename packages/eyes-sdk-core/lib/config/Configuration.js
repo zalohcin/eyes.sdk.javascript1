@@ -13,9 +13,22 @@ const {TypeUtils} = require('../utils/TypeUtils')
 const {GeneralUtils} = require('../utils/GeneralUtils')
 
 /**
- * @typedef {{width: number, height: number, name: BrowserType}} RenderBrowserInfo
- * @typedef {{deviceName: string, screenOrientation: ScreenOrientation}} DeviceInfo
  * @typedef {{level: AccessibilityLevel, guidelinesVersion: AccessibilityGuidelinesVersion}} AccessibilitySettings
+ */
+/**
+ * @typedef {{width: number, height: number, name: (BrowserType|undefined)}} DesktopBrowserInfo
+ */
+/**
+ * @typedef {{deviceName: DeviceName, screenOrientation: (ScreenOrientation|undefined)}} EmulationInfo
+ */
+/**
+ * @typedef {{chromeEmulationInfo: EmulationInfo}} ChromeEmulationInfo
+ */
+/**
+ * @typedef {{iosDeviceInfo: {deviceName: IosDevieName, screenOrientation: (IosScreenOrientation|undefined)}}} IosDeviceInfo
+ */
+/**
+ * @typedef {(DesktopBrowserInfo|EmulationInfo|ChromeEmulationInfo|IosDeviceInfo)} RenderInfo
  */
 
 const MIN_MATCH_TIMEOUT = 500
@@ -147,7 +160,7 @@ class Configuration {
     this._concurrentSessions = undefined
     /** @type {boolean} */
     this._isThrowExceptionOn = undefined
-    /** @type {RenderBrowserInfo[]|DeviceInfo[]} */
+    /** @type {RenderInfo[]} */
     this._browsersInfo = undefined
 
     /** @type {boolean} */
@@ -1121,14 +1134,14 @@ class Configuration {
   }
 
   /**
-   * @return {RenderBrowserInfo[]|DeviceInfo[]|undefined}
+   * @return {RenderInfo[]|undefined}
    */
   getBrowsersInfo() {
     return this._browsersInfo
   }
 
   /**
-   * @param {RenderBrowserInfo[]|DeviceInfo[]|object[]} value
+   * @param {RenderInfo[]} value
    * @return {this}
    */
   setBrowsersInfo(value) {
@@ -1144,7 +1157,7 @@ class Configuration {
   }
 
   /**
-   * @param {...RenderBrowserInfo} browsersInfo
+   * @param {...RenderInfo} browsersInfo
    * @return {this}
    */
   addBrowsers(...browsersInfo) {
@@ -1160,19 +1173,18 @@ class Configuration {
   }
 
   /**
-   * @param {number} width
-   * @param {number} height
-   * @param {BrowserType} browserType
+   * @param {number|RenderInfo} widthOrBrowserInfo
+   * @param {number} [height]
+   * @param {BrowserType} [browserType]
    * @return {this}
    */
-  addBrowser(width, height, browserType = BrowserType.CHROME) {
-    const browserInfo = {
-      width,
-      height,
-      name: browserType,
+  addBrowser(widthOrBrowserInfo, height, browserType = BrowserType.CHROME) {
+    if (arguments.length === 1) {
+      this.addBrowsers(widthOrBrowserInfo)
+    } else {
+      const browserInfo = {width: widthOrBrowserInfo, height, name: browserType}
+      this.addBrowsers(browserInfo)
     }
-
-    this.addBrowsers(browserInfo)
     return this
   }
 

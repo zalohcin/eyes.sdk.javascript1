@@ -616,4 +616,9 @@ describe('Configuration', () => {
     assert.strictEqual(result.batch.getName(), conf.batch.name)
     assert.strictEqual(result.batch.getNotifyOnCompletion(), conf.batch.notifyOnCompletion)
   })
+
+  it('setMatchLevel("Layout")', () => {
+    const config = new Configuration({defaultMatchSettings: {matchLevel: 'Layout'}})
+    assert.strictEqual(config.getMatchLevel(), MatchLevel.Layout)
+  })
 })

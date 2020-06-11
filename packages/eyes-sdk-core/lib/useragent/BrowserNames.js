@@ -1,5 +1,7 @@
 'use strict'
 
+const {Enum} = require('../utils/Enum')
+
 /**
  * @readonly
  * @enum {string}
@@ -13,5 +15,4 @@ const BrowserNames = {
   Chromium: 'Chromium',
 }
 
-Object.freeze(BrowserNames)
-exports.BrowserNames = BrowserNames
+exports.BrowserNames = Enum('BrowserNames', BrowserNames)

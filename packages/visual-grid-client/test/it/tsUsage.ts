@@ -8,9 +8,47 @@ eyes.open({appName: 'App', testName: 'helloworld'})
 eyes.open({
   browser: [
     {width: 800, height: 600, name: 'firefox'},
+    {width: 1024, height: 768, name: 'firefox-one-version-back'},
+    {width: 1024, height: 768, name: 'firefox-two-versions-back'},
     {width: 1024, height: 768, name: 'chrome'},
+    {width: 1024, height: 768, name: 'chrome-one-version-back'},
+    {width: 1024, height: 768, name: 'chrome-two-versions-back'},
+    {width: 1024, height: 768, name: 'safari'},
+    {width: 1024, height: 768, name: 'safari-one-version-back'},
+    {width: 1024, height: 768, name: 'safari-two-versions-back'},
+    {width: 1024, height: 768, name: 'edgechromium'},
+    {width: 1024, height: 768, name: 'edgechromium-one-version-back'},
+    {width: 1024, height: 768, name: 'edgechromium-two-versions-back'},
     {width: 1024, height: 768, name: 'ie11'},
     {width: 1024, height: 768}, // chrome is the default
+    {
+      deviceName: 'iPhone X',
+      screenOrientation: 'landscape',
+    },
+    {
+      deviceName: 'iPhone X',
+      screenOrientation: 'landscape',
+      name: 'chrome'
+    },
+    {
+      chromeEmulationInfo: {
+        deviceName: 'iPhone X',
+        screenOrientation: 'landscape'
+      }
+    },
+    {
+      chromeEmulationInfo: {
+        deviceName: 'iPhone X',
+        screenOrientation: 'landscape',
+        name: 'chrome'
+      }
+    },
+    {
+      iosDeviceInfo: {
+        deviceName: 'iPhone 11 Pro',
+        screenOrientation: 'landscapeLeft'
+      }
+    }
   ]
 });
 

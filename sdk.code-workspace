@@ -9,10 +9,6 @@
 			"path": "packages/dom-snapshot"
 		},
 		{
-			"name": "eyes-common-legacy",
-			"path": "packages/eyes-common-legacy"
-		},
-		{
 			"name": "eyes-cypress",
 			"path": "packages/eyes-cypress"
 		},
@@ -21,28 +17,16 @@
 			"path": "packages/eyes-images"
 		},
 		{
-			"name": "eyes-images-legacy",
-			"path": "packages/eyes-images-legacy"
-		},
-		{
-			"name": "eyes-leanft",
-			"path": "packages/eyes-leanft"
+			"name": "eyes-protractor",
+			"path": "packages/eyes-protractor"
 		},
 		{
 			"name": "eyes-sdk-core",
 			"path": "packages/eyes-sdk-core"
 		},
 		{
-			"name": "eyes-sdk-core-legacy",
-			"path": "packages/eyes-sdk-core-legacy"
-		},
-		{
 			"name": "eyes-selenium",
 			"path": "packages/eyes-selenium"
-		},
-		{
-			"name": "eyes-selenium-3",
-			"path": "packages/eyes-selenium-3"
 		},
 		{
 			"name": "eyes-storybook",
@@ -83,6 +67,10 @@
 		{
 			"name": "sdk-shared",
 			"path": "packages/sdk-shared"
+		},
+		{
+			"name": "side-eyes",
+			"path": "packages/side-eyes"
 		},
 		{
 			"name": "visual-grid-client",

@@ -7,6 +7,7 @@ const domNodesToCdt = require('../src/browser/domNodesToCdt');
 const {loadFixture, loadJsonFixture} = require('./util/loadFixture');
 const fs = require('fs');
 const {resolve} = require('path');
+const {testServer} = require('@applitools/sdk-shared');
 
 function getDocNode(htmlStr) {
   const dom = new JSDOM(htmlStr, {url: 'http://something.org/', resources: 'usable'});
@@ -1207,12 +1208,14 @@ describe('domNodesToCdt', () => {
     expect(cdt).to.deep.equal(expectedCdt);
   });
 
-  it('returns links with having disabled attribute', () => {
-    const absolutePath = path.join(__dirname, 'fixtures/test.css');
+  it('returns links with having disabled attribute', async () => {
+    const server = await testServer({port: 7373});
+
+    const cssPath = 'http://localhost:7373/test.css';
     const docNode = getDocNode(`
-      <link id="lnk1" rel="stylesheet" type="text/css" href="file://${absolutePath}">
-      <link id="lnk2" rel="stylesheet" type="text/css" href="file://${absolutePath}" disabled>
-      <link id="lnk3" rel="stylesheet" type="text/css" href="file://${absolutePath}" disabled>
+      <link id="lnk1" rel="stylesheet" type="text/css" href="${cssPath}">
+      <link id="lnk2" rel="stylesheet" type="text/css" href="${cssPath}" disabled>
+      <link id="lnk3" rel="stylesheet" type="text/css" href="${cssPath}" disabled>
     `);
 
     const expectedCdt = [
@@ -1226,8 +1229,7 @@ describe('domNodesToCdt', () => {
           {name: 'type', value: 'text/css'},
           {
             name: 'href',
-            value:
-              'file:///home/daniel/dev/eyes.sdk.javascript1/packages/dom-snapshot/test/fixtures/test.css',
+            value: cssPath,
           },
           {name: 'disabled', value: ''},
         ],
@@ -1243,8 +1245,7 @@ describe('domNodesToCdt', () => {
           {name: 'type', value: 'text/css'},
           {
             name: 'href',
-            value:
-              'file:///home/daniel/dev/eyes.sdk.javascript1/packages/dom-snapshot/test/fixtures/test.css',
+            value: cssPath,
           },
           {name: 'disabled', value: ''},
         ],
@@ -1260,8 +1261,7 @@ describe('domNodesToCdt', () => {
           {name: 'type', value: 'text/css'},
           {
             name: 'href',
-            value:
-              'file:///home/daniel/dev/eyes.sdk.javascript1/packages/dom-snapshot/test/fixtures/test.css',
+            value: cssPath,
           },
         ],
         childNodeIndexes: [],
@@ -1282,6 +1282,8 @@ describe('domNodesToCdt', () => {
           resolve();
         } catch (err) {
           reject(err);
+        } finally {
+          server.close();
         }
       };
     });

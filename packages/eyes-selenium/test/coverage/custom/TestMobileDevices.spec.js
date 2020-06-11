@@ -166,7 +166,7 @@ describe.skip('TestMobileDevices', () => {
             eyes.StitchMode = StitchMode.SCROLL
             eyes.addProperty('Orientation', device.orientation.toLowerCase())
             eyes.addProperty('Page', page)
-            if(process.env['APPLITOOLS_API_KEY_SDK']){
+            if (process.env['APPLITOOLS_API_KEY_SDK']) {
               eyes.setApiKey(process.env['APPLITOOLS_API_KEY_SDK'])
             }
             webDriver.get(
