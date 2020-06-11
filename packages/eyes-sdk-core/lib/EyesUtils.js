@@ -72,7 +72,9 @@ async function setViewportSize(logger, {controller, executor, context}, required
 
     // Additional attempt. This Solves the "maximized browser" bug
     // (border size for maximized browser sometimes different than non-maximized, so the original browser size calculation is wrong).
-    logger.verbose('Trying workaround for maximization...')
+    logger.verbose(
+      `Failed attempt to set viewport size. actualViewportSize=${actualViewportSize}, requiredViewportSize=${requiredViewportSize}. Trying workaround for maximization...`,
+    )
     await _setWindowSizeByViewportSize(
       logger,
       {controller},
@@ -205,15 +207,22 @@ async function _adjustWindowSizeByViewportSize(
 async function _setWindowSize(logger, {controller}, requiredWindowSize, sleep = 3000, retries = 3) {
   try {
     while (retries >= 0) {
+      logger.verbose(
+        `Attempt to set window size to ${requiredWindowSize}. Retries left: ${retries}`,
+      )
       await controller.setWindowSize(requiredWindowSize)
       await GeneralUtils.sleep(sleep)
       const actualWindowSize = await controller.getWindowSize()
       if (actualWindowSize.equals(requiredWindowSize)) return true
+      logger.verbose(
+        `Attempt to set window size to ${requiredWindowSize} failed. actualWindowSize=${actualWindowSize}`,
+      )
       retries -= 1
     }
-    logger.verbose('Failed to set browser size: retries is out.')
+    logger.verbose('Failed to set browser size: no more retries.')
     return false
-  } catch (ignored) {
+  } catch (ex) {
+    logger.verbose('Failed to set browser size: error thrown.', ex)
     return false
   }
 }

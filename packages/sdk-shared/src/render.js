@@ -445,6 +445,5 @@ function argToString([key, value]) {
 
 function processRunBefore(str) {
   if (str.charAt(0) !== '/') str = `./${str}`
-  console.log('str', str)
   return path.resolve(cwd, str)
 }

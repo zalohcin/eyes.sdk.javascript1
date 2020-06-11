@@ -57,7 +57,7 @@ module.exports = {
       : await driver.getWindowSize()
     return {width: rect.width, height: rect.height}
   },
-  async setWindowSize(driver, {x = 0, y = 0, width, height} = {}) {
+  async setWindowSize(driver, {x = null, y = null, width, height} = {}) {
     return driver.hasOwnProperty('setWindowRect')
       ? driver.setWindowRect(x, y, width, height)
       : driver.setWindowSize(width, height)
