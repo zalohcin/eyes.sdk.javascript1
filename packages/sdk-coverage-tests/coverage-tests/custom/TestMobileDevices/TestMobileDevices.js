@@ -5,7 +5,7 @@ const {Target, StitchMode} = require(cwd)
 const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
 const {getEyes, batch} = require('../../util/TestSetup')
 
-const pages = ['mobile', 'desktop', 'scrolled_mobile']
+const pages = ['mobile',/* 'desktop',*/ 'scrolled_mobile']
 
 const iPhoneAgent =
   'Mozilla/5.0 (iPhone; CPU iPhone OS 13_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0 Mobile/15E148 Safari/604.1'
