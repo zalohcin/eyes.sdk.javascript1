@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 11.0.6 - 2020/6/11
+
 - added support of  check settings as a plain object
 - handle bug when Safari 11(!) take a full page screenshot by default ([Trello](https://trello.com/c/A9AUxYlP))
 - fix OOM issue with big images ([Trello](https://trello.com/c/4JMV3NKN))
