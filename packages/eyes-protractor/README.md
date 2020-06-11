@@ -357,7 +357,7 @@ const {VisualGridRunner} = require('@applitools/eyes-protractor')
 const runner = new VisualGridRunner(concurrentSessions)
 ```
 
-- `concurrentSessions` - (Number) the number of visual tests that are allowed to run at the same time. Default: `Infinity`.
+- `concurrentSessions` - (Number) the number of visual tests that are allowed to run at the same time. Default: `3`.
 
 ### Purpose of runners
 
