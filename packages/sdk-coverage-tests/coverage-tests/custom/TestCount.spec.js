@@ -16,7 +16,7 @@ describe('TestCounts', () => {
     await eyes.setSendDom(false)
   })
 
-  it('Test_VGTestsCount_2', async () => {
+  it('Test_VgTestsCount_2', async () => {
     let conf = eyes.getConfiguration()
     conf.addBrowser(900, 600)
     conf.addBrowser(1024, 768)
@@ -29,7 +29,7 @@ describe('TestCounts', () => {
     assert.deepStrictEqual(2, results.getAllResults().length)
   })
 
-  it('Test_VGTestsCount_3', async () => {
+  it('Test_VgTestsCount_3', async () => {
     let conf = eyes.getConfiguration()
     conf.addBrowser(900, 600)
     conf.addBrowser(1024, 768)
@@ -44,7 +44,7 @@ describe('TestCounts', () => {
     assert.deepStrictEqual(2, results.getAllResults().length)
   })
 
-  it('Test_VGTestsCount_4', async () => {
+  it('Test_VgTestsCount_4', async () => {
     let conf = eyes.getConfiguration()
     conf.setAppName('Test Count')
     conf.setTestName('Test_VGTestsCount_4')
@@ -57,7 +57,7 @@ describe('TestCounts', () => {
     assert.deepStrictEqual(1, results.getAllResults().length)
   })
 
-  it('Test_VGTestsCount_5', async () => {
+  it('Test_VgTestsCount_5', async () => {
     let conf = eyes.getConfiguration()
     conf.addBrowser(900, 600)
     conf.addBrowser(1024, 768)
