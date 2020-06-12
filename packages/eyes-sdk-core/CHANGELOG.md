@@ -3,6 +3,7 @@
 ## Unreleased
 
 - improved support of the regions with fixed position ([Trello](https://trello.com/c/9G1aau4d/357-wdio5-unable-to-capture-scrollable-region)
+- support scroll root elements with a position different from (0, 0) ([Trello](https://trello.com/c/04pdU1Up/328-js4-incorrect-stitching-using-targetregion-with-scrollrootelement))
 
 ## 11.0.6 - 2020/6/11
 
