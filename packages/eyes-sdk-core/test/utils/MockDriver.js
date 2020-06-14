@@ -51,6 +51,9 @@ class MockDriver {
     this.mockScript(EyesJsSnippets.GET_ELEMENT_RECT, element => {
       return element.rect || {x: 0, y: 0, width: 100, height: 100}
     })
+    this.mockScript(EyesJsSnippets.GET_ELEMENT_CLIENT_RECT, element => {
+      return element.rect || {x: 2, y: 2, width: 200, height: 200}
+    })
     this.mockScript(EyesJsSnippets.GET_ELEMENT_CSS_PROPERTIES, (properties, element) => {
       return properties.map(
         property => (element.styles || {})[property] || DEFAULT_STYLES[property],

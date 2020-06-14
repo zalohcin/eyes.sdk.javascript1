@@ -149,7 +149,7 @@ class EyesScreenshot {
     const scrollRootElement = !this._frameChain.isEmpty
       ? this._frameChain.current.scrollRootElement
       : positionProvider.scrollRootElement
-    this._currentFrameScrollPosition = await EyesUtils.getScrollLocation(
+    this._currentFrameScrollPosition = await EyesUtils.getInnerOffsets(
       this._logger,
       this._eyes._executor,
       scrollRootElement,
@@ -164,7 +164,7 @@ class EyesScreenshot {
       }
       this._frameSize = this._frameChain.current.innerSize
     } else {
-      this._frameLocationInScreenshot = frameLocationInScreenshot || Location.ZERO
+      this._frameLocationInScreenshot = Location.ZERO
       // get entire page size might throw an exception for applications which don't support Javascript (e.g., Appium).
       // In that case we'll use the viewport size as the frame's size.
       this._frameSize = await positionProvider

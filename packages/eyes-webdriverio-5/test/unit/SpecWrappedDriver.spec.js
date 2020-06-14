@@ -19,8 +19,8 @@ describe('SpecWrappedDriver', async () => {
         },
       }
       assert.deepStrictEqual(await setWindowSize(driver, {width: 1, height: 1}), {
-        x: 0,
-        y: 0,
+        x: null,
+        y: null,
         width: 1,
         height: 1,
       })
