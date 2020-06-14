@@ -191,6 +191,7 @@ class FullPageCaptureAlgorithm {
     for (const partRegion of imageParts) {
       // Skipping screenshot, already taken
       if (partRegion.getLeft() === initialX && partRegion.getTop() === initialY) {
+        lastSuccessfulLocation = partRegion.getLocation()
         continue
       }
 

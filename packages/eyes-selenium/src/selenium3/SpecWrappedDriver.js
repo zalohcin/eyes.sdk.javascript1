@@ -166,6 +166,10 @@ module.exports = {
     return el.click()
   },
 
+  async type(_driver, el, keys) {
+    return el.sendKeys(keys)
+  },
+
   async waitUntilDisplayed(driver, selector, timeout) {
     const el = await this.findElement(driver, selector)
     return driver.wait(until.elementIsVisible(el), timeout)
