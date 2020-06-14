@@ -129,8 +129,14 @@ module.exports = {
     return driver.deleteSession()
   },
 
-  async click(_driver, el) {
-    return el.click()
+  async click(driver, element) {
+    const extended = await driver.$(element)
+    return extended.click()
+  },
+
+  async type(driver, element, keys) {
+    const extended = await driver.$(element)
+    return extended.setValue(keys)
   },
 
   async waitUntilDisplayed(driver, selector, timeout) {

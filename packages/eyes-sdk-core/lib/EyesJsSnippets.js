@@ -319,7 +319,11 @@ const GET_CURRENT_CONTEXT_INFO = `
 
 const GET_FRAME_BY_NAME_OR_ID = `
   var nameOrId = arguments[0];
-  return document.querySelector('iframe[name="' + nameOrId + '"],iframe#' + nameOrId)
+  try {
+    return document.querySelector('iframe[name="' + nameOrId + '"],iframe#' + nameOrId);
+  } catch (err) {
+    return null;
+  }
 `
 
 const GET_FRAMES = `
