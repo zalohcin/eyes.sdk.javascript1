@@ -30,12 +30,12 @@ function makeEmitTests(initializeSdkImplementation, makeCoverageTests = doMakeCo
         ...supportedTest,
       })
       // test
-      try {
-        const coverageTests = makeCoverageTests(sdkImplementation)
-        coverageTests[supportedTest.name]()
-      } catch (error) {
-        debugger
+      const coverageTests = makeCoverageTests(sdkImplementation)
+      const coverageTestFunc = coverageTests[supportedTest.name]
+      if (!coverageTestFunc) {
+        throw new Error('missing implementation for test ' + supportedTest.name)
       }
+      coverageTests[supportedTest.name]()
       // store
       output.push({
         name: baselineTestName,

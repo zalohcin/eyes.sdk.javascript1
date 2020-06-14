@@ -205,14 +205,14 @@ function makeCoverageTests({driver, eyes} = {}) {
       })
       eyes.close(throwException)
     },
-    //TestCheckScrollableModal: () => {
-    //  driver.visit(url)
-    //  eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
-    //  const element = driver.findElement('#centered')
-    //  driver.click(element)
-    //  eyes.check({region: '#modal-content', scrollRootElement: '#modal1', isFully: true})
-    //  eyes.close(throwException)
-    //},
+    TestCheckScrollableModal: () => {
+      driver.visit(url)
+      eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      const element = driver.findElement('#centered')
+      driver.click(element)
+      eyes.check({region: '#modal-content', scrollRootElement: '#modal1', isFully: true})
+      eyes.close(throwException)
+    },
     TestCheckWindow: () => {
       driver.visit(url)
       eyes.open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
@@ -357,46 +357,41 @@ function makeCoverageTests({driver, eyes} = {}) {
       eyes.close(throwException)
     },
     TestSimpleModal: () => {
-      visit('https://applitools.github.io/demo/TestPages/ModalsPage/index.html')
-      open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
-      click('#open_simple_modal')
-      checkRegion('#simple_modal > .modal-content')
-      close(throwException)
+      driver.visit('https://applitools.github.io/demo/TestPages/ModalsPage/index.html')
+      eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      driver.click('#open_simple_modal')
+      eyes.check({region: '#simple_modal > .modal-content'})
+      eyes.close(throwException)
     },
     TestScrollableModal_Fully: () => {
-      visit('https://applitools.github.io/demo/TestPages/ModalsPage/index.html')
-      open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
-      click('#open_scrollable_modal')
-      checkRegion('#scrollable_modal > .modal-content', {
+      driver.visit('https://applitools.github.io/demo/TestPages/ModalsPage/index.html')
+      eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      driver.click('#open_scrollable_modal')
+      eyes.check({
+        region: '#scrollable_modal > .modal-content',
         scrollRootElement: '#scrollable_modal',
         isFully: true,
       })
-      close(throwException)
+      eyes.close(throwException)
     },
     TestScrollableContentInModal_Fully: () => {
-      visit('https://applitools.github.io/demo/TestPages/ModalsPage/index.html')
-      open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
-      click('#open_scrollable_content_modal')
-      checkRegion('#scrollable_content_modal > .modal-content', {
+      driver.visit('https://applitools.github.io/demo/TestPages/ModalsPage/index.html')
+      eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      driver.click('#open_scrollable_content_modal')
+      eyes.check({
+        region: '#scrollable_content_modal > .modal-content',
         scrollRootElement: '#scrollable_content_modal',
         isFully: true,
       })
-      close(throwException)
+      eyes.close(throwException)
     },
     TestWindowWithModal_Fully: () => {
-      visit('https://applitools.github.io/demo/TestPages/ModalsPage/index.html')
-      open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
-      click('#open_scrollable_modal')
-      checkWindow({scrollRootElement: '#scrollable_modal', isFully: true})
-      close(throwException)
+      driver.visit('https://applitools.github.io/demo/TestPages/ModalsPage/index.html')
+      eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      driver.click('#open_scrollable_modal')
+      eyes.check({scrollRootElement: '#scrollable_modal', isFully: true})
+      eyes.close(throwException)
     },
-    //Test_VGTestsCount_1: () => {
-    //  driver.visit('https://applitools.com/helloworld')
-    //  eyes.open({appName: 'Test Count', viewportSize: {width: 640, height: 480}})
-    //  eyes.check({isFully: true})
-    //  eyes.close(false) // VisualGridRunner::getAllResults doesn't call Eyes::close. In non-JS SDK's it does, but that should be deprecated. Users should be instructed to call close explicitly.
-    //  assert.deepStrictEqual(getAllTestResults(throwException).length, 1)
-    //},
   }
 }
 
