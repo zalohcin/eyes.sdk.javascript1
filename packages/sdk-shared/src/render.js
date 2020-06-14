@@ -178,6 +178,10 @@ const args = yargs
     type: 'string',
     coerce: processRunBefore,
   })
+  .option('attach', {
+    describe: 'attach to existing chrome via remote debugging port',
+    type: 'boolean',
+  })
   .help().argv
 
 const [url] = args._
@@ -265,7 +269,9 @@ if (!url) {
   logger.log(`[render script] process versions: ${JSON.stringify(process.versions)}`)
   console.log('log file at:', logFilePath)
 
-  await spec.visit(driver, url)
+  if (!args.attach) {
+    await spec.visit(driver, url)
+  }
 
   try {
     if (runBeforeFunc) {
@@ -324,7 +330,9 @@ if (!url) {
 
     console.log('\nRender results:\n', resultsStr)
   } finally {
-    await spec.cleanup(driver)
+    if (!args.attach) {
+      await spec.cleanup(driver)
+    }
     if (args.webdriverProxy) {
       await chromedriver.stop()
     }
@@ -341,12 +349,14 @@ function buildDriver({
   driverServer,
   isMobileEmulation,
   deviceName,
+  attach,
 } = {}) {
   const capabilities = {
     browserName: 'chrome',
     'goog:chromeOptions': {
       args: headless ? ['--headless'] : [],
       mobileEmulation: isMobileEmulation ? {deviceName} : undefined,
+      debuggerAddress: attach ? '127.0.0.1:9222' : undefined,
     },
     ...driverCapabilities,
   }
