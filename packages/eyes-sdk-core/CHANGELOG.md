@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 11.0.8 - 2020/6/14
+
 - raise minimum payload size in requests ([Trello](https://trello.com/c/4JMV3NKN))
 
 ## 11.0.7 - 2020/6/12
