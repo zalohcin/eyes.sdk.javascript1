@@ -118,6 +118,7 @@ module.exports = [
   {
     name: 'TestCheckPageWithHeader_Region_Fully',
     executionMode: {isScrollStitching: true},
+    disabled: true,
   },
   {name: 'TestCheckRegion', executionMode: {isVisualGrid: true}},
   {name: 'TestCheckRegion', executionMode: {isCssStitching: true}},
