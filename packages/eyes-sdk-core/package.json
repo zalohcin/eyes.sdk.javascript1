@@ -30,7 +30,7 @@
     "test": "./test"
   },
   "main": "./index.js",
-  "types": "./typings/index.d.ts",
+  "typings": "./index.d.ts",
   "dependencies": {
     "@applitools/dom-capture": "7.2.4",
     "@applitools/isomorphic-fetch": "3.0.0",
@@ -55,7 +55,7 @@
     "jsdoc": "3.6.4",
     "mocha": "7.0.1",
     "selenium-webdriver": "^4.0.0-alpha.5",
-    "typescript": "^3.9.3"
+    "typescript": "^3.9.5"
   },
   "browser": {
     "tunnel": false
@@ -65,7 +65,7 @@
     "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
     "test:it": "mocha --no-timeouts \"test/it/**/*.spec.js\"",
-    "build:types": "tsc",
+    "types:build": "rm -f ./index.d.ts && tsc && echo \"declare module '@applitools/eyes-sdk-core' { import main = require('index'); export = main }\" >> ./index.d.ts",
     "preversion": "bongo preversion && yarn test",
     "version": "bongo version",
     "postversion": "bongo postversion --skip-release-notification"
