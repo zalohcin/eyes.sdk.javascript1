@@ -12,10 +12,10 @@ const DEFAULT_VIEWPORT = {
 
 class EyesService {
   constructor(config) {
-    const runner =
-      config && config.eyes && config.eyes.useVisualGrid
-        ? new VisualGridRunner(config.eyes.concurrency)
-        : undefined
+    this._eyesConfig = getServiceConfig(config)
+    const runner = this._eyesConfig.useVisualGrid
+      ? new VisualGridRunner(this._eyesConfig.concurrency)
+      : undefined
     this._eyes = new Eyes(runner)
     this._eyes.getBaseAgentId = () =>
       runner
@@ -39,7 +39,6 @@ class EyesService {
    */
   // eslint-disable-next-line
   beforeSession(config, capabilities, specs) {
-    this._eyesConfig = config.eyes
     if (this._eyesConfig) {
       this._eyes.setConfiguration(this._eyesConfig)
       this._appName = this._eyes.getConfiguration().getAppName()
@@ -168,6 +167,19 @@ class EyesService {
       this._testResults = await this._eyes.close(false)
     }
   }
+}
+
+function getServiceConfig(config) {
+  let wdioVersion = 6
+  try {
+    const wdioPkgJson = require('webdriverio/package.json') // eslint-disable-line node/no-extraneous-require
+    wdioVersion = Number(wdioPkgJson.version.split('.', 1)[0])
+    if (isNaN(wdioVersion)) {
+      wdioVersion = 6
+    }
+  } catch (ex) {}
+
+  return wdioVersion >= 6 ? config : config.eyes
 }
 
 module.exports = EyesService
