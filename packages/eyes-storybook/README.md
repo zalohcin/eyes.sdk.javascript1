@@ -54,7 +54,7 @@ npm install --save-dev @applitools/eyes-storybook
 
 In order to authenticate via the Applitools server, you need to supply the Eyes-Storybook SDK with the API key you got from Applitools. Read more about how to obtain the API key [here](https://applitools.com/docs/topics/overview/obtain-api-key.html).
 
-To to this, set the environment variable `APPLITOOLS_API_KEY` to the API key before running your tests.
+To do this, set the environment variable `APPLITOOLS_API_KEY` to the API key before running your tests.
 For example, on Linux/Mac:
 
 ```bash
