@@ -132,7 +132,7 @@ If you are interested in speeding up your visual tests, contact sdr@applitools.c
 
 ## Advanced configuration
 
-In addition to command-line arguments, it's possible to define the following configuration for tests:
+In addition to command-line arguments, it's possible to define the following configuration parameteres for tests by using environment variables or the applitools.config.js file:
 
 | Property name             | Default value               | Description   |
 | -------------             |:-------------               |:-----------   |
