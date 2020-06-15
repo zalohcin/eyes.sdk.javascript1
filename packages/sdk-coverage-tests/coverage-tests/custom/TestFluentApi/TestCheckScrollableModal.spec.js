@@ -2,7 +2,7 @@
 const path = require('path')
 const cwd = process.cwd()
 const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
-const {getEyes, Browsers} = require('../util/TestSetup')
+const {getEyes, Browsers} = require('../../util/TestSetup')
 const {TestCheckScrollableModal} = require('./TestFluentApi_utils')
 
 describe('Coverage tests', () => {

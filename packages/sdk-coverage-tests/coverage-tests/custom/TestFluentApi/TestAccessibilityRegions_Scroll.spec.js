@@ -2,8 +2,8 @@
 const path = require('path')
 const cwd = process.cwd()
 const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
-const {getEyes, Browsers} = require('../util/TestSetup')
-const {TestCheckScrollableModal} = require('./TestFluentApi_utils')
+const {getEyes, Browsers} = require('../../util/TestSetup')
+const {TestAccessibilityRegions} = require('./TestFluentApi_utils')
 
 describe('Coverage tests', () => {
   let driver, eyes
@@ -20,6 +20,6 @@ describe('Coverage tests', () => {
     eyes.setMatchTimeout(0)
   })
 
-  it('TestCheckScrollableModal_Scroll', () =>
-    TestCheckScrollableModal({testName: 'TestCheckScrollableModal_Scroll', eyes, driver}))
+  it('TestAccessibilityRegions', () =>
+    TestAccessibilityRegions({testName: 'TestAccessibilityRegions_Scroll', eyes, driver}))
 })

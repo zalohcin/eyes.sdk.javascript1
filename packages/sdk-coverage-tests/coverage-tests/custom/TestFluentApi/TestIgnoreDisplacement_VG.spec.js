@@ -2,8 +2,8 @@
 const path = require('path')
 const cwd = process.cwd()
 const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
-const {getEyes, Browsers} = require('../util/TestSetup')
-const {TestCheckLongOutOfBoundsIFrameModal} = require('./TestFluentApi_utils')
+const {getEyes, Browsers} = require('../../util/TestSetup')
+const {TestIgnoreDisplacements} = require('./TestFluentApi_utils')
 
 describe('Coverage tests', () => {
   let driver, eyes
@@ -20,10 +20,19 @@ describe('Coverage tests', () => {
     eyes.setMatchTimeout(0)
   })
 
-  it('TestCheckLongOutOfBoundsIFrameModal_VG', () =>
-    TestCheckLongOutOfBoundsIFrameModal({
-      testName: 'TestCheckLongOutOfBoundsIFrameModal_VG',
+  it('TestIgnoreDisplacements', () =>
+    TestIgnoreDisplacements({
+      testName: 'TestIgnoreDisplacements_VG',
       eyes,
       driver,
+      ignoreDisplacement: true,
+    }))
+
+  it('TestIgnoreDisplacements', () =>
+    TestIgnoreDisplacements({
+      testName: 'TestIgnoreDisplacements_VG',
+      eyes,
+      driver,
+      ignoreDisplacement: false,
     }))
 })

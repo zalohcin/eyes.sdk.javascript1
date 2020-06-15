@@ -2,8 +2,8 @@
 const path = require('path')
 const cwd = process.cwd()
 const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
-const {getEyes, Browsers} = require('../util/TestSetup')
-const {TestCheckScrollableModal} = require('./TestFluentApi_utils')
+const {getEyes, Browsers} = require('../../util/TestSetup')
+const {TestCheckRegionInFrameInFrame_Fluent} = require('./TestFluentApi_utils')
 
 describe('Coverage tests', () => {
   let driver, eyes
@@ -16,10 +16,14 @@ describe('Coverage tests', () => {
   beforeEach(async () => {
     driver = await spec.build({capabilities: Browsers.chrome()})
     await spec.visit(driver, 'https://applitools.github.io/demo/TestPages/FramesTestPage/')
-    eyes = await getEyes({isVisualGrid: true, branchName: 'v2'})
+    eyes = await getEyes({isCssStitching: true, branchName: 'default'})
     eyes.setMatchTimeout(0)
   })
 
-  it('TestCheckScrollableModal_VG', () =>
-    TestCheckScrollableModal({testName: 'TestCheckScrollableModal_VG', eyes, driver}))
+  it('TestCheckRegionInFrameInFrameFluent', () =>
+    TestCheckRegionInFrameInFrame_Fluent({
+      testName: 'TestCheckRegionInFrameInFrame_Fluent',
+      eyes,
+      driver,
+    }))
 })

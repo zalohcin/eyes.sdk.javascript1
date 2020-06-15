@@ -16,7 +16,7 @@ describe('TestCounts', () => {
     await eyes.setSendDom(false)
   })
 
-  it('Test_VGTestsCount_1', async () => {
+  it('Test_VgTestsCount_1', async () => {
     await eyes.open(driver, 'Test Count', 'Test_VGTestsCount_1')
     await eyes.check('Test', Target.window())
     await eyes.close()

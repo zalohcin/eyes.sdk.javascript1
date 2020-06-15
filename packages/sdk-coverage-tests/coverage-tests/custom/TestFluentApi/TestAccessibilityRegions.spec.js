@@ -2,10 +2,10 @@
 const path = require('path')
 const cwd = process.cwd()
 const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
-const {getEyes, Browsers} = require('../util/TestSetup')
-const {TestCheckLongIFrameModal} = require('./TestFluentApi_utils')
+const {getEyes, Browsers} = require('../../util/TestSetup')
+const {TestAccessibilityRegions} = require('./TestFluentApi_utils')
 
-describe.skip('Coverage tests', () => {
+describe('Coverage tests', () => {
   let driver, eyes
 
   afterEach(async () => {
@@ -20,6 +20,6 @@ describe.skip('Coverage tests', () => {
     eyes.setMatchTimeout(0)
   })
 
-  it('TestCheckLongIFrameModal', () =>
-    TestCheckLongIFrameModal({testName: 'TestCheckLongIFrameModal', eyes, driver}))
+  it('TestAccessibilityRegions', () =>
+    TestAccessibilityRegions({testName: 'TestAccessibilityRegions', eyes, driver}))
 })

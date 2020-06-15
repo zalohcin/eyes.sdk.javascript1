@@ -2,8 +2,8 @@
 const path = require('path')
 const cwd = process.cwd()
 const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
-const {getEyes, Browsers} = require('../util/TestSetup')
-const {TestCheckLongOutOfBoundsIFrameModal} = require('./TestFluentApi_utils')
+const {getEyes, Browsers} = require('../../util/TestSetup')
+const {TestCheckRegionInFrame2_Fluent} = require('./TestFluentApi_utils')
 
 describe('Coverage tests', () => {
   let driver, eyes
@@ -16,14 +16,10 @@ describe('Coverage tests', () => {
   beforeEach(async () => {
     driver = await spec.build({capabilities: Browsers.chrome()})
     await spec.visit(driver, 'https://applitools.github.io/demo/TestPages/FramesTestPage/')
-    eyes = await getEyes({branchName: 'v2'})
+    eyes = await getEyes({isCssStitching: true, branchName: 'default'})
     eyes.setMatchTimeout(0)
   })
 
-  it('TestCheckLongOutOfBoundsIFrameModal_Scroll', () =>
-    TestCheckLongOutOfBoundsIFrameModal({
-      testName: 'TestCheckLongOutOfBoundsIFrameModal_Scroll',
-      eyes,
-      driver,
-    }))
+  it('TestCheckRegionInFrame2Fluent', () =>
+    TestCheckRegionInFrame2_Fluent({testName: 'TestCheckRegionInFrame2_Fluent', eyes, driver}))
 })
