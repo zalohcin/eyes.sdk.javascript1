@@ -3,6 +3,24 @@
 ## Unreleased
 
 
+## 14.4.7 - 2020/6/14
+
+- updated to @applitools/eyes-sdk-core@11.0.8 (from 11.0.7)
+
+## 14.4.6 - 2020/6/12
+
+- updated to @applitools/eyes-sdk-core@11.0.7 (from 11.0.6)
+
+## 14.4.5 - 2020/6/11
+
+- updated to @applitools/eyes-sdk-core@11.0.6 (from 11.0.5)
+
+ ## 14.4.4 - 2020/6/9
+
+- added chromeEmulationInfo and TS defs for iosDeviceInfo 
+- updated to @applitools/dom-snapshot@3.5.3 (from 3.5.2)
+- updated to @applitools/eyes-sdk-core@11.0.5 (from 11.0.4)
+
 ## 14.4.3 - 2020/6/4
 
 - updated to @applitools/eyes-sdk-core@11.0.4 (from v11.0.3)

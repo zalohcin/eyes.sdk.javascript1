@@ -1,25 +1,18 @@
 // commands
 
-function emitCheckWindow(
-  language,
-  { isVisualGridEnabled } = {},
-  stepName
-) {
+function emitCheckWindow(language, { isVisualGridEnabled } = {}, stepName) {
   switch (language) {
     case 'java-junit':
       return `eyes.check(Target.window().fully()${
         isVisualGridEnabled ? '.beforeRenderScreenshotHook(preRenderHook)' : ''
       }${stepName ? `.withName("${stepName}")` : ''});`
     case 'javascript-mocha':
-      if (stepName)
-        return `await eyes.check("${stepName}", Target.window().webHook(preRenderHook).fully(true))`
+      if (stepName) return `await eyes.check("${stepName}", Target.window().webHook(preRenderHook).fully(true))`
       else
         return `await eyes.check((new URL(await driver.getCurrentUrl())).pathname, Target.window().webHook(preRenderHook).fully(true))`
     case 'python-pytest':
-      if (stepName)
-        return `self.eyes.check("${stepName}", Target.window().fully(True))`
-      else
-        return `self.eyes.check(urlparse(self.driver.current_url).path, Target.window().fully(True))`
+      if (stepName) return `self.eyes.check("${stepName}", Target.window().fully(True))`
+      else return `self.eyes.check(urlparse(self.driver.current_url).path, Target.window().fully(True))`
     case 'ruby-rspec':
       if (stepName)
         return `@eyes.check("${stepName}", Applitools::Selenium::Target.window.fully.script_hook(@pre_render_hook))`
@@ -29,17 +22,11 @@ function emitCheckWindow(
     case 'csharp-xunit':
       if (stepName)
         return `eyes.Check(Target.Window().Fully().WithName("${stepName}").BeforeRenderScreenshotHook(preRenderHook));`
-      else
-        return `eyes.Check(Target.Window().Fully().BeforeRenderScreenshotHook(preRenderHook));`
+      else return `eyes.Check(Target.Window().Fully().BeforeRenderScreenshotHook(preRenderHook));`
   }
 }
 
-async function emitCheckElement(
-  language,
-  { locatorEmitter, isVisualGridEnabled } = {},
-  _locator,
-  stepName
-) {
+async function emitCheckElement(language, { locatorEmitter, isVisualGridEnabled } = {}, _locator, stepName) {
   const locator = locatorEmitter ? await locatorEmitter(_locator) : _locator
   switch (language) {
     case 'java-junit':
@@ -47,15 +34,12 @@ async function emitCheckElement(
         isVisualGridEnabled ? '.beforeRenderScreenshotHook(preRenderHook)' : ''
       }${stepName ? `.withName("${stepName}")` : ''});`
     case 'javascript-mocha':
-      if (stepName)
-        return `await eyes.check("${stepName}", Target.region(${locator}).webHook(preRenderHook))`
+      if (stepName) return `await eyes.check("${stepName}", Target.region(${locator}).webHook(preRenderHook))`
       else
         return `await eyes.check((new URL(await driver.getCurrentUrl())).pathname, Target.region(${locator}).webHook(preRenderHook))`
     case 'python-pytest':
-      if (stepName)
-        return `self.eyes.check("${stepName}", Target.region([${locator}]))`
-      else
-        return `self.eyes.check(urlparse(self.driver.current_url).path, Target.region([${locator}]))`
+      if (stepName) return `self.eyes.check("${stepName}", Target.region([${locator}]))`
+      else return `self.eyes.check(urlparse(self.driver.current_url).path, Target.region([${locator}]))`
     case 'ruby-rspec':
       if (stepName)
         return `@eyes.check("${stepName}", Applitools::Selenium::Target.region(${locator}).script_hook(@pre_render_hook))`
@@ -65,8 +49,7 @@ async function emitCheckElement(
     case 'csharp-xunit':
       if (stepName)
         return `eyes.Check(Target.Region(${locator}).WithName("${stepName}").BeforeRenderScreenshotHook(preRenderHook));`
-      else
-        return `eyes.Check(Target.Region(${locator}).BeforeRenderScreenshotHook(preRenderHook));`
+      else return `eyes.Check(Target.Region(${locator}).BeforeRenderScreenshotHook(preRenderHook));`
   }
 }
 
@@ -102,11 +85,7 @@ function emitSetMatchTimeout(language, timeout) {
   }
 }
 
-function emitSetPreRenderHook(
-  language,
-  { isVisualGridEnabled } = {},
-  jsSnippet
-) {
+function emitSetPreRenderHook(language, { isVisualGridEnabled } = {}, jsSnippet) {
   switch (language) {
     case 'java-junit':
       if (isVisualGridEnabled) return `preRenderHook = "${jsSnippet}";`
@@ -168,8 +147,7 @@ function emitAfterEach(language, { isVisualGridEnabled } = {}) {
       else result += `self.eyes.abort()`
       break
     case 'ruby-rspec':
-      if (isVisualGridEnabled)
-        result += `@visual_grid_runner.get_all_test_results`
+      if (isVisualGridEnabled) result += `@visual_grid_runner.get_all_test_results`
       else result += `@eyes.abort_if_not_closed`
       break
     case 'csharp-nunit':
@@ -185,14 +163,10 @@ function emitAfterEach(language, { isVisualGridEnabled } = {}) {
   return result
 }
 
-function emitVisualGridOptions(
-  visualGridOptions,
-  { deviceEmitter, browserEmitter } = {}
-) {
+function emitVisualGridOptions(visualGridOptions, { deviceEmitter, browserEmitter } = {}) {
   let result = ''
   visualGridOptions.forEach(browser => {
-    if (browser.deviceName)
-      result += deviceEmitter(browser.deviceId, browser.screenOrientation)
+    if (browser.deviceName) result += deviceEmitter(browser.deviceId, browser.screenOrientation)
     else {
       browser.type = browser.id ? browser.id : browser.name
       result += browserEmitter(browser)
@@ -218,9 +192,7 @@ function emitBeforeEach(
           return `\nconfig.addDeviceEmulation(DeviceName.${deviceId}, ScreenOrientation.${orientation.toUpperCase()});`
         }
         const browserEmitter = browser => {
-          return `\nconfig.addBrowser(${browser.width}, ${
-            browser.height
-          }, BrowserType.${browser.type.toUpperCase()});`
+          return `\nconfig.addBrowser(${browser.width}, ${browser.height}, BrowserType.${browser.type.toUpperCase()});`
         }
         result += emitVisualGridOptions(visualGridOptions, {
           deviceEmitter,
@@ -230,8 +202,7 @@ function emitBeforeEach(
         result += `eyes = new Eyes();`
         result += `\neyes.setApiKey(System.getenv("APPLITOOLS_API_KEY"));`
         result += `\nConfiguration config = eyes.getConfiguration();`
-        if (baselineEnvName)
-          result += `\neyes.setBaseLineEnvName("${baselineEnvName}");`
+        if (baselineEnvName) result += `\neyes.setBaseLineEnvName("${baselineEnvName}");`
       }
       if (accessibilitySettings) {
         result += `\nAccessibilitySettings settings = new AccessibilitySettings(AccessibilityLevel.${accessibilitySettings.level}, AccessibilityGuidelinesVersion.${accessibilitySettings.guidelinesVersion});`
@@ -249,9 +220,7 @@ function emitBeforeEach(
           return `\nconfig.addDeviceEmulation(DeviceName.${deviceId}, ScreenOrientation.${orientation.toUpperCase()})`
         }
         const browserEmitter = browser => {
-          return `\nconfig.addBrowser(${browser.width}, ${
-            browser.height
-          }, BrowserType.${browser.type.toUpperCase()})`
+          return `\nconfig.addBrowser(${browser.width}, ${browser.height}, BrowserType.${browser.type.toUpperCase()})`
         }
         result += emitVisualGridOptions(visualGridOptions, {
           deviceEmitter,
@@ -270,8 +239,7 @@ function emitBeforeEach(
         }
       }
       result += `\neyes.setApiKey(process.env["APPLITOOLS_API_KEY"])`
-      if (baselineEnvName)
-        result += `\neyes.setBaselineEnvName("${baselineEnvName}")`
+      if (baselineEnvName) result += `\neyes.setBaselineEnvName("${baselineEnvName}")`
       result += `\nawait eyes.open(driver, "${projectName}", "${testName}")`
       break
     case 'python-pytest':
@@ -285,9 +253,7 @@ function emitBeforeEach(
           return `\nconfig.add_device_emulation(DeviceName.${deviceId}, ScreenOrientation.${orientation.toUpperCase()})`
         }
         const browserEmitter = browser => {
-          return `\nconfig.add_browser(${browser.width}, ${
-            browser.height
-          }, BrowserType.${browser.type.toUpperCase()})`
+          return `\nconfig.add_browser(${browser.width}, ${browser.height}, BrowserType.${browser.type.toUpperCase()})`
         }
         result += emitVisualGridOptions(visualGridOptions, {
           deviceEmitter,
@@ -298,8 +264,7 @@ function emitBeforeEach(
         result += `self.eyes = Eyes()`
       }
       result += `\nself.eyes.api_key = os.environ["APPLITOOLS_API_KEY"]`
-      if (baselineEnvName)
-        result += `\nself.eyes.baseline_env_name = "${baselineEnvName}"`
+      if (baselineEnvName) result += `\nself.eyes.baseline_env_name = "${baselineEnvName}"`
       if (accessibilitySettings) {
         result += `\nsetting = AccessibilitySettings(
           AccessibilityLevel.${accessibilitySettings.level}, AccessibilityGuidelinesVersion.${accessibilitySettings.guidelinesVersion}
@@ -321,21 +286,14 @@ function emitBeforeEach(
         if (accessibilitySettings) {
           result += `  c.accessibility_validation = Applitools::AccessibilitySettings.new(Applitools::AccessibilityLevel::${accessibilitySettings.level}, Applitools::AccessibilityGuidelinesVersion::${accessibilitySettings.guidelinesVersion})`
         }
-        if (baselineEnvName)
-          result += `\n  c.baseline_env_name = '${baselineEnvName}'`
+        if (baselineEnvName) result += `\n  c.baseline_env_name = '${baselineEnvName}'`
         const deviceEmitter = (deviceId, orientation) => {
           const deviceName = deviceId.replace(/_/g, '')
-          return `\n  c.add_device_emulation(Devices::${deviceName
-            .charAt(0)
-            .toUpperCase() +
-            deviceName.substring(
-              1
-            )}, Orientations::${orientation.toUpperCase()})`
+          return `\n  c.add_device_emulation(Devices::${deviceName.charAt(0).toUpperCase() +
+            deviceName.substring(1)}, Orientations::${orientation.toUpperCase()})`
         }
         const browserEmitter = browser => {
-          return `\n  c.add_browser(${browser.width}, ${
-            browser.height
-          }, BrowserTypes::${browser.type.toUpperCase()})`
+          return `\n  c.add_browser(${browser.width}, ${browser.height}, BrowserTypes::${browser.type.toUpperCase()})`
         }
         result += emitVisualGridOptions(visualGridOptions, {
           deviceEmitter,
@@ -352,8 +310,7 @@ function emitBeforeEach(
           result += `\n@eyes.config = config`
         }
         result += `\n@eyes.api_key = ENV['APPLITOOLS_API_KEY']`
-        if (baselineEnvName)
-          result += `\n@eyes.baseline_env_name = '${baselineEnvName}'`
+        if (baselineEnvName) result += `\n@eyes.baseline_env_name = '${baselineEnvName}'`
         result += `\n@eyes.open(driver: @driver, app_name: '${projectName}', test_name: '${testName}', viewport_size: '${viewportSize}')`
       }
       break
@@ -370,8 +327,7 @@ function emitBeforeEach(
         result += `\nAccessibilitySettings settings = new AccessibilitySettings(AccessibilityLevel.${accessibilitySettings.level}, AccessibilityGuidelinesVersion.${accessibilitySettings.guidelinesVersion});`
         result += `\nconf.SetAccessibilityValidation(settings);`
       }
-      if (baselineEnvName)
-        result += `\nconf.SetBaselineEnvName("${baselineEnvName}");`
+      if (baselineEnvName) result += `\nconf.SetBaselineEnvName("${baselineEnvName}");`
       if (visualGridOptions) {
         const deviceEmitter = (deviceId, orientation) => {
           return `\nconf.AddDeviceEmulation(DeviceName.${deviceId}, ScreenOrientation.${orientation
@@ -379,9 +335,7 @@ function emitBeforeEach(
             .toUpperCase() + orientation.substring(1)});`
         }
         const browserEmitter = browser => {
-          return `\nconf.AddBrowser(${browser.width}, ${
-            browser.height
-          }, BrowserType.${browser.type.toUpperCase()});`
+          return `\nconf.AddBrowser(${browser.width}, ${browser.height}, BrowserType.${browser.type.toUpperCase()});`
         }
         result += emitVisualGridOptions(visualGridOptions, {
           deviceEmitter,

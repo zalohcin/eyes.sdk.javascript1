@@ -13,6 +13,7 @@
 - [Applitools API key](#applitools-api-key)
 - [Usage](#usage)
 - [Getting started with the API](#getting-started-with-the-api)
+  * [Eyes constructor](#eyes-constructor)
   * [open](#open)
     + [Visual tests and baselines](#visual-tests-and-baselines)
     + [Batches](#batches)
@@ -30,6 +31,10 @@
         * [Scroll root element](#scroll-root-element)
         * [Other checkSettings configuration](#other-checksettings-configuration)
   * [close](#close)
+- [Runners](#runners)
+  * [Purpose of runners](#purpose-of-runners)
+    + [1. Use the Ultra fast grid](#1-use-the-ultra-fast-grid)
+    + [2. Manage tests across multiple `Eyes` instances](#2-manage-tests-across-multiple--eyes--instances)
 - [Recipes for common tasks](#recipes-for-common-tasks)
   * [Configure Server URL](#configure-server-url)
   * [Configure Proxy](#configure-proxy)
@@ -53,14 +58,14 @@
 Install Eyes-Protractor as a local dev dependency in your tested project:
 
 ```bash
-npm i -D @applitools/eyes-protractor@beta
+npm i -D @applitools/eyes-protractor
 ```
 
 ## Applitools API key
 
 In order to authenticate via the Applitools server, you need to supply the Eyes-Protractor SDK with the API key you got from Applitools. Read more about how to obtain the API key [here](https://applitools.com/docs/topics/overview/obtain-api-key.html).
 
-To to this, set the environment variable `APPLITOOLS_API_KEY` to the API key before running your tests.
+To do this, set the environment variable `APPLITOOLS_API_KEY` to the API key before running your tests.
 For example, on Linux/Mac:
 
 ```bash
@@ -104,9 +109,19 @@ describe('My first visual test', function() {
 
 ## Getting started with the API
 
+### Eyes constructor
+
+Creates an instance of `Eyes`, which then exposes methods to run and configure visual tests.
+
+```js
+const eyes = new Eyes(runner)
+```
+
+- `runner` - A runner instance which manages tests across multiple `Eyes` instances. The runner can be an instance of either a `ClassicRunenr` or a `VisualGridRunner`. For more information, see the [Runners](#runners) section below.
+
 ### open
 
-Create an Applitools test.
+Creates an Applitools test.
 This will start a session with the Applitools server.
 
 ```js
@@ -139,7 +154,7 @@ https://applitools.com/docs/topics/working-with-test-batches/working-with-test-b
 
 ### check
 
-Generate a screenshot of the current page and add it to the Applitools Test.
+Generates a screenshot of the current page and add it to the Applitools Test.
 
 ```js
 eyes.check(tag, checkSettings)
@@ -312,7 +327,7 @@ Possible input types are:
 
 ### close
 
-Close the applitools test and check that all screenshots are valid.
+Closes the applitools test and check that all screenshots are valid.
 
 It is important to call this at the end of each test, symmetrically to `open`(or in `afterEach()`, see [Best practice for using the SDK](#best-practice-for-using-the-sdk)).
 
@@ -320,9 +335,97 @@ It is important to call this at the end of each test, symmetrically to `open`(or
 const testResults = await eyes.close(throwEx)
 ```
 
-- `throwEx` - throw an error if visual differences were found, or if the test failed for any other reason. The deault is `true`.
+- `throwEx` - (Boolean) throw an error if visual differences were found, or if the test failed for any other reason. The deault is `true`.
 
-<!--
+Return value: [`TestResults`](#test-results).
+
+## Runners
+
+There are two types of runners: `ClassicRunner` and `VisualGridRunner`:
+
+1. `ClassicRunner` - used when the screenshot is taken by the SDK itself.
+
+```js
+const {ClassicRunner} = require('@applitools/eyes-protractor')
+const runner = new ClassicRunner()
+```
+
+2. `VisualGridRunner` - used when the screenshot is taken by the **Ultra fast grid**.
+
+```js
+const {VisualGridRunner} = require('@applitools/eyes-protractor')
+const runner = new VisualGridRunner(concurrentSessions)
+```
+
+- `concurrentSessions` - (Number) the number of visual tests that are allowed to run at the same time. Default: `3`.
+
+### Purpose of runners
+
+There are two purposes for using runners:
+
+#### 1. Use the Ultra fast grid
+
+This is done simply by specifying the `VisualGridRunner`. Browsers are specified by using the [`Configuration`](#configuration) API. For example:
+
+```js
+const {Eyes, VisualGridRunner, BrowserType, DeviceName} = require('@applitools/eyes-protractor')
+const eyes = new Eyes(new VisualGridRunner)
+const configuration = eyes.getConfiguration()
+
+configuration.addBrowser({width: 1200, height: 800, name: BrowserType.CHROME})
+configuration.addBrowser({width: 1200, height: 800, name: BrowserType.FIREFOX})
+configuration.addBrowser({width: 1200, height: 800, name: BrowserType.SAFARI})
+configuration.addBrowser({width: 1200, height: 800, name: BrowserType.EDGE})
+configuration.addBrowser({width: 1200, height: 800, name: BrowserType.IE_11})
+configuration.addBrowser({deviceName: DeviceName.Galaxy_S9_Plus})
+
+eyes.setConfiguration(configuration)
+```
+
+#### 2. Manage tests across multiple `Eyes` instances
+
+If you decide to create more than one instance of `Eyes` in your tests (for example, if you run `new Eyes()` in `beforeEach` test hooks), the runner provides a method called **`getAllTestResults`** for collecting test results across all eyes instances.
+
+Consider the following:
+
+```js
+const {Eyes, ClassicRunner, StitchMode} = require('applitools/eyes-protractor')
+const runner = new VisualGridRunner(10)
+
+async function runTest(url, ...browsers) {
+  await driver.get(url)
+  const eyes = new Eyes(runner)
+  const configuration = eyes.getConfiguration()
+  configuration.addBrowsers(...browsers)
+  eyes.setConfiguration(configuration)
+  await eyes.open(driver, appName, testName, viewportSize)
+  await eyes.check(undefined, Target.window().fully())
+  eyes.close()
+}
+
+async function collectResults() {
+  const testResultsSummary = await runner.getAllTestResults()
+  for (const testResultContainer of testResultsSummary) {
+    const testResults = testResultContainer.getTestResults()
+    console.log(formatTestResults(testResults)) // see the Recipes section below for the implementation of this function
+  }
+}
+
+Promise.all([
+  runTest('https://example.org',
+    {width: 1200, height: 800, name: BrowserType.CHROME},
+    {width: 1200, height: 800, name: BrowserType.FIREFOX}
+  ),
+  runTest('https://applitools.com',
+    {deviceName: DeviceName.Galaxy_S9_Plus},
+    {deviceName: DeviceName.iPhone_X}
+  )
+]).then(collectResults)
+```
+
+This snippet of code runs two visual tests in parallel on two websites, using a specific configuration for each url. To achieve this, multiple `Eyes` instances are used, but in order to wait for all test results, we call `runner.getAllTestResults`. We then iterate through the results and print out a formatted summary.
+
+<!-- TODO
 ## Configuration
 
 show logs
@@ -540,7 +643,7 @@ _For more information, visit our documentation page: https://applitools.com/docs
 
 It's possible to provide additional information about each test in custom fields, which can then show up in Test Manager in their own column.
 
-This is done by calling `setProperties` on the configuration, and providing it with an array of properties with the structure `{name, value}`. For exmaple:
+This is done by calling `setProperties` on the configuration, and providing it with an array of properties with the structure `{name, value}`. For example:
 
 ```js
 const {Eyes, Target} = require('@applitools/eyes-protractor')
@@ -596,7 +699,7 @@ _For the full list of methods, visit our documentation page: https://applitools.
 To enable logging to the console, use the `ConsoleLogHandler` class:
 
 ```js
-import {Eyes, ConsoleLogHandler} from '@applitools/eyes-testcafe'
+const {Eyes, ConsoleLogHandler} = require('@applitools/eyes-protractor')
 
 const eyes = new Eyes()
 eyes.setLogHandler(new ConsoleLogHandler())

@@ -127,8 +127,12 @@ module.exports = {
     return driver.end()
   },
 
-  async click(driver, el) {
-    return driver.elementIdClick(el.ELEMENT)
+  async click(driver, element) {
+    return driver.elementIdClick(element.ELEMENT)
+  },
+
+  async type(driver, element, keys) {
+    return driver.elementIdValue(element.ELEMENT, keys)
   },
 
   async waitUntilDisplayed(driver, selector, timeout) {

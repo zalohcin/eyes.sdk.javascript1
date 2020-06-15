@@ -3,6 +3,12 @@
 ## Unreleased
 
 
+## 3.8.0 - 2020/6/9
+
+- updated to @applitools/dom-snapshot@3.5.3 (from 3.5.2)
+- updated to @applitools/eyes-sdk-core@11.0.5 (from 11.0.3)
+- updated to @applitools/visual-grid-client@14.4.4 (from 14.4.2)
+
 ## 3.7.1 - 2020/6/3
 
 - fixed 409 conflict error

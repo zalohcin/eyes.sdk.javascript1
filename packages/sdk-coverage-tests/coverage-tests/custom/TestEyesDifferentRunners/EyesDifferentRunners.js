@@ -45,7 +45,11 @@ async function validateVG(eyes) {
   let container = await eyes.getRunner().getAllTestResults(false)
   let results = container.getAllResults()
   for (let result of results) {
-    let data = await getApiData(result.getTestResults())
+    const testResults = result.getTestResults()
+    if (!testResults) {
+      assert.fail(result.getException())
+    }
+    const data = await getApiData(testResults)
     assert.deepStrictEqual(
       data.actualAppOutput.length,
       2,

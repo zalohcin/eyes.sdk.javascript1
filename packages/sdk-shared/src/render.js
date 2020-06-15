@@ -1,7 +1,10 @@
 'use strict'
+const fs = require('fs')
+const path = require('path')
 const chromedriver = require('chromedriver')
 const {URL} = require('url')
-const {Builder, By} = require('selenium-webdriver')
+const cwd = process.cwd()
+const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
 const {
   Eyes,
   ClassicRunner,
@@ -10,13 +13,12 @@ const {
   FileLogHandler,
   Configuration,
   StitchMode,
-  EyesSeleniumUtils,
   DeviceName,
   ScreenOrientation,
   MatchLevel,
   // FileDebugScreenshotsProvider,
-} = require('../index')
-const path = require('path')
+} = require(cwd)
+const {EyesJsBrowserUtils} = require('../../eyes-sdk-core')
 const yargs = require('yargs')
 const args = yargs
   .usage('yarn render <url> [options]')
@@ -170,6 +172,16 @@ const args = yargs
     describe: 'batch name',
     type: 'string',
   })
+  .option('run-before', {
+    describe:
+      'path to JavaScript file which exports an async function which should be run before the visual check. The function receives the driver as a parameter so is can perform page interactions.',
+    type: 'string',
+    coerce: processRunBefore,
+  })
+  .option('attach', {
+    describe: 'attach to existing chrome via remote debugging port',
+    type: 'boolean',
+  })
   .help().argv
 
 const [url] = args._
@@ -191,6 +203,17 @@ if (!url) {
 
   if (args.webdriverProxy) {
     await chromedriver.start(['--whitelisted-ips=127.0.0.1'], true)
+  }
+
+  let runBeforeFunc
+  if (args.runBefore !== undefined) {
+    if (!fs.existsSync(args.runBefore)) {
+      throw new Error('file specified in --run-before does not exist:', args.runBefore)
+    }
+    runBeforeFunc = require(args.runBefore)
+    if (typeof runBeforeFunc !== 'function') {
+      throw new Error(`exported value from --run-before file is not a function: ${args.runBefore}`)
+    }
   }
 
   const driver = await buildDriver({...args, isMobileEmulation})
@@ -246,15 +269,21 @@ if (!url) {
   logger.log(`[render script] process versions: ${JSON.stringify(process.versions)}`)
   console.log('log file at:', logFilePath)
 
-  await driver.get(url)
+  if (!args.attach) {
+    await spec.visit(driver, url)
+  }
 
   try {
+    if (runBeforeFunc) {
+      await runBeforeFunc(driver)
+    }
+
     await eyes.open(driver, args.appName, url)
 
     let target
 
     if (args.targetElement) {
-      target = Target.region(By.css(args.targetElement))
+      target = Target.region(args.targetElement)
     } else {
       target = Target.window()
     }
@@ -266,14 +295,14 @@ if (!url) {
     if (args.ignoreRegions) {
       target.ignoreRegions.apply(
         target,
-        args.ignoreRegions.split(',').map(s => By.css(s.trim())),
+        args.ignoreRegions.split(',').map(s => s.trim()),
       )
     }
 
     if (args.layoutRegions) {
       target.layoutRegions.apply(
         target,
-        args.layoutRegions.split(',').map(s => By.css(s.trim())),
+        args.layoutRegions.split(',').map(s => s.trim()),
       )
     }
 
@@ -284,7 +313,7 @@ if (!url) {
     // debugger
 
     if (args.scrollPage) {
-      await EyesSeleniumUtils.scrollPage(driver)
+      await EyesJsBrowserUtils.scrollPage(driver)
     }
 
     await eyes.check(args.tag, target)
@@ -301,12 +330,17 @@ if (!url) {
 
     console.log('\nRender results:\n', resultsStr)
   } finally {
-    await driver.quit()
+    if (!args.attach) {
+      await spec.cleanup(driver)
+    }
     if (args.webdriverProxy) {
       await chromedriver.stop()
     }
   }
-})()
+})().catch(ex => {
+  console.log(ex)
+  process.exit(1)
+})
 
 function buildDriver({
   headless,
@@ -315,27 +349,26 @@ function buildDriver({
   driverServer,
   isMobileEmulation,
   deviceName,
+  attach,
 } = {}) {
   const capabilities = {
     browserName: 'chrome',
     'goog:chromeOptions': {
       args: headless ? ['--headless'] : [],
       mobileEmulation: isMobileEmulation ? {deviceName} : undefined,
+      debuggerAddress: attach ? '127.0.0.1:9222' : undefined,
     },
-    username: process.env.SAUCE_USERNAME,
-    accesskey: process.env.SAUCE_ACCESS_KEY,
     ...driverCapabilities,
   }
 
-  let builder = new Builder().withCapabilities(capabilities).usingServer(driverServer)
-
-  if (webdriverProxy) {
-    builder = builder
-      .usingServer('http://localhost.charlesproxy.com:9515')
-      .usingWebDriverProxy('http://localhost:8888')
+  if (process.env.SAUCE_USERNAME && process.env.SAUCE_ACCESS_KEY) {
+    capabilities['sauce:options'] = {
+      username: process.env.SAUCE_USERNAME,
+      accesskey: process.env.SAUCE_ACCESS_KEY,
+    }
   }
 
-  return builder.build()
+  return spec.build({capabilities, serverUrl: driverServer, webdriverProxy})
 }
 
 function initLog(eyes, filename) {
@@ -418,4 +451,9 @@ function argToString([key, value]) {
   const valueStr = typeof value === 'object' ? JSON.stringify(value) : value
   const shouldShow = !['_', '$0'].includes(key) && key.indexOf('-') === -1 // don't show the entire cli, and show only the camelCase version of each arg
   return shouldShow && `* ${key}: ${valueStr}`
+}
+
+function processRunBefore(str) {
+  if (str.charAt(0) !== '/') str = `./${str}`
+  return path.resolve(cwd, str)
 }

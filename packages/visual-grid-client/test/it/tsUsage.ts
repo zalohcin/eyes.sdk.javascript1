@@ -21,6 +21,34 @@ eyes.open({
     {width: 1024, height: 768, name: 'edgechromium-two-versions-back'},
     {width: 1024, height: 768, name: 'ie11'},
     {width: 1024, height: 768}, // chrome is the default
+    {
+      deviceName: 'iPhone X',
+      screenOrientation: 'landscape',
+    },
+    {
+      deviceName: 'iPhone X',
+      screenOrientation: 'landscape',
+      name: 'chrome'
+    },
+    {
+      chromeEmulationInfo: {
+        deviceName: 'iPhone X',
+        screenOrientation: 'landscape'
+      }
+    },
+    {
+      chromeEmulationInfo: {
+        deviceName: 'iPhone X',
+        screenOrientation: 'landscape',
+        name: 'chrome'
+      }
+    },
+    {
+      iosDeviceInfo: {
+        deviceName: 'iPhone 11 Pro',
+        screenOrientation: 'landscapeLeft'
+      }
+    }
   ]
 });
 

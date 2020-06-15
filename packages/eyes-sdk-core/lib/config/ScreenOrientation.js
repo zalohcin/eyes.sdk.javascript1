@@ -1,4 +1,5 @@
 'use strict'
+const {Enum} = require('../utils/Enum')
 
 /**
  * @readonly
@@ -9,5 +10,4 @@ const ScreenOrientation = {
   LANDSCAPE: 'landscape',
 }
 
-Object.freeze(ScreenOrientation)
-exports.ScreenOrientation = ScreenOrientation
+exports.ScreenOrientation = Enum('ScreenOrientation', ScreenOrientation)

@@ -34,7 +34,7 @@ function getEyes(stitchMode) {
   let eyes = new Eyes()
   setStitchMode()
   eyes.setBranchName('master')
-  if(process.env['APPLITOOLS_API_KEY_SDK']){
+  if (process.env['APPLITOOLS_API_KEY_SDK']) {
     eyes.setApiKey(process.env['APPLITOOLS_API_KEY_SDK'])
   }
   eyes.setBatch(batch)
