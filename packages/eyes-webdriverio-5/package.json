@@ -59,7 +59,7 @@
   "scripts": {
     "lint": "eslint '**/*.js'",
     "render": "node ../sdk-shared/src/render.js",
-    "test": "yarn test:unit && yarn test:it && yarn test:e2e",
+    "test": "yarn test:unit && yarn test:it && yarn test:e2e && yarn test:service",
     "test:e2e": "mocha --no-timeouts \"test/+(TestClassicApi*.js|TestFluentApi*.js|TestVisualGrid*.js)\"",
     "test:it": "mocha --no-timeouts \"test/it/*.js\"",
     "test:service": "wdio \"test/service/wdio.conf.js\" && wdio \"test/service/no-config/wdio.no-config.conf.js\" && wdio \"test/service/vg/wdio.vg.conf.js\"",
