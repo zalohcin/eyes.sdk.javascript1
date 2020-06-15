@@ -101,7 +101,7 @@ class ServerConnector {
       headers: DEFAULT_HEADERS,
       timeout: DEFAULT_TIMEOUT_MS,
       responseType: 'json',
-      maxContentLength: 20 * 1024 * 1024, // 20 MB
+      maxContentLength: 200 * 1024 * 1024, // 200 MB
     })
 
     this._axios.interceptors.request.use(async config => {
@@ -114,10 +114,15 @@ class ServerConnector {
         agentId: getAgentId(),
       })
 
+      const dataLength = axiosConfig.data && axiosConfig.data.length
+      const dataLengthStr = dataLength ? ` and body length ${axiosConfig.data.length}` : ''
+
       this._logger.verbose(
         `axios request interceptor - ${axiosConfig.name} [${axiosConfig.requestId}${
           axiosConfig.originalRequestId ? ` retry of ${axiosConfig.originalRequestId}` : ''
-        }] will now call to ${axiosConfig.url} with params ${JSON.stringify(axiosConfig.params)}`,
+        }] will now call to ${axiosConfig.url} with params ${JSON.stringify(
+          axiosConfig.params,
+        )}${dataLengthStr}`,
       )
 
       await delayRequest({axiosConfig, logger})

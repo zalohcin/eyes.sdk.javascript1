@@ -44,11 +44,7 @@ function calculateMode(newState) {
     // if only mode is defined take it
     // if none is defined use the previous one
     // else use NORMAL
-    return newState.mode
-      ? newState.mode
-      : state.mode
-      ? state.mode
-      : Modes.NORMAL
+    return newState.mode ? newState.mode : state.mode ? state.mode : Modes.NORMAL
   }
 }
 
@@ -67,10 +63,6 @@ export function validateOptions() {
 export function resetMode() {
   setExternalState({
     mode:
-      verificationMode !== Modes.NORMAL
-        ? verificationMode
-        : state.isConnected
-        ? state.normalMode
-        : Modes.DISCONNECTED,
+      verificationMode !== Modes.NORMAL ? verificationMode : state.isConnected ? state.normalMode : Modes.DISCONNECTED,
   })
 }

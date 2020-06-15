@@ -14,14 +14,7 @@ import {
 
 // TODO: a11y for Python (not implemented yet)
 describe('code-export', () => {
-  const languages = [
-    'java-junit',
-    'javascript-mocha',
-    'python-pytest',
-    'ruby-rspec',
-    'csharp-nunit',
-    'csharp-xunit',
-  ]
+  const languages = ['java-junit', 'javascript-mocha', 'python-pytest', 'ruby-rspec', 'csharp-nunit', 'csharp-xunit']
   languages.forEach(language => {
     describe(language, () => {
       describe('commands', () => {
@@ -39,12 +32,8 @@ describe('code-export', () => {
           ).toMatchSnapshot()
         })
         it('checkElement', () => {
-          expect(
-            emitCheckElement(language, undefined, 'By.id("blah")', 'blah')
-          ).resolves.toMatchSnapshot()
-          expect(
-            emitCheckElement(language, undefined, 'By.id("blah")')
-          ).resolves.toMatchSnapshot()
+          expect(emitCheckElement(language, undefined, 'By.id("blah")', 'blah')).resolves.toMatchSnapshot()
+          expect(emitCheckElement(language, undefined, 'By.id("blah")')).resolves.toMatchSnapshot()
         })
         it('setMatchLevel', () => {
           expect(emitSetMatchLevel(language, 'Layout')).toMatchSnapshot()
@@ -65,16 +54,12 @@ describe('code-export', () => {
               'console.log("blah");'
             )
           ).toMatchSnapshot()
-          expect(
-            emitSetPreRenderHook(language, 'console.log("blah");')
-          ).toMatchSnapshot()
+          expect(emitSetPreRenderHook(language, 'console.log("blah");')).toMatchSnapshot()
         })
       })
       describe('hooks', () => {
         it('afterEach', () => {
-          expect(
-            emitAfterEach(language, { isVisualGridEnabled: true })
-          ).toMatchSnapshot()
+          expect(emitAfterEach(language, { isVisualGridEnabled: true })).toMatchSnapshot()
           expect(emitAfterEach(language)).toMatchSnapshot()
         })
         it('beforeEach', () => {
@@ -83,7 +68,7 @@ describe('code-export', () => {
               accessibilitySettings: {
                 level: 'AA',
                 guidelinesVersion: 'WCAG_2_0',
-              }
+              },
             })
           ).toMatchSnapshot()
           expect(
@@ -118,24 +103,16 @@ describe('code-export', () => {
           expect(
             emitDependency(language, { isVisualGridEnabled: true, hasAccessibilitySettings: true })
           ).toMatchSnapshot()
-          expect(
-            emitDependency(language, { isVisualGridEnabled: true })
-          ).toMatchSnapshot()
-          expect(
-            emitDependency(language, { hasAccessibilitySettings: true })
-          ).toMatchSnapshot()
+          expect(emitDependency(language, { isVisualGridEnabled: true })).toMatchSnapshot()
+          expect(emitDependency(language, { hasAccessibilitySettings: true })).toMatchSnapshot()
           expect(emitDependency(language)).toMatchSnapshot()
         })
         it('inEachEnd', () => {
           expect(emitInEachEnd(language)).toMatchSnapshot()
-          expect(
-            emitInEachEnd(language, { isVisualGridEnabled: true })
-          ).toMatchSnapshot()
+          expect(emitInEachEnd(language, { isVisualGridEnabled: true })).toMatchSnapshot()
         })
         it('variable', () => {
-          expect(
-            emitVariable(language, { isVisualGridEnabled: true })
-          ).toMatchSnapshot()
+          expect(emitVariable(language, { isVisualGridEnabled: true })).toMatchSnapshot()
           expect(emitVariable(language)).toMatchSnapshot()
         })
       })

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 1.0.1 - 2020/6/9
+
 - support accessibility validation
 
 ## 1.0.0 - 20/4/2020

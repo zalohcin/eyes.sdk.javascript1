@@ -1940,7 +1940,7 @@ Received: 'firefox-1'.`,
 
   it('renders iosDeviceInfo', async () => {
     const deviceName = 'iPhone 4'
-    const iosDeviceInfo = {screenOrientation: 'portrait', version: 'latest', name: deviceName}
+    const iosDeviceInfo = {screenOrientation: 'portrait', version: 'latest', deviceName}
     const {checkWindow, close} = await openEyes({
       wrappers: [wrapper],
       browser: {
@@ -1954,7 +1954,7 @@ Received: 'firefox-1'.`,
     const [results] = await close()
     expect(wrapper.getDeviceInfo()).to.equal(deviceName)
     expect(wrapper.iosDeviceInfo).to.eql(iosDeviceInfo)
-    expect(wrapper.getViewportSize()).to.eql(FakeEyesWrapper.devices['iPhone 4'])
+    expect(wrapper.getViewportSize()).to.eql(FakeEyesWrapper.devices[deviceName])
     expect(results.getStepsInfo()[0].result.getAsExpected()).to.equal(true)
   })
 
@@ -1963,7 +1963,7 @@ Received: 'firefox-1'.`,
     const {checkWindow, close} = await openEyes({
       wrappers: [wrapper],
       browser: {
-        iosDeviceInfo: {screenOrientation: 'portrait', version: 'latest', name: deviceName},
+        iosDeviceInfo: {screenOrientation: 'portrait', version: 'latest', deviceName},
       },
       appName,
     })
