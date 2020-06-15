@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 5.14.0 - 2020/6/15
+
 - expose the service from the SDK package
 - add detailed readme
 - updated to @applitools/eyes-sdk-core@11.0.9 (from 11.0.8)
