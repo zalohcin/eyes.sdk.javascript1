@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- change default concurrent sessions in visual grid from 3 to 1
 
 ## 11.0.8 - 2020/6/14
 
