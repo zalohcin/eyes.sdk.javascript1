@@ -20,7 +20,7 @@ describe('Coverage tests', () => {
     eyes.setMatchTimeout(0)
   })
 
-  it('TestIgnoreDisplacements', () =>
+  it('TestIgnoreDisplacements_Scroll', () =>
     TestIgnoreDisplacements({
       testName: 'TestIgnoreDisplacements_Scroll',
       eyes,
@@ -28,7 +28,7 @@ describe('Coverage tests', () => {
       ignoreDisplacement: true,
     }))
 
-  it('TestIgnoreDisplacements', () =>
+  it('TestIgnoreDisplacements_Scroll', () =>
     TestIgnoreDisplacements({
       testName: 'TestIgnoreDisplacements_Scroll',
       eyes,

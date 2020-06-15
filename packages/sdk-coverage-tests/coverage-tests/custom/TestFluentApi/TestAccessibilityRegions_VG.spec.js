@@ -20,6 +20,6 @@ describe.skip('Coverage tests', () => {
     eyes.setMatchTimeout(0)
   })
 
-  it('TestAccessibilityRegions', () =>
+  it('TestAccessibilityRegions_VG', () =>
     TestAccessibilityRegions({testName: 'TestAccessibilityRegions_VG', eyes, driver}))
 })

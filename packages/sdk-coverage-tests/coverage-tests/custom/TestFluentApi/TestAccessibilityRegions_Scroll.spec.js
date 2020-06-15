@@ -20,6 +20,6 @@ describe('Coverage tests', () => {
     eyes.setMatchTimeout(0)
   })
 
-  it('TestAccessibilityRegions', () =>
+  it('TestAccessibilityRegions_Scroll', () =>
     TestAccessibilityRegions({testName: 'TestAccessibilityRegions_Scroll', eyes, driver}))
 })

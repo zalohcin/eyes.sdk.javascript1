@@ -20,7 +20,7 @@ describe('Coverage tests', () => {
     eyes.setMatchTimeout(0)
   })
 
-  it('TestCheckRegionInFrame2Fluent', () =>
+  it('TestCheckRegionInFrame2Fluent_Scroll', () =>
     TestCheckRegionInFrame2_Fluent({
       testName: 'TestCheckRegionInFrame2_Fluent_Scroll',
       eyes,
