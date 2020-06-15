@@ -1,6 +1,8 @@
 'use strict'
 
-const {ConsoleLogHandler, Eyes, Target, VisualGridRunner} = require('..')
+const {ConsoleLogHandler, VisualGridRunner} = require('@applitools/eyes-sdk-core')
+const {WDIOEyesFactory: Eyes} = require('../src/WDIOSpecializedEyes')
+const Target = require('../src/WDIOCheckSettings')
 const VERSION = require('../package.json').version
 
 const DEFAULT_VIEWPORT = {
@@ -60,12 +62,7 @@ class EyesService {
       'eyesCheck',
       async (title, checkSettings = Target.window().fully()) => {
         await this._eyesOpen()
-
-        const matchResult = await this._eyes.check(title, checkSettings)
-        if (this._eyesConfig.throwErrorIfNotAsExpected && !matchResult.getAsExpected()) {
-          throw new Error('Eyes detected visual mismatch!')
-        }
-        return matchResult
+        return this._eyes.check(title, checkSettings)
       },
     )
 
