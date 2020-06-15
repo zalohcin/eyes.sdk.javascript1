@@ -35,9 +35,7 @@
   },
   "scripts": {
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
-    "test": "yarn test:classic && yarn test:vg",
-    "test:classic": "wdio tests/wdio.conf.js",
-    "test:vg": "wdio tests/wdio.conf.vg.js",
+    "test": "wdio tests/wdio.conf.js",
     "preversion": "bongo preversion && yarn test",
     "version": "bongo version",
     "postversion": "bongo postversion --skip-release-notification"

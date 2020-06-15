@@ -12,7 +12,7 @@ const DEFAULT_VIEWPORT = {
 
 class EyesService {
   constructor(config) {
-    this._eyesConfig = getServiceConfig(config)
+    this._eyesConfig = getServiceConfig(config) || {}
     const runner = this._eyesConfig.useVisualGrid
       ? new VisualGridRunner(this._eyesConfig.concurrency)
       : undefined
@@ -37,12 +37,9 @@ class EyesService {
    * @param {Array.<Object>} capabilities list of capabilities details
    * @param {Array.<String>} specs List of spec file paths that are to be run
    */
-  // eslint-disable-next-line
-  beforeSession(config, capabilities, specs) {
-    if (this._eyesConfig) {
-      this._eyes.setConfiguration(this._eyesConfig)
-      this._appName = this._eyes.getConfiguration().getAppName()
-    }
+  beforeSession(config, _capabilities, _specs) {
+    this._eyes.setConfiguration(this._eyesConfig)
+    this._appName = this._eyes.getConfiguration().getAppName()
     if (config.enableEyesLogs) {
       this._eyes.setLogHandler(new ConsoleLogHandler(true))
     }
@@ -55,8 +52,7 @@ class EyesService {
    * @param {Array.<Object>} capabilities list of capabilities details
    * @param {Array.<String>} specs List of spec file paths that are to be run
    */
-  // eslint-disable-next-line
-  before(capabilities, specs) {
+  before(_capabilities, _specs) {
     global.browser.addCommand(
       'eyesCheck',
       async (title, checkSettings = Target.window().fully()) => {
@@ -130,8 +126,7 @@ class EyesService {
    *
    * @param {Object} test test details
    */
-  // eslint-disable-next-line
-  afterTest(test) {
+  afterTest(_test) {
     // the next line is required because if we set an element in one test, then the following test
     // will say that the element is not attached to the page (because different browsers are used)
     this._eyes._scrollRootElement = undefined
