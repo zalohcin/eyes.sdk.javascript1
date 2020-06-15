@@ -32,8 +32,11 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "11.0.4",
-    "@applitools/visual-grid-client": "14.4.3"
+    "@applitools/eyes-sdk-core": "11.0.8",
+    "@applitools/visual-grid-client": "14.4.7"
+  },
+  "peerDependencies": {
+    "webdriverio": ">=5.18.0"
   },
   "devDependencies": {
     "@applitools/sdk-coverage-tests": "1.0.0",
