@@ -98,16 +98,6 @@
     stack-trace "^0.0.10"
     tunnel "0.0.6"
 
-"@applitools/eyes-webdriverio@5.13.2":
-  version "5.13.2"
-  resolved "https://registry.yarnpkg.com/@applitools/eyes-webdriverio/-/eyes-webdriverio-5.13.2.tgz#21bf44ba1f60b738e709c2d900f264ae66633506"
-  integrity sha512-s6IkOXtg7sei+cwxedXFu5HYXOv6c4GhzWQHZtFJd++OwMLDpddaE1CiSFPYATVheZsydC1RXI/C6fRUkK4Sxw==
-  dependencies:
-    "@applitools/eyes-sdk-core" "11.0.7"
-    "@applitools/visual-grid-client" "14.4.6"
-    selenium-webdriver "^4.0.0-alpha.5"
-    webdriverio "^5.18.6"
-
 "@applitools/feature-flags@2.1.1":
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/@applitools/feature-flags/-/feature-flags-2.1.1.tgz#cf784e3b7ab4f322b0ebe62a5ea45ec56738b2d4"
@@ -2554,11 +2544,6 @@
   dependencies:
     "@babel/types" "^7.3.0"
 
-"@types/caseless@*":
-  version "0.12.2"
-  resolved "https://registry.yarnpkg.com/@types/caseless/-/caseless-0.12.2.tgz#f65d3d6389e01eeb458bd54dc8f52b95a9463bc8"
-  integrity sha512-6ckxMjBBD8URvjB6J3NcnuAn5Pkl7t3TizAg+xdlzzQGSPSmBcXf8KoIH0ua/i+tio+ZRUHEXp0HEmvaR4kt0w==
-
 "@types/color-name@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
@@ -2720,16 +2705,6 @@
     "@types/prop-types" "*"
     csstype "^2.2.0"
 
-"@types/request@^2.48.4":
-  version "2.48.4"
-  resolved "https://registry.yarnpkg.com/@types/request/-/request-2.48.4.tgz#df3d43d7b9ed3550feaa1286c6eabf0738e6cf7e"
-  integrity sha512-W1t1MTKYR8PxICH+A4HgEIPuAC3sbljoEVfyZbeFJJDbr30guDspJri2XOaM2E+Un7ZjrihaDi7cf6fPa2tbgw==
-  dependencies:
-    "@types/caseless" "*"
-    "@types/node" "*"
-    "@types/tough-cookie" "*"
-    form-data "^2.5.0"
-
 "@types/resolve@0.0.8":
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/@types/resolve/-/resolve-0.0.8.tgz#f26074d238e02659e323ce1a13d041eee280e194"
@@ -2766,11 +2741,6 @@
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/@types/tapable/-/tapable-1.0.5.tgz#9adbc12950582aa65ead76bffdf39fe0c27a3c02"
   integrity sha512-/gG2M/Imw7cQFp8PGvz/SwocNrmKFjFsm5Pb8HdbHkZ1K8pmuPzOX4VeVoiEecFCVf4CsN1r3/BRvx+6sNqwtQ==
-
-"@types/tough-cookie@*":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@types/tough-cookie/-/tough-cookie-4.0.0.tgz#fef1904e4668b6e5ecee60c52cc6a078ffa6697d"
-  integrity sha512-I99sngh224D0M7XgW1s120zxCt3VYQ3IQsuw3P3jbq5GG4yc79+ZjyKznyOGIQrflfylLgcfekeZW/vk0yng6A==
 
 "@types/uglify-js@*":
   version "3.9.0"
@@ -2889,15 +2859,6 @@
     deepmerge "^4.0.0"
     glob "^7.1.2"
 
-"@wdio/config@5.22.4":
-  version "5.22.4"
-  resolved "https://registry.yarnpkg.com/@wdio/config/-/config-5.22.4.tgz#053d4ba0a8b0dae6be740b1b7b9ab25abac2799e"
-  integrity sha512-i5dJQWb80darcRA//tfG0guMeQCeRUXroZNnHjGNb1qzvTRZmcIIhdxaD+DbK/5dWEx6aoMfoi6wjVp/CXwdAg==
-  dependencies:
-    "@wdio/logger" "5.16.10"
-    deepmerge "^4.0.0"
-    glob "^7.1.2"
-
 "@wdio/dot-reporter@5.18.6":
   version "5.18.6"
   resolved "https://registry.yarnpkg.com/@wdio/dot-reporter/-/dot-reporter-5.18.6.tgz#dc7814791b509e15e98c0ea9d6a51660d2f3285c"
@@ -2940,11 +2901,6 @@
   version "5.16.7"
   resolved "https://registry.yarnpkg.com/@wdio/protocols/-/protocols-5.16.7.tgz#cf8af4fe9e362e879e9b39543ec8ad1770847764"
   integrity sha512-fBlK/lfKeyxTQOfzgnpE0F7tBwb9maTgVkqv2LlvameB0Rsy18js1/cUhjJkpESXiK9md0si/CROdNaNliBKmg==
-
-"@wdio/protocols@5.22.1":
-  version "5.22.1"
-  resolved "https://registry.yarnpkg.com/@wdio/protocols/-/protocols-5.22.1.tgz#51fde0acb57d4ddf07d078fef0ad9c91d227229d"
-  integrity sha512-GdoWb/HTrb09Qb0S/7sLp1NU94LAhTsF1NnFj5sEFSUpecrl0S07pnhVg54pUImectN/woaqSl7uJGjlSGZcdQ==
 
 "@wdio/repl@5.18.6":
   version "5.18.6"
@@ -9607,15 +9563,6 @@ fork-ts-checker-webpack-plugin@1.5.0:
     semver "^5.6.0"
     tapable "^1.0.0"
     worker-rpc "^0.1.0"
-
-form-data@^2.5.0:
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/form-data/-/form-data-2.5.1.tgz#f2cbec57b5e59e23716e128fe44d4e5dd23895f4"
-  integrity sha512-m21N3WOmEEURgk6B9GLOE4RuWOFf28Lhh9qGYeNlGq4VDXUlJy2th2slBNU8Gp8EzloYZOibZJ7t5ecIrFSjVA==
-  dependencies:
-    asynckit "^0.4.0"
-    combined-stream "^1.0.6"
-    mime-types "^2.1.12"
 
 form-data@~2.3.1, form-data@~2.3.2:
   version "2.3.3"
@@ -20485,19 +20432,6 @@ webdriver@5.18.6:
     lodash.merge "^4.6.1"
     request "^2.83.0"
 
-webdriver@5.22.4:
-  version "5.22.4"
-  resolved "https://registry.yarnpkg.com/webdriver/-/webdriver-5.22.4.tgz#d86ff997429c8a4084d35badfe00f17e861f8595"
-  integrity sha512-IrSb8UUt6MDgBIDaSWyh/kP4VJsHyqnubCTxKi2cEZjOQdxPwnxUfvbSQlMDCHXrcgsPaXwAPjRJVTEt6PzArQ==
-  dependencies:
-    "@types/request" "^2.48.4"
-    "@wdio/config" "5.22.4"
-    "@wdio/logger" "5.16.10"
-    "@wdio/protocols" "5.22.1"
-    "@wdio/utils" "5.18.6"
-    lodash.merge "^4.6.1"
-    request "^2.83.0"
-
 webdriverio@5.18.6:
   version "5.18.6"
   resolved "https://registry.yarnpkg.com/webdriverio/-/webdriverio-5.18.6.tgz#a86000fc65bf4c33e7f089dd86e97932ad4d5e3a"
@@ -20519,7 +20453,7 @@ webdriverio@5.18.6:
     serialize-error "^5.0.0"
     webdriver "5.18.6"
 
-webdriverio@^4.14.4:
+webdriverio@^4.14.4, webdriverio@~4.14.4:
   version "4.14.4"
   resolved "https://registry.yarnpkg.com/webdriverio/-/webdriverio-4.14.4.tgz#f7a94e9a6530819796088f42b009833d83de0386"
   integrity sha512-Knp2vzuzP5c5ybgLu+zTwy/l1Gh0bRP4zAr8NWcrStbuomm9Krn9oRF0rZucT6AyORpXinETzmeowFwIoo7mNA==
@@ -20546,27 +20480,6 @@ webdriverio@^4.14.4:
     url "~0.11.0"
     wdio-dot-reporter "~0.0.8"
     wgxpath "~1.0.0"
-
-webdriverio@^5.18.6:
-  version "5.22.4"
-  resolved "https://registry.yarnpkg.com/webdriverio/-/webdriverio-5.22.4.tgz#56819998196d86f5a405a76fb41cae10e7dcd641"
-  integrity sha512-6/Qi1/N8wK5r7Mp2aEwB+1FkDQiyiuwQn8lm+dfYhrfWs3kLOKKt3MPeM4I6j2Yv2/mGpYf7WKu2xTj/vkJzBA==
-  dependencies:
-    "@wdio/config" "5.22.4"
-    "@wdio/logger" "5.16.10"
-    "@wdio/repl" "5.18.6"
-    "@wdio/utils" "5.18.6"
-    archiver "^3.0.0"
-    css-value "^0.0.1"
-    grapheme-splitter "^1.0.2"
-    lodash.clonedeep "^4.5.0"
-    lodash.isobject "^3.0.2"
-    lodash.isplainobject "^4.0.6"
-    lodash.zip "^4.2.0"
-    resq "^1.6.0"
-    rgb2hex "^0.1.0"
-    serialize-error "^5.0.0"
-    webdriver "5.22.4"
 
 webextension-polyfill@0.3.1:
   version "0.3.1"

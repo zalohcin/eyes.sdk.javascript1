@@ -507,15 +507,6 @@ async function isScrollable(_logger, executor, element) {
   return executor.executeScript(EyesJsSnippets.IS_SCROLLABLE, element)
 }
 /**
- * Get default scroll root element for current context
- * @param {Logger} _logger - logger instance
- * @param {EyesJsExecutor} executor - js executor
- * @return {Promise<UnwrappedElement>} default scroll root element
- */
-async function getScrollRootElement(_logger, executor) {
-  return executor.executeScript(EyesJsSnippets.GET_SCROLL_ROOT_ELEMENT)
-}
-/**
  * Mark the specified element or default scrolling element with `data-applitools-scroll`
  * @param {Logger} _logger - logger instance
  * @param {EyesJsExecutor} executor - js executor
@@ -783,7 +774,6 @@ module.exports = {
   getTranslateLocation,
   translateTo,
   isScrollable,
-  getScrollRootElement,
   markScrollRootElement,
   getOverflow,
   setOverflow,

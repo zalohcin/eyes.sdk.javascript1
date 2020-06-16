@@ -220,10 +220,6 @@ const IS_SCROLLABLE = `
   return element.scrollWidth > element.clientWidth || element.scrollHeight > element.clientHeight
 `
 
-const GET_SCROLL_ROOT_ELEMENT = `
-  return document.documentElement;
-`
-
 const MARK_SCROLL_ROOT_ELEMENT = `
   var element =  arguments[0] || document.documentElement;
   element.setAttribute("data-applitools-scroll", "true");
@@ -356,7 +352,6 @@ module.exports = {
   SET_TRANSFORMS,
   TRANSLATE_TO,
   IS_SCROLLABLE,
-  GET_SCROLL_ROOT_ELEMENT,
   MARK_SCROLL_ROOT_ELEMENT,
   GET_OVERFLOW,
   SET_OVERFLOW_AND_RETURN_ORIGIN_VALUE,

@@ -62,13 +62,6 @@ class MockDriver {
     this.mockScript(EyesJsSnippets.GET_ELEMENT_PROPERTIES, (properties, element) => {
       return properties.map(property => (element.props || {})[property] || DEFAULT_PROPS[property])
     })
-    this.mockScript(EyesJsSnippets.GET_SCROLL_ROOT_ELEMENT, () => {
-      const context = this._contexts.get(this._contextId)
-      if (!context.document.scrollingElement) {
-        context.document.scrollingElement = {id: Symbol('scrolling element id')}
-      }
-      return context.document.scrollingElement
-    })
     this.mockScript(EyesJsSnippets.SCROLL_TO, (offset, element) => {
       let scrollingElement = element
       if (!element) {
@@ -118,6 +111,7 @@ class MockDriver {
       script => /^\/\* @applitools\/dom-snapshot@[\d.]+ \*\//.test(script),
       () => FakeDomSnapshot.generateDomSnapshot(this),
     )
+    this.mockElement('html', {scrollPosition: {x: 0, y: 0}})
   }
   mockScript(scriptMatcher, resultGenerator) {
     this._scripts.set(scriptMatcher, resultGenerator)

@@ -18,7 +18,10 @@ describe('SpecWrappedElement Selenium4', () => {
   })
 
   after(async () => {
-    await driver.quit()
+    // mocha version 8 still runs this code even though the suite is skipped in Selenium 3
+    if (driver) {
+      await driver.quit()
+    }
   })
 
   it('isCompatible(element)', async () => {
