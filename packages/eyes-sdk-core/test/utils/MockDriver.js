@@ -28,6 +28,7 @@ class MockDriver {
       document: {id: Symbol('documentId')},
     })
     this._contextId = null
+    this.mockElement('html', {scrollPosition: {x: 0, y: 0}})
     this.mockScript(EyesJsSnippets.GET_CURRENT_CONTEXT_INFO, () => {
       const context = this._contexts.get(this._contextId)
       const isRoot = !this._contextId
@@ -65,11 +66,7 @@ class MockDriver {
     this.mockScript(EyesJsSnippets.SCROLL_TO, (offset, element) => {
       let scrollingElement = element
       if (!element) {
-        const context = this._contexts.get(this._contextId).document
-        if (!context.scrollingElement) {
-          context.scrollingElement = {id: Symbol('scrolling element id')}
-        }
-        scrollingElement = context.scrollingElement
+        scrollingElement = this.findElement('html')
       }
       scrollingElement.scrollPosition = offset
       return [scrollingElement.scrollPosition.x, scrollingElement.scrollPosition.y]
@@ -77,11 +74,7 @@ class MockDriver {
     this.mockScript(EyesJsSnippets.GET_SCROLL_POSITION, element => {
       let scrollingElement = element
       if (!element) {
-        const context = this._contexts.get(this._contextId).document
-        if (!context.scrollingElement) {
-          context.scrollingElement = {id: Symbol('scrolling element id')}
-        }
-        scrollingElement = context.scrollingElement
+        scrollingElement = this.findElement('html')
       }
       if (!scrollingElement.scrollPosition) {
         scrollingElement.scrollPosition = {x: 0, y: 0}
@@ -111,7 +104,6 @@ class MockDriver {
       script => /^\/\* @applitools\/dom-snapshot@[\d.]+ \*\//.test(script),
       () => FakeDomSnapshot.generateDomSnapshot(this),
     )
-    this.mockElement('html', {scrollPosition: {x: 0, y: 0}})
   }
   mockScript(scriptMatcher, resultGenerator) {
     this._scripts.set(scriptMatcher, resultGenerator)
@@ -141,6 +133,10 @@ class MockDriver {
         document: {id: Symbol('documentId')},
       })
       element.contextId = contextId
+      this.mockElement('html', {
+        parentContextId: contextId,
+        scrollPosition: {x: 0, y: 0},
+      })
     }
     return Object.freeze(element)
   }
