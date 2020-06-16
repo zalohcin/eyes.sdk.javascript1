@@ -1,4 +1,11 @@
 const core = require('@applitools/eyes-sdk-core')
+
+if (!process.env.APPLITOOLS_WDIO_MAJOR_VERSION) {
+  const {version} = require('webdriverio/package.json')
+  const [major] = version.split('.', 1)
+  process.env.APPLITOOLS_WDIO_MAJOR_VERSION = major
+}
+
 const WDIOCheckSettings = require('./src/WDIOCheckSettings')
 const {WDIOEyesClassic, WDIOEyesVisualGrid, WDIOEyesFactory} = require('./src/WDIOSpecializedEyes')
 const LegacySelector = require('./src/LegacySelector')

@@ -1,286 +1,372 @@
 const assert = require('assert')
-const chromedriver = require('chromedriver')
-const {remote} = require('webdriverio')
-const specs = require('../../src/SpecWrappedDriver')
+const {TestSetup} = require('@applitools/sdk-coverage-tests/coverage-tests')
+const spec = require('../../src/SpecWrappedDriver')
 
 describe('SpecWrappedDriver', async () => {
-  before(async () => {
-    await chromedriver.start([], true)
-  })
+  let driver
+  const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
 
-  after(async () => {
-    chromedriver.stop()
-  })
+  async function isEqualElements(leftElement, rightElement) {
+    try {
+      return await driver.execute(
+        (leftElement, rightElement) => leftElement === rightElement,
+        leftElement,
+        rightElement,
+      )
+    } catch (err) {
+      return false
+    }
+  }
 
-  describe('headless desktop', async () => {
-    let driver
-    const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
-
-    before(async () => {
-      driver = await remote({
-        capabilities: {
-          browserName: 'chrome',
-          'goog:chromeOptions': {
-            args: ['disable-infobars', 'headless'],
-          },
-        },
-        logLevel: 'error',
-        port: 9515,
-        path: '/',
-      })
-      await driver.url(url)
-    })
-
-    after(async () => {
-      await driver.deleteSession()
-    })
-
-    it('executeScript(strings, ...args)', async () => {
+  function executeScript() {
+    return async () => {
       const args = [0, 'string', {key: 'value'}, [0, 1, 2, 3]]
       const expected = await driver.execute('return arguments', ...args)
-      const result = await specs.executeScript(driver, 'return arguments', ...args)
+      const result = await spec.executeScript(driver, 'return arguments', ...args)
       assert.deepStrictEqual(result, expected)
-    })
-    it('sleep(number)', async () => {
+    }
+  }
+  function sleep() {
+    return async () => {
       const sleep = 1000
       const startAt = Date.now()
-      await specs.sleep(driver, sleep)
+      await spec.sleep(driver, sleep)
       const duration = Date.now() - startAt
       assert.ok(duration >= sleep && duration <= sleep + 10)
-    })
-    it('switchToFrame(element)', async () => {
+    }
+  }
+  function switchToFrame_nested() {
+    return async () => {
       const element = await driver.findElement('css selector', '[name="frame1"]')
       await driver.switchToFrame(element)
-      const expected = await driver.execute('return document')
+      const expected = await driver.execute('return document.documentElement')
       await driver.switchToFrame(null)
-      await specs.switchToFrame(driver, element)
-      const result = await driver.execute('return document')
-      await driver.switchToFrame(null)
-      assert.deepStrictEqual(result, expected)
-    })
-    it('switchToFrame(null)', async () => {
-      const top = await driver.execute('return document')
+      await spec.switchToFrame(driver, element)
+      const result = await driver.execute('return document.documentElement')
+      try {
+        assert.ok(await isEqualElements(result, expected))
+      } finally {
+        await driver.switchToFrame(null)
+      }
+    }
+  }
+  function switchToFrame_top() {
+    return async () => {
+      const top = await driver.execute('return document.documentElement')
       const element = await driver.findElement('css selector', '[name="frame1"]')
       await driver.switchToFrame(element)
-      const frame = await driver.execute('return document')
-      assert.notDeepStrictEqual(frame, top)
-      await specs.switchToFrame(driver, null)
-      const result = await driver.execute('return document')
-      assert.deepStrictEqual(result, top)
-    })
-    it('findElement(string)', async () => {
-      const expected = await driver.$('#overflowing-div')
-      const result = await specs.findElement(driver, '#overflowing-div')
-      assert.strictEqual(result.elementId, expected.elementId)
-    })
-    it('findElements(string)', async () => {
-      const expected = await driver.$$('div')
-      const result = await specs.findElements(driver, 'div')
-      expected.forEach((element, index) =>
-        assert.strictEqual(result[index].elementId, element.elementId),
-      )
-    })
-    it('findElement(function)', async () => {
-      const selector = function() {
-        return this.document.querySelector('#overflowing-div')
+      const frame = await driver.execute('return document.documentElement')
+      assert.ok(!(await isEqualElements(frame, top)))
+      await spec.switchToFrame(driver, null)
+      const result = await driver.execute('return document.documentElement')
+      assert.ok(await isEqualElements(result, top))
+    }
+  }
+  function findElement({input, expected} = {}) {
+    return async () => {
+      const result = expected !== undefined ? expected : await driver.$(input)
+      const element = await spec.findElement(driver, input)
+      if (element !== result) {
+        assert.ok(await isEqualElements(element, result))
       }
-      const expected = await driver.$(selector)
-      const result = await specs.findElement(driver, selector)
-      assert.strictEqual(result.elementId, expected.elementId)
-    })
-    it('findElements(function)', async () => {
-      const selector = function() {
-        return this.document.querySelectorAll('div')
+    }
+  }
+  function findElements({input, expected} = {}) {
+    return async () => {
+      const result = expected !== undefined ? expected : await driver.$$(input)
+      const elements = await spec.findElements(driver, input)
+      assert.strictEqual(elements.length, result.length)
+      for (const [index, element] of elements.entries()) {
+        assert.ok(await isEqualElements(element, result[index]))
       }
-      const expected = await driver.$$(selector)
-      const result = await specs.findElements(driver, selector)
-      expected.forEach((element, index) =>
-        assert.strictEqual(result[index].elementId, element.elementId),
-      )
-    })
-    it('findElement(non-existent)', async () => {
-      const result = await specs.findElement(driver, 'non-existent')
-      assert.strictEqual(result, null)
-    })
-    it('findElements(non-existent)', async () => {
-      const result = await specs.findElements(driver, 'non-existent')
-      assert.deepStrictEqual(result, [])
-    })
-    it('getWindowLocation()', async () => {
-      const {x, y} = await driver.getWindowRect()
-      const result = await specs.getWindowLocation(driver)
+    }
+  }
+  function getWindowLocation({legacy = false} = {}) {
+    return async () => {
+      const {x, y} = legacy ? await driver.getWindowPosition() : await driver.getWindowRect()
+      const result = await spec.getWindowLocation(driver)
       assert.deepStrictEqual(result, {x, y})
-    })
-    it('getWindowSize()', async () => {
-      const {width, height} = await driver.getWindowSize()
-      const result = await specs.getWindowSize(driver)
+    }
+  }
+  function setWindowLocation({legacy = false, expected} = {}) {
+    return async () => {
+      legacy
+        ? await driver.setWindowSize(300, 300)
+        : await driver.setWindowRect(null, null, 300, 300)
+      const location = {x: 100, y: 110}
+      await spec.setWindowLocation(driver, location)
+      const {x, y} = legacy ? await driver.getWindowPosition() : await driver.getWindowRect()
+      assert.deepStrictEqual({x, y}, expected || location)
+    }
+  }
+  function getWindowSize({legacy = false} = {}) {
+    return async () => {
+      const {width, height} = legacy ? await driver.getWindowSize() : await driver.getWindowRect()
+      const result = await spec.getWindowSize(driver)
       assert.deepStrictEqual(result, {width, height})
-    })
-    it('setWindowSize({width, height})', async () => {
-      const location = {width: 300, height: 310}
-      await specs.setWindowSize(driver, location)
-      const {width, height} = await driver.getWindowSize()
-      assert.deepStrictEqual({width, height}, location)
-    })
-    it('getSessionId()', async () => {
+    }
+  }
+  function setWindowSize({legacy = true, expected} = {}) {
+    return async () => {
+      const size = {width: 300, height: 310}
+      await spec.setWindowSize(driver, size)
+      const {width, height} = legacy ? await driver.getWindowSize() : await driver.getWindowRect()
+      assert.deepStrictEqual({width, height}, expected || size)
+    }
+  }
+  function getSessionId() {
+    return async () => {
       const expected = driver.sessionId
-      const result = await specs.getSessionId(driver)
+      const result = await spec.getSessionId(driver)
       assert.deepStrictEqual(result, expected)
-    })
-    it('getTitle()', async () => {
+    }
+  }
+  function getTitle() {
+    return async () => {
       const expected = await driver.getTitle()
-      const result = await specs.getTitle(driver)
+      const result = await spec.getTitle(driver)
       assert.deepStrictEqual(result, expected)
-    })
-    it('getUrl()', async () => {
-      const result = await specs.getUrl(driver)
+    }
+  }
+  function getUrl() {
+    return async () => {
+      const result = await spec.getUrl(driver)
       assert.deepStrictEqual(result, url)
-    })
-    it('visit()', async () => {
+    }
+  }
+  function visit() {
+    return async () => {
       const blank = 'about:blank'
-      await specs.visit(driver, blank)
+      await spec.visit(driver, blank)
       const actual = await driver.getUrl()
       assert.deepStrictEqual(actual, blank)
       await driver.url(url)
+    }
+  }
+  function isMobile({expected} = {}) {
+    return async () => {
+      const result = await spec.isMobile(driver)
+      assert.deepStrictEqual(result, expected)
+    }
+  }
+  function isAndroid({expected} = {}) {
+    return async () => {
+      const result = await spec.isAndroid(driver)
+      assert.strictEqual(result, expected)
+    }
+  }
+  function isIOS({expected} = {}) {
+    return async () => {
+      const result = await spec.isIOS(driver)
+      assert.strictEqual(result, expected)
+    }
+  }
+  function isNative({expected} = {}) {
+    return async () => {
+      const result = await spec.isNative(driver)
+      assert.strictEqual(result, expected)
+    }
+  }
+  function getOrientation({expected} = {}) {
+    return async () => {
+      const result = await spec.getOrientation(driver)
+      assert.strictEqual(result, expected)
+    }
+  }
+  function getPlatformVersion({expected} = {}) {
+    return async () => {
+      const result = await spec.getPlatformVersion(driver)
+      assert.strictEqual(result, expected)
+    }
+  }
+
+  describe('headless desktop (@webdriver)', async () => {
+    before(async () => {
+      driver = await spec.build({
+        capabilities: TestSetup.Browsers.chrome({headless: true}),
+        server: TestSetup.Remotes.local(),
+      })
+      await driver.url(url)
     })
-    it('isMobile()', async () => {
-      const result = await specs.isMobile(driver)
-      assert.deepStrictEqual(result, false)
+
+    after(async () => {
+      await spec.cleanup(driver)
     })
+
+    it('executeScript(strings, ...args)', executeScript())
+    it('sleep(number)', sleep())
+    it('switchToFrame(element)', switchToFrame_nested())
+    it('switchToFrame(null)', switchToFrame_top())
+    it('findElement(string)', findElement({input: '#overflowing-div'}))
+    it('findElements(string)', findElements({input: 'div'}))
+    it(
+      'findElement(function)',
+      findElement({
+        input: function() {
+          return this.document.getElementById('overflowing-div')
+        },
+      }),
+    )
+    it(
+      'findElements(function)',
+      findElements({
+        input: function() {
+          return this.document.querySelectorAll('div')
+        },
+      }),
+    )
+    it('findElement(non-existent)', findElement({input: 'non-existent', expected: null}))
+    it('findElements(non-existent)', findElements({input: 'non-existent', expected: []}))
+    it('getWindowSize()', getWindowSize())
+    it('setWindowSize({width, height})', setWindowSize())
+    it('getSessionId()', getSessionId())
+    it('getTitle()', getTitle())
+    it('getUrl()', getUrl())
+    it('visit()', visit())
+    it('isMobile()', isMobile({expected: false}))
   })
 
-  describe('onscreen desktop', async () => {
-    let driver
-
+  describe('onscreen desktop (@webdriver)', async () => {
     before(async () => {
-      driver = await remote({
+      driver = await spec.build({
+        capabilities: TestSetup.Browsers.chrome({headless: false}),
+        server: TestSetup.Remotes.local(),
+      })
+    })
+
+    after(async () => {
+      await spec.cleanup(driver)
+    })
+
+    it('getWindowLocation()', getWindowLocation())
+    it('setWindowLocation({x, y})', setWindowLocation())
+  })
+
+  describe('headless desktop (@puppeteer)', async () => {
+    before(async () => {
+      driver = await spec.build({
+        protocol: 'devtools',
         capabilities: {
           browserName: 'chrome',
           'goog:chromeOptions': {
-            args: ['disable-infobars'],
+            headless: true,
           },
         },
-        logLevel: 'error',
-        port: 9515,
-        path: '/',
+        server: TestSetup.Remotes.local(),
+      })
+      await driver.url(url)
+    })
+
+    after(async () => {
+      await spec.cleanup(driver)
+    })
+
+    it('executeScript(strings, ...args)', executeScript())
+    it('sleep(number)', sleep())
+    it('switchToFrame(element)', switchToFrame_nested())
+    it('switchToFrame(null)', switchToFrame_top())
+    it('findElement(string)', findElement({input: '#overflowing-div'}))
+    it('findElements(string)', findElements({input: 'div'}))
+    it(
+      'findElement(function)',
+      findElement({
+        input: function() {
+          return this.document.getElementById('overflowing-div')
+        },
+      }),
+    )
+    it(
+      'findElements(function)',
+      findElements({
+        input: function() {
+          return this.document.querySelectorAll('div')
+        },
+      }),
+    )
+    it('findElement(non-existent)', findElement({input: 'non-existent', expected: null}))
+    it('findElements(non-existent)', findElements({input: 'non-existent', expected: []}))
+    it('getWindowSize()', getWindowSize())
+    it('setWindowSize()', setWindowSize())
+    it('getSessionId()', getSessionId())
+    it('getTitle()', getTitle())
+    it('getUrl()', getUrl())
+    it('visit()', visit())
+    it('isMobile()', isMobile({expected: false}))
+  })
+
+  describe('onscreen desktop (@puppeteer)', async () => {
+    before(async () => {
+      driver = await spec.build({
+        protocol: 'devtools',
+        capabilities: {
+          browserName: 'chrome',
+          'goog:chromeOptions': {
+            headless: false,
+          },
+        },
+        server: TestSetup.Remotes.local(),
       })
     })
 
     after(async () => {
-      await driver.deleteSession()
+      await spec.cleanup(driver)
     })
 
-    it('setWindowLocation({x, y})', async () => {
-      await driver.setWindowRect(null, null, 300, 300)
-      const location = {x: 100, y: 110}
-      await specs.setWindowLocation(driver, location)
-      const {x, y} = await driver.getWindowRect()
-      assert.deepStrictEqual({x, y}, location)
-    })
+    it('getWindowLocation()', getWindowLocation())
+    it('setWindowLocation({x, y})', setWindowLocation({expected: {x: null, y: null}}))
   })
 
-  describe('browser with unimplemented methods', async () => {
-    let driver
-
+  describe('legacy browser (@webdriver)', async () => {
     before(async () => {
-      driver = await remote({
-        protocol: 'https',
-        hostname: 'ondemand.saucelabs.com',
-        port: 443,
-        path: '/wd/hub',
-        logLevel: 'error',
+      driver = await spec.build({
         capabilities: {
           browserName: 'internet explorer',
-          browserVersion: '11.285',
           platformName: 'Windows 10',
-          username: process.env.SAUCE_USERNAME,
-          accesskey: process.env.SAUCE_ACCESS_KEY,
+          browserVersion: '11.285',
         },
+        server: TestSetup.Remotes.sauce(),
       })
     })
 
     after(async () => {
-      await driver.deleteSession()
+      await spec.cleanup(driver)
     })
 
-    it('windowSize', async function() {
-      let size = await specs.getWindowSize(driver)
-      assert.strictEqual(size.width, 1040)
-      assert.strictEqual(size.height, 784)
-      await specs.setWindowSize(driver, {width: 800, height: 600})
-      size = await specs.getWindowSize(driver)
-      assert.strictEqual(size.width, 800)
-      assert.strictEqual(size.height, 600)
-    })
+    it('getWindowSize()', getWindowSize({legacy: true}))
+    it('setWindowSize({width, height})', setWindowSize({legacy: true}))
+    it('getWindowLocation()', getWindowLocation({legacy: true}))
+    it('setWindowLocation({x, y})', setWindowLocation({legacy: true}))
   })
 
-  describe('mobile browser', async () => {
-    let driver
-
+  describe('mobile browser (@appium)', async () => {
     before(async () => {
-      driver = await remote({
-        protocol: 'https',
-        hostname: 'ondemand.saucelabs.com',
-        port: 443,
-        path: '/wd/hub',
-        logLevel: 'error',
+      driver = await spec.build({
         capabilities: {
           browserName: 'Chrome',
           platformName: 'Android',
           platformVersion: '10.0',
           deviceName: 'Google Pixel 3a XL GoogleAPI Emulator',
           deviceOrientation: 'portrait',
-          username: process.env.SAUCE_USERNAME,
-          accesskey: process.env.SAUCE_ACCESS_KEY,
         },
+        server: TestSetup.Remotes.sauce(),
       })
     })
 
     after(async () => {
-      await driver.deleteSession()
+      await spec.cleanup(driver)
     })
 
-    it('isMobile()', async () => {
-      const result = await specs.isMobile(driver)
-      assert.strictEqual(result, true)
-    })
-
-    it('isAndroid()', async () => {
-      const result = await specs.isAndroid(driver)
-      assert.strictEqual(result, true)
-    })
-
-    it('isIOS()', async () => {
-      const result = await specs.isIOS(driver)
-      assert.strictEqual(result, false)
-    })
-
-    it('isNative()', async () => {
-      const result = await specs.isNative(driver)
-      assert.strictEqual(result, false)
-    })
-
-    it('getOrientation()', async () => {
-      const result = await specs.getOrientation(driver)
-      assert.strictEqual(result, 'portrait')
-    })
-
-    it('getPlatformVersion()', async () => {
-      const result = await specs.getPlatformVersion(driver)
-      assert.strictEqual(result, '10')
-    })
+    it('isMobile()', isMobile({expected: true}))
+    it('isAndroid()', isAndroid({expected: true}))
+    it('isIOS()', isIOS({expected: false}))
+    it('isNative()', isNative({expected: false}))
+    it('getOrientation()', getOrientation({expected: 'portrait'}))
+    it('getPlatformVersion()', getPlatformVersion({expected: '10'}))
   })
 
-  describe('native app', async () => {
-    let driver
-
+  describe('native app (@appium @native)', async () => {
     before(async () => {
-      driver = await remote({
-        protocol: 'https',
-        hostname: 'ondemand.saucelabs.com',
-        port: 443,
-        path: '/wd/hub',
-        logLevel: 'error',
+      driver = await spec.build({
         capabilities: {
           browserName: '',
           name: 'AndroidNativeAppTest1',
@@ -291,44 +377,20 @@ describe('SpecWrappedDriver', async () => {
           app: 'http://saucelabs.com/example_files/ContactManager.apk',
           clearSystemFiles: true,
           noReset: true,
-          username: process.env.SAUCE_USERNAME,
-          accessKey: process.env.SAUCE_ACCESS_KEY,
         },
+        server: TestSetup.Remotes.sauce(),
       })
     })
 
     after(async () => {
-      await driver.deleteSession()
+      await spec.cleanup(driver)
     })
 
-    it('isMobile()', async () => {
-      const result = await specs.isMobile(driver)
-      assert.strictEqual(result, true)
-    })
-
-    it('isAndroid()', async () => {
-      const result = await specs.isAndroid(driver)
-      assert.strictEqual(result, true)
-    })
-
-    it('isIOS()', async () => {
-      const result = await specs.isIOS(driver)
-      assert.strictEqual(result, false)
-    })
-
-    it('isNative()', async () => {
-      const result = await specs.isNative(driver)
-      assert.strictEqual(result, true)
-    })
-
-    it('getOrientation()', async () => {
-      const result = await specs.getOrientation(driver)
-      assert.strictEqual(result, 'landscape')
-    })
-
-    it('getPlatformVersion()', async () => {
-      const result = await specs.getPlatformVersion(driver)
-      assert.strictEqual(result, '6.0')
-    })
+    it('isMobile()', isMobile({expected: true}))
+    it('isAndroid()', isAndroid({expected: true}))
+    it('isIOS()', isIOS({expected: false}))
+    it('isNative()', isNative({expected: true}))
+    it('getOrientation()', getOrientation({expected: 'landscape'}))
+    it('getPlatformVersion()', getPlatformVersion({expected: '6.0'}))
   })
 })

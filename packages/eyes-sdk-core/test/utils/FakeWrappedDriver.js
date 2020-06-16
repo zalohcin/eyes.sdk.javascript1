@@ -25,9 +25,6 @@ module.exports = EyesWrappedDriver.specialize(
     switchToParentFrame(driver) {
       return driver.switchToParentFrame()
     },
-    isEqualFrames(leftFrame, rightFrame) {
-      return FakeFrame.equals(leftFrame, rightFrame)
-    },
     createFrameReference(reference) {
       return FakeFrame.fromReference(reference)
     },

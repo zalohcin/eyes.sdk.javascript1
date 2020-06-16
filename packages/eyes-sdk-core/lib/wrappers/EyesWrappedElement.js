@@ -161,18 +161,6 @@ class EyesWrappedElement {
     return element instanceof EyesWrappedElement ? element.elementId : this.specs.extractId(element)
   }
   /**
-   * Compare two elements, these elements could be an instances of this class or compatible objects
-   * @param {EyesWrappedElement|UnwrappedElement} leftElement - element to compare
-   * @param {EyesWrappedElement|UnwrappedElement} rightElement - element to compare
-   * @return {Promise<boolean>} true if elements are equal, false otherwise
-   */
-  static async equals(leftElement, rightElement) {
-    if (!leftElement || !rightElement) return false
-    const leftElementId = await this.extractId(leftElement)
-    const rightElementId = await this.extractId(rightElement)
-    return leftElementId === rightElementId
-  }
-  /**
    * ID of the wrapped element
    * @type {Promise<string>}
    */
@@ -198,8 +186,18 @@ class EyesWrappedElement {
    * @param {EyesWrappedDriver|UnwrappedElement} otherElement - element to compare
    * @return {Promise<boolean>} true if elements are equal, false otherwise
    */
-  async equals(otherFrame) {
-    return this.constructor.equals(this, otherFrame)
+  async equals(otherElement) {
+    if (!otherElement) return false
+    const otherElementId = await this.constructor.extractId(otherElement)
+    if (this.elementId === otherElementId) {
+      return true
+    } else {
+      return this._driver.executor.executeScript(
+        'return arguments[0] === arguments[1]',
+        this,
+        otherElement,
+      )
+    }
   }
   /**
    * Initialize element created from {@link SupportedElement} or {@link SupportedSelector}

@@ -34,6 +34,30 @@ const Browsers = {
   },
 }
 
+const Remotes = {
+  local({url = process.env.CVG_TESTS_REMOTE} = {}) {
+    return {
+      url,
+    }
+  },
+  sauce({w3c = false} = {}) {
+    return {
+      username: process.env.SAUCE_USERNAME,
+      accessKey: process.env.SAUCE_ACCESS_KEY,
+      url: 'https://ondemand.saucelabs.com/wd/hub',
+      w3c,
+    }
+  },
+  bstack({w3c = false} = {}) {
+    return {
+      username: process.env.BROWSERSTACK_USERNAME,
+      accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
+      url: 'https://hub-cloud.browserstack.com/wd/hub',
+      w3c,
+    }
+  },
+}
+
 const batch = new BatchInfo(process.env.APPLITOOLS_BATCH_NAME || 'JS Coverage Tests')
 
 function getEyes({isVisualGrid, isCssStitching, configuration, branchName = 'master'} = {}) {
@@ -61,6 +85,7 @@ function getEyes({isVisualGrid, isCssStitching, configuration, branchName = 'mas
 
 module.exports = {
   Browsers,
+  Remotes,
   getEyes,
   batch,
   sauceUrl: SAUCE_SERVER_URL,

@@ -8,9 +8,6 @@ module.exports = Frame.specialize({
   isCompatibleElement(element) {
     return FakeWrappedElement.isCompatible(element)
   },
-  isEqualElements(leftElement, rightElement) {
-    return FakeWrappedElement.equals(leftElement, rightElement)
-  },
   createElement(logger, driver, element, selector) {
     return new FakeWrappedElement(logger, driver, element, selector)
   },
