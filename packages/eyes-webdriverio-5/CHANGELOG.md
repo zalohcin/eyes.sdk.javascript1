@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+
+## 5.14.0 - 2020/6/15
+
+- expose the service from the SDK package
+- add detailed readme
+- updated to @applitools/eyes-sdk-core@11.0.9 (from 11.0.8)
+- updated to @applitools/visual-grid-client@14.4.8 (from 14.4.7)
+
 ## 5.13.3 - 2020/6/14
 
 - updated to @applitools/eyes-sdk-core@11.0.8 (from 11.0.7)

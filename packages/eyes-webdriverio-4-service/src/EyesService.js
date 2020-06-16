@@ -16,6 +16,7 @@ class EyesService {
   // eslint-disable-next-line
   constructor(config) {
     this._eyes = new Eyes()
+    this._eyes.getBaseAgentId = () => `eyes.webdriverio-service/${VERSION}`
 
     this._appName = null
   }
