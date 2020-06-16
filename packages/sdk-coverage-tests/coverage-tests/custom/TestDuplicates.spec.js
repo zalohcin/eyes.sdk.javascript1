@@ -27,7 +27,7 @@ describe(appName, async () => {
     it('TestDuplicatedIFrames', TestDuplicatedIFrames('TestDuplicatedIFrames_Scroll'))
   })
 
-  describe('VG', async () => {
+  describe.skip('VG', async () => {
     beforeEach(async () => {
       driver = await spec.build({capabilities: Browsers.chrome()})
       eyes = await getEyes({isVisualGrid: true})
