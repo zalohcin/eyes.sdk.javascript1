@@ -84,7 +84,7 @@ It's also possible to specify the API key in the webdriver.io config file (norma
 
 exports.config = {
   // ...
-  services: ['@applitools/eyes-webdriverio5-service'], // reminder :)
+  services: ['@applitools/eyes-webdriverio5-service'],
   eyes: {
     apiKey: 'YOUR_API_KEY',
   }
