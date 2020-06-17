@@ -137,10 +137,9 @@ class EyesScreenshot {
 
   /**
    * @param {ScreenshotType} [screenshotType] - screenshot's type (e.g., viewport/full page)
-   * @param {Location} [frameLocationInScreenshot] - current frame's location in the screenshot
    * @return {Promise<EyesScreenshot>}
    */
-  async init(screenshotType, frameLocationInScreenshot) {
+  async init(screenshotType) {
     this._screenshotType =
       screenshotType || (await EyesScreenshot.getScreenshotType(this._image, this._eyes))
     this._frameChain = this._eyes._context.frameChain
