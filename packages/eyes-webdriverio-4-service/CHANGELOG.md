@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- added detailed docs in readme
 
 ## 1.4.0 - 2020/6/9
 
