@@ -320,12 +320,10 @@ class EyesClassic extends EyesCore {
     if (this._context.topContext.scrollRootElement) {
       await this._context.topContext.scrollRootElement.init(this._driver)
     } else {
-      const element = await EyesUtils.getScrollRootElement(this._logger, this._executor)
-      this._context.topContext.scrollRootElement = new this.constructor.WrappedElement(
-        this._logger,
-        this._driver,
-        element,
-      )
+      this._context.topContext.scrollRootElement = await this._finder.findElement({
+        type: 'css',
+        selector: 'html',
+      })
     }
 
     const positionProvider = this._createPositionProvider(
@@ -739,8 +737,7 @@ class EyesClassic extends EyesCore {
 
       let scrollRootElement = positionProvider.scrollRootElement
       if (!scrollRootElement) {
-        const element = await EyesUtils.getScrollRootElement(this._logger, this._executor)
-        scrollRootElement = new this.constructor.WrappedElement(this._logger, this._driver, element)
+        scrollRootElement = await this._finder.findElement({type: 'css', selector: 'html'})
       }
       // TODO replace with js snippet
       const [

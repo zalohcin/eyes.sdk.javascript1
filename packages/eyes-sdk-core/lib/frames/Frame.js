@@ -278,7 +278,7 @@ class Frame {
    */
   async hideScrollbars() {
     if (!this._scrollRootElement) {
-      const element = await EyesUtils.getScrollRootElement(this._logger, this._driver.executor)
+      const element = await this._driver.finder.findElement({type: 'css', selector: 'html'})
       this._scrollRootElement = this.specs.createElement(this._logger, this._driver, element)
     }
     this._logger.verbose('hiding scrollbars of element')
@@ -299,7 +299,7 @@ class Frame {
    */
   async preservePosition(positionProvider) {
     if (!this._scrollRootElement) {
-      const element = await EyesUtils.getScrollRootElement(this._logger, this._driver.executor)
+      const element = await this._driver.finder.findElement({type: 'css', selector: 'html'})
       this._scrollRootElement = this.specs.createElement(this._logger, this._driver, element)
     }
     this._logger.verbose('saving frame position')
