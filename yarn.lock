@@ -81,10 +81,10 @@
     stack-trace "^0.0.10"
     tunnel "0.0.6"
 
-"@applitools/eyes-sdk-core@11.0.7":
-  version "11.0.7"
-  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-11.0.7.tgz#4df7571ade84541b9b7776487b80621961536e4d"
-  integrity sha512-/EZx03whl8yfScjMH9xr1Q6JsA0+1dSRv8509TF/+W3A6ENtw6puXkfSJKwl1PK28jWIDnR6ox6LW/yNyzRZlQ==
+"@applitools/eyes-sdk-core@11.0.9":
+  version "11.0.9"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-11.0.9.tgz#f7da9cb4c7aadaed9b138097b2ef9fedbd1bc0c4"
+  integrity sha512-9G7yrYE1TjoPbHyol6VCEfHVTHyECCFVi5aJTr6cHspaNQf7RcCO6Exk37O58SdMq/2PapVkVjygj8kizdB2gA==
   dependencies:
     "@applitools/dom-capture" "7.2.4"
     "@applitools/isomorphic-fetch" "3.0.0"
@@ -97,6 +97,14 @@
     png-async "^0.9.4"
     stack-trace "^0.0.10"
     tunnel "0.0.6"
+
+"@applitools/eyes-webdriverio@5.14.0":
+  version "5.14.0"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-webdriverio/-/eyes-webdriverio-5.14.0.tgz#0a28a0405a93caad9c28d7d09eb37e94226f0385"
+  integrity sha512-+8buWQ7kG+belrv0wZmBs2iM3JIKibiDecbA05g9pzE1t56HEgpSrZYTryPiEUYJKTQADofHzkKN5U+32BHBgg==
+  dependencies:
+    "@applitools/eyes-sdk-core" "11.0.9"
+    "@applitools/visual-grid-client" "14.4.8"
 
 "@applitools/feature-flags@2.1.1":
   version "2.1.1"
@@ -232,13 +240,13 @@
     postcss-value-parser "^4.0.2"
     throat "^5.0.0"
 
-"@applitools/visual-grid-client@14.4.6":
-  version "14.4.6"
-  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-14.4.6.tgz#8a3b2bf4b143de81f5781a3c7368bb6a91a27491"
-  integrity sha512-D5DhYc1VFVznhuji1E/8aYEtnwLbYM1UFkRauoJsNLeIERTcd6bF4F0S3oLKlMk75R5Uu0YUR0/gektxiNZPmA==
+"@applitools/visual-grid-client@14.4.8":
+  version "14.4.8"
+  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-14.4.8.tgz#0e980dd84d832c9ba38411d78f3d07c94f103f14"
+  integrity sha512-EkcteSs8PGv75mUpfDvQbj95zwNss+LHbC7tsMQHP3qs1y5uiqAVYj97cmOjl3+/6UHZ4O62m/zGomPa3hQMnw==
   dependencies:
     "@applitools/dom-snapshot" "3.5.3"
-    "@applitools/eyes-sdk-core" "11.0.7"
+    "@applitools/eyes-sdk-core" "11.0.9"
     "@applitools/feature-flags" "2.1.1"
     "@applitools/functional-commons" "1.5.4"
     "@applitools/http-commons" "2.3.12"

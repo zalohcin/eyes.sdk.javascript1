@@ -144,6 +144,7 @@ module.exports = {
   },
 
   async getElementRect(driver, el) {
-    return driver.elementIdRect(el.ELEMENT)
+    const resp = await driver.elementIdRect(el.ELEMENT)
+    return resp.value
   },
 }
