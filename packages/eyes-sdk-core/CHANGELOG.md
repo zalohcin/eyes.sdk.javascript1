@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 11.0.10 - 2020/6/17
+
 - fix stale scroll root element issue
 
 ## 11.0.9 - 2020/6/15
