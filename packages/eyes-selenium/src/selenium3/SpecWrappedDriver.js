@@ -162,7 +162,10 @@ module.exports = {
     return driver.quit()
   },
 
-  async click(_driver, el) {
+  async click(driver, el) {
+    if (TypeUtils.isString(el)) {
+      el = await this.findElement(driver, el)
+    }
     return el.click()
   },
 
