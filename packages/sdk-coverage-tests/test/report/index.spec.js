@@ -73,7 +73,7 @@ describe('Report', () => {
   it('should convert xml report to QA report schema as JSON', () => {
     assert.deepStrictEqual(convertJunitXmlToResultSchema({xmlResult}), [
       {
-        test_name: 'TestCheckWindow_VG',
+        test_name: 'TestCheckWindow',
         parameters: {
           browser: 'chrome',
           mode: 'visualgrid',
@@ -89,7 +89,7 @@ describe('Report', () => {
         passed: true,
       },
       {
-        test_name: 'TestCheckWindow_Scroll',
+        test_name: 'TestCheckWindow',
         parameters: {
           browser: 'chrome',
           mode: 'scroll',
@@ -105,7 +105,7 @@ describe('Report', () => {
       sandbox: true,
       results: [
         {
-          test_name: 'TestCheckWindow_VG',
+          test_name: 'TestCheckWindow',
           parameters: {
             browser: 'chrome',
             mode: 'visualgrid',
@@ -121,7 +121,7 @@ describe('Report', () => {
           passed: true,
         },
         {
-          test_name: 'TestCheckWindow_Scroll',
+          test_name: 'TestCheckWindow',
           parameters: {
             browser: 'chrome',
             mode: 'scroll',
