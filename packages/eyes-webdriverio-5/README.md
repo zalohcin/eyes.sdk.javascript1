@@ -39,8 +39,6 @@
   * [What is the service?](#what-is-the-service-)
   * [What is the difference from just using the SDK directly?](#what-is-the-difference-from-just-using-the-sdk-directly-)
   * [How to use the service](#how-to-use-the-service)
-    + [Install automatically](#install-automatically)
-    + [Install manually](#install-manually)
   * [Configure the service](#configure-the-service)
     + [Running with the Ultra fast grid](#running-with-the-ultra-fast-grid)
     + [Verbose logging](#verbose-logging)
@@ -517,27 +515,7 @@ Here are the main differences between the service and the SDK:
 
 ### How to use the service
 
-First, add Eyes-WebdriverIO to your configuration as a service. This can be done automatically or manually.
-
-#### Install automatically
-
-After installing `@applitools/eyes-webdriverio`, run the following:
-
-```sh
-npx eyes-setup-service
-```
-
-This will modify `wdio.conf.js` to include the Eyes service.
-
-If you need to specify a custom path and name for your configuration file, you can specify it in the command line:
-
-```sh
-npx eyes-setup-service --config-file /path/to/config.conf.js
-```
-
-#### Install manually
-
-Add the following to your webdriver.io configuration file:
+First, add Eyes-WebdriverIO to your configuration as a service. Add the following to your webdriver.io configuration file:
 
 ```js
 const {EyesService} = require('@applitools/eyes-webdriverio')
