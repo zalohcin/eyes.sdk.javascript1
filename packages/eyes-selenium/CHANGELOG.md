@@ -8,8 +8,6 @@
 - updated to @applitools/eyes-sdk-core@10.3.1 (from v10.3.0)
 - updated to @applitools/visual-grid-client@14.2.1 (from v14.2.0)
 
-
-
 ## 4.39.2 - 2020/6/17
 
 - updated to @applitools/eyes-sdk-core@11.0.10 (from 11.0.7)
