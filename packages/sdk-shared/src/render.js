@@ -356,7 +356,7 @@ function buildDriver({
     'goog:chromeOptions': {
       args: headless ? ['--headless'] : [],
       mobileEmulation: isMobileEmulation ? {deviceName} : undefined,
-      debuggerAddress: attach ? '127.0.0.1:9222' : undefined,
+      debuggerAddress: attach ? 'host.docker.internal:9222' : undefined,
     },
     ...driverCapabilities,
   }
