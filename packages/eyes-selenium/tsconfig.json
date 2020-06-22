@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
     "declarationDir": "typings",
+    "allowJs": true,
     "declaration": true,
     "emitDeclarationOnly": true,
     "stripInternal": true,
-    "removeComments": false,
-    "allowJs": true,
+    "removeComments": true,
   },
-  "include": ["./index.js"],
+  "files": ["./index.js"],
 }

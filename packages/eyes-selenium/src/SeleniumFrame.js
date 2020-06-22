@@ -1,4 +1,4 @@
-const {Frame} = require('@applitools/eyes-sdk-core')
+const Frame = require('@applitools/eyes-sdk-core')
 const SeleniumWrappedElement = require('./SeleniumWrappedElement')
 
 module.exports = Frame.specialize({

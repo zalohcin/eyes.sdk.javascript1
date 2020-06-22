@@ -11,31 +11,44 @@ const AccessibilityRegionBySelector = require('./AccessibilityRegionBySelector')
 const AccessibilityRegionByElement = require('./AccessibilityRegionByElement')
 
 /**
- * @typedef {import('../wrappers/EyesWrappedElement')} EyesWrappedElement
- * @typedef {import('../wrappers/EyesWrappedElement').SupportedElement} SupportedElement
- * @typedef {import('../wrappers/EyesWrappedElement').SupportedSelector} SupportedSelector
- * @typedef {import('../frames/Frame')} Frame
- * @typedef {import('../frames/Frame').FrameReference} FrameReference
+ * @typedef {import('../geometry/Region')} Region
  */
 
 /**
- * @typedef ExtendedFrameReference
- * @prop {ElementReference} [scrollRootElement]
- * @prop {FrameReference} frame
+ * @template E
+ * @template S
+ * @typedef {import('../frames/Frame')<E,S>} Frame
  */
 
 /**
- * Reference to the region
- * @typedef {Region|SupportedSelector|SupportedElement|EyesWrappedElement} RegionReference
+ * @template E
+ * @template S
+ * @typedef {import('../wrappers/EyesWrappedElement')<E,S>} EyesWrappedElement
  */
 
 /**
- * @typedef {SupportedSelector|SupportedElement|EyesWrappedElement} ElementReference
+ * @template E
+ * @template S
+ * @typedef {import('../frames/Frame').FrameReference<E,S>} FrameReference
  */
 
 /**
+ * @template E
+ * @template S
+ * @typedef {E|S|EyesWrappedElement<E,S>} ElementReference
+ */
+
+/**
+ * @template E
+ * @template S
+ * @typedef {Region|ElementReference<E,S>} RegionReference
+ */
+
+/**
+ * @template E
+ * @template S
  * @typedef FloatingRegionReference
- * @prop {RegionReference} region
+ * @prop {RegionReference<E,S>} region
  * @prop {number} [maxUpOffset] - how much the content can move up
  * @prop {number} [maxDownOffset] - how much the content can move down
  * @prop {number} [maxLeftOffset] - how much the content can move to the left
@@ -43,22 +56,16 @@ const AccessibilityRegionByElement = require('./AccessibilityRegionByElement')
  */
 
 /**
+ * @template E
+ * @template S
  * @typedef AccessibilityRegionReference
- * @prop {RegionReference} region
+ * @prop {RegionReference<E,S>} region
  * @prop {AccessibilityRegionType} [type]
  */
 
 /**
- * @typedef {Object} SpecsCheckSettings
- * @property {(selector) => boolean} isSelector - return true if the value is a valid selector, false otherwise
- * @property {(element) => boolean} isCompatibleElement - return true if the value is an element, false otherwise
- * @property {(selector: SupportedSelector) => EyesWrappedElement} createElementFromSelector - return partially created element
- * @property {(element: SupportedElement) => EyesWrappedElement} createElementFromElement - return partially created element
- * @property {(reference) => boolean} isFrameReference - return true if the value is a frame reference, false otherwise
- * @property {(reference: FrameReference) => Frame} createFrameReference - return frame reference
- */
-
-/**
+ * @template E
+ * @template S
  * @typedef PlainCheckSettings
  * @prop {string} [name]
  * @prop {MatchLevel} [matchLevel]
@@ -71,49 +78,71 @@ const AccessibilityRegionByElement = require('./AccessibilityRegionByElement')
  * @prop {boolean} [isFully=false]
  * @prop {string} [renderId]
  * @prop {{[key: string]: string}} [hooks]
- * @prop {RegionReference} [region]
- * @prop {(FrameReference|ExtendedFrameReference)[]} [frames]
- * @prop {ElementReference} [scrollRootElement]
- * @prop {RegionReference[]} [ignoreRegions]
- * @prop {RegionReference[]} [layoutRegion]
- * @prop {RegionReference[]} [strictRegions]
- * @prop {RegionReference[]} [contentRegions]
- * @prop {(FloatingRegionReference|RegionReference)[]} [floatingRegions]
- * @prop {(AccessibilityRegionReference|RegionReference)[]} [accessibilityRegions]
+ * @prop {RegionReference<E,S>} [region]
+ * @prop {({frame: FrameReference<E,S>, scrollRootElement?: ElementReference<E,S>}|FrameReference<E,S>)[]} [frames]
+ * @prop {ElementReference<E,S>} [scrollRootElement]
+ * @prop {RegionReference<E,S>[]} [ignoreRegions]
+ * @prop {RegionReference<E,S>[]} [layoutRegion]
+ * @prop {RegionReference<E,S>[]} [strictRegions]
+ * @prop {RegionReference<E,S>[]} [contentRegions]
+ * @prop {(FloatingRegionReference<E,S>|RegionReference<E,S>)[]} [floatingRegions]
+ * @prop {(AccessibilityRegionReference<E,S>|RegionReference<E,S>)[]} [accessibilityRegions]
+ */
+
+/**
+ * @template E
+ * @template S
+ * @typedef SpecsCheckSettings
+ * @prop {(selector) => boolean} isSelector - return true if the value is a valid selector, false otherwise
+ * @prop {(element) => boolean} isCompatibleElement - return true if the value is an element, false otherwise
+ * @prop {(reference) => boolean} isFrameReference - return true if the value is a frame reference, false otherwise
+ * @prop {(selector: S) => EyesWrappedElement<E,S>} createElementFromSelector - return partially created element
+ * @prop {(element: E) => EyesWrappedElement<E,S>} createElementFromElement - return partially created element
+ * @prop {(reference: FrameReference<E,S>) => Frame<E,S>} createFrameReference - return frame reference
  */
 
 const BEFORE_CAPTURE_SCREENSHOT = 'beforeCaptureScreenshot'
 
+/**
+ * @template E
+ * @template S
+ */
 class DriverCheckSettings extends CheckSettings {
   /**
-   * @param {SpecsCheckSettings} SpecsCheckSettings
-   * @return {DriverCheckSettings} specialized version of this class
+   * @template E
+   * @template S
+   * @param {SpecsCheckSettings<E,S>} SpecsCheckSettings
+   * @return {typeof DriverCheckSettings<E,S>} specialized version of this class
    */
   static specialize(SpecsCheckSettings) {
     return class extends DriverCheckSettings {
-      /** @override */
+      /**
+       * @override
+       * @type {SpecsCheckSettings<E,S>}
+       */
       static get specs() {
         return SpecsCheckSettings
       }
-      /** @override */
+      /**
+       * @override
+       * @type {SpecsCheckSettings<E,S>}
+       */
       get specs() {
         return SpecsCheckSettings
       }
     }
   }
-  /** @type {SpecsCheckSettings} */
+  /** @type {SpecsCheckSettings<E,S>} */
   static get specs() {
     throw new TypeError('DriverCheckSettings is not specialized')
   }
-  /** @type {SpecsCheckSettings} */
+  /** @type {SpecsCheckSettings<E,S>} */
   get specs() {
     throw new TypeError('DriverCheckSettings is not specialized')
   }
-
   /**
    * Create check settings with bound region and/or frame
-   * @param {RegionReference} [region]
-   * @param {FrameReference} [frame]
+   * @param {PlainCheckSettings<E,S>} [checkSettings]
    */
   constructor(checkSettings) {
     super()
@@ -126,14 +155,15 @@ class DriverCheckSettings extends CheckSettings {
     this._targetElement = null
     /** @type {Frame[]} */
     this._frameChain = []
-    /** @type {Object<string, string>} */
+    /** @type {object<string, string>} */
     this._scriptHooks = {}
   }
-
   /**
    * Create check settings from an object
-   * @param {PlainCheckSettings} object
-   * @return {DriverCheckSettings} check settings instance
+   * @template E
+   * @template S
+   * @param {PlainCheckSettings<E,S>} object
+   * @return {DriverCheckSettings<E,S>} check settings instance
    */
   static from(object) {
     const settings = new this()
@@ -227,38 +257,40 @@ class DriverCheckSettings extends CheckSettings {
     }
     return settings
   }
-
   /**
    * Create check settings without target
-   * @return {DriverCheckSettings} check settings object
+   * @template E
+   * @template S
+   * @return {DriverCheckSettings<E,S>} check settings object
    */
   static window() {
     return new this()
   }
-
   /**
    * Create check settings with bound region and frame
-   * @param {RegionReference} region
-   * @param {FrameReference} [frame]
-   * @return {DriverCheckSettings} check settings object
+   * @template E
+   * @template S
+   * @param {RegionReference<E,S>} region
+   * @param {FrameReference<E,S>} [frame]
+   * @return {DriverCheckSettings<E,S>} check settings object
    */
   static region(region, frame) {
     return frame ? new this().frame(frame).region(region) : new this().region(region)
   }
-
   /**
    * Create check settings with bound frame
-   * @param {FrameReference} frame
-   * @return {DriverCheckSettings} check settings object
+   * @template E
+   * @template S
+   * @param {FrameReference<E,S>} frame
+   * @return {DriverCheckSettings<E,S>} check settings object
    */
   static frame(frame) {
     return new this().frame(frame)
   }
-
   /**
    * Adds a region to ignore
    * @override
-   * @param {RegionReference} region - region reference to ignore when validating the screenshot
+   * @param {RegionReference<E,S>} region - region reference to ignore when validating the screenshot
    * @return {this} this instance for chaining
    */
   ignoreRegion(region) {
@@ -274,11 +306,10 @@ class DriverCheckSettings extends CheckSettings {
 
     return this
   }
-
   /**
    * Adds a layout region
    * @override
-   * @param {RegionReference} region - region reference to match as layout when validating the screenshot
+   * @param {RegionReference<E,S>} region - region reference to match as layout when validating the screenshot
    * @return {this} this instance for chaining
    */
   layoutRegion(region) {
@@ -294,10 +325,9 @@ class DriverCheckSettings extends CheckSettings {
 
     return this
   }
-
   /**
    * Adds a strict region
-   * @param {RegionReference} region - region reference to match as strict when validating the screenshot
+   * @param {RegionReference<E,S>} region - region reference to match as strict when validating the screenshot
    * @return {this} this instance for chaining
    */
   strictRegion(region) {
@@ -313,10 +343,9 @@ class DriverCheckSettings extends CheckSettings {
 
     return this
   }
-
   /**
    * Adds a content region
-   * @param {RegionReference} region - region reference to match as content when validating the screenshot
+   * @param {RegionReference<E,S>} region - region reference to match as content when validating the screenshot
    * @return {this} this instance for chaining
    */
   contentRegion(region) {
@@ -332,11 +361,10 @@ class DriverCheckSettings extends CheckSettings {
 
     return this
   }
-
   /**
    * Adds a floating region. A floating region is a a region that can be placed within the boundaries
    * of a bigger region
-   * @param {RegionReference} region - region reference to mark as float when validating the screenshot
+   * @param {RegionReference<E,S>} region - region reference to mark as float when validating the screenshot
    * @param {number} [maxUpOffset] - how much the content can move up
    * @param {number} [maxDownOffset] - how much the content can move down
    * @param {number} [maxLeftOffset] - how much the content can move to the left
@@ -368,10 +396,9 @@ class DriverCheckSettings extends CheckSettings {
 
     return this
   }
-
   /**
    * Adds an accessibility region. An accessibility region is a region that has an accessibility type
-   * @param {RegionReference} region - region reference of content rectangle or region container
+   * @param {RegionReference<E,S>} region - region reference of content rectangle or region container
    * @param {AccessibilityRegionType} [regionType] - type of accessibility
    * @return {this} this instance for chaining
    */
@@ -391,10 +418,9 @@ class DriverCheckSettings extends CheckSettings {
 
     return this
   }
-
   /**
-   * @param {RegionReference} region
-   * @returns {this}
+   * @param {RegionReference<E,S>} region
+   * @return {this}
    */
   region(region) {
     if (Region.isRegionCompatible(region)) {
@@ -409,10 +435,9 @@ class DriverCheckSettings extends CheckSettings {
     }
     return this
   }
-
   /**
-   * @param {FrameReference} frame - the frame to switch to
-   * @returns {this}
+   * @param {FrameReference<E,S>} frameReference - the frame to switch to
+   * @return {this}
    */
   frame(frameReference) {
     if (this.specs.isFrameReference(frameReference)) {
@@ -422,9 +447,8 @@ class DriverCheckSettings extends CheckSettings {
     }
     return this
   }
-
   /**
-   * @param {SupportedSelector|SupportedElement|EyesWrappedElement} element
+   * @param {ElementReference<E,S>} element
    * @return {this}
    */
   scrollRootElement(element) {
@@ -446,49 +470,41 @@ class DriverCheckSettings extends CheckSettings {
 
     return this
   }
-
   /**
-   * @ignore
-   * @return {Promise<EyesWrappedElement>}
+   * @return {Promise<EyesWrappedElement<E,S>>}
    */
   getScrollRootElement() {
     return this._scrollRootElement
   }
-
   /**
-   * @return {?TargetRegionByElement}
+   * @return {TargetRegionByElement}
    */
   getTargetProvider() {
     if (this._targetElement) {
       return new TargetRegionByElement(this._targetElement)
     }
   }
-
   /**
-   * @return {EyesWrappedElement}
+   * @return {EyesWrappedElement<E,S>}
    */
   get targetElement() {
     return this._targetElement
   }
-
   /**
-   * @return {Frame[]}
+   * @return {Frame<E,S>[]}
    */
   getFrameChain() {
     return this._frameChain
   }
-
   /**
-   * @return {Frame[]}
+   * @return {Frame<E,S>[]}
    */
   get frameChain() {
     return Array.from(this._frameChain)
   }
-
   _getTargetType() {
     return !this._targetRegion && !this._targetElement ? 'window' : 'region'
   }
-
   /**
    * @param {string} name
    * @param {string} script
@@ -498,7 +514,6 @@ class DriverCheckSettings extends CheckSettings {
     this._scriptHooks[name] = script
     return this
   }
-
   /**
    * @deprecated
    * @param {String} hook
@@ -507,7 +522,6 @@ class DriverCheckSettings extends CheckSettings {
   webHook(hook) {
     return this.beforeRenderScreenshotHook(hook)
   }
-
   /**
    * @param {String} hook
    * @return {this}
@@ -515,7 +529,6 @@ class DriverCheckSettings extends CheckSettings {
   beforeRenderScreenshotHook(hook) {
     return this.hook(BEFORE_CAPTURE_SCREENSHOT, hook)
   }
-
   /**
    * @ignore
    * @return {Map<string, string>}

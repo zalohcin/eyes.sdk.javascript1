@@ -11,24 +11,6 @@ const EyesUtils = require('../EyesUtils')
  */
 
 /**
- * Compatible element type
- * @typedef SupportedElement
- * @prop {?}
- */
-
-/**
- * Supported selector type
- * @typedef SupportedSelector
- * @prop {?}
- */
-
-/**
- * Unwrapped element supported by framework
- * @typedef UnwrappedElement
- * @prop {?}
- */
-
-/**
  * Cross SDK selector
  * @typedef EyesSelector
  * @prop {'css'|'xpath'} type
@@ -37,39 +19,51 @@ const EyesUtils = require('../EyesUtils')
 
 /**
  * The object which implements the lowest-level functions to work with element
+ * @template E
+ * @template S
  * @typedef SpecsWrappedElement
  * @prop {(element) => boolean} isCompatible - return true if the value is an element, false otherwise
  * @prop {(selector) => boolean} isSelector - return true if the value is a valid selector, false otherwise
- * @prop {(selector: EyesSelector) => SupportedSelector} toSupportedSelector - translate cross SDK selector to SDK specific selector
- * @prop {(selector: SupportedSelector) => EyesSelector} toEyesSelector - translate SDK specific selector to cross SDK selector
- * @prop {(element: UnwrappedElement) => Promise<string>} extractId - extract id from the unwrapped element
- * @prop {(element: SupportedElement) => UnwrappedElement} [extractElement] - extract an element from the supported element
- * @prop {(element: SupportedElement) => SupportedSelector} [extractSelector] - extract an element from the supported element
+ * @prop {(selector: EyesSelector) => S} toSupportedSelector - translate cross SDK selector to SDK specific selector
+ * @prop {(selector: S) => EyesSelector} toEyesSelector - translate SDK specific selector to cross SDK selector
+ * @prop {(element: E) => Promise<string>} extractId - extract id from the unwrapped element
+ * @prop {(element: E) => E} [extractElement] - extract an element from the supported element
+ * @prop {(element: E) => S} [extractSelector] - extract an element from the supported element
  * @prop {(result) => boolean} [isStaleElementReferenceResult] - check if is a stale element reference result
  */
 
+/**
+ * @template E - Compatible element type
+ * @template S - Supported selector type
+ */
 class EyesWrappedElement {
   /**
-   * @param {SpecsWrappedElement} SpecsWrappedElement - specifications for the specific framework
-   * @return {EyesWrappedElement} specialized version of this class
+   * @param {SpecsWrappedElement<E,S>} SpecsWrappedElement - specifications for the specific framework
+   * @return {typeof EyesWrappedElement<E,S>} specialized version of this class
    */
   static specialize(SpecsWrappedElement) {
     return class extends EyesWrappedElement {
-      /** @override */
+      /**
+       * @override
+       * @type {SpecsWrappedElement<E,S>}
+       */
       static get specs() {
         return SpecsWrappedElement
       }
-      /** @override */
+      /**
+       * @override
+       * @type {SpecsWrappedElement<E,S>}
+       */
       get specs() {
         return SpecsWrappedElement
       }
     }
   }
-  /** @type {SpecsWrappedElement} */
+  /** @type {SpecsWrappedElement<E,S>} */
   static get specs() {
     throw new TypeError('The class is not specialized')
   }
-  /** @type {SpecsWrappedElement} */
+  /** @type {SpecsWrappedElement<E,S>} */
   get specs() {
     throw new TypeError('The class is not specialized')
   }
@@ -79,8 +73,8 @@ class EyesWrappedElement {
    * Partially created elements should be initialized by calling `EyesWrappedDriver#init` method before use.
    * @param {Logger} [logger] - logger instance
    * @param {EyesWrappedDriver} [driver] - parent driver instance
-   * @param {SupportedElement} [element] - supported element object to wrap
-   * @param {SupportedSelector} [selector] - universal selector object or any kind of supported selector
+   * @param {E} [element] - supported element object to wrap
+   * @param {S} [selector] - universal selector object or any kind of supported selector
    */
   constructor(logger, driver, element, selector) {
     if (element instanceof EyesWrappedElement) {
@@ -105,23 +99,27 @@ class EyesWrappedElement {
   }
   /**
    * Create partial wrapped element object from the element, this object need to be initialized before use
-   * @param {SupportedElement} element - supported element object
-   * @return {EyesWrappedElement} partially wrapped object
+   * @template E
+   * @template S
+   * @param {E} element - supported element object
+   * @return {EyesWrappedElement<E,S>} partially wrapped object
    */
   static fromElement(element) {
     return new this(null, null, element)
   }
   /**
    * Create partial wrapped element object from the selector, this object need to be initialized before use
-   * @param {SupportedSelector} selector - any kind of supported selector
-   * @return {EyesWrappedElement} partially wrapped object
+   * @template E
+   * @template S
+   * @param {S} selector - any kind of supported selector
+   * @return {EyesWrappedElement<E,S>} partially wrapped object
    */
   static fromSelector(selector) {
     return new this(null, null, null, selector)
   }
   /**
    * Check if object could be wrapped with this class
-   * @param {*} element - object to check compatibility
+   * @param element - object to check compatibility
    * @return {boolean} true if object could be wrapped with this class, otherwise false
    */
   static isCompatible(element) {
@@ -130,7 +128,7 @@ class EyesWrappedElement {
   }
   /**
    * Check if passed selector is supported by current implementation
-   * @param {*} selector
+   * @param selector
    * @return {boolean} true if selector is supported and could be passed in the {@link EyesWrappedElement.fromSelector} implementation
    */
   static isSelector(selector) {
@@ -138,15 +136,17 @@ class EyesWrappedElement {
   }
   /**
    * Translate cross SDK selector to SDK specific selector
+   * @template S
    * @param {EyesSelector} selector
-   * @return {SupportedSelector} translated SDK specific selector object
+   * @return {S} translated SDK specific selector object
    */
   static toSupportedSelector(selector) {
     return this.specs.toSupportedSelector(selector)
   }
   /**
    * Translate SDK specific selector to cross SDK selector
-   * @param {SupportedSelector} selector
+   * @template S
+   * @param {S} selector
    * @return {EyesSelector} translated cross SDK selector object
    */
   static toEyesSelector(selector) {
@@ -154,7 +154,9 @@ class EyesWrappedElement {
   }
   /**
    * Extract element ID from this class instance or unwrapped element object
-   * @param {EyesWrappedElement|UnwrappedElement} element - element to extract ID
+   * @template E
+   * @template S
+   * @param {EyesWrappedElement<E,S>|E} element - element to extract ID
    * @return {Promise<string>} if extraction is succeed returns ID of provided element, otherwise null
    */
   static async extractId(element) {
@@ -162,8 +164,10 @@ class EyesWrappedElement {
   }
   /**
    * Compare two elements, these elements could be an instances of this class or compatible objects
-   * @param {EyesWrappedElement|UnwrappedElement} leftElement - element to compare
-   * @param {EyesWrappedElement|UnwrappedElement} rightElement - element to compare
+   * @template E
+   * @template S
+   * @param {EyesWrappedElement<E,S>|E} leftElement - element to compare
+   * @param {EyesWrappedElement<E,S>|E} rightElement - element to compare
    * @return {Promise<boolean>} true if elements are equal, false otherwise
    */
   static async equals(leftElement, rightElement) {
@@ -181,25 +185,25 @@ class EyesWrappedElement {
   }
   /**
    * Selector of the wrapped element
-   * @type {SupportedSelector}
+   * @type {S}
    */
   get selector() {
     return this._selector
   }
   /**
    * Unwrapped element
-   * @type {UnwrappedElement}
+   * @type {E}
    */
   get unwrapped() {
     return this._element
   }
   /**
    * Equality check for two elements
-   * @param {EyesWrappedDriver|UnwrappedElement} otherElement - element to compare
+   * @param {EyesWrappedElement<E,S>|E} otherElement - element to compare
    * @return {Promise<boolean>} true if elements are equal, false otherwise
    */
-  async equals(otherFrame) {
-    return this.constructor.equals(this, otherFrame)
+  async equals(otherElement) {
+    return this.constructor.equals(this, otherElement)
   }
   /**
    * Initialize element created from {@link SupportedElement} or {@link SupportedSelector}
@@ -334,7 +338,7 @@ class EyesWrappedElement {
   }
   /**
    * Refresh an element reference with a specified element or try to refresh it by selector if so
-   * @param {UnwrappedElement} [freshElement] - element to update replace internal element reference
+   * @param {S} [freshElement] - element to update replace internal element reference
    * @return {boolean} true if element was successfully refreshed, otherwise false
    */
   async refresh(freshElement) {

@@ -1,4 +1,4 @@
-const {TypeUtils} = require('@applitools/eyes-sdk-core')
+const TypeUtils = require('@applitools/eyes-sdk-core')
 const {By, Builder, until} = require('selenium-webdriver')
 const cmd = require('selenium-webdriver/lib/command')
 const SeleniumFrame = require('../SeleniumFrame')

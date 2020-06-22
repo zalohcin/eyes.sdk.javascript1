@@ -1,11 +1,13 @@
 {
   "compilerOptions": {
-    "outFile": "./index.d.ts",
+    // "outFile": "./index.d.ts",
+    "declarationDir": "typings",
     "allowJs": true,
     "declaration": true,
     "emitDeclarationOnly": true,
+    // "isolatedModules": true,
     "stripInternal": true,
-    "removeComments": false,
+    "removeComments": true,
   },
   "files": ["./index.js"],
 }

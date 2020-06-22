@@ -9,53 +9,70 @@ const EyesUtils = require('../EyesUtils')
  * @typedef {import('../logging/Logger')} Logger
  * @typedef {import('../geometry/Location')} Location
  * @typedef {import('../geometry/RectangleSize')} RectangleSize
- * @typedef {import('../wrappers/EyesWrappedElement')} EyesWrappedElement
- * @typedef {import('../wrappers/EyesWrappedElement').SupportedElement} SupportedElement
- * @typedef {import('../wrappers/EyesWrappedElement').SupportedSelector} SupportedSelector
  * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
+ */
+
+/**
+ * @template E
+ * @template S
+ * @typedef {import('../wrappers/EyesWrappedElement')<E,S>} EyesWrappedElement
  */
 
 /**
  * Reference to the frame, index of the frame in the current context, name or id of the element,
  * framework element object, {@link EyesWrappedElement} implementation object
- * @typedef {number|string|SupportedSelector|SupportedElement|EyesWrappedElement|Frame} FrameReference
+ * @template E
+ * @template S
+ * @typedef {number|string|E|S|EyesWrappedElement<E,S>|Frame<E,S>} FrameReference
  */
 
 /**
+ * @template E
+ * @template S
  * @typedef SpecsFrame
  * @prop {(selector) => boolean} isSelector - return true if the value is a valid selector, false otherwise
  * @prop {(element) => boolean} isCompatibleElement - return true if the value is an element, false otherwise
- * @prop {(leftElement: SupportedElement|EyesWrappedElement, rightElement: SupportedElement|EyesWrappedElement) => Promise<boolean>} isEqualElements - return true if elements are equal, false otherwise
- * @prop {(logger: Logger, driver: EyesWrappedDriver, element: SupportedElement, selector: SupportedSelector) => EyesWrappedElement} createElement - return wrapped element instance
+ * @prop {(leftElement: E|EyesWrappedElement<E,S>, rightElement: E|EyesWrappedElement<E,S>) => Promise<boolean>} isEqualElements - return true if elements are equal, false otherwise
+ * @prop {(logger: Logger, driver: EyesWrappedDriver, element: E, selector: S) => EyesWrappedElement} createElement - return wrapped element instance
  */
 
 /**
  * Encapsulates a frame/iframe. This is a generic type class,
  * and it's actual type is determined by the element used by the user in
  * order to switch into the frame.
+ * @template E
+ * @template S
  */
 class Frame {
   /**
-   * @param {SpecsFrame} SpecsFrame
-   * @return {Frame} specialized version of this class
+   * @template E
+   * @template S
+   * @param {SpecsFrame<E,S>} SpecsFrame
+   * @return {typeof Frame<E,S>}
    */
   static specialize(SpecsFrame) {
     return class extends Frame {
-      /** @override */
+      /**
+       * @override
+       * @type {SpecFrame<E,S>}
+       */
       static get specs() {
         return SpecsFrame
       }
-      /** @override */
+      /**
+       * @override
+       * @type {SpecFrame<E,S>}
+       */
       get specs() {
         return SpecsFrame
       }
     }
   }
-  /** @type {SpecsFrame} */
+  /** @type {SpecsFrame<E,S>} */
   static get specs() {
     throw new TypeError('Frame is not specialized')
   }
-  /** @type {SpecsFrame} */
+  /** @type {SpecsFrame<E,S>} */
   get specs() {
     throw new TypeError('Frame is not specialized')
   }
@@ -63,13 +80,13 @@ class Frame {
    * Create frame from components
    * @param {Logger} logger - logger instance
    * @param {EyesWrappedDriver} driver - wrapped driver
-   * @param {Object} frame - frame components
-   * @param {EyesWrappedElement} frame.element - frame element, used as a element to switch into the frame
+   * @param {object} frame - frame components
+   * @param {EyesWrappedElement<E,S>} frame.element - frame element, used as a element to switch into the frame
    * @param {Location} frame.location - location of the frame within the current frame
    * @param {RectangleSize} frame.size - frame element size (i.e., the size of the frame on the screen, not the internal document size)
    * @param {RectangleSize} frame.innerSize - frame element inner size (i.e., the size of the frame actual size, without borders)
    * @param {Location} frame.parentScrollLocation - scroll location of the frame
-   * @param {EyesWrappedElement} frame.scrollRootElement - scroll root element
+   * @param {EyesWrappedElement<E,S>} frame.scrollRootElement - scroll root element
    */
   constructor(logger, driver, frame) {
     if (frame instanceof Frame) {
@@ -100,9 +117,11 @@ class Frame {
   }
   /**
    * Construct frame reference object which could be later initialized to the full frame object
-   * @param {FrameReference} reference - reference to the frame on its parent context
-   * @param {EyesWrappedElement} scrollRootElement - scroll root element
-   * @return {Frame} frame reference object
+   * @template E
+   * @template S
+   * @param {FrameReference<E,S>} reference - reference to the frame on its parent context
+   * @param {EyesWrappedElement<E,S>} scrollRootElement - scroll root element
+   * @return {Frame<E,S>} frame reference object
    */
   static fromReference(reference, scrollRootElement) {
     const frame = new this(null, null, reference)
@@ -111,7 +130,7 @@ class Frame {
   }
   /**
    * Check value for belonging to the {@link FrameReference} type
-   * @param {*} reference - value to check if is it a reference
+   * @param reference - value to check if is it a reference
    * @return {boolean} true if value is a valid reference, otherwise false
    */
   static isReference(reference) {
@@ -126,8 +145,10 @@ class Frame {
   }
   /**
    * Equality check for two frame objects or frame elements
-   * @param {Frame|EyesWrappedDriver} leftFrame - frame object or frame element
-   * @param {Frame|EyesWrappedDriver} rightFrame - frame object or frame element
+   * @template E
+   * @template S
+   * @param {Frame<E,S>|EyesWrappedElement<E,S>} leftFrame - frame object or frame element
+   * @param {Frame<E,S>|EyesWrappedElement<E,S>} rightFrame - frame object or frame element
    * @return {Promise<boolean>} true if frames are described the same frame element, otherwise false
    */
   static async equals(leftFrame, rightFrame) {
@@ -136,7 +157,7 @@ class Frame {
     return this.specs.isEqualElements(leftElement, rightElement)
   }
   /**
-   * @return {EyesWrappedElement}
+   * @return {EyesWrappedElement<E,S>}
    */
   get element() {
     return this._element
@@ -166,13 +187,13 @@ class Frame {
     return this._parentScrollLocation
   }
   /**
-   * @return {EyesWrappedElement}
+   * @return {EyesWrappedElement<E,S>}
    */
   get scrollRootElement() {
     return this._scrollRootElement
   }
   /**
-   * @param {!EyesWrappedElement} scrollRootElement
+   * @param {EyesWrappedElement<E,S>} scrollRootElement
    */
   set scrollRootElement(scrollRootElement) {
     if (scrollRootElement) {
@@ -181,14 +202,14 @@ class Frame {
   }
   /**
    * Create reference from current frame object
-   * @return {Frame} frame reference object
+   * @return {Frame<E,S>} frame reference object
    */
   toReference() {
     return this.constructor.fromReference(this._element || this._reference, this._scrollRootElement)
   }
   /**
    * Equality check for two frame objects or frame elements
-   * @param {Frame|EyesWrappedDriver} otherFrame - frame object or frame element
+   * @param {Frame<E,S>|EyesWrappedDriver} otherFrame - frame object or frame element
    * @return {Promise<boolean>} true if frames are described the same frame element, otherwise false
    */
   async equals(otherFrame) {
@@ -294,7 +315,7 @@ class Frame {
     }
   }
   /**
-   * @param {positionProvider} positionProvider
+   * @param {PositionProvider} positionProvider
    * @return {Promise<void>}
    */
   async preservePosition(positionProvider) {
@@ -306,7 +327,7 @@ class Frame {
     return this._scrollRootElement.preservePosition(positionProvider)
   }
   /**
-   * @param {positionProvider} positionProvider
+   * @param {PositionProvider} positionProvider
    * @return {Promise<void>}
    */
   async restorePosition(positionProvider) {
