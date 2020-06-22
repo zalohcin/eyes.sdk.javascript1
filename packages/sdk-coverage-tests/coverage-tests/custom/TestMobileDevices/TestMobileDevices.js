@@ -62,7 +62,7 @@ function getDeviceEmulationCaps(mobileEmulation) {
     browserName: 'chrome',
     'goog:chromeOptions': {
       mobileEmulation: mobileEmulation,
-      // args: ['headless'],
+      args: ['headless'],
     },
   }
 }
