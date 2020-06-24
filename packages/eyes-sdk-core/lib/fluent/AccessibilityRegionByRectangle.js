@@ -1,13 +1,23 @@
 'use strict'
 const AccessibilityMatchSettings = require('../config/AccessibilityMatchSettings')
-const AccessibilityRegionTypes = require('../config/AccessibilityRegionType')
-const ArgumentGuard = require('../utils/ArgumentGuard')
 const GetAccessibilityRegion = require('./GetAccessibilityRegion')
 
 /**
  * @typedef {import('../config/AccessibilityRegionType').AccessibilityRegionType} AccessibilityRegionType
  */
 
+/**
+ * @typedef AccessibilityPersistedRegion
+ * @prop {number} left
+ * @prop {number} top
+ * @prop {number} width
+ * @prop {number} height
+ * @prop {AccessibilityRegionType} accessibilityType
+ */
+
+/**
+ * @internal
+ */
 class AccessibilityRegionByRectangle extends GetAccessibilityRegion {
   /**
    * @param {Region} rect
@@ -15,15 +25,13 @@ class AccessibilityRegionByRectangle extends GetAccessibilityRegion {
    */
   constructor(rect, type) {
     super()
-    ArgumentGuard.isValidEnumValue(type, AccessibilityRegionTypes, false)
     this._rect = rect
     this._type = type
   }
-
   /**
-   * @inheritDoc
+   * @return {Promise<AccessibilityMatchSettings[]>}
    */
-  async getRegion(_eyesBase, _screenshot) {
+  async getRegion() {
     const accessibilityRegion = new AccessibilityMatchSettings({
       left: this._rect.getLeft(),
       top: this._rect.getTop(),
@@ -33,7 +41,9 @@ class AccessibilityRegionByRectangle extends GetAccessibilityRegion {
     })
     return [accessibilityRegion]
   }
-
+  /**
+   * @return {Promise<AccessibilityPersistedRegion[]>}
+   */
   async toPersistedRegions() {
     return [
       {

@@ -1,26 +1,31 @@
 'use strict'
-
-const {FloatingMatchSettings, CoordinatesType} = require('../..')
+const CoordinatesType = require('../geometry/CoordinatesType')
+const FloatingMatchSettings = require('../config/FloatingMatchSettings')
 const GetFloatingRegion = require('./GetFloatingRegion')
 const EyesUtils = require('../EyesUtils')
 
 /**
- * @typedef {import('../wrappers/EyesWrappedElement').SupportedSelector} SupportedSelector
- * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
+ * @typedef {import('../config/AccessibilityRegionType').AccessibilityRegionType} AccessibilityRegionType
+ * @typedef {import('../wrappers/EyesWrappedElement').EyesSelector} EyesSelector
  * @typedef {import('../EyesClassic')} EyesClassic
- *
- * @typedef FloatingPersistedRegions
- * @prop {string} type - selector type (css or xpath)
- * @prop {string} selector - selector itself
- * @prop {number} maxUpOffset - up offset
- * @prop {number} maxDownOffset - down offset
- * @prop {number} maxLeftOffset - left offset
- * @prop {number} maxRightOffset - right offset
  */
 
+/**
+ * @template Driver, Element, Selector
+ * @typedef {import('../wrappers/EyesWrappedDriver')<Driver, Element, Selector>} EyesWrappedDriver
+ */
+
+/**
+ * @typedef {EyesSelector & {maxUpOffset: number, maxDownOffset: number, maxLeftOffset: number, maxRightOffset: number}} FloatingPersistedRegion
+ */
+
+/**
+ * @internal
+ * @template Selector
+ */
 class FloatingRegionBySelector extends GetFloatingRegion {
   /**
-   * @param {SupportedSelector} regionSelector
+   * @param {Selector} regionSelector
    * @param {number} maxUpOffset
    * @param {number} maxDownOffset
    * @param {number} maxLeftOffset
@@ -67,8 +72,9 @@ class FloatingRegionBySelector extends GetFloatingRegion {
     return regions
   }
   /**
-   * @param {EyesWrappedDriver} driver
-   * @return {Promise<FloatingPersistedRegions[]>}
+   * @template Driver, Element
+   * @param {EyesWrappedDriver<Driver, Element, Selector>} driver
+   * @return {Promise<FloatingPersistedRegion[]>}
    */
   async toPersistedRegions(driver) {
     const regions = await EyesUtils.locatorToPersistedRegions(

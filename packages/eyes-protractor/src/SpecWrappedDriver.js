@@ -3,6 +3,10 @@ const ProtractorFrame = require('./ProtractorFrame')
 const ProtractorWrappedElement = require('./ProtractorWrappedElement')
 const {Builder, Runner, Command, CommandName, until} = require('protractor')
 
+/**
+ * @typedef {import('protractor').ProtractorBrowser} Driver
+ */
+
 module.exports = {
   isEqualFrames(leftFrame, rightFrame) {
     return ProtractorFrame.equals(leftFrame, rightFrame)

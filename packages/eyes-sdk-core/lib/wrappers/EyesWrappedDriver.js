@@ -7,15 +7,31 @@ const EyesDriverController = require('./EyesDriverController')
 
 /**
  * @typedef {import('../logging/Logger')} Logger
- * @typedef {import('./EyesJsExecutor').SpecsJsExecutor} SpecsJsExecutor
- * @typedef {import('./EyesBrowsingContext').SpecsBrowsingContext} SpecsBrowsingContext
- * @typedef {import('./EyesElementFinder').SpecsElementFinder} SpecsElementFinder
- * @typedef {import('./EyesDriverController').SpecsDriverController} SpecsDriverController
  */
 
 /**
- * @typedef UnwrappedDriver
- * @prop {?}
+ * @template Driver, Element, Selector
+ * @typedef {import('./EyesJsExecutor').SpecJsExecutor<Driver, Element, Selector>} SpecJsExecutor
+ */
+
+/**
+ * @template Driver, Element, Selector
+ * @typedef {import('./EyesBrowsingContext').SpecBrowsingContext<Driver, Element, Selector>} SpecBrowsingContext
+ */
+
+/**
+ * @template Driver, Element, Selector
+ * @typedef {import('./EyesElementFinder').SpecElementFinder<Driver, Element, Selector>} SpecElementFinder
+ */
+
+/**
+ * @template Driver, Element, Selector
+ * @typedef {import('./EyesDriverController').SpecDriverController<Driver, Element, Selector>} SpecDriverController
+ */
+
+/**
+ * @template Driver, Element, Selector
+ * @typedef {SpecJsExecutor<Driver, Element, Selector> & SpecBrowsingContext<Driver, Element, Selector> & SpecElementFinder<Driver, Element, Selector> & SpecDriverController<Driver, Element, Selector>} SpecDriver
  */
 
 /**
@@ -23,23 +39,25 @@ const EyesDriverController = require('./EyesDriverController')
  * @prop {(reference) => Promise<*>} switchToFrame
  * @prop {() => Promise<*>} switchToParentFrame
  * @prop {(url: string) => Promise<*>} visit
- *
  */
 
 /**
- * @typedef {SpecsJsExecutor & SpecsBrowsingContext & SpecsElementFinder & SpecsDriverController} SpecsWrappedDriver
+ * @template Driver - Driver provided by wrapped framework
+ * @template Element - Element provided by wrapped framework
+ * @template Selector - Selector supported by framework
  */
-
 class EyesWrappedDriver {
   /**
-   * @param {SpecsWrappedDriver} SpecsWrappedDriver - specifications for the specific framework
-   * @return {EyesWrappedDriver} specialized version of this class
+   * @template Driver, Element, Selector
+   * @param {SpecDriver<Driver, Element, Selector>} spec - specifications for the specific framework
+   * @param {DriverOverrides} overrides - specifications for the specific framework
+   * @return {typeof EyesWrappedDriver} specialized version of this class
    */
-  static specialize(SpecsWrappedDriver, overrides) {
-    const BrowsingContext = EyesBrowsingContext.specialize(SpecsWrappedDriver)
-    const JsExecutor = EyesJsExecutor.specialize(SpecsWrappedDriver)
-    const ElementFinder = EyesElementFinder.specialize(SpecsWrappedDriver)
-    const DriverController = EyesDriverController.specialize(SpecsWrappedDriver)
+  static specialize(spec, overrides) {
+    const BrowsingContext = EyesBrowsingContext.specialize(spec)
+    const JsExecutor = EyesJsExecutor.specialize(spec)
+    const ElementFinder = EyesElementFinder.specialize(spec)
+    const DriverController = EyesDriverController.specialize(spec)
     return class extends EyesWrappedDriver {
       /** @override */
       static get overrides() {
@@ -50,12 +68,12 @@ class EyesWrappedDriver {
         return overrides || {}
       }
       /** @override */
-      static get specs() {
-        return SpecsWrappedDriver
+      static get spec() {
+        return spec
       }
       /** @override */
       get specs() {
-        return SpecsWrappedDriver
+        return spec
       }
       /** @override */
       static get JsExecutor() {
@@ -95,54 +113,56 @@ class EyesWrappedDriver {
   static get overrides() {
     return {}
   }
+  /**
+   * @type {SpecDriver}
+   */
+  static get spec() {
+    throw new TypeError('EyesWrappedDriver is not specialized')
+  }
+  /** @type {typeof EyesJsExecutor} */
+  static get JsExecutor() {
+    throw new TypeError('EyesWrappedDriver is not specialized')
+  }
+  /** @type {typeof EyesBrowsingContext} */
+  static get BrowsingContext() {
+    throw new TypeError('EyesWrappedDriver is not specialized')
+  }
+  /** @type {typeof EyesElementFinder} */
+  static get ElementFinder() {
+    throw new TypeError('EyesWrappedDriver is not specialized')
+  }
+  /** @type {typeof EyesDriverController} */
+  static get DriverController() {
+    throw new TypeError('EyesWrappedDriver is not specialized')
+  }
   /** @type {Object<string, Function>} */
   get overrides() {
     return {}
   }
-  /** @type {SpecsWrappedDriver} */
-  static get specs() {
+  /** @type {SpecDriver<Driver, Element, Selector>} */
+  get spec() {
     throw new TypeError('EyesWrappedDriver is not specialized')
   }
-  /** @type {SpecsWrappedDriver} */
-  get specs() {
-    throw new TypeError('EyesWrappedDriver is not specialized')
-  }
-  /** @type {EyesJsExecutor} */
-  static get JsExecutor() {
-    throw new TypeError('EyesWrappedDriver is not specialized')
-  }
-  /** @type {EyesJsExecutor} */
+  /** @type {typeof EyesJsExecutor} */
   get JsExecutor() {
     throw new TypeError('EyesWrappedDriver is not specialized')
   }
-  /** @type {EyesBrowsingContext} */
-  static get BrowsingContext() {
-    throw new TypeError('EyesWrappedDriver is not specialized')
-  }
-  /** @type {EyesBrowsingContext} */
+  /** @type {typeof EyesBrowsingContext} */
   get BrowsingContext() {
     throw new TypeError('EyesWrappedDriver is not specialized')
   }
-  /** @type {EyesElementFinder} */
-  static get ElementFinder() {
-    throw new TypeError('EyesWrappedDriver is not specialized')
-  }
-  /** @type {EyesElementFinder} */
+  /** @type {typeof EyesElementFinder} */
   get ElementFinder() {
     throw new TypeError('EyesWrappedDriver is not specialized')
   }
-  /** @type {EyesDriverController} */
-  static get DriverController() {
-    throw new TypeError('EyesWrappedDriver is not specialized')
-  }
-  /** @type {EyesDriverController} */
+  /** @type {typeof EyesDriverController} */
   get DriverController() {
     throw new TypeError('EyesWrappedDriver is not specialized')
   }
   /**
    * Construct wrapped driver instance and initialize all of helpers interfaces
    * @param {Logger} logger - logger instance
-   * @param {UnwrappedDriver} driver - specific driver object for the framework
+   * @param {Driver} driver - specific driver object for the framework
    */
   constructor(logger, driver) {
     ArgumentGuard.notNull(driver, 'driver')
@@ -183,35 +203,35 @@ class EyesWrappedDriver {
   }
   /**
    * Unwrapped driver for specific SDK
-   * @type {UnwrappedDriver}
+   * @type {Driver}
    */
   get unwrapped() {
     return this._driver
   }
   /**
    * Implementation of JavaScript executor interface for specific SDK
-   * @type {EyesJsExecutor}
+   * @type {EyesJsExecutor<Driver, Element, Selector>}
    */
   get executor() {
     return this._executor
   }
   /**
    * Implementation of browsing context switcher interface for specific SDK
-   * @type {EyesBrowsingContext}
+   * @type {EyesBrowsingContext<Driver, Element, Selector>}
    */
   get context() {
     return this._context
   }
   /**
    * Implementation of element finder interface for specific SDK
-   * @type {EyesElementFinder}
+   * @type {EyesElementFinder<Driver, Element, Selector>}
    */
   get finder() {
     return this._finder
   }
   /**
    * Implementation of driver controller interface for specific SDK
-   * @type {EyesDriverController}
+   * @type {EyesDriverController<Driver, Element, Selector>}
    */
   get controller() {
     return this._controller

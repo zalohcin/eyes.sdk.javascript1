@@ -1,5 +1,6 @@
 const TestResultsFormatter = require('../../lib/TestResultsFormatter')
-const {TestResults, TestResultsError} = require('../../lib/TestResults')
+const TestResults = require('../../lib/TestResults')
+const TestResultsError = require('../../lib/TestResultsError')
 const TestResultsStatuses = require('../../lib/TestResultsStatus')
 const assert = require('assert')
 

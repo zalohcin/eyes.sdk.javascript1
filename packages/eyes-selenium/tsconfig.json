@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
+    "moduleResolution": "node",
     "declarationDir": "typings",
-    "allowJs": true,
     "declaration": true,
     "emitDeclarationOnly": true,
-    "stripInternal": true,
-    "removeComments": true,
+    "allowJs": true,
+    "types" : ["selenium-webdriver-3"]
   },
-  "files": ["./index.js"],
+  "files": ["index.js"],
 }

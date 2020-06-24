@@ -1,22 +1,31 @@
 'use strict'
-
-const {CoordinatesType, Region} = require('../..')
+const Region = require('../geometry/Region')
+const CoordinatesTypes = require('../geometry/CoordinatesType')
 const GetRegion = require('./GetRegion')
 const EyesUtils = require('../EyesUtils')
 
 /**
- * @typedef {import('../wrappers/EyesWrappedElement').SupportedSelector} SupportedSelector
- * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
+ * @typedef {import('../config/AccessibilityRegionType').AccessibilityRegionType} AccessibilityRegionType
+ * @typedef {import('../wrappers/EyesWrappedElement').EyesSelector} EyesSelector
  * @typedef {import('../EyesClassic')} EyesClassic
- *
- * @typedef PersistedRegions
- * @prop {string} type - selector type (css or xpath)
- * @prop {string} selector - selector itself
  */
 
+/**
+ * @template Driver, Element, Selector
+ * @typedef {import('../wrappers/EyesWrappedDriver')<Driver, Element, Selector>} EyesWrappedDriver
+ */
+
+/**
+ * @typedef {EyesSelector} IgnorePersistedRegion
+ */
+
+/**
+ * @internal
+ * @template Selector
+ */
 class IgnoreRegionBySelector extends GetRegion {
   /**
-   * @param {SupportedSelector} selector
+   * @param {Selector} selector
    */
   constructor(selector) {
     super()
@@ -36,15 +45,16 @@ class IgnoreRegionBySelector extends GetRegion {
       const rect = await element.getRect()
       const lTag = screenshot.convertLocation(
         rect.getLocation(),
-        CoordinatesType.CONTEXT_RELATIVE,
-        CoordinatesType.SCREENSHOT_AS_IS,
+        CoordinatesTypes.CONTEXT_RELATIVE,
+        CoordinatesTypes.SCREENSHOT_AS_IS,
       )
       regions.push(new Region(lTag.getX(), lTag.getY(), rect.getWidth(), rect.getHeight()))
     }
     return regions
   }
   /**
-   * @param {EyesWrappedDriver} driver
+   * @template Driver, Element
+   * @param {EyesWrappedDriver<Driver, Element, Selector>} driver
    * @return {Promise<PersistedRegions[]>}
    */
   async toPersistedRegions(driver) {

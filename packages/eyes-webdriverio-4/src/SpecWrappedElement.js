@@ -3,26 +3,17 @@ const LegacySelector = require('./LegacySelector')
 
 /**
  * Supported selector type
- * @typedef {string|LegacySelector} SupportedSelector
+ * @typedef {string|LegacySelector} Selector
  */
 
 /**
  * Compatible element type
- * @typedef {UnwrappedElement|ResponseElement} SupportedElement
+ * @typedef {PlainElement|{value: PlainElement, selector?: string}} Element
  */
 
 /**
- * Unwrapped element supported by framework
- * @typedef {Object} UnwrappedElement
- * @property {string} ELEMENT - legacy element id
- * @property {string} element-6066-11e4-a52e-4f735466cecf - element id
- */
-
-/**
- * Response element the object returned from find element operation
- * @typedef {Object} ResponseElement
- * @property {UnwrappedElement} value
- * @property {string} [selector]
+ * Plain element object type
+ * @typedef {{ELEMENT: string, 'element-6066-11e4-a52e-4f735466cecf': string}} PlainElement
  */
 
 const LEGACY_ELEMENT_ID = 'ELEMENT'

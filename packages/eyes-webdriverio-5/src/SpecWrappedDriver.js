@@ -4,6 +4,10 @@ const LegacySelector = require('./LegacySelector')
 const {remote} = require('webdriverio')
 const {URL} = require('url')
 
+/**
+ * @typedef {import('webdriverio').Browser} Driver
+ */
+
 module.exports = {
   isEqualFrames(leftFrame, rightFrame) {
     return WDIOFrame.equals(leftFrame, rightFrame)
@@ -103,7 +107,7 @@ module.exports = {
     return driver.url(url)
   },
 
-  /********* for testing purposes */
+  /* -------- FOR TESTING PURPOSES -------- */
 
   async build({capabilities, serverUrl = process.env.CVG_TESTS_REMOTE}) {
     const {hostname, port, pathname, protocol} = serverUrl ? new URL(serverUrl) : {}

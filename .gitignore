@@ -18,6 +18,7 @@ node_modules
 tmp
 .env
 .vscode
+typings
 
 # sdk-release-kit
 .bongo

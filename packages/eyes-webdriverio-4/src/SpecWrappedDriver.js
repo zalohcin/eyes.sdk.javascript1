@@ -4,6 +4,10 @@ const WDIOWrappedElement = require('./WDIOWrappedElement')
 const {remote} = require('webdriverio')
 const {URL} = require('url')
 
+/**
+ * @typedef {object} Driver
+ */
+
 module.exports = {
   isEqualFrames(leftFrame, rightFrame) {
     return WDIOFrame.equals(leftFrame, rightFrame)

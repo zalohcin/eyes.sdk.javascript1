@@ -2,7 +2,14 @@ const {DriverCheckSettings} = require('@applitools/eyes-sdk-core')
 const SeleniumWrappedElement = require('./SeleniumWrappedElement')
 const SeleniumFrame = require('./SeleniumFrame')
 
-module.exports = DriverCheckSettings.specialize({
+/**
+ * @typedef {import('./selenium3/SpecWrappedDriver').Driver|import('./selenium4/SpecWrappedDriver').Driver} SeleniumDriver
+ * @typedef {import('./selenium3/SpecWrappedElement').Element|import('./selenium4/SpecWrappedElement').Element} SeleniumElement
+ * @typedef {import('./selenium3/SpecWrappedElement').Selector|import('./selenium4/SpecWrappedElement').Selector} SeleniumSelector
+ */
+
+/** @type {DriverCheckSettings<SeleniumDriver, SeleniumElement, SeleniumSelector>} */
+const SeleniumCheckSettings = DriverCheckSettings.specialize({
   isSelector(selector) {
     return SeleniumWrappedElement.isSelector(selector)
   },
@@ -22,3 +29,5 @@ module.exports = DriverCheckSettings.specialize({
     return SeleniumFrame.fromReference(reference)
   },
 })
+
+module.exports = SeleniumCheckSettings

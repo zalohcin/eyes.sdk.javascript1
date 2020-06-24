@@ -34,7 +34,6 @@ describe('ClassicRunner', () => {
 
     const throwEx = true
     await assertRejects(eyes.getRunner().getAllTestResults(throwEx), err => {
-      console.log(err)
       assert.strictEqual(err.name, 'NewTestError')
       return true
     })

@@ -1,22 +1,36 @@
 'use strict'
-
-const {Region, CoordinatesType} = require('../..')
+const Region = require('../geometry/Region')
+const CoordinatesTypes = require('../geometry/CoordinatesType')
 const GetRegion = require('./GetRegion')
 const EyesUtils = require('../EyesUtils')
 
 /**
- * @typedef {import('../wrappers/EyesWrappedElement')} EyesWrappedElement
- * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
+ * @typedef {import('../config/AccessibilityRegionType').AccessibilityRegionType} AccessibilityRegionType
+ * @typedef {import('../wrappers/EyesWrappedElement').EyesSelector} EyesSelector
  * @typedef {import('../EyesClassic')} EyesClassic
- *
- * @typedef PersistedRegions
- * @prop {string} type - selector type (css or xpath)
- * @prop {string} selector - selector itself
  */
 
+/**
+ * @template Driver, Element, Selector
+ * @typedef {import('../wrappers/EyesWrappedDriver')<Driver, Element, Selector>} EyesWrappedDriver
+ */
+
+/**
+ * @template Element
+ * @typedef {import('../wrappers/EyesWrappedElement')<any, Element, any>} EyesWrappedElement
+ */
+
+/**
+ * @typedef {EyesSelector} IgnorePersistedRegion
+ */
+
+/**
+ * @internal
+ * @template Element
+ */
 class IgnoreRegionByElement extends GetRegion {
   /**
-   * @param {EyesWrappedElement} element
+   * @param {EyesWrappedElement<Element>} element
    */
   constructor(element) {
     super()
@@ -33,14 +47,15 @@ class IgnoreRegionByElement extends GetRegion {
     const rect = await this._element.getRect()
     const lTag = screenshot.convertLocation(
       rect.getLocation(),
-      CoordinatesType.CONTEXT_RELATIVE,
-      CoordinatesType.SCREENSHOT_AS_IS,
+      CoordinatesTypes.CONTEXT_RELATIVE,
+      CoordinatesTypes.SCREENSHOT_AS_IS,
     )
     return [new Region(lTag.getX(), lTag.getY(), rect.getWidth(), rect.getHeight())]
   }
   /**
-   * @param {EyesWrappedDriver} driver
-   * @return {Promise<PersistedRegions[]>}
+   * @template Driver, Selector
+   * @param {EyesWrappedDriver<Driver, Element, Selector>} driver
+   * @return {Promise<IgnorePersistedRegion[]>}
    */
   async toPersistedRegions(driver) {
     const xpath = await EyesUtils.getElementAbsoluteXpath(

@@ -1,6 +1,11 @@
 const {TypeUtils} = require('@applitools/eyes-sdk-core')
 const LegacySelector = require('./LegacySelector')
 
+/**
+ * @template T
+ * @param {T} EyesWrappedDriver
+ * @return {T}
+ */
 function LegacyAPIDriver(EyesWrappedDriver) {
   return class EyesWebDriver extends EyesWrappedDriver {
     get remoteWebDriver() {

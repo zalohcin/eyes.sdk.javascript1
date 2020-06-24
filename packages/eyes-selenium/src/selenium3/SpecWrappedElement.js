@@ -2,23 +2,13 @@ const {TypeUtils} = require('@applitools/eyes-sdk-core')
 const {WebElement, By} = require('selenium-webdriver')
 
 /**
- * @typedef {import('selenium-webdriver').ByHash} ByHash
- * @typedef {import('selenium-webdriver').By} By
- */
-
-/**
  * Supported selector type
- * @typedef {By|ByHash} SupportedSelector
- */
-
-/**
- * Compatible element type
- * @typedef {UnwrappedElement} SupportedElement
+ * @typedef {import('selenium-webdriver').By|import('selenium-webdriver').ByHash|string} Selector
  */
 
 /**
  * Unwrapped element supported by framework
- * @typedef {WebElement} UnwrappedElement
+ * @typedef {import('selenium-webdriver').WebElement} Element
  */
 
 module.exports = {

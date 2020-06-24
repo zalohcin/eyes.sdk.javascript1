@@ -6,25 +6,37 @@ const EyesUtils = require('../EyesUtils')
 
 /**
  * @typedef {import('../config/AccessibilityRegionType').AccessibilityRegionType} AccessibilityRegionType
- * @typedef {import('../wrappers/EyesWrappedElement')} EyesWrappedElement
- * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
+ * @typedef {import('../wrappers/EyesWrappedElement').EyesSelector} EyesSelector
  * @typedef {import('../EyesClassic')} EyesClassic
- *
- * @typedef AccessibilityPersistedRegions
- * @prop {string} type - selector type (css or xpath)
- * @prop {string} selector - selector itself
- * @prop {AccessibilityRegionType} accessibilityType - accessibility region type
  */
 
+/**
+ * @template Driver, Element, Selector
+ * @typedef {import('../wrappers/EyesWrappedDriver')<Driver, Element, Selector>} EyesWrappedDriver
+ */
+
+/**
+ * @template Element
+ * @typedef {import('../wrappers/EyesWrappedElement')<any, Element, any>} EyesWrappedElement
+ */
+
+/**
+ * @typedef {EyesSelector & {accessibilityType: AccessibilityRegionType}} AccessibilityPersistedRegion
+ */
+
+/**
+ * @internal
+ * @template Element
+ */
 class AccessibilityRegionByElement extends GetAccessibilityRegion {
   /**
-   * @param {EyesWrappedElement} element
-   * @param {AccessibilityRegionType} regionType
+   * @param {EyesWrappedElement<Element>} element
+   * @param {AccessibilityRegionType} [type]
    */
-  constructor(element, regionType) {
+  constructor(element, type) {
     super()
     this._element = element
-    this._regionType = regionType
+    this._type = type
   }
   /**
    * @param {EyesClassic} eyes
@@ -46,13 +58,14 @@ class AccessibilityRegionByElement extends GetAccessibilityRegion {
       top: pTag.getY(),
       width: rect.getWidth(),
       height: rect.getHeight(),
-      type: this._regionType,
+      type: this._type,
     })
     return [accessibilityRegion]
   }
   /**
-   * @param {EyesWrappedDriver} driver
-   * @return {Promise<AccessibilityPersistedRegions[]>}
+   * @template Driver, Selector
+   * @param {EyesWrappedDriver<Driver, Element, Selector>} driver
+   * @return {Promise<AccessibilityPersistedRegion[]>}
    */
   async toPersistedRegions(driver) {
     const xpath = await EyesUtils.getElementAbsoluteXpath(
@@ -64,7 +77,7 @@ class AccessibilityRegionByElement extends GetAccessibilityRegion {
       {
         type: 'xpath',
         selector: xpath,
-        accessibilityType: this._regionType,
+        accessibilityType: this._type,
       },
     ]
   }

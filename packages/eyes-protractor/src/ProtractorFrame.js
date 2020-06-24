@@ -1,7 +1,14 @@
 const {Frame} = require('@applitools/eyes-sdk-core')
 const ProtractorWrappedElement = require('./ProtractorWrappedElement')
 
-module.exports = Frame.specialize({
+/**
+ * @typedef {import('./SpecWrappedDriver').Driver} ProtractorDriver
+ * @typedef {import('./SpecWrappedElement').Element} ProtractorElement
+ * @typedef {import('./SpecWrappedElement').Selector} ProtractorSelector
+ */
+
+/** @type {Frame<ProtractorDriver, ProtractorElement, ProtractorSelector>} */
+const ProtractorFrame = Frame.specialize({
   isSelector(selector) {
     return ProtractorWrappedElement.isSelector(selector)
   },
@@ -15,3 +22,5 @@ module.exports = Frame.specialize({
     return new ProtractorWrappedElement(logger, driver, element, selector)
   },
 })
+
+module.exports = ProtractorFrame

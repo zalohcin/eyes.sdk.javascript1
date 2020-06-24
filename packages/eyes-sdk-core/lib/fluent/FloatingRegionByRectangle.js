@@ -1,10 +1,21 @@
 'use strict'
-
-const FloatingMatchSettings = require('../..')
+const FloatingMatchSettings = require('../config/FloatingMatchSettings')
 const GetFloatingRegion = require('./GetFloatingRegion')
 
 /**
- * @ignore
+ * @typedef FloatingPersistedRegion
+ * @prop {number} left
+ * @prop {number} top
+ * @prop {number} width
+ * @prop {number} height
+ * @prop {number} maxUpOffset
+ * @prop {number} maxDownOffset
+ * @prop {number} maxLeftOffset
+ * @prop {number} maxRightOffset
+ */
+
+/**
+ * @internal
  */
 class FloatingRegionByRectangle extends GetFloatingRegion {
   /**
@@ -22,11 +33,10 @@ class FloatingRegionByRectangle extends GetFloatingRegion {
     this._maxLeftOffset = maxLeftOffset
     this._maxRightOffset = maxRightOffset
   }
-
   /**
-   * @inheritDoc
+   * @return {Promise<FloatingMatchSettings[]>}
    */
-  async getRegion(_eyesBase, _screenshot) {
+  async getRegion() {
     const floatingRegion = new FloatingMatchSettings({
       left: this._rect.getLeft(),
       top: this._rect.getTop(),
@@ -39,8 +49,10 @@ class FloatingRegionByRectangle extends GetFloatingRegion {
     })
     return [floatingRegion]
   }
-
-  async toPersistedRegions(_driver) {
+  /**
+   * @return {FloatingPersistedRegion[]}
+   */
+  async toPersistedRegions() {
     return [
       {
         left: this._rect.getLeft(),

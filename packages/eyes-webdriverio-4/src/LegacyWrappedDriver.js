@@ -1,5 +1,10 @@
 const LegacySelector = require('./LegacySelector')
 
+/**
+ * @template T
+ * @param {T} EyesWrappedDriver
+ * @return {T}
+ */
 function LegacyAPIDriver(EyesWrappedDriver) {
   return class EyesWebDriver extends EyesWrappedDriver {
     async executeScript(script, ...varArgs) {

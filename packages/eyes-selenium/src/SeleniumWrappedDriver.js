@@ -2,6 +2,13 @@ const {EyesWrappedDriver} = require('@applitools/eyes-sdk-core')
 const LegacyWrappedDriver = require('./LegacyWrappedDriver')
 const SpecWrappedDriver = require('./SpecWrappedDriver')
 
+/**
+ * @typedef {import('./selenium3/SpecWrappedDriver').Driver|import('./selenium4/SpecWrappedDriver').Driver} SeleniumDriver
+ * @typedef {import('./selenium3/SpecWrappedElement').Element|import('./selenium4/SpecWrappedElement').Element} SeleniumElement
+ * @typedef {import('./selenium3/SpecWrappedElement').Selector|import('./selenium4/SpecWrappedElement').Selector} SeleniumSelector
+ */
+
+/** @type {EyesWrappedDriver<SeleniumDriver, SeleniumElement, SeleniumSelector>} */
 const SeleniumWrappedDriver = EyesWrappedDriver.specialize(SpecWrappedDriver, {
   /** @override */
   switchTo(proxies) {

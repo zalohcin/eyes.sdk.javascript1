@@ -1,6 +1,6 @@
 'use strict'
-
-const {GeneralUtils, ArgumentGuard} = require('../..')
+const GeneralUtils = require('../utils/GeneralUtils')
+const ArgumentGuard = require('../utils/ArgumentGuard')
 
 /**
  * Encapsulates data required to start session using the Session API.

@@ -1,24 +1,37 @@
 'use strict'
-
-const {ArgumentGuard, Location} = require('../..')
+const ArgumentGuard = require('../utils/ArgumentGuard')
+const Location = require('../geometry/Location')
 const PositionProvider = require('./PositionProvider')
 const PositionMemento = require('./PositionMemento')
 const EyesUtils = require('../EyesUtils')
 
 /**
- * @typedef {import('../geometry/RectangleSize').RectangleSize} RectangleSize
- * @typedef {import('../wrappers/EyesJsExecutor')} EyesJsExecutor
- * @typedef {import('../wrappers/EyesWrappedElement')} EyesWrappedElement
+ * @typedef {import('../geometry/RectangleSize')} RectangleSize
+ */
+
+/**
+ * @template Driver, Element, Selector
+ * @typedef {import('../wrappers/EyesJsExecutor')<Driver, Element, Selector>} EyesJsExecutor
+ */
+
+/**
+ * @template Driver, Element, Selector
+ * @typedef {import('../wrappers/EyesWrappedElement')<Driver, Element, Selector>} EyesWrappedElement
  */
 
 /**
  * A {@link PositionProvider} which is based on Scroll
+ *
+ * @internal
+ * @template Driver
+ * @template Element
+ * @template Selector
  */
 class ScrollElementPositionProvider extends PositionProvider {
   /**
    * @param {Logger} logger - logger instance
-   * @param {EyesJsExecutor} executor - js executor
-   * @param {EyesWrappedElement} element - scrolling element
+   * @param {EyesJsExecutor<Driver, Element, Selector>} executor - js executor
+   * @param {EyesWrappedElement<Driver, Element, Selector>} element - scrolling element
    */
   constructor(logger, executor, element) {
     super()
@@ -31,18 +44,17 @@ class ScrollElementPositionProvider extends PositionProvider {
     this._executor = executor
     this._element = element
   }
-
   /**
-   * @return {EyesWrappedElement} scroll root element
+   * @type {EyesWrappedElement<Driver, Element, Selector>}
    */
   get scrollRootElement() {
     return this._element
   }
-
   /**
    * Get scroll position of the provided element
-   * @param {EyesWrappedElement} [customScrollRootElement] - if custom scroll root element provided
+   * @param {EyesWrappedElement<Driver, Element, Selector>} [customScrollRootElement] - if custom scroll root element provided
    *  it will be user as a base element for this operation
+   * @return {Promise<Location>}
    */
   async getCurrentPosition(customScrollRootElement) {
     try {
@@ -60,13 +72,12 @@ class ScrollElementPositionProvider extends PositionProvider {
       return Location.ZERO
     }
   }
-
   /**
    * Set scroll position of the provided element
    * @param {Location} position - position to set
-   * @param {EyesWrappedElement} [customScrollRootElement] - if custom scroll root element provided
+   * @param {EyesWrappedElement<Driver, Element, Selector>} [customScrollRootElement] - if custom scroll root element provided
    *  it will be user as a base element for this operation
-   * @return {Location} actual position after set
+   * @return {Promise<Location>} actual position after set
    */
   async setPosition(position, customScrollRootElement) {
     try {
@@ -84,17 +95,15 @@ class ScrollElementPositionProvider extends PositionProvider {
       this._logger.verbose(`Failed to set current scroll position!.`, err)
     }
   }
-
   /**
    * Returns entire size of the scrolling element
-   * @return {RectangleSize} container's entire size
+   * @return {Promise<RectangleSize>} container's entire size
    */
   async getEntireSize() {
     const size = await EyesUtils.getElementEntireSize(this._logger, this._executor, this._element)
     this._logger.verbose(`ScrollElementPositionProvider - Entire size: ${size}`)
     return size
   }
-
   /**
    * Add "data-applitools-scroll" attribute to the scrolling element
    */
@@ -105,10 +114,9 @@ class ScrollElementPositionProvider extends PositionProvider {
       this._logger.verbose("Can't set data attribute for element", err)
     }
   }
-
   /**
    * Returns current position of the scrolling element for future restoring
-   * @param {EyesWrappedElement} [customScrollRootElement] - if custom scroll root element provided
+   * @param {EyesWrappedElement<Driver, Element, Selector>} [customScrollRootElement] - if custom scroll root element provided
    *  it will be user as a base element for this operation
    * @return {Promise<PositionMemento>} current state of scrolling element
    */
@@ -116,13 +124,12 @@ class ScrollElementPositionProvider extends PositionProvider {
     const position = await this.getCurrentPosition(customScrollRootElement)
     return new PositionMemento({position})
   }
-
   /**
    * Restore position of the element from the state
    * @param {PositionMemento} state - initial state of position
-   * @param {EyesWrappedElement} [customScrollRootElement] - if custom scroll root element provided
+   * @param {EyesWrappedElement<Driver, Element, Selector>} [customScrollRootElement] - if custom scroll root element provided
    *  it will be user as a base element for this operation
-   * @return {Promise}
+   * @return {Promise<void>}
    */
   async restoreState(state) {
     await this.setPosition(state.position)

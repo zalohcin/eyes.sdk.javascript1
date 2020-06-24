@@ -11,7 +11,7 @@ const {
   handleRequestResponse,
   handleRequestError,
 } = require('./requestHelpers')
-const {TestResults} = require('../TestResults')
+const TestResults = require('../TestResults')
 const MatchResult = require('../match/MatchResult')
 
 const RunningRender = require('../renderer/RunningRender')

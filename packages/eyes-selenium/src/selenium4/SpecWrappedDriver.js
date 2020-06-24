@@ -4,6 +4,10 @@ const cmd = require('selenium-webdriver/lib/command')
 const SeleniumFrame = require('../SeleniumFrame')
 const SeleniumWrappedElement = require('../SeleniumWrappedElement')
 
+/**
+ * @typedef {import('selenium-webdriver').WebDriver} Driver
+ */
+
 module.exports = {
   isEqualFrames(leftFrame, rightFrame) {
     return SeleniumFrame.equals(leftFrame, rightFrame)
@@ -139,7 +143,8 @@ module.exports = {
     return driver.get(url)
   },
 
-  /********* for testing purposes */
+  /* -------- FOR TESTING PURPOSES -------- */
+
   async build({capabilities, serverUrl = process.env.CVG_TESTS_REMOTE}) {
     return new Builder()
       .withCapabilities(capabilities)

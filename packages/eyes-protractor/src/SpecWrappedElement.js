@@ -2,22 +2,13 @@ const {TypeUtils} = require('@applitools/eyes-sdk-core')
 const {ProtractorBy} = require('protractor')
 
 /**
- * @typedef {import('protractor').Locator} Locator
- */
-
-/**
  * Supported selector type
- * @typedef {Locator|string} SupportedSelector
+ * @typedef {import('protractor').Locator|string} Selector
  */
 
 /**
  * Compatible element type
- * @typedef {UnwrappedElement} SupportedElement
- */
-
-/**
- * Unwrapped element supported by framework
- * @typedef {WebElement|ElementFinder} UnwrappedElement
+ * @typedef {import('protractor').WebElement|import('protractor').ElementFinder} Element
  */
 
 module.exports = {
