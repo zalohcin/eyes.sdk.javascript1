@@ -3,12 +3,18 @@ const LegacyWrappedDriver = require('./LegacyWrappedDriver')
 const SpecWrappedDriver = require('./SpecWrappedDriver')
 
 /**
- * @typedef {import('./selenium3/SpecWrappedDriver').Driver|import('./selenium4/SpecWrappedDriver').Driver} SeleniumDriver
- * @typedef {import('./selenium3/SpecWrappedElement').Element|import('./selenium4/SpecWrappedElement').Element} SeleniumElement
- * @typedef {import('./selenium3/SpecWrappedElement').Selector|import('./selenium4/SpecWrappedElement').Selector} SeleniumSelector
+ * @typedef {import('./selenium3/SpecWrappedDriver').Driver} Selenium3Driver
+ * @typedef {import('./selenium3/SpecWrappedElement').Element} Selenium3Element
+ * @typedef {import('./selenium3/SpecWrappedElement').Selector} Selenium3Selector
+ * @typedef {EyesWrappedDriver<Selenium3Driver, Selenium3Element, Selenium3Selector>} Selenium3WrappedDriver
+ *
+ * @typedef {import('./selenium4/SpecWrappedDriver').Driver} Selenium4Driver
+ * @typedef {import('./selenium4/SpecWrappedElement').Element} Selenium4Element
+ * @typedef {import('./selenium4/SpecWrappedElement').Selector} Selenium4Selector
+ * @typedef {EyesWrappedDriver<Selenium4Driver, Selenium4Element, Selenium4Selector>} Selenium4WrappedDriver
  */
 
-/** @type {EyesWrappedDriver<SeleniumDriver, SeleniumElement, SeleniumSelector>} */
+/** @type {Selenium3WrappedDriver|Selenium4WrappedDriver} */
 const SeleniumWrappedDriver = EyesWrappedDriver.specialize(SpecWrappedDriver, {
   /** @override */
   switchTo(proxies) {

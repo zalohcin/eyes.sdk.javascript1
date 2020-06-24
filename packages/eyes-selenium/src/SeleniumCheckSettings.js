@@ -3,12 +3,16 @@ const SeleniumWrappedElement = require('./SeleniumWrappedElement')
 const SeleniumFrame = require('./SeleniumFrame')
 
 /**
- * @typedef {import('./selenium3/SpecWrappedDriver').Driver|import('./selenium4/SpecWrappedDriver').Driver} SeleniumDriver
- * @typedef {import('./selenium3/SpecWrappedElement').Element|import('./selenium4/SpecWrappedElement').Element} SeleniumElement
- * @typedef {import('./selenium3/SpecWrappedElement').Selector|import('./selenium4/SpecWrappedElement').Selector} SeleniumSelector
+ * @typedef {import('./selenium3/SpecWrappedElement').Element} Selenium3Element
+ * @typedef {import('./selenium3/SpecWrappedElement').Selector} Selenium3Selector
+ * @typedef {DriverCheckSettings<Selenium3Element, Selenium3Selector>} Selenium3CheckSettings
+ *
+ * @typedef {import('./selenium4/SpecWrappedElement').Element} Selenium4Element
+ * @typedef {import('./selenium4/SpecWrappedElement').Selector} Selenium4Selector
+ * @typedef {DriverCheckSettings<Selenium4Element, Selenium4Selector>} Selenium4CheckSettings
  */
 
-/** @type {DriverCheckSettings<SeleniumDriver, SeleniumElement, SeleniumSelector>} */
+/** @type {Selenium3CheckSettings|Selenium4CheckSettings} */
 const SeleniumCheckSettings = DriverCheckSettings.specialize({
   isSelector(selector) {
     return SeleniumWrappedElement.isSelector(selector)

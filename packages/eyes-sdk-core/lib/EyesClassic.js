@@ -34,26 +34,58 @@ const EyesUtils = require('./EyesUtils')
 const EyesCore = require('./EyesCore')
 
 /**
- * @typedef {import('./wrappers/EyesWrappedDriver')} EyesWrappedDriver
- * @typedef {import('./wrappers/EyesWrappedElement')} EyesWrappedElement
- * @typedef {import('./wrappers/EyesBrowsingContext')} EyesBrowsingContext
- * @typedef {import('./wrappers/EyesElementFinder')} EyesElementFinder
- * @typedef {import('./wrappers/EyesDriverController')} EyesDriverController
- * @typedef {import('./wrappers/EyesJsExecutor')} EyesJsExecutor
- * @typedef {import('./fluent/DriverCheckSettings')} DriverCheckSettings
+ * @template Driver, Element, Selector
+ * @typedef {import('./wrappers/EyesWrappedDriver')<Driver, Element, Selector>} EyesWrappedDriver
+ */
+
+/**
+ * @template Driver, Element, Selector
+ * @typedef {import('./wrappers/EyesJsExecutor')<Driver, Element, Selector>} EyesJsExecutor
+ */
+
+/**
+ * @template Driver, Element, Selector
+ * @typedef {import('./wrappers/EyesBrowsingContext')<Driver, Element, Selector>} EyesBrowsingContext
+ */
+
+/**
+ * @template Driver, Element, Selector
+ * @typedef {import('./wrappers/EyesElementFinder')<Driver, Element, Selector>} EyesElementFinder
+ */
+
+/**
+ * @template Driver, Element, Selector
+ * @typedef {import('./wrappers/EyesDriverController')<Driver, Element, Selector>} EyesDriverController
+ */
+
+/**
+ * @template Driver, Element, Selector
+ * @typedef {import('./wrappers/EyesWrappedElement')<Driver, Element, Selector>} EyesWrappedElement
+ */
+
+/**
+ * @template Element, Selector
+ * @typedef {import('./fluent/DriverCheckSettings')<Element, Selector>} CheckSettings
  */
 
 const UNKNOWN_DEVICE_PIXEL_RATIO = 0
 const DEFAULT_DEVICE_PIXEL_RATIO = 1
 
+/**
+ * @template Driver
+ * @template Element
+ * @template Selector
+ * @extends {never}
+ */
 class EyesClassic extends EyesCore {
   /**
    * Create a specialized version of this class
+   * @template Driver, Element, Selector
    * @param {Object} implementations - implementations of related classes
    * @param {string} implementations.agentId - base agent id
-   * @param {EyesWrappedDriver} implementations.WrappedDriver - implementation for {@link EyesWrappedDriver}
-   * @param {EyesWrappedElement} implementations.WrappedElement - implementation for {@link EyesWrappedElement}
-   * @param {DriverCheckSettings} implementations.CheckSettings - specialized version of {@link DriverCheckSettings}
+   * @param {EyesWrappedDriver<Driver, Element, Selector>} implementations.WrappedDriver - implementation for {@link EyesWrappedDriver}
+   * @param {EyesWrappedElement<Driver, Element, Selector>} implementations.WrappedElement - implementation for {@link EyesWrappedElement}
+   * @param {CheckSettings<Element, Selector>} implementations.CheckSettings - specialized version of {@link DriverCheckSettings}
    * @return {typeof EyesClassic} specialized version of this class
    */
   static specialize({agentId, WrappedDriver, WrappedElement, CheckSettings}) {
@@ -95,15 +127,15 @@ class EyesClassic extends EyesCore {
     this._runner = runner
     this._runner.attachEyes(this, this._serverConnector)
 
-    /** @type {EyesWrappedDriver} */
+    /** @type {EyesWrappedDriver<Driver, Element, Selector>} */
     this._driver = undefined
-    /** @type {EyesJsExecutor} */
+    /** @type {EyesJsExecutor<Driver, Element, Selector>} */
     this._executor = undefined
-    /** @type {EyesElementFinder} */
+    /** @type {EyesElementFinder<Driver, Element, Selector>} */
     this._finder = undefined
-    /** @type {EyesBrowsingContext} */
+    /** @type {EyesBrowsingContext<Driver, Element, Selector>} */
     this._context = undefined
-    /** @type {EyesDriverController} */
+    /** @type {EyesDriverController<Driver, Element, Selector>} */
     this._controller = undefined
     /** @type {boolean} */
     this._dontGetTitle = false
@@ -139,18 +171,18 @@ class EyesClassic extends EyesCore {
     this._domUrl
     /** @type {EyesScreenshotFactory} */
     this._screenshotFactory = undefined
-    /** @type {EyesWrappedElement} */
+    /** @type {EyesWrappedElement<Driver, Element, Selector>} */
     this._scrollRootElement = null
     /** @type {Promise<void>} */
     this._closePromise = Promise.resolve()
   }
   /**
-   * @param {Object} driver - driver object for the specific framework
+   * @param {Driver} driver - driver object for the specific framework
    * @param {String} [appName] - application name
    * @param {String} [testName] - test name
    * @param {RectangleSize|{width: number, height: number}} [viewportSize] - viewport size
    * @param {SessionType} [sessionType] - type of test (e.g.,  standard test / visual performance test).
-   * @returns {Promise<EyesWrappedDriver>}
+   * @returns {Promise<EyesWrappedDriver<Driver, Element, Selector>>}
    */
   async open(driver, appName, testName, viewportSize, sessionType) {
     ArgumentGuard.notNull(driver, 'driver')
@@ -222,8 +254,8 @@ class EyesClassic extends EyesCore {
     return this._driver
   }
   /**
-   * @param {string|DriverCheckSettings} [nameOrCheckSettings] - name of the test case
-   * @param {DriverCheckSettings} [checkSettings] - check settings for the described test case
+   * @param {string|CheckSettings<Element, Selector>} [nameOrCheckSettings] - name of the test case
+   * @param {CheckSettings<Element, Selector>} [checkSettings] - check settings for the described test case
    * @returns {Promise<MatchResult>}
    */
   async check(nameOrCheckSettings, checkSettings) {
@@ -285,8 +317,8 @@ class EyesClassic extends EyesCore {
   }
   /**
    * @private
-   * @param {DriverCheckSettings} checkSettings - check settings for the described test case
-   * @param {AsyncFunction} operation - check operation
+   * @param {CheckSettings<Element, Selector>} checkSettings - check settings for the described test case
+   * @param {Function} operation - check operation
    * @return {Promise<MatchResult>}
    */
   async _checkPrepare(checkSettings, operation) {
@@ -370,7 +402,7 @@ class EyesClassic extends EyesCore {
   }
   /**
    * @private
-   * @param {DriverCheckSettings} checkSettings - check settings for the described test case
+   * @param {CheckSettings<Element, Selector>} checkSettings - check settings for the described test case
    * @param {Region} targetRegion - region to check
    * @return {Promise<MatchResult>}
    */
@@ -397,7 +429,8 @@ class EyesClassic extends EyesCore {
     }
   }
   /**
-   * @param {DriverCheckSettings} checkSettings - check settings for the described test case
+   * @private
+   * @param {CheckSettings<Element, Selector>} checkSettings - check settings for the described test case
    * @param {Region} targetRegion - region to check
    * @return {Promise<MatchResult>}
    */
@@ -452,7 +485,7 @@ class EyesClassic extends EyesCore {
   }
   /**
    * @private
-   * @param {DriverCheckSettings} checkSettings - check settings for the described test case
+   * @param {CheckSettings<Element, Selector>} checkSettings - check settings for the described test case
    * @param {EyesWrappedElement} targetElement - element to check
    * @return {Promise<MatchResult>}
    */
@@ -481,7 +514,7 @@ class EyesClassic extends EyesCore {
   }
   /**
    * @private
-   * @param {DriverCheckSettings} checkSettings - check settings for the described test case
+   * @param {CheckSettings<Element, Selector>} checkSettings - check settings for the described test case
    * @param {EyesWrappedElement} targetElement - element to check
    * @return {Promise<MatchResult>}
    */
@@ -550,7 +583,7 @@ class EyesClassic extends EyesCore {
   }
   /**
    * @private
-   * @param {DriverCheckSettings} checkSettings - check settings for the described test case
+   * @param {CheckSettings<Element, Selector>} checkSettings - check settings for the described test case
    * @return {Promise<MatchResult>}
    */
   async _checkFrame(checkSettings) {
@@ -565,7 +598,7 @@ class EyesClassic extends EyesCore {
   }
   /**
    * @private
-   * @param {DriverCheckSettings} checkSettings - check settings for the described test case
+   * @param {CheckSettings<Element, Selector>} checkSettings - check settings for the described test case
    * @return {Promise<MatchResult>}
    */
   async _checkFullFrame(checkSettings) {
@@ -614,7 +647,7 @@ class EyesClassic extends EyesCore {
   }
   /**
    * @private
-   * @param {EyesWrappedElement} scrollRootElement - scroll root element
+   * @param {EyesWrappedElement<Driver, Element, Selecotr>} scrollRootElement - scroll root element
    * @return {PositionProvider}
    */
   _createPositionProvider(scrollRootElement) {
@@ -882,7 +915,9 @@ class EyesClassic extends EyesCore {
 
     return this._closePromise
   }
-
+  /**
+   * @private
+   */
   async tryCaptureDom() {
     try {
       this._logger.verbose('Getting window DOM...')
@@ -893,9 +928,7 @@ class EyesClassic extends EyesCore {
   }
   /**
    * Use this method only if you made a previous call to {@link #open(WebDriver, String, String)} or one of its variants.
-   *
    * @override
-   * @inheritDoc
    */
   async getViewportSize() {
     const viewportSize = this._viewportSizeHandler.get()
@@ -905,7 +938,6 @@ class EyesClassic extends EyesCore {
   }
   /**
    * Use this method only if you made a previous call to {@link #open(WebDriver, String, String)} or one of its variants.
-   *
    * @protected
    * @override
    */
@@ -928,7 +960,9 @@ class EyesClassic extends EyesCore {
 
     this._viewportSizeHandler.set(new RectangleSize(viewportSize))
   }
-
+  /**
+   * @override
+   */
   async getAppEnvironment() {
     const appEnv = await super.getAppEnvironment()
 
@@ -953,19 +987,24 @@ class EyesClassic extends EyesCore {
     EyesCore.prototype.setFailureReport.call(this, mode)
   }
   /**
+   * @override
    * @return {boolean}
    */
   async getSendDom() {
     return !(await this._controller.isNative()) && super.getSendDom()
   }
-
+  /**
+   * @private
+   */
   getImageLocation() {
     if (this._regionToCheck) {
       return this._regionToCheck.getLocation()
     }
     return Location.ZERO
   }
-
+  /**
+   * @private
+   */
   async getInferredEnvironment() {
     try {
       const userAgent = await this._controller.getUserAgent()
@@ -974,12 +1013,16 @@ class EyesClassic extends EyesCore {
       return null
     }
   }
-
+  /**
+   * @private
+   */
   async getAndSaveRenderingInfo() {
     const renderingInfo = await this._runner.getRenderingInfoWithCache()
     this._serverConnector.setRenderingInfo(renderingInfo)
   }
-
+  /**
+   * @private
+   */
   async _getAndSaveBatchInfoFromServer(batchId) {
     ArgumentGuard.notNullOrEmpty(batchId, 'batchId')
     return this._runner.getBatchInfoWithCache(batchId)
