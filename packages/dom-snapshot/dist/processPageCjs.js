@@ -13064,6 +13064,7 @@ const NEED_MAP_INPUT_TYPES = new Set([
   'week',
 ]);
 const ON_EVENT_REGEX = /^on[a-z]+$/;
+const handledNodes = new Set();
 
 function domNodesToCdt(docNode, baseUrl, log = noop$4) {
   const cdt = [{nodeType: Node.DOCUMENT_NODE}];
@@ -13091,6 +13092,12 @@ function domNodesToCdt(docNode, baseUrl, log = noop$4) {
     let node, manualChildNodeIndexes, dummyUrl;
     const {nodeType} = elementNode;
 
+    if (handledNodes.has(elementNode)) {
+      return null;
+    }
+
+    handledNodes.add(elementNode);
+
     if ([Node.ELEMENT_NODE, Node.DOCUMENT_FRAGMENT_NODE].includes(nodeType)) {
       if (elementNode.nodeName !== 'SCRIPT') {
         if (
@@ -13113,8 +13120,20 @@ function domNodesToCdt(docNode, baseUrl, log = noop$4) {
           (elementNode.childNodes.length ? childrenFactory(cdt, elementNode.childNodes) : []);
 
         if (elementNode.shadowRoot) {
-          node.shadowRootIndex = elementNodeFactory(cdt, elementNode.shadowRoot);
-          docRoots.push(elementNode.shadowRoot);
+          if (/native code/.test(elementNode.shadowRoot.toString())) {
+            node.shadowRootIndex = elementNodeFactory(cdt, elementNode.shadowRoot);
+            docRoots.push(elementNode.shadowRoot);
+          } else {
+            node.childNodeIndexes = node.childNodeIndexes.concat(
+              childrenFactory(cdt, elementNode.shadowRoot.childNodes),
+            );
+          }
+        } else if (typeof elementNode.$$ShadowResolverKey$$ === 'function') {
+          const shadowRoot = elementNode.$$ShadowResolverKey$$();
+          if (!Array.from(shadowRoot.childNodes).some(childNode => handledNodes.has(childNode))) {
+            node.shadowRootIndex = elementNodeFactory(cdt, shadowRoot);
+            docRoots.push(shadowRoot);
+          }
         }
 
         if (elementNode.nodeName === 'CANVAS') {
@@ -13377,6 +13396,7 @@ function makeProcessResource({
                 value,
                 styleSheet,
               );
+              console.log('###', url);
               dependentUrls = extractResourcesFromStyleSheet(corsFreeStyleSheet);
               cleanStyleSheet();
             }
@@ -13390,6 +13410,9 @@ function makeProcessResource({
           }
 
           if (dependentUrls) {
+            if (dependentUrls.length > 0) {
+              console.log('@@@', dependentUrls);
+            }
             const absoluteDependentUrls = dependentUrls
               .map(resourceUrl => absolutizeUrl_1(resourceUrl, url.replace(/^blob:/, '')))
               .map(toUnAnchoredUri_1)
@@ -13589,7 +13612,15 @@ function makeExtractResourcesFromStyleSheet({styleSheetCache, CSSRule = window.C
           [CSSRule.STYLE_RULE]: () => {
             let rv = [];
             for (let i = 0, ii = rule.style.length; i < ii; i++) {
-              const urls = getUrlFromCssText_1(rule.style.getPropertyValue(rule.style[i]));
+              const property = rule.style[i];
+              let propertyValue = rule.style.getPropertyValue(property);
+              if (/^\s*var\s*\(/.test(propertyValue) || /^--/.test(property)) {
+                propertyValue = propertyValue.replace(/\\/g, '');
+              }
+              const urls = getUrlFromCssText_1(propertyValue);
+              if (urls.length) {
+                console.log('@@@', property, propertyValue);
+              }
               rv = rv.concat(urls);
             }
             return rv;
@@ -13838,6 +13869,19 @@ function processPage(doc = document, {showLogs, useSessionCache, dontFetchResour
     return result;
   });
 
+  function getLinksFromCdtElements(cdt) {
+    const links = [];
+    cdt.forEach(el => {
+      if (el.nodeName === 'IMG') {
+        const srcAttr = el.attributes.find(({name}) => name.toUpperCase() === 'SRC');
+        if (srcAttr) {
+          links.push(srcAttr.value);
+        }
+      }
+    });
+    return links;
+  }
+
   function doProcessPage(doc, pageUrl = doc.location.href) {
     const baseUrl = getBaseUrl(doc) || pageUrl;
     const {cdt, docRoots, canvasElements, inlineFrames} = domNodesToCdt_1(doc, baseUrl, log$$1);
@@ -13848,7 +13892,8 @@ function processPage(doc = document, {showLogs, useSessionCache, dontFetchResour
     const urls = uniq_1(
       Array.from(linkUrls)
         .concat(Array.from(styleTagUrls))
-        .concat(extractResourceUrlsFromStyleAttrs_1(cdt)),
+        .concat(extractResourceUrlsFromStyleAttrs_1(cdt))
+        .concat(getLinksFromCdtElements(cdt)),
     )
       .map(toUriEncoding_1)
       .map(absolutizeThisUrl)

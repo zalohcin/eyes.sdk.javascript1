@@ -70,8 +70,14 @@ function domNodesToCdt(docNode, baseUrl, log = noop) {
           (elementNode.childNodes.length ? childrenFactory(cdt, elementNode.childNodes) : []);
 
         if (elementNode.shadowRoot) {
-          node.shadowRootIndex = elementNodeFactory(cdt, elementNode.shadowRoot);
-          docRoots.push(elementNode.shadowRoot);
+          if (/native code/.test(elementNode.shadowRoot.toString())) {
+            node.shadowRootIndex = elementNodeFactory(cdt, elementNode.shadowRoot);
+            docRoots.push(elementNode.shadowRoot);
+          } else {
+            node.childNodeIndexes = node.childNodeIndexes.concat(
+              childrenFactory(cdt, elementNode.shadowRoot.childNodes),
+            );
+          }
         }
 
         if (elementNode.nodeName === 'CANVAS') {

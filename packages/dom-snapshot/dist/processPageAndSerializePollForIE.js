@@ -22602,6 +22602,7 @@ function __processPageAndSerializePollForIE() {
 
             var NEED_MAP_INPUT_TYPES = new Set(['date', 'datetime-local', 'email', 'month', 'number', 'password', 'search', 'tel', 'text', 'time', 'url', 'week']);
             var ON_EVENT_REGEX = /^on[a-z]+$/;
+            var handledNodes = new Set();
 
             function domNodesToCdt(docNode, baseUrl) {
               var log = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : noop$4;
@@ -22636,6 +22637,12 @@ function __processPageAndSerializePollForIE() {
                 var node, manualChildNodeIndexes, dummyUrl;
                 var nodeType = elementNode.nodeType;
 
+                if (handledNodes.has(elementNode)) {
+                  return null;
+                }
+
+                handledNodes.add(elementNode);
+
                 if ([Node.ELEMENT_NODE, Node.DOCUMENT_FRAGMENT_NODE].includes(nodeType)) {
                   if (elementNode.nodeName !== 'SCRIPT') {
                     if (elementNode.nodeName === 'STYLE' && elementNode.sheet && elementNode.sheet.cssRules.length) {
@@ -22652,8 +22659,21 @@ function __processPageAndSerializePollForIE() {
                     node.childNodeIndexes = manualChildNodeIndexes || (elementNode.childNodes.length ? childrenFactory(cdt, elementNode.childNodes) : []);
 
                     if (elementNode.shadowRoot) {
-                      node.shadowRootIndex = elementNodeFactory(cdt, elementNode.shadowRoot);
-                      docRoots.push(elementNode.shadowRoot);
+                      if (/native code/.test(elementNode.shadowRoot.toString())) {
+                        node.shadowRootIndex = elementNodeFactory(cdt, elementNode.shadowRoot);
+                        docRoots.push(elementNode.shadowRoot);
+                      } else {
+                        node.childNodeIndexes = node.childNodeIndexes.concat(childrenFactory(cdt, elementNode.shadowRoot.childNodes));
+                      }
+                    } else if (typeof elementNode.$$ShadowResolverKey$$ === 'function') {
+                      var shadowRoot = elementNode.$$ShadowResolverKey$$();
+
+                      if (!Array.from(shadowRoot.childNodes).some(function (childNode) {
+                        return handledNodes.has(childNode);
+                      })) {
+                        node.shadowRootIndex = elementNodeFactory(cdt, shadowRoot);
+                        docRoots.push(shadowRoot);
+                      }
                     }
 
                     if (elementNode.nodeName === 'CANVAS') {
@@ -22978,6 +22998,7 @@ function __processPageAndSerializePollForIE() {
                             corsFreeStyleSheet = _getCorsFreeStyleShee.corsFreeStyleSheet,
                             cleanStyleSheet = _getCorsFreeStyleShee.cleanStyleSheet;
 
+                        console.log('###', url);
                         dependentUrls = extractResourcesFromStyleSheet(corsFreeStyleSheet);
                         cleanStyleSheet();
                       }
@@ -22991,6 +23012,10 @@ function __processPageAndSerializePollForIE() {
                     }
 
                     if (dependentUrls) {
+                      if (dependentUrls.length > 0) {
+                        console.log('@@@', dependentUrls);
+                      }
+
                       var absoluteDependentUrls = dependentUrls.map(function (resourceUrl) {
                         return absolutizeUrl_1(resourceUrl, url.replace(/^blob:/, ''));
                       }).map(toUnAnchoredUri_1).filter(filterInlineUrl_1);
@@ -23185,7 +23210,18 @@ function __processPageAndSerializePollForIE() {
                     var rv = [];
 
                     for (var i = 0, ii = rule.style.length; i < ii; i++) {
-                      var _urls = getUrlFromCssText_1(rule.style.getPropertyValue(rule.style[i]));
+                      var property = rule.style[i];
+                      var propertyValue = rule.style.getPropertyValue(property);
+
+                      if (/^\s*var\s*\(/.test(propertyValue) || /^--/.test(property)) {
+                        propertyValue = propertyValue.replace(/\\/g, '');
+                      }
+
+                      var _urls = getUrlFromCssText_1(propertyValue);
+
+                      if (_urls.length) {
+                        console.log('@@@', property, propertyValue);
+                      }
 
                       rv = rv.concat(_urls);
                     }
@@ -23455,6 +23491,23 @@ function __processPageAndSerializePollForIE() {
                 return result;
               });
 
+              function getLinksFromCdtElements(cdt) {
+                var links = [];
+                cdt.forEach(function (el) {
+                  if (el.nodeName === 'IMG') {
+                    var srcAttr = el.attributes.find(function (_ref2) {
+                      var name = _ref2.name;
+                      return name.toUpperCase() === 'SRC';
+                    });
+
+                    if (srcAttr) {
+                      links.push(srcAttr.value);
+                    }
+                  }
+                });
+                return links;
+              }
+
               function doProcessPage(doc) {
                 var pageUrl = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : doc.location.href;
                 var baseUrl = getBaseUrl(doc) || pageUrl;
@@ -23468,7 +23521,7 @@ function __processPageAndSerializePollForIE() {
                 var linkUrls = flat_1(docRoots.map(extractLinks_1));
                 var styleTagUrls = flat_1(docRoots.map(extractResourceUrlsFromStyleTags$$1));
                 var absolutizeThisUrl = getAbsolutizeByUrl(baseUrl);
-                var urls = uniq_1(Array.from(linkUrls).concat(Array.from(styleTagUrls)).concat(extractResourceUrlsFromStyleAttrs_1(cdt))).map(toUriEncoding_1).map(absolutizeThisUrl).map(toUnAnchoredUri_1).filter(filterInlineUrlsIfExisting);
+                var urls = uniq_1(Array.from(linkUrls).concat(Array.from(styleTagUrls)).concat(extractResourceUrlsFromStyleAttrs_1(cdt)).concat(getLinksFromCdtElements(cdt))).map(toUriEncoding_1).map(absolutizeThisUrl).map(toUnAnchoredUri_1).filter(filterInlineUrlsIfExisting);
                 var resourceUrlsAndBlobsPromise = dontFetchResources ? Promise.resolve({
                   resourceUrls: urls,
                   blobsObj: {}
@@ -23484,9 +23537,9 @@ function __processPageAndSerializePollForIE() {
                 var processFramesPromise = frameDocs.map(function (f) {
                   return doProcessPage(f, f.defaultView.frameElement.src);
                 });
-                var processInlineFramesPromise = inlineFrames.map(function (_ref2) {
-                  var element = _ref2.element,
-                      url = _ref2.url;
+                var processInlineFramesPromise = inlineFrames.map(function (_ref3) {
+                  var element = _ref3.element,
+                      url = _ref3.url;
                   return doProcessPage(element.contentDocument, url);
                 });
                 var srcAttr = doc.defaultView && doc.defaultView.frameElement && doc.defaultView.frameElement.getAttribute('src');

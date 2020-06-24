@@ -19,7 +19,12 @@ function makeExtractResourcesFromStyleSheet({styleSheetCache, CSSRule = window.C
           [CSSRule.STYLE_RULE]: () => {
             let rv = [];
             for (let i = 0, ii = rule.style.length; i < ii; i++) {
-              const urls = getUrlFromCssText(rule.style.getPropertyValue(rule.style[i]));
+              const property = rule.style[i];
+              let propertyValue = rule.style.getPropertyValue(property);
+              if (/^\s*var\s*\(/.test(propertyValue) || /^--/.test(property)) {
+                propertyValue = propertyValue.replace(/\\/g, '');
+              }
+              const urls = getUrlFromCssText(propertyValue);
               rv = rv.concat(urls);
             }
             return rv;

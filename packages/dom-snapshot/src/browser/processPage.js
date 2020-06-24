@@ -59,6 +59,19 @@ function processPage(doc = document, {showLogs, useSessionCache, dontFetchResour
     return result;
   });
 
+  function getLinksFromCdtElements(cdt) {
+    const links = [];
+    cdt.forEach(el => {
+      if (el.nodeName === 'IMG') {
+        const srcAttr = el.attributes.find(({name}) => name.toUpperCase() === 'SRC');
+        if (srcAttr) {
+          links.push(srcAttr.value);
+        }
+      }
+    });
+    return links;
+  }
+
   function doProcessPage(doc, pageUrl = doc.location.href) {
     const baseUrl = getBaesUrl(doc) || pageUrl;
     const {cdt, docRoots, canvasElements, inlineFrames} = domNodesToCdt(doc, baseUrl, log);
@@ -69,7 +82,8 @@ function processPage(doc = document, {showLogs, useSessionCache, dontFetchResour
     const urls = uniq(
       Array.from(linkUrls)
         .concat(Array.from(styleTagUrls))
-        .concat(extractResourceUrlsFromStyleAttrs(cdt)),
+        .concat(extractResourceUrlsFromStyleAttrs(cdt))
+        .concat(getLinksFromCdtElements(cdt)),
     )
       .map(toUriEncoding)
       .map(absolutizeThisUrl)
