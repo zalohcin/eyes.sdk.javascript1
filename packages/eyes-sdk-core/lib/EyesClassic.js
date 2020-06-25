@@ -486,7 +486,7 @@ class EyesClassic extends EyesCore {
   /**
    * @private
    * @param {CheckSettings<Element, Selector>} checkSettings - check settings for the described test case
-   * @param {EyesWrappedElement} targetElement - element to check
+   * @param {EyesWrappedElement<Driver, Element, Selector>} targetElement - element to check
    * @return {Promise<MatchResult>}
    */
   async _checkElement(checkSettings, targetElement) {

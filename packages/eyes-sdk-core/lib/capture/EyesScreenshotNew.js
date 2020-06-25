@@ -21,7 +21,7 @@ const EyesUtils = require('../EyesUtils')
  * @typedef {number} ScreenshotType
  */
 
-const ScreenshotTypes = Enum({
+const ScreenshotTypes = Enum('ScreenshotType', {
   VIEWPORT: 1,
   ENTIRE_FRAME: 2,
 })

@@ -2,12 +2,12 @@
 const Enum = require('./utils/Enum')
 
 /**
- * @readonly
- * @enum {string}
+ * @typedef {'Passed'|'Failed'} AccessibilityStatus
  */
-const AccessibilityStatus = Enum('AccessibilityStatus', {
+
+const AccessibilityStatuses = Enum('AccessibilityStatus', {
   Passed: 'Passed',
   Failed: 'Failed',
 })
 
-exports.AccessibilityStatus = AccessibilityStatus
+module.exports = AccessibilityStatuses

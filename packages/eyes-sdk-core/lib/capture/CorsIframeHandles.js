@@ -1,7 +1,7 @@
 const Enum = require('../utils/Enum')
 
 /**
- * @typedef {string} CorsIframeHandle
+ * @typedef {'BLANK'|'KEEP'|'SNAPSHOT'} CorsIframeHandle
  */
 
 const CorsIframeHandles = Enum('CorsIframeHandle', {
@@ -12,4 +12,4 @@ const CorsIframeHandles = Enum('CorsIframeHandle', {
   SNAPSHOT: 'SNAPSHOT',
 })
 
-exports.CorsIframeHandles = CorsIframeHandles
+module.exports = CorsIframeHandles

@@ -1,6 +1,7 @@
 'use strict'
-
-const {Location, Region, OSNames} = require('../..')
+const OSNames = require('../useragent/OSNames')
+const Location = require('../geometry/Location')
+const Region = require('../geometry/Region')
 const ImageProvider = require('./ImageProvider')
 const EyesUtils = require('../EyesUtils')
 

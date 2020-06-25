@@ -1,8 +1,8 @@
 'use strict'
 
 /* eslint-disable no-unused-vars */
-
-const {ArgumentGuard, Region} = require('../..')
+const ArgumentGuard = require('../utils/ArgumentGuard')
+const Region = require('../geometry/Region')
 
 /**
  * Base class for handling screenshots.

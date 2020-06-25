@@ -1,8 +1,6 @@
 'use strict'
-
 const {GeneralUtils} = require('../..')
-
-const {RenderingInfo} = require('./RenderingInfo')
+const RenderingInfo = require('./RenderingInfo')
 
 /**
  * Encapsulates data for the session currently running in the agent.

@@ -1,6 +1,10 @@
 'use strict'
 
-const {ArgumentGuard, CoordinatesType, Location, RectangleSize, Region} = require('../..')
+const ArgumentGuard = require('../utils/ArgumentGuard')
+const CoordinatesType = require('../geometry/CoordinatesType')
+const Location = require('../geometry/Location')
+const RectangleSize = require('../geometry/RectangleSize')
+const Region = require('../geometry/Region')
 
 const OutOfBoundsError = require('../errors/OutOfBoundsError')
 const CoordinatesTypeConversionError = require('../errors/CoordinatesTypeConversionError')
