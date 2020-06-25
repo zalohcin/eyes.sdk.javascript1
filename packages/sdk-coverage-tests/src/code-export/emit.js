@@ -56,7 +56,14 @@ class EmitTracker {
       beforeEach: [],
       afterEach: [],
     }
+    this.syntax = {
+      var: null,
+    }
     this.commands = []
+  }
+
+  addSyntax(name, callback) {
+    this.syntax[name] = callback
   }
 
   storeCommand(command) {
@@ -65,7 +72,13 @@ class EmitTracker {
       isRef: true,
       resolve: () => {
         const name = `var_${id}`
-        this.commands[id - 1] = `const ${name} = ${command}`
+        const value = this.commands[id - 1]
+        if (!this.syntax.var) {
+          throw new TypeError(
+            "EmitTracker don't have an implementation for `var` syntax. Use `addSyntax` method to add an implementation",
+          )
+        }
+        this.commands[id - 1] = this.syntax.var({name, value})
         return name
       },
     }

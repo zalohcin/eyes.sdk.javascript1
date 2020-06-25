@@ -184,21 +184,12 @@ const args = yargs
   })
   .help().argv
 
-const [url] = args._
-if (!url) {
+let [url] = args._
+if (!url && !args.attach) {
   throw new Error('missing url argument!')
 }
 
 ;(async function() {
-  console.log('Running Selenium render for', url)
-  console.log(
-    'Options:\n ',
-    Object.entries(args)
-      .map(argToString)
-      .filter(x => x)
-      .join('\n  '),
-  )
-
   const isMobileEmulation = args.deviceName && !args.vg
 
   if (args.webdriverProxy) {
@@ -217,6 +208,19 @@ if (!url) {
   }
 
   const driver = await buildDriver({...args, isMobileEmulation})
+
+  if (args.attach) {
+    url = await spec.executeScript(driver, 'return window.location.href')
+  }
+
+  console.log('Running Selenium render for', url)
+  console.log(
+    'Options:\n ',
+    Object.entries(args)
+      .map(argToString)
+      .filter(x => x)
+      .join('\n  '),
+  )
 
   const runner = args.vg ? new VisualGridRunner() : new ClassicRunner()
   const eyes = new Eyes(runner)
@@ -354,9 +358,10 @@ function buildDriver({
   const capabilities = {
     browserName: 'chrome',
     'goog:chromeOptions': {
+      // w3c: false,
       args: headless ? ['--headless'] : [],
       mobileEmulation: isMobileEmulation ? {deviceName} : undefined,
-      debuggerAddress: attach ? '127.0.0.1:9222' : undefined,
+      debuggerAddress: attach ? '127.0.01:9222' : undefined,
     },
     ...driverCapabilities,
   }

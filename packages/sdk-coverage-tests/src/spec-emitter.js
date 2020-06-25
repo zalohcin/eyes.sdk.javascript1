@@ -18,6 +18,7 @@ function makeSpecEmitter(options) {
     return code + chunks[chunks.length - 1]
   }
 
+  tracker.addSyntax('var', ({name, value}) => `const ${name} = ${value}`)
   tracker.storeHook('deps', `const cwd = process.cwd()`)
   tracker.storeHook('deps', `const path = require('path')`)
   tracker.storeHook('deps', `const specs = require(path.resolve(cwd, 'src/SpecWrappedDriver'))`)
