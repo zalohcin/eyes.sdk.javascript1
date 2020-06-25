@@ -25,7 +25,7 @@ const {GeneralUtils} = require('../utils/GeneralUtils')
  * @typedef {{chromeEmulationInfo: EmulationInfo}} ChromeEmulationInfo
  */
 /**
- * @typedef {{iosDeviceInfo: {deviceName: IosDevieName, screenOrientation: (IosScreenOrientation|undefined)}}} IosDeviceInfo
+ * @typedef {{iosDeviceInfo: {deviceName: IosDevieName, screenOrientation: (ScreenOrientation|undefined)}}} IosDeviceInfo
  */
 /**
  * @typedef {(DesktopBrowserInfo|EmulationInfo|ChromeEmulationInfo|IosDeviceInfo)} RenderInfo

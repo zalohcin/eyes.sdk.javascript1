@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- remove IosScreenOrientation ([Trello](https://trello.com/c/abSJ68Rl/409-ufg-safari-on-ios-orientations-changes))
 
 ## 2.17.1 - 2020/6/17
 
