@@ -10,8 +10,8 @@ const EyesUtils = require('../EyesUtils')
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('./EyesWrappedDriver')<Driver, Element, Selector>} EyesWrappedDriver
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./EyesWrappedDriver')<TDriver, TElement, TSelector>} EyesWrappedDriver
  */
 
 /**
@@ -23,28 +23,45 @@ const EyesUtils = require('../EyesUtils')
 
 /**
  * The object which implements the lowest-level functions to work with element
- * @template Driver, Element, Selector
+ * @template TDriver, TElement, TSelector
  * @typedef SpecElement
  * @prop {(element) => boolean} isCompatible - return true if the value is an element, false otherwise
  * @prop {(selector) => boolean} isSelector - return true if the value is a valid selector, false otherwise
- * @prop {(selector: EyesSelector) => S} toSupportedSelector - translate cross SDK selector to SDK specific selector
- * @prop {(selector: Selector) => EyesSelector} toEyesSelector - translate SDK specific selector to cross SDK selector
- * @prop {(element: Element) => Promise<string>} extractId - extract id from the unwrapped element
- * @prop {(element: Element) => Element} [extractElement] - extract an element from the supported element
- * @prop {(element: Element) => Selector} [extractSelector] - extract an element from the supported element
+ * @prop {(selector: EyesSelector) => TSelector} toSupportedSelector - translate cross SDK selector to SDK specific selector
+ * @prop {(selector: TSelector) => EyesSelector} toEyesSelector - translate SDK specific selector to cross SDK selector
+ * @prop {(element: EyesWrappedElement<TDriver, TElement, TSelector>) => Promise<string>} extractId - extract id from the unwrapped element
+ * @prop {(element: TElement) => TElement} [extractElement] - extract an element from the supported element
+ * @prop {(element: TElement) => TSelector} [extractSelector] - extract an element from the supported element
  * @prop {(result) => boolean} [isStaleElementReferenceResult] - check if is a stale element reference result
  */
 
 /**
- * @template Driver - Driver provided by wrapped framework
- * @template Element - Element provided by wrapped framework
- * @template Selector - Selector supported by framework
+ * @template TDriver, TElement, TSelector
+ * @typedef {new (logger?: Logger, driver?: EyesWrappedDriver<TDriver, TElement, TSelector>, element?: TElement, selector?: TSelector) => EyesWrappedElement<TDriver, TElement, TSelector>} EyesWrappedElementCtor
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef EyesWrappedElementStatics
+ * @prop {(element: TElement) => EyesWrappedElement<TDriver, TElement, TSelector>} fromElement
+ * @prop {(selector: TSelector) => EyesWrappedElement<TDriver, TElement, TSelector>} fromSelector
+ * @prop {(element) => element is TElement} isCompatible
+ * @prop {(selector) => selector is TSelector} isSelector
+ * @prop {(selector: EyesSelector) => TSelector} toSupportedSelector
+ * @prop {(selector: TSelector) => EyesSelector} toEyesSelector
+ * @prop {(element: EyesWrappedElement<TDriver, TElement, TSelector>|TElement) => Promise<string>} extractId
+ */
+
+/**
+ * @template TDriver - TDriver provided by wrapped framework
+ * @template TElement - TElement provided by wrapped framework
+ * @template TSelector - TSelector supported by framework
  */
 class EyesWrappedElement {
   /**
-   * @template Driver, Element, Selector
-   * @param {SpecElement<Driver, Element, Selector>} spec - specifications for the specific framework
-   * @return {typeof EyesWrappedElement} specialized version of this class
+   * @template TDriver, TElement, TSelector
+   * @param {SpecElement<TDriver, TElement, TSelector>} spec - specifications for the specific framework
+   * @return {EyesWrappedElementCtor<TDriver, TElement, TSelector> & EyesWrappedElementStatics<TDriver, TElement, TSelector>} specialized version of this class
    */
   static specialize(spec) {
     return class extends EyesWrappedElement {
@@ -64,7 +81,7 @@ class EyesWrappedElement {
   static get spec() {
     throw new TypeError('The class is not specialized')
   }
-  /** @type {SpecElement<Driver, Element, Selector>} */
+  /** @type {SpecElement<TDriver, TElement, TSelector>} */
   get spec() {
     throw new TypeError('The class is not specialized')
   }
@@ -73,9 +90,9 @@ class EyesWrappedElement {
    * Only using an element object or selector.
    * Partially created elements should be initialized by calling `EyesWrappedDriver#init` method before use.
    * @param {Logger} [logger] - logger instance
-   * @param {EyesWrappedDriver<Driver, Element, Selector>} [driver] - parent driver instance
-   * @param {Element} [element] - supported element object to wrap
-   * @param {Selector} [selector] - universal selector object or any kind of supported selector
+   * @param {EyesWrappedDriver<TDriver, TElement, TSelector>} [driver] - parent driver instance
+   * @param {TElement} [element] - supported element object to wrap
+   * @param {TSelector} [selector] - universal selector object or any kind of supported selector
    */
   constructor(logger, driver, element, selector) {
     if (element instanceof EyesWrappedElement) {
@@ -99,26 +116,27 @@ class EyesWrappedElement {
   }
   /**
    * Create partial wrapped element object from the element, this object need to be initialized before use
-   * @template Driver, Element, Selector
-   * @param {Element} element - supported element object
-   * @return {EyesWrappedElement<Driver, Element, Selector>} partially wrapped object
+   * @template TDriver, TElement, TSelector
+   * @param {TElement} element - supported element object
+   * @return {EyesWrappedElement<TDriver, TElement, TSelector>} partially wrapped object
    */
   static fromElement(element) {
     return new this(null, null, element)
   }
   /**
    * Create partial wrapped element object from the selector, this object need to be initialized before use
-   * @template Driver, Element, Selector
-   * @param {Selector} selector - any kind of supported selector
-   * @return {EyesWrappedElement<Driver, Element, Selector>} partially wrapped object
+   * @template TDriver, TElement, TSelector
+   * @param {TSelector} selector - any kind of supported selector
+   * @return {EyesWrappedElement<TDriver, TElement, TSelector>} partially wrapped object
    */
   static fromSelector(selector) {
     return new this(null, null, null, selector)
   }
   /**
    * Check if object could be wrapped with this class
+   * @template TElement
    * @param element - object to check compatibility
-   * @return {boolean} true if object could be wrapped with this class, otherwise false
+   * @return {element is TElement} true if object could be wrapped with this class, otherwise false
    */
   static isCompatible(element) {
     if (!element) return false
@@ -126,25 +144,26 @@ class EyesWrappedElement {
   }
   /**
    * Check if passed selector is supported by current implementation
+   * @template TSelector
    * @param selector
-   * @return {boolean} true if selector is supported and could be passed in the {@link EyesWrappedElement.fromSelector} implementation
+   * @return {selector is TSelector} true if selector is supported and could be passed in the {@link EyesWrappedElement.fromSelector} implementation
    */
   static isSelector(selector) {
     return this.spec.isSelector(selector)
   }
   /**
    * Translate cross SDK selector to SDK specific selector
-   * @template Selector
+   * @template TSelector
    * @param {EyesSelector} selector
-   * @return {Selector} translated SDK specific selector object
+   * @return {TSelector} translated SDK specific selector object
    */
   static toSupportedSelector(selector) {
     return this.spec.toSupportedSelector(selector)
   }
   /**
    * Translate SDK specific selector to cross SDK selector
-   * @template Selector
-   * @param {Selector} selector
+   * @template TSelector
+   * @param {TSelector} selector
    * @return {EyesSelector} translated cross SDK selector object
    */
   static toEyesSelector(selector) {
@@ -152,8 +171,8 @@ class EyesWrappedElement {
   }
   /**
    * Extract element ID from this class instance or unwrapped element object
-   * @template Driver, Element, Selector
-   * @param {EyesWrappedElement<Driver, Element, Selector>|Element} element - element to extract ID
+   * @template TDriver, TElement, TSelector
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>|TElement} element - element to extract ID
    * @return {Promise<string>} if extraction is succeed returns ID of provided element, otherwise null
    */
   static async extractId(element) {
@@ -161,9 +180,9 @@ class EyesWrappedElement {
   }
   /**
    * Compare two elements, these elements could be an instances of this class or compatible objects
-   * @template Driver, Element, Selector
-   * @param {EyesWrappedElement<Driver, Element, Selector>|Element} leftElement - element to compare
-   * @param {EyesWrappedElement<Driver, Element, Selector>|Element} rightElement - element to compare
+   * @template TDriver, TElement, TSelector
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>|TElement} leftElement - element to compare
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>|TElement} rightElement - element to compare
    * @return {Promise<boolean>} true if elements are equal, false otherwise
    */
   static async equals(leftElement, rightElement) {
@@ -180,22 +199,22 @@ class EyesWrappedElement {
     return this.spec.extractId(this._element)
   }
   /**
-   * Selector of the wrapped element
-   * @type {Selector}
+   * TSelector of the wrapped element
+   * @type {TSelector}
    */
   get selector() {
     return this._selector
   }
   /**
    * Unwrapped element
-   * @type {Element}
+   * @type {TElement}
    */
   get unwrapped() {
     return this._element
   }
   /**
    * Equality check for two elements
-   * @param {EyesWrappedElement<Driver, Element, Selector>|Element} otherElement - element to compare
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>|TElement} otherElement - element to compare
    * @return {Promise<boolean>} true if elements are equal, false otherwise
    */
   async equals(otherElement) {
@@ -204,7 +223,7 @@ class EyesWrappedElement {
   /**
    * Initialize element created from element or selector
    * or other kind of supported selector
-   * @param {EyesWrappedDriver<Driver, Element, Selector>} driver - instance of {@link EyesWrappedDriver} implementation
+   * @param {EyesWrappedDriver<TDriver, TElement, TSelector>} driver - instance of {@link EyesWrappedDriver} implementation
    * @return {Promise<this>} initialized element
    */
   async init(driver) {
@@ -334,7 +353,7 @@ class EyesWrappedElement {
   }
   /**
    * Refresh an element reference with a specified element or try to refresh it by selector if so
-   * @param {Element} [freshElement] - element to update replace internal element reference
+   * @param {TElement} [freshElement] - element to update replace internal element reference
    * @return {boolean} true if element was successfully refreshed, otherwise false
    */
   async refresh(freshElement) {

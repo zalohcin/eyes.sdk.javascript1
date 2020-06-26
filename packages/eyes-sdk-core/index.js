@@ -1,6 +1,26 @@
 'use strict'
 /* eslint-disable max-len */
 
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./lib/wrappers/EyesWrappedDriver').SpecDriver<TDriver, TElement, TSelector>} SpecDriver
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./lib/wrappers/EyesWrappedElement').SpecElement<TDriver, TElement, TSelector>} SpecElement
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./lib/frames/Frame').SpecFrame<TDriver, TElement, TSelector>} SpecFrame
+ */
+
+/**
+ * @template TElement, TSelector
+ * @typedef {import('./lib/fluent/DriverCheckSettings').SpecCheckSettings<TElement, TSelector>} SpecCheckSettings
+ */
+
 // config
 exports.AccessibilityLevel = require('./lib/config/AccessibilityLevel')
 exports.AccessibilityGuidelinesVersion = require('./lib/config/AccessibilityGuidelinesVersion')

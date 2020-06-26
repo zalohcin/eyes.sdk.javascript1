@@ -9,13 +9,13 @@ const EyesUtils = require('../EyesUtils')
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('../wrappers/EyesWrappedDriver')<Driver, Element, Selector>} EyesWrappedDriver
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('../wrappers/EyesWrappedDriver')<TDriver, TElement, TSelector>} EyesWrappedDriver
  */
 
 /**
- * @template Element, Selector
- * @typedef {import('../wrappers/EyesWrappedElement')<any, Element, Selector>} EyesWrappedElement
+ * @template TElement, TSelector
+ * @typedef {import('../wrappers/EyesWrappedElement')<any, TElement, TSelector>} EyesWrappedElement
  */
 
 /**
@@ -24,20 +24,20 @@ const EyesUtils = require('../EyesUtils')
 
 /**
  * @internal
- * @template Element
- * @template Selector
+ * @template TElement
+ * @template TSelector
  */
 class TargetRegionByElement extends GetRegion {
   /**
-   * @param {EyesWrappedElement<Element, Selector>} element
+   * @param {EyesWrappedElement<TElement, TSelector>} element
    */
   constructor(element) {
     super()
     this._element = element
   }
   /**
-   * @template Driver
-   * @param {EyesWrappedDriver<Driver, Element, Selector>} driver
+   * @template TDriver
+   * @param {EyesWrappedDriver<TDriver, TElement, TSelector>} driver
    * @return {Promise<TargetPersistedRegion[]>}
    */
   async toPersistedRegions(driver) {

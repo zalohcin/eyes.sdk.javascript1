@@ -1,14 +1,8 @@
 const {EyesWrappedElement} = require('@applitools/eyes-sdk-core')
-const SpecWrappedElement = require('./SpecWrappedElement')
 const LegacyWrappedElement = require('./LegacyWrappedElement')
 
-/**
- * @typedef {import('./SpecWrappedDriver').Driver} WDIODriver
- * @typedef {import('./SpecWrappedElement').Element} WDIOElement
- * @typedef {import('./SpecWrappedElement').Selector} WDIOSelector
- */
+const SpecWrappedElement = require('./SpecWrappedElement')
 
-/** @type {EyesWrappedElement<WDIODriver, WDIOElement, WDIOSelector>} */
 const WDIOWrappedElement = EyesWrappedElement.specialize(SpecWrappedElement)
 
 module.exports = LegacyWrappedElement(WDIOWrappedElement)

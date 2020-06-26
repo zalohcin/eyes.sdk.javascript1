@@ -18,57 +18,72 @@ const EyesCore = require('./EyesCore')
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('./wrappers/EyesWrappedDriver')<Driver, Element, Selector>} EyesWrappedDriver
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesWrappedDriver')<TDriver, TElement, TSelector>} EyesWrappedDriver
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('./wrappers/EyesJsExecutor')<Driver, Element, Selector>} EyesJsExecutor
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesWrappedElement')<TDriver, TElement, TSelector>} EyesWrappedElement
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('./wrappers/EyesBrowsingContext')<Driver, Element, Selector>} EyesBrowsingContext
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesWrappedDriver').EyesWrappedDriverCtor<TDriver, TElement, TSelector>} EyesWrappedDriverCtor
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('./wrappers/EyesElementFinder')<Driver, Element, Selector>} EyesElementFinder
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesWrappedElement').EyesWrappedElementCtor<TDriver, TElement, TSelector>} EyesWrappedElementCtor
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('./wrappers/EyesDriverController')<Driver, Element, Selector>} EyesDriverController
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesWrappedElement').EyesWrappedElementStatics<TDriver, TElement, TSelector>} EyesWrappedElementStatics
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('./wrappers/EyesWrappedElement')<Driver, Element, Selector>} EyesWrappedElement
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesJsExecutor')<TDriver, TElement, TSelector>} EyesJsExecutor
  */
 
 /**
- * @template Element, Selector
- * @typedef {import('./fluent/DriverCheckSettings')<Element, Selector>} CheckSettings
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesBrowsingContext')<TDriver, TElement, TSelector>} EyesBrowsingContext
  */
 
 /**
- * @template Driver
- * @template Element
- * @template Selector
- * @extends {never}
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesElementFinder')<TDriver, TElement, TSelector>} EyesElementFinder
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesDriverController')<TDriver, TElement, TSelector>} EyesDriverController
+ */
+
+/**
+ * @template TElement, TSelector
+ * @typedef {import('./fluent/DriverCheckSettings')<TElement, TSelector>} CheckSettings
+ */
+
+/**
+ * @template TDriver
+ * @template TElement
+ * @template TSelector
+ * @extends {EyesCore<TDriver, TElement, TSelector>}
  */
 class EyesVisualGrid extends EyesCore {
   /**
    * Create a specialized version of this class
-   * @template Driver, Element, Selector
+   * @template TDriver, TElement, TSelector
    * @param {Object} implementations - implementations of related classes
    * @param {string} implementations.agentId - base agent id
-   * @param {EyesWrappedDriver<Driver, Element, Selector>} implementations.WrappedDriver - implementation for {@link EyesWrappedDriver}
-   * @param {EyesWrappedElement<Driver, Element, Selector>} implementations.WrappedElement - implementation for {@link EyesWrappedElement}
-   * @param {CheckSettings<Element, Selector>} implementations.CheckSettings - specialized version of {@link DriverCheckSettings}
+   * @param {EyesWrappedDriverCtor<TDriver, TElement, TSelector>} implementations.WrappedDriver - implementation for {@link EyesWrappedDriver}
+   * @param {EyesWrappedElementCtor<TDriver, TElement, TSelector> & EyesWrappedElementStatics<TDriver, TElement, TSelector>} implementations.WrappedElement - implementation for {@link EyesWrappedElement}
+   * @param {CheckSettings<TElement, TSelector>} implementations.CheckSettings - specialized version of {@link DriverCheckSettings}
    * @param {VisualGridClient} implementations.VisualGridClient - visual grid client
-   * @return {typeof EyesVisualGrid} specialized version of this class
+   * @return {new (...args: ConstructorParameters<typeof EyesVisualGrid>) => EyesVisualGrid<TDriver, TElement, TSelector>} specialized version of this class
    */
   static specialize({agentId, WrappedDriver, WrappedElement, CheckSettings, VisualGridClient}) {
     return class extends EyesVisualGrid {
@@ -97,37 +112,42 @@ class EyesVisualGrid extends EyesCore {
    *
    * @param {string} [serverUrl=EyesBase.getDefaultServerUrl()] The Eyes server URL.
    * @param {boolean} [isDisabled=false] Set to true to disable Applitools Eyes and use the webdriver directly.
-   * @param {EyesRunner} [runner] - Set {@code true} to disable Applitools Eyes and use the WebDriver directly.
+   * @param {VisualGridRunner} [runner] - Set {@code true} to disable Applitools Eyes and use the WebDriver directly.
    */
   constructor(serverUrl, isDisabled, runner = new VisualGridRunner()) {
     super(serverUrl, isDisabled)
+    /** @private */
     this._runner = runner
     this._runner.attachEyes(this, this._serverConnector)
     this._runner.makeGetVisualGridClient(this.constructor.VisualGridClient.makeVisualGridClient)
 
-    /** @type {boolean} */ this._isOpen = false
-    /** @type {boolean} */ this._isVisualGrid = true
-    /** @type {EyesJsExecutor<Driver, Element, Selector>} */ this._jsExecutor = undefined
-    /** @type {CorsIframeHandle} */ this._corsIframeHandle = CorsIframeHandles.BLANK
+    /** @private @type {boolean} */
+    this._isOpen = false
+    /** @private @type {boolean} */
+    this._isVisualGrid = true
+    /** @private @type {EyesJsExecutor<TDriver, TElement, TSelector>} */
+    this._jsExecutor = undefined
+    /** @private @type {CorsIframeHandle} */
+    this._corsIframeHandle = CorsIframeHandles.BLANK
 
-    /** @function */ this._checkWindowCommand = undefined
-    /** @function */ this._closeCommand = undefined
-    /** @function */ this._abortCommand = undefined
+    /** @private */
+    this._checkWindowCommand = undefined
+    /** @private */
+    this._closeCommand = undefined
+    /** @private */
+    this._abortCommand = undefined
 
-    /** @type {Promise<void>} */
+    /** @private @type {Promise<void>} */
     this._closePromise = Promise.resolve()
   }
   /**
-   * @signature `open(driver, configuration)`
-   * @signature `open(driver, appName, testName, ?viewportSize, ?configuration)`
-   *
-   * @param {Driver} driver The web driver that controls the browser hosting the application under test.
+   * @param {TDriver} driver The web driver that controls the browser hosting the application under test.
    * @param {Configuration|string} optArg1 The Configuration for the test or the name of the application under the test.
    * @param {string} [optArg2] The test name.
    * @param {RectangleSize|object} [optArg3] The required browser's viewport size
    *   (i.e., the visible part of the document's body) or to use the current window's viewport.
    * @param {Configuration} [optArg4] The Configuration for the test
-   * @return {Promise<EyesWrappedDriver<Driver, Element, Selector>>} A wrapped WebDriver which enables Eyes trigger recording and frame handling.
+   * @return {Promise<TDriver & EyesWrappedDriver<TDriver, TElement, TSelector>>} A wrapped WebDriver which enables Eyes trigger recording and frame handling.
    */
   async open(driver, optArg1, optArg2, optArg3, optArg4) {
     ArgumentGuard.notNull(driver, 'driver')
@@ -207,8 +227,8 @@ class EyesVisualGrid extends EyesCore {
     return this._driver
   }
   /**
-   * @param {string|CheckSettings<Element, Selector>} [nameOrCheckSettings] - name of the test case
-   * @param {CheckSettings<Element, Selector>} [checkSettings] - check settings for the described test case
+   * @param {string|CheckSettings<TElement, TSelector>} [nameOrCheckSettings] - name of the test case
+   * @param {CheckSettings<TElement, TSelector>} [checkSettings] - check settings for the described test case
    * @returns {Promise<MatchResult>}
    */
   async check(nameOrCheckSettings, checkSettings) {
@@ -265,7 +285,7 @@ class EyesVisualGrid extends EyesCore {
   }
   /**
    * @private
-   * @param {CheckSettings<Element, Selector>} checkSettings
+   * @param {CheckSettings<TElement, TSelector>} checkSettings
    * @param {Function} operation
    */
   async _checkPrepare(checkSettings, operation) {
@@ -280,7 +300,7 @@ class EyesVisualGrid extends EyesCore {
   }
   /**
    * @private
-   * @param {CheckSettings<Element, Selector>} checkSettings
+   * @param {CheckSettings<TElement, TSelector>} checkSettings
    */
   async _getTargetConfiguration(checkSettings) {
     const targetSelector =

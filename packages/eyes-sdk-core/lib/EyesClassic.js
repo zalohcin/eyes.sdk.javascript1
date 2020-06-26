@@ -34,76 +34,91 @@ const EyesUtils = require('./EyesUtils')
 const EyesCore = require('./EyesCore')
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('./wrappers/EyesWrappedDriver')<Driver, Element, Selector>} EyesWrappedDriver
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesWrappedDriver')<TDriver, TElement, TSelector>} EyesWrappedDriver
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('./wrappers/EyesJsExecutor')<Driver, Element, Selector>} EyesJsExecutor
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesWrappedElement')<TDriver, TElement, TSelector>} EyesWrappedElement
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('./wrappers/EyesBrowsingContext')<Driver, Element, Selector>} EyesBrowsingContext
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesWrappedDriver').EyesWrappedDriverCtor<TDriver, TElement, TSelector>} EyesWrappedDriverCtor
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('./wrappers/EyesElementFinder')<Driver, Element, Selector>} EyesElementFinder
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesWrappedElement').EyesWrappedElementCtor<TDriver, TElement, TSelector>} EyesWrappedElementCtor
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('./wrappers/EyesDriverController')<Driver, Element, Selector>} EyesDriverController
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesWrappedElement').EyesWrappedElementStatics<TDriver, TElement, TSelector>} EyesWrappedElementStatics
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('./wrappers/EyesWrappedElement')<Driver, Element, Selector>} EyesWrappedElement
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesJsExecutor')<TDriver, TElement, TSelector>} EyesJsExecutor
  */
 
 /**
- * @template Element, Selector
- * @typedef {import('./fluent/DriverCheckSettings')<Element, Selector>} CheckSettings
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesBrowsingContext')<TDriver, TElement, TSelector>} EyesBrowsingContext
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesElementFinder')<TDriver, TElement, TSelector>} EyesElementFinder
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesDriverController')<TDriver, TElement, TSelector>} EyesDriverController
+ */
+
+/**
+ * @template TElement, TSelector
+ * @typedef {import('./fluent/DriverCheckSettings')<TElement, TSelector>} CheckSettings
  */
 
 const UNKNOWN_DEVICE_PIXEL_RATIO = 0
 const DEFAULT_DEVICE_PIXEL_RATIO = 1
 
 /**
- * @template Driver
- * @template Element
- * @template Selector
- * @extends {never}
+ * @template TDriver
+ * @template TElement
+ * @template TSelector
+ * @extends {EyesCore<TDriver, TElement, TSelector>}
  */
 class EyesClassic extends EyesCore {
   /**
    * Create a specialized version of this class
-   * @template Driver, Element, Selector
+   * @template TDriver, TElement, TSelector
    * @param {Object} implementations - implementations of related classes
    * @param {string} implementations.agentId - base agent id
-   * @param {EyesWrappedDriver<Driver, Element, Selector>} implementations.WrappedDriver - implementation for {@link EyesWrappedDriver}
-   * @param {EyesWrappedElement<Driver, Element, Selector>} implementations.WrappedElement - implementation for {@link EyesWrappedElement}
-   * @param {CheckSettings<Element, Selector>} implementations.CheckSettings - specialized version of {@link DriverCheckSettings}
-   * @return {typeof EyesClassic} specialized version of this class
+   * @param {EyesWrappedDriverCtor<TDriver, TElement, TSelector>} implementations.WrappedDriver - implementation for {@link EyesWrappedDriver}
+   * @param {EyesWrappedElementCtor<TDriver, TElement, TSelector> & EyesWrappedElementStatics<TDriver, TElement, TSelector>} implementations.WrappedElement - implementation for {@link EyesWrappedElement}
+   * @param {CheckSettings<TElement, TSelector>} implementations.CheckSettings - specialized version of {@link DriverCheckSettings}
+   * @return {new (...args: ConstructorParameters<typeof EyesClassic>) => EyesClassic<TDriver, TElement, TSelector>} specialized version of this class
    */
   static specialize({agentId, WrappedDriver, WrappedElement, CheckSettings}) {
     return class extends EyesClassic {
       /**
-       * @return {EyesWrappedDriver} implementation for {@link EyesWrappedDriver}
+       * @return {typeof WrappedDriver} implementation for {@link EyesWrappedDriver}
        */
       static get WrappedDriver() {
         return WrappedDriver
       }
       /**
-       * @return {EyesWrappedElement} implementation for {@link EyesWrappedElement}
+       * @return {typeof WrappedElement} implementation for {@link EyesWrappedElement}
        */
       static get WrappedElement() {
         return WrappedElement
       }
       /**
-       * @return {DriverCheckSettings} specialized version of {@link DriverCheckSettings}
+       * @return {typeof CheckSettings} specialized version of {@link DriverCheckSettings}
        */
       static get CheckSettings() {
         return CheckSettings
@@ -118,71 +133,75 @@ class EyesClassic extends EyesCore {
   }
   /**
    * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
-   * @param {string|boolean|VisualGridRunner} [serverUrl=EyesBase.getDefaultServerUrl()] - Eyes server URL
+   * @param {string|boolean|ClassicRunner} [serverUrl=EyesBase.getDefaultServerUrl()] - Eyes server URL
    * @param {boolean} [isDisabled=false] - set to true to disable Applitools Eyes and use the webdriver directly
    * @param {ClassicRunner} [runner=new ClassicRunner()] - runner related to the wanted Eyes implementation
    */
   constructor(serverUrl, isDisabled = false, runner = new ClassicRunner()) {
     super(serverUrl, isDisabled)
+    /** @private */
     this._runner = runner
     this._runner.attachEyes(this, this._serverConnector)
 
-    /** @type {EyesWrappedDriver<Driver, Element, Selector>} */
+    /** @type {EyesWrappedDriver<TDriver, TElement, TSelector>} */
     this._driver = undefined
-    /** @type {EyesJsExecutor<Driver, Element, Selector>} */
+    /** @private @type {EyesJsExecutor<TDriver, TElement, TSelector>} */
     this._executor = undefined
-    /** @type {EyesElementFinder<Driver, Element, Selector>} */
+    /** @private @type {EyesElementFinder<TDriver, TElement, TSelector>} */
     this._finder = undefined
-    /** @type {EyesBrowsingContext<Driver, Element, Selector>} */
+    /** @private @type {EyesBrowsingContext<TDriver, TElement, TSelector>} */
     this._context = undefined
-    /** @type {EyesDriverController<Driver, Element, Selector>} */
+    /** @private @type {EyesDriverController<TDriver, TElement, TSelector>} */
     this._controller = undefined
-    /** @type {boolean} */
+    /** @private @type {boolean} */
     this._dontGetTitle = false
 
+    /** @private */
     this._imageRotationDegrees = 0
+    /** @private */
     this._automaticRotation = true
-    /** @type {boolean} */
+    /** @private @type {boolean} */
     this._isLandscape = false
-    /** @type {boolean} */
+    /** @private @type {boolean} */
     this._checkFullFrameOrElement = false
 
-    /** @type {String} */
+    /** @private @type {String} */
     this._originalDefaultContentOverflow = false
-    /** @type {String} */
+    /** @private @type {String} */
     this._originalFrameOverflow = false
 
-    /** @type {String} */
+    /** @private @type {String} */
     this._originalOverflow = null
+    /** @private */
     this._rotation = undefined
-    /** @type {ImageProvider} */
+    /** @private @type {ImageProvider} */
     this._imageProvider = undefined
-    /** @type {RegionPositionCompensation} */
+    /** @private @type {RegionPositionCompensation} */
     this._regionPositionCompensation = undefined
-    /** @type {number} */
+    /** @private @type {number} */
     this._devicePixelRatio = UNKNOWN_DEVICE_PIXEL_RATIO
-    /** @type {Region} */
+    /** @private @type {Region} */
     this._regionToCheck = null
-    /** @type {PositionProvider} */
+    /** @private @type {PositionProvider} */
     this._targetPositionProvider = undefined
-    /** @type {Region} */
+    /** @private @type {Region} */
     this._effectiveViewport = Region.EMPTY
-    /** @type {string}*/
+    /** @private @type {string}*/
     this._domUrl
-    /** @type {EyesScreenshotFactory} */
+    /** @private @type {EyesScreenshotFactory} */
     this._screenshotFactory = undefined
-    /** @type {EyesWrappedElement<Driver, Element, Selector>} */
+    /** @private @type {EyesWrappedElement<TDriver, TElement, TSelector>} */
     this._scrollRootElement = null
-    /** @type {Promise<void>} */
+    /** @private @type {Promise<void>} */
     this._closePromise = Promise.resolve()
   }
   /**
-   * @param {Driver} driver - driver object for the specific framework
+   * @param {TDriver} driver - driver object for the specific framework
    * @param {String} [appName] - application name
    * @param {String} [testName] - test name
    * @param {RectangleSize|{width: number, height: number}} [viewportSize] - viewport size
    * @param {SessionType} [sessionType] - type of test (e.g.,  standard test / visual performance test).
-   * @returns {Promise<EyesWrappedDriver<Driver, Element, Selector>>}
+   * @return {Promise<TDriver & EyesWrappedDriver<TDriver, TElement, TSelector>>}
    */
   async open(driver, appName, testName, viewportSize, sessionType) {
     ArgumentGuard.notNull(driver, 'driver')
@@ -254,8 +273,8 @@ class EyesClassic extends EyesCore {
     return this._driver
   }
   /**
-   * @param {string|CheckSettings<Element, Selector>} [nameOrCheckSettings] - name of the test case
-   * @param {CheckSettings<Element, Selector>} [checkSettings] - check settings for the described test case
+   * @param {string|CheckSettings<TElement, TSelector>} [nameOrCheckSettings] - name of the test case
+   * @param {CheckSettings<TElement, TSelector>} [checkSettings] - check settings for the described test case
    * @returns {Promise<MatchResult>}
    */
   async check(nameOrCheckSettings, checkSettings) {
@@ -317,7 +336,7 @@ class EyesClassic extends EyesCore {
   }
   /**
    * @private
-   * @param {CheckSettings<Element, Selector>} checkSettings - check settings for the described test case
+   * @param {CheckSettings<TElement, TSelector>} checkSettings - check settings for the described test case
    * @param {Function} operation - check operation
    * @return {Promise<MatchResult>}
    */
@@ -402,7 +421,7 @@ class EyesClassic extends EyesCore {
   }
   /**
    * @private
-   * @param {CheckSettings<Element, Selector>} checkSettings - check settings for the described test case
+   * @param {CheckSettings<TElement, TSelector>} checkSettings - check settings for the described test case
    * @param {Region} targetRegion - region to check
    * @return {Promise<MatchResult>}
    */
@@ -430,7 +449,7 @@ class EyesClassic extends EyesCore {
   }
   /**
    * @private
-   * @param {CheckSettings<Element, Selector>} checkSettings - check settings for the described test case
+   * @param {CheckSettings<TElement, TSelector>} checkSettings - check settings for the described test case
    * @param {Region} targetRegion - region to check
    * @return {Promise<MatchResult>}
    */
@@ -485,8 +504,8 @@ class EyesClassic extends EyesCore {
   }
   /**
    * @private
-   * @param {CheckSettings<Element, Selector>} checkSettings - check settings for the described test case
-   * @param {EyesWrappedElement<Driver, Element, Selector>} targetElement - element to check
+   * @param {CheckSettings<TElement, TSelector>} checkSettings - check settings for the described test case
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>} targetElement - element to check
    * @return {Promise<MatchResult>}
    */
   async _checkElement(checkSettings, targetElement) {
@@ -514,7 +533,7 @@ class EyesClassic extends EyesCore {
   }
   /**
    * @private
-   * @param {CheckSettings<Element, Selector>} checkSettings - check settings for the described test case
+   * @param {CheckSettings<TElement, TSelector>} checkSettings - check settings for the described test case
    * @param {EyesWrappedElement} targetElement - element to check
    * @return {Promise<MatchResult>}
    */
@@ -526,7 +545,7 @@ class EyesClassic extends EyesCore {
     }
 
     this._regionToCheck = await targetElement.getClientRect()
-    this._logger.verbose('Element region: ' + this._regionToCheck)
+    this._logger.verbose('TElement region: ' + this._regionToCheck)
 
     const remainingOffset = await EyesUtils.ensureRegionVisible(
       this._logger,
@@ -583,7 +602,7 @@ class EyesClassic extends EyesCore {
   }
   /**
    * @private
-   * @param {CheckSettings<Element, Selector>} checkSettings - check settings for the described test case
+   * @param {CheckSettings<TElement, TSelector>} checkSettings - check settings for the described test case
    * @return {Promise<MatchResult>}
    */
   async _checkFrame(checkSettings) {
@@ -598,7 +617,7 @@ class EyesClassic extends EyesCore {
   }
   /**
    * @private
-   * @param {CheckSettings<Element, Selector>} checkSettings - check settings for the described test case
+   * @param {CheckSettings<TElement, TSelector>} checkSettings - check settings for the described test case
    * @return {Promise<MatchResult>}
    */
   async _checkFullFrame(checkSettings) {
@@ -628,7 +647,7 @@ class EyesClassic extends EyesCore {
       this._regionToCheck.intersect(this._effectiveViewport)
     }
 
-    this._logger.verbose('Element region: ' + this._regionToCheck)
+    this._logger.verbose('TElement region: ' + this._regionToCheck)
 
     try {
       const source = await this._controller.getSource()
@@ -647,7 +666,7 @@ class EyesClassic extends EyesCore {
   }
   /**
    * @private
-   * @param {EyesWrappedElement<Driver, Element, Selecotr>} scrollRootElement - scroll root element
+   * @param {EyesWrappedElement<TDriver, TElement, Selecotr>} scrollRootElement - scroll root element
    * @return {PositionProvider}
    */
   _createPositionProvider(scrollRootElement) {

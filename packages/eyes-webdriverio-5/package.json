@@ -31,6 +31,7 @@
     "test": "./test"
   },
   "main": "./index.js",
+  "types": "./typings/index.js",
   "dependencies": {
     "@applitools/eyes-sdk-core": "11.0.10",
     "@applitools/visual-grid-client": "14.4.9"

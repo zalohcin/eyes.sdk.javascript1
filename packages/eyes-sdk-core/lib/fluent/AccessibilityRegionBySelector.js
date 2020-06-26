@@ -11,8 +11,8 @@ const EyesUtils = require('../EyesUtils')
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('../wrappers/EyesWrappedDriver')<Driver, Element, Selector>} EyesWrappedDriver
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('../wrappers/EyesWrappedDriver')<TDriver, TElement, TSelector>} EyesWrappedDriver
  */
 
 /**
@@ -21,11 +21,11 @@ const EyesUtils = require('../EyesUtils')
 
 /**
  * @internal
- * @template Selector
+ * @template TSelector
  */
 class AccessibilityRegionBySelector extends GetAccessibilityRegion {
   /**
-   * @param {Selector} selector
+   * @param {TSelector} selector
    * @param {AccessibilityRegionType} [type]
    */
   constructor(selector, type) {
@@ -63,8 +63,8 @@ class AccessibilityRegionBySelector extends GetAccessibilityRegion {
     return regions
   }
   /**
-   * @template Driver, Element
-   * @param {EyesWrappedDriver<Driver, Element, Selector>} driver
+   * @template TDriver, TElement
+   * @param {EyesWrappedDriver<TDriver, TElement, TSelector>} driver
    * @return {Promise<AccessibilityPersistedRegion[]>}
    */
   async toPersistedRegions(driver) {

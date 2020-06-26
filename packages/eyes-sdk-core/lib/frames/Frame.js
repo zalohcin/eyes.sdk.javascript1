@@ -12,44 +12,56 @@ const EyesUtils = require('../EyesUtils')
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('./EyesWrappedDriver')<Driver, Element, Selector>} EyesWrappedDriver
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./EyesWrappedDriver')<TDriver, TElement, TSelector>} EyesWrappedDriver
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('../wrappers/EyesWrappedElement')<Driver, Element, Selector>} EyesWrappedElement
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('../wrappers/EyesWrappedElement')<TDriver, TElement, TSelector>} EyesWrappedElement
  */
 
 /**
  * Reference to the frame, index of the frame in the current context, name or id of the element,
  * framework element object, {@link EyesWrappedElement} implementation object
- * @template Driver, Element, Selector
- * @typedef {Frame<Driver, Element, Selector>|EyesWrappedElement<Driver, Element, Selector>|Element|Selector|number|string} FrameReference
+ * @template TDriver, TElement, TSelector
+ * @typedef {Frame<TDriver, TElement, TSelector>|EyesWrappedElement<TDriver, TElement, TSelector>|TElement|TSelector|number|string} FrameReference
  */
 
 /**
- * @template Driver, Element, Selector
+ * @template TDriver, TElement, TSelector
  * @typedef SpecFrame
  * @prop {(selector) => boolean} isSelector - return true if the value is a valid selector, false otherwise
  * @prop {(element) => boolean} isCompatibleElement - return true if the value is an element, false otherwise
- * @prop {(logger: Logger, driver: EyesWrappedDriver<Driver, Element, Selector>, element: Element, selector: Selector) => EyesWrappedElement} createElement - return wrapped element instance
- * @prop {(leftElement: EyesWrappedElement<Driver, Element, Selector>|Element, rightElement: EyesWrappedElement<Driver, Element, Selector>|Element) => Promise<boolean>} isEqualElements - return true if elements are equal, false otherwise
+ * @prop {(logger: Logger, driver: EyesWrappedDriver<TDriver, TElement, TSelector>, element: TElement, selector: TSelector) => EyesWrappedElement<TDriver, TElement, TSelector>} createElement - return wrapped element instance
+ * @prop {(leftElement: EyesWrappedElement<TDriver, TElement, TSelector>|TElement, rightElement: EyesWrappedElement<TDriver, TElement, TSelector>|TElement) => Promise<boolean>} isEqualElements - return true if elements are equal, false otherwise
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {new (logger: Logger, driver: EyesWrappedDriver<TDriver, TElement, TSelector>, frame) => Frame<TDriver, TElement, TSelector>} FrameCtor
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef FrameStatics
+ * @prop {(reference: FrameReference<TDriver, TElement, TSelector>, scrollRootElement?: EyesWrappedElement<TDriver, TElement, TSelector>) => Frame<TDriver, TElement, TSelector>} fromReference
+ * @prop {(reference) => reference is FrameReference<TDriver, TElement, TSelector>} isReference
  */
 
 /**
  * Encapsulates a frame/iframe. This is a generic type class,
  * and it's actual type is determined by the element used by the user in
  * order to switch into the frame.
- * @template Driver - Driver provided by wrapped framework
- * @template Element - Element provided by wrapped framework
- * @template Selector - Selector supported by framework
+ * @template TDriver - TDriver provided by wrapped framework
+ * @template TElement - TElement provided by wrapped framework
+ * @template TSelector - TSelector supported by framework
  */
 class Frame {
   /**
-   * @template Driver, Element, Selector
-   * @param {SpecFrame<Driver, Element, Selector>} spec
-   * @return {typeof Frame}
+   * @template TDriver, TElement, TSelector
+   * @param {SpecFrame<TDriver, TElement, TSelector>} spec
+   * @return {FrameCtor<TDriver, TElement, TSelector> & FrameStatics<TDriver, TElement, TSelector>}
    */
   static specialize(spec) {
     return class extends Frame {
@@ -74,14 +86,14 @@ class Frame {
   /**
    * Create frame from components
    * @param {Logger} logger - logger instance
-   * @param {EyesWrappedDriver<Driver, Element, Selector>} driver - wrapped driver
+   * @param {EyesWrappedDriver<TDriver, TElement, TSelector>} driver - wrapped driver
    * @param {object} frame - frame components
-   * @param {EyesWrappedElement<Driver, Element, Selector>} frame.element - frame element, used as a element to switch into the frame
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>} frame.element - frame element, used as a element to switch into the frame
    * @param {Location} frame.location - location of the frame within the current frame
    * @param {RectangleSize} frame.size - frame element size (i.e., the size of the frame on the screen, not the internal document size)
    * @param {RectangleSize} frame.innerSize - frame element inner size (i.e., the size of the frame actual size, without borders)
    * @param {Location} frame.parentScrollLocation - scroll location of the frame
-   * @param {EyesWrappedElement<Driver, Element, Selector>} [frame.scrollRootElement] - scroll root element
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>} [frame.scrollRootElement] - scroll root element
    */
   constructor(logger, driver, frame) {
     if (frame instanceof Frame) {
@@ -112,10 +124,10 @@ class Frame {
   }
   /**
    * Construct frame reference object which could be later initialized to the full frame object
-   * @template Driver, Element, Selector
-   * @param {FrameReference<Driver, Element, Selector>} reference - reference to the frame on its parent context
-   * @param {EyesWrappedElement<Driver, Element, Selector>} [scrollRootElement] - scroll root element
-   * @return {Frame<Driver, Element, Selector>} frame reference object
+   * @template TDriver, TElement, TSelector
+   * @param {FrameReference<TDriver, TElement, TSelector>} reference - reference to the frame on its parent context
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>} [scrollRootElement] - scroll root element
+   * @return {Frame<TDriver, TElement, TSelector>} frame reference object
    */
   static fromReference(reference, scrollRootElement) {
     const frame = new this(null, null, reference)
@@ -124,8 +136,9 @@ class Frame {
   }
   /**
    * Check value for belonging to the {@link FrameReference} type
+   * @template TDriver, TElement, TSelector
    * @param reference - value to check if is it a reference
-   * @return {boolean} true if value is a valid reference, otherwise false
+   * @return {reference is FrameReference<TDriver, TElement, TSelector>} true if value is a valid reference, otherwise false
    */
   static isReference(reference) {
     return (
@@ -139,9 +152,9 @@ class Frame {
   }
   /**
    * Equality check for two frame objects or frame elements
-   * @template Driver, Element, Selector
-   * @param {Frame<Driver, Element, Selector>|EyesWrappedElement<Driver, Element, Selector>} leftFrame - frame object or frame element
-   * @param {Frame<Driver, Element, Selector>|EyesWrappedElement<Driver, Element, Selector>} rightFrame - frame object or frame element
+   * @template TDriver, TElement, TSelector
+   * @param {Frame<TDriver, TElement, TSelector>|EyesWrappedElement<TDriver, TElement, TSelector>} leftFrame - frame object or frame element
+   * @param {Frame<TDriver, TElement, TSelector>|EyesWrappedElement<TDriver, TElement, TSelector>} rightFrame - frame object or frame element
    * @return {Promise<boolean>} true if frames are described the same frame element, otherwise false
    */
   static async equals(leftFrame, rightFrame) {
@@ -150,7 +163,7 @@ class Frame {
     return this.spec.isEqualElements(leftElement, rightElement)
   }
   /**
-   * @return {EyesWrappedElement<Driver, Element, Selector>}
+   * @return {EyesWrappedElement<TDriver, TElement, TSelector>}
    */
   get element() {
     return this._element
@@ -180,13 +193,13 @@ class Frame {
     return this._parentScrollLocation
   }
   /**
-   * @return {EyesWrappedElement<Driver, Element, Selector>}
+   * @return {EyesWrappedElement<TDriver, TElement, TSelector>}
    */
   get scrollRootElement() {
     return this._scrollRootElement
   }
   /**
-   * @param {EyesWrappedElement<Driver, Element, Selector>} scrollRootElement
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>} scrollRootElement
    */
   set scrollRootElement(scrollRootElement) {
     if (scrollRootElement) {
@@ -195,14 +208,14 @@ class Frame {
   }
   /**
    * Create reference from current frame object
-   * @return {Frame<Driver, Element, Selector>} frame reference object
+   * @return {Frame<TDriver, TElement, TSelector>} frame reference object
    */
   toReference() {
     return this.constructor.fromReference(this._element || this._reference, this._scrollRootElement)
   }
   /**
    * Equality check for two frame objects or frame elements
-   * @param {Frame<Driver, Element, Selector>|EyesWrappedElement<Driver, Element, Selector>} otherFrame - frame object or frame element
+   * @param {Frame<TDriver, TElement, TSelector>|EyesWrappedElement<TDriver, TElement, TSelector>} otherFrame - frame object or frame element
    * @return {Promise<boolean>} true if frames are described the same frame element, otherwise false
    */
   async equals(otherFrame) {
@@ -211,7 +224,7 @@ class Frame {
   /**
    * Initialize frame reference by finding frame element and calculate metrics
    * @param {Logger} logger - logger instance
-   * @param {EyesWrappedDriver<Driver, Element, Selector>} driver - wrapped driver targeted on parent context
+   * @param {EyesWrappedDriver<TDriver, TElement, TSelector>} driver - wrapped driver targeted on parent context
    * @return {this} initialized frame object
    */
   async init(logger, driver, parentFrame) {
@@ -258,7 +271,7 @@ class Frame {
     return this.refresh(parentFrame)
   }
   /**
-   * Recalculate frame object metrics. Driver should be targeted on a parent context
+   * Recalculate frame object metrics. TDriver should be targeted on a parent context
    * @return {this} this frame object
    */
   async refresh(parentFrame) {

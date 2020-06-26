@@ -1,13 +1,6 @@
 const {EyesWrappedDriver} = require('@applitools/eyes-sdk-core')
 const SpecWrappedDriver = require('./SpecWrappedDriver')
 
-/**
- * @typedef {import('./SpecWrappedDriver').Driver} ProtractorDriver
- * @typedef {import('./SpecWrappedElement').Element} ProtractorElement
- * @typedef {import('./SpecWrappedElement').Selector} ProtractorSelector
- */
-
-/** @type {EyesWrappedDriver<ProtractorDriver, ProtractorElement, ProtractorSelector>} */
 const ProtractorWrappedDriver = EyesWrappedDriver.specialize(SpecWrappedDriver, {
   /** @override */
   switchTo(proxies) {

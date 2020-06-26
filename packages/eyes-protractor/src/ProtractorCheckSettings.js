@@ -3,13 +3,14 @@ const ProtractorWrappedElement = require('./ProtractorWrappedElement')
 const ProtractorFrame = require('./ProtractorFrame')
 
 /**
- * @typedef {import('./SpecWrappedDriver').Driver} ProtractorDriver
- * @typedef {import('./SpecWrappedElement').Element} ProtractorElement
- * @typedef {import('./SpecWrappedElement').Selector} ProtractorSelector
+ * @typedef {import('./SpecWrappedElement').Element} Element
+ * @typedef {import('./SpecWrappedElement').Selector} Selector
+ *
+ * @typedef {import('@applitools/eyes-sdk-core').SpecCheckSettings<Element, Selector>} ProtractorSpecCheckSettings
  */
 
-/** @type {DriverCheckSettings<ProtractorDriver, ProtractorElement, ProtractorSelector>} */
-const ProtractorCheckSettings = DriverCheckSettings.specialize({
+/** @type {ProtractorSpecCheckSettings} */
+const SpecCheckSettings = {
   isSelector(selector) {
     return ProtractorWrappedElement.isSelector(selector)
   },
@@ -28,6 +29,8 @@ const ProtractorCheckSettings = DriverCheckSettings.specialize({
   createFrameReference(reference) {
     return ProtractorFrame.fromReference(reference)
   },
-})
+}
 
-module.exports = ProtractorCheckSettings
+const CheckSettings = DriverCheckSettings.specialize(SpecCheckSettings)
+
+module.exports = CheckSettings

@@ -5,36 +5,41 @@
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('./EyesWrappedDriver')<Driver, Element, Selector>} EyesWrappedDriver
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./EyesWrappedDriver')<TDriver, TElement, TSelector>} EyesWrappedDriver
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('./EyesWrappedElement')<Driver, Element, Selector>} EyesWrappedElement
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./EyesWrappedElement')<TDriver, TElement, TSelector>} EyesWrappedElement
  */
 
 /**
  * The object which implements the lowest-level functions to work with element finder
- * @template Driver, Element, Selector
+ * @template TDriver, TElement, TSelector
  * @typedef SpecElementFinder
- * @prop {(logger: Logger, driver: EyesWrappedDriver<Driver, Element, Selector>, element: Element, selector: Selector) => EyesWrappedElement<Driver, Element, Selector>} createElement - return wrapped element instance
- * @prop {(driver: Driver, selector: Selector) => Element} findElement - return found element
- * @prop {(driver: Driver, selector: Selector) => Element} findElements - return found elements
- * @prop {(selector: EyesSelector) => Selector} toSupportedSelector - translate cross SDK selector to SDK specific selector
- * @prop {(selector: Selector) => EyesSelector} toEyesSelector - translate SDK specific selector to cross SDK selector
+ * @prop {(logger: Logger, driver: EyesWrappedDriver<TDriver, TElement, TSelector>, element: TElement, selector: TSelector) => EyesWrappedElement<TDriver, TElement, TSelector>} createElement - return wrapped element instance
+ * @prop {(driver: TDriver, selector: TSelector) => TElement} findElement - return found element
+ * @prop {(driver: TDriver, selector: TSelector) => TElement} findElements - return found elements
+ * @prop {(selector: EyesSelector) => TSelector} toSupportedSelector - translate cross SDK selector to SDK specific selector
+ * @prop {(selector: TSelector) => EyesSelector} toEyesSelector - translate SDK specific selector to cross SDK selector
  */
 
 /**
- * @template Driver - Driver provided by wrapped framework
- * @template Element - Element provided by wrapped framework
- * @template Selector - Selector supported by framework
+ * @template TDriver, TElement, TSelector
+ * @typedef {new (logger: Logger, driver: EyesWrappedDriver<TDriver, TElement, TSelector>) => EyesElementFinder<TDriver, TElement, TSelector>} EyesElementFinderCtor
+ */
+
+/**
+ * @template TDriver - TDriver provided by wrapped framework
+ * @template TElement - TElement provided by wrapped framework
+ * @template TSelector - TSelector supported by framework
  */
 class EyesElementFinder {
   /**
-   * @template Driver, Element, Selector
-   * @param {SpecElementFinder<Driver, Element, Selector>} spec - specifications for the specific framework
-   * @return {typedef EyesElementFinder} specialized version of this class
+   * @template TDriver, TElement, TSelector
+   * @param {SpecElementFinder<TDriver, TElement, TSelector>} spec - specifications for the specific framework
+   * @return {EyesElementFinderCtor<TDriver, TElement, TSelector>} specialized version of this class
    */
   static specialize(spec) {
     return class extends EyesElementFinder {
@@ -54,14 +59,14 @@ class EyesElementFinder {
   static get spec() {
     throw new TypeError('The class is not specialized')
   }
-  /** @type {SpecElementFinder<Driver, Element, Selector>} */
+  /** @type {SpecElementFinder<TDriver, TElement, TSelector>} */
   get spec() {
     throw new TypeError('The class is not specialized')
   }
   /**
    * Construct an element finder instance
    * @param {Logger} logger - logger instance
-   * @param {EyesWrappedDriver<Driver, Element, Selector>} driver - wrapped driver instance
+   * @param {EyesWrappedDriver<TDriver, TElement, TSelector>} driver - wrapped driver instance
    */
   constructor(logger, driver) {
     this._logger = logger
@@ -69,8 +74,8 @@ class EyesElementFinder {
   }
   /**
    * Returns first founded element
-   * @param {Selector|EyesSelector} selector - selector supported by current implementation
-   * @return {Promise<EyesWrappedElement<Driver, Element, Selector>>}
+   * @param {TSelector|EyesSelector} selector - selector supported by current implementation
+   * @return {Promise<EyesWrappedElement<TDriver, TElement, TSelector>>}
    */
   async findElement(selector) {
     selector = this.spec.toSupportedSelector(selector)
@@ -79,8 +84,8 @@ class EyesElementFinder {
   }
   /**
    * Returns all founded element
-   * @param {Selector|EyesSelector} selector - selector supported by current implementation
-   * @return {Promise<EyesWrappedElement<Driver, Element, Selector>[]>}
+   * @param {TSelector|EyesSelector} selector - selector supported by current implementation
+   * @return {Promise<EyesWrappedElement<TDriver, TElement, TSelector>[]>}
    */
   async findElements(selector) {
     const elements = await this.spec.findElements(this._driver.unwrapped, selector)

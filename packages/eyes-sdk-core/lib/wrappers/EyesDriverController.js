@@ -5,41 +5,46 @@ const MutableImage = require('../images/MutableImage')
 const EyesDriverOperationError = require('../errors/EyesDriverOperationError')
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('./EyesWrappedDriver')<Driver, Element, Selector>} EyesWrappedDriver
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./EyesWrappedDriver')<TDriver, TElement, TSelector>} EyesWrappedDriver
  */
 
 /**
  * The object which implements the lowest-level functions to work with element finder
- * @template Driver, Element, Selector
+ * @template TDriver, TElement, TSelector
  * @typedef SpecDriverController
- * @prop {(driver: Driver) => Promise<{x: number, y: number}>} getWindowLocation - return location of the window on the screen
- * @prop {(driver: Driver, location: {x: number, y: number}) => Promise<void>} setWindowLocation - set location of the window on the screen
- * @prop {(driver: Driver) => Promise<{width: number, height: number}>} getWindowSize - return size of the window
- * @prop {(driver: Driver, size: {width: number, height: number}) => Promise<void>} setWindowSize - set size of the window
- * @prop {(driver: Driver) => Promise<'landscape'|'portrait'>} getOrientation - return string which represents screen orientation
- * @prop {(driver: Driver) => Promise<boolean>} isMobile - true if a mobile device, false otherwise
- * @prop {(driver: Driver) => Promise<boolean>} isAndroid - true if an Android device, false otherwise
- * @prop {(driver: Driver) => Promise<boolean>} isIOS - true if an iOS device, false otherwise
- * @prop {(driver: Driver) => Promise<boolean>} isNative - true if a native app, false otherwise
- * @prop {(driver: Driver) => Promise<string>} getPlatformVersion - return version of the device's platform
- * @prop {(driver: Driver) => Promise<string>} getSessionId - return id of the running session
- * @prop {(driver: Driver) => Promise<string|Buffer>} takeScreenshot - return screenshot of the viewport
- * @prop {(driver: Driver) => Promise<string>} getTitle - return page title
- * @prop {(driver: Driver) => Promise<string>} getSource - return current url
- * @prop {(driver: Driver, url: string) => Promise<void>} visit - redirect to the specified url
+ * @prop {(driver: TDriver) => Promise<{x: number, y: number}>} getWindowLocation - return location of the window on the screen
+ * @prop {(driver: TDriver, location: {x: number, y: number}) => Promise<void>} setWindowLocation - set location of the window on the screen
+ * @prop {(driver: TDriver) => Promise<{width: number, height: number}>} getWindowSize - return size of the window
+ * @prop {(driver: TDriver, size: {width: number, height: number}) => Promise<void>} setWindowSize - set size of the window
+ * @prop {(driver: TDriver) => Promise<'landscape'|'portrait'>} getOrientation - return string which represents screen orientation
+ * @prop {(driver: TDriver) => Promise<boolean>} isMobile - true if a mobile device, false otherwise
+ * @prop {(driver: TDriver) => Promise<boolean>} isAndroid - true if an Android device, false otherwise
+ * @prop {(driver: TDriver) => Promise<boolean>} isIOS - true if an iOS device, false otherwise
+ * @prop {(driver: TDriver) => Promise<boolean>} isNative - true if a native app, false otherwise
+ * @prop {(driver: TDriver) => Promise<string>} getPlatformVersion - return version of the device's platform
+ * @prop {(driver: TDriver) => Promise<string>} getSessionId - return id of the running session
+ * @prop {(driver: TDriver) => Promise<string|Buffer>} takeScreenshot - return screenshot of the viewport
+ * @prop {(driver: TDriver) => Promise<string>} getTitle - return page title
+ * @prop {(driver: TDriver) => Promise<string>} getSource - return current url
+ * @prop {(driver: TDriver, url: string) => Promise<void>} visit - redirect to the specified url
  */
 
 /**
- * @template Driver - Driver provided by wrapped framework
- * @template Element - Element provided by wrapped framework
- * @template Selector - Selector supported by framework
+ * @template TDriver, TElement, TSelector
+ * @typedef {new (logger: Logger, driver: EyesWrappedDriver<TDriver, TElement, TSelector>) => EyesDriverController<TDriver, TElement, TSelector>} EyesDriverControllerCtor
+ */
+
+/**
+ * @template TDriver - TDriver provided by wrapped framework
+ * @template TElement - TElement provided by wrapped framework
+ * @template TSelector - TSelector supported by framework
  */
 class EyesDriverController {
   /**
-   * @template Driver, Element, Selector
-   * @param {SpecDriverController<Driver, Element, Selector>} spec - specifications for the specific framework
-   * @return {typeof EyesDriverController} specialized version of this class
+   * @template TDriver, TElement, TSelector
+   * @param {SpecDriverController<TDriver, TElement, TSelector>} spec - specifications for the specific framework
+   * @return {EyesDriverControllerCtor<TDriver, TElement, TSelector>} specialized version of this class
    */
   static specialize(spec) {
     return class extends EyesDriverController {
@@ -59,14 +64,14 @@ class EyesDriverController {
   static get spec() {
     throw new TypeError('EyesDriverController is not specialized')
   }
-  /** @type {SpecDriverController<Driver, Element, Selector>} */
+  /** @type {SpecDriverController<TDriver, TElement, TSelector>} */
   get spec() {
     throw new TypeError('EyesDriverController is not specialized')
   }
   /**
    * Construct a driver controller instance
    * @param {Logger} logger - logger instance
-   * @param {EyesWrappedDriver<Driver, Element, Selector>} driver - wrapped driver instance
+   * @param {EyesWrappedDriver<TDriver, TElement, TSelector>} driver - wrapped driver instance
    */
   constructor(logger, driver) {
     this._logger = logger

@@ -2,18 +2,10 @@ const {TypeUtils} = require('@applitools/eyes-sdk-core')
 const LegacySelector = require('./LegacySelector')
 
 /**
- * Supported selector type
+ * @typedef {import('./SpecWrappedDriver').Driver} Driver
  * @typedef {string|LegacySelector} Selector
- */
-
-/**
- * Compatible element type
- * @typedef {PlainElement|{value: PlainElement, selector?: string}} Element
- */
-
-/**
- * Plain element object type
- * @typedef {{ELEMENT: string, 'element-6066-11e4-a52e-4f735466cecf': string}} PlainElement
+ * @typedef {import('webdriverio').Element|{value: import('webdriverio').Element, selector?: string}} Element
+ * @typedef {import('@applitools/eyes-sdk-core').SpecElement<Driver, Element, Selector>} WDIOSpecElement
  */
 
 const LEGACY_ELEMENT_ID = 'ELEMENT'
@@ -25,15 +17,12 @@ function isCompatible(element) {
     ? Boolean(element.value[ELEMENT_ID] || element.value[LEGACY_ELEMENT_ID])
     : Boolean(element[ELEMENT_ID] || element[LEGACY_ELEMENT_ID])
 }
-
 function isSelector(selector) {
   return TypeUtils.isString(selector) || selector instanceof LegacySelector
 }
-
 function extractId(element) {
   return element[ELEMENT_ID] || element[LEGACY_ELEMENT_ID]
 }
-
 function toSupportedSelector(selector) {
   if (TypeUtils.has(selector, ['type', 'selector'])) {
     if (selector.type === 'css') return `css selector:${selector.selector}`
@@ -41,7 +30,6 @@ function toSupportedSelector(selector) {
   }
   return selector
 }
-
 function toEyesSelector(selector) {
   if (selector instanceof LegacySelector) {
     const {using, value} = selector
@@ -57,7 +45,6 @@ function toEyesSelector(selector) {
   }
   return {selector}
 }
-
 function extractElement(element) {
   const unwrapped = element.value ? element.value : element
   return {
@@ -65,11 +52,9 @@ function extractElement(element) {
     [LEGACY_ELEMENT_ID]: extractId(unwrapped),
   }
 }
-
 function extractSelector(element) {
   return element.selector
 }
-
 function isStaleElementReferenceResult(result, wrapper) {
   if (!result) return false
   return result instanceof Error
@@ -77,11 +62,14 @@ function isStaleElementReferenceResult(result, wrapper) {
     : result.value && result.selector && result.selector === wrapper.selector
 }
 
-exports.isCompatible = isCompatible
-exports.isSelector = isSelector
-exports.extractId = extractId
-exports.toSupportedSelector = toSupportedSelector
-exports.toEyesSelector = toEyesSelector
-exports.extractElement = extractElement
-exports.extractSelector = extractSelector
-exports.isStaleElementReferenceResult = isStaleElementReferenceResult
+/** @type {WDIOSpecElement} */
+module.exports = {
+  isCompatible,
+  isSelector,
+  extractId,
+  toSupportedSelector,
+  toEyesSelector,
+  extractElement,
+  extractSelector,
+  isStaleElementReferenceResult,
+}

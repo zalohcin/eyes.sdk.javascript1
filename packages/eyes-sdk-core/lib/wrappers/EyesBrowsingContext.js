@@ -7,40 +7,45 @@ const EyesUtils = require('../EyesUtils')
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('./EyesWrappedDriver')<Driver, Element, Selector>} EyesWrappedDriver
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./EyesWrappedDriver')<TDriver, TElement, TSelector>} EyesWrappedDriver
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('../frames/Frame')<Driver, Element, Selector>} Frame
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('../frames/Frame')<TDriver, TElement, TSelector>} Frame
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('../frames/Frame').FrameReference<Driver, Element, Selector>} FrameReference
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('../frames/Frame').FrameReference<TDriver, TElement, TSelector>} FrameReference
  */
 
 /**
  * The object which implements the lowest-level functions to work with browsing context
- * @template Driver, Element, Selector
+ * @template TDriver, TElement, TSelector
  * @typedef SpecBrowsingContext
- * @prop {(reference: FrameReference<Driver, Element, Selector>) => Frame} createFrameReference - return new frame reference
- * @prop {(leftFrame: Frame<Driver, Element, Selector>, rightFrame: Frame<Driver, Element, Selector>) => Promise<boolean>} isEqualFrames - return true if two frames are equal, false otherwise
- * @prop {(driver: Driver, reference: FrameReference<Driver, Element, Selector>) => void} switchToFrame - switch to frame specified with a reference
- * @prop {(driver: Driver) => void} switchToParentFrame - switch to parent frame
+ * @prop {(reference: FrameReference<TDriver, TElement, TSelector>) => Frame} createFrameReference - return new frame reference
+ * @prop {(leftFrame: Frame<TDriver, TElement, TSelector>, rightFrame: Frame<TDriver, TElement, TSelector>) => Promise<boolean>} isEqualFrames - return true if two frames are equal, false otherwise
+ * @prop {(driver: TDriver, reference: FrameReference<TDriver, TElement, TSelector>) => void} switchToFrame - switch to frame specified with a reference
+ * @prop {(driver: TDriver) => void} switchToParentFrame - switch to parent frame
  */
 
 /**
- * @template Driver - Driver provided by wrapped framework
- * @template Element - Element provided by wrapped framework
- * @template Selector - Selector supported by framework
+ * @template TDriver, TElement, TSelector
+ * @typedef {new (logger: Logger, driver: EyesWrappedDriver<TDriver, TElement, TSelector>) => EyesBrowsingContext<TDriver, TElement, TSelector>} EyesBrowsingContextCtor
+ */
+
+/**
+ * @template TDriver - TDriver provided by wrapped framework
+ * @template TElement - TElement provided by wrapped framework
+ * @template TSelector - TSelector supported by framework
  */
 class EyesBrowsingContext {
   /**
-   * @template Driver, Element, Selector
-   * @param {SpecBrowsingContext<Driver, Element, Selector>} spec - specifications for the specific framework
-   * @return {EyesBrowsingContext} specialized version of this class
+   * @template TDriver, TElement, TSelector
+   * @param {SpecBrowsingContext<TDriver, TElement, TSelector>} spec - specifications for the specific framework
+   * @return {EyesBrowsingContextCtor<TDriver, TElement, TSelector>} specialized version of this class
    */
   static specialize(spec) {
     return class extends EyesBrowsingContext {
@@ -60,14 +65,14 @@ class EyesBrowsingContext {
   static get spec() {
     throw new TypeError('The class is not specialized')
   }
-  /** @type {SpecBrowsingContext<Driver, Element, Selector>} */
+  /** @type {SpecBrowsingContext<TDriver, TElement, TSelector>} */
   get spec() {
     throw new TypeError('The class is not specialized')
   }
   /**
    * Construct browsing context instance
    * @param {Logger} logger - logger instance
-   * @param {EyesWrappedDriver<Driver, Element, Selector>} driver - parent driver instance
+   * @param {EyesWrappedDriver<TDriver, TElement, TSelector>} driver - parent driver instance
    */
   constructor(logger, driver) {
     this._logger = logger
@@ -77,7 +82,7 @@ class EyesBrowsingContext {
   }
   /**
    * Representation of the top-level context
-   * @type {Frame<Driver, Element, Selector>}
+   * @type {Frame<TDriver, TElement, TSelector>}
    */
   get topContext() {
     return this._topContext
@@ -97,7 +102,7 @@ class EyesBrowsingContext {
   }
   /**
    * Switch to the child (frame) context by reference
-   * @param {FrameReference<Driver, Element, Selector>} reference - reference to the frame
+   * @param {FrameReference<TDriver, TElement, TSelector>} reference - reference to the frame
    * @return {Promise<void>}
    */
   async frame(reference) {
@@ -158,7 +163,7 @@ class EyesBrowsingContext {
   }
   /**
    * Switch to the specified frame path from the top level
-   * @param {Iterable<FrameReference<Driver, Element, Selector>>} path
+   * @param {Iterable<FrameReference<TDriver, TElement, TSelector>>} path
    * @return {Promise<void>}
    */
   async frames(path) {
@@ -202,7 +207,7 @@ class EyesBrowsingContext {
   }
   /**
    * Append the specified frame path to the current context
-   * @param {Iterable<FrameReference<Driver, Element, Selector>>} path
+   * @param {Iterable<FrameReference<TDriver, TElement, TSelector>>} path
    * @return {Promise<void>}
    */
   async framesAppend(path) {
@@ -258,7 +263,7 @@ class EyesBrowsingContext {
   }
   /**
    * Perform an operation in the browsing context with required frame chain and return it back after operation is finished
-   * @param {Iterable<FrameReference<Driver, Element, Selector>>} path
+   * @param {Iterable<FrameReference<TDriver, TElement, TSelector>>} path
    * @param {Function} operation
    * @return {Promise<any>} promise which resolve whatever an operation will resolve
    */
@@ -274,7 +279,7 @@ class EyesBrowsingContext {
   }
   /**
    * Perform an operation in the browsing context with appended frame chain and return it back after operation is finished
-   * @param {Iterable<FrameReference<Driver, Element, Selector>>} path
+   * @param {Iterable<FrameReference<TDriver, TElement, TSelector>>} path
    * @param {Function} operation
    * @return {Promise<any>} promise which resolve whatever an operation will resolve
    */

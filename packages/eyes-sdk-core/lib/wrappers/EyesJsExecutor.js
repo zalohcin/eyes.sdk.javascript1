@@ -6,28 +6,33 @@ const EyesWrappedElement = require('./EyesWrappedElement')
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('./EyesWrappedDriver')<Driver, Element, Selector>} EyesWrappedDriver
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./EyesWrappedDriver')<TDriver, TElement, TSelector>} EyesWrappedDriver
  */
 
 /**
  * The object which implements the lowest-level functions to work with element finder
- * @template Driver, Element, Selector
+ * @template TDriver, TElement, TSelector
  * @typedef SpecJsExecutor
- * @prop {(driver: Driver, script: string|Function, ...args) => Promise<*>} executeScript - execute script and return result
- * @prop {(driver: Driver, ms: number) => Promise<void>} sleep - makes the driver sleep for the given amount of time in ms
+ * @prop {(driver: TDriver, script: string|Function, ...args) => Promise<*>} executeScript - execute script and return result
+ * @prop {(driver: TDriver, ms: number) => Promise<void>} sleep - makes the driver sleep for the given amount of time in ms
  */
 
 /**
- * @template Driver - Driver provided by wrapped framework
- * @template Element - Element provided by wrapped framework
- * @template Selector - Selector supported by framework
+ * @template TDriver, TElement, TSelector
+ * @typedef {new (logger: Logger, driver: EyesWrappedDriver<TDriver, TElement, TSelector>) => EyesJsExecutor<TDriver, TElement, TSelector>} EyesJsExecutorCtor
+ */
+
+/**
+ * @template TDriver - TDriver provided by wrapped framework
+ * @template TElement - TElement provided by wrapped framework
+ * @template TSelector - TSelector supported by framework
  */
 class EyesJsExecutor {
   /**
-   * @template Driver, Element, Selector
-   * @param {SpecJsExecutor<Driver, Element, Selector>} spec - specifications for the specific framework
-   * @return {typeof EyesJsExecutor} specialized version of this class
+   * @template TDriver, TElement, TSelector
+   * @param {SpecJsExecutor<TDriver, TElement, TSelector>} spec - specifications for the specific framework
+   * @return {EyesJsExecutorCtor<TDriver, TElement, TSelector>} specialized version of this class
    */
   static specialize(spec) {
     return class extends EyesJsExecutor {
@@ -47,14 +52,14 @@ class EyesJsExecutor {
   static get spec() {
     throw new TypeError('The class is not specialized')
   }
-  /** @type {SpecsJsExecutor<Driver, Element, Selector>} */
+  /** @type {SpecsJsExecutor<TDriver, TElement, TSelector>} */
   get spec() {
     throw new TypeError('The class is not specialized')
   }
   /**
    * Construct js executor instance
    * @param {Logger} logger - logger instance
-   * @param {EyesWrappedDriver<Driver, Element, Selector>} driver - wrapped driver instance
+   * @param {EyesWrappedDriver<TDriver, TElement, TSelector>} driver - wrapped driver instance
    */
   constructor(logger, driver) {
     this._logger = logger

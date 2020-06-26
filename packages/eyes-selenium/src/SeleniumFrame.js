@@ -2,19 +2,15 @@ const {Frame} = require('@applitools/eyes-sdk-core')
 const SeleniumWrappedElement = require('./SeleniumWrappedElement')
 
 /**
- * @typedef {import('./selenium3/SpecWrappedDriver').Driver} Selenium3Driver
- * @typedef {import('./selenium3/SpecWrappedElement').Element} Selenium3Element
- * @typedef {import('./selenium3/SpecWrappedElement').Selector} Selenium3Selector
- * @typedef {Frame<Selenium3Driver, Selenium3Element, Selenium3Selector>} Selenium3Frame
+ * @typedef {import('./SpecWrappedDriver').Driver} Driver
+ * @typedef {import('./SpecWrappedElement').Element} Element
+ * @typedef {import('./SpecWrappedElement').Selector} Selector
  *
- * @typedef {import('./selenium4/SpecWrappedDriver').Driver} Selenium4Driver
- * @typedef {import('./selenium4/SpecWrappedElement').Element} Selenium4Element
- * @typedef {import('./selenium4/SpecWrappedElement').Selector} Selenium4Selector
- * @typedef {Frame<Selenium4Driver, Selenium4Element, Selenium4Selector>} Selenium4Frame
+ * @typedef {import('@applitools/eyes-sdk-core').SpecFrame<Driver, Element, Selector>} SeleniumSpecFrame
  */
 
-/** @type {Selenium3Frame|Selenium4Frame} */
-const SeleniumFrame = Frame.specialize({
+/** @type {SeleniumSpecFrame} */
+const SpecFrame = {
   isSelector(selector) {
     return SeleniumWrappedElement.isSelector(selector)
   },
@@ -27,6 +23,8 @@ const SeleniumFrame = Frame.specialize({
   createElement(logger, driver, element, selector) {
     return new SeleniumWrappedElement(logger, driver, element, selector)
   },
-})
+}
+
+const SeleniumFrame = Frame.specialize(SpecFrame)
 
 module.exports = SeleniumFrame

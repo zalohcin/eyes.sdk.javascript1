@@ -6,30 +6,35 @@ const ClassicRunner = require('./runner/ClassicRunner')
 const VisualGridRunner = require('./runner/VisualGridRunner')
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('./EyesClassic')<Driver, Element, Selector>} EyesClassic
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./EyesClassic')<TDriver, TElement, TSelector>} EyesClassic
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('./EyesVisualGrid')<Driver, Element, Selector>} EyesVisualGrid
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./EyesVisualGrid')<TDriver, TElement, TSelector>} EyesVisualGrid
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {new <TRunner>(serverUrl?: string|boolean|TRunner, isDisabled?: boolean, runner?: TRunner) => TRunner extends VisualGridRunner ? EyesVisualGrid<TDriver, TElement, TSelector> : EyesClassic<TDriver, TElement, TSelector>} EyesFactoryCtor
  */
 
 /**
  * This class represents an abstraction for construction of {@link EyesClassic} and {@link EyesVisualGrid}
  *
- * @template Driver
- * @template Element
- * @template Selector
+ * @template TDriver
+ * @template TElement
+ * @template TSelector
  */
 class EyesFactory {
   /**
    * Return a specialized
-   * @template Driver, Element, Selector
+   * @template TDriver, TElement, TSelector
    * @param {Object} implementations - implementations of related classes
-   * @param {EyesClassic<Driver, Element, Selector>} implementations.EyesClassic - specialized implementation of {@link EyesClassic} class
-   * @param {EyesVisualGrid<Driver, Element, Selector>} implementations.EyesVisualGrid - specialized implementation of {@link EyesVisualGrid} class
-   * @return {typeof EyesFactory} specialized version of {@link EyesFactory}
+   * @param {new (...args: any[]) => EyesClassic<TDriver, TElement, TSelector>} implementations.EyesClassic - specialized implementation of {@link EyesClassic} class
+   * @param {new (...args: any[]) => EyesVisualGrid<TDriver, TElement, TSelector>} implementations.EyesVisualGrid - specialized implementation of {@link EyesVisualGrid} class
+   * @return {EyesFactoryCtor<TDriver, TElement, TSelector>} specialized version of {@link EyesFactory}
    */
   static specialize({EyesClassic, EyesVisualGrid}) {
     return class extends EyesFactory {
@@ -48,24 +53,11 @@ class EyesFactory {
     }
   }
   /**
-   * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
-   * @param {string|boolean|VisualGridRunner} [serverUrl=EyesBase.getDefaultServerUrl()] - Eyes server URL
+   * @param {string|boolean|EyesRunner} [serverUrl=EyesBase.getDefaultServerUrl()] - Eyes server URL
    * @param {boolean} [isDisabled=false] - set to true to disable Applitools Eyes and use the webdriver directly
    * @param {EyesRunner} [runner=new ClassicRunner()] - runner related to the wanted Eyes implementation
    */
   constructor(serverUrl, isDisabled, runner = new ClassicRunner()) {
-    return this.constructor.from(serverUrl, isDisabled, runner)
-  }
-  /**
-   * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
-   * @template Driver, Element, Selector
-   * @template {EyesRunner} Runner
-   * @param {string|boolean|Runner} [serverUrl=EyesBase.getDefaultServerUrl()] - Eyes server URL
-   * @param {boolean} [isDisabled=false] - set to true to disable Applitools Eyes and use the webdriver directly
-   * @param {Runner} [runner=new ClassicRunner()] - runner related to the wanted Eyes implementation
-   * @return {Runner extends VisualGridRunner ? EyesVisualGrid<Driver, Element, Selector> : EyesClassic<Driver, Element, Selector>}
-   */
-  static from(serverUrl, isDisabled, runner = new ClassicRunner()) {
     if (serverUrl instanceof EyesRunner) {
       runner = serverUrl
       serverUrl = undefined

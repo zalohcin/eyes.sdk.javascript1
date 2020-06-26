@@ -3,17 +3,14 @@ const SeleniumWrappedElement = require('./SeleniumWrappedElement')
 const SeleniumFrame = require('./SeleniumFrame')
 
 /**
- * @typedef {import('./selenium3/SpecWrappedElement').Element} Selenium3Element
- * @typedef {import('./selenium3/SpecWrappedElement').Selector} Selenium3Selector
- * @typedef {DriverCheckSettings<Selenium3Element, Selenium3Selector>} Selenium3CheckSettings
+ * @typedef {import('./SpecWrappedElement').Element} Element
+ * @typedef {import('./SpecWrappedElement').Selector} Selector
  *
- * @typedef {import('./selenium4/SpecWrappedElement').Element} Selenium4Element
- * @typedef {import('./selenium4/SpecWrappedElement').Selector} Selenium4Selector
- * @typedef {DriverCheckSettings<Selenium4Element, Selenium4Selector>} Selenium4CheckSettings
+ * @typedef {import('@applitools/eyes-sdk-core').SpecCheckSettings<Element, Selector>} SeleniumSpecCheckSettings
  */
 
-/** @type {Selenium3CheckSettings|Selenium4CheckSettings} */
-const SeleniumCheckSettings = DriverCheckSettings.specialize({
+/** @type {SeleniumSpecCheckSettings} */
+const SpecCheckSettings = {
   isSelector(selector) {
     return SeleniumWrappedElement.isSelector(selector)
   },
@@ -32,6 +29,8 @@ const SeleniumCheckSettings = DriverCheckSettings.specialize({
   createFrameReference(reference) {
     return SeleniumFrame.fromReference(reference)
   },
-})
+}
 
-module.exports = SeleniumCheckSettings
+const CheckSettings = DriverCheckSettings.specialize(SpecCheckSettings)
+
+module.exports = CheckSettings

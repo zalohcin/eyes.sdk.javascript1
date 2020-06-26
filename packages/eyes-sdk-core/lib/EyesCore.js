@@ -5,24 +5,24 @@ const ImageRotation = require('./positioning/ImageRotation')
 const EyesBase = require('./EyesBase')
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('./wrappers/EyesWrappedDriver')<Driver, Element, Selector>} EyesWrappedDriver
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesWrappedDriver')<TDriver, TElement, TSelector>} EyesWrappedDriver
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('./wrappers/EyesWrappedElement')<Driver, Element, Selector>} EyesWrappedElement
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesWrappedElement')<TDriver, TElement, TSelector>} EyesWrappedElement
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('./frames/Frame').FrameReference<Driver, Element, Selector>} FrameReference
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./frames/Frame').FrameReference<TDriver, TElement, TSelector>} FrameReference
  */
 
 /**
- * @template Driver
- * @template Element
- * @template Selector
+ * @template TDriver
+ * @template TElement
+ * @template TSelector
  */
 class EyesCore extends EyesBase {
   /* ------------ Classic API ------------ */
@@ -43,7 +43,7 @@ class EyesCore extends EyesBase {
   }
   /**
    * Matches the frame given as parameter, by switching into the frame and using stitching to get an image of the frame.
-   * @param {FrameReference<Driver, Element, Selector>} element - The element which is the frame to switch to.
+   * @param {FrameReference<TDriver, TElement, TSelector>} element - The element which is the frame to switch to.
    * @param {number} [matchTimeout] - The amount of time to retry matching (milliseconds).
    * @param {string} [tag] - An optional tag to be associated with the match.
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
@@ -58,7 +58,7 @@ class EyesCore extends EyesBase {
   }
   /**
    * Takes a snapshot of the application under test and matches a specific element with the expected region output.
-   * @param {EyesWrappedElement<Driver, Element, Selector>|Element} element - The element to check.
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>|TElement} element - The element to check.
    * @param {number} [matchTimeout] - The amount of time to retry matching (milliseconds).
    * @param {string} [tag] - An optional tag to be associated with the match.
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
@@ -73,7 +73,7 @@ class EyesCore extends EyesBase {
   }
   /**
    * Takes a snapshot of the application under test and matches a specific element with the expected region output.
-   * @param {Selector} locator - The element to check.
+   * @param {TSelector} locator - The element to check.
    * @param {number} [matchTimeout] - The amount of time to retry matching (milliseconds).
    * @param {string} [tag] - An optional tag to be associated with the match.
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
@@ -99,7 +99,7 @@ class EyesCore extends EyesBase {
   /**
    * Visually validates a region in the screenshot.
    *
-   * @param {EyesWrappedElement<Driver, Element, Selector>|Element} element - The element defining the region to validate.
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>|TElement} element - The element defining the region to validate.
    * @param {string} [tag] - An optional tag to be associated with the screenshot.
    * @param {number} [matchTimeout] - The amount of time to retry matching.
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
@@ -110,7 +110,7 @@ class EyesCore extends EyesBase {
   /**
    * Visually validates a region in the screenshot.
    *
-   * @param {Selector} by - The selector used for finding the region to validate.
+   * @param {TSelector} by - The selector used for finding the region to validate.
    * @param {string} [tag] - An optional tag to be associated with the screenshot.
    * @param {number} [matchTimeout] - The amount of time to retry matching.
    * @param {boolean} [stitchContent] - If {@code true}, stitch the internal content of the region (i.e., perform
@@ -128,8 +128,8 @@ class EyesCore extends EyesBase {
   /**
    * Switches into the given frame, takes a snapshot of the application under test and matches a region specified by
    * the given selector.
-   * @param {FrameReference<Driver, Element, Selector>} frameReference - The name or id of the frame to switch to.
-   * @param {Selector} locator - A Selector specifying the region to check.
+   * @param {FrameReference<TDriver, TElement, TSelector>} frameReference - The name or id of the frame to switch to.
+   * @param {TSelector} locator - A TSelector specifying the region to check.
    * @param {?number} [matchTimeout] - The amount of time to retry matching. (Milliseconds)
    * @param {string} [tag] - An optional tag to be associated with the snapshot.
    * @param {boolean} [stitchContent] - If {@code true}, stitch the internal content of the region (i.e., perform
@@ -188,7 +188,7 @@ class EyesCore extends EyesBase {
   /**
    * Adds a mouse trigger.
    * @param {MouseTrigger.MouseAction} action  Mouse action.
-   * @param {EyesWrappedElement<Driver, Element, Selector>} element The element on which the click was called.
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>} element The element on which the click was called.
    * @return {Promise}
    */
   async addMouseTriggerForElement(action, element) {
@@ -250,7 +250,7 @@ class EyesCore extends EyesBase {
   }
   /**
    * Adds a keyboard trigger.
-   * @param {EyesWrappedElement<Driver, Element, Selector>} element The element for which we sent keys.
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>} element The element for which we sent keys.
    * @param {String} text  The trigger's text.
    * @return {Promise}
    */
@@ -300,20 +300,20 @@ class EyesCore extends EyesBase {
     return ''
   }
   /**
-   * @return {EyesWrappedDriver<Driver, Element, Selector>}
+   * @return {EyesWrappedDriver<TDriver, TElement, TSelector>}
    */
   getDriver() {
     return this._driver
   }
   /**
-   * @return {Driver}
+   * @return {TDriver}
    */
   getRemoteWebDriver() {
     return this._driver.unwrapped
   }
   /**
    * Get jsExecutor
-   * @return {EyesJsExecutor<Driver, Element, Selector>}
+   * @return {EyesJsExecutor<TDriver, TElement, TSelector>}
    */
   get jsExecutor() {
     return this._executor
@@ -349,7 +349,7 @@ class EyesCore extends EyesBase {
     return this._stitchContent
   }
   /**
-   * @param {EyesWrappedElement<Driver, Element, Selector>|Element|Selector} element
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>|TElement|TSelector} element
    */
   setScrollRootElement(scrollRootElement) {
     if (this.constructor.WrappedElement.isSelector(scrollRootElement)) {
@@ -361,7 +361,7 @@ class EyesCore extends EyesBase {
     }
   }
   /**
-   * @return {Promise<EyesWrappedElement<Driver, Element, Selector>|Element|Selector>}
+   * @return {Promise<EyesWrappedElement<TDriver, TElement, TSelector>|TElement|TSelector>}
    */
   async getScrollRootElement() {
     if (this._scrollRootElement) {

@@ -10,28 +10,28 @@ const EyesDriverController = require('./EyesDriverController')
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('./EyesJsExecutor').SpecJsExecutor<Driver, Element, Selector>} SpecJsExecutor
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./EyesJsExecutor').SpecJsExecutor<TDriver, TElement, TSelector>} SpecJsExecutor
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('./EyesBrowsingContext').SpecBrowsingContext<Driver, Element, Selector>} SpecBrowsingContext
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./EyesBrowsingContext').SpecBrowsingContext<TDriver, TElement, TSelector>} SpecBrowsingContext
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('./EyesElementFinder').SpecElementFinder<Driver, Element, Selector>} SpecElementFinder
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./EyesElementFinder').SpecElementFinder<TDriver, TElement, TSelector>} SpecElementFinder
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('./EyesDriverController').SpecDriverController<Driver, Element, Selector>} SpecDriverController
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./EyesDriverController').SpecDriverController<TDriver, TElement, TSelector>} SpecDriverController
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {SpecJsExecutor<Driver, Element, Selector> & SpecBrowsingContext<Driver, Element, Selector> & SpecElementFinder<Driver, Element, Selector> & SpecDriverController<Driver, Element, Selector>} SpecDriver
+ * @template TDriver, TElement, TSelector
+ * @typedef {SpecJsExecutor<TDriver, TElement, TSelector> & SpecBrowsingContext<TDriver, TElement, TSelector> & SpecElementFinder<TDriver, TElement, TSelector> & SpecDriverController<TDriver, TElement, TSelector>} SpecDriver
  */
 
 /**
@@ -42,16 +42,21 @@ const EyesDriverController = require('./EyesDriverController')
  */
 
 /**
- * @template Driver - Driver provided by wrapped framework
- * @template Element - Element provided by wrapped framework
- * @template Selector - Selector supported by framework
+ * @template TDriver, TElement, TSelector
+ * @typedef {new (logger: Logger, driver: TDriver) => TDriver & EyesWrappedDriver<TDriver, TElement, TSelector>} EyesWrappedDriverCtor
+ */
+
+/**
+ * @template TDriver - TDriver provided by wrapped framework
+ * @template TElement - TElement provided by wrapped framework
+ * @template TSelector - TSelector supported by framework
  */
 class EyesWrappedDriver {
   /**
-   * @template Driver, Element, Selector
-   * @param {SpecDriver<Driver, Element, Selector>} spec - specifications for the specific framework
+   * @template TDriver, TElement, TSelector
+   * @param {SpecDriver<TDriver, TElement, TSelector>} spec - specifications for the specific framework
    * @param {DriverOverrides} overrides - specifications for the specific framework
-   * @return {typeof EyesWrappedDriver} specialized version of this class
+   * @return {EyesWrappedDriverCtor<TDriver, TElement, TSelector>}
    */
   static specialize(spec, overrides) {
     const BrowsingContext = EyesBrowsingContext.specialize(spec)
@@ -139,7 +144,7 @@ class EyesWrappedDriver {
   get overrides() {
     return {}
   }
-  /** @type {SpecDriver<Driver, Element, Selector>} */
+  /** @type {SpecDriver<TDriver, TElement, TSelector>} */
   get spec() {
     throw new TypeError('EyesWrappedDriver is not specialized')
   }
@@ -162,7 +167,7 @@ class EyesWrappedDriver {
   /**
    * Construct wrapped driver instance and initialize all of helpers interfaces
    * @param {Logger} logger - logger instance
-   * @param {Driver} driver - specific driver object for the framework
+   * @param {TDriver} driver - specific driver object for the framework
    */
   constructor(logger, driver) {
     ArgumentGuard.notNull(driver, 'driver')
@@ -203,35 +208,35 @@ class EyesWrappedDriver {
   }
   /**
    * Unwrapped driver for specific SDK
-   * @type {Driver}
+   * @type {TDriver}
    */
   get unwrapped() {
     return this._driver
   }
   /**
    * Implementation of JavaScript executor interface for specific SDK
-   * @type {EyesJsExecutor<Driver, Element, Selector>}
+   * @type {EyesJsExecutor<TDriver, TElement, TSelector>}
    */
   get executor() {
     return this._executor
   }
   /**
    * Implementation of browsing context switcher interface for specific SDK
-   * @type {EyesBrowsingContext<Driver, Element, Selector>}
+   * @type {EyesBrowsingContext<TDriver, TElement, TSelector>}
    */
   get context() {
     return this._context
   }
   /**
    * Implementation of element finder interface for specific SDK
-   * @type {EyesElementFinder<Driver, Element, Selector>}
+   * @type {EyesElementFinder<TDriver, TElement, TSelector>}
    */
   get finder() {
     return this._finder
   }
   /**
    * Implementation of driver controller interface for specific SDK
-   * @type {EyesDriverController<Driver, Element, Selector>}
+   * @type {EyesDriverController<TDriver, TElement, TSelector>}
    */
   get controller() {
     return this._controller

@@ -548,11 +548,11 @@ async function setOverflow(_logger, executor, overflow, element) {
 }
 /**
  * Blur the specified element or current active element
- * @template Element
+ * @template TElement
  * @param {Logger} logger - logger instance
  * @param {EyesJsExecutor} executor - js executor
  * @param {EyesWrappedElement} [element] - element to blur
- * @return {Promise<Element>} actually blurred element if there is any
+ * @return {Promise<TElement>} actually blurred element if there is any
  */
 async function blurElement(logger, executor, element) {
   try {
@@ -601,12 +601,12 @@ async function getElementXpath(logger, executor, element) {
 }
 /**
  * Translate element selector to the persisted regions
- * @template Selector
+ * @template TSelector
  * @param {Logger} logger - logger instance
  * @param {Object} driver
  * @param {EyesElementFinder} driver.finder - element finder
  * @param {EyesJsExecutor} driver.executor - js executor
- * @param {Selector} selector - element selector
+ * @param {TSelector} selector - element selector
  * @return {Promise<{type: string, selector: string}[]>} persisted regions for selector
  */
 async function locatorToPersistedRegions(logger, {finder, executor}, selector) {
@@ -623,42 +623,42 @@ async function locatorToPersistedRegions(logger, {finder, executor}, selector) {
   )
 }
 /**
- * @template Element
+ * @template TElement
  * @typedef ContextInfo
  * @prop {boolean} isRoot - is root context
  * @prop {boolean} isCORS - is cors context related to the parent
- * @prop {Element} document - context document element
+ * @prop {TElement} document - context document element
  * @prop {string} frameSelector - xpath to the frame element related to the parent context
  *
  * Extract information about relations between current context and its parent
- * @template Element
+ * @template TElement
  * @param {Logger} _logger - logger instance
  * @param {EyesJsExecutor} executor - js executor
- * @return {Promise<ContextInfo<Element>>} frame info
+ * @return {Promise<ContextInfo<TElement>>} frame info
  */
 async function getCurrentContextInfo(_logger, executor) {
   return executor.executeScript(EyesJsSnippets.GET_CURRENT_CONTEXT_INFO)
 }
 /**
  * Get frame element by name or id
- * @template Element
+ * @template TElement
  * @param {Logger} _logger - logger instance
  * @param {EyesJsExecutor} executor - js executor
  * @param {string} nameOrId - name or id of the element
- * @return {Element} frame element
+ * @return {TElement} frame element
  */
 async function getFrameByNameOrId(_logger, executor, nameOrId) {
   return executor.executeScript(EyesJsSnippets.GET_FRAME_BY_NAME_OR_ID, nameOrId)
 }
 /**
  * Find by context information
- * @template Element
+ * @template TElement
  * @param {Logger} _logger - logger instance
  * @param {Object} driver
  * @param {EyesBrowsingContext} driver.context - browsing context
  * @param {EyesJsExecutor} driver.executor - js executor
  * @param {ContextInfo} contextInfo - target context info
- * @param {(left: Element, right: Element) => Promise<boolean>} comparator - check if two document elements are equal
+ * @param {(left: TElement, right: TElement) => Promise<boolean>} comparator - check if two document elements are equal
  * @return {Promise<Frame>} frame
  */
 async function findFrameByContext(_logger, {executor, context}, contextInfo, comparator) {

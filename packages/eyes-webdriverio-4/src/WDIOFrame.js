@@ -2,13 +2,15 @@ const {Frame} = require('@applitools/eyes-sdk-core')
 const WDIOWrappedElement = require('./WDIOWrappedElement')
 
 /**
- * @typedef {import('./SpecWrappedDriver').Driver} WDIODriver
- * @typedef {import('./SpecWrappedElement').Element} WDIOElement
- * @typedef {import('./SpecWrappedElement').Selector} WDIOSelector
+ * @typedef {import('./SpecWrappedDriver').Driver} Driver
+ * @typedef {import('./SpecWrappedElement').Element} Element
+ * @typedef {import('./SpecWrappedElement').Selector} Selector
+ *
+ * @typedef {import('@applitools/eyes-sdk-core').SpecFrame<Driver, Element, Selector>} WDIOSpecFrame
  */
 
-/** @type {Frame<WDIODriver, WDIOElement, WDIOSelector>} */
-const WDIOFrame = Frame.specialize({
+/** @type {WDIOSpecFrame} */
+const SpecFrame = {
   isSelector(selector) {
     return WDIOWrappedElement.isSelector(selector)
   },
@@ -21,6 +23,8 @@ const WDIOFrame = Frame.specialize({
   createElement(logger, driver, element, selector) {
     return new WDIOWrappedElement(logger, driver, element, selector)
   },
-})
+}
+
+const WDIOFrame = Frame.specialize(SpecFrame)
 
 module.exports = WDIOFrame

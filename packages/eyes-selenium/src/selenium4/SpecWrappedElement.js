@@ -2,19 +2,16 @@ const {TypeUtils} = require('@applitools/eyes-sdk-core')
 const {WebElement, By} = require('selenium-webdriver')
 
 /**
- * Supported selector type
+ * @typedef {import('./SpecWrappedDriver').Driver} Driver
  * @typedef {import('selenium-webdriver').By|import('selenium-webdriver').ByHash|string} Selector
- */
-
-/**
- * Unwrapped element supported by framework
  * @typedef {import('selenium-webdriver').WebElement} Element
+ *
+ * @typedef {import('@applitools/eyes-sdk-core').SpecElement<Driver, Element, Selector>} SeleniumSpecElement
  */
 
 function isCompatible(element) {
   return element instanceof WebElement
 }
-
 function isSelector(selector) {
   if (!selector) return false
   return (
@@ -24,7 +21,6 @@ function isSelector(selector) {
     TypeUtils.isString(selector)
   )
 }
-
 function toSupportedSelector(selector) {
   if (TypeUtils.has(selector, ['type', 'selector'])) {
     if (selector.type === 'css') return By.css(selector.selector)
@@ -32,7 +28,6 @@ function toSupportedSelector(selector) {
   }
   return selector
 }
-
 function toEyesSelector(selector) {
   if (TypeUtils.isString(selector)) {
     selector = By.css(selector)
@@ -51,19 +46,20 @@ function toEyesSelector(selector) {
 
   return {selector}
 }
-
 function extractId(element) {
   return element.getId()
 }
-
 function isStaleElementReferenceResult(result) {
   if (!result) return false
   return result instanceof Error && result.name === 'StaleElementReferenceError'
 }
 
-exports.isCompatible = isCompatible
-exports.isSelector = isSelector
-exports.toSupportedSelector = toSupportedSelector
-exports.toEyesSelector = toEyesSelector
-exports.extractId = extractId
-exports.isStaleElementReferenceResult = isStaleElementReferenceResult
+/** @type {SeleniumSpecElement} */
+module.exports = {
+  isCompatible,
+  isSelector,
+  toSupportedSelector,
+  toEyesSelector,
+  extractId,
+  isStaleElementReferenceResult,
+}

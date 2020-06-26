@@ -10,13 +10,13 @@ const EyesUtils = require('../EyesUtils')
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('../wrappers/EyesJsExecutor')<Driver, Element, Selector>} EyesJsExecutor
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('../wrappers/EyesJsExecutor')<TDriver, TElement, TSelector>} EyesJsExecutor
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('../wrappers/EyesWrappedElement')<Driver, Element, Selector>} EyesWrappedElement
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('../wrappers/EyesWrappedElement')<TDriver, TElement, TSelector>} EyesWrappedElement
  */
 
 /**
@@ -24,15 +24,15 @@ const EyesUtils = require('../EyesUtils')
  * useful when we want to stitch a page which contains fixed position elements.
  *
  * @internal
- * @template Driver
- * @template Element
- * @template Selector
+ * @template TDriver
+ * @template TElement
+ * @template TSelector
  */
 class CssTranslateElementPositionProvider extends PositionProvider {
   /**
    * @param {Logger} logger - logger instance
-   * @param {EyesJsExecutor<Driver, Element, Selector>} executor - js executor
-   * @param {EyesWrappedElement<Driver, Element, Selector>} element - scrolling element
+   * @param {EyesJsExecutor<TDriver, TElement, TSelector>} executor - js executor
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>} element - scrolling element
    */
   constructor(logger, executor, element) {
     ArgumentGuard.notNull(logger, 'logger')
@@ -45,14 +45,14 @@ class CssTranslateElementPositionProvider extends PositionProvider {
     this._element = element
   }
   /**
-   * @type {EyesWrappedElement<Driver, Element, Selector>}
+   * @type {EyesWrappedElement<TDriver, TElement, TSelector>}
    */
   get scrollRootElement() {
     return this._element
   }
   /**
    * Get position of the provided element using css translate algorithm
-   * @param {EyesWrappedElement<Driver, Element, Selector>} [customScrollRootElement] - if custom scroll root element provided
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>} [customScrollRootElement] - if custom scroll root element provided
    *  it will be user as a base element for this operation
    * @return {Promise<Location>}
    */
@@ -80,7 +80,7 @@ class CssTranslateElementPositionProvider extends PositionProvider {
   /**
    * Set position of the provided element using css translate algorithm
    * @param {Location} position - position to set
-   * @param {EyesWrappedElement<Driver, Element, Selector>} [customScrollRootElement] - if custom scroll root element provided
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>} [customScrollRootElement] - if custom scroll root element provided
    *  it will be user as a base element for this operation
    * @return {Promise<Location>} actual position after set
    */
@@ -129,7 +129,7 @@ class CssTranslateElementPositionProvider extends PositionProvider {
   }
   /**
    * Returns current position of the scrolling element for future restoring
-   * @param {EyesWrappedElement<Driver, Element, Selector>} [customScrollRootElement] - if custom scroll root element provided
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>} [customScrollRootElement] - if custom scroll root element provided
    *  it will be user as a base element for this operation
    * @return {Promise<PositionMemento>} current state of scrolling element
    */
@@ -155,7 +155,7 @@ class CssTranslateElementPositionProvider extends PositionProvider {
   /**
    * Restore position of the element from the state
    * @param {PositionMemento} state - initial state of position
-   * @param {EyesWrappedElement<Driver, Element, Selector>} [customScrollRootElement] - if custom scroll root element provided
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>} [customScrollRootElement] - if custom scroll root element provided
    *  it will be user as a base element for this operation
    * @return {Promise<void>}
    */

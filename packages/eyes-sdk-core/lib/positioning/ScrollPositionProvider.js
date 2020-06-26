@@ -10,28 +10,28 @@ const EyesUtils = require('../EyesUtils')
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('../wrappers/EyesJsExecutor')<Driver, Element, Selector>} EyesJsExecutor
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('../wrappers/EyesJsExecutor')<TDriver, TElement, TSelector>} EyesJsExecutor
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('../wrappers/EyesWrappedElement')<Driver, Element, Selector>} EyesWrappedElement
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('../wrappers/EyesWrappedElement')<TDriver, TElement, TSelector>} EyesWrappedElement
  */
 
 /**
  * A {@link PositionProvider} which is based on Scroll
  *
  * @internal
- * @template Driver
- * @template Element
- * @template Selector
+ * @template TDriver
+ * @template TElement
+ * @template TSelector
  */
 class ScrollPositionProvider extends PositionProvider {
   /**
    * @param {Logger} logger - logger instance
-   * @param {EyesJsExecutor<Driver, Element, Selector>} executor - js executor
-   * @param {EyesWrappedElement<Driver, Element, Selector>} [scrollRootElement] - if scrolling element is not provided, default scrolling element will be used
+   * @param {EyesJsExecutor<TDriver, TElement, TSelector>} executor - js executor
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>} [scrollRootElement] - if scrolling element is not provided, default scrolling element will be used
    */
   constructor(logger, executor, scrollRootElement) {
     ArgumentGuard.notNull(logger, 'logger')
@@ -43,14 +43,14 @@ class ScrollPositionProvider extends PositionProvider {
     this._scrollRootElement = scrollRootElement
   }
   /**
-   * @type {EyesWrappedElement<Driver, Element, Selector>}
+   * @type {EyesWrappedElement<TDriver, TElement, TSelector>}
    */
   get scrollRootElement() {
     return this._scrollRootElement
   }
   /**
    * Get scroll position of the provided element
-   * @param {EyesWrappedElement<Driver, Element, Selector>} [customScrollRootElement] - if custom scroll root element provided
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>} [customScrollRootElement] - if custom scroll root element provided
    *  it will be user as a base element for this operation
    * @return {Promise<Location>}
    */
@@ -73,7 +73,7 @@ class ScrollPositionProvider extends PositionProvider {
   /**
    * Set scroll position of the provided element
    * @param {Location} position - position to set
-   * @param {EyesWrappedElement<Driver, Element, Selector>} [customScrollRootElement] - if custom scroll root element provided
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>} [customScrollRootElement] - if custom scroll root element provided
    *  it will be user as a base element for this operation
    * @return {Promise<Location>} actual position after set
    */
@@ -117,7 +117,7 @@ class ScrollPositionProvider extends PositionProvider {
   }
   /**
    * Returns current position of the scrolling element for future restoring
-   * @param {EyesWrappedElement<Driver, Element, Selector>} [customScrollRootElement] - if custom scroll root element provided
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>} [customScrollRootElement] - if custom scroll root element provided
    *  it will be user as a base element for this operation
    * @return {Promise<PositionMemento>} current state of scrolling element
    */
@@ -128,7 +128,7 @@ class ScrollPositionProvider extends PositionProvider {
   /**
    * Restore position of the element from the state
    * @param {PositionMemento} state - initial state of position
-   * @param {EyesWrappedElement<Driver, Element, Selector>} [customScrollRootElement] - if custom scroll root element provided
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>} [customScrollRootElement] - if custom scroll root element provided
    *  it will be user as a base element for this operation
    * @return {Promise<void>}
    */

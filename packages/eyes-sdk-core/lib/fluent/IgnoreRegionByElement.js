@@ -11,13 +11,13 @@ const EyesUtils = require('../EyesUtils')
  */
 
 /**
- * @template Driver, Element, Selector
- * @typedef {import('../wrappers/EyesWrappedDriver')<Driver, Element, Selector>} EyesWrappedDriver
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('../wrappers/EyesWrappedDriver')<TDriver, TElement, TSelector>} EyesWrappedDriver
  */
 
 /**
- * @template Element
- * @typedef {import('../wrappers/EyesWrappedElement')<any, Element, any>} EyesWrappedElement
+ * @template TElement
+ * @typedef {import('../wrappers/EyesWrappedElement')<any, TElement, any>} EyesWrappedElement
  */
 
 /**
@@ -26,11 +26,11 @@ const EyesUtils = require('../EyesUtils')
 
 /**
  * @internal
- * @template Element
+ * @template TElement
  */
 class IgnoreRegionByElement extends GetRegion {
   /**
-   * @param {EyesWrappedElement<Element>} element
+   * @param {EyesWrappedElement<TElement>} element
    */
   constructor(element) {
     super()
@@ -53,8 +53,8 @@ class IgnoreRegionByElement extends GetRegion {
     return [new Region(lTag.getX(), lTag.getY(), rect.getWidth(), rect.getHeight())]
   }
   /**
-   * @template Driver, Selector
-   * @param {EyesWrappedDriver<Driver, Element, Selector>} driver
+   * @template TDriver, TSelector
+   * @param {EyesWrappedDriver<TDriver, TElement, TSelector>} driver
    * @return {Promise<IgnorePersistedRegion[]>}
    */
   async toPersistedRegions(driver) {

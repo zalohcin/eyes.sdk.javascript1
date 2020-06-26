@@ -24,34 +24,34 @@ const GeneralUtils = require('../utils/GeneralUtils')
  */
 
 /**
- * @template Element, Selector
- * @typedef {import('../wrappers/EyesWrappedElement')<any, Element, Selector>} EyesWrappedElement
+ * @template TElement, TSelector
+ * @typedef {import('../wrappers/EyesWrappedElement')<any, TElement, TSelector>} EyesWrappedElement
  */
 
 /**
- * @template Element, Selector
- * @typedef {import('../frames/Frame')<any, Element, Selector>} Frame
+ * @template TElement, TSelector
+ * @typedef {import('../frames/Frame')<any, TElement, TSelector>} Frame
  */
 
 /**
- * @template Element, Selector
- * @typedef {import('../frames/Frame').FrameReference<any, Element, Selector>} FrameReference
+ * @template TElement, TSelector
+ * @typedef {import('../frames/Frame').FrameReference<any, TElement, TSelector>} FrameReference
  */
 
 /**
- * @template Element, Selector
- * @typedef {EyesWrappedElement<Element, Selector>|Element|Selector} ElementReference
+ * @template TElement, TSelector
+ * @typedef {EyesWrappedElement<TElement, TSelector>|TElement|TSelector} ElementReference
  */
 
 /**
- * @template Element, Selector
- * @typedef {ElementReference<Element, Selector>|Region} RegionReference
+ * @template TElement, TSelector
+ * @typedef {ElementReference<TElement, TSelector>|Region} RegionReference
  */
 
 /**
- * @template Element, Selector
+ * @template TElement, TSelector
  * @typedef FloatingRegionReference
- * @prop {RegionReference<Element, Selector>} region
+ * @prop {RegionReference<TElement, TSelector>} region
  * @prop {number} [maxUpOffset] - how much the content can move up
  * @prop {number} [maxDownOffset] - how much the content can move down
  * @prop {number} [maxLeftOffset] - how much the content can move to the left
@@ -59,14 +59,14 @@ const GeneralUtils = require('../utils/GeneralUtils')
  */
 
 /**
- * @template Element, Selector
+ * @template TElement, TSelector
  * @typedef AccessibilityRegionReference
- * @prop {RegionReference<Element, Selector>} region
+ * @prop {RegionReference<TElement, TSelector>} region
  * @prop {AccessibilityRegionType} [type]
  */
 
 /**
- * @template Element, Selector
+ * @template TElement, TSelector
  * @typedef PlainCheckSettings
  * @prop {string} [name]
  * @prop {MatchLevel} [matchLevel]
@@ -79,39 +79,53 @@ const GeneralUtils = require('../utils/GeneralUtils')
  * @prop {boolean} [isFully=false]
  * @prop {string} [renderId]
  * @prop {{[key: string]: string}} [hooks]
- * @prop {RegionReference<Element, Selector>} [region]
- * @prop {({frame: FrameReference<Element, Selector>, scrollRootElement?: ElementReference<Element, Selector>}|FrameReference<Element, Selector>)[]} [frames]
- * @prop {ElementReference<Element, Selector>} [scrollRootElement]
- * @prop {RegionReference<Element, Selector>[]} [ignoreRegions]
- * @prop {RegionReference<Element, Selector>[]} [layoutRegion]
- * @prop {RegionReference<Element, Selector>[]} [strictRegions]
- * @prop {RegionReference<Element, Selector>[]} [contentRegions]
- * @prop {(FloatingRegionReference<Element, Selector>|RegionReference<Element, Selector>)[]} [floatingRegions]
- * @prop {(AccessibilityRegionReference<Element, Selector>|RegionReference<Element, Selector>)[]} [accessibilityRegions]
+ * @prop {RegionReference<TElement, TSelector>} [region]
+ * @prop {({frame: FrameReference<TElement, TSelector>, scrollRootElement?: ElementReference<TElement, TSelector>}|FrameReference<TElement, TSelector>)[]} [frames]
+ * @prop {ElementReference<TElement, TSelector>} [scrollRootElement]
+ * @prop {RegionReference<TElement, TSelector>[]} [ignoreRegions]
+ * @prop {RegionReference<TElement, TSelector>[]} [layoutRegion]
+ * @prop {RegionReference<TElement, TSelector>[]} [strictRegions]
+ * @prop {RegionReference<TElement, TSelector>[]} [contentRegions]
+ * @prop {(FloatingRegionReference<TElement, TSelector>|RegionReference<TElement, TSelector>)[]} [floatingRegions]
+ * @prop {(AccessibilityRegionReference<TElement, TSelector>|RegionReference<TElement, TSelector>)[]} [accessibilityRegions]
  */
 
 /**
- * @template Element, Selector
+ * @template TElement, TSelector
  * @typedef SpecCheckSettings
  * @prop {(selector) => boolean} isSelector - return true if the value is a valid selector, false otherwise
  * @prop {(element) => boolean} isCompatibleElement - return true if the value is an element, false otherwise
  * @prop {(reference) => boolean} isFrameReference - return true if the value is a frame reference, false otherwise
- * @prop {(selector: Selector) => EyesWrappedElement<Element, Selector>} createElementFromSelector - return partially created element
- * @prop {(element: Element) => EyesWrappedElement<Element, Selector>} createElementFromElement - return partially created element
- * @prop {(reference: FrameReference<Element, Selector>) => Frame<Element, Selector>} createFrameReference - return frame reference
+ * @prop {(selector: TSelector) => EyesWrappedElement<TElement, TSelector>} createElementFromSelector - return partially created element
+ * @prop {(element: TElement) => EyesWrappedElement<TElement, TSelector>} createElementFromElement - return partially created element
+ * @prop {(reference: FrameReference<TElement, TSelector>) => Frame<TElement, TSelector>} createFrameReference - return frame reference
  */
 
 const BEFORE_CAPTURE_SCREENSHOT = 'beforeCaptureScreenshot'
 
 /**
- * @template Element - Element provided by wrapped framework
- * @template Selector - Selector supported by framework
+ * @template TElement, TSelector
+ * @typedef {new (checkSettings?: PlainCheckSettings<TElement, TSelector>) => CheckSettings<TElement, TSelector>} CheckSettingsCtor
+ */
+
+/**
+ * @template TElement, TSelector
+ * @typedef CheckSettingsStatics
+ * @prop {(object: PlainCheckSettings<TElement, TSelector>) => CheckSettings<TElement, TSelector>} from
+ * @prop {() => CheckSettings<TElement, TSelector>} window
+ * @prop {(frame: FrameReference<TElement, TSelector>) => CheckSettings<TElement, TSelector>} frame
+ * @prop {(region: RegionReference<TElement, TSelector>, frame?: FrameReference<TElement, TSelector>) => CheckSettings<TElement, TSelector>} region
+ */
+
+/**
+ * @template TElement - TElement provided by wrapped framework
+ * @template TSelector - TSelector supported by framework
  */
 class CheckSettings {
   /**
-   * @template Element, Selector
-   * @param {SpecCheckSettings<Element, Selector>} spec
-   * @return {typeof CheckSettings<Element, Selector>} specialized version of this class
+   * @template TElement, TSelector
+   * @param {SpecCheckSettings<TElement, TSelector>} spec
+   * @return {CheckSettingsCtor<TElement, TSelector> & CheckSettingsStatics<TElement, TSelector>} specialized version of this class
    */
   static specialize(spec) {
     return class extends CheckSettings {
@@ -121,13 +135,13 @@ class CheckSettings {
       }
     }
   }
-  /** @type {SpecCheckSettings<Element, Selector>} */
+  /** @type {SpecCheckSettings<TElement, TSelector>} */
   get spec() {
     throw new TypeError('CheckSettings is not specialized')
   }
   /**
    * Create check settings with bound region and/or frame
-   * @param {PlainCheckSettings<Element, Selector>} [checkSettings]
+   * @param {PlainCheckSettings<TElement, TSelector>} [checkSettings]
    */
   constructor(checkSettings) {
     if (checkSettings instanceof CheckSettings) {
@@ -135,11 +149,11 @@ class CheckSettings {
     } else if (checkSettings) {
       return this.constructor.from(checkSettings)
     }
-    /** @private @type {EyesWrappedElement<Element, Selector>} */
+    /** @private @type {EyesWrappedElement<TElement, TSelector>} */
     this._targetElement = null
     /** @private @type {Region} */
     this._targetRegion = null
-    /** @private @type {Frame<Element, Selector>[]} */
+    /** @private @type {Frame<TElement, TSelector>[]} */
     this._frameChain = []
     /** @private @type {GetRegion[]} */
     this._ignoreRegions = []
@@ -153,7 +167,7 @@ class CheckSettings {
     this._floatingRegions = []
     /** @private @type {GetAccessibilityRegion[]} */
     this._accessibilityRegions = []
-    /** @private @type {EyesWrappedElement<Element, Selector>} */
+    /** @private @type {EyesWrappedElement<TElement, TSelector>} */
     this._scrollRootElement = null
     /** @private @type {string} */
     this._name = undefined
@@ -182,9 +196,9 @@ class CheckSettings {
   }
   /**
    * Create check settings from an object
-   * @template Element, Selector
-   * @param {PlainCheckSettings<Element, Selector>} object
-   * @return {CheckSettings<Element, Selector>} check settings instance
+   * @template TElement, TSelector
+   * @param {PlainCheckSettings<TElement, TSelector>} object
+   * @return {CheckSettings<TElement, TSelector>} check settings instance
    */
   static from(object) {
     const settings = new this()
@@ -280,33 +294,33 @@ class CheckSettings {
   }
   /**
    * Create check settings without target
-   * @template Element, Selector
-   * @return {CheckSettings<Element, Selector>} check settings object
+   * @template TElement, TSelector
+   * @return {CheckSettings<TElement, TSelector>} check settings object
    */
   static window() {
     return new this()
   }
   /**
    * Create check settings with bound region and frame
-   * @template Element, Selector
-   * @param {RegionReference<Element, Selector>} region
-   * @param {FrameReference<Element, Selector>} [frame]
-   * @return {CheckSettings<Element, Selector>} check settings object
+   * @template TElement, TSelector
+   * @param {RegionReference<TElement, TSelector>} region
+   * @param {FrameReference<TElement, TSelector>} [frame]
+   * @return {CheckSettings<TElement, TSelector>} check settings object
    */
   static region(region, frame) {
     return frame ? new this().frame(frame).region(region) : new this().region(region)
   }
   /**
    * Create check settings with bound frame
-   * @template Element, Selector
-   * @param {FrameReference<Element, Selector>} frame
-   * @return {CheckSettings<Element, Selector>} check settings object
+   * @template TElement, TSelector
+   * @param {FrameReference<TElement, TSelector>} frame
+   * @return {CheckSettings<TElement, TSelector>} check settings object
    */
   static frame(frame) {
     return new this().frame(frame)
   }
   /**
-   * @param {RegionReference<Element, Selector>} region
+   * @param {RegionReference<TElement, TSelector>} region
    * @return {this}
    */
   region(region) {
@@ -340,13 +354,13 @@ class CheckSettings {
   }
   /**
    * @private
-   * @type {EyesWrappedElement<Element, Selector>}
+   * @type {EyesWrappedElement<TElement, TSelector>}
    */
   get targetElement() {
     return this._targetElement
   }
   /**
-   * @param {FrameReference<Element, Selector>} frameReference - the frame to switch to
+   * @param {FrameReference<TElement, TSelector>} frameReference - the frame to switch to
    * @return {this}
    */
   frame(frameReference) {
@@ -359,21 +373,21 @@ class CheckSettings {
   }
   /**
    * @private
-   * @return {Frame<Element, Selector>[]}
+   * @return {Frame<TElement, TSelector>[]}
    */
   getFrameChain() {
     return this._frameChain
   }
   /**
    * @private
-   * @type {Frame<Element, Selector>[]}
+   * @type {Frame<TElement, TSelector>[]}
    */
   get frameChain() {
     return Array.from(this._frameChain)
   }
   /**
    * Adds a region to ignore
-   * @param {RegionReference<Element, Selector>} region - region reference to ignore when validating the screenshot
+   * @param {RegionReference<TElement, TSelector>} region - region reference to ignore when validating the screenshot
    * @return {this} this instance for chaining
    */
   ignoreRegion(region) {
@@ -395,7 +409,7 @@ class CheckSettings {
   }
   /**
    * Adds a region to ignore
-   * @param {RegionReference<Element, Selector>} region - region reference to ignore when validating the screenshot
+   * @param {RegionReference<TElement, TSelector>} region - region reference to ignore when validating the screenshot
    * @return {this} this instance for chaining
    */
   ignore(region) {
@@ -403,7 +417,7 @@ class CheckSettings {
   }
   /**
    * Adds one or more ignore regions.
-   * @param {RegionReference<Element, Selector>[]} regions - region references to ignore when validating the screenshot.
+   * @param {RegionReference<TElement, TSelector>[]} regions - region references to ignore when validating the screenshot.
    * @return {this} this instance of the settings object.
    */
   ignoreRegions(...regions) {
@@ -412,7 +426,7 @@ class CheckSettings {
   }
   /**
    * Adds one or more ignore regions.
-   * @param {RegionReference<Element, Selector>[]} regions - region references to ignore when validating the screenshot.
+   * @param {RegionReference<TElement, TSelector>[]} regions - region references to ignore when validating the screenshot.
    * @return {this} this instance of the settings object.
    */
   ignores(...regions) {
@@ -427,7 +441,7 @@ class CheckSettings {
   }
   /**
    * Adds a layout region
-   * @param {RegionReference<Element, Selector>} region - region reference to match as layout when validating the screenshot
+   * @param {RegionReference<TElement, TSelector>} region - region reference to match as layout when validating the screenshot
    * @return {this} this instance for chaining
    */
   layoutRegion(region) {
@@ -449,7 +463,7 @@ class CheckSettings {
   }
   /**
    * Adds one or more layout regions.
-   * @param {RegionReference<Element, Selector>[]} regions - region references to match using the Layout method.
+   * @param {RegionReference<TElement, TSelector>[]} regions - region references to match using the Layout method.
    * @return {this} this instance of the settings object.
    */
   layoutRegions(...regions) {
@@ -465,7 +479,7 @@ class CheckSettings {
   }
   /**
    * Adds a strict region
-   * @param {RegionReference<Element, Selector>} region - region reference to match as strict when validating the screenshot
+   * @param {RegionReference<TElement, TSelector>} region - region reference to match as strict when validating the screenshot
    * @return {this} this instance for chaining
    */
   strictRegion(region) {
@@ -494,7 +508,7 @@ class CheckSettings {
   }
   /**
    * Adds one or more strict regions.
-   * @param {RegionReference<Element, Selector>[]} regions - region references to match using the Strict method.
+   * @param {RegionReference<TElement, TSelector>[]} regions - region references to match using the Strict method.
    * @return {this} this instance of the settings object.
    */
   strictRegions(...regions) {
@@ -503,7 +517,7 @@ class CheckSettings {
   }
   /**
    * Adds a content region
-   * @param {RegionReference<Element, Selector>} region - region reference to match as content when validating the screenshot
+   * @param {RegionReference<TElement, TSelector>} region - region reference to match as content when validating the screenshot
    * @return {this} this instance for chaining
    */
   contentRegion(region) {
@@ -525,7 +539,7 @@ class CheckSettings {
   }
   /**
    * Adds one or more content regions.
-   * @param {RegionReference<Element, Selector>[]} regions - region references to match using the Content method.
+   * @param {RegionReference<TElement, TSelector>[]} regions - region references to match using the Content method.
    * @return {this} this instance of the settings object.
    */
   contentRegions(...regions) {
@@ -542,7 +556,7 @@ class CheckSettings {
   /**
    * Adds a floating region. A floating region is a a region that can be placed within the boundaries
    * of a bigger region
-   * @param {RegionReference<Element, Selector>} region - region reference to mark as float when validating the screenshot
+   * @param {RegionReference<TElement, TSelector>} region - region reference to mark as float when validating the screenshot
    * @param {number} [maxUpOffset] - how much the content can move up
    * @param {number} [maxDownOffset] - how much the content can move down
    * @param {number} [maxLeftOffset] - how much the content can move to the left
@@ -595,7 +609,7 @@ class CheckSettings {
   /**
    * Adds a floating region. A floating region is a a region that can be placed within the boundaries
    * of a bigger region
-   * @param {RegionReference<Element, Selector>} region - region reference to mark as float when validating the screenshot
+   * @param {RegionReference<TElement, TSelector>} region - region reference to mark as float when validating the screenshot
    * @param {number} [maxUpOffset] - how much the content can move up
    * @param {number} [maxDownOffset] - how much the content can move down
    * @param {number} [maxLeftOffset] - how much the content can move to the left
@@ -609,7 +623,7 @@ class CheckSettings {
    * Adds one or more floating regions. A floating region is a a region that can be placed within the boundaries
    * of a bigger region.
    * @param {number} maxOffset - how much each of the content rectangles can move in any direction.
-   * @param {RegionReference<Element, Selector>[]} regions - one or more content rectangles or region containers
+   * @param {RegionReference<TElement, TSelector>[]} regions - one or more content rectangles or region containers
    * @return {this} this instance of the settings object.
    */
   floatingRegions(maxOffset, ...regions) {
@@ -622,7 +636,7 @@ class CheckSettings {
    * Adds one or more floating regions. A floating region is a a region that can be placed within the boundaries
    * of a bigger region.
    * @param {number} maxOffset - how much each of the content rectangles can move in any direction.
-   * @param {RegionReference<Element, Selector>[]} regions - one or more content rectangles or region containers
+   * @param {RegionReference<TElement, TSelector>[]} regions - one or more content rectangles or region containers
    * @return {this} this instance of the settings object.
    */
   floatings(maxOffset, ...regions) {
@@ -637,7 +651,7 @@ class CheckSettings {
   }
   /**
    * Adds an accessibility region. An accessibility region is a region that has an accessibility type
-   * @param {RegionReference<Element, Selector>} region - region reference of content rectangle or region container
+   * @param {RegionReference<TElement, TSelector>} region - region reference of content rectangle or region container
    * @param {AccessibilityRegionType} [regionType] - type of accessibility
    * @return {this} this instance for chaining
    */
@@ -665,7 +679,7 @@ class CheckSettings {
   }
   /**
    * Adds an accessibility region. An accessibility region is a region that has an accessibility type
-   * @param {RegionReference<Element, Selector>} region - region reference of content rectangle or region container
+   * @param {RegionReference<TElement, TSelector>} region - region reference of content rectangle or region container
    * @param {AccessibilityRegionType} [regionType] - type of accessibility
    * @return {this} this instance for chaining
    */
@@ -680,7 +694,7 @@ class CheckSettings {
     return this._accessibilityRegions
   }
   /**
-   * @param {ElementReference<Element, Selector>} element
+   * @param {ElementReference<TElement, TSelector>} element
    * @return {this}
    */
   scrollRootElement(element) {
@@ -704,7 +718,7 @@ class CheckSettings {
   }
   /**
    * @private
-   * @return {Promise<EyesWrappedElement<Element, Selector>>}
+   * @return {Promise<EyesWrappedElement<TElement, TSelector>>}
    */
   getScrollRootElement() {
     return this._scrollRootElement

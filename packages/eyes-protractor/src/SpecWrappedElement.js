@@ -2,20 +2,17 @@ const {TypeUtils} = require('@applitools/eyes-sdk-core')
 const {ProtractorBy} = require('protractor')
 
 /**
- * Supported selector type
+ * @typedef {import('./SpecWrappedDriver').Driver} Driver
  * @typedef {import('protractor').Locator|string} Selector
- */
-
-/**
- * Compatible element type
  * @typedef {import('protractor').WebElement|import('protractor').ElementFinder} Element
+ *
+ * @typedef {import('@applitools/eyes-sdk-core').SpecElement<Driver, Element, Selector>} ProtractorSpecElement
  */
 
 function isCompatible(element) {
   const ctorName = element && element.constructor && element.constructor.name
   return ctorName === 'WebElement' || ctorName === 'ElementFinder'
 }
-
 function isSelector(selector) {
   if (!selector) return false
   const by = new ProtractorBy()
@@ -26,7 +23,6 @@ function isSelector(selector) {
     TypeUtils.isFunction(selector.findElementsOverride)
   )
 }
-
 function toSupportedSelector(selector) {
   if (TypeUtils.has(selector, ['type', 'selector'])) {
     if (selector.type === 'css') return {css: selector.selector}
@@ -34,7 +30,6 @@ function toSupportedSelector(selector) {
   }
   return selector
 }
-
 function toEyesSelector(selector) {
   if (!TypeUtils.has(selector, ['using', 'value'])) {
     const by = new ProtractorBy()
@@ -53,19 +48,20 @@ function toEyesSelector(selector) {
   else if (using === 'xpath') return {type: 'xpath', selector: value}
   else return {selector}
 }
-
 function extractId(element) {
   return element.getId()
 }
-
 function isStaleElementReferenceResult(result) {
   if (!result) return false
   return result instanceof Error && result.name === 'StaleElementReferenceError'
 }
 
-exports.isCompatible = isCompatible
-exports.isSelector = isSelector
-exports.toSupportedSelector = toSupportedSelector
-exports.toEyesSelector = toEyesSelector
-exports.extractId = extractId
-exports.isStaleElementReferenceResult = isStaleElementReferenceResult
+/** @type {ProtractorSpecElement} */
+module.exports = {
+  isCompatible,
+  isSelector,
+  toSupportedSelector,
+  toEyesSelector,
+  extractId,
+  isStaleElementReferenceResult,
+}
