@@ -182,6 +182,10 @@ const args = yargs
     describe: 'attach to existing chrome via remote debugging port',
     type: 'boolean',
   })
+  .option('scroll-root-element', {
+    describe: 'selector to scroll root element',
+    type: 'string',
+  })
   .help().argv
 
 let [url] = args._
@@ -308,6 +312,10 @@ if (!url && !args.attach) {
         target,
         args.layoutRegions.split(',').map(s => s.trim()),
       )
+    }
+
+    if (args.scrollRootElement) {
+      target.scrollRootElement(args.scrollRootElement)
     }
 
     logger.log('[render script] awaiting delay...', args.delay * 1000)
