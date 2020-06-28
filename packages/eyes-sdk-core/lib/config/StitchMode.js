@@ -1,7 +1,7 @@
 const Enum = require('../utils/Enum')
 
 /**
- * @typedef {string} StitchMode
+ * @typedef {'Scroll'|'CSS'} StitchMode
  */
 
 /**

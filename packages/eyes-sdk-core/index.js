@@ -2,6 +2,12 @@
 /* eslint-disable max-len */
 
 /**
+ * @typedef {import('./lib/config/Configuration').PlainConfiguration} PlainConfiguration
+ * @typedef {import('./lib/config/Configuration').PlainConfigurationClassic} PlainConfigurationClassic
+ * @typedef {import('./lib/config/Configuration').PlainConfigurationVisualGrid} PlainConfigurationVisualGrid
+ */
+
+/**
  * @template TDriver, TElement, TSelector
  * @typedef {import('./lib/wrappers/EyesWrappedDriver').SpecDriver<TDriver, TElement, TSelector>} SpecDriver
  */

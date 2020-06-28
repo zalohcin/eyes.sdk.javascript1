@@ -3,7 +3,9 @@
 const ArgumentGuard = require('../utils/ArgumentGuard')
 
 /**
- * @typedef {{width: number, height: number}} RectangleSizeObject
+ * @typedef PlainRectangleSize
+ * @prop {number} width
+ * @prop {number} height
  */
 
 /**
@@ -12,7 +14,7 @@ const ArgumentGuard = require('../utils/ArgumentGuard')
 class RectangleSize {
   /**
    * Creates a RectangleSize instance.
-   * @param {RectangleSize|RectangleSizeObject|number} varArg1 - The RectangleSize (or object) to clone from or the width of new RectangleSize.
+   * @param {RectangleSize|PlainRectangleSize|number} varArg1 - The RectangleSize (or object) to clone from or the width of new RectangleSize.
    * @param {number} [varArg2] - The height of new RectangleSize.
    */
   constructor(varArg1, varArg2) {

@@ -1,7 +1,7 @@
 const Enum = require('../utils/Enum')
 
 /**
- * @typedef {string} SessionType
+ * @typedef {'SEQUENTIAL'|'PROGRESSION'} SessionType
  */
 
 /**

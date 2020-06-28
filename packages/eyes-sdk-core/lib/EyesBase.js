@@ -1611,7 +1611,7 @@ class EyesBase {
    * @protected
    * @param {string} appName - The name of the application under test.
    * @param {string} testName - The test name.
-   * @param {RectangleSize|RectangleSizeObject} [viewportSize] - The client's viewport size (i.e., the
+   * @param {RectangleSize|PalinRectangleSize} [viewportSize] - The client's viewport size (i.e., the
    *   visible part of the document's body) or {@code null} to allow any viewport size.
    * @param {SessionType} [sessionType=SessionType.SEQUENTIAL] - The type of test (e.g., Progression for timing tests),
    *   or {@code null} to use the default.
