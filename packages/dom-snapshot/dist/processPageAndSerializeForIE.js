@@ -22896,6 +22896,11 @@ function __processPageAndSerializeForIE() {
                         probablyCORS: true,
                         url: url
                       };
+                    } else if (e.isTimeout) {
+                      return {
+                        isTimeout: true,
+                        url: url
+                      };
                     } else {
                       throw e;
                     }
@@ -22903,13 +22908,26 @@ function __processPageAndSerializeForIE() {
                     var url = _ref3.url,
                         type = _ref3.type,
                         value = _ref3.value,
-                        probablyCORS = _ref3.probablyCORS;
+                        probablyCORS = _ref3.probablyCORS,
+                        isTimeout = _ref3.isTimeout;
 
                     if (probablyCORS) {
                       log('not fetched due to CORS', "[".concat(Date.now() - now, "ms]"), url);
                       sessionCache && sessionCache.setItem(url, []);
                       return {
                         resourceUrls: [url]
+                      };
+                    }
+
+                    if (isTimeout) {
+                      // TODO return errorStatusCode once VG supports it (https://trello.com/c/J5lBWutP/92-when-capturing-dom-add-non-200-urls-to-resource-map)
+                      log('not fetched due to timeout, returning empty resource');
+                      sessionCache && sessionCache.setItem(url, []);
+                      return {
+                        blobsObj: _defineProperty({}, url, {
+                          type: 'application/x-applitools-empty',
+                          value: new ArrayBuffer()
+                        })
                       };
                     }
 
@@ -23053,30 +23071,51 @@ function __processPageAndSerializeForIE() {
 
             var makeExtractResourcesFromSvg_1 = makeExtractResourcesFromSvg;
 
-            function fetchUrl(url) {
-              var fetch = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : window.fetch;
-              // Why return a `new Promise` like this? Because people like Atlassian do horrible things.
-              // They monkey patched window.fetch, and made it so it throws a synchronous exception if the route is not well known.
-              // Returning a new Promise guarantees that `fetchUrl` is the async function that it declares to be.
-              return new Promise(function (resolve, reject) {
-                return fetch(url, {
-                  cache: 'force-cache',
-                  credentials: 'same-origin'
-                }).then(function (resp) {
-                  return resp.status === 200 ? resp.arrayBuffer().then(function (buff) {
-                    return {
-                      url: url,
-                      type: resp.headers.get('Content-Type'),
-                      value: buff
-                    };
-                  }) : Promise.reject(new Error("bad status code ".concat(resp.status)));
-                }).then(resolve).catch(function (err) {
-                  return reject(err);
+            function makeFetchUrl(_ref) {
+              var _ref$fetch = _ref.fetch,
+                  fetch = _ref$fetch === void 0 ? window.fetch : _ref$fetch,
+                  _ref$AbortController = _ref.AbortController,
+                  AbortController = _ref$AbortController === void 0 ? window.AbortController : _ref$AbortController,
+                  _ref$timeout = _ref.timeout,
+                  timeout = _ref$timeout === void 0 ? 10000 : _ref$timeout;
+              return function fetchUrl(url) {
+                // Why return a `new Promise` like this? Because people like Atlassian do horrible things.
+                // They monkey patched window.fetch, and made it so it throws a synchronous exception if the route is not well known.
+                // Returning a new Promise guarantees that `fetchUrl` is the async function that it declares to be.
+                return new Promise(function (resolve, reject) {
+                  var controller = new AbortController();
+                  var timeoutId = setTimeout(function () {
+                    var err = new Error('fetchUrl timeout reached');
+                    err.isTimeout = true;
+                    reject(err);
+                    controller.abort();
+                  }, timeout);
+                  return fetch(url, {
+                    cache: 'force-cache',
+                    credentials: 'same-origin',
+                    signal: controller.signal
+                  }).then(function (resp) {
+                    clearTimeout(timeoutId);
+
+                    if (resp.status === 200) {
+                      return resp.arrayBuffer().then(function (buff) {
+                        return {
+                          url: url,
+                          type: resp.headers.get('Content-Type'),
+                          value: buff
+                        };
+                      });
+                    } else {
+                      return Promise.reject(new Error("bad status code ".concat(resp.status)));
+                    }
+                  }).then(resolve).catch(function (err) {
+                    return reject(err);
+                  });
                 });
-              });
+              };
             }
 
-            var fetchUrl_1 = fetchUrl;
+            var fetchUrl = makeFetchUrl;
 
             function sanitizeAuthUrl(urlStr) {
               var url = new URL(urlStr);
@@ -23125,8 +23164,9 @@ function __processPageAndSerializeForIE() {
                   var getRuleUrls = (_CSSRule$IMPORT_RULE$ = {}, _defineProperty(_CSSRule$IMPORT_RULE$, CSSRule.IMPORT_RULE, function () {
                     if (rule.styleSheet) {
                       styleSheetCache[rule.styleSheet.href] = rule.styleSheet;
-                      return rule.href;
                     }
+
+                    return rule.href;
                   }), _defineProperty(_CSSRule$IMPORT_RULE$, CSSRule.FONT_FACE_RULE, function () {
                     return getUrlFromCssText_1(rule.cssText);
                   }), _defineProperty(_CSSRule$IMPORT_RULE$, CSSRule.SUPPORTS_RULE, function () {
@@ -23368,7 +23408,8 @@ function __processPageAndSerializeForIE() {
               var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
                   showLogs = _ref.showLogs,
                   useSessionCache = _ref.useSessionCache,
-                  dontFetchResources = _ref.dontFetchResources;
+                  dontFetchResources = _ref.dontFetchResources,
+                  fetchTimeout = _ref.fetchTimeout;
 
               /* MARKER FOR TEST - DO NOT DELETE */
               var log = showLogs ? log$9(Date.now()) : noop$4;
@@ -23387,8 +23428,11 @@ function __processPageAndSerializeForIE() {
               var extractResourcesFromSvg = makeExtractResourcesFromSvg_1({
                 extractResourceUrlsFromStyleTags: extractResourceUrlsFromStyleTags$$1
               });
+              var fetchUrl$$1 = fetchUrl({
+                timeout: fetchTimeout
+              });
               var processResource$$1 = processResource({
-                fetchUrl: fetchUrl_1,
+                fetchUrl: fetchUrl$$1,
                 findStyleSheetByUrl: findStyleSheetByUrl$$1,
                 getCorsFreeStyleSheet: getCorsFreeStyleSheet_1,
                 extractResourcesFromStyleSheet: extractResourcesFromStyleSheet$$1,
