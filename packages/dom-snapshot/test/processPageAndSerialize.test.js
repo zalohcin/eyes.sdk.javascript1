@@ -13,6 +13,7 @@ const writeFile = util.promisify(fs.writeFile);
 const {resolve} = require('path');
 const {JSDOM} = require('jsdom');
 const {version} = require('../package.json');
+const path = require('path');
 
 function decodeFrame(frame) {
   return Object.assign(frame, {
@@ -33,15 +34,20 @@ describe('processPage', () => {
   let logPromise;
 
   before(async () => {
-    server = await testServer({port: 7373});
+    server = await testServer({
+      showLogs: process.env.APPLITOOLS_SHOW_LOGS,
+      port: 7373,
+      middlewareFile: path.resolve(__dirname, 'util/hang.js'),
+    });
     const _processPageAndSerialize = await getProcessPageAndSerialize();
-    processPage = ({showLogs, useSessionCache, dontFetchResources} = {}) =>
+    processPage = ({showLogs, useSessionCache, dontFetchResources, fetchTimeout} = {}) =>
       page
         .evaluate(
           `(${_processPageAndSerialize})(document, {
             showLogs: ${showLogs},
             useSessionCache: ${useSessionCache},
             dontFetchResources: ${dontFetchResources},
+            fetchTimeout: ${fetchTimeout},
           })`,
         )
         .then(decodeFrame);
@@ -653,7 +659,7 @@ describe('processPage', () => {
       await page.goto('http://localhost:7373/cors-css-rules-container.html');
       const {
         frames: [{blobs, resourceUrls, srcAttr, url}],
-      } = await processPage({showLogs: true});
+      } = await processPage();
 
       expect(srcAttr).to.eq('cors-css-rules.html');
       expect(url).to.eq('http://localhost:7373/cors-css-rules.html');
@@ -916,5 +922,23 @@ describe('processPage', () => {
       url,
       scriptVersion: version,
     });
+  });
+
+  it('includes hanging resources', async () => {
+    await page.goto('http://localhost:7373/hanging.html');
+    let flag = true;
+    setTimeout(() => {
+      flag = false;
+    }, 1000);
+    const result = await processPage({fetchTimeout: 500});
+    expect(result.resourceUrls).to.eql([]);
+    expect(result.blobs).to.eql([
+      {
+        url: 'http://localhost:7373/hanging.css',
+        type: 'application/x-applitools-empty',
+        value: Buffer.from(''),
+      },
+    ]);
+    expect(flag).to.equal(true);
   });
 });

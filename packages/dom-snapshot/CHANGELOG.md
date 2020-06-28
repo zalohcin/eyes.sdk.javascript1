@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- handle hanging resources ([Trello](https://trello.com/c/iDf2x25p/393-dom-snapshot-fails-to-resource-map-imported-hrefs))
 
 ## 3.5.3 - 2020/6/4
 
