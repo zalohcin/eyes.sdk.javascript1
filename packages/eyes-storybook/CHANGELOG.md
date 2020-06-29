@@ -1,6 +1,9 @@
 # Changelog
 
 ## Unreleased
+- updated to @applitools/dom-snapshot@3.6.0 (from 3.5.3)
+- updated to @applitools/eyes-sdk-core@11.1.0 (from 11.0.5)
+- updated to @applitools/visual-grid-client@14.5.0 (from 14.4.4)
 
 
 ## 3.8.0 - 2020/6/9
