@@ -11,16 +11,12 @@ function startTestServer({
   port = 0,
   allowCors,
   showLogs,
-  middleWare,
   middlewareFile,
 } = {}) {
   const app = express()
   app.use(cookieParser())
   if (allowCors) {
     app.use(cors())
-  }
-  if (middleWare) {
-    app.use(middleWare)
   }
   if (middlewareFile) {
     app.use(require(middlewareFile))
