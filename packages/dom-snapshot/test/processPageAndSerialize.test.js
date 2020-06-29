@@ -941,4 +941,13 @@ describe('processPage', () => {
     ]);
     expect(flag).to.equal(true);
   });
+
+  it('does not process google fonts', async () => {
+    await page.setContent(
+      `<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Zilla+Slab"></link>`,
+    );
+    const {resourceUrls, blobs} = await processPage();
+    expect(resourceUrls).to.eql(['https://fonts.googleapis.com/css?family=Zilla+Slab']);
+    expect(blobs).to.eql([]);
+  });
 });

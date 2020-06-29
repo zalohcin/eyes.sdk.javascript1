@@ -38,7 +38,7 @@ function makeGetAllResources({resourceCache, fetchResource, extractCssResources,
     return rGridResource
   }
 
-  return function getAllResources({resourceUrls, preResources, fetchOptions}) {
+  return function getAllResources({resourceUrls, preResources, userAgent, referer}) {
     const handledResources = new Set()
     return getOrFetchResources(resourceUrls, preResources)
 
@@ -65,15 +65,20 @@ function makeGetAllResources({resourceCache, fetchResource, extractCssResources,
       }
 
       await Promise.all(
-        missingResourceUrls.map(url =>
-          fetchResource(url, fetchOptions)
+        missingResourceUrls.map(url => {
+          const fetchOptions = {headers: {Referer: referer}}
+          if (!/https:\/\/fonts.googleapis.com/.test(url)) {
+            fetchOptions.headers['User-Agent'] = userAgent
+          }
+
+          return fetchResource(url, fetchOptions)
             .then(async resource =>
               assignContentfulResources(resources, await processResource(resource)),
             )
             .catch(ex => {
               logger.log(`error fetching resource at ${url}: ${ex}`)
-            }),
-        ),
+            })
+        }),
       )
 
       return resources

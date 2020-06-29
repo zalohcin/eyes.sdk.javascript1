@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- don't send user-agent header for google fonts
 
 ## 14.4.10 - 2020/6/29
 
