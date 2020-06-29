@@ -3,7 +3,7 @@
 const {executeAndControlProcess} = require('./process-commons')
 const path = require('path')
 
-async function runTestServer(args) {
+async function runTestServer(args = {}) {
   let resolve, reject
   const ret = new Promise((r, j) => {
     resolve = r
