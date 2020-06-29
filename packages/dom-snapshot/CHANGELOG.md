@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- don't fetch google fonts
 
 ## 3.5.4 - 2020/6/28
 
