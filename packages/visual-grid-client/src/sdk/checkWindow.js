@@ -27,7 +27,7 @@ function makeCheckWindow({
   stepCounter,
   testName,
   openEyesPromises,
-  fetchHeaders,
+  userAgent,
   matchLevel: _matchLevel,
   isSingleWindow,
   getUserAgents,
@@ -64,7 +64,6 @@ function makeCheckWindow({
     } else if (target === 'region' && region) {
       sizeMode = 'region'
     }
-    fetchHeaders['Referer'] = url
 
     const accErr = isInvalidAccessibility(accessibility)
     if (accErr) {
@@ -93,6 +92,8 @@ function makeCheckWindow({
       resourceContents,
       cdt,
       frames,
+      userAgent,
+      referer: url,
     })
 
     const noOffsetSelectors = {
