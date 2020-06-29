@@ -15,13 +15,11 @@
     "eyes-storybook": "./bin/eyes-storybook.js"
   },
   "scripts": {
-    "test": "yarn build && yarn test:mocha && yarn lint && yarn msg:success || yarn msg:failure",
+    "test": "yarn build && yarn test:mocha && yarn lint",
     "test:mocha": "mocha --no-timeouts --trace-warnings 'test/unit/*.test.js' 'test/it/*.test.js' 'test/e2e/*.test.js'",
     "test:unit": "mocha --no-timeouts --trace-warnings 'test/unit/*.test.js'",
     "test:it": "mocha --no-timeouts --trace-warnings 'test/it/*.test.js'",
     "test:e2e": "mocha --no-timeouts --trace-warnings 'test/e2e/*.test.js'",
-    "msg:success": "notify -t 'Storybook tests Passed !!' -m 'Yaaaaaa !!!'",
-    "msg:failure": "notify -t 'Storybook tests Failed !!' -m 'Daaaamm !!!'",
     "build": "rollup -c rollup.config.js",
     "build:heavy": "node scripts/bitmap.js",
     "lint": "eslint '**/*.js'",
@@ -89,7 +87,6 @@
     "filenamify": "^4.1.0",
     "mocha": "^5.2.0",
     "node-fetch": "^2.6.0",
-    "node-notifier-cli": "^1.1.2",
     "prettier": "^1.19.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
