@@ -13341,6 +13341,9 @@ function __processPage() {
           const resourceUrls = getDependencies(url);
           log('doProcessResource from sessionStorage', url, 'deps:', resourceUrls.slice(1));
           cache[url] = Promise.resolve({resourceUrls});
+        } else if (/https:\/\/fonts.googleapis.com/.test(url)) {
+          log('not processing google font:', url);
+          cache[url] = Promise.resolve({resourceUrls: [url]});
         } else {
           const now = Date.now();
           cache[url] = doProcessResource(url).then(result => {

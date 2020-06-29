@@ -22924,6 +22924,11 @@ function __processPageAndSerializePollForIE() {
                     cache[url] = Promise.resolve({
                       resourceUrls: resourceUrls
                     });
+                  } else if (/https:\/\/fonts.googleapis.com/.test(url)) {
+                    log('not processing google font:', url);
+                    cache[url] = Promise.resolve({
+                      resourceUrls: [url]
+                    });
                   } else {
                     var now = Date.now();
                     cache[url] = doProcessResource(url).then(function (result) {

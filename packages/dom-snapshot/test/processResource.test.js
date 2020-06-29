@@ -230,6 +230,15 @@ describe('processResource', () => {
 
     expect(result).to.eql({});
   });
+
+  it("doesn't fetch google fonts", async () => {
+    const {resourceUrls, blobsObj} = await processResource({
+      url: 'https://fonts.googleapis.com/some-font',
+    });
+
+    expect(resourceUrls).to.eql(['https://fonts.googleapis.com/some-font']);
+    expect(blobsObj).to.eql(undefined);
+  });
 });
 
 function createDoc(...cssUrls) {
