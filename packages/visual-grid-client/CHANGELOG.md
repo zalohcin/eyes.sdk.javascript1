@@ -3,6 +3,7 @@
 ## Unreleased
 
 - don't send user-agent header for google fonts
+- updated to @applitools/dom-snapshot@3.6.0 (from 3.5.4)
 
 ## 14.4.10 - 2020/6/29
 
