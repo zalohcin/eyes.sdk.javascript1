@@ -63,9 +63,9 @@ class EyesFactory {
       serverUrl = undefined
     }
     if (runner instanceof VisualGridRunner) {
-      return new this.EyesVisualGrid(serverUrl, isDisabled, runner)
+      return new this.constructor.EyesVisualGrid(serverUrl, isDisabled, runner)
     }
-    return new this.EyesClassic(serverUrl, isDisabled, runner)
+    return new this.constructor.EyesClassic(serverUrl, isDisabled, runner)
   }
   /**
    * @param {string} [serverUrl] - The Eyes server URL.
