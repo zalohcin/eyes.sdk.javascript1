@@ -20,6 +20,10 @@ function convertSdkNameToReportName(sdkName) {
       return 'python'
     case 'eyes_selenium_ruby':
       return 'ruby'
+    case 'eyes_selenium_java':
+      return 'java'
+    case 'eyes_selenium_dotnet':
+      return 'dotnet'
     default:
       throw new Error('Unsupported SDK')
   }
