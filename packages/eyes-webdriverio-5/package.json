@@ -40,7 +40,7 @@
     "webdriverio": ">=5.18.0"
   },
   "devDependencies": {
-    "@applitools/sdk-coverage-tests": "1.0.0",
+    "@applitools/sdk-coverage-tests": "^1.0.5",
     "@applitools/sdk-fake-eyes-server": "^2.0.0",
     "@applitools/sdk-release-kit": "0.1.0",
     "@wdio/cli": "5.18.6",
