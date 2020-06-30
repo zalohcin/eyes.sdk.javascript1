@@ -5,7 +5,7 @@ const {GeneralUtils, Region} = require('../..')
 const EmulationInfo = require('./EmulationInfo')
 
 /**
- * @typedef {{iosDeviceInfo: {deviceName: IosDevieName, screenOrientation: (IosScreenOrientation|undefined)})}} IosDeviceInfo
+ * @typedef {{iosDeviceInfo: {deviceName: IosDevieName, screenOrientation: (ScreenOrientation|undefined)})}} IosDeviceInfo
  */
 
 class RenderInfo {

@@ -4,6 +4,14 @@
 ## Unreleased
 
 
+## 3.6.0 - 2020/6/29
+
+- don't fetch google fonts
+
+## 3.5.4 - 2020/6/28
+
+- handle hanging resources ([Trello](https://trello.com/c/iDf2x25p/393-dom-snapshot-fails-to-resource-map-imported-hrefs))
+
 ## 3.5.3 - 2020/6/4
 
 - fix dist scripts

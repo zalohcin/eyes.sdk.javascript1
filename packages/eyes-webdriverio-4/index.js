@@ -23,7 +23,6 @@ exports.BrowserType = core.BrowserType
 exports.DeviceName = core.DeviceName
 exports.ScreenOrientation = core.ScreenOrientation
 exports.IosDeviceName = core.IosDeviceName
-exports.IosScreenOrientation = core.IosScreenOrientation
 exports.Region = core.Region
 exports.MatchLevel = core.MatchLevel
 exports.RectangleSize = core.RectangleSize

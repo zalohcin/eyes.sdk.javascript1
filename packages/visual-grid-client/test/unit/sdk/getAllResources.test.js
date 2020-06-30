@@ -171,9 +171,12 @@ describe('getAllResources', () => {
     expect(resourcesFromCache).to.eql(expected)
   })
 
-  it('fetches with fetchOptions', async () => {
-    let actualOptions
-    const fetchResource = async (_url, options) => (actualOptions = options)
+  it('fetches with user-agent and referer headers', async () => {
+    const fetchResource = async (url, options) => ({
+      url,
+      type: 'text/plain',
+      value: JSON.stringify(options),
+    })
     resourceCache = createResourceCache()
     getAllResources = makeGetAllResources({
       resourceCache,
@@ -182,11 +185,22 @@ describe('getAllResources', () => {
       logger: testLogger,
     })
 
-    await getAllResources({
-      resourceUrls: ['http://localhost/some/url.html'],
-      fetchOptions: {someOp: {hello: true}},
+    const url = 'http://localhost/some/url.html'
+    const userAgent = 'some-user-agent'
+    const referer = 'some-referer'
+    const resources = await getAllResources({
+      resourceUrls: [url],
+      userAgent,
+      referer,
     })
-    expect(actualOptions).to.eql({someOp: {hello: true}})
+
+    expect(resources).to.eql({
+      [url]: toRGridResource({
+        url,
+        type: 'text/plain',
+        value: JSON.stringify({headers: {Referer: referer, 'User-Agent': 'some-user-agent'}}),
+      }),
+    })
   })
 
   it('works for urls with long paths', async () => {
@@ -689,5 +703,37 @@ describe('getAllResources', () => {
       preResources: {},
     })
     expect(resources[fontResource.url]).to.eql(toRGridResource(fontResource))
+  })
+
+  it("doesn't send user-agent header when fetching google fonts", async () => {
+    const fetchResource = async (url, options) => ({
+      url,
+      type: 'text/plain',
+      value: JSON.stringify(options),
+    })
+    resourceCache = createResourceCache()
+    getAllResources = makeGetAllResources({
+      resourceCache,
+      extractCssResources,
+      fetchResource,
+      logger: testLogger,
+    })
+    const resources = await getAllResources({
+      resourceUrls: ['https://some/url', 'https://fonts.googleapis.com/css?family=Zilla+Slab'],
+      preResources: {},
+      userAgent: 'bla',
+    })
+    expect(resources).to.eql({
+      'https://some/url': toRGridResource({
+        url: 'https://some/url',
+        type: 'text/plain',
+        value: JSON.stringify({headers: {'User-Agent': 'bla'}}),
+      }),
+      'https://fonts.googleapis.com/css?family=Zilla+Slab': toRGridResource({
+        url: 'https://fonts.googleapis.com/css?family=Zilla+Slab',
+        type: 'text/plain',
+        value: JSON.stringify({headers: {}}),
+      }),
+    })
   })
 })

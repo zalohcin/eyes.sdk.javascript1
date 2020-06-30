@@ -3,6 +3,16 @@
 ## Unreleased
 
 
+## 14.5.0 - 2020/6/29
+
+- don't send user-agent header for google fonts
+- updated to @applitools/dom-snapshot@3.6.0 (from 3.5.4)
+
+## 14.4.10 - 2020/6/29
+
+- updated to @applitools/dom-snapshot@3.5.4 (from 3.5.3)
+- updated to @applitools/eyes-sdk-core@11.1.0 (from 11.0.10)
+
 ## 14.4.9 - 2020/6/17
 
 - updated to @applitools/eyes-sdk-core@11.0.10 (from 11.0.9)

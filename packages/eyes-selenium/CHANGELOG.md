@@ -1,12 +1,17 @@
 # Change Log
 
 ## Unreleased
+<<<<<<< HEAD
 - updated to @applitools/eyes-sdk-core@10.1.2
 - updated to @applitools/visual-grid-client@13.8.1
 - updated to @applitools/eyes-sdk-core@10.3.0 (from v10.2.0)
 - updated to @applitools/visual-grid-client@14.2.0 (from v14.1.0)
 - updated to @applitools/eyes-sdk-core@10.3.1 (from v10.3.0)
 - updated to @applitools/visual-grid-client@14.2.1 (from v14.2.0)
+=======
+
+- remove IosScreenOrientation ([Trello](https://trello.com/c/abSJ68Rl/409-ufg-safari-on-ios-orientations-changes))
+>>>>>>> 563204f54c33789ad62a6ce6e0deaddce03ae93c
 
 ## 4.39.2 - 2020/6/17
 

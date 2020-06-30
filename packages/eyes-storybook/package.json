@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-storybook",
-  "version": "3.8.0",
+  "version": "3.8.2",
   "description": "",
   "main": "src/eyes-storybook.js",
   "engines": {
@@ -15,13 +15,11 @@
     "eyes-storybook": "./bin/eyes-storybook.js"
   },
   "scripts": {
-    "test": "yarn build && yarn test:mocha && yarn lint && yarn msg:success || yarn msg:failure",
+    "test": "yarn build && yarn test:mocha && yarn lint",
     "test:mocha": "mocha --no-timeouts --trace-warnings 'test/unit/*.test.js' 'test/it/*.test.js' 'test/e2e/*.test.js'",
     "test:unit": "mocha --no-timeouts --trace-warnings 'test/unit/*.test.js'",
     "test:it": "mocha --no-timeouts --trace-warnings 'test/it/*.test.js'",
     "test:e2e": "mocha --no-timeouts --trace-warnings 'test/e2e/*.test.js'",
-    "msg:success": "notify -t 'Storybook tests Passed !!' -m 'Yaaaaaa !!!'",
-    "msg:failure": "notify -t 'Storybook tests Failed !!' -m 'Daaaamm !!!'",
     "build": "rollup -c rollup.config.js",
     "build:heavy": "node scripts/bitmap.js",
     "lint": "eslint '**/*.js'",
@@ -54,11 +52,11 @@
     "url": "git://github.com/applitools/eyes.sdk.javascript1.git"
   },
   "dependencies": {
-    "@applitools/dom-snapshot": "3.5.3",
-    "@applitools/eyes-sdk-core": "11.0.5",
+    "@applitools/dom-snapshot": "3.6.0",
+    "@applitools/eyes-sdk-core": "11.1.0",
     "@applitools/functional-commons": "1.5.4",
     "@applitools/monitoring-commons": "1.0.19",
-    "@applitools/visual-grid-client": "14.4.4",
+    "@applitools/visual-grid-client": "14.5.0",
     "boxen": "^4.2.0",
     "chalk": "3.0.0",
     "detect-port": "^1.3.0",
@@ -89,7 +87,6 @@
     "filenamify": "^4.1.0",
     "mocha": "^5.2.0",
     "node-fetch": "^2.6.0",
-    "node-notifier-cli": "^1.1.2",
     "prettier": "^1.19.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",

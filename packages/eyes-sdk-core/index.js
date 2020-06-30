@@ -46,7 +46,6 @@ exports.ScreenOrientation = require('./lib/config/ScreenOrientation')
 exports.SessionType = require('./lib/config/SessionType')
 exports.StitchMode = require('./lib/config/StitchMode')
 exports.IosDeviceName = require('./lib/config/IosDeviceName')
-exports.IosScreenOrientation = require('./lib/config/IosScreenOrientation')
 exports.IosVersion = require('./lib/config/IosVersion')
 
 // debug
