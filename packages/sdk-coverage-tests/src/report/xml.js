@@ -56,7 +56,9 @@ function parseJunitXmlForTests(xmlResult) {
     return Array.isArray(testsuite)
       ? testsuite
           .map(suite => suite.testcase)
-          .reduce((flatten, testcase) => flatten.concat(testcase))
+          .reduce((flatten, testcase) => flatten.concat(testcase), [])
+      : Array.isArray(testsuite.testcase)
+      ? testsuite.testcase
       : [testsuite.testcase]
   } else if (jsonResult.hasOwnProperty('testsuite')) {
     const testCase = jsonResult.testsuite.testcase
