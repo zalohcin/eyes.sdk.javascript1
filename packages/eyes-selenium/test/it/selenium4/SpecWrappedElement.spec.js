@@ -2,6 +2,7 @@ const assert = require('assert')
 const {By, WebElement} = require('selenium-webdriver')
 const specs = require('../../../src/selenium4/SpecWrappedElement')
 const {getDriver} = require('../../coverage/custom/util/TestSetup')
+const {EyesError} = require('@applitools/eyes-sdk-core')
 
 describe('SpecWrappedElement Selenium4 Tests', () => {
   before(function() {
@@ -98,6 +99,17 @@ describe('SpecWrappedElement Selenium4 Tests', () => {
         await driver.executeScript('return null', element)
       } catch (err) {
         assert.strictEqual(specs.isStaleElementReferenceResult(err), true)
+      }
+    })
+
+    it('isStaleElementReferenceResult(eyesErr)', async () => {
+      const element = await driver.findElement(By.css('div'))
+      await driver.navigate().refresh()
+      try {
+        await driver.executeScript('return null', element)
+      } catch (err) {
+        const eyesErr = new EyesError('msg', err)
+        assert.strictEqual(specs.isStaleElementReferenceResult(eyesErr), true)
       }
     })
   })

@@ -53,7 +53,8 @@ function extractId(element) {
 }
 function isStaleElementReferenceResult(result) {
   if (!result) return false
-  return result instanceof Error && result.name === 'StaleElementReferenceError'
+  const errOrResult = result.originalError || result
+  return errOrResult instanceof Error && errOrResult.name === 'StaleElementReferenceError'
 }
 
 /** @type {ProtractorSpecElement} */

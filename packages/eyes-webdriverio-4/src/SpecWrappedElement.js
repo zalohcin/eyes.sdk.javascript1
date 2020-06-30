@@ -57,9 +57,10 @@ function extractSelector(element) {
 }
 function isStaleElementReferenceResult(result, wrapper) {
   if (!result) return false
-  return result instanceof Error
-    ? result.seleniumStack && result.seleniumStack.type === 'StaleElementReference'
-    : result.value && result.selector && result.selector === wrapper.selector
+  const errOrResult = result.originalError || result
+  return errOrResult instanceof Error
+    ? errOrResult.seleniumStack && errOrResult.seleniumStack.type === 'StaleElementReference'
+    : errOrResult.value && errOrResult.selector && errOrResult.selector === wrapper.selector
 }
 
 /** @type {WDIOSpecElement} */

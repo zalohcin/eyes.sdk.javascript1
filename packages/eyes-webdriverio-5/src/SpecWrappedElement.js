@@ -59,7 +59,8 @@ function extractSelector(element) {
 }
 function isStaleElementReferenceResult(result) {
   if (!result) return false
-  return result instanceof Error && result.name === 'stale element reference'
+  const errOrResult = result.originalError || result
+  return errOrResult instanceof Error && errOrResult.name === 'stale element reference'
 }
 
 /** @type {WDIOSpecElement} */

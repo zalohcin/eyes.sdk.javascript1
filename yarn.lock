@@ -97,6 +97,23 @@
     stack-trace "^0.0.10"
     tunnel "0.0.6"
 
+"@applitools/eyes-sdk-core@11.1.0":
+  version "11.1.0"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-11.1.0.tgz#c10bb06b2026cd57152bb2e5d24d2b5cab9443b7"
+  integrity sha512-lNq2dK6eavJ+cnsZbEy3YpxE4W3i34eV1BNXTksaEEb9ew2RmoU1uD7Qq4YyYbthvLRxkSftqbAaVrfN9kzOBg==
+  dependencies:
+    "@applitools/dom-capture" "7.2.4"
+    "@applitools/isomorphic-fetch" "3.0.0"
+    axios "0.19.2"
+    chalk "3.0.0"
+    cosmiconfig "^6.0.0"
+    dateformat "^3.0.3"
+    debug "^4.1.1"
+    deepmerge "^4.2.2"
+    png-async "^0.9.4"
+    stack-trace "^0.0.10"
+    tunnel "0.0.6"
+
 "@applitools/feature-flags@2.1.1":
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/@applitools/feature-flags/-/feature-flags-2.1.1.tgz#cf784e3b7ab4f322b0ebe62a5ea45ec56738b2d4"
@@ -20400,7 +20417,7 @@ webdriverio@5.18.6:
     serialize-error "^5.0.0"
     webdriver "5.18.6"
 
-webdriverio@^4.14.4:
+webdriverio@^4.14.4, webdriverio@~4.14.4:
   version "4.14.4"
   resolved "https://registry.yarnpkg.com/webdriverio/-/webdriverio-4.14.4.tgz#f7a94e9a6530819796088f42b009833d83de0386"
   integrity sha512-Knp2vzuzP5c5ybgLu+zTwy/l1Gh0bRP4zAr8NWcrStbuomm9Krn9oRF0rZucT6AyORpXinETzmeowFwIoo7mNA==
