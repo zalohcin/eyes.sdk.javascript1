@@ -19,7 +19,10 @@ function makeSpecEmitter(options) {
   }
 
   tracker.addSyntax('var', ({name, value}) => `const ${name} = ${value}`)
+  tracker.addSyntax('getter', ({target, key}) => `${target}.${key}`)
+  tracker.addSyntax('call', ({target, args}) => `${target}(${js`...${args}`})`)
   tracker.storeHook('deps', `const cwd = process.cwd()`)
+  tracker.storeHook('deps', `const assert = require('assert')`)
   tracker.storeHook('deps', `const path = require('path')`)
   tracker.storeHook('deps', `const specs = require(path.resolve(cwd, 'src/SpecWrappedDriver'))`)
   tracker.storeHook(
@@ -34,7 +37,7 @@ function makeSpecEmitter(options) {
   tracker.storeHook(
     'beforeEach',
     js`driver = await specs.build({
-      capabilities: TestSetup.Browsers.chrome(),
+      capabilities: ${options.capabilities} || TestSetup.Browsers.chrome(),
       serverUrl: ${options.host},
       logLevel: 'error',
     })`,
@@ -218,9 +221,30 @@ function makeSpecEmitter(options) {
     abort() {
       tracker.storeCommand(js`await eyes.abort()`)
     },
+    getViewportSize() {
+      return tracker.storeCommand(js`await eyes.getViewportSize()`)
+    },
   }
 
-  return {tracker, driver, eyes}
+  const assert = {
+    strictEqual(actual, expected, message) {
+      tracker.storeCommand(js`assert.strictEqual(${actual}, ${expected}, ${message})`)
+    },
+    notStrictEqual(actual, expected, message) {
+      tracker.storeCommand(js`assert.notStrictEqual(${actual}, ${expected}, ${message})`)
+    },
+    deepStrictEqual(actual, expected, message) {
+      tracker.storeCommand(js`assert.deepStrictEqual(${actual}, ${expected}, ${message})`)
+    },
+    notDeepStrictEqual(actual, expected, message) {
+      tracker.storeCommand(js`assert.notDeepStrictEqual(${actual}, ${expected}, ${message})`)
+    },
+    ok(value, message) {
+      tracker.storeCommand(js`assert.value(${value}, ${message})`)
+    },
+  }
+
+  return {tracker, driver, eyes, assert}
 }
 
 module.exports = {makeSpecEmitter}

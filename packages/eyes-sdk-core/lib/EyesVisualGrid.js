@@ -370,24 +370,6 @@ class EyesVisualGrid extends EyesCore {
     return this._abortCommand()
   }
   /**
-   * @return {Promise<RectangleSize>}
-   */
-  async getViewportSize() {
-    return this._configuration.getViewportSize()
-  }
-  /**
-   * @param {RectangleSize|object} viewportSize
-   */
-  async setViewportSize(viewportSize) {
-    ArgumentGuard.notNull(viewportSize, 'viewportSize')
-    viewportSize = new RectangleSize(viewportSize)
-    this._configuration.setViewportSize(viewportSize)
-
-    if (this._driver) {
-      await EyesUtils.setViewportSize(this._logger, this._driver, viewportSize)
-    }
-  }
-  /**
    * @inheritDoc
    */
   async getInferredEnvironment() {

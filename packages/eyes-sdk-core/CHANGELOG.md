@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- cache correct viewport size value after fail set viewport size
 
 ## 11.2.1 - 2020/6/30
 

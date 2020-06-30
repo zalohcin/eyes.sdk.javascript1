@@ -1,7 +1,12 @@
 const ArgumentGuard = require('./utils/ArgumentGuard')
 const Region = require('./geometry/Region')
+const Location = require('./geometry/Location')
+const RectangleSize = require('./geometry/RectangleSize')
 const FrameChain = require('./frames/FrameChain')
 const ImageRotation = require('./positioning/ImageRotation')
+const ReadOnlyPropertyHandler = require('./handler/ReadOnlyPropertyHandler')
+const TestFailedError = require('./errors/TestFailedError')
+const EyesUtils = require('./EyesUtils')
 const EyesBase = require('./EyesBase')
 
 /**
@@ -281,6 +286,42 @@ class EyesCore extends EyesBase {
     EyesBase.prototype.addTextTrigger.call(this, elementRegion, text)
   }
   /* ------------ Getters/Setters ------------ */
+  /**
+   * Use this method only if you made a previous call to {@link #open(WebDriver, String, String)} or one of its variants.
+   * @override
+   */
+  async getViewportSize() {
+    const viewportSize = this._viewportSizeHandler.get()
+    return viewportSize
+      ? viewportSize
+      : EyesUtils.getTopContextViewportSize(this._logger, this._driver)
+  }
+  /**
+   * Use this method only if you made a previous call to {@link #open(WebDriver, String, String)} or one of its variants.
+   * @protected
+   * @override
+   */
+  async setViewportSize(viewportSize) {
+    if (this._viewportSizeHandler instanceof ReadOnlyPropertyHandler) {
+      this._logger.verbose('Ignored (viewport size given explicitly)')
+      return Promise.resolve()
+    }
+
+    if (!(await this._controller.isMobile())) {
+      ArgumentGuard.notNull(viewportSize, 'viewportSize')
+      viewportSize = new RectangleSize(viewportSize)
+      try {
+        await EyesUtils.setViewportSize(this._logger, this._driver, new RectangleSize(viewportSize))
+        this._effectiveViewport = new Region(Location.ZERO, viewportSize)
+      } catch (e) {
+        const viewportSize = await EyesUtils.getTopContextViewportSize(this._logger, this._driver)
+        this._viewportSizeHandler.set(viewportSize)
+        throw new TestFailedError('Failed to set the viewport size', e)
+      }
+    }
+
+    this._viewportSizeHandler.set(new RectangleSize(viewportSize))
+  }
   async getAUTSessionId() {
     if (!this._driver) {
       return undefined

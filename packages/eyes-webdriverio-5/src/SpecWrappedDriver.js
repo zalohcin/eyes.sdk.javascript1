@@ -112,7 +112,11 @@ async function visit(driver, url) {
 
 /* -------- FOR TESTING PURPOSES -------- */
 
-async function build({capabilities, serverUrl = process.env.CVG_TESTS_REMOTE}) {
+async function build({
+  capabilities,
+  serverUrl = process.env.CVG_TESTS_REMOTE,
+  logLevel = 'silent',
+}) {
   const {hostname, port, pathname, protocol} = serverUrl ? new URL(serverUrl) : {}
   let fixedPort = port
   if (protocol === 'http:' && !port) {
@@ -122,8 +126,8 @@ async function build({capabilities, serverUrl = process.env.CVG_TESTS_REMOTE}) {
     fixedPort = 443
   }
   const options = {
-    logLevel: 'silent',
-    capabilities: capabilities,
+    logLevel,
+    capabilities,
     path: pathname,
     port: fixedPort ? Number(fixedPort) : undefined,
     hostname,
