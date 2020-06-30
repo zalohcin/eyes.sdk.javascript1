@@ -20,21 +20,20 @@ Applitools Eyes SDK for [Storybook](http://storybook.js.org).
   * [Getting a screenshot of multiple browsers in parallel](#getting-a-screenshot-of-multiple-browsers-in-parallel)
   * [Device emulation](#device-emulation)
 - [Per component configuration](#per-component-configuration)
-    + [The following properties are supported:](#the-following-properties-are-supported-)
-  * [`include`](#-include-)
-  * [`variations`](#-variations-)
-  * [`waitBeforeScreenshot`](#-waitbeforescreenshot-)
-  * [`properties`](#-properties-)
-  * [`ignoreRegions`](#-ignoreregions-)
-  * [`floatingRegions`](#-floatingregions-)
-  * [`layoutRegions`](#-layoutregions-)
-  * [`contentRegions`](#-contentregions-)
-  * [`strictRegions`](#-strictregions-)
-  * [`accessibilityRegions`](#-accessibilityregions-)
-  * [`accessibilityValidation`](#-accessibilityvalidation-)
-  * [Parameters that cannot be set as an Advanced configuration](#parameters-that-cannot-be-set-as-an--advanced-configuration---advanced-configuration-)
-  * [`runBefore`](#-runbefore-)
-  * [`scriptHooks`](#-scripthooks-)
+  * [`include`](#include)
+  * [`variations`](#variations)
+  * [`waitBeforeScreenshot`](#waitbeforescreenshot)
+  * [`properties`](#properties)
+  * [`ignoreRegions`](#ignoreregions)
+  * [`floatingRegions`](#floatingregions)
+  * [`layoutRegions`](#layoutregions)
+  * [`contentRegions`](#contentregions)
+  * [`strictRegions`](#strictregions)
+  * [`accessibilityRegions`](#accessibilityregions)
+  * [`accessibilityValidation`](#accessibilityvalidation)
+  * [Parameters that cannot be set as an Advanced configuration](#parameters-that-cannot-be-set-as-an--advanced-configuration---advanced-configuration)
+  * [`runBefore`](#runbefore)
+  * [`scriptHooks`](#scripthooks)
     + [beforeCaptureScreenshot](#beforecapturescreenshot)
 - [Running Eyes-Storybook in Docker](#running-eyes-storybook-in-docker)
 - [Dealing with dynamic data](#dealing-with-dynamic-data)
@@ -309,7 +308,7 @@ There are two ways to provide configuration for a specific story, or a group of 
 
 _Specifying a value locally in the story takes precedence over the global config value._
 
-#### The following properties are supported:
+**The following properties are supported:**
 
 ### `include`
 
@@ -369,6 +368,20 @@ _Note that the predicate option for `waitBeforeScreenshot` is currently not avai
 ### `properties`
 
 Adds custom properties for each test. These show up in Test Manager, and tests can be grouped by custom properties. By default, Eyes-Storybook adds 2 custom properties for each test: the **Component name** and **State** of each component. Adding more properties via this config param will **not** override these two properties.
+
+For example:
+
+```js
+storiesOf('Components with custom properties', module)
+  .add(
+    'Some story',
+    () => <span id="container" class="loading"></span>,
+    {eyes: { properties: [
+      {name: 'some prop #1', value: 'some value #1'},
+      {name: 'some prop #2', value: 'some value #2'},
+    ] }}
+  );
+```
 
 ### `ignoreRegions`
 
