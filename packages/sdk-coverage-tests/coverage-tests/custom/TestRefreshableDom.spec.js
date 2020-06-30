@@ -64,7 +64,7 @@ describe('TestRefreshableDom', function() {
     }
   })
 
-  it.only('refresh scroll root element after StaleElementReference', async () => {
+  it('refresh scroll root element after StaleElementReference', async () => {
     await spec.visit(driver, 'https://applitools.github.io/demo/TestPages/RefreshDomPage')
     await eyes.check()
     await spec.visit(driver, 'https://applitools.github.io/demo/TestPages/RefreshDomPage')
