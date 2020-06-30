@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 11.2.1 - 2020/6/30
+
 - bring back input validation of accessibility type for AccessibilityRegionByRectangle
 - handle stale element reference error wrapped with eyes error
 
