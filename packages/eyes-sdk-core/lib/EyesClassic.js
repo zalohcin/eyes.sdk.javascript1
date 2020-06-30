@@ -739,16 +739,15 @@ class EyesClassic extends EyesCore {
       if (!scrollRootElement) {
         scrollRootElement = await this._finder.findElement({type: 'css', selector: 'html'})
       }
-      // TODO replace with js snippet
-      const [
-        location,
-        [borderLeftWidth, borderTopWidth],
-        [clientWidth, clientHeight],
-      ] = await Promise.all([
-        scrollRootElement.getLocation(),
-        scrollRootElement.getCssProperty('border-left-width', 'border-top-width'),
-        scrollRootElement.getProperty('clientWidth', 'clientHeight'),
-      ])
+      const location = await scrollRootElement.getLocation()
+      const [borderLeftWidth, borderTopWidth] = await scrollRootElement.getCssProperty(
+        'border-left-width',
+        'border-top-width',
+      )
+      const [clientWidth, clientHeight] = await scrollRootElement.getProperty(
+        'clientWidth',
+        'clientHeight',
+      )
       const region = new Region(
         Math.round(location.getX() + Number.parseFloat(borderLeftWidth)),
         Math.round(location.getY() + Number.parseFloat(borderTopWidth)),

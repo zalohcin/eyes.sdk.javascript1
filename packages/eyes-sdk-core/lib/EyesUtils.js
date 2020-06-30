@@ -616,12 +616,14 @@ async function locatorToPersistedRegions(logger, {finder, executor}, selector) {
     return [eyesSelector]
   }
   const elements = await finder.findElements(selector)
-  return Promise.all(
-    elements.map(async element => ({
+  const persistedRegions = []
+  for (const element of elements) {
+    persistedRegions.push({
       type: 'xpath',
       selector: await getElementXpath(logger, executor, element),
-    })),
-  )
+    })
+  }
+  return persistedRegions
 }
 /**
  * @typedef {Object} ContextInfo
