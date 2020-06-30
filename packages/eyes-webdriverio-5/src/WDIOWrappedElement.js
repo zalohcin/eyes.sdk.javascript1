@@ -1,6 +1,7 @@
 const {EyesWrappedElement} = require('@applitools/eyes-sdk-core')
-const SpecWrappedElement = require('./SpecWrappedElement')
 const LegacyWrappedElement = require('./LegacyWrappedElement')
+
+const SpecWrappedElement = require('./SpecWrappedElement')
 
 const WDIOWrappedElement = EyesWrappedElement.specialize(SpecWrappedElement)
 

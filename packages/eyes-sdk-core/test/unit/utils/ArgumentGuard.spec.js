@@ -1,8 +1,6 @@
 'use strict'
-
 const assert = require('assert')
-
-const {Enum} = require('../../../lib/utils/Enum')
+const Enum = require('../../../lib/utils/Enum')
 const {ArgumentGuard} = require('../../../index')
 
 describe('ArgumentGuard', () => {

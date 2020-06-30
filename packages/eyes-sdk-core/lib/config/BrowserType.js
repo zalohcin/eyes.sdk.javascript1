@@ -1,12 +1,10 @@
-'use strict'
-
-const {Enum} = require('../utils/Enum')
+const Enum = require('../utils/Enum')
 
 /**
- * @readonly
- * @enum {string}
+ * @typedef {string} BrowserType
  */
-const BrowserType = {
+
+const BrowserTypes = Enum('BrowserType', {
   CHROME: 'chrome',
   FIREFOX: 'firefox',
   IE_11: 'ie',
@@ -23,6 +21,6 @@ const BrowserType = {
   SAFARI_TWO_VERSIONS_BACK: 'safari-two-versions-back',
   EDGE_CHROMIUM_ONE_VERSION_BACK: 'edgechromium-one-version-back',
   EDGE_CHROMIUM_TWO_VERSIONS_BACK: 'edgechromium-two-versions-back',
-}
+})
 
-exports.BrowserType = Enum('BrowserType', BrowserType)
+module.exports = BrowserTypes

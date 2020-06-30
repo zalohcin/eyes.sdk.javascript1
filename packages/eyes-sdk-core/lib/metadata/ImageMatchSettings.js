@@ -232,4 +232,4 @@ class ImageMatchSettings {
   }
 }
 
-exports.ImageMatchSettings = ImageMatchSettings
+module.exports = ImageMatchSettings

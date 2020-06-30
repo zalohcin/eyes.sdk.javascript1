@@ -1,30 +1,42 @@
 'use strict'
-
-const {AccessibilityMatchSettings, CoordinatesType} = require('../..')
-const {GetAccessibilityRegion} = require('./GetAccessibilityRegion')
+const AccessibilityMatchSettings = require('../config/AccessibilityMatchSettings')
+const CoordinatesTypes = require('../geometry/CoordinatesType')
+const GetAccessibilityRegion = require('./GetAccessibilityRegion')
 const EyesUtils = require('../EyesUtils')
 
 /**
  * @typedef {import('../config/AccessibilityRegionType').AccessibilityRegionType} AccessibilityRegionType
- * @typedef {import('../wrappers/EyesWrappedElement')} EyesWrappedElement
- * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
+ * @typedef {import('../wrappers/EyesWrappedElement').EyesSelector} EyesSelector
  * @typedef {import('../EyesClassic')} EyesClassic
- *
- * @typedef {Object} AccessibilityPersistedRegions
- * @property {string} type - selector type (css or xpath)
- * @property {string} selector - selector itself
- * @property {AccessibilityRegionType} accessibilityType - accessibility region type
  */
 
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('../wrappers/EyesWrappedDriver')<TDriver, TElement, TSelector>} EyesWrappedDriver
+ */
+
+/**
+ * @template TElement
+ * @typedef {import('../wrappers/EyesWrappedElement')<any, TElement, any>} EyesWrappedElement
+ */
+
+/**
+ * @typedef {EyesSelector & {accessibilityType: AccessibilityRegionType}} AccessibilityPersistedRegion
+ */
+
+/**
+ * @internal
+ * @template TElement
+ */
 class AccessibilityRegionByElement extends GetAccessibilityRegion {
   /**
-   * @param {EyesWrappedElement} element
-   * @param {AccessibilityRegionType} regionType
+   * @param {EyesWrappedElement<TElement>} element
+   * @param {AccessibilityRegionType} [type]
    */
-  constructor(element, regionType) {
+  constructor(element, type) {
     super()
     this._element = element
-    this._regionType = regionType
+    this._type = type
   }
   /**
    * @param {EyesClassic} eyes
@@ -37,8 +49,8 @@ class AccessibilityRegionByElement extends GetAccessibilityRegion {
     const rect = await this._element.getRect()
     const pTag = screenshot.convertLocation(
       rect.getLocation(),
-      CoordinatesType.CONTEXT_RELATIVE,
-      CoordinatesType.SCREENSHOT_AS_IS,
+      CoordinatesTypes.CONTEXT_RELATIVE,
+      CoordinatesTypes.SCREENSHOT_AS_IS,
     )
 
     const accessibilityRegion = new AccessibilityMatchSettings({
@@ -46,13 +58,14 @@ class AccessibilityRegionByElement extends GetAccessibilityRegion {
       top: pTag.getY(),
       width: rect.getWidth(),
       height: rect.getHeight(),
-      type: this._regionType,
+      type: this._type,
     })
     return [accessibilityRegion]
   }
   /**
-   * @param {EyesWrappedDriver} driver
-   * @return {Promise<AccessibilityPersistedRegions[]>}
+   * @template TDriver, TSelector
+   * @param {EyesWrappedDriver<TDriver, TElement, TSelector>} driver
+   * @return {Promise<AccessibilityPersistedRegion[]>}
    */
   async toPersistedRegions(driver) {
     const xpath = await EyesUtils.getElementAbsoluteXpath(
@@ -64,7 +77,7 @@ class AccessibilityRegionByElement extends GetAccessibilityRegion {
       {
         type: 'xpath',
         selector: xpath,
-        accessibilityType: this._regionType,
+        accessibilityType: this._type,
       },
     ]
   }

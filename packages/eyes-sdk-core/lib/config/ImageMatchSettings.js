@@ -1,12 +1,12 @@
 'use strict'
 
-const {ArgumentGuard} = require('../utils/ArgumentGuard')
-const {GeneralUtils} = require('../utils/GeneralUtils')
-const {TypeUtils} = require('../utils/TypeUtils')
-const {MatchLevel} = require('./MatchLevel')
-const {AccessibilityLevel} = require('./AccessibilityLevel')
-const {AccessibilityGuidelinesVersion} = require('./AccessibilityGuidelinesVersion')
-const {ExactMatchSettings} = require('./ExactMatchSettings')
+const ArgumentGuard = require('../utils/ArgumentGuard')
+const GeneralUtils = require('../utils/GeneralUtils')
+const TypeUtils = require('../utils/TypeUtils')
+const MatchLevel = require('./MatchLevel')
+const AccessibilityLevel = require('./AccessibilityLevel')
+const AccessibilityGuidelinesVersions = require('./AccessibilityGuidelinesVersion')
+const ExactMatchSettings = require('./ExactMatchSettings')
 
 const DEFAULT_VALUES = {
   matchLevel: MatchLevel.Strict,
@@ -128,7 +128,7 @@ class ImageMatchSettings {
     if (value) {
       ArgumentGuard.hasProperties(value, ['level', 'guidelinesVersion'], 'accessibilitySettings')
       ArgumentGuard.isValidEnumValue(value.level, AccessibilityLevel)
-      ArgumentGuard.isValidEnumValue(value.guidelinesVersion, AccessibilityGuidelinesVersion)
+      ArgumentGuard.isValidEnumValue(value.guidelinesVersion, AccessibilityGuidelinesVersions)
     }
     this._accessibilitySettings = value
   }
@@ -332,4 +332,4 @@ class ImageMatchSettings {
   }
 }
 
-exports.ImageMatchSettings = ImageMatchSettings
+module.exports = ImageMatchSettings

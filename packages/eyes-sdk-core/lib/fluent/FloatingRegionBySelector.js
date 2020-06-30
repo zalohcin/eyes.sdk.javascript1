@@ -1,26 +1,31 @@
 'use strict'
-
-const {FloatingMatchSettings, CoordinatesType} = require('../..')
-const {GetFloatingRegion} = require('./GetFloatingRegion')
+const CoordinatesType = require('../geometry/CoordinatesType')
+const FloatingMatchSettings = require('../config/FloatingMatchSettings')
+const GetFloatingRegion = require('./GetFloatingRegion')
 const EyesUtils = require('../EyesUtils')
 
 /**
- * @typedef {import('../wrappers/EyesWrappedElement').SupportedSelector} SupportedSelector
- * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
+ * @typedef {import('../config/AccessibilityRegionType').AccessibilityRegionType} AccessibilityRegionType
+ * @typedef {import('../wrappers/EyesWrappedElement').EyesSelector} EyesSelector
  * @typedef {import('../EyesClassic')} EyesClassic
- *
- * @typedef {Object} FloatingPersistedRegions
- * @property {string} type - selector type (css or xpath)
- * @property {string} selector - selector itself
- * @property {number} maxUpOffset - up offset
- * @property {number} maxDownOffset - down offset
- * @property {number} maxLeftOffset - left offset
- * @property {number} maxRightOffset - right offset
  */
 
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('../wrappers/EyesWrappedDriver')<TDriver, TElement, TSelector>} EyesWrappedDriver
+ */
+
+/**
+ * @typedef {EyesSelector & {maxUpOffset: number, maxDownOffset: number, maxLeftOffset: number, maxRightOffset: number}} FloatingPersistedRegion
+ */
+
+/**
+ * @internal
+ * @template TSelector
+ */
 class FloatingRegionBySelector extends GetFloatingRegion {
   /**
-   * @param {SupportedSelector} regionSelector
+   * @param {TSelector} regionSelector
    * @param {number} maxUpOffset
    * @param {number} maxDownOffset
    * @param {number} maxLeftOffset
@@ -67,8 +72,9 @@ class FloatingRegionBySelector extends GetFloatingRegion {
     return regions
   }
   /**
-   * @param {EyesWrappedDriver} driver
-   * @return {Promise<FloatingPersistedRegions[]>}
+   * @template TDriver, TElement
+   * @param {EyesWrappedDriver<TDriver, TElement, TSelector>} driver
+   * @return {Promise<FloatingPersistedRegion[]>}
    */
   async toPersistedRegions(driver) {
     const regions = await EyesUtils.locatorToPersistedRegions(

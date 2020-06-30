@@ -2,68 +2,64 @@ const {TypeUtils} = require('@applitools/eyes-sdk-core')
 const {WebElement, By} = require('selenium-webdriver')
 
 /**
- * @typedef {import('selenium-webdriver').ByHash} ByHash
- * @typedef {import('selenium-webdriver').By} By
+ * @typedef {import('./SpecWrappedDriver').Driver} Driver
+ * @typedef {import('selenium-webdriver').By|import('selenium-webdriver').ByHash|string} Selector
+ * @typedef {import('selenium-webdriver').WebElement} Element
+ *
+ * @typedef {import('@applitools/eyes-sdk-core').SpecElement<Driver, Element, Selector>} SeleniumSpecElement
  */
 
-/**
- * Supported selector type
- * @typedef {By|ByHash} SupportedSelector
- */
+function isCompatible(element) {
+  return element instanceof WebElement
+}
+function isSelector(selector) {
+  if (!selector) return false
+  return (
+    selector instanceof By ||
+    TypeUtils.has(selector, ['using', 'value']) ||
+    Object.keys(selector).some(key => key in By) ||
+    TypeUtils.isString(selector)
+  )
+}
+function toSupportedSelector(selector) {
+  if (TypeUtils.has(selector, ['type', 'selector'])) {
+    if (selector.type === 'css') return By.css(selector.selector)
+    else if (selector.type === 'xpath') return By.xpath(selector.selector)
+  }
+  return selector
+}
+function toEyesSelector(selector) {
+  if (TypeUtils.isString(selector)) {
+    selector = By.css(selector)
+  } else if (TypeUtils.has(selector, ['using', 'value'])) {
+    selector = new By(selector.using, selector.value)
+  } else if (TypeUtils.isPlainObject(selector)) {
+    const using = Object.keys(selector).find(using => TypeUtils.has(By, using))
+    if (using) selector = By[using](selector[using])
+  }
 
-/**
- * Compatible element type
- * @typedef {UnwrappedElement} SupportedElement
- */
+  if (selector instanceof By) {
+    const {using, value} = selector
+    if (using === 'css selector') return {type: 'css', selector: value}
+    else if (using === 'xpath') return {type: 'xpath', selector: value}
+  }
 
-/**
- * Unwrapped element supported by framework
- * @typedef {WebElement} UnwrappedElement
- */
+  return {selector}
+}
+function extractId(element) {
+  return element.getId()
+}
+function isStaleElementReferenceResult(result) {
+  if (!result) return false
+  return result instanceof Error && result.name === 'StaleElementReferenceError'
+}
 
+/** @type {SeleniumSpecElement} */
 module.exports = {
-  isCompatible(element) {
-    return element instanceof WebElement
-  },
-  isSelector(selector) {
-    if (!selector) return false
-    return (
-      selector instanceof By ||
-      TypeUtils.has(selector, ['using', 'value']) ||
-      Object.keys(selector).some(key => key in By) ||
-      TypeUtils.isString(selector)
-    )
-  },
-  toSupportedSelector(selector) {
-    if (TypeUtils.has(selector, ['type', 'selector'])) {
-      if (selector.type === 'css') return By.css(selector.selector)
-      else if (selector.type === 'xpath') return By.xpath(selector.selector)
-    }
-    return selector
-  },
-  toEyesSelector(selector) {
-    if (TypeUtils.isString(selector)) {
-      selector = By.css(selector)
-    } else if (TypeUtils.has(selector, ['using', 'value'])) {
-      selector = new By(selector.using, selector.value)
-    } else if (TypeUtils.isPlainObject(selector)) {
-      const using = Object.keys(selector).find(using => TypeUtils.has(By, using))
-      if (using) selector = By[using](selector[using])
-    }
-
-    if (selector instanceof By) {
-      const {using, value} = selector
-      if (using === 'css selector') return {type: 'css', selector: value}
-      else if (using === 'xpath') return {type: 'xpath', selector: value}
-    }
-
-    return {selector}
-  },
-  extractId(element) {
-    return element.getId()
-  },
-  isStaleElementReferenceResult(result) {
-    if (!result) return false
-    return result instanceof Error && result.name === 'StaleElementReferenceError'
-  },
+  isCompatible,
+  isSelector,
+  toSupportedSelector,
+  toEyesSelector,
+  extractId,
+  isStaleElementReferenceResult,
 }

@@ -1,11 +1,12 @@
 'use strict'
-
 const {URL} = require('url')
-
-const {ArgumentGuard} = require('../utils/ArgumentGuard')
+const ArgumentGuard = require('../utils/ArgumentGuard')
 
 /**
- * @typedef {{url: string, username: (string|undefined), password: (string|undefined)}} ProxySettingsObject
+ * @typedef PlainProxySettings
+ * @prop {string} url
+ * @prop {string} [username]
+ * @prop {string} [password]
  */
 
 /**
@@ -86,4 +87,4 @@ class ProxySettings {
   }
 }
 
-exports.ProxySettings = ProxySettings
+module.exports = ProxySettings

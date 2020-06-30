@@ -196,4 +196,4 @@ class RenderStatusResults {
   }
 }
 
-exports.RenderStatusResults = RenderStatusResults
+module.exports = RenderStatusResults

@@ -1,7 +1,7 @@
 'use strict'
 
 const {GeneralUtils} = require('../..')
-const {TestResultsSummary} = require('./TestResultsSummary')
+const TestResultsSummary = require('./TestResultsSummary')
 
 class EyesRunner {
   constructor() {
@@ -75,4 +75,4 @@ class EyesRunner {
   }
 }
 
-exports.EyesRunner = EyesRunner
+module.exports = EyesRunner

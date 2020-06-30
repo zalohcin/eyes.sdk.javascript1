@@ -1,9 +1,11 @@
 'use strict'
 
-const {ArgumentGuard} = require('../utils/ArgumentGuard')
+const ArgumentGuard = require('../utils/ArgumentGuard')
 
 /**
- * @typedef {{width: number, height: number}} RectangleSizeObject
+ * @typedef PlainRectangleSize
+ * @prop {number} width
+ * @prop {number} height
  */
 
 /**
@@ -12,18 +14,7 @@ const {ArgumentGuard} = require('../utils/ArgumentGuard')
 class RectangleSize {
   /**
    * Creates a RectangleSize instance.
-   *
-   * @signature `new RectangleSize(rectangleSize)`
-   * @sigparam {RectangleSize} rectangleSize - The RectangleSize instance to clone from.
-   *
-   * @signature `new RectangleSize(object)`
-   * @sigparam {{width: number, height: number}} object - The size object to clone from.
-   *
-   * @signature `new RectangleSize(width, height)`
-   * @sigparam {number} width - The width of the rectangle.
-   * @sigparam {number} height - The height of the rectangle.
-   *
-   * @param {RectangleSize|RectangleSizeObject|number} varArg1 - The RectangleSize (or object) to clone from or the width of new RectangleSize.
+   * @param {RectangleSize|PlainRectangleSize|number} varArg1 - The RectangleSize (or object) to clone from or the width of new RectangleSize.
    * @param {number} [varArg2] - The height of new RectangleSize.
    */
   constructor(varArg1, varArg2) {
@@ -122,6 +113,7 @@ class RectangleSize {
   }
 }
 
+/** @type {RectangleSize} */
 RectangleSize.EMPTY = new RectangleSize(0, 0)
 
-exports.RectangleSize = RectangleSize
+module.exports = RectangleSize

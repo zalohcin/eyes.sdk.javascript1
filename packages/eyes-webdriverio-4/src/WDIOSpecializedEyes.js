@@ -12,6 +12,7 @@ const WDIOEyesClassic = EyesClassic.specialize({
   WrappedElement,
   CheckSettings,
 })
+
 const WDIOEyesVisualGrid = EyesVisualGrid.specialize({
   agentId: `eyes.webdriverio.visualgrid/${version}`,
   WrappedDriver,
@@ -19,6 +20,7 @@ const WDIOEyesVisualGrid = EyesVisualGrid.specialize({
   CheckSettings,
   VisualGridClient,
 })
+
 const WDIOEyesFactory = EyesFactory.specialize({
   EyesClassic: WDIOEyesClassic,
   EyesVisualGrid: WDIOEyesVisualGrid,

@@ -1,10 +1,7 @@
 'use strict'
-
-const {ArgumentGuard} = require('../utils/ArgumentGuard')
-const {BrowserNames} = require('./BrowserNames')
-const {OSNames} = require('./OSNames')
-
-/* eslint-disable prefer-destructuring */
+const BrowserNames = require('./BrowserNames')
+const OSNames = require('./OSNames')
+const ArgumentGuard = require('../utils/ArgumentGuard')
 
 const MAJOR_MINOR = '(\\d+)(?:[_.](\\d+))?'
 const PRODUCT = `(?:(%s)/${MAJOR_MINOR})`
@@ -249,4 +246,4 @@ class UserAgent {
   }
 }
 
-exports.UserAgent = UserAgent
+module.exports = UserAgent

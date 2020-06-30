@@ -3,11 +3,11 @@
 const axios = require('axios')
 const {URL} = require('url')
 const {getCaptureDomAndPollScript, getCaptureDomAndPollForIE} = require('@applitools/dom-capture')
-const {ArgumentGuard} = require('./utils/ArgumentGuard')
-const {GeneralUtils} = require('./utils/GeneralUtils')
-const {PerformanceUtils} = require('./utils/PerformanceUtils')
-const {EyesError} = require('./errors/EyesError')
-const {Location} = require('./geometry/Location')
+const ArgumentGuard = require('./utils/ArgumentGuard')
+const GeneralUtils = require('./utils/GeneralUtils')
+const PerformanceUtils = require('./utils/PerformanceUtils')
+const EyesError = require('./errors/EyesError')
+const Location = require('./geometry/Location')
 
 const DomCaptureReturnType = {
   OBJECT: 'OBJECT',
@@ -43,6 +43,7 @@ class DomCapture {
    * @param {EyesWrappedDriver} driver
    * @param {PositionProvider} [positionProvider]
    * @param {DomCaptureReturnType} [returnType]
+   * @param {string} [script]
    * @return {Promise<string|object>}
    */
   static async getFullWindowDom(
@@ -88,7 +89,7 @@ class DomCapture {
   }
 
   /**
-   * @return {Promise<{string}>}
+   * @return {Promise<string>}
    */
   async getWindowDom() {
     let script
@@ -111,7 +112,7 @@ class DomCapture {
   /**
    * @param {string} script
    * @param {string} url
-   * @return {Promise<{string}>}
+   * @return {Promise<string>}
    */
   async getFrameDom(script, url) {
     let timeout, result
@@ -288,5 +289,5 @@ class DomCapture {
 }
 
 Object.freeze(DomCaptureReturnType)
+module.exports = DomCapture
 exports.DomCaptureReturnType = DomCaptureReturnType
-exports.DomCapture = DomCapture

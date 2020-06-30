@@ -1,22 +1,19 @@
 'use strict'
+const ArgumentGuard = require('../utils/ArgumentGuard')
+const GeneralUtils = require('../utils/GeneralUtils')
+const CoordinatesType = require('../geometry/CoordinatesType')
+const Location = require('../geometry/Location')
+const RectangleSize = require('../geometry/RectangleSize')
+const Region = require('../geometry/Region')
+const MutableImage = require('../images/MutableImage')
 
-const {
-  GeneralUtils,
-  ArgumentGuard,
-  CoordinatesType,
-  Location,
-  RectangleSize,
-  Region,
-  MutableImage,
-} = require('../..')
-
-const {NullCutProvider} = require('../cropping/NullCutProvider')
+const NullCutProvider = require('../cropping/NullCutProvider')
 const NullRegionPositionCompensation = require('../positioning/NullRegionPositionCompensation')
 
 const MIN_SCREENSHOT_PART_HEIGHT = 10
 
 /**
- * @ignore
+ * @internal
  */
 class FullPageCaptureAlgorithm {
   /**
@@ -378,4 +375,4 @@ class FullPageCaptureAlgorithm {
   }
 }
 
-exports.FullPageCaptureAlgorithm = FullPageCaptureAlgorithm
+module.exports = FullPageCaptureAlgorithm

@@ -1,15 +1,12 @@
 'use strict'
-
-const {
-  ArgumentGuard,
-  GeneralUtils,
-  TypeUtils,
-  Region,
-  PerformanceUtils,
-  ImageMatchSettings,
-} = require('..')
-
-const {MatchWindowData, Options} = require('./match/MatchWindowData')
+const ArgumentGuard = require('./utils/ArgumentGuard')
+const GeneralUtils = require('./utils/GeneralUtils')
+const TypeUtils = require('./utils/TypeUtils')
+const Region = require('./geometry/Region')
+const PerformanceUtils = require('./utils/PerformanceUtils')
+const ImageMatchSettings = require('./config/ImageMatchSettings')
+const MatchWindowData = require('./match/MatchWindowData')
+const Options = require('./match/ImageMatchOptions')
 
 const MATCH_INTERVAL = 500 // Milliseconds
 
@@ -500,4 +497,4 @@ class MatchWindowTask {
 }
 
 MatchWindowTask.MATCH_INTERVAL = MATCH_INTERVAL
-exports.MatchWindowTask = MatchWindowTask
+module.exports = MatchWindowTask

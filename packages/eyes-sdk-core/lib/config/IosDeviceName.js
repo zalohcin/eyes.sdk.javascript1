@@ -1,10 +1,10 @@
-'use strict'
+const Enum = require('../utils/Enum')
 
 /**
- * @readonly
- * @enum {string}
+ * @typedef {string} IosDeviceName
  */
-const IosDeviceName = {
+
+const IosDeviceNames = Enum('IosDeviceName', {
   iPhone_11_Pro: 'iPhone 11 Pro',
   iPhone_11_Pro_Max: 'iPhone 11 Pro Max',
   iPhone_11: 'iPhone 11',
@@ -16,7 +16,6 @@ const IosDeviceName = {
   iPad_Pro_3: 'iPad Pro (12.9-inch) (3rd generation)',
   iPad_7: 'iPad (7th generation)',
   iPad_Air_2: 'iPad Air (2nd generation)',
-}
+})
 
-Object.freeze(IosDeviceName)
-exports.IosDeviceName = IosDeviceName
+module.exports = IosDeviceNames
