@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 11.2.0 - 2020/6/30
+
 - Add type definitions
 
 ## 11.1.0 - 2020/6/28
