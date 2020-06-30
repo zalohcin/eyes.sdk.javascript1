@@ -1,6 +1,8 @@
 'use strict'
 const AccessibilityMatchSettings = require('../config/AccessibilityMatchSettings')
 const GetAccessibilityRegion = require('./GetAccessibilityRegion')
+const AccessibilityRegionTypes = require('../config/AccessibilityRegionType')
+const ArgumentGuard = require('../utils/ArgumentGuard')
 
 /**
  * @typedef {import('../config/AccessibilityRegionType').AccessibilityRegionType} AccessibilityRegionType
@@ -25,6 +27,7 @@ class AccessibilityRegionByRectangle extends GetAccessibilityRegion {
    */
   constructor(rect, type) {
     super()
+    ArgumentGuard.isValidEnumValue(type, AccessibilityRegionTypes, false)
     this._rect = rect
     this._type = type
   }
