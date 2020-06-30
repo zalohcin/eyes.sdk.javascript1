@@ -16,7 +16,7 @@
     "coverage:prod": "coverage-tests create-tests && yarn test:coverage && coverage-tests process-report --send-report prod",
     "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-webdriverio-4' APPLITOOLS_BATCH_ID=$(uuidgen) XUNIT_FILE=coverage-test-report.xml mocha --no-timeouts --reporter spec-xunit-file --parallel --jobs 15 {'./test/coverage/generic/*.spec.js','../sdk-coverage-tests/coverage-tests/custom/**/*.spec.js'}",
     "types:generate": "rm -rf ./typings && tsc --declaration --declarationDir ./typings --allowJs --emitDeclarationOnly ./index.js",
-    "preversion": "bongo preversion && yarn test && yarn coverage:prod",
+    "preversion": "bongo preversion && yarn types:generate && yarn test && yarn coverage:prod",
     "version": "bongo version",
     "postversion": "bongo postversion",
     "start-chromedriver": "node scripts/start-chromedriver.js",
