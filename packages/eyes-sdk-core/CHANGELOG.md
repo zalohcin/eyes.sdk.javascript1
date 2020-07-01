@@ -5,6 +5,7 @@
 - cache correct viewport size value after fail set viewport size
 - improve for element client rect js snippet
 - fix js snippet to be compatible with IE ([Trello](https://trello.com/c/Y0Q6QAHK/406-wdio5-error-executing-javascript-fully-fullpagescreenshot))
+- replace concurrent requests to the browser with sequential requests ([Trello](https://trello.com/c/Idx6gS3e/419-gartner-ie-errors))
 
 ## 11.2.1 - 2020/6/30
 

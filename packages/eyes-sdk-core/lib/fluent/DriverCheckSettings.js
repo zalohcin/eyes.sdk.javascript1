@@ -967,8 +967,8 @@ class CheckSettings {
   /**
    * @private
    */
-  async toCheckWindowConfiguration(eyesWebDriver) {
-    const regions = await this._getPersistedRegions(eyesWebDriver)
+  async toCheckWindowConfiguration(driver) {
+    const regions = await this._getPersistedRegions(driver)
     return {
       ...regions,
       target: this._getTargetType(),
@@ -982,21 +982,21 @@ class CheckSettings {
   /**
    * @private
    */
-  async _getPersistedRegions(eyesWebDriver) {
-    const [ignore, floating, strict, layout, content, accessibility] = await Promise.all([
-      persistRegions(this.getIgnoreRegions()),
-      persistRegions(this.getFloatingRegions()),
-      persistRegions(this.getStrictRegions()),
-      persistRegions(this.getLayoutRegions()),
-      persistRegions(this.getContentRegions()),
-      persistRegions(this.getAccessibilityRegions()),
-    ])
+  async _getPersistedRegions(driver) {
+    return {
+      ignore: await persistRegions(this.getIgnoreRegions()),
+      floating: await persistRegions(this.getFloatingRegions()),
+      strict: await persistRegions(this.getStrictRegions()),
+      layout: await persistRegions(this.getLayoutRegions()),
+      content: await persistRegions(this.getContentRegions()),
+      accessibility: await persistRegions(this.getAccessibilityRegions()),
+    }
 
-    return {ignore, floating, strict, layout, content, accessibility}
-
-    async function persistRegions(regions) {
-      const persisted = await Promise.all(regions.map(r => r.toPersistedRegions(eyesWebDriver)))
-      return [].concat(...persisted)
+    async function persistRegions(regions = []) {
+      const persisted = []
+      for (const region of regions) {
+        persisted.push(await region.toPersistedRegions(driver))
+      }
     }
   }
 }
