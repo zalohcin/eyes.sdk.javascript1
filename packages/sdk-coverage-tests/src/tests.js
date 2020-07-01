@@ -12,9 +12,9 @@ module.exports = {
   TestAcmeLogin: ({driver, eyes}) => {
     driver.visit('https://afternoon-savannah-68940.herokuapp.com/#')
     eyes.open({appName: 'Eyes Selenium SDK - ACME', viewportSize: {width: 1024, height: 768}})
-    const username = driver.findElement('#username')
+    const username = driver.findElement('#username').ref('username')
     driver.type(username, 'adamC')
-    const password = driver.findElement('#password')
+    const password = driver.findElement('#password').ref('username')
     driver.type(password, 'MySecret123?')
     eyes.check({region: '#username'})
     eyes.check({region: '#password'})
@@ -205,7 +205,7 @@ module.exports = {
   TestCheckScrollableModal: ({driver, eyes}) => {
     driver.visit(url)
     eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
-    const element = driver.findElement('#centered')
+    const element = driver.findElement('#centered').ref('element')
     driver.click(element)
     eyes.check({region: '#modal-content', scrollRootElement: '#modal1', isFully: true})
     eyes.close(throwException)
@@ -312,7 +312,7 @@ module.exports = {
   TestCheckWindowWithIgnoreRegion_Fluent: ({driver, eyes}) => {
     driver.visit(url)
     eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
-    const input = driver.findElement('input')
+    const input = driver.findElement('input').ref('input')
     driver.type(input, 'My Input')
     eyes.check({
       ignoreRegions: [{left: 50, top: 50, width: 100, height: 100}],
@@ -408,10 +408,11 @@ module.exports = {
         appName: 'Eyes Selenium SDK - Fluent API',
         viewportSize: {width: 5000, height: 5000},
       })
-      const cachedViewportSize = eyes.getViewportSize()
-      const expectedViewportSize = driver.executeScript(
-        'return {height: window.innerHeight, width: window.innerWidth}',
-      )
+      const cachedViewportSize = eyes.getViewportSize().ref('cachedViewportSize')
+      const expectedViewportSize = driver
+        .executeScript('return {height: window.innerHeight, width: window.innerWidth}')
+        .type('Map<string, Number>')
+        .ref('expectedViewportSize')
       assert.strictEqual(cachedViewportSize.getWidth(), expectedViewportSize.width)
       assert.strictEqual(cachedViewportSize.getHeight(), expectedViewportSize.height)
       eyes.close(false)

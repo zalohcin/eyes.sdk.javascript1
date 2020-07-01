@@ -7,7 +7,7 @@ function makeSpecEmitter(options) {
     values.forEach((value, index) => {
       let stringified = ''
       if (value && value.isRef) {
-        stringified = value.resolve()
+        stringified = value.ref()
       } else if (typeof value === 'function') {
         stringified = value.toString()
       } else {
@@ -56,7 +56,7 @@ function makeSpecEmitter(options) {
 
   const driver = {
     build(options) {
-      return tracker.storeCommand(js`await specs.build(${options})`)
+      tracker.storeCommand(js`await specs.build(${options})`)
     },
     cleanup() {
       tracker.storeCommand(js`await specs.cleanup(driver)`)
@@ -77,23 +77,29 @@ function makeSpecEmitter(options) {
       tracker.storeCommand(js`await specs.switchToParentFrame(driver)`)
     },
     findElement(selector) {
-      return tracker.storeCommand(
-        js`await specs.findElement(driver, specs.toSupportedSelector({type: 'css', selector: ${selector}}))`,
-      )
+      return tracker
+        .storeCommand(
+          js`await specs.findElement(driver, specs.toSupportedSelector({type: 'css', selector: ${selector}}))`,
+        )
+        .type('Element')
     },
     findElements(selector) {
-      return tracker.storeCommand(
-        js`await specs.findElements(driver, specs.toSupportedSelector({type: 'css', selector: ${selector}}))`,
-      )
+      return tracker
+        .storeCommand(
+          js`await specs.findElements(driver, specs.toSupportedSelector({type: 'css', selector: ${selector}}))`,
+        )
+        .type('Array<Element>')
     },
     getWindowLocation() {
-      return tracker.storeCommand(js`await specs.getWindowLocation(driver)`)
+      return tracker
+        .storeCommand(js`await specs.getWindowLocation(driver)`)
+        .type('Map<String, Number>')
     },
     setWindowLocation(location) {
       tracker.storeCommand(js`await specs.setWindowLocation(driver, ${location})`)
     },
     getWindowSize() {
-      return tracker.storeCommand(js`await specs.getWindowSize(driver)`)
+      return tracker.storeCommand(js`await specs.getWindowSize(driver)`).type('Map<String, Number>')
     },
     setWindowSize(size) {
       tracker.storeCommand(js`await specs.setWindowSize(driver, ${size})`)
@@ -150,12 +156,16 @@ function makeSpecEmitter(options) {
 
   const eyes = {
     open({appName, viewportSize}) {
-      tracker.storeCommand(js`await eyes.open(
-        driver,
-        ${appName},
-        ${options.baselineTestName},
-        ${viewportSize},
-      )`)
+      return tracker
+        .storeCommand(
+          js`await eyes.open(
+            driver,
+            ${appName},
+            ${options.baselineTestName},
+            ${viewportSize},
+          )`,
+        )
+        .type('WrappedDriver')
     },
     check(checkSettings) {
       tracker.storeCommand(js`await eyes.check(${checkSettings})`)
@@ -222,7 +232,7 @@ function makeSpecEmitter(options) {
       tracker.storeCommand(js`await eyes.abort()`)
     },
     getViewportSize() {
-      return tracker.storeCommand(js`await eyes.getViewportSize()`)
+      return tracker.storeCommand(js`await eyes.getViewportSize()`).type('RectangleSize')
     },
   }
 

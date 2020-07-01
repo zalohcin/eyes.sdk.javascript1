@@ -52,6 +52,40 @@ function makeEmitTests(initializeSdkImplementation, coverageTests = defaultCover
   return {emitTests}
 }
 
+function Ref(syntax, resolver) {
+  const ref = function() {}
+  ref.isRef = true
+  ref.ref = function(name) {
+    if (name) {
+      ref._name = name
+      return this
+    } else if (ref._isResolved) {
+      return ref._name
+    } else {
+      ref._name = resolver({type: ref._type, name: ref._name})
+      ref._isResolved = true
+      return ref._name
+    }
+  }
+  ref.type = function(type) {
+    if (type) {
+      ref._type = ref
+      return this
+    } else {
+      return ref._type
+    }
+  }
+  return new Proxy(ref, {
+    get(ref, key) {
+      if (key in ref) return Reflect.get(ref, key)
+      return new Ref(syntax, () => syntax.getter({type: ref.type(), target: ref.ref(), key}))
+    },
+    apply(ref, _, args) {
+      return new Ref(syntax, () => syntax.call({target: ref.ref(), args: Array.from(args)}))
+    },
+  })
+}
+
 class EmitTracker {
   constructor() {
     this.hooks = {
@@ -80,38 +114,15 @@ class EmitTracker {
     this.commands = []
   }
 
-  createRef(resolve) {
-    const ref = function() {}
-    ref.isRef = true
-    ref.resolve = () => {
-      if (!ref.resolved) {
-        ref.resolved = resolve()
-      }
-      return ref.resolved
-    }
-    return new Proxy(ref, {
-      get: (ref, key) => {
-        if (key in ref) return Reflect.get(ref, key)
-        return this.createRef(() => this.syntax.getter({target: ref.resolve(), key}))
-      },
-      apply: (ref, _, args) => {
-        return this.createRef(() =>
-          this.syntax.call({target: ref.resolve(), args: Array.from(args)}),
-        )
-      },
-    })
-  }
-
   addSyntax(name, callback) {
     this.syntax[name] = callback
   }
 
   storeCommand(command) {
     const id = this.commands.push(command)
-    return this.createRef(() => {
-      const name = `var_${id}`
+    return new Ref(this.syntax, ({name = `var_${id}`, type} = {}) => {
       const value = this.commands[id - 1]
-      this.commands[id - 1] = this.syntax.var({name, value})
+      this.commands[id - 1] = this.syntax.var({name, value, type})
       return name
     })
   }
