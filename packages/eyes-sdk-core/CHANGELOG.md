@@ -3,6 +3,7 @@
 ## Unreleased
 
 - cache correct viewport size value after fail set viewport size
+- improve for element client rect js snippet
 
 ## 11.2.1 - 2020/6/30
 
