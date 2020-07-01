@@ -4,6 +4,7 @@
 
 - cache correct viewport size value after fail set viewport size
 - improve for element client rect js snippet
+- fix js snippet to be compatible with IE ([Trello](https://trello.com/c/Y0Q6QAHK/406-wdio5-error-executing-javascript-fully-fullpagescreenshot))
 
 ## 11.2.1 - 2020/6/30
 
