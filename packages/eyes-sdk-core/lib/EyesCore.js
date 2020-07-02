@@ -8,6 +8,7 @@ const ReadOnlyPropertyHandler = require('./handler/ReadOnlyPropertyHandler')
 const TestFailedError = require('./errors/TestFailedError')
 const EyesUtils = require('./EyesUtils')
 const EyesBase = require('./EyesBase')
+const Logger = require('./logging/Logger')
 
 /**
  * @template TDriver, TElement, TSelector
@@ -296,6 +297,16 @@ class EyesCore extends EyesBase {
       ? viewportSize
       : EyesUtils.getTopContextViewportSize(this._logger, this._driver)
   }
+
+  static async setViewportSize(driver, viewportSize) {
+    const logger = new Logger()
+    const wrappedDriver = new this.WrappedDriver(logger, driver)
+    if (!(await wrappedDriver.controller.isMobile())) {
+      ArgumentGuard.notNull(viewportSize, 'viewportSize')
+      await EyesUtils.setViewportSize(logger, wrappedDriver, new RectangleSize(viewportSize))
+    }
+  }
+
   /**
    * Use this method only if you made a previous call to {@link #open(WebDriver, String, String)} or one of its variants.
    * @protected
