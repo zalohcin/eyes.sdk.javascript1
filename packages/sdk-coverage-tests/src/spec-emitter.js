@@ -155,6 +155,11 @@ function makeSpecEmitter(options) {
   }
 
   const eyes = {
+    constructor: {
+      setViewportSize(viewportSize) {
+        tracker.storeCommand(js`Eyes.setViewportSize(driver, ${viewportSize})`)
+      },
+    },
     open({appName, viewportSize}) {
       return tracker
         .storeCommand(
