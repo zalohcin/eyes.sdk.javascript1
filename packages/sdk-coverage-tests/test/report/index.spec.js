@@ -82,11 +82,13 @@ describe('Report', () => {
   })
   it(`should omit skipped testcases`, () => {
     const altXmlResult = loadFixture('single-suite-skipped-test.xml')
-    convertJunitXmlToResultSchema({xmlResult: altXmlResult})
+    const result = convertJunitXmlToResultSchema({xmlResult: altXmlResult})
+    assert.deepStrictEqual(result.length, 0)
   })
   it(`should omit skipped testcases with multiple testcases`, () => {
     const altXmlResult = loadFixture('single-suite-multiple-tests-with-skipped.xml')
-    convertJunitXmlToResultSchema({xmlResult: altXmlResult})
+    const result = convertJunitXmlToResultSchema({xmlResult: altXmlResult})
+    assert.deepStrictEqual(result.length, 3)
   })
   it('should convert xml report to QA report schema as JSON', () => {
     assert.deepStrictEqual(convertJunitXmlToResultSchema({xmlResult}), [
