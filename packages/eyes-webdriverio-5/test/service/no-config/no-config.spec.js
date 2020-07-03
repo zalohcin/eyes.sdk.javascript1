@@ -3,6 +3,7 @@
 const {expect} = require('chai')
 const {Target} = require('../../..')
 const {ApiAssertions} = require('@applitools/sdk-coverage-tests/coverage-tests')
+const {version} = require('../../../package.json')
 
 describe('EyesServiceTest', () => {
   it('checkWindow', () => {
@@ -12,6 +13,6 @@ describe('EyesServiceTest', () => {
     const data = browser.call(() =>
       ApiAssertions.getApiData(testResults, process.env.APPLITOOLS_API_KEY),
     )
-    expect(data.startInfo.agentId).to.equal('eyes-webdriverio-service/5.13.3')
+    expect(data.startInfo.agentId).to.equal(`eyes-webdriverio-service/${version}`)
   })
 })

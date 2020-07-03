@@ -1,26 +1,27 @@
 'use strict'
-const {ArgumentGuard} = require('../utils/ArgumentGuard')
-const {BrowserNames} = require('../useragent/BrowserNames')
-const {CoordinatesType} = require('../geometry/CoordinatesType')
-const {Region} = require('../geometry/Region')
-const {Location} = require('../geometry/Location')
-const {RectangleSize} = require('../geometry/RectangleSize')
+const ArgumentGuard = require('../utils/ArgumentGuard')
+const BrowserNames = require('../useragent/BrowserNames')
+const CoordinatesType = require('../geometry/CoordinatesType')
+const Region = require('../geometry/Region')
+const Location = require('../geometry/Location')
+const RectangleSize = require('../geometry/RectangleSize')
 const CoordinatesTypeConversionError = require('../errors/CoordinatesTypeConversionError')
-const OutOfBoundsError = require('../errors/OutOfBoundsError').OutOfBoundsError
+const OutOfBoundsError = require('../errors/OutOfBoundsError')
 const FrameChain = require('../frames/FrameChain')
+const Enum = require('../utils/Enum')
 const EyesUtils = require('../EyesUtils')
 
 /**
- * @typedef {import('../logging/Logger').Logger} Logger
- * @typedef {import('../images/MutableImage').MutableImage} MutableImage
+ * @typedef {import('../logging/Logger')} Logger
+ * @typedef {import('../images/MutableImage')} MutableImage
  * @typedef {import('../wrappers/EyesWrappedElement')} EyesWrappedElement
  */
 
 /**
- * @readonly
- * @enum {number}
+ * @typedef {number} ScreenshotType
  */
-const ScreenshotType = Object.freeze({
+
+const ScreenshotTypes = Enum('ScreenshotType', {
   VIEWPORT: 1,
   ENTIRE_FRAME: 2,
 })
@@ -86,9 +87,9 @@ class EyesScreenshot {
         eyes._userAgent.getBrowser() === BrowserNames.Firefox &&
         Number.parseInt(eyes._userAgent.getBrowserMajorVersion(), 10) < 48)
     ) {
-      return ScreenshotType.VIEWPORT
+      return ScreenshotTypes.VIEWPORT
     } else {
-      return ScreenshotType.ENTIRE_FRAME
+      return ScreenshotTypes.ENTIRE_FRAME
     }
   }
 
@@ -126,7 +127,7 @@ class EyesScreenshot {
    */
   async initFromFrameSize(entireFrameSize) {
     // The frame comprises the entire screenshot.
-    this._screenshotType = ScreenshotType.ENTIRE_FRAME
+    this._screenshotType = ScreenshotTypes.ENTIRE_FRAME
 
     this._currentFrameScrollPosition = Location.ZERO
     this._frameLocationInScreenshot = Location.ZERO
@@ -137,10 +138,9 @@ class EyesScreenshot {
 
   /**
    * @param {ScreenshotType} [screenshotType] - screenshot's type (e.g., viewport/full page)
-   * @param {Location} [frameLocationInScreenshot] - current frame's location in the screenshot
    * @return {Promise<EyesScreenshot>}
    */
-  async init(screenshotType, frameLocationInScreenshot) {
+  async init(screenshotType) {
     this._screenshotType =
       screenshotType || (await EyesScreenshot.getScreenshotType(this._image, this._eyes))
     this._frameChain = this._eyes._context.frameChain
@@ -157,7 +157,7 @@ class EyesScreenshot {
 
     if (!this._frameChain.isEmpty) {
       this._frameLocationInScreenshot = this._frameChain.getCurrentFrameLocationInViewport()
-      if (this._screenshotType === ScreenshotType.ENTIRE_FRAME) {
+      if (this._screenshotType === ScreenshotTypes.ENTIRE_FRAME) {
         this._frameLocationInScreenshot = this._frameLocationInScreenshot.offsetByLocation(
           this._frameChain.first.parentScrollLocation,
         )
@@ -315,7 +315,7 @@ class EyesScreenshot {
 
     // If we're not inside a frame, and the screenshot is the entire page, then the context as-is/relative are the same (notice
     // screenshot as-is might be different, e.g., if it is actually a sub-screenshot of a region).
-    if (this._frameChain.size === 0 && this._screenshotType === ScreenshotType.ENTIRE_FRAME) {
+    if (this._frameChain.size === 0 && this._screenshotType === ScreenshotTypes.ENTIRE_FRAME) {
       if (
         (from === CoordinatesType.CONTEXT_RELATIVE || from === CoordinatesType.CONTEXT_AS_IS) &&
         to === CoordinatesType.SCREENSHOT_AS_IS
@@ -480,5 +480,5 @@ class EyesScreenshot {
   }
 }
 
-EyesScreenshot.ScreenshotType = ScreenshotType
+EyesScreenshot.ScreenshotTypes = ScreenshotTypes
 module.exports = EyesScreenshot

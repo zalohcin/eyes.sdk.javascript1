@@ -2,7 +2,7 @@
 
 const {ArgumentGuard} = require('../..')
 
-const {ScaleProvider} = require('./ScaleProvider')
+const ScaleProvider = require('./ScaleProvider')
 
 class FixedScaleProvider extends ScaleProvider {
   /**
@@ -23,4 +23,4 @@ class FixedScaleProvider extends ScaleProvider {
   }
 }
 
-exports.FixedScaleProvider = FixedScaleProvider
+module.exports = FixedScaleProvider

@@ -1,14 +1,14 @@
 'use strict'
 
-const {ArgumentGuard} = require('../utils/ArgumentGuard')
-const {Region} = require('../geometry/Region')
-const {Location} = require('../geometry/Location')
-const {RectangleSize} = require('../geometry/RectangleSize')
+const ArgumentGuard = require('../utils/ArgumentGuard')
+const Region = require('../geometry/Region')
+const Location = require('../geometry/Location')
+const RectangleSize = require('../geometry/RectangleSize')
 
 /**
- * @typedef {import('../..').Logger} Logger
- * @typedef {import('../..').Location} Location
- * @typedef {import('../..').RectangleSize} RectangleSize
+ * @typedef {import('../logging/Logger')} Logger
+ * @typedef {import('../geometry/Location')} Location
+ * @typedef {import('../geometry/RectangleSize')} RectangleSize
  */
 
 class FrameChain {

@@ -1,28 +1,40 @@
 'use strict'
-const {Configuration} = require('./config/Configuration')
-const {CorsIframeHandle} = require('./capture/CorsIframeHandler')
-const {EyesRunner} = require('./runner/EyesRunner')
-const {ClassicRunner} = require('./runner/ClassicRunner')
-const {VisualGridRunner} = require('./runner/VisualGridRunner')
+const Configuration = require('./config/Configuration')
+const CorsIframeHandles = require('./capture/CorsIframeHandles')
+const EyesRunner = require('./runner/EyesRunner')
+const ClassicRunner = require('./runner/ClassicRunner')
+const VisualGridRunner = require('./runner/VisualGridRunner')
 
 /**
- * @typedef {import('./EyesClassic')} EyesClassic
- * @typedef {import('./EyesVisualGrid')} EyesVisualGrid
- * @typedef {import('./runner/EyesRunner').EyesRunner} EyesRunner
- * @typedef {import('./runner/ClassicRunner').ClassicRunner} ClassicRunner
- * @typedef {import('./runner/VisualGridRunner').VisualGridRunner} VisualGridRunner
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./EyesClassic')<TDriver, TElement, TSelector>} EyesClassic
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./EyesVisualGrid')<TDriver, TElement, TSelector>} EyesVisualGrid
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {new <TRunner>(serverUrl?: string|boolean|TRunner, isDisabled?: boolean, runner?: TRunner) => TRunner extends VisualGridRunner ? EyesVisualGrid<TDriver, TElement, TSelector> : EyesClassic<TDriver, TElement, TSelector>} EyesFactoryCtor
  */
 
 /**
  * This class represents an abstraction for construction of {@link EyesClassic} and {@link EyesVisualGrid}
+ *
+ * @template TDriver
+ * @template TElement
+ * @template TSelector
  */
 class EyesFactory {
   /**
    * Return a specialized
+   * @template TDriver, TElement, TSelector
    * @param {Object} implementations - implementations of related classes
-   * @param {EyesClassic} implementations.EyesClassic - specialized implementation of {@link EyesClassic} class
-   * @param {EyesVisualGrid} implementations.EyesVisualGrid - specialized implementation of {@link EyesVisualGrid} class
-   * @return {EyesFactory} specialized version of {@link EyesFactory}
+   * @param {new (...args: any[]) => EyesClassic<TDriver, TElement, TSelector>} implementations.EyesClassic - specialized implementation of {@link EyesClassic} class
+   * @param {new (...args: any[]) => EyesVisualGrid<TDriver, TElement, TSelector>} implementations.EyesVisualGrid - specialized implementation of {@link EyesVisualGrid} class
+   * @return {EyesFactoryCtor<TDriver, TElement, TSelector>} specialized version of {@link EyesFactory}
    */
   static specialize({EyesClassic, EyesVisualGrid}) {
     return class extends EyesFactory {
@@ -41,11 +53,9 @@ class EyesFactory {
     }
   }
   /**
-   * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
-   * @param {string|boolean|VisualGridRunner} [serverUrl=EyesBase.getDefaultServerUrl()] - Eyes server URL
+   * @param {string|boolean|EyesRunner} [serverUrl=EyesBase.getDefaultServerUrl()] - Eyes server URL
    * @param {boolean} [isDisabled=false] - set to true to disable Applitools Eyes and use the webdriver directly
    * @param {EyesRunner} [runner=new ClassicRunner()] - runner related to the wanted Eyes implementation
-   * @return {EyesClassic|EyesVisualGrid} instance of Eyes related to the provided runner
    */
   constructor(serverUrl, isDisabled, runner = new ClassicRunner()) {
     if (serverUrl instanceof EyesRunner) {
@@ -57,9 +67,7 @@ class EyesFactory {
     }
     return new this.constructor.EyesClassic(serverUrl, isDisabled, runner)
   }
-
   /**
-   * @private
    * @param {string} [serverUrl] - The Eyes server URL.
    * @param {boolean} [isDisabled=false] - Set {@code true} to disable Applitools Eyes and use the webdriver directly.
    * @param {Object} [config] - Additional configuration object.
@@ -85,7 +93,7 @@ class EyesFactory {
       eyes = new this.EyesClassic(serverUrl, isDisabled)
     }
 
-    eyes._corsIframeHandle = CorsIframeHandle.BLANK
+    eyes._corsIframeHandle = CorsIframeHandles.BLANK
 
     return eyes
   }

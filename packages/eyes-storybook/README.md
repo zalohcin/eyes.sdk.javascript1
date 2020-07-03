@@ -20,21 +20,20 @@ Applitools Eyes SDK for [Storybook](http://storybook.js.org).
   * [Getting a screenshot of multiple browsers in parallel](#getting-a-screenshot-of-multiple-browsers-in-parallel)
   * [Device emulation](#device-emulation)
 - [Per component configuration](#per-component-configuration)
-    + [The following properties are supported:](#the-following-properties-are-supported-)
-  * [`include`](#-include-)
-  * [`variations`](#-variations-)
-  * [`waitBeforeScreenshot`](#-waitbeforescreenshot-)
-  * [`properties`](#-properties-)
-  * [`ignoreRegions`](#-ignoreregions-)
-  * [`floatingRegions`](#-floatingregions-)
-  * [`layoutRegions`](#-layoutregions-)
-  * [`contentRegions`](#-contentregions-)
-  * [`strictRegions`](#-strictregions-)
-  * [`accessibilityRegions`](#-accessibilityregions-)
-  * [`accessibilityValidation`](#-accessibilityvalidation-)
-  * [Parameters that cannot be set as an Advanced configuration](#parameters-that-cannot-be-set-as-an--advanced-configuration---advanced-configuration-)
-  * [`runBefore`](#-runbefore-)
-  * [`scriptHooks`](#-scripthooks-)
+  * [`include`](#include)
+  * [`variations`](#variations)
+  * [`waitBeforeScreenshot`](#waitbeforescreenshot)
+  * [`properties`](#properties)
+  * [`ignoreRegions`](#ignoreregions)
+  * [`floatingRegions`](#floatingregions)
+  * [`layoutRegions`](#layoutregions)
+  * [`contentRegions`](#contentregions)
+  * [`strictRegions`](#strictregions)
+  * [`accessibilityRegions`](#accessibilityregions)
+  * [`accessibilityValidation`](#accessibilityvalidation)
+  * [Parameters that cannot be set as an Advanced configuration](#parameters-that-cannot-be-set-as-an--advanced-configuration---advanced-configuration)
+  * [`runBefore`](#runbefore)
+  * [`scriptHooks`](#scripthooks)
     + [beforeCaptureScreenshot](#beforecapturescreenshot)
 - [Running Eyes-Storybook in Docker](#running-eyes-storybook-in-docker)
 - [Dealing with dynamic data](#dealing-with-dynamic-data)
@@ -309,7 +308,7 @@ There are two ways to provide configuration for a specific story, or a group of 
 
 _Specifying a value locally in the story takes precedence over the global config value._
 
-#### The following properties are supported:
+**The following properties are supported:**
 
 ### `include`
 
@@ -370,6 +369,20 @@ _Note that the predicate option for `waitBeforeScreenshot` is currently not avai
 
 Adds custom properties for each test. These show up in Test Manager, and tests can be grouped by custom properties. By default, Eyes-Storybook adds 2 custom properties for each test: the **Component name** and **State** of each component. Adding more properties via this config param will **not** override these two properties.
 
+For example:
+
+```js
+storiesOf('Components with custom properties', module)
+  .add(
+    'Some story',
+    () => <span id="container" class="loading"></span>,
+    {eyes: { properties: [
+      {name: 'some prop #1', value: 'some value #1'},
+      {name: 'some prop #2', value: 'some value #2'},
+    ] }}
+  );
+```
+
 ### `ignoreRegions`
 
 A single or an array of regions to ignore when checking for visual differences. For example:
@@ -383,7 +396,12 @@ storiesOf('Components with ignored region', module)
         <span>I am visually perfect!</span>
         <span className="ignore-this">this should be ignored</span>
       </div>,
-    {eyes: { ignoreRegions: [{selector: '.ignore-this'}] }}
+    {eyes: {
+      ignoreRegions: [
+        {selector: '.ignore-this'}, // by css selector
+        {left: 10, top: 20, width: 200, height: 80} // by absolute coordinates
+      ]}
+    }
   )
 ```
 
@@ -400,13 +418,27 @@ storiesOf('Components with floating region', module)
         <span>I am visually perfect!</span>
         <span className="floating-region">this should be floating</span>
       </div>,
-    {eyes: { floatingRegions: [{
-      selector: '.floating-region',
-      maxUpOffset: 10,
-      maxDownOffset: 20,
-      maxLeftOffset: 30,
-      maxRightOffset: 40,
-    }] }}
+    {eyes: {
+      floatingRegions: [
+        { // by selector
+          selector: '.floating-region',
+          maxUpOffset: 10,
+          maxDownOffset: 20,
+          maxLeftOffset: 30,
+          maxRightOffset: 40,
+        },
+        { // by absolute coordinates
+          left: 10,
+          top: 20,
+          width: 200,
+          height: 80,
+          maxUpOffset: 10,
+          maxDownOffset: 20,
+          maxLeftOffset: 30,
+          maxRightOffset: 40,
+        }
+      ]}
+    }
   )
 ```
 
@@ -423,7 +455,12 @@ storiesOf('Components with layout region', module)
         <span>I am visually perfect!</span>
         <span className="layout-region">this should be compared with layout match level</span>
       </div>,
-    {eyes: { layoutRegions: [{selector: '.layout-region'}] }}
+    {eyes: {
+      layoutRegions: [
+        {selector: '.layout-region'}, // by css selector
+        {left: 10, top: 20, width: 200, height: 80} // by absolute coordinates
+      ]}
+    }
   )
 ```
 
@@ -440,7 +477,12 @@ storiesOf('Components with content region', module)
         <span>I am visually perfect!</span>
         <span className="content-region">this should be compared with content match level</span>
       </div>,
-    {eyes: { contentRegions: [{selector: '.content-region'}] }}
+    {eyes: {
+      contentRegions: [
+        {selector: '.content-region'}, // by css selector
+        {left: 10, top: 20, width: 200, height: 80} // by absolute coordinates
+      ]}
+    }
   )
 ```
 
@@ -457,7 +499,12 @@ storiesOf('Components with strict region', module)
         <span>I am visually perfect!</span>
         <span className="strict-region">this should be compared with strict match level</span>
       </div>,
-    {eyes: { strictRegions: [{selector: '.strict-region'}] }}
+    {eyes: {
+      strictRegions: [
+        {selector: '.strict-region'}, // by css selector
+        {left: 10, top: 20, width: 200, height: 80} // by absolute coordinates
+      ]}
+    }
   )
 ```
 
@@ -469,12 +516,15 @@ A single or an array of regions for accessibility checking. For example:
 storiesOf('Components with accessibility regions', module)
   .add(
     'Some story',
-    () => <div>
-      <span>I am visually perfect!<span>
-      <span className="check-me">this should be tested for accessibility</span>
+    () =>
+      <div>
+        <span>I am visually perfect!</span>
+        <span className="check-me">this should be tested for accessibility</span>
+      </div>,
     {eyes: {
       accessibilityRegions: [
-        {accessibilityType: 'RegularText', selector: '.check-me'},
+        {accessibilityType: 'RegularText', selector: '.check-me'}, // by css selector
+        {accessibilityType: 'RegularText', left: 10, top: 20, width: 200, height: 80} // by absolute coordinates
       ]
     }}
   )

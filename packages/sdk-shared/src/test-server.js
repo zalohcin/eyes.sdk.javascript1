@@ -6,20 +6,20 @@ const morgan = require('morgan')
 const {resolve} = require('path')
 const cors = require('cors')
 
-module.exports = ({
+function startTestServer({
   staticPath = resolve('./test/fixtures'),
   port = 0,
-  allowCors = false,
-  showLogs = false,
-  middleWare = undefined,
-} = {}) => {
+  allowCors,
+  showLogs,
+  middlewareFile,
+} = {}) {
   const app = express()
   app.use(cookieParser())
   if (allowCors) {
     app.use(cors())
   }
-  if (middleWare) {
-    app.use(middleWare)
+  if (middlewareFile) {
+    app.use(require(middlewareFile))
   }
   if (showLogs) {
     app.use(morgan('tiny'))
@@ -41,7 +41,7 @@ module.exports = ({
   app.use('/', express.static(staticPath))
   app.get('/err*', (_req, res) => res.sendStatus(500))
 
-  const log = args => showLogs && console.log(...args)
+  const log = args => showLogs && console.log(args)
 
   return new Promise((resolve, reject) => {
     const server = app.listen(port, err => {
@@ -70,3 +70,25 @@ module.exports = ({
     })
   })
 }
+
+if (require.main === module) {
+  const {argv} = require('yargs')
+  console.log('running test server', argv)
+  startTestServer(argv)
+    .then(({close, port}) => {
+      process.on('SIGTERM', () => {
+        close()
+      })
+      if (process.send) {
+        process.send({success: true, port})
+      }
+    })
+    .catch(err => {
+      if (process.send) {
+        process.send({success: false, err})
+      }
+      process.exit(1)
+    })
+}
+
+module.exports = startTestServer

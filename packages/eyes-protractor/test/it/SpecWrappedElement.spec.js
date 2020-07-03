@@ -2,6 +2,7 @@ const assert = require('assert')
 const {WebElement} = require('protractor')
 const driverSpecs = require('../../src/SpecWrappedDriver')
 const specs = require('../../src/SpecWrappedElement')
+const {EyesError} = require('@applitools/eyes-sdk-core')
 
 describe('SpecWrappedElement', () => {
   let driver
@@ -110,6 +111,17 @@ describe('SpecWrappedElement', () => {
       await driver.executeScript('return null', element)
     } catch (err) {
       assert.strictEqual(specs.isStaleElementReferenceResult(err), true)
+    }
+  })
+
+  it('isStaleElementReferenceResult(eyesErr)', async () => {
+    const element = await driver.findElement(driver.by.css('div'))
+    await driver.navigate().refresh()
+    try {
+      await driver.executeScript('return null', element)
+    } catch (err) {
+      const eyesErr = new EyesError('msg', err)
+      assert.strictEqual(specs.isStaleElementReferenceResult(eyesErr), true)
     }
   })
 })

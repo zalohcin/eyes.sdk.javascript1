@@ -16,8 +16,11 @@ const DEFAULT_PROPS = {
 }
 
 class MockDriver {
-  constructor() {
+  constructor({isNative = false, isMobile = false} = {}) {
+    this._isNative = isNative
+    this._isMobile = isMobile
     this._window = {
+      title: 'Default Page Title',
       url: 'http://default.url',
       rect: {x: 0, y: 0, width: 1000, height: 1000},
     }
@@ -28,6 +31,7 @@ class MockDriver {
       document: {id: Symbol('documentId')},
     })
     this._contextId = null
+    this.mockElement('html', {scrollPosition: {x: 0, y: 0}})
     this.mockScript(EyesJsSnippets.GET_CURRENT_CONTEXT_INFO, () => {
       const context = this._contexts.get(this._contextId)
       const isRoot = !this._contextId
@@ -62,21 +66,10 @@ class MockDriver {
     this.mockScript(EyesJsSnippets.GET_ELEMENT_PROPERTIES, (properties, element) => {
       return properties.map(property => (element.props || {})[property] || DEFAULT_PROPS[property])
     })
-    this.mockScript(EyesJsSnippets.GET_SCROLL_ROOT_ELEMENT, () => {
-      const context = this._contexts.get(this._contextId)
-      if (!context.document.scrollingElement) {
-        context.document.scrollingElement = {id: Symbol('scrolling element id')}
-      }
-      return context.document.scrollingElement
-    })
     this.mockScript(EyesJsSnippets.SCROLL_TO, (offset, element) => {
       let scrollingElement = element
       if (!element) {
-        const context = this._contexts.get(this._contextId).document
-        if (!context.scrollingElement) {
-          context.scrollingElement = {id: Symbol('scrolling element id')}
-        }
-        scrollingElement = context.scrollingElement
+        scrollingElement = this.findElement('html')
       }
       scrollingElement.scrollPosition = offset
       return [scrollingElement.scrollPosition.x, scrollingElement.scrollPosition.y]
@@ -84,11 +77,7 @@ class MockDriver {
     this.mockScript(EyesJsSnippets.GET_SCROLL_POSITION, element => {
       let scrollingElement = element
       if (!element) {
-        const context = this._contexts.get(this._contextId).document
-        if (!context.scrollingElement) {
-          context.scrollingElement = {id: Symbol('scrolling element id')}
-        }
-        scrollingElement = context.scrollingElement
+        scrollingElement = this.findElement('html')
       }
       if (!scrollingElement.scrollPosition) {
         scrollingElement.scrollPosition = {x: 0, y: 0}
@@ -147,6 +136,10 @@ class MockDriver {
         document: {id: Symbol('documentId')},
       })
       element.contextId = contextId
+      this.mockElement('html', {
+        parentContextId: contextId,
+        scrollPosition: {x: 0, y: 0},
+      })
     }
     return Object.freeze(element)
   }
@@ -209,9 +202,15 @@ class MockDriver {
     Object.assign(this._window.rect, rect)
   }
   async getUrl() {
+    if (this._isNative) throw new Error("Native context doesn't support this method")
     return this._window.url
   }
+  async getTitle() {
+    if (this._isNative) throw new Error("Native context doesn't support this method")
+    return this._window.title
+  }
   async visit(url) {
+    if (this._isNative) throw new Error("Native context doesn't support this method")
     this._window.url = url
   }
   async takeScreenshot() {

@@ -29,6 +29,16 @@ describe('Report', () => {
       const result = parseJunitXmlForTests(xmlResult)
       assert(result[0].hasOwnProperty('_attributes'))
     })
+    it('should support multiple suites with multiple tests at every suite', () => {
+      const altXmlResult = loadFixture('multiple-suites-multiple-tests-each.xml')
+      const result = parseJunitXmlForTests(altXmlResult)
+      assert(result[0].hasOwnProperty('_attributes'))
+    })
+    it('should support multiple suites with one suite with multiple tests', () => {
+      const altXmlResult = loadFixture('multiple-suites-multiple-tests-one.xml')
+      const result = parseJunitXmlForTests(altXmlResult)
+      assert(result[0].hasOwnProperty('_attributes'))
+    })
     it('should support multiple suites with a single test', () => {
       const altXmlResult = loadFixture('multiple-suites-single-test.xml')
       const result = parseJunitXmlForTests(altXmlResult)
@@ -73,7 +83,7 @@ describe('Report', () => {
   it('should convert xml report to QA report schema as JSON', () => {
     assert.deepStrictEqual(convertJunitXmlToResultSchema({xmlResult}), [
       {
-        test_name: 'TestCheckWindow_VG',
+        test_name: 'TestCheckWindow',
         parameters: {
           browser: 'chrome',
           mode: 'visualgrid',
@@ -89,7 +99,7 @@ describe('Report', () => {
         passed: true,
       },
       {
-        test_name: 'TestCheckWindow_Scroll',
+        test_name: 'TestCheckWindow',
         parameters: {
           browser: 'chrome',
           mode: 'scroll',
@@ -105,7 +115,7 @@ describe('Report', () => {
       sandbox: true,
       results: [
         {
-          test_name: 'TestCheckWindow_VG',
+          test_name: 'TestCheckWindow',
           parameters: {
             browser: 'chrome',
             mode: 'visualgrid',
@@ -121,7 +131,7 @@ describe('Report', () => {
           passed: true,
         },
         {
-          test_name: 'TestCheckWindow_Scroll',
+          test_name: 'TestCheckWindow',
           parameters: {
             browser: 'chrome',
             mode: 'scroll',

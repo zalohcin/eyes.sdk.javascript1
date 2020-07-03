@@ -18,10 +18,11 @@ class EyesError extends Error {
     this.message = message
 
     if (error instanceof Error) {
+      this.originalError = error
       this.message = `${message}: ${error.message}`
       this.stack = error.stack
     }
   }
 }
 
-exports.EyesError = EyesError
+module.exports = EyesError

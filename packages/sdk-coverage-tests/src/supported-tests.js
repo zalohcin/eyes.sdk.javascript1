@@ -309,4 +309,5 @@ module.exports = [
   {name: 'TestScrollableContentInModal_Fully', executionMode: {isCssStitching: true}},
   {name: 'TestScrollableContentInModal_Fully', executionMode: {isScrollStitching: true}},
   {name: 'TestWindowWithModal_Fully', executionMode: {isScrollStitching: true}},
+  {name: 'TestTooBigViewportSize', executionMode: {isCssStitching: true}},
 ]

@@ -1,7 +1,6 @@
 'use strict'
 
-const {BrowserNames} = require('../..')
-
+const BrowserNames = require('../useragent/BrowserNames')
 const TakesScreenshotImageProvider = require('./TakesScreenshotImageProvider')
 const FirefoxScreenshotImageProvider = require('./FirefoxScreenshotImageProvider')
 const SafariScreenshotImageProvider = require('./SafariScreenshotImageProvider')

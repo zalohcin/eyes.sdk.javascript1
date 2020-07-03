@@ -1,13 +1,13 @@
 {
   "name": "@applitools/eyes.webdriverio",
-  "version": "2.17.0",
+  "version": "2.18.0",
   "description": "Applitools Eyes SDK for WebdriverIO",
   "main": "index.js",
+  "typings": "./typings/index.d.ts",
   "scripts": {
     "lint": "eslint '**/*.js'",
     "render": "node ../sdk-shared/src/render.js",
     "test": "yarn test:unit && yarn test:it && yarn test:e2e",
-    "test:tmp": "mocha --no-timeouts test/coverage/custom/* # TEST AND REMOVE SCRIPT AFTER PR 151 MERGE !!",
     "test:e2e": "mocha --no-timeouts \"test/e2e/*.js\"",
     "test:it": "mocha --no-timeouts \"test/it/**/*.js\"",
     "test:unit": "mocha \"test/unit/**/*.js\"",
@@ -15,7 +15,8 @@
     "coverage:sandbox": "coverage-tests create-tests && yarn test:coverage && coverage-tests process-report",
     "coverage:prod": "coverage-tests create-tests && yarn test:coverage && coverage-tests process-report --send-report prod",
     "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-webdriverio-4' APPLITOOLS_BATCH_ID=$(uuidgen) XUNIT_FILE=coverage-test-report.xml mocha --no-timeouts --reporter spec-xunit-file --parallel --jobs 15 {'./test/coverage/generic/*.spec.js','../sdk-coverage-tests/coverage-tests/custom/**/*.spec.js'}",
-    "preversion": "bongo preversion && yarn test && yarn coverage:prod",
+    "types:generate": "rm -rf ./typings && tsc --declaration --declarationDir ./typings --allowJs --emitDeclarationOnly ./index.js",
+    "preversion": "bongo preversion && yarn types:generate && yarn test && yarn coverage:prod",
     "version": "bongo version",
     "postversion": "bongo postversion",
     "start-chromedriver": "node scripts/start-chromedriver.js",
@@ -26,13 +27,17 @@
   "license": "SEE LICENSE IN LICENSE",
   "repository": "https://github.com/applitools/eyes.sdk.javascript1",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "11.0.5",
-    "@applitools/visual-grid-client": "14.4.4"
+    "@applitools/eyes-sdk-core": "11.1.0",
+    "@applitools/visual-grid-client": "14.5.0"
+  },
+  "peerDependencies": {
+    "webdriverio": "~4.14.4"
   },
   "devDependencies": {
     "@applitools/sdk-coverage-tests": "1.0.0",
     "@applitools/sdk-fake-eyes-server": "^2.0.0",
     "@applitools/sdk-release-kit": "0.1.0",
+    "@types/webdriverio": "^4.13.3",
     "axios": "^0.19.2",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
@@ -42,7 +47,8 @@
     "mocha": "^8.0.1",
     "node-fetch": "^2.6.0",
     "shared-examples-for": "^0.1.3",
-    "spec-xunit-file": "0.0.1-3"
+    "spec-xunit-file": "0.0.1-3",
+    "webdriverio": "~4.14.4"
   },
   "engines": {
     "node": ">=8.9.0"

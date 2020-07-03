@@ -10,6 +10,15 @@ const WDIOCheckSettings = require('./src/WDIOCheckSettings')
 const {WDIOEyesClassic, WDIOEyesVisualGrid, WDIOEyesFactory} = require('./src/WDIOSpecializedEyes')
 const LegacySelector = require('./src/LegacySelector')
 
+/**
+ * @typedef {import('./src/SpecWrappedDriver').Driver} Driver
+ * @typedef {import('./src/SpecWrappedElement').Element} Element
+ * @typedef {import('./src/SpecWrappedElement').Selector} Selector
+ * @typedef {import('@applitools/eyes-sdk-core').EyesWrappedElement<Driver, Element, Selector>} WrappedElement
+ * @typedef {import('@applitools/eyes-sdk-core').EyesWrappedDriver<Driver, Element, Selector>} WrappedDriver
+ * @typedef {import('@applitools/eyes-sdk-core').DriverCheckSettings<Element, Selector>} CheckSettings
+ */
+
 exports.Eyes = WDIOEyesFactory
 exports.EyesWDIO = WDIOEyesClassic
 exports.EyesVisualGrid = WDIOEyesVisualGrid
@@ -27,7 +36,6 @@ exports.BrowserType = core.BrowserType
 exports.Configuration = core.Configuration
 exports.DeviceName = core.DeviceName
 exports.IosDeviceName = core.IosDeviceName
-exports.IosScreenOrientation = core.IosScreenOrientation
 exports.ExactMatchSettings = core.ExactMatchSettings
 exports.FloatingMatchSettings = core.FloatingMatchSettings
 exports.ImageMatchSettings = core.ImageMatchSettings

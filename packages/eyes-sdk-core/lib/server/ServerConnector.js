@@ -1,23 +1,21 @@
 'use strict'
-
 const Axios = require('axios')
 const zlib = require('zlib')
-
-const {GeneralUtils, ArgumentGuard} = require('../..')
-
-const {RenderingInfo} = require('./RenderingInfo')
-const {RunningSession} = require('./RunningSession')
+const GeneralUtils = require('../utils/GeneralUtils')
+const ArgumentGuard = require('../utils/ArgumentGuard')
+const RenderingInfo = require('./RenderingInfo')
+const RunningSession = require('./RunningSession')
 const {
   configureAxios,
   delayRequest,
   handleRequestResponse,
   handleRequestError,
 } = require('./requestHelpers')
-const {TestResults} = require('../TestResults')
-const {MatchResult} = require('../match/MatchResult')
+const TestResults = require('../TestResults')
+const MatchResult = require('../match/MatchResult')
 
-const {RunningRender} = require('../renderer/RunningRender')
-const {RenderStatusResults} = require('../renderer/RenderStatusResults')
+const RunningRender = require('../renderer/RunningRender')
+const RenderStatusResults = require('../renderer/RenderStatusResults')
 
 // Constants
 const EYES_API_PATH = '/api/sessions'
@@ -752,4 +750,4 @@ class ServerConnector {
   }
 }
 
-exports.ServerConnector = ServerConnector
+module.exports = ServerConnector

@@ -2,6 +2,28 @@
 
 ## Unreleased
 
+- cache correct viewport size value after fail set viewport size
+- improve for element client rect js snippet
+- fix js snippet to be compatible with IE ([Trello](https://trello.com/c/Y0Q6QAHK/406-wdio5-error-executing-javascript-fully-fullpagescreenshot))
+- replace concurrent requests to the browser with sequential requests ([Trello](https://trello.com/c/Idx6gS3e/419-gartner-ie-errors))
+- prevent call unnecessary methods in native context ([Trello](https://trello.com/c/SSWShJPg/345-wdio-5-sdk-support-for-wdio6))
+
+## 11.2.1 - 2020/6/30
+
+- bring back input validation of accessibility type for AccessibilityRegionByRectangle
+- handle stale element reference error wrapped with eyes error
+
+## 11.2.0 - 2020/6/30
+
+- Add type definitions
+
+## 11.1.0 - 2020/6/28
+
+- remove IosScreenOrientation ([Trello](https://trello.com/c/abSJ68Rl/409-ufg-safari-on-ios-orientations-changes))
+
+## 11.0.10 - 2020/6/17
+
+- fix stale scroll root element issue
 
 ## 11.0.9 - 2020/6/15
 

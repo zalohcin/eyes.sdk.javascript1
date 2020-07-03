@@ -42,4 +42,4 @@ class LogHandler {
   onMessage(verbose, logString) {} // eslint-disable-line no-unused-vars
 }
 
-exports.LogHandler = LogHandler
+module.exports = LogHandler

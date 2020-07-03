@@ -3,6 +3,7 @@ const chromedriver = require('chromedriver')
 const {remote} = require('webdriverio')
 const specs = require('../../src/SpecWrappedElement')
 const {By} = require('../../index')
+const {EyesError} = require('@applitools/eyes-sdk-core')
 
 describe('SpecWrappedDriver', async () => {
   let driver
@@ -148,6 +149,17 @@ describe('SpecWrappedDriver', async () => {
       await driver.execute('return null', element)
     } catch (err) {
       assert.strictEqual(specs.isStaleElementReferenceResult(err), true)
+    }
+  })
+
+  it('isStaleElementReferenceResult(eyesErr)', async () => {
+    const {value: element} = await driver.element('div')
+    await driver.refresh()
+    try {
+      await driver.execute('return null', element)
+    } catch (err) {
+      const eyesErr = new EyesError('msg', err)
+      assert.strictEqual(specs.isStaleElementReferenceResult(eyesErr), true)
     }
   })
 })

@@ -1,7 +1,8 @@
 'use strict'
-
-const {Location, Region, OSNames} = require('../..')
-const {ImageProvider} = require('./ImageProvider')
+const OSNames = require('../useragent/OSNames')
+const Location = require('../geometry/Location')
+const Region = require('../geometry/Region')
+const ImageProvider = require('./ImageProvider')
 const EyesUtils = require('../EyesUtils')
 
 class SafariScreenshotImageProvider extends ImageProvider {

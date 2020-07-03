@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-protractor",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Applitools Eyes SDK for Protractor",
   "keywords": [
     "eyes-protractor",
@@ -35,9 +35,10 @@
     "test": "./test"
   },
   "main": "./index.js",
+  "typings": "./typings/index.d.ts",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "11.0.5",
-    "@applitools/visual-grid-client": "14.4.4"
+    "@applitools/eyes-sdk-core": "11.1.0",
+    "@applitools/visual-grid-client": "14.5.0"
   },
   "devDependencies": {
     "@applitools/sdk-coverage-tests": "1.0.0",
@@ -70,7 +71,8 @@
     "coverage:sandbox": "yarn coverage:generate && yarn test:coverage && coverage-tests process-report",
     "coverage:prod": "yarn coverage:generate && yarn test:coverage && coverage-tests process-report --send-report prod",
     "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-protractor' APPLITOOLS_BATCH_ID=$(uuidgen) XUNIT_FILE=coverage-test-report.xml mocha --no-timeouts --reporter spec-xunit-file --parallel --jobs 15 --grep '^(?!.*(@native))' {'./test/coverage/generic/*.spec.js','../sdk-coverage-tests/coverage-tests/custom/**/*.spec.js'}",
-    "preversion": "bongo preversion && yarn test && yarn coverage:prod",
+    "types:generate": "rm -rf ./typings && tsc --declaration --declarationDir ./typings --allowJs --emitDeclarationOnly ./index.js",
+    "preversion": "bongo preversion && yarn types:generate && yarn test && yarn coverage:prod",
     "version": "bongo version",
     "postversion": "bongo postversion"
   },

@@ -210,4 +210,4 @@ class ImageDeltaCompressor {
   }
 }
 
-exports.ImageDeltaCompressor = ImageDeltaCompressor
+module.exports = ImageDeltaCompressor

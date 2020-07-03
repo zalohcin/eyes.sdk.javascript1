@@ -354,4 +354,4 @@ class EyesJsBrowserUtils {
   }
 }
 
-exports.EyesJsBrowserUtils = EyesJsBrowserUtils
+module.exports = EyesJsBrowserUtils

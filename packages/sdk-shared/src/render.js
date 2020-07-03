@@ -182,23 +182,18 @@ const args = yargs
     describe: 'attach to existing chrome via remote debugging port',
     type: 'boolean',
   })
+  .option('scroll-root-element', {
+    describe: 'selector to scroll root element',
+    type: 'string',
+  })
   .help().argv
 
-const [url] = args._
-if (!url) {
+let [url] = args._
+if (!url && !args.attach) {
   throw new Error('missing url argument!')
 }
 
 ;(async function() {
-  console.log('Running Selenium render for', url)
-  console.log(
-    'Options:\n ',
-    Object.entries(args)
-      .map(argToString)
-      .filter(x => x)
-      .join('\n  '),
-  )
-
   const isMobileEmulation = args.deviceName && !args.vg
 
   if (args.webdriverProxy) {
@@ -217,6 +212,19 @@ if (!url) {
   }
 
   const driver = await buildDriver({...args, isMobileEmulation})
+
+  if (args.attach) {
+    url = await spec.executeScript(driver, 'return window.location.href')
+  }
+
+  console.log('Running Selenium render for', url)
+  console.log(
+    'Options:\n ',
+    Object.entries(args)
+      .map(argToString)
+      .filter(x => x)
+      .join('\n  '),
+  )
 
   const runner = args.vg ? new VisualGridRunner() : new ClassicRunner()
   const eyes = new Eyes(runner)
@@ -306,6 +314,10 @@ if (!url) {
       )
     }
 
+    if (args.scrollRootElement) {
+      target.scrollRootElement(args.scrollRootElement)
+    }
+
     logger.log('[render script] awaiting delay...', args.delay * 1000)
     await new Promise(r => setTimeout(r, args.delay * 1000))
     logger.log('[render script] awaiting delay... DONE')
@@ -354,9 +366,10 @@ function buildDriver({
   const capabilities = {
     browserName: 'chrome',
     'goog:chromeOptions': {
+      // w3c: false,
       args: headless ? ['--headless'] : [],
       mobileEmulation: isMobileEmulation ? {deviceName} : undefined,
-      debuggerAddress: attach ? '127.0.0.1:9222' : undefined,
+      debuggerAddress: attach ? '127.0.01:9222' : undefined,
     },
     ...driverCapabilities,
   }

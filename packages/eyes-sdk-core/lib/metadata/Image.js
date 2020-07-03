@@ -4,9 +4,10 @@ const {GeneralUtils, RectangleSize} = require('../..')
 
 class Image {
   /**
-   * @param {string} id
-   * @param {RectangleSize|object} size
-   * @param {boolean} hasDom
+   * @param data
+   * @param {string} data.id
+   * @param {RectangleSize|object} data.size
+   * @param {boolean} data.hasDom
    */
   constructor({id, size, hasDom} = {}) {
     if (size && !(size instanceof RectangleSize)) {
@@ -77,4 +78,4 @@ class Image {
   }
 }
 
-exports.Image = Image
+module.exports = Image

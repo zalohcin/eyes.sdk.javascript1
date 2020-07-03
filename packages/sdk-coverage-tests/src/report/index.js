@@ -16,6 +16,14 @@ function convertSdkNameToReportName(sdkName) {
       return 'testcafe'
     case 'eyes-protractor':
       return 'js_protractor'
+    case 'eyes_selenium_python':
+      return 'python'
+    case 'eyes_selenium_ruby':
+      return 'ruby'
+    case 'eyes_selenium_java':
+      return 'java'
+    case 'eyes_selenium_dotnet':
+      return 'dotnet'
     default:
       throw new Error('Unsupported SDK')
   }
