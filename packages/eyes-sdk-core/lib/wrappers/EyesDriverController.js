@@ -205,6 +205,7 @@ class EyesDriverController {
    * @return {Promise<string>} user agent
    */
   async getUserAgent() {
+    if (await this.spec.isNative(this._driver.unwrapped)) return null
     try {
       const userAgent = await this._driver.executor.executeScript('return navigator.userAgent')
       this._logger.verbose(`user agent: ${userAgent}`)
@@ -219,6 +220,7 @@ class EyesDriverController {
    * @return {Promise<string>} current page title
    */
   async getTitle() {
+    if (await this.spec.isNative(this._driver.unwrapped)) return null
     return this.spec.getTitle(this._driver.unwrapped)
   }
   /**
@@ -226,11 +228,8 @@ class EyesDriverController {
    * @return {Promise<string>} current page url
    */
   async getSource() {
-    if (!(await this.spec.isMobile(this._driver.unwrapped))) {
-      return this.spec.getUrl(this._driver.unwrapped)
-    } else {
-      return null
-    }
+    if (await this.spec.isNative(this._driver.unwrapped)) return null
+    return this.spec.getUrl(this._driver.unwrapped)
   }
 }
 
