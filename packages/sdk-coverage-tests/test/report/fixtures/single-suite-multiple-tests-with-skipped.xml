@@ -9,4 +9,7 @@
   <testcase classname="TestCheckWindow_Fluent" name="TestCheckWindow_Fluent (screenshots: /Users/tourdedave/_dev/applitools/eyes.sdk.javascript1/packages/eyes-testcafe/screenshots/.applitools-70dea208-3333-4f0a-b7e8-0b1fb3e40a43/screenshot.png)" time="22.338">
   <skipped/>
   </testcase>
+  <testcase classname="coverage.generic.TestCheckOverflowingRegionByCoordinates_Fluent_Scroll" file="coverage/generic/TestCheckOverflowingRegionByCoordinates_Fluent_Scroll.py" line="18" name="test_TestCheckOverflowingRegionByCoordinates_Fluent_Scroll" time="0.005">
+    <skipped message="generated" type="pytest.skip">coverage/generic/TestCheckOverflowingRegionByCoordinates_Fluent_Scroll.py:19: generated</skipped>
+  </testcase>
 </testsuite>
