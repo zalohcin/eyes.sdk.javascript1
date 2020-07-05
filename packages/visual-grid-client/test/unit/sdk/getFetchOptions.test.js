@@ -6,40 +6,21 @@ const {expect} = require('chai')
 
 describe('getFetchOptions', () => {
   it('adds user-agent and referer header', async () => {
-    const url = 'https://some/url'
+    const referer = 'some referer'
     const userAgent = 'bla'
-    expect(
-      getFetchOptions({
-        url,
-        userAgent,
-      }),
-    ).to.eql({
-      headers: {Referer: url, 'User-Agent': userAgent},
+    expect(getFetchOptions({referer, userAgent})).to.eql({
+      headers: {Referer: referer, 'User-Agent': userAgent},
     })
   })
 
   it("doesn't add user-agent header when fetching google fonts", async () => {
     const url = 'https://fonts.googleapis.com/css?family=Zilla+Slab'
-    expect(
-      getFetchOptions({
-        url,
-        userAgent: 'bla',
-      }),
-    ).to.eql({
-      headers: {Referer: url},
-    })
+    const referer = 'some referer'
+    expect(getFetchOptions({url, referer, userAgent: 'bla'})).to.eql({headers: {Referer: referer}})
   })
 
-  it('adds user-agent and referer header', async () => {
+  it('sets tunneling agent when proxySettings is isHttpOnly', async () => {
     const proxySettings = new ProxySettings('http://localhost:8888', 'user', 'pass', true)
-    const url = 'https://some/url'
-    const userAgent = 'bla'
-    expect(
-      getFetchOptions({
-        url,
-        userAgent,
-        proxySettings,
-      }).agent.constructor.name,
-    ).to.equal('TunnelingAgent')
+    expect(getFetchOptions({proxySettings}).agent.constructor.name).to.equal('TunnelingAgent')
   })
 })
