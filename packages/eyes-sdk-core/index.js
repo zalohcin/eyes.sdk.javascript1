@@ -199,6 +199,7 @@ exports.ScaleProviderIdentityFactory = require('./lib/scaling/ScaleProviderIdent
 exports.RenderingInfo = require('./lib/server/RenderingInfo')
 exports.RunningSession = require('./lib/server/RunningSession')
 exports.ServerConnector = require('./lib/server/ServerConnector')
+exports.getTunnelAgentFromProxy = require('./lib/server/getTunnelAgentFromProxy')
 exports.SessionStartInfo = require('./lib/server/SessionStartInfo')
 
 exports.MouseTrigger = require('./lib/triggers/MouseTrigger')

@@ -6,6 +6,7 @@ const absolutizeUrl = require('./absolutizeUrl')
 const resourceType = require('./resourceType')
 const toCacheEntry = require('./toCacheEntry')
 const extractSvgResources = require('./extractSvgResources')
+const getFetchOptions = require('./getFetchOptions')
 
 function assignContentfulResources(obj1, obj2) {
   for (const p in obj2) {
@@ -38,7 +39,7 @@ function makeGetAllResources({resourceCache, fetchResource, extractCssResources,
     return rGridResource
   }
 
-  return function getAllResources({resourceUrls, preResources, userAgent, referer}) {
+  return function getAllResources({resourceUrls, preResources, userAgent, referer, proxySettings}) {
     const handledResources = new Set()
     return getOrFetchResources(resourceUrls, preResources)
 
@@ -66,11 +67,7 @@ function makeGetAllResources({resourceCache, fetchResource, extractCssResources,
 
       await Promise.all(
         missingResourceUrls.map(url => {
-          const fetchOptions = {headers: {Referer: referer}}
-          if (!/https:\/\/fonts.googleapis.com/.test(url)) {
-            fetchOptions.headers['User-Agent'] = userAgent
-          }
-
+          const fetchOptions = getFetchOptions({url, referer, userAgent, proxySettings})
           return fetchResource(url, fetchOptions)
             .then(async resource =>
               assignContentfulResources(resources, await processResource(resource)),
