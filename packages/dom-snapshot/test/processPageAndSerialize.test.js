@@ -950,4 +950,26 @@ describe('processPage', () => {
     expect(resourceUrls).to.eql(['https://fonts.googleapis.com/css?family=Zilla+Slab']);
     expect(blobs).to.eql([]);
   });
+
+  it("handles frame that we're redirected in JavaScript", async () => {
+    await page.goto('http://localhost:7373/redirected-frame/page-with-redirected-frame.html');
+    const {frames} = await processPage();
+    frames[0].cdt = 'overriden cdt';
+    expect(frames).to.eql([
+      {
+        url: 'http://localhost:7373/redirected-frame/frame/frame.html',
+        srcAttr: 'blank.html',
+        blobs: [
+          {
+            url: 'http://localhost:7373/redirected-frame/frame/style.css',
+            type: 'text/css; charset=UTF-8',
+            value: loadFixtureBuffer('redirected-frame/frame/style.css'),
+          },
+        ],
+        resourceUrls: [],
+        frames: [],
+        cdt: 'overriden cdt',
+      },
+    ]);
+  });
 });

@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- fix frames that were redirected with JavaScript ([Trello](https://trello.com/c/egprwtNp))
 
 ## 3.6.0 - 2020/6/29
 
