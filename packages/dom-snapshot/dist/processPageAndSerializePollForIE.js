@@ -23531,7 +23531,7 @@ function __processPageAndSerializePollForIE() {
                 var canvasBlobs = buildCanvasBlobs_1(canvasElements);
                 var frameDocs = extractFrames_1(docRoots);
                 var processFramesPromise = frameDocs.map(function (f) {
-                  return doProcessPage(f, f.defaultView.frameElement.src);
+                  return doProcessPage(f);
                 });
                 var processInlineFramesPromise = inlineFrames.map(function (_ref2) {
                   var element = _ref2.element,

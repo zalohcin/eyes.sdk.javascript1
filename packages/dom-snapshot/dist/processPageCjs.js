@@ -13904,9 +13904,7 @@ function processPage(
     const canvasBlobs = buildCanvasBlobs_1(canvasElements);
     const frameDocs = extractFrames_1(docRoots);
 
-    const processFramesPromise = frameDocs.map(f =>
-      doProcessPage(f, f.defaultView.frameElement.src),
-    );
+    const processFramesPromise = frameDocs.map(f => doProcessPage(f));
     const processInlineFramesPromise = inlineFrames.map(({element, url}) =>
       doProcessPage(element.contentDocument, url),
     );
