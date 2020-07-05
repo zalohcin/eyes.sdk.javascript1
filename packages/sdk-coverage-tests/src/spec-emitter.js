@@ -25,6 +25,7 @@ function makeSpecEmitter(options) {
   tracker.storeHook('deps', `const assert = require('assert')`)
   tracker.storeHook('deps', `const path = require('path')`)
   tracker.storeHook('deps', `const specs = require(path.resolve(cwd, 'src/SpecWrappedDriver'))`)
+  tracker.storeHook('deps', `const {Eyes} = require(cwd)`)
   tracker.storeHook(
     'deps',
     `const {TestSetup} = require('@applitools/sdk-coverage-tests/coverage-tests')`,
@@ -157,7 +158,7 @@ function makeSpecEmitter(options) {
   const eyes = {
     constructor: {
       setViewportSize(viewportSize) {
-        tracker.storeCommand(js`Eyes.setViewportSize(driver, ${viewportSize})`)
+        tracker.storeCommand(js`await Eyes.setViewportSize(driver, ${viewportSize})`)
       },
     },
     open({appName, viewportSize}) {

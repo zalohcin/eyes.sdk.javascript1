@@ -14,7 +14,7 @@ module.exports = {
     eyes.open({appName: 'Eyes Selenium SDK - ACME', viewportSize: {width: 1024, height: 768}})
     const username = driver.findElement('#username').ref('username')
     driver.type(username, 'adamC')
-    const password = driver.findElement('#password').ref('username')
+    const password = driver.findElement('#password').ref('password')
     driver.type(password, 'MySecret123?')
     eyes.check({region: '#username'})
     eyes.check({region: '#password'})
