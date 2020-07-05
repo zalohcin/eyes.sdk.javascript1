@@ -8,6 +8,7 @@ const {
   AccessibilityRegionType,
   VisualGridRunner,
   ClassicRunner,
+  ConsoleLogHandler,
 } = require('../../index')
 const MockDriver = require('../utils/MockDriver')
 const FakeEyesFactory = require('../utils/FakeEyesFactory')
@@ -47,6 +48,9 @@ describe('TestAccessibility', () => {
         accessibilitySettings,
       },
     })
+    if (process.env.APPLITOOLS_SHOW_LOGS) {
+      eyes.setLogHandler(new ConsoleLogHandler(true))
+    }
 
     const wrappedDriver = await eyes.open(
       driver,

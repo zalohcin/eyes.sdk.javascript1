@@ -995,7 +995,8 @@ class CheckSettings {
     async function persistRegions(regions = []) {
       const persisted = []
       for (const region of regions) {
-        persisted.push(await region.toPersistedRegions(driver))
+        const persistedRegions = await region.toPersistedRegions(driver)
+        persisted.push(...persistedRegions)
       }
       return persisted
     }
