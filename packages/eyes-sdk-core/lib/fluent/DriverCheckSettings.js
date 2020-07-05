@@ -997,6 +997,7 @@ class CheckSettings {
       for (const region of regions) {
         persisted.push(await region.toPersistedRegions(driver))
       }
+      return persisted
     }
   }
 }
