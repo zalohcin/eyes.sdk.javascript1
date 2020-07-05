@@ -50,6 +50,10 @@ class EyesFactory {
       static get EyesVisualGrid() {
         return EyesVisualGrid
       }
+
+      static async setViewportSize(driver, viewportSize) {
+        return EyesClassic.setViewportSize(driver, viewportSize)
+      }
     }
   }
   /**
