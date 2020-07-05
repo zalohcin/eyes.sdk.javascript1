@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fetch resources with tunneling agent if necessary  ([Trello](https://trello.com/c/a22B3tUB))
 
 ## 14.5.1 - 2020/6/30
 
