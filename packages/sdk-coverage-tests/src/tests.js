@@ -398,7 +398,7 @@ module.exports = {
         'sauce:options': {
           screenResolution: '1280x800',
           username: process.env.SAUCE_USERNAME,
-          accessKey: process.env.SAUCE_ACCESS_KEY,
+          accesskey: process.env.SAUCE_ACCESS_KEY,
         },
       },
       host: 'https://ondemand.saucelabs.com:443/wd/hub',
