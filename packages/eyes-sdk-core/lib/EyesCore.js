@@ -298,6 +298,11 @@ class EyesCore extends EyesBase {
       : EyesUtils.getTopContextViewportSize(this._logger, this._driver)
   }
 
+  /**
+   * Sets the browser's viewport size
+   * @param {TDriver} driver - driver object for the specific framework
+   * @param {RectangleSize|{width: number, height: number}} viewportSize - viewport size
+   */
   static async setViewportSize(driver, viewportSize) {
     const logger = new Logger()
     const wrappedDriver = new this.WrappedDriver(logger, driver)
