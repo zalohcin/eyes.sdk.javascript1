@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- support visual locators
 
 ## 11.2.2 - 2020/7/5
 

@@ -748,6 +748,39 @@ class ServerConnector {
       throw new Error(`ServerConnector.getUserAgents - unexpected status (${response.statusText})`)
     }
   }
+
+  /**
+   * Visual locators
+   *
+   * @param visualLocatorData
+   * @param {string} visualLocatorData.appName
+   * @param {string} visualLocatorData.imageUrl
+   * @param {string} visualLocatorData.locatorNames
+   * @param {string} visualLocatorData.firstOnly
+   * @return {Promise<{[key: string]: import('../../typings/lib/geometry/Region').RegionObject[]}>}
+   */
+  async postLocators(visualLocatorData) {
+    ArgumentGuard.notNull(visualLocatorData, 'visualLocatorData')
+    this._logger.verbose(
+      `ServerConnector.postLocators called with ${JSON.stringify(visualLocatorData)}`,
+    )
+
+    const config = {
+      name: 'postLocators',
+      method: 'POST',
+      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), 'api/locators/locate'),
+      data: visualLocatorData,
+    }
+
+    const response = await this._axios.request(config)
+    const validStatusCodes = [HTTP_STATUS_CODES.OK]
+    if (validStatusCodes.includes(response.status)) {
+      this._logger.verbose('ServerConnector.postLocators - post succeeded', response.data)
+      return response.data
+    }
+
+    throw new Error(`ServerConnector.postLocators - unexpected status (${response.statusText})`)
+  }
 }
 
 module.exports = ServerConnector

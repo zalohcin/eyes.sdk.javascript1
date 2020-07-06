@@ -427,4 +427,16 @@ module.exports = {
       .ref('actualViewportSize')
     assert.deepStrictEqual(actualViewportSize, expectedViewportSize)
   },
+  TestVisualLocators: ({driver, eyes, assert}) => {
+    driver.visit(url)
+    eyes.open({appName: 'Applitools Eyes SDK'})
+    const regionsMap = eyes
+      .locate({locatorNames: ['applitools_title']})
+      .type('Map<String, List<Region>>')
+      .ref('regionsMap')
+    eyes.close(false)
+    assert.deepStrictEqual(regionsMap, {
+      applitools_title: [{left: 2, top: 11, width: 173, height: 58}],
+    })
+  },
 }
