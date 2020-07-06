@@ -1,4 +1,4 @@
-function getScrollOffset(element) {
+function getScrollOffset({element} = {}) {
   if (element) {
     return {x: element.scrollLeft, y: element.scrollTop}
   } else {

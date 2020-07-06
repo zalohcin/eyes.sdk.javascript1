@@ -1,8 +1,10 @@
-const setTransforms = require('./setTransforms')
+const setElementStyleProperty = require('./setElementStyleProperty')
 
-function translateTo(location, element = document.documentElement) {
-  setTransforms(`translate(${-location.x}px, ${-location.y}px)`, element)
-  return location
+function translateTo({offset, element = document.documentElement} = {}) {
+  const value = `translate(${-offset.x}px, ${-offset.y}px)`
+  setElementStyleProperty({element, property: 'transform', value})
+  setElementStyleProperty({element, property: 'webkitTransform', value})
+  return offset
 }
 
 module.exports = translateTo

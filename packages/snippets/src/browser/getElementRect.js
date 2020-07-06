@@ -1,8 +1,8 @@
-const findFixedAncestor = require('./findFixedAncestor')
+const findFixedAncestor = require('./getElementFixedAncestor')
 const isElementScrollable = require('./isElementScrollable')
-const getScrollOffset = require('./getScrollOffset')
+const getElementScrollOffset = require('./getElementScrollOffset')
 
-module.exports = function getElementRect(element, isClient = false) {
+module.exports = function getElementRect({element, isClient = false} = {}) {
   const elementBoundingClientRect = element.getBoundingClientRect()
   const rect = {
     x: elementBoundingClientRect.left,
@@ -12,16 +12,16 @@ module.exports = function getElementRect(element, isClient = false) {
   }
   if (isClient) {
     const elementComputedStyle = window.getComputedStyle(element)
-    rect.x += Number.parseInt(elementComputedStyle.getPropertyValue('border-left-width'))
-    rect.y += Number.parseInt(elementComputedStyle.getPropertyValue('border-top-width'))
+    rect.x += parseInt(elementComputedStyle.getPropertyValue('border-left-width'))
+    rect.y += parseInt(elementComputedStyle.getPropertyValue('border-top-width'))
     rect.width = element.clientWidth
     rect.height = element.clientHeight
   }
-  const fixedAncestor = findFixedAncestor(element)
+  const fixedAncestor = findFixedAncestor({element})
   if (fixedAncestor) {
-    const isFixedAncestorScrollable = isElementScrollable(fixedAncestor)
+    const isFixedAncestorScrollable = isElementScrollable({element: fixedAncestor})
     if (fixedAncestor !== element && isFixedAncestorScrollable) {
-      const fixedAncestorScrollOffset = getScrollOffset(fixedAncestor)
+      const fixedAncestorScrollOffset = getElementScrollOffset({element: fixedAncestor})
       rect.x += fixedAncestorScrollOffset.x
       rect.y += fixedAncestorScrollOffset.y
     }

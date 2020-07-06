@@ -29,7 +29,8 @@
       "packages/eyes-storybook",
       "packages/eyes-leanft",
       "packages/side-eyes",
-      "packages/sdk-shared"
+      "packages/sdk-shared",
+      "packages/snippets"
     ],
     "nohoist": [
       "**/@wdio/*",

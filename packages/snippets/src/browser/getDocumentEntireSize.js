@@ -1,4 +1,4 @@
-function getDocumentSize() {
+function getDocumentEntireSize() {
   const scrollWidth = document.documentElement.scrollWidth
   const scrollHeight = document.documentElement.scrollHeight
   const clientHeight = document.documentElement.clientHeight
@@ -12,4 +12,4 @@ function getDocumentSize() {
   return {width, height}
 }
 
-module.exports = getDocumentSize
+module.exports = getDocumentEntireSize

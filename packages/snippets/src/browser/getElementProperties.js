@@ -1,4 +1,4 @@
-function getElementProperties(element, properties = []) {
+function getElementProperties({element, properties = []} = {}) {
   return properties.map(property => element[property])
 }
 

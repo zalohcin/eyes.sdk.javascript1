@@ -1,4 +1,4 @@
-function setElementAttribute(element, attr, value) {
+function setElementAttribute({element, attr, value}) {
   element.setAttribute(attr, value)
 }
 

@@ -5,37 +5,40 @@ const fs = require('fs')
 const commonjs = require('@rollup/plugin-commonjs')
 const {babel} = require('@rollup/plugin-babel')
 const {terser} = require('rollup-plugin-terser')
-const progress = require('rollup-plugin-progress')
+const progress = require('./progress')
 
-const options = {
-  input: glob.sync('./src/browser/*.js'),
-  output: {
-    json: './dist/commands.json',
-    snippet: './dist/index.js',
-  },
-  plugins: [
-    commonjs(),
-    babel({
-      babelHelpers: 'inline',
-      presets: [['@babel/env', {loose: true, modules: false, targets: {ie: '10'}}]],
-    }),
-    terser(),
-    progress(),
-  ],
+function configure() {
+  const input = glob.sync('./src/browser/*.js')
+  return {
+    input,
+    output: {
+      json: './dist/commands.json',
+      snippet: './dist/index.js',
+    },
+    plugins: [
+      commonjs(),
+      babel({
+        babelHelpers: 'inline',
+        presets: [['@babel/preset-env', {loose: true, modules: false, targets: {ie: '10'}}]],
+      }),
+      terser(),
+      progress({total: input.length}),
+    ],
+  }
 }
 
 const generator = {
   async json(bundle) {
     const generated = await bundle.generate({name: 's', format: 'iife'})
     for (const output of generated.output) {
-      output.code = `function(){${output.code}return s.apply(this,arguments)}`
+      output.code = `function(arg){${output.code}return s(arg)}`
     }
     return generated.output
   },
   async snippet(bundle) {
     const generated = await bundle.generate({name: 's', format: 'iife'})
     for (const output of generated.output) {
-      output.code = `exports.${output.name}=function(){\n${output.code}return s.apply(this,arguments)\n}`
+      output.code = `exports.${output.name}=function(arg){\n${output.code}return s(arg)\n}`
     }
     return generated.output
   },
@@ -55,12 +58,13 @@ const concat = {
 }
 
 async function bundle({formats}) {
+  const config = configure()
   const outputs = {json: [], snippet: []}
 
-  for (const input of options.input) {
+  for (const input of config.input) {
     const bundle = await rollup.rollup({
       input,
-      plugins: options.plugins,
+      plugins: config.plugins,
     })
     for (const format of formats) {
       const output = await generator[format](bundle)
@@ -70,13 +74,20 @@ async function bundle({formats}) {
 
   for (const [format, output] of Object.entries(outputs)) {
     if (output.length > 0) {
-      fs.writeFileSync(path.resolve(process.cwd(), options.output[format]), concat[format](output))
+      fs.writeFileSync(path.resolve(process.cwd(), config.output[format]), concat[format](output))
     }
   }
 }
 
 async function watch({formats}) {
-  const watcher = rollup.watch({input: options.input})
+  await bundle({formats})
+  const {input} = configure()
+  const watcher = rollup.watch({
+    input,
+    watch: {
+      buildDelay: 1000,
+    },
+  })
   watcher.on('change', () => bundle({formats}))
 }
 

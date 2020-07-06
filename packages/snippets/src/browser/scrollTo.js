@@ -1,9 +1,9 @@
-function scrollTo(offset, element = document.documentElement) {
+function scrollTo({element = document.documentElement, offset} = {}) {
   if (element.scrollTo) {
     element.scrollTo(offset.x, offset.y)
   } else {
-    element.scrollTop = offset.x
-    element.scrollLeft = offset.y
+    element.scrollLeft = offset.x
+    element.scrollTop = offset.y
   }
   return {x: element.scrollLeft, y: element.scrollTop}
 }

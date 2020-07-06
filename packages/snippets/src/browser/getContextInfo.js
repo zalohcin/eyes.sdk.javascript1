@@ -1,4 +1,4 @@
-const generateElementXpath = require('./generateElementXpath')
+const getElementXpath = require('./getElementXpath')
 
 function getContextInfo() {
   let isRoot
@@ -16,7 +16,7 @@ function getContextInfo() {
   let selector
   if (!isCORS) {
     try {
-      selector = generateElementXpath(window.frameElement)
+      selector = getElementXpath(window.frameElement)
     } catch (err) {
       selector = null
     }
