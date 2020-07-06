@@ -152,6 +152,9 @@ async function startPollingRequest({url, config, axios}) {
   }
 }
 async function handleRequestError({err, axios, logger}) {
+  if (!err.config) {
+    throw err
+  }
   const {response, config} = err
   const reason = `${err.message}${response ? `(${response.statusText})` : ''}`
 
