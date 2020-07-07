@@ -38,7 +38,7 @@ function makeSpecEmitter(options) {
     'beforeEach',
     js`driver = await specs.build({
       capabilities: ${options.capabilities} || TestSetup.Browsers.chrome(),
-      serverUrl: ${options.host},
+      server: ${options.server} || ${options.host},
       logLevel: 'error',
     })`,
   )

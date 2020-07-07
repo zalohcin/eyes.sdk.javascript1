@@ -1,3 +1,5 @@
+const {Remotes} = require('../coverage-tests/util/TestSetup')
+
 const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
 const viewportSize = {width: 700, height: 460}
 const throwException = true
@@ -14,7 +16,7 @@ module.exports = {
     eyes.open({appName: 'Eyes Selenium SDK - ACME', viewportSize: {width: 1024, height: 768}})
     const username = driver.findElement('#username').ref('username')
     driver.type(username, 'adamC')
-    const password = driver.findElement('#password').ref('username')
+    const password = driver.findElement('#password').ref('password')
     driver.type(password, 'MySecret123?')
     eyes.check({region: '#username'})
     eyes.check({region: '#password'})
@@ -397,11 +399,9 @@ module.exports = {
         platformName: 'Windows 10',
         'sauce:options': {
           screenResolution: '1280x800',
-          username: process.env.SAUCE_USERNAME,
-          accessKey: process.env.SAUCE_ACCESS_KEY,
         },
       },
-      host: 'https://ondemand.saucelabs.com:443/wd/hub',
+      server: Remotes.sauce(),
     },
     test: ({driver, eyes, assert}) => {
       eyes.open({

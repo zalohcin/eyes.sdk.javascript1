@@ -1,7 +1,7 @@
 // re: https://trello.com/c/EQD3JUOf
 const cwd = process.cwd()
 const path = require('path')
-const {getEyes, sauceUrl} = require('../util/TestSetup')
+const {getEyes, Remotes} = require('../util/TestSetup')
 const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
 const {Target} = require(cwd)
 const {assertImage} = require('../util/ApiAssertions')
@@ -12,17 +12,17 @@ describe('Coverage Tests', async () => {
     let driver
 
     before(async () => {
-      const capabilities = {
-        browserName: 'MicrosoftEdge',
-        browserVersion: '18',
-        platformName: 'Windows 10',
-        'sauce:options': {
-          screenResolution: '1920x1080',
-          username: process.env.SAUCE_USERNAME,
-          accesskey: process.env.SAUCE_ACCESS_KEY,
+      driver = await spec.build({
+        capabilities: {
+          browserName: 'MicrosoftEdge',
+          browserVersion: '18',
+          platformName: 'Windows 10',
+          'sauce:options': {
+            screenResolution: '1920x1080',
+          },
         },
-      }
-      driver = await spec.build({capabilities, serverUrl: sauceUrl})
+        server: Remotes.sauce(),
+      })
       eyes = getEyes()
     })
 
@@ -47,17 +47,17 @@ describe('Coverage Tests', async () => {
     let driver
 
     before(async () => {
-      const capabilities = {
-        browserName: 'internet explorer',
-        browserVersion: '11.285',
-        platformName: 'Windows 10',
-        'sauce:options': {
-          screenResolution: '1920x1080',
-          username: process.env.SAUCE_USERNAME,
-          accesskey: process.env.SAUCE_ACCESS_KEY,
+      driver = await spec.build({
+        capabilities: {
+          browserName: 'internet explorer',
+          browserVersion: '11.285',
+          platformName: 'Windows 10',
+          'sauce:options': {
+            screenResolution: '1920x1080',
+          },
         },
-      }
-      driver = await spec.build({capabilities, serverUrl: sauceUrl})
+        server: Remotes.sauce(),
+      })
       eyes = getEyes()
     })
 

@@ -1,3 +1,4 @@
+const snippets = require('@applitools/snippets')
 const GeneralUtils = require('./utils/GeneralUtils')
 const ArgumentGuard = require('./utils/ArgumentGuard')
 const CoordinatesTypes = require('./geometry/CoordinatesType')
@@ -27,8 +28,8 @@ const EyesJsSnippets = require('./EyesJsSnippets')
  * @return {RectangleSize} viewport size
  */
 async function getViewportSize(_logger, {executor}) {
-  const [width, height] = await executor.executeScript(EyesJsSnippets.GET_VIEWPORT_SIZE)
-  return new RectangleSize(Number.parseInt(width, 10) || 0, Number.parseInt(height, 10) || 0)
+  const {width = 0, height = 0} = await executor.executeScript(snippets.getViewportSize)
+  return new RectangleSize(width, height)
 }
 /**
  * Set viewport size of the window
@@ -285,8 +286,8 @@ async function getTopContextViewportSize(logger, {controller, context, executor}
  */
 async function getCurrentFrameContentEntireSize(_logger, executor) {
   try {
-    const [width, height] = await executor.executeScript(EyesJsSnippets.GET_CONTENT_ENTIRE_SIZE)
-    return new RectangleSize(Number.parseInt(width, 10) || 0, Number.parseInt(height, 10) || 0)
+    const {width = 0, height = 0} = await executor.executeScript(snippets.getDocumentEntireSize)
+    return new RectangleSize(width, height)
   } catch (err) {
     throw new EyesDriverOperationError('Failed to extract entire size!', err)
   }
@@ -300,11 +301,10 @@ async function getCurrentFrameContentEntireSize(_logger, executor) {
  */
 async function getElementEntireSize(_logger, executor, element) {
   try {
-    const [width, height] = await executor.executeScript(
-      EyesJsSnippets.GET_ELEMENT_ENTIRE_SIZE,
+    const {width = 0, height = 0} = await executor.executeScript(snippets.getElementEntireSize, {
       element,
-    )
-    return new RectangleSize(Number.parseInt(width, 10) || 0, Number.parseInt(height, 10) || 0)
+    })
+    return new RectangleSize(width, height)
   } catch (err) {
     throw new EyesDriverOperationError('Failed to extract element size!', err)
   }
@@ -352,8 +352,10 @@ async function getElementRect(_logger, executor, element) {
  * @return {*[]} extracted values
  */
 async function getElementProperties(_logger, executor, properties, element) {
-  return executor.executeScript(EyesJsSnippets.GET_ELEMENT_PROPERTIES, properties, element)
+  return executor.executeScript(snippets.getElementProperties, {element, properties})
 }
+
+// TODO rename
 /**
  * Extract css values of specified css properties for specified element
  * @param {Logger} _logger - logger instance
@@ -363,7 +365,7 @@ async function getElementProperties(_logger, executor, properties, element) {
  * @return {string[]} extracted css values
  */
 async function getElementCssProperties(_logger, executor, properties, element) {
-  return executor.executeScript(EyesJsSnippets.GET_ELEMENT_CSS_PROPERTIES, properties, element)
+  return executor.executeScript(snippets.getElementComputedStyleProperties, {element, properties})
 }
 /**
  * Get device pixel ratio
@@ -384,16 +386,14 @@ async function getDevicePixelRatio(_logger, {executor}) {
  * @return {Promise<number>} mobile device pixel ratio
  */
 async function getMobilePixelRatio(_logger, {controller}, viewportSize) {
-  const screenshot64 = await controller.takeScreenshot()
-  const screenshot = new MutableImage(screenshot64)
+  const screenshot = await controller.takeScreenshot()
   return screenshot.getWidth() / viewportSize.getWidth()
 }
 
+// TODO rename
 async function getInnerOffsets(_logger, executor, element) {
-  const offsets = await executor.executeScript(EyesJsSnippets.GET_INNER_OFFSETS, element)
-  const scroll = new Location(offsets.scroll)
-  const translate = new Location(offsets.translate)
-  return scroll.offsetByLocation(translate)
+  const {x = 0, y = 0} = await executor.executeScript(snippets.getElementOffsets, {element})
+  return new Location(x, y)
 }
 /**
  * Get top-level context scroll position
@@ -415,8 +415,8 @@ async function getTopContextScrollLocation(logger, {context, executor}) {
  * @return {Promise<Location>} scroll position
  */
 async function getScrollLocation(_logger, executor, element) {
-  const [x, y] = await executor.executeScript(EyesJsSnippets.GET_SCROLL_POSITION, element)
-  return new Location(Math.ceil(Number.parseFloat(x)) || 0, Math.ceil(Number.parseFloat(y)) || 0)
+  const {x = 0, y = 0} = await executor.executeScript(snippets.getElementScrollOffset, {element})
+  return new Location(x, y)
 }
 /**
  * Set current context scroll position for the specified element or default scrolling element
@@ -427,12 +427,11 @@ async function getScrollLocation(_logger, executor, element) {
  * @return {Promise<Location>} actual scroll position after set
  */
 async function scrollTo(_logger, executor, location, element) {
-  const [x, y] = await executor.executeScript(
-    EyesJsSnippets.SCROLL_TO,
-    {x: location.getX(), y: location.getY()},
+  const {x = 0, y = 0} = await executor.executeScript(snippets.scrollTo, {
+    offset: {x: location.getX(), y: location.getY()},
     element,
-  )
-  return new Location(Math.ceil(Number.parseFloat(x)) || 0, Math.ceil(Number.parseFloat(y)) || 0)
+  })
+  return new Location(x, y)
 }
 /**
  * Get transforms of the specified element or default scrolling element
@@ -487,11 +486,11 @@ async function getTranslateLocation(_logger, executor, element) {
  * @return {Promise<Location>} actual translate position after set
  */
 async function translateTo(_logger, executor, location, element) {
-  await executor.executeScript(
-    EyesJsSnippets.TRANSLATE_TO(location.getX(), location.getY()),
+  const offset = await executor.executeScript(snippets.translateTo, {
     element,
-  )
-  return location
+    offset: {x: location.getX(), y: location.getY()},
+  })
+  return new Location(offset)
 }
 /**
  * Check if the specified element or default scrolling element is scrollable
@@ -501,7 +500,7 @@ async function translateTo(_logger, executor, location, element) {
  * @return {Promise<boolean>} true if element is scrollable, false otherwise
  */
 async function isScrollable(_logger, executor, element) {
-  return executor.executeScript(EyesJsSnippets.IS_SCROLLABLE, element)
+  return executor.executeScript(snippets.isScrollable, {element})
 }
 /**
  * Mark the specified element or default scrolling element with `data-applitools-scroll`
@@ -510,7 +509,11 @@ async function isScrollable(_logger, executor, element) {
  * @param {EyesWrappedElement} [element] - element to mark
  */
 async function markScrollRootElement(_logger, executor, element) {
-  return executor.executeScript(EyesJsSnippets.MARK_SCROLL_ROOT_ELEMENT, element)
+  return executor.executeScript(snippets.setElementAttribute, {
+    element,
+    attr: 'data-applitools-scroll',
+    value: true,
+  })
 }
 /**
  * Get overflow style property of the specified element
@@ -522,7 +525,11 @@ async function markScrollRootElement(_logger, executor, element) {
 async function getOverflow(_logger, executor, element) {
   ArgumentGuard.notNull(executor, 'executor')
   ArgumentGuard.notNull(element, 'element')
-  return executor.executeScript(EyesJsSnippets.GET_OVERFLOW, element)
+  const [overflow] = await executor.executeScript(snippets.getElementStyleProperties, {
+    element,
+    properties: ['overflow'],
+  })
+  return overflow
 }
 /**
  * Set overflow style property of the specified element
@@ -536,12 +543,13 @@ async function setOverflow(_logger, executor, overflow, element) {
   ArgumentGuard.notNull(element, 'element')
 
   try {
-    const result = await executor.executeScript(
-      EyesJsSnippets.SET_OVERFLOW_AND_RETURN_ORIGIN_VALUE(overflow),
+    const original = await executor.executeScript(snippets.setElementStyleProperty, {
       element,
-    )
+      property: 'overflow',
+      value: overflow,
+    })
     await GeneralUtils.sleep(200)
-    return result
+    return original
   } catch (err) {
     throw new EyesError('Failed to set overflow', err)
   }
@@ -556,7 +564,7 @@ async function setOverflow(_logger, executor, overflow, element) {
  */
 async function blurElement(logger, executor, element) {
   try {
-    return await executor.executeScript(EyesJsSnippets.BLUR_ELEMENT, element)
+    return await executor.executeScript(snippets.blurElement, {element})
   } catch (err) {
     logger.verbose(`WARNING: Cannot hide caret! ${err}`)
   }
@@ -569,20 +577,10 @@ async function blurElement(logger, executor, element) {
  */
 async function focusElement(logger, executor, element) {
   try {
-    return await executor.executeScript(EyesJsSnippets.FOCUS_ELEMENT, element)
+    return await executor.executeScript(snippets.focusElement, {element})
   } catch (err) {
-    logger.verbose(`WARNING: Cannot hide caret! ${err}`)
+    logger.verbose(`WARNING: Cannot restore caret! ${err}`)
   }
-}
-/**
- * Get element absolute xpath selector related to the top-level context
- * @param {Logger} _logger - logger instance
- * @param {EyesJsExecutor} executor - js executor
- * @param {EyesWrappedElement} element - element to calculate xpath
- * @return {Promise<string>} xpath selector
- */
-async function getElementAbsoluteXpath(_logger, executor, element) {
-  return executor.executeScript(EyesJsSnippets.GET_ELEMENT_XPATH, element)
 }
 /**
  * Get element xpath selector related to the current context
@@ -593,7 +591,7 @@ async function getElementAbsoluteXpath(_logger, executor, element) {
  */
 async function getElementXpath(logger, executor, element) {
   try {
-    return await executor.executeScript(EyesJsSnippets.GET_ELEMENT_XPATH, element)
+    return await executor.executeScript(snippets.getElementXpath, {element})
   } catch (err) {
     logger.verbose('Warning: Failed to get element selector (xpath)')
     return null
@@ -639,7 +637,7 @@ async function locatorToPersistedRegions(logger, {finder, executor}, selector) {
  * @return {Promise<ContextInfo<TElement>>} frame info
  */
 async function getCurrentContextInfo(_logger, executor) {
-  return executor.executeScript(EyesJsSnippets.GET_CURRENT_CONTEXT_INFO)
+  return executor.executeScript(snippets.getContextInfo)
 }
 /**
  * Get frame element by name or id
@@ -780,7 +778,6 @@ module.exports = {
   blurElement,
   focusElement,
   getElementXpath,
-  getElementAbsoluteXpath,
   locatorToPersistedRegions,
   ensureRegionVisible,
   ensureFrameVisible,

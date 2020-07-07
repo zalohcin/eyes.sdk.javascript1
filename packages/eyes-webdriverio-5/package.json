@@ -33,14 +33,14 @@
   "main": "./index.js",
   "types": "./typings/index.js",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "11.2.1",
-    "@applitools/visual-grid-client": "14.5.1"
+    "@applitools/eyes-sdk-core": "11.2.2",
+    "@applitools/visual-grid-client": "14.5.2"
   },
   "peerDependencies": {
     "webdriverio": "5.0.0 - 6.x.x"
   },
   "devDependencies": {
-    "@applitools/sdk-coverage-tests": "^1.0.5",
+    "@applitools/sdk-coverage-tests": "^1.0.7",
     "@applitools/sdk-fake-eyes-server": "^2.0.0",
     "@applitools/sdk-release-kit": "0.1.0",
     "@wdio/cli": "5.18.6",

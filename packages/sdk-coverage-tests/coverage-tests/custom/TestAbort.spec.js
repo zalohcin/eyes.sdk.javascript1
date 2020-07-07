@@ -1,7 +1,7 @@
 'use strict'
 const cwd = process.cwd()
 const path = require('path')
-const {Browsers, batch} = require('../util/TestSetup')
+const {Browsers, batch, Remotes} = require('../util/TestSetup')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 chai.use(chaiAsPromised)

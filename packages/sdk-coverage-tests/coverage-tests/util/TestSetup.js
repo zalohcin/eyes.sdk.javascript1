@@ -35,12 +35,7 @@ const Browsers = {
 }
 
 const Remotes = {
-  local({url = process.env.CVG_TESTS_REMOTE} = {}) {
-    return {
-      url,
-    }
-  },
-  sauce({w3c = false} = {}) {
+  sauce({w3c = true} = {}) {
     return {
       username: process.env.SAUCE_USERNAME,
       accessKey: process.env.SAUCE_ACCESS_KEY,
@@ -48,7 +43,7 @@ const Remotes = {
       w3c,
     }
   },
-  bstack({w3c = false} = {}) {
+  bstack({w3c = true} = {}) {
     return {
       username: process.env.BROWSERSTACK_USERNAME,
       accessKey: process.env.BROWSERSTACK_ACCESS_KEY,

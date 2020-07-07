@@ -4,7 +4,7 @@ const cwd = process.cwd()
 const path = require('path')
 const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
 const {Target} = require(cwd)
-const {getEyes} = require('../util/TestSetup')
+const {getEyes, Remotes} = require('../util/TestSetup')
 
 describe('CheckViewportSafari', () => {
   let driver, eyes
@@ -16,19 +16,17 @@ describe('CheckViewportSafari', () => {
 
   it('Safari11', async () => {
     driver = await spec.build({
-      serverUrl: 'https://hub-cloud.browserstack.com/wd/hub',
       capabilities: {
         'bstack:options': {
           os: 'OS X',
           osVersion: 'High Sierra',
           local: 'false',
           seleniumVersion: '3.5.2',
-          userName: process.env.BROWSERSTACK_USERNAME,
-          accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
         },
         browserName: 'Safari',
         browserVersion: '11.0',
       },
+      server: Remotes.bstack(),
     })
     eyes = new getEyes()
     await spec.visit(driver, 'https://applitools.github.io/demo/TestPages/FramesTestPage/')
@@ -40,19 +38,17 @@ describe('CheckViewportSafari', () => {
 
   it('Safari12', async () => {
     driver = await spec.build({
-      serverUrl: 'https://hub-cloud.browserstack.com/wd/hub',
       capabilities: {
         'bstack:options': {
           os: 'OS X',
           osVersion: 'Mojave',
           local: 'false',
           seleniumVersion: '3.13.0',
-          userName: process.env.BROWSERSTACK_USERNAME,
-          accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
         },
         browserName: 'Safari',
         browserVersion: '12.1',
       },
+      server: Remotes.bstack(),
     })
     eyes = new getEyes()
     await spec.visit(driver, 'https://applitools.github.io/demo/TestPages/FramesTestPage/')

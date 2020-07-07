@@ -182,10 +182,7 @@ describe('SpecWrappedDriver', async () => {
 
   describe('headless desktop (@webdriver)', async () => {
     before(async () => {
-      driver = await spec.build({
-        capabilities: TestSetup.Browsers.chrome({headless: true}),
-        server: TestSetup.Remotes.local(),
-      })
+      driver = await spec.build({capabilities: TestSetup.Browsers.chrome({headless: true})})
       await driver.url(url)
     })
 
@@ -228,10 +225,7 @@ describe('SpecWrappedDriver', async () => {
 
   describe('onscreen desktop (@webdriver)', async () => {
     before(async () => {
-      driver = await spec.build({
-        capabilities: TestSetup.Browsers.chrome({headless: false}),
-        server: TestSetup.Remotes.local(),
-      })
+      driver = await spec.build({capabilities: TestSetup.Browsers.chrome({headless: false})})
     })
 
     after(async () => {
@@ -252,7 +246,6 @@ describe('SpecWrappedDriver', async () => {
             headless: true,
           },
         },
-        server: TestSetup.Remotes.local(),
       })
       await driver.url(url)
     })
@@ -304,7 +297,6 @@ describe('SpecWrappedDriver', async () => {
             headless: false,
           },
         },
-        server: TestSetup.Remotes.local(),
       })
     })
 

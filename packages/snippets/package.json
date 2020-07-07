@@ -1,16 +1,15 @@
 {
   "name": "@applitools/snippets",
   "version": "1.0.0",
-  "main": "./index.js",
+  "main": "./dist/index.js",
   "license": "SEE LICENSE IN LICENSE",
   "scripts": {
     "lint": "eslint '**/*.js'",
-    "test": "mocha --no-timeouts --parallel --jobs 15 ./test/*",
+    "test": "mocha --no-timeouts --parallel --jobs 15 ./test/*.spec.js",
     "build": "node ./rollup/cli bundle --format json --format snippet",
     "build:watch": "node ./rollup/cli watch --format json --format snippet"
   },
   "engines": {
-    "ie": "10",
     "node": ">=8.9.0"
   },
   "devDependencies": {

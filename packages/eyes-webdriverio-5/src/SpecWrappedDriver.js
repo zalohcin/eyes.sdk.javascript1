@@ -159,38 +159,42 @@ async function visit(driver, url) {
 
 /* -------- TESTING -------- */
 
-async function build({capabilities, server, logLevel = 'silent', protocol = 'webdriver'} = {}) {
+async function build({
+  capabilities,
+  server = process.env.CVG_TESTS_REMOTE,
+  logLevel = 'silent',
+  protocol = 'webdriver',
+} = {}) {
   const options = {capabilities, logLevel, automationProtocol: protocol}
-  if (server && server.url) {
-    const url = new URL(server.url)
-    options.protocol = url.protocol ? url.protocol.replace(/:$/, '') : undefined
-    options.hostname = url.hostname
-    options.port = Number(url.port)
-    options.path = url.pathname
-    if (server.url.includes('saucelabs.com')) {
-      if (server.w3c) {
-        if (!options.capabilities['sauce:options']) {
-          options.capabilities['sauce:options'] = {}
-        }
-        options.capabilities['sauce:options'].username = server.username
-        options.capabilities['sauce:options'].accessKey = server.accessKey
-      } else {
-        options.capabilities.username = server.username
-        options.capabilities.accessKey = server.accessKey
+  const url = new URL(TypeUtils.isString(server) ? server : server.url)
+  options.protocol = url.protocol ? url.protocol.replace(/:$/, '') : undefined
+  options.hostname = url.hostname
+  options.port = Number(url.port)
+  options.path = url.pathname
+  if (TypeUtils.isObject(server) && url.hostname.includes('saucelabs.com')) {
+    if (server.w3c) {
+      if (!options.capabilities['sauce:options']) {
+        options.capabilities['sauce:options'] = {}
       }
-    } else if (server.url.includes('browserstack.com')) {
-      if (server.w3c) {
-        if (!options.capabilities['bstack:options']) {
-          options.capabilities['bstack:options'] = {}
-        }
-        options.capabilities['bstack:options'].userName = server.username
-        options.capabilities['bstack:options'].accessKey = server.accessKey
-      } else {
-        options.capabilities['browserstack.user'] = server.username
-        options.capabilities['browserstack.key'] = server.accessKey
+      options.capabilities['sauce:options'].username = server.username
+      options.capabilities['sauce:options'].accessKey = server.accessKey
+    } else {
+      options.capabilities.username = server.username
+      options.capabilities.accessKey = server.accessKey
+    }
+  } else if (TypeUtils.isObject(server) && url.hostname.includes('browserstack.com')) {
+    if (server.w3c) {
+      if (!options.capabilities['bstack:options']) {
+        options.capabilities['bstack:options'] = {}
       }
+      options.capabilities['bstack:options'].userName = server.username
+      options.capabilities['bstack:options'].accessKey = server.accessKey
+    } else {
+      options.capabilities['browserstack.user'] = server.username
+      options.capabilities['browserstack.key'] = server.accessKey
     }
   }
+  console.log(options)
   return remote(options)
 }
 async function cleanup(driver) {

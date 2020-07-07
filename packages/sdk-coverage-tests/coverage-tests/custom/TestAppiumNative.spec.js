@@ -1,7 +1,7 @@
 'use strict'
 const cwd = process.cwd()
 const path = require('path')
-const {getEyes, sauceUrl} = require('../util/TestSetup')
+const {getEyes, Remotes} = require('../util/TestSetup')
 const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
 const {Target, Region} = require(cwd)
 
@@ -16,8 +16,6 @@ describe('TestAppiumNative (@native)', () => {
     driver = await spec.build({
       capabilities: {
         browserName: '',
-        username: process.env.SAUCE_USERNAME,
-        accessKey: process.env.SAUCE_ACCESS_KEY,
         name: 'AndroidNativeAppTest1',
         platformName: 'Android',
         deviceName: 'Android Emulator',
@@ -26,7 +24,7 @@ describe('TestAppiumNative (@native)', () => {
         clearSystemFiles: true,
         noReset: true,
       },
-      serverUrl: sauceUrl,
+      server: Remotes.sauce({w3c: false}),
     })
 
     eyes = new getEyes()
@@ -39,8 +37,6 @@ describe('TestAppiumNative (@native)', () => {
     driver = await spec.build({
       capabilities: {
         browserName: '',
-        username: process.env.SAUCE_USERNAME,
-        accessKey: process.env.SAUCE_ACCESS_KEY,
         name: 'AndroidNativeAppTest2',
         platformName: 'Android',
         deviceName: 'Samsung Galaxy S8 WQHD GoogleAPI Emulator',
@@ -51,7 +47,7 @@ describe('TestAppiumNative (@native)', () => {
         appActivity: 'com.applitoolstest.ScrollActivity',
         newCommandTimeout: 600,
       },
-      serverUrl: sauceUrl,
+      server: Remotes.sauce({w3c: false}),
     })
     eyes = getEyes()
     await eyes.open(driver, 'Mobile Native Tests', 'Android Native App 2')
@@ -74,13 +70,11 @@ describe('TestAppiumNative (@native)', () => {
         platformVersion: '10.3',
         deviceName: 'iPhone 7 Simulator',
         deviceOrientation: 'portrait',
-        username: process.env.SAUCE_USERNAME,
-        accessKey: process.env.SAUCE_ACCESS_KEY,
         app: 'https://store.applitools.com/download/iOS.TestApp.app.zip',
         clearSystemFiles: true,
         noReset: true,
       },
-      serverUrl: sauceUrl,
+      server: Remotes.sauce({w3c: false}),
     })
     eyes = getEyes()
     await eyes.open(driver, 'JS test', 'Checking eyes settings in appium tests')
