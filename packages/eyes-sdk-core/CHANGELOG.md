@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 11.3.2 - 2020/7/7
+
 - avoid creating a test if no check command was called ([Trello](https://trello.com/c/ZhKO8sqA/404-wdiojs-sdkempty-test-results-with-new-eyes-core))
 - fix setting blank src on same-origin iframes in visual grid
 
