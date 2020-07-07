@@ -751,13 +751,13 @@ class ServerConnector {
 
   /**
    * Visual locators
-   *
-   * @param visualLocatorData
+   * @template {string} TLocatorName
+   * @param {Object} visualLocatorData
    * @param {string} visualLocatorData.appName
    * @param {string} visualLocatorData.imageUrl
-   * @param {string} visualLocatorData.locatorNames
+   * @param {Readonly<TLocatorName[]>} visualLocatorData.locatorNames
    * @param {string} visualLocatorData.firstOnly
-   * @return {Promise<{[key: string]: import('../../typings/lib/geometry/Region').RegionObject[]}>}
+   * @return {Promise<{[TKey in TLocatorName]: import('../../typings/lib/geometry/Region').RegionObject[]}>}
    */
   async postLocators(visualLocatorData) {
     ArgumentGuard.notNull(visualLocatorData, 'visualLocatorData')

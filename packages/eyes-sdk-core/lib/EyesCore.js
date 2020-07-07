@@ -24,6 +24,10 @@ const UNKNOWN_DEVICE_PIXEL_RATIO = 0
 const DEFAULT_DEVICE_PIXEL_RATIO = 1
 
 /**
+ * @typedef {import('./geometry/Region').RegionObject} RegionObject
+ */
+
+/**
  * @template TDriver, TElement, TSelector
  * @typedef {import('./wrappers/EyesWrappedDriver')<TDriver, TElement, TSelector>} EyesWrappedDriver
  */
@@ -393,10 +397,11 @@ class EyesCore extends EyesBase {
 
   /**
    * Run visual locators
-   * @param visualLocatorSettings
-   * @param {string[]} visualLocatorSettings.locatorNames
+   * @template {string} TLocatorName
+   * @param {Object} visualLocatorSettings
+   * @param {Readonly<TLocatorName[]>} visualLocatorSettings.locatorNames
    * @param {boolean} visualLocatorSettings.firstOnly
-   * @return {Promise<{[key: string]: import('../typings/lib/geometry/Region').RegionObject[]}>}
+   * @return {Promise<{[TKey in TLocatorName]: RegionObject[]}>}
    */
   async locate(visualLocatorSettings) {
     ArgumentGuard.notNull(visualLocatorSettings, 'visualLocatorSettings')
