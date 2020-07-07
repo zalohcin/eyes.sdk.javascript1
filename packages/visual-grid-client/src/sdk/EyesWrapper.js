@@ -18,8 +18,8 @@ class EyesWrapper extends EyesBase {
     this._getBatchInfoWithCache = getBatchInfoWithCache
   }
 
-  async open({appName, testName, viewportSize}) {
-    await super.openBase(appName, testName, undefined, undefined)
+  async open({appName, testName, viewportSize, skipStartingSession}) {
+    await super.openBase(appName, testName, undefined, undefined, skipStartingSession)
 
     if (viewportSize) {
       this.setViewportSize(viewportSize)

@@ -232,10 +232,10 @@ function makeSpecEmitter(options) {
       )`)
     },
     close(throwEx) {
-      return tracker.storeCommand(js`await eyes.close(${throwEx})`)
+      tracker.storeCommand(js`await eyes.close(${throwEx})`)
     },
     abort() {
-      return tracker.storeCommand(js`await eyes.abort()`)
+      tracker.storeCommand(js`await eyes.abort()`)
     },
     getViewportSize() {
       return tracker.storeCommand(js`await eyes.getViewportSize()`).type('RectangleSize')

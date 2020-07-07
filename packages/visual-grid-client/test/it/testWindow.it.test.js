@@ -81,6 +81,7 @@ describe('testWindow', () => {
     expect(openArgs).to.eql([
       {
         appName: 'some app name',
+        skipStartingSession: true,
         testName: 'some test name',
         viewportSize: {
           _height: 768,

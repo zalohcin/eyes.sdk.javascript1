@@ -231,6 +231,7 @@ function makeOpenEyes({
       appName,
       testName,
       eyesTransactionThroat,
+      skipStartingSession: isSingleWindow,
     })
 
     let stepCounter = 0
