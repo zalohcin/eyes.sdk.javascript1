@@ -17,6 +17,10 @@ const MatchResult = require('../match/MatchResult')
 const RunningRender = require('../renderer/RunningRender')
 const RenderStatusResults = require('../renderer/RenderStatusResults')
 
+/**
+ * @typedef {import('../geometry/Region').RegionObject} RegionObject
+ */
+
 // Constants
 const EYES_API_PATH = '/api/sessions'
 const DEFAULT_TIMEOUT_MS = 300000 // ms (5 min)
@@ -757,7 +761,7 @@ class ServerConnector {
    * @param {string} visualLocatorData.imageUrl
    * @param {Readonly<TLocatorName[]>} visualLocatorData.locatorNames
    * @param {string} visualLocatorData.firstOnly
-   * @return {Promise<{[TKey in TLocatorName]: import('../../typings/lib/geometry/Region').RegionObject[]}>}
+   * @return {Promise<{[TKey in TLocatorName]: RegionObject[]}>}
    */
   async postLocators(visualLocatorData) {
     ArgumentGuard.notNull(visualLocatorData, 'visualLocatorData')
