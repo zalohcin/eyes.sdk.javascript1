@@ -957,7 +957,7 @@ describe('processPage', () => {
     frames[0].cdt = 'overriden cdt';
     expect(frames).to.eql([
       {
-        url: 'http://localhost:7373/redirected-frame/frame/frame.html',
+        url: 'http://localhost:7373/redirected-frame/frame/inner-page.html',
         srcAttr: 'blank.html',
         blobs: [
           {

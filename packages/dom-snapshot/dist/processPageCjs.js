@@ -13178,6 +13178,15 @@ function domNodesToCdt(docNode, baseUrl, log = noop$4) {
           value = value.replace(/^blob:/, '');
         } else if (ON_EVENT_REGEX.test(name)) {
           value = '';
+        } else if (
+          elementNode.nodeName === 'IFRAME' &&
+          isAccessibleFrame_1(elementNode) &&
+          name === 'src' &&
+          elementNode.contentDocument.location.href !== 'about:blank' &&
+          elementNode.contentDocument.location.href !==
+            absolutizeUrl_1(value, elementNode.ownerDocument.location.href)
+        ) {
+          value = elementNode.contentDocument.location.href;
         }
         return {
           name,
