@@ -432,4 +432,16 @@ module.exports = {
     const testResults = eyes.close(false).ref('testResults')
     assert.strictEqual(testResults.getId(), undefined)
   },
+  TestVisualLocators: ({driver, eyes, assert}) => {
+    driver.visit(url)
+    eyes.open({appName: 'Applitools Eyes SDK'})
+    const regionsMap = eyes
+      .locate({locatorNames: ['applitools_title']})
+      .type('Map<String, List<Region>>')
+      .ref('regionsMap')
+    eyes.close(false)
+    assert.deepStrictEqual(regionsMap, {
+      applitools_title: [{left: 2, top: 11, width: 173, height: 58}],
+    })
+  },
 }

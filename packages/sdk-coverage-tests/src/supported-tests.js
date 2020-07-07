@@ -313,4 +313,6 @@ module.exports = [
   {name: 'TestSetViewportSize', executionMode: {isCssStitching: true}},
   {name: 'TestEmpty', executionMode: {isCssStitching: true}},
   {name: 'TestEmpty', executionMode: {isVisualGrid: true}},
+  {name: 'TestVisualLocators', executionMode: {isCssStitching: true}},
+  {name: 'TestVisualLocators', executionMode: {isVisualGrid: true}},
 ]

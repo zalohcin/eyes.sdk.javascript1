@@ -240,6 +240,9 @@ function makeSpecEmitter(options) {
     getViewportSize() {
       return tracker.storeCommand(js`await eyes.getViewportSize()`).type('RectangleSize')
     },
+    locate(visualLocatorSettings) {
+      return tracker.storeCommand(js`await eyes.locate(${visualLocatorSettings})`)
+    },
   }
 
   const assert = {
@@ -256,7 +259,7 @@ function makeSpecEmitter(options) {
       tracker.storeCommand(js`assert.notDeepStrictEqual(${actual}, ${expected}, ${message})`)
     },
     ok(value, message) {
-      tracker.storeCommand(js`assert.value(${value}, ${message})`)
+      tracker.storeCommand(js`assert.ok(${value}, ${message})`)
     },
   }
 

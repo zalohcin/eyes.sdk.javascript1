@@ -1,4 +1,4 @@
-/* @applitools/dom-snapshot@3.6.1 */
+/* @applitools/dom-snapshot@3.6.2 */
 'use strict';
 
 function extractLinks(doc = document) {
@@ -13178,6 +13178,15 @@ function domNodesToCdt(docNode, baseUrl, log = noop$4) {
           value = value.replace(/^blob:/, '');
         } else if (ON_EVENT_REGEX.test(name)) {
           value = '';
+        } else if (
+          elementNode.nodeName === 'IFRAME' &&
+          isAccessibleFrame_1(elementNode) &&
+          name === 'src' &&
+          elementNode.contentDocument.location.href !== 'about:blank' &&
+          elementNode.contentDocument.location.href !==
+            absolutizeUrl_1(value, elementNode.ownerDocument.location.href)
+        ) {
+          value = elementNode.contentDocument.location.href;
         }
         return {
           name,
@@ -13874,7 +13883,7 @@ function processPage(
 
   return doProcessPage(doc).then(result => {
     log$$1('processPage end');
-    result.scriptVersion = '3.6.1';
+    result.scriptVersion = '3.6.2';
     return result;
   });
 

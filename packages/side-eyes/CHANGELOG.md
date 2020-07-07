@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+
+## 1.11.1 - 2020/7/7
+
+- fix issue with redirected iframes for the ultra fast grid ([Trello](https://trello.com/c/egprwtNp))
+- updated to @applitools/dom-snapshot@3.6.1 (from 3.5.3)
+- updated to @applitools/visual-grid-client@14.5.3 (from 14.4.4)
+
 ## v1.11.0
 - updated browser and device list to support new options in the Ultrafast Grid [Trello 337](https://trello.com/c/epkkyC4m)
 - added Contrast Advisor to the UI [Trello 337](https://trello.com/c/epkkyC4m)

@@ -1,4 +1,4 @@
-/* @applitools/dom-snapshot@3.6.1 */
+/* @applitools/dom-snapshot@3.6.2 */
 
 function __processPageAndSerializePollForIE() {
   var processPageAndSerializePollForIE = (function () {
@@ -22730,6 +22730,8 @@ function __processPageAndSerializePollForIE() {
                       value = value.replace(/^blob:/, '');
                     } else if (ON_EVENT_REGEX.test(name)) {
                       value = '';
+                    } else if (elementNode.nodeName === 'IFRAME' && isAccessibleFrame_1(elementNode) && name === 'src' && elementNode.contentDocument.location.href !== 'about:blank' && elementNode.contentDocument.location.href !== absolutizeUrl_1(value, elementNode.ownerDocument.location.href)) {
+                      value = elementNode.contentDocument.location.href;
                     }
 
                     return {
@@ -23500,7 +23502,7 @@ function __processPageAndSerializePollForIE() {
               });
               return doProcessPage(doc).then(function (result) {
                 log('processPage end');
-                result.scriptVersion = '3.6.1';
+                result.scriptVersion = '3.6.2';
                 return result;
               });
 

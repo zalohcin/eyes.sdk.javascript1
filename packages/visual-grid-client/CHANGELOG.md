@@ -3,6 +3,15 @@
 ## Unreleased
 
 
+## 14.5.4 - 2020/7/7
+
+- updated to @applitools/dom-snapshot@3.6.2 (from 3.6.1)
+- updated to @applitools/eyes-sdk-core@11.3.1 (from 11.3.0)
+
+## 14.5.3 - 2020/7/7
+
+- updated to @applitools/eyes-sdk-core@11.3.0 (from 11.2.2)
+
 ## 14.5.2 - 2020/7/5
 
 - fetch resources with tunneling agent if necessary  ([Trello](https://trello.com/c/a22B3tUB))

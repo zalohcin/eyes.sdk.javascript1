@@ -80,6 +80,16 @@ describe('Report', () => {
     assert.deepStrictEqual(parseExecutionMode('TestCheckWindow_Scroll'), 'scroll')
     assert.deepStrictEqual(parseExecutionMode('TestCheckWindow'), 'css')
   })
+  it(`should omit skipped testcases`, () => {
+    const altXmlResult = loadFixture('single-suite-skipped-test.xml')
+    const result = convertJunitXmlToResultSchema({xmlResult: altXmlResult})
+    assert.deepStrictEqual(result.length, 0)
+  })
+  it(`should omit skipped testcases with multiple testcases`, () => {
+    const altXmlResult = loadFixture('single-suite-multiple-tests-with-skipped.xml')
+    const result = convertJunitXmlToResultSchema({xmlResult: altXmlResult})
+    assert.deepStrictEqual(result.length, 3)
+  })
   it('should convert xml report to QA report schema as JSON', () => {
     assert.deepStrictEqual(convertJunitXmlToResultSchema({xmlResult}), [
       {

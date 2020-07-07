@@ -29,7 +29,7 @@ class CorsIframeHandler {
    * @return {object[]}
    */
   static blankCorsIframeSrcOfCdt(cdt, frames) {
-    const frameUrls = new Set(frames.map(frame => frame.srcAttr))
+    const frameUrls = new Set(frames.map(frame => frame.url))
     cdt.map(node => {
       if (node.nodeName === 'IFRAME') {
         const srcAttr = node.attributes.find(attr => attr.name === 'src')
