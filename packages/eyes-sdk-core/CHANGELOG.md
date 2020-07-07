@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix issue with redirected frames in dom-snapshot ([Trello](https://trello.com/c/egprwtNp))
 
 ## 11.3.0 - 2020/7/7
 
