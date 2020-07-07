@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix types
 
 ## 11.3.2 - 2020/7/7
 

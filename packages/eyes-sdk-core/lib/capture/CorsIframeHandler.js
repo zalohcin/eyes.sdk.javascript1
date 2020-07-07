@@ -24,8 +24,10 @@ class CorsIframeHandler {
   }
 
   /**
-   * @param {object[]} cdt
-   * @param {object[]} frames
+   * @param page
+   * @param {string} page.url
+   * @param {object[]} page.cdt
+   * @param {object[]} page.frames
    * @return {object[]}
    */
   static blankCorsIframeSrcOfCdt({url, cdt, frames}) {
