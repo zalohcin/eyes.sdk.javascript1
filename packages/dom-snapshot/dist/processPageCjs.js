@@ -13288,9 +13288,16 @@ function aggregateResourceUrlsAndBlobs(resourceUrlsAndBlobsArr) {
 var aggregateResourceUrlsAndBlobs_1 = aggregateResourceUrlsAndBlobs;
 
 function makeGetResourceUrlsAndBlobs({processResource, aggregateResourceUrlsAndBlobs}) {
-  return function getResourceUrlsAndBlobs({documents, urls, forceCreateStyle = false}) {
+  return function getResourceUrlsAndBlobs({
+    documents,
+    urls,
+    forceCreateStyle = false,
+    skipResources,
+  }) {
     return Promise.all(
-      urls.map(url => processResource({url, documents, getResourceUrlsAndBlobs, forceCreateStyle})),
+      urls.map(url =>
+        processResource({url, documents, getResourceUrlsAndBlobs, forceCreateStyle, skipResources}),
+      ),
     ).then(resourceUrlsAndBlobsArr => aggregateResourceUrlsAndBlobs(resourceUrlsAndBlobsArr));
   };
 }
@@ -13332,14 +13339,18 @@ function makeProcessResource({
     documents,
     getResourceUrlsAndBlobs,
     forceCreateStyle = false,
+    skipResources,
   }) {
     if (!cache[url]) {
       if (sessionCache && sessionCache.getItem(url)) {
         const resourceUrls = getDependencies(url);
         log('doProcessResource from sessionStorage', url, 'deps:', resourceUrls.slice(1));
         cache[url] = Promise.resolve({resourceUrls});
-      } else if (/https:\/\/fonts.googleapis.com/.test(url)) {
-        log('not processing google font:', url);
+      } else if (
+        (skipResources && skipResources.indexOf(url) > -1) ||
+        /https:\/\/fonts.googleapis.com/.test(url)
+      ) {
+        log('not processing resource from skip list (or google font):', url);
         cache[url] = Promise.resolve({resourceUrls: [url]});
       } else {
         const now = Date.now();
@@ -13415,6 +13426,7 @@ function makeProcessResource({
               documents,
               urls: absoluteDependentUrls,
               forceCreateStyle,
+              skipResources,
             }).then(({resourceUrls, blobsObj}) => ({
               resourceUrls,
               blobsObj: Object.assign(blobsObj, thisBlob),
@@ -13841,11 +13853,12 @@ var sessionCache = makeSessionCache;
 
 function processPage(
   doc = document,
-  {showLogs, useSessionCache, dontFetchResources, fetchTimeout} = {},
+  {showLogs, useSessionCache, dontFetchResources, fetchTimeout, skipResources} = {},
 ) {
   /* MARKER FOR TEST - DO NOT DELETE */
   const log$$1 = showLogs ? log(Date.now()) : noop$4;
   log$$1('processPage start');
+  log$$1(`skipResources length: ${skipResources && skipResources.length}`);
   const sessionCache$$1 = useSessionCache && sessionCache({log: log$$1});
   const styleSheetCache = {};
   const extractResourcesFromStyleSheet$$1 = extractResourcesFromStyleSheet({styleSheetCache});
@@ -13897,7 +13910,7 @@ function processPage(
 
     const resourceUrlsAndBlobsPromise = dontFetchResources
       ? Promise.resolve({resourceUrls: urls, blobsObj: {}})
-      : getResourceUrlsAndBlobs$$1({documents: docRoots, urls}).then(result => {
+      : getResourceUrlsAndBlobs$$1({documents: docRoots, urls, skipResources}).then(result => {
           sessionCache$$1 && sessionCache$$1.persist();
           return result;
         });

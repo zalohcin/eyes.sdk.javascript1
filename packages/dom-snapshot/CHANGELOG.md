@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- support resource skip list ([Trello](https://trello.com/c/dz46CZM5/399-dom-snapshot-should-accept-a-skip-list-for-fetched-resources))
 
 ## 3.6.1 - 2020/7/5
 
