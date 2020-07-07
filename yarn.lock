@@ -215,6 +215,20 @@
     xml-js "^1.6.11"
     yargs "^15.0.2"
 
+"@applitools/sdk-coverage-tests@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@applitools/sdk-coverage-tests/-/sdk-coverage-tests-1.0.0.tgz#3173aaa71d8b37378519fc65f2a16b073fcea8cb"
+  integrity sha512-Me0dpql5/N7E7XStHNnaja3iIujwGHKKc2XX36uWFqM8THKrsH3MEVRu3WuoMqskDPe8j0RG5mxnJynf/8NT/A==
+  dependencies:
+    "@applitools/sdk-shared" "0.1.0"
+    chai "^4.2.0"
+    chai-as-promised "^7.1.1"
+    chalk "3.0.0"
+    micromatch "^4.0.2"
+    node-fetch "^2.6.0"
+    xml-js "^1.6.11"
+    yargs "^15.0.2"
+
 "@applitools/visual-grid-client@14.0.1":
   version "14.0.1"
   resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-14.0.1.tgz#479f37c54fc9f05eeccc28de561ad6280d458ccf"
