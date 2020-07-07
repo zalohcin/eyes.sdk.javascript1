@@ -1615,16 +1615,9 @@ class EyesBase {
    *   visible part of the document's body) or {@code null} to allow any viewport size.
    * @param {SessionType} [sessionType=SessionType.SEQUENTIAL] - The type of test (e.g., Progression for timing tests),
    *   or {@code null} to use the default.
-   * @param {skipStartingSession} [skipStartingSession=false] - If {@code true} skip starting the session.
    * @return {Promise}
    */
-  async openBase(
-    appName,
-    testName,
-    viewportSize,
-    sessionType = SessionType.SEQUENTIAL,
-    skipStartingSession = false,
-  ) {
+  async openBase(appName, testName, viewportSize, sessionType = SessionType.SEQUENTIAL) {
     this._logger.getLogHandler().open()
 
     if (viewportSize) this._configuration.setViewportSize(viewportSize)
@@ -1666,10 +1659,6 @@ class EyesBase {
       this._viewportSizeHandler.set(this._configuration.getViewportSize())
       this._configuration.setSessionType(sessionType)
       this._validationId = -1
-
-      if (this._configuration.getViewportSize() && !skipStartingSession) {
-        await this._ensureRunningSession()
-      }
 
       this._autSessionId = await this.getAUTSessionId()
       this._isOpen = true
