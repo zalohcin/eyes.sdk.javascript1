@@ -258,7 +258,7 @@ class EyesVisualGrid extends EyesCore {
       })
       const {cdt, url, resourceContents, resourceUrls, frames} = pageDomResults
       if (this.getCorsIframeHandle() === CorsIframeHandles.BLANK) {
-        CorsIframeHandler.blankCorsIframeSrcOfCdt(cdt, frames)
+        CorsIframeHandler.blankCorsIframeSrcOfCdt({url, cdt, frames})
       }
       // this._logger.verbose(`Dom extracted  (${checkSettings.toString()})   $$$$$$$$$$$$`)
 
