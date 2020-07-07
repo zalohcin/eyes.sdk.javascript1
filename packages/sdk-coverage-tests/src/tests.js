@@ -427,4 +427,9 @@ module.exports = {
       .ref('actualViewportSize')
     assert.deepStrictEqual(actualViewportSize, expectedViewportSize)
   },
+  TestEmpty: ({eyes, assert}) => {
+    eyes.open({appName: 'TestEmpty'})
+    const testResults = eyes.close(false).ref('testResults')
+    assert.strictEqual(testResults.getId(), undefined)
+  },
 }

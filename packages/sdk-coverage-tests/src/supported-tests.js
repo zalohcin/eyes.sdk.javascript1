@@ -311,4 +311,6 @@ module.exports = [
   {name: 'TestWindowWithModal_Fully', executionMode: {isScrollStitching: true}},
   {name: 'TestTooBigViewportSize', executionMode: {isCssStitching: true}},
   {name: 'TestSetViewportSize', executionMode: {isCssStitching: true}},
+  {name: 'TestEmpty', executionMode: {isCssStitching: true}},
+  {name: 'TestEmpty', executionMode: {isVisualGrid: true}},
 ]

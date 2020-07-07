@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- avoid creating a test if no check command was called ([Trello](https://trello.com/c/ZhKO8sqA/404-wdiojs-sdkempty-test-results-with-new-eyes-core))
 
 ## 11.2.2 - 2020/7/5
 
