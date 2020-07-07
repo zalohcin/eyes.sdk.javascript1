@@ -1,4 +1,4 @@
-/* @applitools/dom-snapshot@3.6.0 */
+/* @applitools/dom-snapshot@3.6.1 */
 
 function __processPageAndSerialize() {
   var processPageAndSerialize = (function () {
@@ -13929,7 +13929,7 @@ function __processPageAndSerialize() {
 
     return doProcessPage(doc).then(result => {
       log$$1('processPage end');
-      result.scriptVersion = '3.6.0';
+      result.scriptVersion = '3.6.1';
       return result;
     });
 
@@ -13959,9 +13959,7 @@ function __processPageAndSerialize() {
       const canvasBlobs = buildCanvasBlobs_1(canvasElements);
       const frameDocs = extractFrames_1(docRoots);
 
-      const processFramesPromise = frameDocs.map(f =>
-        doProcessPage(f, f.defaultView.frameElement.src),
-      );
+      const processFramesPromise = frameDocs.map(f => doProcessPage(f));
       const processInlineFramesPromise = inlineFrames.map(({element, url}) =>
         doProcessPage(element.contentDocument, url),
       );

@@ -411,11 +411,32 @@ module.exports = {
       const cachedViewportSize = eyes.getViewportSize().ref('cachedViewportSize')
       const expectedViewportSize = driver
         .executeScript('return {height: window.innerHeight, width: window.innerWidth}')
-        .type('Map<string, Number>')
+        .type('Map<String, Number>')
         .ref('expectedViewportSize')
       assert.strictEqual(cachedViewportSize.getWidth(), expectedViewportSize.width)
       assert.strictEqual(cachedViewportSize.getHeight(), expectedViewportSize.height)
       eyes.close(false)
     },
+  },
+  TestSetViewportSize: ({driver, eyes, assert}) => {
+    const expectedViewportSize = {width: 600, height: 600}
+    eyes.constructor.setViewportSize(expectedViewportSize)
+    const actualViewportSize = driver
+      .executeScript('return {width: window.innerWidth, height: window.innerHeight}')
+      .type('Map<String, Number>')
+      .ref('actualViewportSize')
+    assert.deepStrictEqual(actualViewportSize, expectedViewportSize)
+  },
+  TestVisualLocators: ({driver, eyes, assert}) => {
+    driver.visit(url)
+    eyes.open({appName: 'Applitools Eyes SDK'})
+    const regionsMap = eyes
+      .locate({locatorNames: ['applitools_title']})
+      .type('Map<String, List<Region>>')
+      .ref('regionsMap')
+    eyes.close(false)
+    assert.deepStrictEqual(regionsMap, {
+      applitools_title: [{left: 2, top: 11, width: 173, height: 58}],
+    })
   },
 }

@@ -3,6 +3,11 @@
 ## Unreleased
 
 
+## 4.41.0 - 2020/7/5
+
+- updated to @applitools/eyes-sdk-core@11.2.2 (from 11.2.1)
+- updated to @applitools/visual-grid-client@14.5.2 (from 14.5.1)
+
 ## 4.40.0 - 2020/6/30
 
 - remove IosScreenOrientation ([Trello](https://trello.com/c/abSJ68Rl/409-ufg-safari-on-ios-orientations-changes))

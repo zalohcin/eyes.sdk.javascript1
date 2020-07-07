@@ -3,7 +3,7 @@ const {logDebug} = require('../log')
 
 function convertJunitXmlToResultSchema({xmlResult, browser}) {
   let result = []
-  const tests = parseJunitXmlForTests(xmlResult)
+  const tests = parseJunitXmlForTests(xmlResult).filter(test => !test.skipped)
   logDebug(tests)
   tests.forEach(test => {
     const testName = parseBareTestName(test._attributes.name)

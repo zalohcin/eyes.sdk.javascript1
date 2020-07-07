@@ -4,6 +4,10 @@
 ## Unreleased
 
 
+## 3.6.1 - 2020/7/5
+
+- fix frames that were redirected with JavaScript ([Trello](https://trello.com/c/egprwtNp))
+
 ## 3.6.0 - 2020/6/29
 
 - don't fetch google fonts

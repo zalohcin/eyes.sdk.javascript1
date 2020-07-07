@@ -25,10 +25,10 @@
     "@applitools/functional-commons" "1.5.4"
     css-tree "^1.0.0-alpha.39"
 
-"@applitools/dom-snapshot@3.5.4":
-  version "3.5.4"
-  resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-3.5.4.tgz#c8e256e7923fdb69e60cfd0c40335233c93e9800"
-  integrity sha512-oLtkn+UrQX7g2FOdkt5aspAz4JaQBiIDuKaDVN73l0qBoarJfFWFdaDqnvMvvJsG9gpJ6VV5klj+WJwOG8G/MQ==
+"@applitools/dom-snapshot@3.6.0":
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-3.6.0.tgz#5008c43bd46eb679e268dfa0659366f7269721cf"
+  integrity sha512-bnPX5BLhJ5XihsVNWU6jMTHzrcKGZYHFXpck9nnZYEeS250It10FI0sPNi3d9S0b1YcxRt4LVJ5spC1tqwWyQw==
   dependencies:
     "@applitools/functional-commons" "1.5.4"
     css-tree "^1.0.0-alpha.39"
@@ -202,11 +202,25 @@
     xml-js "^1.6.11"
     yargs "^15.0.2"
 
-"@applitools/sdk-coverage-tests@1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@applitools/sdk-coverage-tests/-/sdk-coverage-tests-1.0.3.tgz#a101b3c8154145950a25d40846e8ec15bb1ab03a"
-  integrity sha512-sad4rnRar757vEK0dEugmul41vqjuWDY4EGqvpbM33voOvIg8NB/AxegttTWgUu4fsVHXE6oleS/8O+eSqX0UQ==
+"@applitools/sdk-coverage-tests@1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@applitools/sdk-coverage-tests/-/sdk-coverage-tests-1.0.5.tgz#1540b08f2ec9a204b7c0f17d31110fc426c47a7e"
+  integrity sha512-QTmfFGzzfSUDkgB65NLDaULKZgTQpftO4GApLFZ46fNxh2bjEyDknwnepTCIUXR0hVmo0WbSfcKNtnjWwE8fnQ==
   dependencies:
+    chai "^4.2.0"
+    chai-as-promised "^7.1.1"
+    chalk "3.0.0"
+    micromatch "^4.0.2"
+    node-fetch "^2.6.0"
+    xml-js "^1.6.11"
+    yargs "^15.0.2"
+
+"@applitools/sdk-coverage-tests@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@applitools/sdk-coverage-tests/-/sdk-coverage-tests-1.0.0.tgz#3173aaa71d8b37378519fc65f2a16b073fcea8cb"
+  integrity sha512-Me0dpql5/N7E7XStHNnaja3iIujwGHKKc2XX36uWFqM8THKrsH3MEVRu3WuoMqskDPe8j0RG5mxnJynf/8NT/A==
+  dependencies:
+    "@applitools/sdk-shared" "0.1.0"
     chai "^4.2.0"
     chai-as-promised "^7.1.1"
     chalk "3.0.0"
@@ -255,13 +269,13 @@
     postcss-value-parser "^4.0.2"
     throat "^5.0.0"
 
-"@applitools/visual-grid-client@14.4.10":
-  version "14.4.10"
-  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-14.4.10.tgz#1dfa22822651f81c77f76e01fcf9e148e83648d9"
-  integrity sha512-TLxKgjXixoG9tOE1yM2E4zt1AcihFf4tuacxBDL9BciBIucntUoAubMz5wB69QKMJzUYSWKoAzzFzlmSlr/g7w==
+"@applitools/visual-grid-client@14.4.4":
+  version "14.4.4"
+  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-14.4.4.tgz#47d177a5e2a4ab1640aa26931e5b0d6414a2329c"
+  integrity sha512-pZCqDXFM+7Q4guwj8hakaArkfQDfrM+8Xs0nsCu3jGN5qj5TFGNNbJ7Glkl+VWy4O1h3L7FhmvCwavtVv0Jt2w==
   dependencies:
-    "@applitools/dom-snapshot" "3.5.4"
-    "@applitools/eyes-sdk-core" "11.1.0"
+    "@applitools/dom-snapshot" "3.5.3"
+    "@applitools/eyes-sdk-core" "11.0.5"
     "@applitools/feature-flags" "2.1.1"
     "@applitools/functional-commons" "1.5.4"
     "@applitools/http-commons" "2.3.12"
@@ -275,13 +289,13 @@
     postcss-value-parser "^4.0.2"
     throat "^5.0.0"
 
-"@applitools/visual-grid-client@14.4.4":
-  version "14.4.4"
-  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-14.4.4.tgz#47d177a5e2a4ab1640aa26931e5b0d6414a2329c"
-  integrity sha512-pZCqDXFM+7Q4guwj8hakaArkfQDfrM+8Xs0nsCu3jGN5qj5TFGNNbJ7Glkl+VWy4O1h3L7FhmvCwavtVv0Jt2w==
+"@applitools/visual-grid-client@14.5.0":
+  version "14.5.0"
+  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-14.5.0.tgz#3764daef19ac80c501fafe2004555d4e8c12a991"
+  integrity sha512-yJKOZUvBeYFoys2YS7IO5h++JWagl3AuBFO0CmdhBJEpMGmXgu3GchO2BfCJMpetWXi78K9dMBd+Ts9zA7SGEQ==
   dependencies:
-    "@applitools/dom-snapshot" "3.5.3"
-    "@applitools/eyes-sdk-core" "11.0.5"
+    "@applitools/dom-snapshot" "3.6.0"
+    "@applitools/eyes-sdk-core" "11.1.0"
     "@applitools/feature-flags" "2.1.1"
     "@applitools/functional-commons" "1.5.4"
     "@applitools/http-commons" "2.3.12"
@@ -13924,36 +13938,6 @@ mocha@5.2.0, mocha@^5.2.0:
     mkdirp "0.5.1"
     supports-color "5.4.0"
 
-mocha@7.0.1:
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/mocha/-/mocha-7.0.1.tgz#276186d35a4852f6249808c6dd4a1376cbf6c6ce"
-  integrity sha512-9eWmWTdHLXh72rGrdZjNbG3aa1/3NRPpul1z0D979QpEnFdCG0Q5tv834N+94QEN2cysfV72YocQ3fn87s70fg==
-  dependencies:
-    ansi-colors "3.2.3"
-    browser-stdout "1.3.1"
-    chokidar "3.3.0"
-    debug "3.2.6"
-    diff "3.5.0"
-    escape-string-regexp "1.0.5"
-    find-up "3.0.0"
-    glob "7.1.3"
-    growl "1.10.5"
-    he "1.2.0"
-    js-yaml "3.13.1"
-    log-symbols "2.2.0"
-    minimatch "3.0.4"
-    mkdirp "0.5.1"
-    ms "2.1.1"
-    node-environment-flags "1.0.6"
-    object.assign "4.1.0"
-    strip-json-comments "2.0.1"
-    supports-color "6.0.0"
-    which "1.3.1"
-    wide-align "1.1.3"
-    yargs "13.3.0"
-    yargs-parser "13.1.1"
-    yargs-unparser "1.6.0"
-
 mocha@^6.1.0, mocha@^6.2.2:
   version "6.2.3"
   resolved "https://registry.yarnpkg.com/mocha/-/mocha-6.2.3.tgz#e648432181d8b99393410212664450a4c1e31912"
@@ -21033,14 +21017,6 @@ yaml@^1.7.2:
   integrity sha512-X/v7VDnK+sxbQ2Imq4Jt2PRUsRsP7UcpSl3Llg6+NRRqWLIvxkMFYtH1FmvwNGYRKKPa+EPA4qDBlI9WVG1UKw==
   dependencies:
     "@babel/runtime" "^7.8.7"
-
-yargs-parser@13.1.1:
-  version "13.1.1"
-  resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-13.1.1.tgz#d26058532aa06d365fe091f6a1fc06b2f7e5eca0"
-  integrity sha512-oVAVsHz6uFrg3XQheFII8ESO2ssAf9luWuAd6Wexsu4F3OtIW0o8IribPXYrD4WC24LWtPrJlGy87y5udK+dxQ==
-  dependencies:
-    camelcase "^5.0.0"
-    decamelize "^1.2.0"
 
 yargs-parser@13.1.2, yargs-parser@^13.0.0, yargs-parser@^13.1.1, yargs-parser@^13.1.2:
   version "13.1.2"

@@ -2,11 +2,19 @@
 
 ## Unreleased
 
+
+## 11.3.0 - 2020/7/7
+
+- support visual locators
+
+## 11.2.2 - 2020/7/5
+
 - cache correct viewport size value after fail set viewport size
 - improve for element client rect js snippet
 - fix js snippet to be compatible with IE ([Trello](https://trello.com/c/Y0Q6QAHK/406-wdio5-error-executing-javascript-fully-fullpagescreenshot))
 - replace concurrent requests to the browser with sequential requests ([Trello](https://trello.com/c/Idx6gS3e/419-gartner-ie-errors))
 - prevent call unnecessary methods in native context ([Trello](https://trello.com/c/SSWShJPg/345-wdio-5-sdk-support-for-wdio6))
+- static Eyes.setViewportSize method ([Trello](https://trello.com/c/1KTjqPjI))
 
 ## 11.2.1 - 2020/6/30
 

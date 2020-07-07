@@ -25,6 +25,7 @@ function makeSpecEmitter(options) {
   tracker.storeHook('deps', `const assert = require('assert')`)
   tracker.storeHook('deps', `const path = require('path')`)
   tracker.storeHook('deps', `const specs = require(path.resolve(cwd, 'src/SpecWrappedDriver'))`)
+  tracker.storeHook('deps', `const {Eyes} = require(cwd)`)
   tracker.storeHook(
     'deps',
     `const {TestSetup} = require('@applitools/sdk-coverage-tests/coverage-tests')`,
@@ -155,6 +156,11 @@ function makeSpecEmitter(options) {
   }
 
   const eyes = {
+    constructor: {
+      setViewportSize(viewportSize) {
+        tracker.storeCommand(js`await Eyes.setViewportSize(driver, ${viewportSize})`)
+      },
+    },
     open({appName, viewportSize}) {
       return tracker
         .storeCommand(
@@ -234,6 +240,9 @@ function makeSpecEmitter(options) {
     getViewportSize() {
       return tracker.storeCommand(js`await eyes.getViewportSize()`).type('RectangleSize')
     },
+    locate(visualLocatorSettings) {
+      return tracker.storeCommand(js`await eyes.locate(${visualLocatorSettings})`)
+    },
   }
 
   const assert = {
@@ -250,7 +259,7 @@ function makeSpecEmitter(options) {
       tracker.storeCommand(js`assert.notDeepStrictEqual(${actual}, ${expected}, ${message})`)
     },
     ok(value, message) {
-      tracker.storeCommand(js`assert.value(${value}, ${message})`)
+      tracker.storeCommand(js`assert.ok(${value}, ${message})`)
     },
   }
 

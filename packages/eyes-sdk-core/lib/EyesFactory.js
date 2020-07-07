@@ -50,6 +50,15 @@ class EyesFactory {
       static get EyesVisualGrid() {
         return EyesVisualGrid
       }
+
+      /**
+       * Sets the browser's viewport size
+       * @param {TDriver} driver - driver object for the specific framework
+       * @param {RectangleSize|{width: number, height: number}} viewportSize - viewport size
+       */
+      static async setViewportSize(driver, viewportSize) {
+        return EyesClassic.setViewportSize(driver, viewportSize)
+      }
     }
   }
   /**

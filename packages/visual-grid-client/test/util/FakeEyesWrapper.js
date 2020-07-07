@@ -466,6 +466,10 @@ class FakeEyesWrapper extends EventEmitter {
   getUserSetBatchId() {
     return this.batchId
   }
+
+  getProxy() {
+    return this.proxy
+  }
 }
 
 module.exports = FakeEyesWrapper
