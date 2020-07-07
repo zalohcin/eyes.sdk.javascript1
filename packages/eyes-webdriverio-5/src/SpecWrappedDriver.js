@@ -194,7 +194,6 @@ async function build({
       options.capabilities['browserstack.key'] = server.accessKey
     }
   }
-  console.log(options)
   return remote(options)
 }
 async function cleanup(driver) {

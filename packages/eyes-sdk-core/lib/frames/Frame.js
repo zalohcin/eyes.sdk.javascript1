@@ -34,7 +34,6 @@ const EyesUtils = require('../EyesUtils')
  * @prop {(selector) => boolean} isSelector - return true if the value is a valid selector, false otherwise
  * @prop {(element) => boolean} isCompatibleElement - return true if the value is an element, false otherwise
  * @prop {(logger: Logger, driver: EyesWrappedDriver<TDriver, TElement, TSelector>, element: TElement, selector: TSelector) => EyesWrappedElement<TDriver, TElement, TSelector>} createElement - return wrapped element instance
- * @prop {(leftElement: EyesWrappedElement<TDriver, TElement, TSelector>|TElement, rightElement: EyesWrappedElement<TDriver, TElement, TSelector>|TElement) => Promise<boolean>} isEqualElements - return true if elements are equal, false otherwise
  */
 
 /**

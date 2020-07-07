@@ -239,12 +239,7 @@ class EyesBrowsingContext {
             selector: contextInfo.selector,
           })
         } else {
-          frameElement = await EyesUtils.findFrameByContext(
-            this._logger,
-            this._driver,
-            contextInfo,
-            this.spec.isEqualFrames,
-          )
+          frameElement = await EyesUtils.findFrameByContext(this._logger, this._driver, contextInfo)
         }
         if (!frameElement) throw new Error('Unable to find out the chain of frames')
         if (frameChain.current && (await frameChain.current.equals(frameElement))) {

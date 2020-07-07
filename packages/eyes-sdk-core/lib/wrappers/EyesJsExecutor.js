@@ -1,6 +1,4 @@
 'use strict'
-const EyesWrappedElement = require('./EyesWrappedElement')
-
 /**
  * @typedef {import('../logging/Logger')} Logger
  */
@@ -76,11 +74,7 @@ class EyesJsExecutor {
    */
   async executeScript(script, ...args) {
     try {
-      const result = await this.spec.executeScript(
-        this._driver.unwrapped,
-        script,
-        ...args.map(arg => (arg instanceof EyesWrappedElement ? arg.unwrapped : arg)),
-      )
+      const result = await this.spec.executeScript(this._driver.unwrapped, script, ...args)
       this._logger.verbose('Done!')
       return result
     } catch (err) {

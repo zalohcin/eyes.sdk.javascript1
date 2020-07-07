@@ -393,6 +393,12 @@ class EyesWrappedElement {
       else throw err
     }
   }
+  /**
+   * @override
+   */
+  toJSON() {
+    return this.unwrapped
+  }
 }
 
 module.exports = EyesWrappedElement

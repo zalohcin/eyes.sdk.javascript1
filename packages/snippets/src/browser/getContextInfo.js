@@ -16,7 +16,7 @@ function getContextInfo() {
   let selector
   if (!isCORS) {
     try {
-      selector = getElementXpath(window.frameElement)
+      selector = getElementXpath({element: window.frameElement})
     } catch (err) {
       selector = null
     }

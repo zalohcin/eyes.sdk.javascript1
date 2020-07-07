@@ -500,7 +500,7 @@ async function translateTo(_logger, executor, location, element) {
  * @return {Promise<boolean>} true if element is scrollable, false otherwise
  */
 async function isScrollable(_logger, executor, element) {
-  return executor.executeScript(snippets.isScrollable, {element})
+  return executor.executeScript(snippets.isElementScrollable, {element})
 }
 /**
  * Mark the specified element or default scrolling element with `data-applitools-scroll`
@@ -652,24 +652,23 @@ async function getFrameByNameOrId(_logger, executor, nameOrId) {
 }
 /**
  * Find by context information
- * @template TElement
  * @param {Logger} _logger - logger instance
  * @param {Object} driver
  * @param {EyesBrowsingContext} driver.context - browsing context
  * @param {EyesJsExecutor} driver.executor - js executor
  * @param {ContextInfo} contextInfo - target context info
- * @param {(left: TElement, right: TElement) => Promise<boolean>} comparator - check if two document elements are equal
  * @return {Promise<Frame>} frame
  */
-async function findFrameByContext(_logger, {executor, context}, contextInfo, comparator) {
+async function findFrameByContext(_logger, {executor, context, finder}, contextInfo) {
   const framesInfo = await executor.executeScript(EyesJsSnippets.GET_FRAMES)
   for (const frameInfo of framesInfo) {
     if (frameInfo.isCORS !== contextInfo.isCORS) continue
     await context.frame(frameInfo.element)
     const frame = context.frameChain.current
-    const contentDocument = await executor.executeScript(EyesJsSnippets.GET_DOCUMENT_ELEMENT)
+    const contentDocument = await finder.findElement({type: 'css', selector: 'html'})
+    console.log(contentDocument.constructor.name)
     await context.frameParent()
-    if (await comparator(contentDocument, contextInfo.contentDocument)) return frame
+    if (await contentDocument.equals(contextInfo.contentDocument)) return frame
   }
 }
 /**
