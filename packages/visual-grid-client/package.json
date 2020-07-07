@@ -32,7 +32,7 @@
   ],
   "dependencies": {
     "@applitools/dom-snapshot": "3.6.2",
-    "@applitools/eyes-sdk-core": "11.3.2",
+    "@applitools/eyes-sdk-core": "11.3.3",
     "@applitools/feature-flags": "2.1.1",
     "@applitools/functional-commons": "1.5.4",
     "@applitools/http-commons": "2.3.12",
