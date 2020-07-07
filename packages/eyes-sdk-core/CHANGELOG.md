@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 11.3.4 - 2020/7/7
+
 - REVERT: avoid creating a test if no check command was called ([Trello](https://trello.com/c/ZhKO8sqA/404-wdiojs-sdkempty-test-results-with-new-eyes-core))
 
 ## 11.3.3 - 2020/7/7
