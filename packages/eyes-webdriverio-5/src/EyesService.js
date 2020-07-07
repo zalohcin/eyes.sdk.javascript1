@@ -39,7 +39,7 @@ class EyesService {
    */
   beforeSession(config, _capabilities, _specs) {
     this._eyes.setConfiguration(this._eyesConfig)
-    this._appName = this._eyes.getConfiguration().getAppName() || config.appName
+    this._appName = this._eyes.getConfiguration().getAppName()
     if (config.enableEyesLogs) {
       this._eyes.setLogHandler(new ConsoleLogHandler(true))
     }
@@ -108,10 +108,10 @@ class EyesService {
    */
   beforeTest(test) {
     const configuration = this._eyes.getConfiguration()
-    configuration.setTestName(test.title || test.description)
+    configuration.setTestName(test.title || test.description) // test.title is for mocha, and test.description is for jasmine
 
     if (!this._appName) {
-      configuration.setAppName(test.parent || test.id)
+      configuration.setAppName(test.parent || test.id) // test.parent is for mocha, and test.id is for jasmine
     }
 
     if (!configuration.getViewportSize()) {
