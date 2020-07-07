@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+
+## 3.6.2 - 2020/7/7
+
 - fix redirected frames
 
 ## 3.6.1 - 2020/7/5
