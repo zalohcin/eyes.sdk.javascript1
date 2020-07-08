@@ -85,9 +85,9 @@
   },
   "dependencies": {
     "@applitools/dom-capture": "7.2.4",
-    "@applitools/dom-snapshot": "3.6.1",
-    "@applitools/eyes-images": "4.14.1",
-    "@applitools/visual-grid-client": "14.5.3",
+    "@applitools/dom-snapshot": "3.6.2",
+    "@applitools/eyes-images": "4.14.2",
+    "@applitools/visual-grid-client": "14.5.7",
     "buffer": "^5.2.1",
     "classnames": "^2.2.5",
     "fuse.js": "^3.3.0",

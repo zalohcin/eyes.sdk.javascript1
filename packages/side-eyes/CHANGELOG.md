@@ -1,11 +1,14 @@
 # Changelog
 
 ## Unreleased
+- fix issue with redirected iframes for the ultra fast grid ([Trello](https://trello.com/c/egprwtNp))
+- updated to @applitools/dom-snapshot@3.6.2 (from 3.6.1)
+- updated to @applitools/eyes-images@4.14.2 (from 4.14.1)
+- updated to @applitools/visual-grid-client@14.5.7 (from 14.5.3)
 
 
 ## 1.11.1 - 2020/7/7
 
-- fix issue with redirected iframes for the ultra fast grid ([Trello](https://trello.com/c/egprwtNp))
 - updated to @applitools/dom-snapshot@3.6.1 (from 3.5.3)
 - updated to @applitools/visual-grid-client@14.5.3 (from 14.4.4)
 
