@@ -20453,7 +20453,7 @@ webdriverio@5.18.6:
     serialize-error "^5.0.0"
     webdriver "5.18.6"
 
-webdriverio@^4.14.4:
+webdriverio@^4.14.4, webdriverio@~4.14.4:
   version "4.14.4"
   resolved "https://registry.yarnpkg.com/webdriverio/-/webdriverio-4.14.4.tgz#f7a94e9a6530819796088f42b009833d83de0386"
   integrity sha512-Knp2vzuzP5c5ybgLu+zTwy/l1Gh0bRP4zAr8NWcrStbuomm9Krn9oRF0rZucT6AyORpXinETzmeowFwIoo7mNA==
