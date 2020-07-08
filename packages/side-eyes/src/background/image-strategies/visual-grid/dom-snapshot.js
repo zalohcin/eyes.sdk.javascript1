@@ -23,7 +23,7 @@ function mapResourceContents(snapshot) {
   }))
 }
 
-function removeCrossOriginIframes({url, cdt, frames}) {
+function removeCrossOriginIframes({ url, cdt, frames }) {
   const frameUrls = new Set(frames.map(frame => frame.url))
   cdt.map(node => {
     if (node.nodeName === 'IFRAME') {
