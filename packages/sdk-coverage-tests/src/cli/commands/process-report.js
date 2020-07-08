@@ -11,7 +11,7 @@ async function processReport(args) {
   })
   const isSandbox = args.sendReport === 'sandbox' ? true : false
   process.stdout.write(`\nSending report to QA dashboard ${isSandbox ? '(sandbox)' : ''}... `)
-  const report = createReport({sdkName, xmlResult: results, sandbox: isSandbox})
+  const report = createReport({sdkName, xmlResult: results, sandbox: isSandbox, id: args.reportId})
   logDebug(report)
   const result = await sendReport(report)
   process.stdout.write(result.isSuccessful ? 'Done!\n' : 'Failed!\n')
