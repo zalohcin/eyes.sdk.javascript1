@@ -1,6 +1,5 @@
 const fs = require('fs')
 const path = require('path')
-const {createTestFileString} = require('./render')
 
 async function createTestFiles(emittedTests, sdkImplementation) {
   const targetDirectory = path.join(process.cwd(), sdkImplementation.out)
@@ -8,9 +7,8 @@ async function createTestFiles(emittedTests, sdkImplementation) {
   fs.mkdirSync(targetDirectory, {recursive: true})
 
   emittedTests.forEach(test => {
-    const payload = createTestFileString(test, sdkImplementation.testFrameworkTemplate)
-    const extname = sdkImplementation.ext
-    const filePath = path.resolve(targetDirectory, `${test.name}${extname}`)
+    const payload = sdkImplementation.testFrameworkTemplate(test)
+    const filePath = path.resolve(targetDirectory, `${test.name}${sdkImplementation.ext}`)
     fs.writeFileSync(filePath, payload)
   })
 }

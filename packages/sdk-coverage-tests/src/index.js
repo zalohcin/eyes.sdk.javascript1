@@ -1,4 +1,4 @@
 const {makeEmitTracker} = require('./code-export')
-const {makeCoverageTests} = require('./tests')
+const coverageTests = require('./tests')
 
-module.exports = {makeEmitTracker, makeCoverageTests}
+module.exports = {makeEmitTracker, coverageTests}
