@@ -5,6 +5,10 @@
 
 - support resource skip list ([Trello](https://trello.com/c/dz46CZM5/399-dom-snapshot-should-accept-a-skip-list-for-fetched-resources))
 
+## 3.6.2 - 2020/7/7
+
+- fix redirected frames
+
 ## 3.6.1 - 2020/7/5
 
 - fix frames that were redirected with JavaScript ([Trello](https://trello.com/c/egprwtNp))

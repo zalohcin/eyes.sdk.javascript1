@@ -4,7 +4,6 @@ const BrowserType = require('./config/BrowserType')
 const Configuration = require('./config/Configuration')
 const TypeUtils = require('./utils/TypeUtils')
 const ArgumentGuard = require('./utils/ArgumentGuard')
-const RectangleSize = require('./geometry/RectangleSize')
 const TestResultsFormatter = require('./TestResultsFormatter')
 const MatchResult = require('./match/MatchResult')
 const CorsIframeHandler = require('./capture/CorsIframeHandler')
@@ -224,6 +223,8 @@ class EyesVisualGrid extends EyesCore {
     this._closeCommand = close
     this._abortCommand = abort
 
+    this._initCommon()
+
     return this._driver
   }
   /**
@@ -257,7 +258,7 @@ class EyesVisualGrid extends EyesCore {
       })
       const {cdt, url, resourceContents, resourceUrls, frames} = pageDomResults
       if (this.getCorsIframeHandle() === CorsIframeHandles.BLANK) {
-        CorsIframeHandler.blankCorsIframeSrcOfCdt(cdt, frames)
+        CorsIframeHandler.blankCorsIframeSrcOfCdt({url, cdt, frames})
       }
       // this._logger.verbose(`Dom extracted  (${checkSettings.toString()})   $$$$$$$$$$$$`)
 
@@ -374,13 +375,6 @@ class EyesVisualGrid extends EyesCore {
    */
   async getInferredEnvironment() {
     return undefined
-  }
-  /**
-   * @private
-   */
-  async _getAndSaveBatchInfoFromServer(batchId) {
-    ArgumentGuard.notNullOrEmpty(batchId, 'batchId')
-    return this._runner.getBatchInfoWithCache(batchId)
   }
 }
 module.exports = EyesVisualGrid

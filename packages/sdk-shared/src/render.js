@@ -40,7 +40,11 @@ const args = yargs
     default: process.env.APPLITOOLS_API_KEY,
   })
   .option('target-element', {
-    describe: '',
+    describe: 'translates to Target.region(...)',
+    type: 'string',
+  })
+  .option('target-frame', {
+    describe: 'translates to Target.frame(...)',
     type: 'string',
   })
   .option('vg', {
@@ -292,6 +296,8 @@ if (!url && !args.attach) {
 
     if (args.targetElement) {
       target = Target.region(args.targetElement)
+    } else if (args.targetFrame) {
+      target = Target.frame(args.targetFrame)
     } else {
       target = Target.window()
     }
