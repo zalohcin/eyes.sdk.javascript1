@@ -1,4 +1,4 @@
-const {makeEmitTracker} = require('./code-export')
+const {makeEmitTracker} = require('../src/code-export')
 
 function makeSpecEmitter(options) {
   const tracker = makeEmitTracker()
@@ -266,4 +266,4 @@ function makeSpecEmitter(options) {
   return {tracker, driver, eyes, assert}
 }
 
-module.exports = {makeSpecEmitter}
+module.exports = makeSpecEmitter
