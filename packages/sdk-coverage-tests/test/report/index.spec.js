@@ -118,7 +118,7 @@ describe('Report', () => {
       },
     ])
   })
-  it('should create a report payload', () => {
+  it('should create a report payload without id', () => {
     assert.deepStrictEqual(createReport({sdkName: 'eyes-selenium', xmlResult}), {
       sdk: 'js_selenium_4',
       group: 'selenium',
@@ -149,6 +149,42 @@ describe('Report', () => {
           passed: true,
         },
       ],
+      id: undefined,
+    })
+  })
+
+  it('should create a report payload with id', () => {
+    assert.deepStrictEqual(createReport({sdkName: 'eyes-selenium', id: '111111', xmlResult}), {
+      sdk: 'js_selenium_4',
+      group: 'selenium',
+      sandbox: true,
+      results: [
+        {
+          test_name: 'TestCheckWindow',
+          parameters: {
+            browser: 'chrome',
+            mode: 'visualgrid',
+          },
+          passed: false,
+        },
+        {
+          test_name: 'TestCheckWindow',
+          parameters: {
+            browser: 'chrome',
+            mode: 'css',
+          },
+          passed: true,
+        },
+        {
+          test_name: 'TestCheckWindow',
+          parameters: {
+            browser: 'chrome',
+            mode: 'scroll',
+          },
+          passed: true,
+        },
+      ],
+      id: '111111',
     })
   })
 })
