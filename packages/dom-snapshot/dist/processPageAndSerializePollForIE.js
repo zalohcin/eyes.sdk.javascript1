@@ -1,4 +1,4 @@
-/* @applitools/dom-snapshot@3.6.2 */
+/* @applitools/dom-snapshot@3.7.0 */
 
 function __processPageAndSerializePollForIE() {
   var processPageAndSerializePollForIE = (function () {
@@ -23508,7 +23508,7 @@ function __processPageAndSerializePollForIE() {
               });
               return doProcessPage(doc).then(function (result) {
                 log('processPage end');
-                result.scriptVersion = '3.6.2';
+                result.scriptVersion = '3.7.0';
                 return result;
               });
 

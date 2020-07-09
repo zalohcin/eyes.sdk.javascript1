@@ -1,4 +1,4 @@
-/* @applitools/dom-snapshot@3.6.2 */
+/* @applitools/dom-snapshot@3.7.0 */
 
 function __processPageAndSerialize() {
   var processPageAndSerialize = (function () {
@@ -13951,7 +13951,7 @@ function __processPageAndSerialize() {
 
     return doProcessPage(doc).then(result => {
       log$$1('processPage end');
-      result.scriptVersion = '3.6.2';
+      result.scriptVersion = '3.7.0';
       return result;
     });
 

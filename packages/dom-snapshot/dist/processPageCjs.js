@@ -1,4 +1,4 @@
-/* @applitools/dom-snapshot@3.6.2 */
+/* @applitools/dom-snapshot@3.7.0 */
 'use strict';
 
 function extractLinks(doc = document) {
@@ -13896,7 +13896,7 @@ function processPage(
 
   return doProcessPage(doc).then(result => {
     log$$1('processPage end');
-    result.scriptVersion = '3.6.2';
+    result.scriptVersion = '3.7.0';
     return result;
   });
 
