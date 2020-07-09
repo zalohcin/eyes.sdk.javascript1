@@ -344,7 +344,7 @@ class EyesVisualGrid extends EyesCore {
         }
         if (isErrorCaught) {
           const error = TypeUtils.isArray(results) ? results[0] : results
-          if (throwEx) throw error
+          if (throwEx || !error.getTestResults) throw error
           else return error.getTestResults()
         }
         return TypeUtils.isArray(results) ? results[0] : results
