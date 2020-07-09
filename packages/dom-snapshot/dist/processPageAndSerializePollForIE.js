@@ -22863,13 +22863,15 @@ function __processPageAndSerializePollForIE() {
                 var documents = _ref2.documents,
                     urls = _ref2.urls,
                     _ref2$forceCreateStyl = _ref2.forceCreateStyle,
-                    forceCreateStyle = _ref2$forceCreateStyl === void 0 ? false : _ref2$forceCreateStyl;
+                    forceCreateStyle = _ref2$forceCreateStyl === void 0 ? false : _ref2$forceCreateStyl,
+                    skipResources = _ref2.skipResources;
                 return Promise.all(urls.map(function (url) {
                   return processResource({
                     url: url,
                     documents: documents,
                     getResourceUrlsAndBlobs: getResourceUrlsAndBlobs,
-                    forceCreateStyle: forceCreateStyle
+                    forceCreateStyle: forceCreateStyle,
+                    skipResources: skipResources
                   });
                 })).then(function (resourceUrlsAndBlobsArr) {
                   return aggregateResourceUrlsAndBlobs(resourceUrlsAndBlobsArr);
@@ -22917,7 +22919,8 @@ function __processPageAndSerializePollForIE() {
                     documents = _ref2.documents,
                     getResourceUrlsAndBlobs = _ref2.getResourceUrlsAndBlobs,
                     _ref2$forceCreateStyl = _ref2.forceCreateStyle,
-                    forceCreateStyle = _ref2$forceCreateStyl === void 0 ? false : _ref2$forceCreateStyl;
+                    forceCreateStyle = _ref2$forceCreateStyl === void 0 ? false : _ref2$forceCreateStyl,
+                    skipResources = _ref2.skipResources;
 
                 if (!cache[url]) {
                   if (sessionCache && sessionCache.getItem(url)) {
@@ -22926,8 +22929,8 @@ function __processPageAndSerializePollForIE() {
                     cache[url] = Promise.resolve({
                       resourceUrls: resourceUrls
                     });
-                  } else if (/https:\/\/fonts.googleapis.com/.test(url)) {
-                    log('not processing google font:', url);
+                  } else if (skipResources && skipResources.indexOf(url) > -1 || /https:\/\/fonts.googleapis.com/.test(url)) {
+                    log('not processing resource from skip list (or google font):', url);
                     cache[url] = Promise.resolve({
                       resourceUrls: [url]
                     });
@@ -23023,7 +23026,8 @@ function __processPageAndSerializePollForIE() {
                       return getResourceUrlsAndBlobs({
                         documents: documents,
                         urls: absoluteDependentUrls,
-                        forceCreateStyle: forceCreateStyle
+                        forceCreateStyle: forceCreateStyle,
+                        skipResources: skipResources
                       }).then(function (_ref4) {
                         var resourceUrls = _ref4.resourceUrls,
                             blobsObj = _ref4.blobsObj;
@@ -23464,11 +23468,13 @@ function __processPageAndSerializePollForIE() {
                   showLogs = _ref.showLogs,
                   useSessionCache = _ref.useSessionCache,
                   dontFetchResources = _ref.dontFetchResources,
-                  fetchTimeout = _ref.fetchTimeout;
+                  fetchTimeout = _ref.fetchTimeout,
+                  skipResources = _ref.skipResources;
 
               /* MARKER FOR TEST - DO NOT DELETE */
               var log = showLogs ? log$9(Date.now()) : noop$4;
               log('processPage start');
+              log("skipResources length: ".concat(skipResources && skipResources.length));
               var sessionCache$$1 = useSessionCache && sessionCache({
                 log: log
               });
@@ -23525,7 +23531,8 @@ function __processPageAndSerializePollForIE() {
                   blobsObj: {}
                 }) : getResourceUrlsAndBlobs$$1({
                   documents: docRoots,
-                  urls: urls
+                  urls: urls,
+                  skipResources: skipResources
                 }).then(function (result) {
                   sessionCache$$1 && sessionCache$$1.persist();
                   return result;
