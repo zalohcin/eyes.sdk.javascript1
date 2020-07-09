@@ -21,14 +21,18 @@ function makeProcessResource({
     documents,
     getResourceUrlsAndBlobs,
     forceCreateStyle = false,
+    skipResources,
   }) {
     if (!cache[url]) {
       if (sessionCache && sessionCache.getItem(url)) {
         const resourceUrls = getDependencies(url);
         log('doProcessResource from sessionStorage', url, 'deps:', resourceUrls.slice(1));
         cache[url] = Promise.resolve({resourceUrls});
-      } else if (/https:\/\/fonts.googleapis.com/.test(url)) {
-        log('not processing google font:', url);
+      } else if (
+        (skipResources && skipResources.indexOf(url) > -1) ||
+        /https:\/\/fonts.googleapis.com/.test(url)
+      ) {
+        log('not processing resource from skip list (or google font):', url);
         cache[url] = Promise.resolve({resourceUrls: [url]});
       } else {
         const now = Date.now();
@@ -104,6 +108,7 @@ function makeProcessResource({
               documents,
               urls: absoluteDependentUrls,
               forceCreateStyle,
+              skipResources,
             }).then(({resourceUrls, blobsObj}) => ({
               resourceUrls,
               blobsObj: Object.assign(blobsObj, thisBlob),
