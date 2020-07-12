@@ -387,6 +387,14 @@ function buildDriver({
     }
   }
 
+  console.log(
+    'Running with capabilities:\n',
+    Object.entries(capabilities)
+      .map(argToString)
+      .join('\n '),
+    '\n',
+  )
+
   return spec.build({capabilities, serverUrl: driverServer, webdriverProxy})
 }
 
@@ -459,7 +467,7 @@ function parseCompoundParameter(str) {
 
   return str
     .split(',')
-    .map(keyValue => keyValue.split(':'))
+    .map(keyValue => keyValue.split('=>'))
     .reduce((acc, [key, value]) => {
       acc[key] = value // not casting to Number or Boolean since I didn't need it
       return acc
