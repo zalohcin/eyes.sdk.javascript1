@@ -223,7 +223,7 @@ class EyesVisualGrid extends EyesCore {
     this._closeCommand = close
     this._abortCommand = abort
 
-    this._initCommon()
+    await this._initCommon()
 
     return this._driver
   }
