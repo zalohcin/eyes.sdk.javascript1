@@ -62,6 +62,12 @@ function isStaleElementReferenceResult(result) {
   const errOrResult = result.originalError || result
   return errOrResult instanceof Error && errOrResult.name === 'stale element reference'
 }
+function getNativeLocation(element) {
+  return element.getLocation()
+}
+function getNativeSize(element) {
+  return element.getSize()
+}
 
 /** @type {WDIOSpecElement} */
 module.exports = {
@@ -70,7 +76,9 @@ module.exports = {
   toSupportedSelector,
   toEyesSelector,
   extractId,
-  extractElement,
+  // extractElement,
   extractSelector,
   isStaleElementReferenceResult,
+  getNativeLocation,
+  getNativeSize,
 }

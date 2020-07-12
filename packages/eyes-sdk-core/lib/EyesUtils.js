@@ -4,7 +4,6 @@ const CoordinatesTypes = require('./geometry/CoordinatesType')
 const Location = require('./geometry/Location')
 const RectangleSize = require('./geometry/RectangleSize')
 const Region = require('./geometry/Region')
-const MutableImage = require('./images/MutableImage')
 const EyesError = require('./errors/EyesError')
 const EyesDriverOperationError = require('./errors/EyesDriverOperationError')
 const EyesJsSnippets = require('./EyesJsSnippets')
@@ -333,8 +332,15 @@ async function getElementClientRect(_logger, executor, element) {
  * @param {EyesWrappedElement} element - element to get rect
  * @return {Promise<Region>} element rect
  */
-async function getElementRect(_logger, executor, element) {
-  const rect = await executor.executeScript(EyesJsSnippets.GET_ELEMENT_RECT, element)
+async function getElementRect({logger: _logger, executor, element, isNative}) {
+  let rect
+  if (isNative) {
+    const {x, y} = await element.spec.getNativeLocation(element.unwrapped)
+    const {width, height} = await element.spec.getNativeSize(element.unwrapped)
+    rect = {x, y, width, height}
+  } else {
+    rect = await executor.executeScript(EyesJsSnippets.GET_ELEMENT_RECT, element)
+  }
   return new Region({
     left: Math.ceil(rect.x),
     top: Math.ceil(rect.y),

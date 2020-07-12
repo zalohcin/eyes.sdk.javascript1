@@ -247,8 +247,13 @@ class EyesWrappedElement {
    * @return {Promise<Region>} rect of the element
    */
   async getRect() {
-    return this.withRefresh(() =>
-      EyesUtils.getElementRect(this._logger, this._driver.executor, this),
+    return this.withRefresh(async () =>
+      EyesUtils.getElementRect({
+        logger: this._logger,
+        executor: this._driver.executor,
+        isNative: await this._driver.controller.isNative(),
+        element: this,
+      }),
     )
   }
   /**
@@ -265,8 +270,13 @@ class EyesWrappedElement {
    * @return {Promise<RectangleSize>} size of the element
    */
   async getSize() {
-    const rect = await this.withRefresh(() =>
-      EyesUtils.getElementRect(this._logger, this._driver.executor, this),
+    const rect = await this.withRefresh(async () =>
+      EyesUtils.getElementRect({
+        logger: this._logger,
+        executor: this._driver.executor,
+        isNative: await this._driver.controller.isNative(),
+        element: this,
+      }),
     )
     return rect.getSize()
   }
@@ -275,8 +285,13 @@ class EyesWrappedElement {
    * @return {Promise<Location>} location of the element
    */
   async getLocation() {
-    const rect = await this.withRefresh(() =>
-      EyesUtils.getElementRect(this._logger, this._driver.executor, this),
+    const rect = await this.withRefresh(async () =>
+      EyesUtils.getElementRect({
+        logger: this._logger,
+        executor: this._driver.executor,
+        isNative: await this._driver.controller.isNative(),
+        element: this,
+      }),
     )
     return rect.getLocation()
   }

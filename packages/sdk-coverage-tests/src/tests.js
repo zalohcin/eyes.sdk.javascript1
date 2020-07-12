@@ -1,3 +1,4 @@
+const path = require('path')
 const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
 const viewportSize = {width: 700, height: 460}
 const throwException = true
@@ -438,5 +439,22 @@ module.exports = {
     assert.deepStrictEqual(regionsMap, {
       applitools_title: [{left: 2, top: 11, width: 173, height: 58}],
     })
+  },
+  TestMobileNativeRegion: {
+    options: {
+      capabilities: {
+        platformName: 'Android',
+        'appium:deviceName': 'Pixel_2_API_29',
+        'appium:platformVersion': '10.0',
+        'appium:automationName': 'uiautomator2',
+        'appium:app': path.resolve(__dirname, '../coverage-tests/fixtures/app-debug.apk'),
+      },
+      host: 'http://localhost:4723/wd/hub',
+    },
+    test: ({eyes}) => {
+      eyes.open({appName: 'Applitools Eyes SDK'})
+      eyes.check({region: '~ExampleId'})
+      eyes.close(false)
+    },
   },
 }
