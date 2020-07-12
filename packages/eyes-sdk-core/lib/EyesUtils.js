@@ -384,8 +384,7 @@ async function getDevicePixelRatio(_logger, {executor}) {
  * @return {Promise<number>} mobile device pixel ratio
  */
 async function getMobilePixelRatio(_logger, {controller}, viewportSize) {
-  const screenshot64 = await controller.takeScreenshot()
-  const screenshot = new MutableImage(screenshot64)
+  const screenshot = await controller.takeScreenshot()
   return screenshot.getWidth() / viewportSize.getWidth()
 }
 
