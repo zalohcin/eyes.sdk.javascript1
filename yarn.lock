@@ -33,6 +33,14 @@
     "@applitools/functional-commons" "1.5.4"
     css-tree "^1.0.0-alpha.39"
 
+"@applitools/dom-snapshot@3.6.2":
+  version "3.6.2"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-3.6.2.tgz#fff2a2dda3576769ef9efbd9ec7bd4729e02aec6"
+  integrity sha512-4QNldOHu+78LBzXyGknmGsLkeMZG1lPAZ68seBTNcovGgm57KVVMEuZoKmfQQq42y3x5GswJMUjxCvCf0pbI2g==
+  dependencies:
+    "@applitools/functional-commons" "1.5.4"
+    css-tree "^1.0.0-alpha.39"
+
 "@applitools/eslint-plugin-compat@^0.7.0":
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@applitools/eslint-plugin-compat/-/eslint-plugin-compat-0.7.0.tgz#61785cfb4156ddbb06141116b7fd381ecf11afea"
@@ -202,19 +210,6 @@
   integrity sha512-Me0dpql5/N7E7XStHNnaja3iIujwGHKKc2XX36uWFqM8THKrsH3MEVRu3WuoMqskDPe8j0RG5mxnJynf/8NT/A==
   dependencies:
     "@applitools/sdk-shared" "0.1.0"
-    chai "^4.2.0"
-    chai-as-promised "^7.1.1"
-    chalk "3.0.0"
-    micromatch "^4.0.2"
-    node-fetch "^2.6.0"
-    xml-js "^1.6.11"
-    yargs "^15.0.2"
-
-"@applitools/sdk-coverage-tests@1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@applitools/sdk-coverage-tests/-/sdk-coverage-tests-1.0.5.tgz#1540b08f2ec9a204b7c0f17d31110fc426c47a7e"
-  integrity sha512-QTmfFGzzfSUDkgB65NLDaULKZgTQpftO4GApLFZ46fNxh2bjEyDknwnepTCIUXR0hVmo0WbSfcKNtnjWwE8fnQ==
-  dependencies:
     chai "^4.2.0"
     chai-as-promised "^7.1.1"
     chalk "3.0.0"

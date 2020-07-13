@@ -9,9 +9,15 @@ async function processReport(args) {
   const results = readFileSync(path.resolve(process.cwd(), 'coverage-test-report.xml'), {
     encoding: 'utf-8',
   })
-  const isSandbox = args.sendReport === 'sandbox' ? true : false
+  const isSandbox = args.sendReport === 'sandbox'
   process.stdout.write(`\nSending report to QA dashboard ${isSandbox ? '(sandbox)' : ''}... `)
-  const report = createReport({sdkName, xmlResult: results, sandbox: isSandbox, id: args.reportId})
+  const report = createReport({
+    sdkName,
+    xmlResult: results,
+    sandbox: isSandbox,
+    id: args.reportId,
+    isGeneric: args.generic,
+  })
   logDebug(report)
   const result = await sendReport(report)
   process.stdout.write(result.isSuccessful ? 'Done!\n' : 'Failed!\n')
