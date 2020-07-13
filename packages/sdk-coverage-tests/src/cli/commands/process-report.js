@@ -6,7 +6,8 @@ const {logDebug} = require('../../log')
 
 async function processReport(args) {
   const {name: sdkName} = require(path.join(process.cwd(), args.path))
-  const results = readFileSync(path.resolve(process.cwd(), 'coverage-test-report.xml'), {
+  logDebug(args.reportName)
+  const results = readFileSync(path.resolve(process.cwd(), args.reportName), {
     encoding: 'utf-8',
   })
   const isSandbox = args.sendReport === 'sandbox'

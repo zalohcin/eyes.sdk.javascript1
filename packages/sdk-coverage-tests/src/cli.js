@@ -53,6 +53,11 @@ yargs
     alias: 'id',
     describe: 'Id of the report which will be displayed at the dashboard',
   })
+  .option('reportName', {
+    alias: 'rn',
+    describe: 'Xml report name which will be converted to the QA dashboard schema',
+    default: 'coverage-test-report.xml',
+  })
   .option('generic', {
     alias: 'g',
     boolean: true,
