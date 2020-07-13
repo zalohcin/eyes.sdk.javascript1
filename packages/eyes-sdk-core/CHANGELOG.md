@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- improve typings
 
 ## 11.3.4 - 2020/7/7
 

@@ -17,7 +17,7 @@ const VisualGridRunner = require('./runner/VisualGridRunner')
 
 /**
  * @template TDriver, TElement, TSelector
- * @typedef {new <TRunner>(serverUrl?: string|boolean|TRunner, isDisabled?: boolean, runner?: TRunner) => TRunner extends VisualGridRunner ? EyesVisualGrid<TDriver, TElement, TSelector> : EyesClassic<TDriver, TElement, TSelector>} EyesFactoryCtor
+ * @typedef {new <TRunner = any>(serverUrl?: string|boolean|TRunner, isDisabled?: boolean, runner?: TRunner) => TRunner extends VisualGridRunner ? EyesVisualGrid<TDriver, TElement, TSelector> : EyesClassic<TDriver, TElement, TSelector>} EyesFactoryCtor
  */
 
 /**

@@ -2,9 +2,14 @@ const {TypeUtils} = require('@applitools/eyes-sdk-core')
 const LegacySelector = require('./LegacySelector')
 
 /**
+ * @typedef {{ELEMENT?: string, 'element-6066-11e4-a52e-4f735466cecf'?: string}} WDIOPlainElement
+ * @typedef {{elementId: string, selector: string} & WDIOPlainElement} WDIOElement
+ */
+
+/**
  * @typedef {import('./SpecWrappedDriver').Driver} Driver
  * @typedef {string|Function|import('./LegacySelector')} Selector
- * @typedef {import('webdriverio').Element|{ELEMENT: string, 'element-6066-11e4-a52e-4f735466cecf': string}} Element
+ * @typedef {WDIOElement|WDIOPlainElement} Element
  *
  * @typedef {import('@applitools/eyes-sdk-core').SpecElement<Driver, Element, Selector>} WDIOSpecElement
  */

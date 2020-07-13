@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- use own types to describe wdio api instead of importing wdio types
 
 ## 5.18.0 - 2020/7/7
 
