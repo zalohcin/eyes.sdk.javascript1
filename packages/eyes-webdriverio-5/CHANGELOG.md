@@ -3,6 +3,8 @@
 ## Unreleased
 
 - add default generic type to Eyes
+- updated to @applitools/eyes-sdk-core@11.3.6 (from 11.3.5)
+- updated to @applitools/visual-grid-client@14.5.9 (from 14.5.8)
 
 ## 5.18.1 - 2020/7/14
 
