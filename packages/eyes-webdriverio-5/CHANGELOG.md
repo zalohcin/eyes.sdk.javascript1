@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 5.18.1 - 2020/7/14
+
 - use own types to describe wdio api instead of importing wdio types
 - updated to @applitools/eyes-sdk-core@11.3.5 (from 11.3.4)
 
