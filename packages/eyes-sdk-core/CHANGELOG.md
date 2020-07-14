@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- return extended driver from EyesVisualGrid#open
 
 ## 11.3.5 - 2020/7/13
 
