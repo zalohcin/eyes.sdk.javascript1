@@ -16,7 +16,7 @@ const LegacySelector = require('./src/LegacySelector')
 
 /**
  * @template TRunner
- * @typedef {import('@applitools/eyes-sdk-core').EyesFactoryInstance<TRunner, EyesVisualGrid, EyesClassic>} Eyes
+ * @typedef {TRunner extends VisualGridRunner ? EyesVisualGrid : EyesClassic} Eyes
  */
 
 /**

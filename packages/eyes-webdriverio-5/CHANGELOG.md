@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- add default generic type to Eyes
 
 ## 5.18.1 - 2020/7/14
 
