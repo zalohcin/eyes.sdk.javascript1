@@ -1,7 +1,7 @@
 const convert = require('xml-js')
 const {logDebug} = require('../log')
 
-function convertJunitXmlToResultSchema({xmlResult, browser, isGeneric}) {
+function convertJunitXmlToResultSchema({xmlResult, browser, metaData}) {
   let result = []
   const tests = parseJunitXmlForTests(xmlResult).filter(test => !test.skipped)
   logDebug(tests)
@@ -10,7 +10,7 @@ function convertJunitXmlToResultSchema({xmlResult, browser, isGeneric}) {
     const testNameWithoutSuffix = removeSuffix(testName)
     result.push({
       test_name: testNameWithoutSuffix,
-      isGeneric: isGeneric,
+      isGeneric: metaData[testName] ? metaData[testName].isGeneric : false,
       parameters: {
         browser: browser ? browser : 'chrome',
         mode: parseExecutionMode(testName),

@@ -17,7 +17,17 @@ function loadFixture(fileName) {
 }
 
 const xmlResult = loadFixture('multiple-suites-multiple-tests.xml')
-
+const metaData = {
+  TestCheckWindow: {
+    isGeneric: true
+  },
+  TestCheckWindow_VG: {
+    isGeneric: true
+  },
+  TestCheckWindow_Scroll: {
+    isGeneric: true
+  }
+}
 describe('Report', () => {
   describe('JUnit XML Parser', () => {
     it('should throw if parsing an unsupported xml', () => {
@@ -87,14 +97,14 @@ describe('Report', () => {
   })
   it(`should omit skipped testcases with multiple testcases`, () => {
     const altXmlResult = loadFixture('single-suite-multiple-tests-with-skipped.xml')
-    const result = convertJunitXmlToResultSchema({xmlResult: altXmlResult})
+    const result = convertJunitXmlToResultSchema({xmlResult: altXmlResult, metaData: {}})
     assert.deepStrictEqual(result.length, 3)
   })
   it('should convert xml report to QA report schema as JSON', () => {
-    assert.deepStrictEqual(convertJunitXmlToResultSchema({xmlResult}), [
+    assert.deepStrictEqual(convertJunitXmlToResultSchema({xmlResult, metaData: {}}), [
       {
         test_name: 'TestCheckWindow',
-        isGeneric: undefined,
+        isGeneric: false,
         parameters: {
           browser: 'chrome',
           mode: 'visualgrid',
@@ -103,7 +113,7 @@ describe('Report', () => {
       },
       {
         test_name: 'TestCheckWindow',
-        isGeneric: undefined,
+        isGeneric: false,
         parameters: {
           browser: 'chrome',
           mode: 'css',
@@ -112,7 +122,7 @@ describe('Report', () => {
       },
       {
         test_name: 'TestCheckWindow',
-        isGeneric: undefined,
+        isGeneric: false,
         parameters: {
           browser: 'chrome',
           mode: 'scroll',
@@ -122,7 +132,7 @@ describe('Report', () => {
     ])
   })
   it('should convert xml report to QA report schema as JSON with generic set to false', () => {
-    assert.deepStrictEqual(convertJunitXmlToResultSchema({isGeneric: false, xmlResult}), [
+    assert.deepStrictEqual(convertJunitXmlToResultSchema({metaData: {}, xmlResult}), [
       {
         test_name: 'TestCheckWindow',
         isGeneric: false,
@@ -154,7 +164,7 @@ describe('Report', () => {
   })
 
   it('should create a report payload without id', () => {
-    assert.deepStrictEqual(createReport({sdkName: 'eyes-selenium', isGeneric: true, xmlResult}), {
+    assert.deepStrictEqual(createReport({sdkName: 'eyes-selenium', metaData: metaData, xmlResult}), {
       sdk: 'js_selenium_4',
       group: 'selenium',
       sandbox: true,
@@ -193,7 +203,7 @@ describe('Report', () => {
 
   it('should create a report payload with id', () => {
     assert.deepStrictEqual(
-      createReport({sdkName: 'eyes-selenium', id: '111111', isGeneric: true, xmlResult}),
+      createReport({sdkName: 'eyes-selenium', id: '111111', metaData: metaData, xmlResult}),
       {
         sdk: 'js_selenium_4',
         group: 'selenium',

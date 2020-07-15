@@ -1,6 +1,6 @@
 const path = require('path')
 const {filterTests, numberOfTestVariations, numberOfUniqueTests} = require('../cli-util')
-const {makeEmitTests, createTestFiles} = require('../../code-export')
+const {makeEmitTests, createTestFiles, createTestMetaData} = require('../../code-export')
 
 async function createTests(args) {
   const sdkImplementation = require(path.join(path.resolve('.'), args.path))
@@ -12,6 +12,7 @@ async function createTests(args) {
     all: args.all,
   })
   await createTestFiles(emittedTests, sdkImplementation)
+  await createTestMetaData(emittedTests)
   console.log(
     `\nCreated ${supportedTests.length} (${numberOfTestVariations({
       tests: supportedTests,

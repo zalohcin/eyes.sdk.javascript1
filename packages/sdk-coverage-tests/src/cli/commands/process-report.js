@@ -10,6 +10,8 @@ async function processReport(args) {
   const results = readFileSync(path.resolve(process.cwd(), args.reportName), {
     encoding: 'utf-8',
   })
+  const metaDataFile = readFileSync(path.resolve(process.cwd(), 'coverage-tests-metadata.json'))
+  const metaData = JSON.parse(metaDataFile)
   const isSandbox = args.sendReport === 'sandbox'
   process.stdout.write(`\nSending report to QA dashboard ${isSandbox ? '(sandbox)' : ''}... `)
   const report = createReport({
@@ -17,7 +19,7 @@ async function processReport(args) {
     xmlResult: results,
     sandbox: isSandbox,
     id: args.reportId,
-    isGeneric: args.generic,
+    metaData: metaData
   })
   logDebug(report)
   const result = await sendReport(report)

@@ -29,12 +29,12 @@ function convertSdkNameToReportName(sdkName) {
   }
 }
 
-function createReport({sdkName, xmlResult, browser, group, sandbox, id, isGeneric} = {}) {
+function createReport({sdkName, xmlResult, browser, group, sandbox, id, metaData} = {}) {
   return {
     sdk: convertSdkNameToReportName(sdkName),
     group: group ? group : 'selenium',
     sandbox: sandbox !== undefined ? sandbox : true,
-    results: convertJunitXmlToResultSchema({xmlResult, browser, isGeneric}),
+    results: convertJunitXmlToResultSchema({xmlResult, browser, metaData}),
     id,
   }
 }

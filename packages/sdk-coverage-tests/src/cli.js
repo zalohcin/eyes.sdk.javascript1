@@ -58,12 +58,6 @@ yargs
     describe: 'Xml report name which will be converted to the QA dashboard schema',
     default: 'coverage-test-report.xml',
   })
-  .option('generic', {
-    alias: 'g',
-    boolean: true,
-    describe: 'Identified if the processed report is contains results of non generic tests',
-    default: true,
-  })
   .demandCommand(1, 'You need to specify a command before moving on')
 ;(async () => {
   try {

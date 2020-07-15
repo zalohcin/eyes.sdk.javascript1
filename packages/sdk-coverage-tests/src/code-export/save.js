@@ -17,7 +17,14 @@ async function createTestFiles(emittedTests, sdkImplementation) {
     fs.writeFileSync(filePath, payload)
   })
 }
+async function createTestMetaData(emittedTests) {
+  let metaData = {}
+  emittedTests.forEach(test => metaData[test.name] = {isGeneric: true} )
+  const filePath = path.resolve(process.cwd(), 'coverage-tests-metadata.json')
+  fs.writeFileSync(filePath, JSON.stringify(metaData, null, '\t'))
+}
 
 module.exports = {
   createTestFiles,
+  createTestMetaData
 }
