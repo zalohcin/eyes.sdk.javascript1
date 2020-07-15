@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- add sync and async interfaces of wdio driver
 - add verification step after types generation
 
 ## 5.18.2 - 2020/7/14

@@ -4,32 +4,57 @@ const LegacySelector = require('./LegacySelector')
 const {URL} = require('url')
 
 /**
- * @typedef {Object} WDIODriver
+ * @typedef {Object} WDIOSyncDriver
  * @prop {boolean} isMobile
  * @prop {boolean} isAndroid
  * @prop {boolean} isIOS
  * @prop {string} sessionId
  * @prop {{platformName?: string, platformVersion?: string|number, browserName?: string}} capabilities
- * @prop {(script: string|Function, ...args: any[]) => Promise<any>} execute
+ * @prop {(script: string|((...args: any[]) => any), ...args: any[]) => any} execute
+ * @prop {(ms: number) => void} pause
+ * @prop {(reference: number|object|null) => void} switchToFrame
+ * @prop {() => void} switchToParentFrame
+ * @prop {(selector: string|object|Function) => Element} $
+ * @prop {(selector: string|object|Function) => Element[]} $$
+ * @prop {(url: string) => void} url
+ * @prop {() => string} takeScreenshot
+ * @prop {() => string} getOrientation
+ * @prop {() => string} getTitle
+ * @prop {() => {x: number, y: number, width: number, height: number}} [getWindowRect]
+ * @prop {(x: number, y: number, width: number, height: number) => any} [setWindowRect]
+ * @prop {() => {x: number, y: number}} [getWindowLocation]
+ * @prop {(x: number, y: number) => any} [setWindowLocation]
+ * @prop {() => {width: number, height: number}} [getWindowSize]
+ * @prop {(width: number, height: number) => any} [setWindowSize]
+ */
+
+/**
+ * @typedef {Object} WDIOAsyncDriver
+ * @prop {boolean} isMobile
+ * @prop {boolean} isAndroid
+ * @prop {boolean} isIOS
+ * @prop {string} sessionId
+ * @prop {{platformName?: string, platformVersion?: string|number, browserName?: string}} capabilities
+ * @prop {(script: string|((...args: any[]) => any), ...args: any[]) => Promise<any>} execute
  * @prop {(ms: number) => Promise<void>} pause
- * @prop {(reference: number|object|null) => Promise<any>} switchToFrame
- * @prop {() => Promise<any>} switchToParentFrame
- * @prop {(selector: string|Function) => Promise<Element>} $
- * @prop {(selector: string|Function) => Promise<Element[]>} $$
+ * @prop {(reference: number|object|null) => Promise<void>} switchToFrame
+ * @prop {() => Promise<void>} switchToParentFrame
+ * @prop {(selector: string|object|Function) => Promise<Element>} $
+ * @prop {(selector: string|object|Function) => Promise<Element[]>} $$
  * @prop {(url: string) => Promise<void>} url
  * @prop {() => Promise<string>} takeScreenshot
  * @prop {() => Promise<string>} getOrientation
+ * @prop {() => Promise<string>} getTitle
  * @prop {() => Promise<{x: number, y: number, width: number, height: number}>} [getWindowRect]
  * @prop {(x: number, y: number, width: number, height: number) => Promise<any>} [setWindowRect]
  * @prop {() => Promise<{x: number, y: number}>} [getWindowLocation]
  * @prop {(x: number, y: number) => Promise<any>} [setWindowLocation]
  * @prop {() => Promise<{width: number, height: number}>} [getWindowSize]
  * @prop {(width: number, height: number) => Promise<any>} [setWindowSize]
- * @prop {() => Promise<string>} [gatTitle]
  */
 
 /**
- * @typedef {WDIODriver} Driver
+ * @typedef {WDIOSyncDriver|WDIOAsyncDriver} Driver
  * @typedef {import('./SpecWrappedElement').Element} Element
  * @typedef {import('./SpecWrappedElement').Selector} Selector
  *

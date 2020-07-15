@@ -15,8 +15,7 @@ const LegacySelector = require('./src/LegacySelector')
  */
 
 /**
- * @template TRunner
- * @typedef {TRunner extends VisualGridRunner ? EyesVisualGrid : EyesClassic} Eyes
+ * @typedef {EyesClassic} Eyes
  */
 
 /**
