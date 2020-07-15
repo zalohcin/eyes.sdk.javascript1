@@ -4,6 +4,8 @@
 
 - add sync and async interfaces of wdio driver
 - add verification step after types generation
+- updated to @applitools/eyes-sdk-core@11.3.7 (from 11.3.6)
+- updated to @applitools/visual-grid-client@14.5.10 (from 14.5.9)
 
 ## 5.18.2 - 2020/7/14
 
