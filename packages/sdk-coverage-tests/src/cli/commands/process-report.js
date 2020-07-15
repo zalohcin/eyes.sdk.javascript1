@@ -22,7 +22,7 @@ async function processReport(args) {
     xmlResult: results,
     sandbox: isSandbox,
     id: args.reportId,
-    metaData: metaData,
+    metaData,
   })
   logDebug(report)
   const result = await sendReport(report)

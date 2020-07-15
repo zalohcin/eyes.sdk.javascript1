@@ -14,7 +14,7 @@ async function createTestFiles(emittedTests, sdkImplementation) {
   })
 }
 async function createTestMetaData(emittedTests, sdkImplementation) {
-  let metaData = {}
+  const metaData = {}
   emittedTests.forEach(test => (metaData[test.name] = {isGeneric: true}))
   const filePath = path.resolve(
     process.cwd(),

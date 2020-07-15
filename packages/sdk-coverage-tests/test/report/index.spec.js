@@ -104,7 +104,6 @@ describe('Report', () => {
     assert.deepStrictEqual(convertJunitXmlToResultSchema({xmlResult, metaData: {}}), [
       {
         test_name: 'TestCheckWindow',
-        isGeneric: false,
         parameters: {
           browser: 'chrome',
           mode: 'visualgrid',
@@ -113,7 +112,6 @@ describe('Report', () => {
       },
       {
         test_name: 'TestCheckWindow',
-        isGeneric: false,
         parameters: {
           browser: 'chrome',
           mode: 'css',
@@ -122,7 +120,6 @@ describe('Report', () => {
       },
       {
         test_name: 'TestCheckWindow',
-        isGeneric: false,
         parameters: {
           browser: 'chrome',
           mode: 'scroll',
@@ -135,7 +132,6 @@ describe('Report', () => {
     assert.deepStrictEqual(convertJunitXmlToResultSchema({metaData: {}, xmlResult}), [
       {
         test_name: 'TestCheckWindow',
-        isGeneric: false,
         parameters: {
           browser: 'chrome',
           mode: 'visualgrid',
@@ -144,7 +140,6 @@ describe('Report', () => {
       },
       {
         test_name: 'TestCheckWindow',
-        isGeneric: false,
         parameters: {
           browser: 'chrome',
           mode: 'css',
@@ -153,7 +148,6 @@ describe('Report', () => {
       },
       {
         test_name: 'TestCheckWindow',
-        isGeneric: false,
         parameters: {
           browser: 'chrome',
           mode: 'scroll',
