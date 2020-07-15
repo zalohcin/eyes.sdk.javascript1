@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 11.3.7 - 2020/7/15
+
 - use EyesClassic type as a return type for EyesFactoryCtor
 
 ## 11.3.6 - 2020/7/14
