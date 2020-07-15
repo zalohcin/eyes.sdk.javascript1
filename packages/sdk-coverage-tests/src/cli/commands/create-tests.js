@@ -12,7 +12,7 @@ async function createTests(args) {
     all: args.all,
   })
   await createTestFiles(emittedTests, sdkImplementation)
-  await createTestMetaData(emittedTests)
+  await createTestMetaData(emittedTests, sdkImplementation)
   console.log(
     `\nCreated ${supportedTests.length} (${numberOfTestVariations({
       tests: supportedTests,

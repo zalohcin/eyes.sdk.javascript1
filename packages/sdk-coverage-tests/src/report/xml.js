@@ -8,15 +8,17 @@ function convertJunitXmlToResultSchema({xmlResult, browser, metaData}) {
   tests.forEach(test => {
     const testName = parseBareTestName(test._attributes.name)
     const testNameWithoutSuffix = removeSuffix(testName)
-    result.push({
+    let testData = {
       test_name: testNameWithoutSuffix,
-      isGeneric: metaData[testName] ? metaData[testName].isGeneric : false,
       parameters: {
         browser: browser ? browser : 'chrome',
+
         mode: parseExecutionMode(testName),
       },
       passed: !test.failure,
-    })
+    }
+    if (metaData[testName]) Object.assign(testData, metaData[testName])
+    result.push(testData)
   })
   return result
 }

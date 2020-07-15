@@ -5,13 +5,16 @@ const {sendReport} = require('../../send-report')
 const {logDebug} = require('../../log')
 
 async function processReport(args) {
-  const {name: sdkName} = require(path.join(process.cwd(), args.path))
+  const {name: sdkName, meta: metaPath} = require(path.join(process.cwd(), args.path))
   logDebug(args.reportName)
   const results = readFileSync(path.resolve(process.cwd(), args.reportName), {
     encoding: 'utf-8',
   })
-  const metaDataFile = readFileSync(path.resolve(process.cwd(), 'coverage-tests-metadata.json'))
+  const metaDataFile = readFileSync(
+    path.resolve(process.cwd(), metaPath || 'coverage-tests-metadata.json'),
+  )
   const metaData = JSON.parse(metaDataFile)
+  logDebug(metaData)
   const isSandbox = args.sendReport === 'sandbox'
   process.stdout.write(`\nSending report to QA dashboard ${isSandbox ? '(sandbox)' : ''}... `)
   const report = createReport({
@@ -19,7 +22,7 @@ async function processReport(args) {
     xmlResult: results,
     sandbox: isSandbox,
     id: args.reportId,
-    metaData: metaData
+    metaData: metaData,
   })
   logDebug(report)
   const result = await sendReport(report)
