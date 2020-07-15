@@ -179,40 +179,37 @@ async function getElementRect(driver, el) {
   return driver.getElementRect(el.elementId)
 }
 
-/** @type {WDIOSpecDriver} */
-module.exports = {
-  isEqualFrames,
-  createElement,
-  createFrameReference,
-  toSupportedSelector,
-  toEyesSelector,
-  executeScript,
-  sleep,
-  switchToFrame,
-  switchToParentFrame,
-  findElement,
-  findElements,
-  getWindowLocation,
-  setWindowLocation,
-  getWindowSize,
-  setWindowSize,
-  getOrientation,
-  isMobile,
-  isAndroid,
-  isIOS,
-  isNative,
-  getPlatformVersion,
-  getBrowserName,
-  getBrowserVersion,
-  getSessionId,
-  takeScreenshot,
-  getTitle,
-  getUrl,
-  visit,
-  build,
-  cleanup,
-  click,
-  type,
-  waitUntilDisplayed,
-  getElementRect,
-}
+exports.isEqualFrames = isEqualFrames
+exports.createElement = createElement
+exports.createFrameReference = createFrameReference
+exports.toSupportedSelector = toSupportedSelector
+exports.toEyesSelector = toEyesSelector
+exports.executeScript = executeScript
+exports.sleep = sleep
+exports.switchToFrame = switchToFrame
+exports.switchToParentFrame = switchToParentFrame
+exports.findElement = findElement
+exports.findElements = findElements
+exports.getWindowLocation = getWindowLocation
+exports.setWindowLocation = setWindowLocation
+exports.getWindowSize = getWindowSize
+exports.setWindowSize = setWindowSize
+exports.getOrientation = getOrientation
+exports.isMobile = isMobile
+exports.isAndroid = isAndroid
+exports.isIOS = isIOS
+exports.isNative = isNative
+exports.getPlatformVersion = getPlatformVersion
+exports.getBrowserName = getBrowserName
+exports.getBrowserVersion = getBrowserVersion
+exports.getSessionId = getSessionId
+exports.takeScreenshot = takeScreenshot
+exports.getTitle = getTitle
+exports.getUrl = getUrl
+exports.visit = visit
+exports.build = build
+exports.cleanup = cleanup
+exports.click = click
+exports.type = type
+exports.waitUntilDisplayed = waitUntilDisplayed
+exports.getElementRect = getElementRect

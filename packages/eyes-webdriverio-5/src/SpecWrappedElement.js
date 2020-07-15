@@ -68,14 +68,11 @@ function isStaleElementReferenceResult(result) {
   return errOrResult instanceof Error && errOrResult.name === 'stale element reference'
 }
 
-/** @type {WDIOSpecElement} */
-module.exports = {
-  isCompatible,
-  isSelector,
-  toSupportedSelector,
-  toEyesSelector,
-  extractId,
-  extractElement,
-  extractSelector,
-  isStaleElementReferenceResult,
-}
+exports.isCompatible = isCompatible
+exports.isSelector = isSelector
+exports.toSupportedSelector = toSupportedSelector
+exports.toEyesSelector = toEyesSelector
+exports.extractId = extractId
+exports.extractElement = extractElement
+exports.extractSelector = extractSelector
+exports.isStaleElementReferenceResult = isStaleElementReferenceResult
