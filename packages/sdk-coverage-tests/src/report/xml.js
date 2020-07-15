@@ -8,7 +8,7 @@ function convertJunitXmlToResultSchema({xmlResult, browser, metaData}) {
   tests.forEach(test => {
     const testName = parseBareTestName(test._attributes.name)
     const testNameWithoutSuffix = removeSuffix(testName)
-    let testData = {
+    result.push({
       test_name: testNameWithoutSuffix,
       parameters: {
         browser: browser ? browser : 'chrome',
@@ -16,9 +16,8 @@ function convertJunitXmlToResultSchema({xmlResult, browser, metaData}) {
         mode: parseExecutionMode(testName),
       },
       passed: !test.failure,
-    }
-    if (metaData[testName]) Object.assign(testData, metaData[testName])
-    result.push(testData)
+      ...metaData[testName],
+    })
   })
   return result
 }
