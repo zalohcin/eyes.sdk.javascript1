@@ -5,5 +5,5 @@ module.exports = {
   makeEmitTracker,
   makeEmitTests,
   createTestFiles,
-  createTestMetaData
+  createTestMetaData,
 }

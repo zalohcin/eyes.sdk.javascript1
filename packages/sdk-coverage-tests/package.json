@@ -27,6 +27,7 @@
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "chalk": "3.0.0",

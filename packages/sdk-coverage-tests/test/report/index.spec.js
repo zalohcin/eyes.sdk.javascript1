@@ -19,14 +19,14 @@ function loadFixture(fileName) {
 const xmlResult = loadFixture('multiple-suites-multiple-tests.xml')
 const metaData = {
   TestCheckWindow: {
-    isGeneric: true
+    isGeneric: true,
   },
   TestCheckWindow_VG: {
-    isGeneric: true
+    isGeneric: true,
   },
   TestCheckWindow_Scroll: {
-    isGeneric: true
-  }
+    isGeneric: true,
+  },
 }
 describe('Report', () => {
   describe('JUnit XML Parser', () => {
@@ -158,41 +158,44 @@ describe('Report', () => {
   })
 
   it('should create a report payload without id', () => {
-    assert.deepStrictEqual(createReport({sdkName: 'eyes-selenium', metaData: metaData, xmlResult}), {
-      sdk: 'js_selenium_4',
-      group: 'selenium',
-      sandbox: true,
-      results: [
-        {
-          test_name: 'TestCheckWindow',
-          isGeneric: true,
-          parameters: {
-            browser: 'chrome',
-            mode: 'visualgrid',
+    assert.deepStrictEqual(
+      createReport({sdkName: 'eyes-selenium', metaData: metaData, xmlResult}),
+      {
+        sdk: 'js_selenium_4',
+        group: 'selenium',
+        sandbox: true,
+        results: [
+          {
+            test_name: 'TestCheckWindow',
+            isGeneric: true,
+            parameters: {
+              browser: 'chrome',
+              mode: 'visualgrid',
+            },
+            passed: false,
           },
-          passed: false,
-        },
-        {
-          test_name: 'TestCheckWindow',
-          isGeneric: true,
-          parameters: {
-            browser: 'chrome',
-            mode: 'css',
+          {
+            test_name: 'TestCheckWindow',
+            isGeneric: true,
+            parameters: {
+              browser: 'chrome',
+              mode: 'css',
+            },
+            passed: true,
           },
-          passed: true,
-        },
-        {
-          test_name: 'TestCheckWindow',
-          isGeneric: true,
-          parameters: {
-            browser: 'chrome',
-            mode: 'scroll',
+          {
+            test_name: 'TestCheckWindow',
+            isGeneric: true,
+            parameters: {
+              browser: 'chrome',
+              mode: 'scroll',
+            },
+            passed: true,
           },
-          passed: true,
-        },
-      ],
-      id: undefined,
-    })
+        ],
+        id: undefined,
+      },
+    )
   })
 
   it('should create a report payload with id', () => {
