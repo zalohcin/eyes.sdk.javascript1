@@ -53,11 +53,6 @@ yargs
     alias: 'id',
     describe: 'Id of the report which will be displayed at the dashboard',
   })
-  .option('reportName', {
-    alias: 'rn',
-    describe: 'Xml report name which will be converted to the QA dashboard schema',
-    default: 'coverage-test-report.xml',
-  })
   .demandCommand(1, 'You need to specify a command before moving on')
 ;(async () => {
   try {

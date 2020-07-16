@@ -6,8 +6,7 @@ const {logDebug} = require('../../log')
 
 async function processReport(args) {
   const {name: sdkName, meta: metaPath} = require(path.join(process.cwd(), args.path))
-  logDebug(args.reportName)
-  const results = readFileSync(path.resolve(process.cwd(), args.reportName), {
+  const results = readFileSync(path.resolve(process.cwd(), 'coverage-test-report.xml'), {
     encoding: 'utf-8',
   })
   const metaDataFile = readFileSync(
