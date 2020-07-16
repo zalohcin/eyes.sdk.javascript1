@@ -11,7 +11,7 @@ async function processReport(args) {
     encoding: 'utf-8',
   })
   const metaDataFile = readFileSync(
-    path.resolve(process.cwd(), metaPath || 'coverage-tests-metadata.json'),
+    path.resolve(process.cwd(), metaPath || '', 'coverage-tests-metadata.json'),
   )
   const metaData = JSON.parse(metaDataFile)
   logDebug(metaData)

@@ -16,10 +16,9 @@ async function createTestFiles(emittedTests, sdkImplementation) {
 async function createTestMetaData(emittedTests, sdkImplementation) {
   const metaData = {}
   emittedTests.forEach(test => (metaData[test.name] = {isGeneric: true}))
-  const filePath = path.resolve(
-    process.cwd(),
-    sdkImplementation.meta || 'coverage-tests-metadata.json',
-  )
+  const dirPath = path.resolve(process.cwd(), sdkImplementation.meta || '')
+  const filePath = path.resolve(dirPath, 'coverage-tests-metadata.json')
+  fs.mkdirSync(dirPath, {recursive: true})
   fs.writeFileSync(filePath, JSON.stringify(metaData, null, '\t'))
 }
 

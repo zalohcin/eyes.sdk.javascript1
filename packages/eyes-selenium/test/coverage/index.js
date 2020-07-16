@@ -7,5 +7,4 @@ module.exports = {
   initialize: makeEmitter,
   testFrameworkTemplate: makeTemplate,
   supportedTests,
-  meta: 'eyes-selenium-meta.json',
 }
