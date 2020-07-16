@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 5.18.3 - 2020/7/16
+
 - add sync and async interfaces of wdio driver
 - add verification step after types generation
 - updated to @applitools/eyes-sdk-core@11.3.7 (from 11.3.6)
