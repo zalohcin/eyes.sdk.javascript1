@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- fix selected options in select element ([Trello](https://trello.com/c/PftuuFqx))
 
 ## 3.7.0 - 2020/7/9
 

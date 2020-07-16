@@ -22712,7 +22712,7 @@ function __processPageAndSerializeForIE() {
                   addOrUpdateAttribute(node.attributes, 'value', elementNode.value);
                 }
 
-                if (elementNode.tagName === 'OPTION' && elementNode.parentElement.value === elementNode.value) {
+                if (elementNode.tagName === 'OPTION' && elementNode.parentElement.selectedOptions && Array.from(elementNode.parentElement.selectedOptions).indexOf(elementNode) > -1) {
                   addOrUpdateAttribute(node.attributes, 'selected', '');
                 }
 
