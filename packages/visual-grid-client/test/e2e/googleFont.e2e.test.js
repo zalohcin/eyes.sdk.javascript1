@@ -44,7 +44,8 @@ describe('openEyes', () => {
     await browser.close()
   })
 
-  it('renders google font on IE correctly', async () => {
+  // TODO unskip once VG has an answer to the cause of the failure
+  it.skip('renders google font on IE correctly', async () => {
     await page.goto(`${baseUrl}/google-font.html`)
     const userAgent = await page.evaluate(() => navigator.userAgent)
 
