@@ -5,7 +5,7 @@ const {sendReport} = require('../../send-report')
 const {logDebug} = require('../../log')
 
 async function processReport(args) {
-  const {name: sdkName, meta: metaPath} = require(path.join(process.cwd(), args.path))
+  const {name: sdkName, metaPath} = require(path.join(process.cwd(), args.path))
   const results = readFileSync(path.resolve(process.cwd(), 'coverage-test-report.xml'), {
     encoding: 'utf-8',
   })
