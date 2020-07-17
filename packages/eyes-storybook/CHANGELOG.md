@@ -3,6 +3,9 @@
 ## Unreleased
 
 - add ios device info to readme
+- updated to @applitools/dom-snapshot@3.7.1 (from 3.6.0)
+- updated to @applitools/eyes-sdk-core@11.3.7 (from 11.1.0)
+- updated to @applitools/visual-grid-client@14.5.11 (from 14.5.0)
 
 ## 3.8.2 - 2020/6/29
 
