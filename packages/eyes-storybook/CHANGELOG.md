@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- add ios device info to readme
 
 ## 3.8.2 - 2020/6/29
 
