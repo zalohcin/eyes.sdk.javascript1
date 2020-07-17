@@ -161,6 +161,7 @@ async function visit(driver, url) {
 
 /* -------- FOR TESTING PURPOSES -------- */
 
+/** @return {WDIOAsyncDriver} */
 async function build({
   capabilities,
   serverUrl = process.env.CVG_TESTS_REMOTE,

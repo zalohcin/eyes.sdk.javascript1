@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- prevented from using wdio external types during types generation
 
 ## 5.18.3 - 2020/7/16
 
