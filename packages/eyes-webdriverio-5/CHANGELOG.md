@@ -3,6 +3,7 @@
 ## Unreleased
 
 - prevented from using wdio external types during types generation
+- updated to @applitools/visual-grid-client@14.5.11 (from 14.5.10)
 
 ## 5.18.3 - 2020/7/16
 
