@@ -3,6 +3,8 @@
 ## Unreleased
 
 - add driver.click to legacy API
+- updated to @applitools/eyes-sdk-core@11.3.7 (from 11.3.4)
+- updated to @applitools/visual-grid-client@14.5.11 (from 14.5.7)
 
 ## 2.19.0 - 2020/7/8
 
