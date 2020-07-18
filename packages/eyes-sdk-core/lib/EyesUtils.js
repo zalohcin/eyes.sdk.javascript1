@@ -252,29 +252,37 @@ async function getTopContextViewportSize(logger, {controller, context, executor}
   return context.framesSwitchAndReturn(null, async () => {
     logger.verbose('Extracting viewport size...')
     let viewportSize
-    try {
-      viewportSize = await getViewportSize(logger, {executor})
-    } catch (err) {
-      logger.verbose('Failed to extract viewport size using Javascript:', err)
-      // If we failed to extract the viewport size using JS, will use the window size instead.
-      logger.verbose('Using window size as viewport size.')
-
-      const windowSize = await controller.getWindowSize()
-      let width = windowSize.getWidth()
-      let height = windowSize.getHeight()
-      const isLandscapeOrientation = await controller.isLandscapeOrientation().catch(() => {
-        // Not every IWebDriver supports querying for orientation.
-      })
-      if (isLandscapeOrientation && height > width) {
-        const temp = width
-        width = height
-        height = temp
+    if (await controller.isNative()) {
+      viewportSize = await _getPortraitWindowSize(logger, controller)
+    } else {
+      try {
+        viewportSize = await getViewportSize(logger, {executor})
+      } catch (err) {
+        logger.verbose('Failed to extract viewport size using Javascript:', err)
+        // If we failed to extract the viewport size using JS, will use the window size instead.
+        viewportSize = await _getPortraitWindowSize(logger, controller)
       }
-      viewportSize = new RectangleSize(width, height)
     }
-    logger.verbose('Done! Viewport size: ', viewportSize)
+    logger.verbose('Done extracting viewport size! Viewport size: ', viewportSize)
     return viewportSize
   })
+}
+
+async function _getPortraitWindowSize(logger, controller) {
+  logger.verbose('Using window size as viewport size.')
+
+  const windowSize = await controller.getWindowSize()
+  let width = windowSize.getWidth()
+  let height = windowSize.getHeight()
+  const isLandscapeOrientation = await controller.isLandscapeOrientation().catch(() => {
+    // Not every IWebDriver supports querying for orientation.
+  })
+  if (isLandscapeOrientation && height > width) {
+    const temp = width
+    width = height
+    height = temp
+  }
+  return new RectangleSize(width, height)
 }
 /**
  * Get current context content size
@@ -325,22 +333,16 @@ async function getElementClientRect(_logger, executor, element) {
     coordinatesType: CoordinatesTypes.CONTEXT_RELATIVE,
   })
 }
+
 /**
  * Get element rect relative to the current context
- * @param {Logger} _logger - logger instance
- * @param {EyesJsExecutor} executor - js executor
- * @param {EyesWrappedElement} element - element to get rect
+ * @param obj
+ * @param {EyesJsExecutor} obj.executor - js executor
+ * @param {EyesWrappedElement} obj.element - element to get rect
  * @return {Promise<Region>} element rect
  */
-async function getElementRect({logger: _logger, executor, element, isNative}) {
-  let rect
-  if (isNative) {
-    const {x, y} = await element.spec.getNativeLocation(element.unwrapped)
-    const {width, height} = await element.spec.getNativeSize(element.unwrapped)
-    rect = {x, y, width, height}
-  } else {
-    rect = await executor.executeScript(EyesJsSnippets.GET_ELEMENT_RECT, element)
-  }
+async function getElementRect({executor, element}) {
+  const rect = await executor.executeScript(EyesJsSnippets.GET_ELEMENT_RECT, element)
   return new Region({
     left: Math.ceil(rect.x),
     top: Math.ceil(rect.y),
@@ -349,6 +351,56 @@ async function getElementRect({logger: _logger, executor, element, isNative}) {
     coordinatesType: CoordinatesTypes.CONTEXT_RELATIVE,
   })
 }
+
+/**
+ * Get native mobile element rect relative to the current context
+ * @param obj
+ * @param {EyesWrappedDriver} obj.driver - driver
+ * @param {EyesWrappedElement} obj.element - element to get rect
+ * @return {Promise<Region>} element rect
+ */
+async function getNativeElementRect({driver, element}) {
+  const {x, y} = await driver.specs.getNativeElementLocation(driver, element.unwrapped)
+  const {width, height} = await driver.specs.getNativeElementSize(driver, element.unwrapped)
+  return new Region({
+    left: Math.ceil(x),
+    top: Math.ceil(y),
+    width: Math.ceil(width),
+    height: Math.ceil(height),
+    coordinatesType: CoordinatesTypes.CONTEXT_RELATIVE,
+  })
+}
+
+/**
+ * Get native mobile element size
+ * @param obj
+ * @param {EyesWrappedDriver} obj.driver - driver
+ * @param {EyesWrappedElement} obj.element - element to get rect
+ * @return {Promise<RectangleSize>} element size
+ */
+async function getNativeElementSize({driver, element}) {
+  const {width, height} = await driver.specs.getNativeElementSize(driver, element.unwrapped)
+  return new RectangleSize({
+    width: Math.ceil(width),
+    height: Math.ceil(height),
+  })
+}
+
+/**
+ * Get native mobile element location
+ * @param obj
+ * @param {EyesWrappedDriver} obj.driver - driver
+ * @param {EyesWrappedElement} obj.element - element to get rect
+ * @return {Promise<Location>} element location
+ */
+async function getNativeElementLocation({driver, element}) {
+  const {x, y} = await driver.specs.getNativeElementLocation(driver, element.unwrapped)
+  return new Location({
+    left: Math.ceil(x),
+    top: Math.ceil(y),
+  })
+}
+
 /**
  * Extract values of specified properties for specified element
  * @param {Logger} _logger - logger instance
@@ -766,6 +818,9 @@ module.exports = {
   getElementEntireSize,
   getElementClientRect,
   getElementRect,
+  getNativeElementRect,
+  getNativeElementSize,
+  getNativeElementLocation,
   getElementProperties,
   getElementCssProperties,
   getDevicePixelRatio,

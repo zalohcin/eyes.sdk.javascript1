@@ -450,6 +450,20 @@ module.exports = {
         'appium:app': path.resolve(__dirname, '../coverage-tests/fixtures/app-debug.apk'),
       },
       host: 'http://localhost:4723/wd/hub',
+
+      // capabilities: {
+      //   platformName: 'Android',
+      //   platformVersion: '10.0',
+      //   appiumVersion: '1.17.1',
+      //   deviceName: 'Google Pixel GoogleAPI Emulator',
+      //   browserName: '',
+      //   app:
+      //     'https://github.com/applitools/eyes.sdk.javascript1/blob/mobile-selectors/packages/sdk-coverage-tests/coverage-tests/fixtures/app-debug.apk?raw=true',
+      //   username: process.env.SAUCE_USERNAME,
+      //   accesskey: process.env.SAUCE_ACCESS_KEY,
+      //   automationName: 'uiautomator2',
+      // },
+      // host: 'https://ondemand.saucelabs.com:443/wd/hub',
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Applitools Eyes SDK'})
