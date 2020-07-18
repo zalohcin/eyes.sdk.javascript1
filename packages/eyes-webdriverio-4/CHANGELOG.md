@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- add driver.click to legacy API
 
 ## 2.19.0 - 2020/7/8
 
