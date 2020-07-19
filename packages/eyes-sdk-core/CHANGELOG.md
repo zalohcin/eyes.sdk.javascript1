@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 11.3.8 - 2020/7/19
+
 - fix `Date` typo in BatchInfo JSDoc
 - support duplicate copies of the SDK in CheckSettings constructor ([Trello](https://trello.com/c/4Gd7uWtS))
 
