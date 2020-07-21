@@ -1,90 +1,3 @@
-const {getNameFromObject} = require('../common-util')
-
-function convertExecutionModeToSuffix(executionMode) {
-  if (executionMode.useStrictName) return ''
-  switch (getNameFromObject(executionMode)) {
-    case 'isVisualGrid':
-      return '_VG'
-    case 'isScrollStitching':
-      return '_Scroll'
-    default:
-      return ''
-  }
-}
-
-function makeEmitTests(initializeSdkImplementation, coverageTests) {
-  let output = []
-  function emitTests(supportedTests, {host, all = false} = {}) {
-    supportedTests.forEach(supportedTest => {
-      const coverageTest = coverageTests[supportedTest.name]
-      if (
-        !coverageTest ||
-        !(typeof coverageTest === 'function' || typeof coverageTest.test === 'function')
-      ) {
-        throw new Error('missing implementation for test ' + supportedTest.name)
-      }
-      const coverageTestFunc = coverageTest.test || coverageTest
-      const baselineTestName = `${supportedTest.name}${convertExecutionModeToSuffix(
-        supportedTest.executionMode,
-      )}`
-      const branchName = supportedTest.baselineVersion
-        ? `v${supportedTest.baselineVersion}`
-        : 'master'
-      const sdkImplementation = initializeSdkImplementation({
-        baselineTestName,
-        branchName,
-        host,
-        ...supportedTest,
-        ...coverageTest.options,
-      })
-      // test
-      coverageTestFunc(sdkImplementation)
-      // store
-      output.push({
-        name: baselineTestName,
-        disabled: !all && supportedTest.disabled,
-        ...sdkImplementation.tracker,
-      })
-    })
-    return output
-  }
-  return {emitTests}
-}
-
-function Ref(syntax, resolver) {
-  const ref = function() {}
-  ref.isRef = true
-  ref.ref = function(name) {
-    if (name) {
-      ref._name = name
-      return this
-    } else if (ref._isResolved) {
-      return ref._name
-    } else {
-      ref._name = resolver({type: ref._type, name: ref._name})
-      ref._isResolved = true
-      return ref._name
-    }
-  }
-  ref.type = function(type) {
-    if (type) {
-      ref._type = ref
-      return this
-    } else {
-      return ref._type
-    }
-  }
-  return new Proxy(ref, {
-    get(ref, key) {
-      if (key in ref) return Reflect.get(ref, key)
-      return new Ref(syntax, () => syntax.getter({type: ref.type(), target: ref.ref(), key}))
-    },
-    apply(ref, _, args) {
-      return new Ref(syntax, () => syntax.call({target: ref.ref(), args: Array.from(args)}))
-    },
-  })
-}
-
 class EmitTracker {
   constructor() {
     this.hooks = {
@@ -150,11 +63,53 @@ class EmitTracker {
   }
 }
 
-function makeEmitTracker() {
-  return new EmitTracker()
+function Ref(syntax, resolver) {
+  const ref = function() {}
+  ref.isRef = true
+  ref.ref = function(name) {
+    if (name) {
+      ref._name = name
+      return this
+    } else if (ref._isResolved) {
+      return ref._name
+    } else {
+      ref._name = resolver({type: ref._type, name: ref._name})
+      ref._isResolved = true
+      return ref._name
+    }
+  }
+  ref.type = function(type) {
+    if (type) {
+      ref._type = parseType(type)
+      return this
+    } else {
+      return ref._type
+    }
+  }
+  return new Proxy(ref, {
+    get(ref, key) {
+      if (key in ref) return Reflect.get(ref, key)
+      return new Ref(syntax, () => syntax.getter({type: ref.type(), target: ref.ref(), key}))
+    },
+    apply(ref, _, args) {
+      return new Ref(syntax, () => syntax.call({target: ref.ref(), args: Array.from(args)}))
+    },
+  })
 }
 
-module.exports = {
-  makeEmitTracker,
-  makeEmitTests,
+function parseType(type) {
+  const match = type.match(/(?<name>[A-Za-z][A-Za-z0-9_]*)(<(?<generic>.*?)>)?/)
+  if (!match) {
+    throw new Error(
+      'Type format is incorrect. Please follow the convention (e.g. TypeName or Type1<Type2, Type3>)',
+    )
+  }
+  return {
+    name: match.groups.name,
+    generic: match.groups.generic ? match.groups.generic.split(/, ?/).map(parseType) : null,
+  }
+}
+
+module.exports = function makeEmitTracker() {
+  return new EmitTracker()
 }
