@@ -22602,7 +22602,6 @@ function __processPageAndSerializePollForIE() {
 
             var NEED_MAP_INPUT_TYPES = new Set(['date', 'datetime-local', 'email', 'month', 'number', 'password', 'search', 'tel', 'text', 'time', 'url', 'week']);
             var ON_EVENT_REGEX = /^on[a-z]+$/;
-            var handledNodes = new Set();
 
             function domNodesToCdt(docNode, baseUrl) {
               var log = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : noop$4;
@@ -22637,12 +22636,6 @@ function __processPageAndSerializePollForIE() {
                 var node, manualChildNodeIndexes, dummyUrl;
                 var nodeType = elementNode.nodeType;
 
-                if (handledNodes.has(elementNode)) {
-                  return null;
-                }
-
-                handledNodes.add(elementNode);
-
                 if ([Node.ELEMENT_NODE, Node.DOCUMENT_FRAGMENT_NODE].includes(nodeType)) {
                   if (elementNode.nodeName !== 'SCRIPT') {
                     if (elementNode.nodeName === 'STYLE' && elementNode.sheet && elementNode.sheet.cssRules.length) {
@@ -22659,20 +22652,11 @@ function __processPageAndSerializePollForIE() {
                     node.childNodeIndexes = manualChildNodeIndexes || (elementNode.childNodes.length ? childrenFactory(cdt, elementNode.childNodes) : []);
 
                     if (elementNode.shadowRoot) {
-                      if (/native code/.test(elementNode.shadowRoot.toString())) {
+                      if (typeof window === 'undefined' || typeof elementNode.attachShadow === 'function' && /native code/.test(elementNode.attachShadow.toString())) {
                         node.shadowRootIndex = elementNodeFactory(cdt, elementNode.shadowRoot);
                         docRoots.push(elementNode.shadowRoot);
                       } else {
                         node.childNodeIndexes = node.childNodeIndexes.concat(childrenFactory(cdt, elementNode.shadowRoot.childNodes));
-                      }
-                    } else if (typeof elementNode.$$ShadowResolverKey$$ === 'function') {
-                      var shadowRoot = elementNode.$$ShadowResolverKey$$();
-
-                      if (!Array.from(shadowRoot.childNodes).some(function (childNode) {
-                        return handledNodes.has(childNode);
-                      })) {
-                        node.shadowRootIndex = elementNodeFactory(cdt, shadowRoot);
-                        docRoots.push(shadowRoot);
                       }
                     }
 
@@ -22998,7 +22982,6 @@ function __processPageAndSerializePollForIE() {
                             corsFreeStyleSheet = _getCorsFreeStyleShee.corsFreeStyleSheet,
                             cleanStyleSheet = _getCorsFreeStyleShee.cleanStyleSheet;
 
-                        console.log('###', url);
                         dependentUrls = extractResourcesFromStyleSheet(corsFreeStyleSheet);
                         cleanStyleSheet();
                       }
@@ -23012,10 +22995,6 @@ function __processPageAndSerializePollForIE() {
                     }
 
                     if (dependentUrls) {
-                      if (dependentUrls.length > 0) {
-                        console.log('@@@', dependentUrls);
-                      }
-
                       var absoluteDependentUrls = dependentUrls.map(function (resourceUrl) {
                         return absolutizeUrl_1(resourceUrl, url.replace(/^blob:/, ''));
                       }).map(toUnAnchoredUri_1).filter(filterInlineUrl_1);
@@ -23218,10 +23197,6 @@ function __processPageAndSerializePollForIE() {
                       }
 
                       var _urls = getUrlFromCssText_1(propertyValue);
-
-                      if (_urls.length) {
-                        console.log('@@@', property, propertyValue);
-                      }
 
                       rv = rv.concat(_urls);
                     }

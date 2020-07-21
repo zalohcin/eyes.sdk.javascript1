@@ -70,7 +70,11 @@ function domNodesToCdt(docNode, baseUrl, log = noop) {
           (elementNode.childNodes.length ? childrenFactory(cdt, elementNode.childNodes) : []);
 
         if (elementNode.shadowRoot) {
-          if (/native code/.test(elementNode.shadowRoot.toString())) {
+          if (
+            typeof window === 'undefined' ||
+            (typeof elementNode.attachShadow === 'function' &&
+              /native code/.test(elementNode.attachShadow.toString()))
+          ) {
             node.shadowRootIndex = elementNodeFactory(cdt, elementNode.shadowRoot);
             docRoots.push(elementNode.shadowRoot);
           } else {

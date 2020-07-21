@@ -13150,7 +13150,6 @@ function __processPageAndSerializePoll() {
     'week',
   ]);
   const ON_EVENT_REGEX = /^on[a-z]+$/;
-  const handledNodes = new Set();
 
   function domNodesToCdt(docNode, baseUrl, log = noop$4) {
     const cdt = [{nodeType: Node.DOCUMENT_NODE}];
@@ -13178,12 +13177,6 @@ function __processPageAndSerializePoll() {
       let node, manualChildNodeIndexes, dummyUrl;
       const {nodeType} = elementNode;
 
-      if (handledNodes.has(elementNode)) {
-        return null;
-      }
-
-      handledNodes.add(elementNode);
-
       if ([Node.ELEMENT_NODE, Node.DOCUMENT_FRAGMENT_NODE].includes(nodeType)) {
         if (elementNode.nodeName !== 'SCRIPT') {
           if (
@@ -13206,19 +13199,17 @@ function __processPageAndSerializePoll() {
             (elementNode.childNodes.length ? childrenFactory(cdt, elementNode.childNodes) : []);
 
           if (elementNode.shadowRoot) {
-            if (/native code/.test(elementNode.shadowRoot.toString())) {
+            if (
+              typeof window === 'undefined' ||
+              (typeof elementNode.attachShadow === 'function' &&
+                /native code/.test(elementNode.attachShadow.toString()))
+            ) {
               node.shadowRootIndex = elementNodeFactory(cdt, elementNode.shadowRoot);
               docRoots.push(elementNode.shadowRoot);
             } else {
               node.childNodeIndexes = node.childNodeIndexes.concat(
                 childrenFactory(cdt, elementNode.shadowRoot.childNodes),
               );
-            }
-          } else if (typeof elementNode.$$ShadowResolverKey$$ === 'function') {
-            const shadowRoot = elementNode.$$ShadowResolverKey$$();
-            if (!Array.from(shadowRoot.childNodes).some(childNode => handledNodes.has(childNode))) {
-              node.shadowRootIndex = elementNodeFactory(cdt, shadowRoot);
-              docRoots.push(shadowRoot);
             }
           }
 
@@ -13482,7 +13473,6 @@ function __processPageAndSerializePoll() {
                   value,
                   styleSheet,
                 );
-                console.log('###', url);
                 dependentUrls = extractResourcesFromStyleSheet(corsFreeStyleSheet);
                 cleanStyleSheet();
               }
@@ -13496,9 +13486,6 @@ function __processPageAndSerializePoll() {
             }
 
             if (dependentUrls) {
-              if (dependentUrls.length > 0) {
-                console.log('@@@', dependentUrls);
-              }
               const absoluteDependentUrls = dependentUrls
                 .map(resourceUrl => absolutizeUrl_1(resourceUrl, url.replace(/^blob:/, '')))
                 .map(toUnAnchoredUri_1)
@@ -13704,9 +13691,6 @@ function __processPageAndSerializePoll() {
                   propertyValue = propertyValue.replace(/\\/g, '');
                 }
                 const urls = getUrlFromCssText_1(propertyValue);
-                if (urls.length) {
-                  console.log('@@@', property, propertyValue);
-                }
                 rv = rv.concat(urls);
               }
               return rv;

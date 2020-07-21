@@ -859,7 +859,7 @@ describe('processPage', () => {
     await logPromise;
   });
 
-  it("doesn't fetch any external resource, internal resource and blob when 'dontFetchResources' is set", async () => {
+  it.only("doesn't fetch any external resource, internal resource and blob when 'dontFetchResources' is set", async () => {
     const url = 'http://localhost:7373/test-visual-grid.html';
     await page.goto(url);
     await delay(500);
