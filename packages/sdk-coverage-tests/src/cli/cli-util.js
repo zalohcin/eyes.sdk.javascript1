@@ -1,11 +1,23 @@
+const fs = require('fs')
+const axios = require('axios')
+const path = require('path')
 const {findDifferencesBetweenCollections} = require('../common-util')
-const coverageTests = require('../tests')
 const {isMatch} = require('micromatch')
 
-function findUnsupportedTests(sdkImplementation) {
-  const allTests = coverageTests
+async function fetchCoverageTests() {
+  const testFilePath = path.resolve(__dirname, 'tests.js')
+  const testsFileData = (
+    await axios('https://raw.githubusercontent.com/applitools/sdk.coverage.tests/master/tests.js')
+  ).data
+  fs.writeFileSync(testFilePath, testsFileData)
+  const coverageTests = require(testFilePath)
+  fs.unlinkSync(testFilePath)
+  return coverageTests
+}
+
+function findUnsupportedTests(sdkImplementation, coverageTests) {
   const sdkSupportedTests = sdkImplementation.supportedTests.map(test => test.name)
-  return findDifferencesBetweenCollections(allTests, sdkSupportedTests)
+  return findDifferencesBetweenCollections(coverageTests, sdkSupportedTests)
 }
 
 function filterTestsByName(filter, tests) {
@@ -100,4 +112,5 @@ module.exports = {
   numberOfUniqueTests,
   numberOfTestVariations,
   needsChromeDriver,
+  fetchCoverageTests,
 }

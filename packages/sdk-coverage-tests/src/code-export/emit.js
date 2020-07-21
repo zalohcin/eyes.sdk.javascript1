@@ -1,4 +1,3 @@
-const defaultCoverageTests = require('../tests')
 const {getNameFromObject} = require('../common-util')
 
 function convertExecutionModeToSuffix(executionMode) {
@@ -13,7 +12,7 @@ function convertExecutionModeToSuffix(executionMode) {
   }
 }
 
-function makeEmitTests(initializeSdkImplementation, coverageTests = defaultCoverageTests) {
+function makeEmitTests(initializeSdkImplementation, coverageTests) {
   let output = []
   function emitTests(supportedTests, {host, all = false} = {}) {
     supportedTests.forEach(supportedTest => {
