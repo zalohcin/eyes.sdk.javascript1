@@ -799,7 +799,7 @@ class EyesClassic extends EyesCore {
           this._runner._allTestResult.push(results)
         }
         if (isErrorCaught) {
-          if (throwEx) throw results
+          if (throwEx || !results.getTestResults) throw results
           else return results.getTestResults()
         }
         return results
