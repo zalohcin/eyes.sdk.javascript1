@@ -153,8 +153,8 @@ class CheckSettings {
     this._targetElement = null
     /** @private @type {Region} */
     this._targetRegion = null
-    /** @private @type {Frame<TElement, TSelector>[]} */
-    this._frameChain = []
+    // /** @private @type {Frame<TElement, TSelector>[]} */ TODO
+    this._context = this.spec.createContextReference(null)
     /** @private @type {GetRegion[]} */
     this._ignoreRegions = []
     /** @private @type {GetRegion[]} */
@@ -360,12 +360,12 @@ class CheckSettings {
     return this._targetElement
   }
   /**
-   * @param {FrameReference<TElement, TSelector>} frameReference - the frame to switch to
+   * @param {FrameReference<TElement, TSelector>} reference - the frame to switch to
    * @return {this}
    */
-  frame(frameReference) {
-    if (this.spec.isFrameReference(frameReference)) {
-      this._frameChain.push(this.spec.createFrameReference(frameReference))
+  frame(reference) {
+    if (this.spec.isFrameReference(reference)) {
+      this._context = this._context.childContext(this.spec.createContextReference({reference}))
     } else {
       throw new TypeError('frame method called with argument of unknown type!')
     }
@@ -373,17 +373,10 @@ class CheckSettings {
   }
   /**
    * @private
-   * @return {Frame<TElement, TSelector>[]}
-   */
-  getFrameChain() {
-    return this._frameChain
-  }
-  /**
-   * @private
    * @type {Frame<TElement, TSelector>[]}
    */
-  get frameChain() {
-    return Array.from(this._frameChain)
+  get context() {
+    return this._context
   }
   /**
    * Adds a region to ignore
@@ -706,13 +699,7 @@ class CheckSettings {
     } else {
       throw new TypeError('scrollRootElement method called with argument of unknown type!')
     }
-
-    if (this._frameChain.length === 0) {
-      this._scrollRootElement = scrollRootElement
-    } else {
-      const frameReference = this._frameChain[this._frameChain.length - 1]
-      frameReference.scrollRootElement = scrollRootElement
-    }
+    this._context.scrollRootElement = scrollRootElement
 
     return this
   }

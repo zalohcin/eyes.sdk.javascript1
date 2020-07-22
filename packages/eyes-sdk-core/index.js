@@ -27,6 +27,8 @@
  * @typedef {import('./lib/fluent/DriverCheckSettings').SpecCheckSettings<TElement, TSelector>} SpecCheckSettings
  */
 
+exports.EyesDriver = require('./lib/wrappers/EyesDriver')
+
 // config
 exports.AccessibilityLevel = require('./lib/config/AccessibilityLevel')
 exports.AccessibilityGuidelinesVersion = require('./lib/config/AccessibilityGuidelinesVersion')

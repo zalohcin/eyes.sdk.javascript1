@@ -1,4 +1,5 @@
 'use strict'
+const {URL} = require('url')
 const cwd = process.cwd()
 const {
   StitchMode,
@@ -11,46 +12,66 @@ const {
 
 const SAUCE_SERVER_URL = 'https://ondemand.saucelabs.com:443/wd/hub'
 
-const Browsers = {
-  chrome({headless = !process.env.NO_HEADLESS} = {}) {
-    const args = []
-    if (headless) args.push('headless')
-    return {
-      browserName: 'chrome',
-      'goog:chromeOptions': {
-        args,
-      },
-    }
+const SAUCE_DEVICES = {
+  'iPhone XS': {
+    deviceName: 'iPhone XS Simulator',
+    platformName: 'iOS',
+    platformVersion: '13.2',
+    deviceOrientation: 'portrait',
   },
-  firefox({headless = !process.env.NO_HEADLESS} = {}) {
-    const args = []
-    if (headless) args.push('headless')
-    return {
-      browserName: 'firefox',
-      'moz:firefoxOptions': {
-        args,
-      },
-    }
+  'Pixel 3a XL': {
+    deviceName: 'Google Pixel 3a XL GoogleAPI Emulator',
+    platformName: 'Android',
+    platformVersion: '10.0',
+    deviceOrientation: 'portrait',
+  },
+  'Android Emulator': {
+    deviceName: 'Android Emulator',
+    platformName: 'Android',
+    platformVersion: '6.0',
+    deviceOrientation: 'landscape',
+    clearSystemFiles: true,
+    noReset: true,
   },
 }
 
-const Remotes = {
-  sauce({w3c = true} = {}) {
-    return {
-      username: process.env.SAUCE_USERNAME,
-      accessKey: process.env.SAUCE_ACCESS_KEY,
-      url: 'https://ondemand.saucelabs.com/wd/hub',
-      w3c,
-    }
+const SAUCE_BROWSERS = {
+  ie11: {
+    browserName: 'internet explorer',
+    browserVersion: '11.285',
+    platformName: 'Windows 10',
   },
-  bstack({w3c = true} = {}) {
-    return {
-      username: process.env.BROWSERSTACK_USERNAME,
-      accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
-      url: 'https://hub-cloud.browserstack.com/wd/hub',
-      w3c,
+}
+
+function Env({
+  browser = null,
+  app = null,
+  device = null,
+  protocol = 'wd',
+  remote = 'local',
+  url = process.env.CVG_TESTS_REMOTE,
+  headless = !process.env.NO_HEADLESS,
+  ...options
+} = {}) {
+  const env = {browser, device, headless, protocol, ...options}
+  if (protocol === 'wd') {
+    if (remote === 'local') {
+      env.url = new URL(url)
+    } else if (remote === 'sauce') {
+      env.url = new URL('https://ondemand.saucelabs.com/wd/hub')
+      env.username = process.env.SAUCE_USERNAME
+      env.accessKey = process.env.SAUCE_ACCESS_KEY
+      env.capabilities = SAUCE_DEVICES[device] || SAUCE_BROWSERS[browser]
+      if (app) {
+        env.capabilities.app = app
+      }
+    } else if (remote === 'bstack') {
+      env.url = new URL('https://hub-cloud.browserstack.com/wd/hub')
+      env.username = process.env.BROWSERSTACK_USERNAME
+      env.accessKey = process.env.BROWSERSTACK_ACCESS_KEY
     }
-  },
+  }
+  return env
 }
 
 const batch = new BatchInfo(process.env.APPLITOOLS_BATCH_NAME || 'JS Coverage Tests')
@@ -79,8 +100,7 @@ function getEyes({isVisualGrid, isCssStitching, configuration, branchName = 'mas
 }
 
 module.exports = {
-  Browsers,
-  Remotes,
+  Env,
   getEyes,
   batch,
   sauceUrl: SAUCE_SERVER_URL,
