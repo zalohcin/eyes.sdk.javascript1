@@ -1,4 +1,4 @@
-/* @applitools/dom-snapshot@3.5.3 */
+/* @applitools/dom-snapshot@3.7.2 */
 
 function __processPageAndSerializeForIE() {
   var processPageAndSerializeForIE = (function () {
@@ -22682,6 +22682,8 @@ function __processPageAndSerializeForIE() {
                       value = value.replace(/^blob:/, '');
                     } else if (ON_EVENT_REGEX.test(name)) {
                       value = '';
+                    } else if (elementNode.nodeName === 'IFRAME' && isAccessibleFrame_1(elementNode) && name === 'src' && elementNode.contentDocument.location.href !== 'about:blank' && elementNode.contentDocument.location.href !== absolutizeUrl_1(value, elementNode.ownerDocument.location.href)) {
+                      value = elementNode.contentDocument.location.href;
                     }
 
                     return {
@@ -22710,7 +22712,7 @@ function __processPageAndSerializeForIE() {
                   addOrUpdateAttribute(node.attributes, 'value', elementNode.value);
                 }
 
-                if (elementNode.tagName === 'OPTION' && elementNode.parentElement.value === elementNode.value) {
+                if (elementNode.tagName === 'OPTION' && elementNode.parentElement.selectedOptions && Array.from(elementNode.parentElement.selectedOptions).indexOf(elementNode) > -1) {
                   addOrUpdateAttribute(node.attributes, 'selected', '');
                 }
 
@@ -22813,13 +22815,15 @@ function __processPageAndSerializeForIE() {
                 var documents = _ref2.documents,
                     urls = _ref2.urls,
                     _ref2$forceCreateStyl = _ref2.forceCreateStyle,
-                    forceCreateStyle = _ref2$forceCreateStyl === void 0 ? false : _ref2$forceCreateStyl;
+                    forceCreateStyle = _ref2$forceCreateStyl === void 0 ? false : _ref2$forceCreateStyl,
+                    skipResources = _ref2.skipResources;
                 return Promise.all(urls.map(function (url) {
                   return processResource({
                     url: url,
                     documents: documents,
                     getResourceUrlsAndBlobs: getResourceUrlsAndBlobs,
-                    forceCreateStyle: forceCreateStyle
+                    forceCreateStyle: forceCreateStyle,
+                    skipResources: skipResources
                   });
                 })).then(function (resourceUrlsAndBlobsArr) {
                   return aggregateResourceUrlsAndBlobs(resourceUrlsAndBlobsArr);
@@ -22838,7 +22842,7 @@ function __processPageAndSerializeForIE() {
             function toUnAnchoredUri(url) {
               var m = url && url.match(/(^[^#]*)/);
               var res = m && m[1] || url;
-              return res && res.replace(/\?\s*$/, '') || url;
+              return res && res.replace(/\?\s*$/, '?') || url;
             }
 
             var toUnAnchoredUri_1 = toUnAnchoredUri;
@@ -22867,7 +22871,8 @@ function __processPageAndSerializeForIE() {
                     documents = _ref2.documents,
                     getResourceUrlsAndBlobs = _ref2.getResourceUrlsAndBlobs,
                     _ref2$forceCreateStyl = _ref2.forceCreateStyle,
-                    forceCreateStyle = _ref2$forceCreateStyl === void 0 ? false : _ref2$forceCreateStyl;
+                    forceCreateStyle = _ref2$forceCreateStyl === void 0 ? false : _ref2$forceCreateStyl,
+                    skipResources = _ref2.skipResources;
 
                 if (!cache[url]) {
                   if (sessionCache && sessionCache.getItem(url)) {
@@ -22875,6 +22880,11 @@ function __processPageAndSerializeForIE() {
                     log('doProcessResource from sessionStorage', url, 'deps:', resourceUrls.slice(1));
                     cache[url] = Promise.resolve({
                       resourceUrls: resourceUrls
+                    });
+                  } else if (skipResources && skipResources.indexOf(url) > -1 || /https:\/\/fonts.googleapis.com/.test(url)) {
+                    log('not processing resource from skip list (or google font):', url);
+                    cache[url] = Promise.resolve({
+                      resourceUrls: [url]
                     });
                   } else {
                     var now = Date.now();
@@ -22896,6 +22906,11 @@ function __processPageAndSerializeForIE() {
                         probablyCORS: true,
                         url: url
                       };
+                    } else if (e.isTimeout) {
+                      return {
+                        isTimeout: true,
+                        url: url
+                      };
                     } else {
                       throw e;
                     }
@@ -22903,13 +22918,26 @@ function __processPageAndSerializeForIE() {
                     var url = _ref3.url,
                         type = _ref3.type,
                         value = _ref3.value,
-                        probablyCORS = _ref3.probablyCORS;
+                        probablyCORS = _ref3.probablyCORS,
+                        isTimeout = _ref3.isTimeout;
 
                     if (probablyCORS) {
                       log('not fetched due to CORS', "[".concat(Date.now() - now, "ms]"), url);
                       sessionCache && sessionCache.setItem(url, []);
                       return {
                         resourceUrls: [url]
+                      };
+                    }
+
+                    if (isTimeout) {
+                      // TODO return errorStatusCode once VG supports it (https://trello.com/c/J5lBWutP/92-when-capturing-dom-add-non-200-urls-to-resource-map)
+                      log('not fetched due to timeout, returning empty resource');
+                      sessionCache && sessionCache.setItem(url, []);
+                      return {
+                        blobsObj: _defineProperty({}, url, {
+                          type: 'application/x-applitools-empty',
+                          value: new ArrayBuffer()
+                        })
                       };
                     }
 
@@ -22950,7 +22978,8 @@ function __processPageAndSerializeForIE() {
                       return getResourceUrlsAndBlobs({
                         documents: documents,
                         urls: absoluteDependentUrls,
-                        forceCreateStyle: forceCreateStyle
+                        forceCreateStyle: forceCreateStyle,
+                        skipResources: skipResources
                       }).then(function (_ref4) {
                         var resourceUrls = _ref4.resourceUrls,
                             blobsObj = _ref4.blobsObj;
@@ -23053,30 +23082,51 @@ function __processPageAndSerializeForIE() {
 
             var makeExtractResourcesFromSvg_1 = makeExtractResourcesFromSvg;
 
-            function fetchUrl(url) {
-              var fetch = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : window.fetch;
-              // Why return a `new Promise` like this? Because people like Atlassian do horrible things.
-              // They monkey patched window.fetch, and made it so it throws a synchronous exception if the route is not well known.
-              // Returning a new Promise guarantees that `fetchUrl` is the async function that it declares to be.
-              return new Promise(function (resolve, reject) {
-                return fetch(url, {
-                  cache: 'force-cache',
-                  credentials: 'same-origin'
-                }).then(function (resp) {
-                  return resp.status === 200 ? resp.arrayBuffer().then(function (buff) {
-                    return {
-                      url: url,
-                      type: resp.headers.get('Content-Type'),
-                      value: buff
-                    };
-                  }) : Promise.reject(new Error("bad status code ".concat(resp.status)));
-                }).then(resolve).catch(function (err) {
-                  return reject(err);
+            function makeFetchUrl(_ref) {
+              var _ref$fetch = _ref.fetch,
+                  fetch = _ref$fetch === void 0 ? window.fetch : _ref$fetch,
+                  _ref$AbortController = _ref.AbortController,
+                  AbortController = _ref$AbortController === void 0 ? window.AbortController : _ref$AbortController,
+                  _ref$timeout = _ref.timeout,
+                  timeout = _ref$timeout === void 0 ? 10000 : _ref$timeout;
+              return function fetchUrl(url) {
+                // Why return a `new Promise` like this? Because people like Atlassian do horrible things.
+                // They monkey patched window.fetch, and made it so it throws a synchronous exception if the route is not well known.
+                // Returning a new Promise guarantees that `fetchUrl` is the async function that it declares to be.
+                return new Promise(function (resolve, reject) {
+                  var controller = new AbortController();
+                  var timeoutId = setTimeout(function () {
+                    var err = new Error('fetchUrl timeout reached');
+                    err.isTimeout = true;
+                    reject(err);
+                    controller.abort();
+                  }, timeout);
+                  return fetch(url, {
+                    cache: 'force-cache',
+                    credentials: 'same-origin',
+                    signal: controller.signal
+                  }).then(function (resp) {
+                    clearTimeout(timeoutId);
+
+                    if (resp.status === 200) {
+                      return resp.arrayBuffer().then(function (buff) {
+                        return {
+                          url: url,
+                          type: resp.headers.get('Content-Type'),
+                          value: buff
+                        };
+                      });
+                    } else {
+                      return Promise.reject(new Error("bad status code ".concat(resp.status)));
+                    }
+                  }).then(resolve).catch(function (err) {
+                    return reject(err);
+                  });
                 });
-              });
+              };
             }
 
-            var fetchUrl_1 = fetchUrl;
+            var fetchUrl = makeFetchUrl;
 
             function sanitizeAuthUrl(urlStr) {
               var url = new URL(urlStr);
@@ -23125,8 +23175,9 @@ function __processPageAndSerializeForIE() {
                   var getRuleUrls = (_CSSRule$IMPORT_RULE$ = {}, _defineProperty(_CSSRule$IMPORT_RULE$, CSSRule.IMPORT_RULE, function () {
                     if (rule.styleSheet) {
                       styleSheetCache[rule.styleSheet.href] = rule.styleSheet;
-                      return rule.href;
                     }
+
+                    return rule.href;
                   }), _defineProperty(_CSSRule$IMPORT_RULE$, CSSRule.FONT_FACE_RULE, function () {
                     return getUrlFromCssText_1(rule.cssText);
                   }), _defineProperty(_CSSRule$IMPORT_RULE$, CSSRule.SUPPORTS_RULE, function () {
@@ -23368,11 +23419,14 @@ function __processPageAndSerializeForIE() {
               var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
                   showLogs = _ref.showLogs,
                   useSessionCache = _ref.useSessionCache,
-                  dontFetchResources = _ref.dontFetchResources;
+                  dontFetchResources = _ref.dontFetchResources,
+                  fetchTimeout = _ref.fetchTimeout,
+                  skipResources = _ref.skipResources;
 
               /* MARKER FOR TEST - DO NOT DELETE */
               var log = showLogs ? log$9(Date.now()) : noop$4;
               log('processPage start');
+              log("skipResources length: ".concat(skipResources && skipResources.length));
               var sessionCache$$1 = useSessionCache && sessionCache({
                 log: log
               });
@@ -23387,8 +23441,11 @@ function __processPageAndSerializeForIE() {
               var extractResourcesFromSvg = makeExtractResourcesFromSvg_1({
                 extractResourceUrlsFromStyleTags: extractResourceUrlsFromStyleTags$$1
               });
+              var fetchUrl$$1 = fetchUrl({
+                timeout: fetchTimeout
+              });
               var processResource$$1 = processResource({
-                fetchUrl: fetchUrl_1,
+                fetchUrl: fetchUrl$$1,
                 findStyleSheetByUrl: findStyleSheetByUrl$$1,
                 getCorsFreeStyleSheet: getCorsFreeStyleSheet_1,
                 extractResourcesFromStyleSheet: extractResourcesFromStyleSheet$$1,
@@ -23403,7 +23460,7 @@ function __processPageAndSerializeForIE() {
               });
               return doProcessPage(doc).then(function (result) {
                 log('processPage end');
-                result.scriptVersion = '3.5.3';
+                result.scriptVersion = '3.7.2';
                 return result;
               });
 
@@ -23426,7 +23483,8 @@ function __processPageAndSerializeForIE() {
                   blobsObj: {}
                 }) : getResourceUrlsAndBlobs$$1({
                   documents: docRoots,
-                  urls: urls
+                  urls: urls,
+                  skipResources: skipResources
                 }).then(function (result) {
                   sessionCache$$1 && sessionCache$$1.persist();
                   return result;
@@ -23434,7 +23492,7 @@ function __processPageAndSerializeForIE() {
                 var canvasBlobs = buildCanvasBlobs_1(canvasElements);
                 var frameDocs = extractFrames_1(docRoots);
                 var processFramesPromise = frameDocs.map(function (f) {
-                  return doProcessPage(f, f.defaultView.frameElement.src);
+                  return doProcessPage(f);
                 });
                 var processInlineFramesPromise = inlineFrames.map(function (_ref2) {
                   var element = _ref2.element,

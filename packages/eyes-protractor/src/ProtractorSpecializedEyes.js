@@ -12,6 +12,7 @@ const ProtractorEyesClassic = EyesClassic.specialize({
   WrappedElement,
   CheckSettings,
 })
+
 const ProtractorEyesVisualGrid = EyesVisualGrid.specialize({
   agentId: `eyes-protractor.visualgrid/${version}`,
   WrappedDriver,
@@ -19,6 +20,7 @@ const ProtractorEyesVisualGrid = EyesVisualGrid.specialize({
   CheckSettings,
   VisualGridClient,
 })
+
 const ProtractorEyesFactory = EyesFactory.specialize({
   EyesClassic: ProtractorEyesClassic,
   EyesVisualGrid: ProtractorEyesVisualGrid,

@@ -2,6 +2,75 @@
 
 ## Unreleased
 
+- updated enum types to be more explicit about values
+
+## 11.3.9 - 2020/7/22
+
+- avoid `error.getTestResults is not a function` error ([Trello 1](https://trello.com/c/XAmA255U) [Trello 2](https://trello.com/c/1Bl2EaDE))
+
+## 11.3.8 - 2020/7/19
+
+- fix `Date` typo in BatchInfo JSDoc
+- support duplicate copies of the SDK in CheckSettings constructor ([Trello](https://trello.com/c/4Gd7uWtS))
+
+## 11.3.7 - 2020/7/15
+
+- use EyesClassic type as a return type for EyesFactoryCtor
+
+## 11.3.6 - 2020/7/14
+
+- return extended driver from EyesVisualGrid#open
+
+## 11.3.5 - 2020/7/13
+
+- improve typings
+
+## 11.3.4 - 2020/7/7
+
+- REVERT: avoid creating a test if no check command was called ([Trello](https://trello.com/c/ZhKO8sqA/404-wdiojs-sdkempty-test-results-with-new-eyes-core))
+
+## 11.3.3 - 2020/7/7
+
+- fix types
+
+## 11.3.2 - 2020/7/7
+
+- [REVERTED] avoid creating a test if no check command was called ([Trello](https://trello.com/c/ZhKO8sqA/404-wdiojs-sdkempty-test-results-with-new-eyes-core))
+- fix setting blank src on same-origin iframes in visual grid
+
+## 11.3.1 - 2020/7/7
+
+- fix issue with redirected frames in dom-snapshot ([Trello](https://trello.com/c/egprwtNp))
+
+## 11.3.0 - 2020/7/7
+
+- support visual locators
+
+## 11.2.2 - 2020/7/5
+
+- cache correct viewport size value after fail set viewport size
+- improve for element client rect js snippet
+- fix js snippet to be compatible with IE ([Trello](https://trello.com/c/Y0Q6QAHK/406-wdio5-error-executing-javascript-fully-fullpagescreenshot))
+- replace concurrent requests to the browser with sequential requests ([Trello](https://trello.com/c/Idx6gS3e/419-gartner-ie-errors))
+- prevent call unnecessary methods in native context ([Trello](https://trello.com/c/SSWShJPg/345-wdio-5-sdk-support-for-wdio6))
+- static Eyes.setViewportSize method ([Trello](https://trello.com/c/1KTjqPjI))
+
+## 11.2.1 - 2020/6/30
+
+- bring back input validation of accessibility type for AccessibilityRegionByRectangle
+- handle stale element reference error wrapped with eyes error
+
+## 11.2.0 - 2020/6/30
+
+- Add type definitions
+
+## 11.1.0 - 2020/6/28
+
+- remove IosScreenOrientation ([Trello](https://trello.com/c/abSJ68Rl/409-ufg-safari-on-ios-orientations-changes))
+
+## 11.0.10 - 2020/6/17
+
+- fix stale scroll root element issue
 
 ## 11.0.9 - 2020/6/15
 

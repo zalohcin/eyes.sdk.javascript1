@@ -6,7 +6,7 @@ const fetch = require('node-fetch');
 const jsdom = require('jsdom');
 const {JSDOM} = jsdom;
 const makeProcessResource = require('../src/browser/processResource');
-const fetchUrl = require('../src/browser/fetchUrl');
+const makeFetchUrl = require('../src/browser/fetchUrl');
 const makeFindStyleSheetByUrl = require('../src/browser/findStyleSheetByUrl');
 const makeExtractResourcesFromStyleSheet = require('../src/browser/extractResourcesFromStyleSheet');
 const getCorsFreeStyleSheet = require('../src/browser/getCorsFreeStyleSheet');
@@ -17,6 +17,7 @@ const aggregateResourceUrlsAndBlobs = require('../src/browser/aggregateResourceU
 const {testServer} = require('@applitools/sdk-shared');
 const {loadFixture, loadFixtureBuffer} = require('./util/loadFixture');
 const bufferToArrayBuffer = require('./util/bufferToArrayBuffer');
+const AbortController = require('abort-controller');
 
 const {
   parse,
@@ -61,11 +62,12 @@ describe('processResource', () => {
     });
 
     processResource = makeProcessResource({
-      fetchUrl: url => fetchUrl(url, fetch),
+      fetchUrl: makeFetchUrl({fetch, AbortController}),
       findStyleSheetByUrl,
       getCorsFreeStyleSheet,
       extractResourcesFromStyleSheet,
       extractResourcesFromSvg,
+      log: process.env.APPLITOOLS_SHOW_LOGS ? console.log : undefined,
     });
 
     getResourceUrlsAndBlobs = makeGetResourceUrlsAndBlobs({
@@ -185,7 +187,7 @@ describe('processResource', () => {
       throw new Error('bla');
     };
     processResource = makeProcessResource({
-      fetchUrl: url => fetchUrl(url, fetchThatThrowsSync),
+      fetchUrl: makeFetchUrl({fetch: fetchThatThrowsSync, AbortController}),
       findStyleSheetByUrl,
       getCorsFreeStyleSheet,
       extractResourcesFromStyleSheet,
@@ -202,6 +204,40 @@ describe('processResource', () => {
     });
 
     expect(result).to.eql({});
+  });
+
+  it('handles fetch timeout', async () => {
+    const fetchThatHangs = async url => {
+      await new Promise(r => setTimeout(r, 1000));
+      return url;
+    };
+    processResource = makeProcessResource({
+      fetchUrl: makeFetchUrl({fetch: fetchThatHangs, AbortController}),
+      findStyleSheetByUrl,
+      getCorsFreeStyleSheet,
+      extractResourcesFromStyleSheet,
+      extractResourcesFromSvg,
+      log: console.log,
+    });
+
+    const doc = createDoc('test.css');
+
+    const result = await processResource({
+      url: 'http://localhost:7373/test.css',
+      documents: [doc],
+      getResourceUrlsAndBlobs,
+    });
+
+    expect(result).to.eql({});
+  });
+
+  it("doesn't fetch google fonts", async () => {
+    const {resourceUrls, blobsObj} = await processResource({
+      url: 'https://fonts.googleapis.com/some-font',
+    });
+
+    expect(resourceUrls).to.eql(['https://fonts.googleapis.com/some-font']);
+    expect(blobsObj).to.eql(undefined);
   });
 });
 

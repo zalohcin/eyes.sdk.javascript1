@@ -1,13 +1,17 @@
-'use strict'
-const {Enum} = require('../utils/Enum')
+const Enum = require('../utils/Enum')
 
 /**
- * @readonly
- * @enum {string}
+ * @typedef {import('../utils/Enum').EnumValues<typeof ScreenOrientations>} ScreenOrientation
  */
-const ScreenOrientation = {
-  PORTRAIT: 'portrait',
-  LANDSCAPE: 'landscape',
-}
 
-exports.ScreenOrientation = Enum('ScreenOrientation', ScreenOrientation)
+/**
+ * Represents the types of available stitch modes.
+ */
+const ScreenOrientations = Enum('ScreenOrientation', {
+  /** @type {'portrait'} */
+  PORTRAIT: 'portrait',
+  /** @type {'landscape'} */
+  LANDSCAPE: 'landscape',
+})
+
+module.exports = ScreenOrientations

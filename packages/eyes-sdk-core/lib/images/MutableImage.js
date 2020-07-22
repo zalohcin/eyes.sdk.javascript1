@@ -1,9 +1,8 @@
 'use strict'
-
-const {Location} = require('../geometry/Location')
-const {RectangleSize} = require('../geometry/RectangleSize')
-const {TypeUtils} = require('../utils/TypeUtils')
-const {ImageUtils} = require('../utils/ImageUtils')
+const Location = require('../geometry/Location')
+const RectangleSize = require('../geometry/RectangleSize')
+const TypeUtils = require('../utils/TypeUtils')
+const ImageUtils = require('../utils/ImageUtils')
 
 /**
  * Parses the image if possible - meaning dimensions and BMP are extracted and available
@@ -294,4 +293,4 @@ class MutableImage {
   }
 }
 
-exports.MutableImage = MutableImage
+module.exports = MutableImage

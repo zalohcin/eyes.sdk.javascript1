@@ -48,7 +48,7 @@ function makeOpenEyes({
   compareWithParentBranch: _compareWithParentBranch,
   ignoreBaseline: _ignoreBaseline,
   userAgent: _userAgent,
-  createRGridDOMAndGetResourceMapping: _createRGridDOMAndGetResourceMapping,
+  createRGridDOMAndGetResourceMapping,
   apiKey,
   proxy,
   serverUrl,
@@ -243,10 +243,6 @@ function makeOpenEyes({
       logger,
     })
 
-    const headers = {'User-Agent': userAgent}
-    const createRGridDOMAndGetResourceMapping = args =>
-      _createRGridDOMAndGetResourceMapping(Object.assign({fetchOptions: {headers}}, args))
-
     const checkWindow = makeCheckWindow({
       globalState,
       testController,
@@ -265,7 +261,7 @@ function makeOpenEyes({
       testName,
       openEyesPromises,
       matchLevel,
-      fetchHeaders: headers,
+      userAgent,
       isSingleWindow,
       getUserAgents,
     })

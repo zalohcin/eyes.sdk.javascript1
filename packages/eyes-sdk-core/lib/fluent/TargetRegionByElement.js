@@ -1,24 +1,44 @@
 'use strict'
-
-const {GetSelector} = require('./GetSelector')
+const GetRegion = require('./GetRegion')
 const EyesUtils = require('../EyesUtils')
 
 /**
- * @typedef {import('../wrappers/EyesWrappedElement')} EyesWrappedElement
- * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
+ * @typedef {import('../config/AccessibilityRegionType').AccessibilityRegionType} AccessibilityRegionType
+ * @typedef {import('../wrappers/EyesWrappedElement').EyesSelector} EyesSelector
+ * @typedef {import('../EyesClassic')} EyesClassic
  */
 
-class TargetRegionByElement extends GetSelector {
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('../wrappers/EyesWrappedDriver')<TDriver, TElement, TSelector>} EyesWrappedDriver
+ */
+
+/**
+ * @template TElement, TSelector
+ * @typedef {import('../wrappers/EyesWrappedElement')<any, TElement, TSelector>} EyesWrappedElement
+ */
+
+/**
+ * @typedef {EyesSelector} TargetPersistedRegion
+ */
+
+/**
+ * @internal
+ * @template TElement
+ * @template TSelector
+ */
+class TargetRegionByElement extends GetRegion {
   /**
-   * @param {EyesWrappedElement} element
+   * @param {EyesWrappedElement<TElement, TSelector>} element
    */
   constructor(element) {
     super()
     this._element = element
   }
   /**
-   * @param {EyesWrappedDriver} driver
-   * @return {Promise<PersistedRegions[]>}
+   * @template TDriver
+   * @param {EyesWrappedDriver<TDriver, TElement, TSelector>} driver
+   * @return {Promise<TargetPersistedRegion[]>}
    */
   async toPersistedRegions(driver) {
     await this._element.init(driver)

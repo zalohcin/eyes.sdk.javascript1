@@ -16,17 +16,26 @@ function convertSdkNameToReportName(sdkName) {
       return 'testcafe'
     case 'eyes-protractor':
       return 'js_protractor'
+    case 'eyes_selenium_python':
+      return 'python'
+    case 'eyes_selenium_ruby':
+      return 'ruby'
+    case 'eyes_selenium_java':
+      return 'java'
+    case 'eyes_selenium_dotnet':
+      return 'dotnet'
     default:
       throw new Error('Unsupported SDK')
   }
 }
 
-function createReport({sdkName, xmlResult, browser, group, sandbox} = {}) {
+function createReport({sdkName, xmlResult, browser, group, sandbox, id, metaData} = {}) {
   return {
     sdk: convertSdkNameToReportName(sdkName),
     group: group ? group : 'selenium',
     sandbox: sandbox !== undefined ? sandbox : true,
-    results: convertJunitXmlToResultSchema({xmlResult, browser}),
+    results: convertJunitXmlToResultSchema({xmlResult, browser, metaData}),
+    id,
   }
 }
 

@@ -13,7 +13,7 @@ describe('takeScreenshot e2e', () => {
   let server, browser, page
 
   before(async () => {
-    server = await testServer({port: 3456})
+    server = await testServer({port: 3459})
     browser = await puppeteer.launch()
     page = await browser.newPage()
   })

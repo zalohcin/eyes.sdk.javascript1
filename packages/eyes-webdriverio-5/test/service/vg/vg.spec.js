@@ -2,6 +2,7 @@
 'use strict'
 const {expect} = require('chai')
 const {ApiAssertions} = require('@applitools/sdk-coverage-tests/coverage-tests')
+const {version} = require('../../../package.json')
 
 describe('vg', () => {
   it('full page', () => {
@@ -13,6 +14,6 @@ describe('vg', () => {
     const data = browser.call(() =>
       ApiAssertions.getApiData(testResults, process.env.APPLITOOLS_API_KEY),
     )
-    expect(data.startInfo.agentId).to.equal('eyes-webdriverio-service-visualgrid/5.13.3')
+    expect(data.startInfo.agentId).to.equal(`eyes-webdriverio-service-visualgrid/${version}`)
   })
 })

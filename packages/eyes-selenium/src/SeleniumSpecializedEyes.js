@@ -12,6 +12,7 @@ const SeleniumEyesClassic = EyesClassic.specialize({
   WrappedElement,
   CheckSettings,
 })
+
 const SeleniumEyesVisualGrid = EyesVisualGrid.specialize({
   agentId: `eyes.selenium.visualgrid.javascript/${version}--${process.env.APPLITOOLS_SELENIUM_MAJOR_VERSION}`,
   WrappedDriver,
@@ -19,6 +20,7 @@ const SeleniumEyesVisualGrid = EyesVisualGrid.specialize({
   CheckSettings,
   VisualGridClient,
 })
+
 const SeleniumEyesFactory = EyesFactory.specialize({
   EyesClassic: SeleniumEyesClassic,
   EyesVisualGrid: SeleniumEyesVisualGrid,

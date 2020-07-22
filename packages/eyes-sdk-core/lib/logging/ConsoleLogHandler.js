@@ -1,6 +1,6 @@
 'use strict'
 
-const {LogHandler} = require('./LogHandler')
+const LogHandler = require('./LogHandler')
 
 /**
  * Write log messages to the browser/node console
@@ -20,4 +20,4 @@ class ConsoleLogHandler extends LogHandler {
   }
 }
 
-exports.ConsoleLogHandler = ConsoleLogHandler
+module.exports = ConsoleLogHandler

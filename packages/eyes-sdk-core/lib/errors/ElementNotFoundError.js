@@ -1,4 +1,4 @@
-const {EyesError} = require('./EyesError')
+const EyesError = require('./EyesError')
 
 /**
  * Indicates that element wasn't found
@@ -6,7 +6,7 @@ const {EyesError} = require('./EyesError')
 class ElementNotFoundError extends EyesError {
   /**
    * Creates a new ElementNotFoundError instance.
-   * @param {SupportedSelector} selector - element selector.
+   * @param {string} selector - element selector.
    */
   constructor(selector) {
     const message = `Unable to find element using provided selector - "${selector}"`
@@ -14,4 +14,4 @@ class ElementNotFoundError extends EyesError {
   }
 }
 
-exports.ElementNotFoundError = ElementNotFoundError
+module.exports = ElementNotFoundError

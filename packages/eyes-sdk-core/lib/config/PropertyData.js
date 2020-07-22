@@ -1,6 +1,5 @@
 'use strict'
-
-const {ArgumentGuard} = require('../utils/ArgumentGuard')
+const ArgumentGuard = require('../utils/ArgumentGuard')
 
 /**
  * @typedef {{name: string, value: string}} PropertyDataObject
@@ -89,4 +88,4 @@ class PropertyData {
   }
 }
 
-exports.PropertyData = PropertyData
+module.exports = PropertyData

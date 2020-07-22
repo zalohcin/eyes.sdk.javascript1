@@ -1,76 +1,110 @@
 'use strict'
-const {StitchMode} = require('./config/StitchMode')
-const {TypeUtils} = require('./utils/TypeUtils')
-const {ArgumentGuard} = require('./utils/ArgumentGuard')
-const {CoordinatesType} = require('./geometry/CoordinatesType')
-const {Region} = require('./geometry/Region')
-const {Location} = require('./geometry/Location')
-const {RectangleSize} = require('./geometry/RectangleSize')
-const {UserAgent} = require('./useragent/UserAgent')
-const {ReadOnlyPropertyHandler} = require('./handler/ReadOnlyPropertyHandler')
-const {SimplePropertyHandler} = require('./handler/SimplePropertyHandler')
-const {FailureReports} = require('./FailureReports')
-const {TestFailedError} = require('./errors/TestFailedError')
-const {MatchResult} = require('./match/MatchResult')
-const {FullPageCaptureAlgorithm} = require('./capture/FullPageCaptureAlgorithm')
+const StitchMode = require('./config/StitchMode')
+const TypeUtils = require('./utils/TypeUtils')
+const ArgumentGuard = require('./utils/ArgumentGuard')
+const CoordinatesType = require('./geometry/CoordinatesType')
+const Region = require('./geometry/Region')
+const Location = require('./geometry/Location')
+const FailureReports = require('./FailureReports')
+const MatchResult = require('./match/MatchResult')
+const FullPageCaptureAlgorithm = require('./capture/FullPageCaptureAlgorithm')
 const EyesScreenshot = require('./capture/EyesScreenshotNew')
 const EyesScreenshotFactory = require('./capture/EyesScreenshotFactory')
-const ImageProviderFactory = require('./capture/ImageProviderFactory')
 const NullRegionProvider = require('./positioning/NullRegionProvider')
 const RegionProvider = require('./positioning/RegionProvider')
-const {NullCutProvider} = require('./cropping/NullCutProvider')
-const {NullScaleProvider} = require('./scaling/NullScaleProvider')
-const {ScaleProviderIdentityFactory} = require('./scaling/ScaleProviderIdentityFactory')
-const {ContextBasedScaleProviderFactory} = require('./scaling/ContextBasedScaleProviderFactory')
-const {FixedScaleProviderFactory} = require('./scaling/FixedScaleProviderFactory')
 const RegionPositionCompensationFactory = require('./positioning/RegionPositionCompensationFactory')
 const CssTranslatePositionProvider = require('./positioning/CssTranslatePositionProvider')
 const ScrollPositionProvider = require('./positioning/ScrollPositionProvider')
 const CssTranslateElementPositionProvider = require('./positioning/CssTranslateElementPositionProvider')
 const ScrollElementPositionProvider = require('./positioning/ScrollElementPositionProvider')
-const {ClassicRunner} = require('./runner/ClassicRunner')
-const {DomCapture} = require('./DomCapture')
+const ClassicRunner = require('./runner/ClassicRunner')
+const DomCapture = require('./DomCapture')
 const EyesUtils = require('./EyesUtils')
 const EyesCore = require('./EyesCore')
 
 /**
- * @typedef {import('./wrappers/EyesWrappedDriver')} EyesWrappedDriver
- * @typedef {import('./wrappers/EyesWrappedElement')} EyesWrappedElement
- * @typedef {import('./wrappers/EyesBrowsingContext')} EyesBrowsingContext
- * @typedef {import('./wrappers/EyesElementFinder')} EyesElementFinder
- * @typedef {import('./wrappers/EyesDriverController')} EyesDriverController
- * @typedef {import('./wrappers/EyesJsExecutor')} EyesJsExecutor
- * @typedef {import('./fluent/DriverCheckSettings')} DriverCheckSettings
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesWrappedDriver')<TDriver, TElement, TSelector>} EyesWrappedDriver
  */
 
-const UNKNOWN_DEVICE_PIXEL_RATIO = 0
-const DEFAULT_DEVICE_PIXEL_RATIO = 1
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesWrappedElement')<TDriver, TElement, TSelector>} EyesWrappedElement
+ */
 
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesWrappedDriver').EyesWrappedDriverCtor<TDriver, TElement, TSelector>} EyesWrappedDriverCtor
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesWrappedElement').EyesWrappedElementCtor<TDriver, TElement, TSelector>} EyesWrappedElementCtor
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesWrappedElement').EyesWrappedElementStatics<TDriver, TElement, TSelector>} EyesWrappedElementStatics
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesJsExecutor')<TDriver, TElement, TSelector>} EyesJsExecutor
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesBrowsingContext')<TDriver, TElement, TSelector>} EyesBrowsingContext
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesElementFinder')<TDriver, TElement, TSelector>} EyesElementFinder
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesDriverController')<TDriver, TElement, TSelector>} EyesDriverController
+ */
+
+/**
+ * @template TElement, TSelector
+ * @typedef {import('./fluent/DriverCheckSettings')<TElement, TSelector>} CheckSettings
+ */
+
+/**
+ * @template TDriver
+ * @template TElement
+ * @template TSelector
+ * @extends {EyesCore<TDriver, TElement, TSelector>}
+ */
 class EyesClassic extends EyesCore {
   /**
    * Create a specialized version of this class
+   * @template TDriver, TElement, TSelector
    * @param {Object} implementations - implementations of related classes
-   * @param {EyesWrappedDriver} implementations.WrappedDriver - implementation for {@link EyesWrappedDriver}
-   * @param {EyesWrappedElement} implementations.WrappedElement - implementation for {@link EyesWrappedElement}
-   * @param {DriverCheckSettings} implementations.CheckSettings - specialized version of {@link DriverCheckSettings}
-   * @return {EyesClassic} specialized version of this class
+   * @param {string} implementations.agentId - base agent id
+   * @param {EyesWrappedDriverCtor<TDriver, TElement, TSelector>} implementations.WrappedDriver - implementation for {@link EyesWrappedDriver}
+   * @param {EyesWrappedElementCtor<TDriver, TElement, TSelector> & EyesWrappedElementStatics<TDriver, TElement, TSelector>} implementations.WrappedElement - implementation for {@link EyesWrappedElement}
+   * @param {CheckSettings<TElement, TSelector>} implementations.CheckSettings - specialized version of {@link DriverCheckSettings}
+   * @return {new (...args: ConstructorParameters<typeof EyesClassic>) => EyesClassic<TDriver, TElement, TSelector>} specialized version of this class
    */
   static specialize({agentId, WrappedDriver, WrappedElement, CheckSettings}) {
     return class extends EyesClassic {
       /**
-       * @return {EyesWrappedDriver} implementation for {@link EyesWrappedDriver}
+       * @return {typeof WrappedDriver} implementation for {@link EyesWrappedDriver}
        */
       static get WrappedDriver() {
         return WrappedDriver
       }
       /**
-       * @return {EyesWrappedElement} implementation for {@link EyesWrappedElement}
+       * @return {typeof WrappedElement} implementation for {@link EyesWrappedElement}
        */
       static get WrappedElement() {
         return WrappedElement
       }
       /**
-       * @return {DriverCheckSettings} specialized version of {@link DriverCheckSettings}
+       * @return {typeof CheckSettings} specialized version of {@link DriverCheckSettings}
        */
       static get CheckSettings() {
         return CheckSettings
@@ -85,71 +119,57 @@ class EyesClassic extends EyesCore {
   }
   /**
    * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
-   * @param {string|boolean|VisualGridRunner} [serverUrl=EyesBase.getDefaultServerUrl()] - Eyes server URL
+   * @param {string|boolean|ClassicRunner} [serverUrl=EyesBase.getDefaultServerUrl()] - Eyes server URL
    * @param {boolean} [isDisabled=false] - set to true to disable Applitools Eyes and use the webdriver directly
    * @param {ClassicRunner} [runner=new ClassicRunner()] - runner related to the wanted Eyes implementation
    */
   constructor(serverUrl, isDisabled = false, runner = new ClassicRunner()) {
     super(serverUrl, isDisabled)
+    /** @private */
     this._runner = runner
     this._runner.attachEyes(this, this._serverConnector)
 
-    /** @type {EyesWrappedDriver} */
-    this._driver = undefined
-    /** @type {EyesJsExecutor} */
-    this._executor = undefined
-    /** @type {EyesElementFinder} */
-    this._finder = undefined
-    /** @type {EyesBrowsingContext} */
-    this._context = undefined
-    /** @type {EyesDriverController} */
-    this._controller = undefined
-    /** @type {boolean} */
-    this._dontGetTitle = false
-
+    /** @private */
     this._imageRotationDegrees = 0
+    /** @private */
     this._automaticRotation = true
-    /** @type {boolean} */
+    /** @private @type {boolean} */
     this._isLandscape = false
-    /** @type {boolean} */
+    /** @private @type {boolean} */
     this._checkFullFrameOrElement = false
 
-    /** @type {String} */
+    /** @private @type {String} */
     this._originalDefaultContentOverflow = false
-    /** @type {String} */
+    /** @private @type {String} */
     this._originalFrameOverflow = false
 
-    /** @type {String} */
+    /** @private @type {String} */
     this._originalOverflow = null
-    this._rotation = undefined
-    /** @type {ImageProvider} */
-    this._imageProvider = undefined
-    /** @type {RegionPositionCompensation} */
+    /** @private @type {RegionPositionCompensation} */
     this._regionPositionCompensation = undefined
-    /** @type {number} */
-    this._devicePixelRatio = UNKNOWN_DEVICE_PIXEL_RATIO
-    /** @type {Region} */
+    /** @private @type {Region} */
     this._regionToCheck = null
-    /** @type {PositionProvider} */
+    /** @private @type {PositionProvider} */
     this._targetPositionProvider = undefined
-    /** @type {Region} */
+    /** @private @type {Region} */
     this._effectiveViewport = Region.EMPTY
-    /** @type {string}*/
+    /** @private @type {string}*/
     this._domUrl
-    /** @type {EyesScreenshotFactory} */
+    /** @private @type {EyesScreenshotFactory} */
     this._screenshotFactory = undefined
-    /** @type {EyesWrappedElement} */
+    /** @private @type {EyesWrappedElement<TDriver, TElement, TSelector>} */
     this._scrollRootElement = null
-    /** @type {Promise<void>} */
+    /** @private @type {Promise<void>} */
     this._closePromise = Promise.resolve()
   }
   /**
-   * @param {Object} driver - driver object for the specific framework
+   * @template {TDriver} CDriver
+   * @param {CDriver} driver - driver object for the specific framework
    * @param {String} [appName] - application name
    * @param {String} [testName] - test name
    * @param {RectangleSize|{width: number, height: number}} [viewportSize] - viewport size
    * @param {SessionType} [sessionType] - type of test (e.g.,  standard test / visual performance test).
-   * @returns {Promise<EyesWrappedDriver>}
+   * @return {Promise<CDriver & EyesWrappedDriver<TDriver, TElement, TSelector>>}
    */
   async open(driver, appName, testName, viewportSize, sessionType) {
     ArgumentGuard.notNull(driver, 'driver')
@@ -185,26 +205,15 @@ class EyesClassic extends EyesCore {
       return driver
     }
 
-    this._devicePixelRatio = UNKNOWN_DEVICE_PIXEL_RATIO
-
     if (await this._controller.isMobile()) {
       // set viewportSize to null if browser is mobile
       this._configuration.setViewportSize(null)
     }
-    const userAgentString = await this._controller.getUserAgent()
-    if (userAgentString) {
-      this._userAgent = UserAgent.parseUserAgentString(userAgentString, true)
-    }
+
+    await this._initCommon()
 
     this._screenshotFactory = new EyesScreenshotFactory(this._logger, this)
-    this._imageProvider = ImageProviderFactory.getImageProvider(
-      this._logger,
-      this._driver,
-      this._rotation,
-      this,
-      this._userAgent,
-      this._rotation,
-    )
+
     this._regionPositionCompensation = RegionPositionCompensationFactory.getRegionPositionCompensation(
       this._userAgent,
       this,
@@ -221,8 +230,8 @@ class EyesClassic extends EyesCore {
     return this._driver
   }
   /**
-   * @param {string|DriverCheckSettings} [nameOrCheckSettings] - name of the test case
-   * @param {DriverCheckSettings} [checkSettings] - check settings for the described test case
+   * @param {string|CheckSettings<TElement, TSelector>} [nameOrCheckSettings] - name of the test case
+   * @param {CheckSettings<TElement, TSelector>} [checkSettings] - check settings for the described test case
    * @returns {Promise<MatchResult>}
    */
   async check(nameOrCheckSettings, checkSettings) {
@@ -284,8 +293,8 @@ class EyesClassic extends EyesCore {
   }
   /**
    * @private
-   * @param {DriverCheckSettings} checkSettings - check settings for the described test case
-   * @param {AsyncFunction} operation - check operation
+   * @param {CheckSettings<TElement, TSelector>} checkSettings - check settings for the described test case
+   * @param {Function} operation - check operation
    * @return {Promise<MatchResult>}
    */
   async _checkPrepare(checkSettings, operation) {
@@ -320,12 +329,10 @@ class EyesClassic extends EyesCore {
     if (this._context.topContext.scrollRootElement) {
       await this._context.topContext.scrollRootElement.init(this._driver)
     } else {
-      const element = await EyesUtils.getScrollRootElement(this._logger, this._executor)
-      this._context.topContext.scrollRootElement = new this.constructor.WrappedElement(
-        this._logger,
-        this._driver,
-        element,
-      )
+      this._context.topContext.scrollRootElement = await this._finder.findElement({
+        type: 'css',
+        selector: 'html',
+      })
     }
 
     const positionProvider = this._createPositionProvider(
@@ -371,7 +378,7 @@ class EyesClassic extends EyesCore {
   }
   /**
    * @private
-   * @param {DriverCheckSettings} checkSettings - check settings for the described test case
+   * @param {CheckSettings<TElement, TSelector>} checkSettings - check settings for the described test case
    * @param {Region} targetRegion - region to check
    * @return {Promise<MatchResult>}
    */
@@ -398,7 +405,8 @@ class EyesClassic extends EyesCore {
     }
   }
   /**
-   * @param {DriverCheckSettings} checkSettings - check settings for the described test case
+   * @private
+   * @param {CheckSettings<TElement, TSelector>} checkSettings - check settings for the described test case
    * @param {Region} targetRegion - region to check
    * @return {Promise<MatchResult>}
    */
@@ -453,8 +461,8 @@ class EyesClassic extends EyesCore {
   }
   /**
    * @private
-   * @param {DriverCheckSettings} checkSettings - check settings for the described test case
-   * @param {EyesWrappedElement} targetElement - element to check
+   * @param {CheckSettings<TElement, TSelector>} checkSettings - check settings for the described test case
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>} targetElement - element to check
    * @return {Promise<MatchResult>}
    */
   async _checkElement(checkSettings, targetElement) {
@@ -482,7 +490,7 @@ class EyesClassic extends EyesCore {
   }
   /**
    * @private
-   * @param {DriverCheckSettings} checkSettings - check settings for the described test case
+   * @param {CheckSettings<TElement, TSelector>} checkSettings - check settings for the described test case
    * @param {EyesWrappedElement} targetElement - element to check
    * @return {Promise<MatchResult>}
    */
@@ -494,7 +502,7 @@ class EyesClassic extends EyesCore {
     }
 
     this._regionToCheck = await targetElement.getClientRect()
-    this._logger.verbose('Element region: ' + this._regionToCheck)
+    this._logger.verbose('TElement region: ' + this._regionToCheck)
 
     const remainingOffset = await EyesUtils.ensureRegionVisible(
       this._logger,
@@ -551,7 +559,7 @@ class EyesClassic extends EyesCore {
   }
   /**
    * @private
-   * @param {DriverCheckSettings} checkSettings - check settings for the described test case
+   * @param {CheckSettings<TElement, TSelector>} checkSettings - check settings for the described test case
    * @return {Promise<MatchResult>}
    */
   async _checkFrame(checkSettings) {
@@ -566,7 +574,7 @@ class EyesClassic extends EyesCore {
   }
   /**
    * @private
-   * @param {DriverCheckSettings} checkSettings - check settings for the described test case
+   * @param {CheckSettings<TElement, TSelector>} checkSettings - check settings for the described test case
    * @return {Promise<MatchResult>}
    */
   async _checkFullFrame(checkSettings) {
@@ -596,7 +604,7 @@ class EyesClassic extends EyesCore {
       this._regionToCheck.intersect(this._effectiveViewport)
     }
 
-    this._logger.verbose('Element region: ' + this._regionToCheck)
+    this._logger.verbose('TElement region: ' + this._regionToCheck)
 
     try {
       const source = await this._controller.getSource()
@@ -615,7 +623,7 @@ class EyesClassic extends EyesCore {
   }
   /**
    * @private
-   * @param {EyesWrappedElement} scrollRootElement - scroll root element
+   * @param {EyesWrappedElement<TDriver, TElement, Selecotr>} scrollRootElement - scroll root element
    * @return {PositionProvider}
    */
   _createPositionProvider(scrollRootElement) {
@@ -739,19 +747,17 @@ class EyesClassic extends EyesCore {
 
       let scrollRootElement = positionProvider.scrollRootElement
       if (!scrollRootElement) {
-        const element = await EyesUtils.getScrollRootElement(this._logger, this._executor)
-        scrollRootElement = new this.constructor.WrappedElement(this._logger, this._driver, element)
+        scrollRootElement = await this._finder.findElement({type: 'css', selector: 'html'})
       }
-      // TODO replace with js snippet
-      const [
-        location,
-        [borderLeftWidth, borderTopWidth],
-        [clientWidth, clientHeight],
-      ] = await Promise.all([
-        scrollRootElement.getLocation(),
-        scrollRootElement.getCssProperty('border-left-width', 'border-top-width'),
-        scrollRootElement.getProperty('clientWidth', 'clientHeight'),
-      ])
+      const location = await scrollRootElement.getLocation()
+      const [borderLeftWidth, borderTopWidth] = await scrollRootElement.getCssProperty(
+        'border-left-width',
+        'border-top-width',
+      )
+      const [clientWidth, clientHeight] = await scrollRootElement.getProperty(
+        'clientWidth',
+        'clientHeight',
+      )
       const region = new Region(
         Math.round(location.getX() + Number.parseFloat(borderLeftWidth)),
         Math.round(location.getY() + Number.parseFloat(borderTopWidth)),
@@ -775,90 +781,7 @@ class EyesClassic extends EyesCore {
       originalFramePosition,
     )
   }
-  /**
-   * Create a viewport page screenshot
-   * @return {Promise<EyesScreenshot>}
-   */
-  async _getViewportScreenshot() {
-    this._logger.verbose('Screenshot requested...')
-    const scaleProviderFactory = await this._updateScalingParams()
 
-    let screenshotImage = await this._imageProvider.getImage()
-    await this._debugScreenshotsProvider.save(screenshotImage, 'original')
-
-    const scaleProvider = scaleProviderFactory.getScaleProvider(screenshotImage.getWidth())
-    if (scaleProvider.getScaleRatio() !== 1) {
-      this._logger.verbose('scaling...')
-      screenshotImage = await screenshotImage.scale(scaleProvider.getScaleRatio())
-      await this._debugScreenshotsProvider.save(screenshotImage, 'scaled')
-    }
-
-    const cutProvider = this._cutProviderHandler.get()
-    if (!(cutProvider instanceof NullCutProvider)) {
-      this._logger.verbose('cutting...')
-      screenshotImage = await cutProvider.cut(screenshotImage)
-      await this._debugScreenshotsProvider.save(screenshotImage, 'cut')
-    }
-
-    this._logger.verbose('Building screenshot object...')
-    return EyesScreenshot.fromScreenshotType(this._logger, this, screenshotImage)
-  }
-  /**
-   * @private
-   * @return {Promise<ScaleProviderFactory>}
-   */
-  async _updateScalingParams() {
-    // Update the scaling params only if we haven't done so yet, and the user hasn't set anything else manually.
-    if (
-      this._devicePixelRatio !== UNKNOWN_DEVICE_PIXEL_RATIO &&
-      !(this._scaleProviderHandler.get() instanceof NullScaleProvider)
-    ) {
-      // If we already have a scale provider set, we'll just use it, and pass a mock as provider handler.
-      const nullProvider = new SimplePropertyHandler()
-      return new ScaleProviderIdentityFactory(this._scaleProviderHandler.get(), nullProvider)
-    }
-
-    this._logger.verbose('Trying to extract device pixel ratio...')
-    this._devicePixelRatio = await EyesUtils.getDevicePixelRatio(this._logger, this._driver)
-      .catch(async err => {
-        const isNative = await this._controller.isNative()
-        if (!isNative) throw err
-        const viewportSize = await this.getViewportSize()
-        return EyesUtils.getMobilePixelRatio(this._logger, this._driver, viewportSize)
-      })
-      .catch(err => {
-        this._logger.verbose('Failed to extract device pixel ratio! Using default.', err)
-        return DEFAULT_DEVICE_PIXEL_RATIO
-      })
-
-    this._logger.verbose(`Device pixel ratio: ${this._devicePixelRatio}`)
-    this._logger.verbose('Setting scale provider...')
-    const factory = await this._getScaleProviderFactory().catch(err => {
-      this._logger.verbose('Failed to set ContextBasedScaleProvider.', err)
-      this._logger.verbose('Using FixedScaleProvider instead...')
-      return new FixedScaleProviderFactory(1 / this._devicePixelRatio, this._scaleProviderHandler)
-    })
-    this._logger.verbose('Done!')
-    return factory
-  }
-  /**
-   * @private
-   * @return {Promise<ScaleProviderFactory>}
-   */
-  async _getScaleProviderFactory() {
-    const entireSize = await EyesUtils.getCurrentFrameContentEntireSize(
-      this._logger,
-      this._executor,
-    )
-    return new ContextBasedScaleProviderFactory(
-      this._logger,
-      entireSize,
-      this._viewportSizeHandler.get(),
-      this._devicePixelRatio,
-      false,
-      this._scaleProviderHandler,
-    )
-  }
   /**
    * @param {boolean} [throwEx=true] - true if need to throw exception for unresolved tests, otherwise false
    * @return {Promise<TestResults>}
@@ -876,7 +799,7 @@ class EyesClassic extends EyesCore {
           this._runner._allTestResult.push(results)
         }
         if (isErrorCaught) {
-          if (throwEx) throw results
+          if (throwEx || !results.getTestResults) throw results
           else return results.getTestResults()
         }
         return results
@@ -884,7 +807,9 @@ class EyesClassic extends EyesCore {
 
     return this._closePromise
   }
-
+  /**
+   * @private
+   */
   async tryCaptureDom() {
     try {
       this._logger.verbose('Getting window DOM...')
@@ -894,43 +819,8 @@ class EyesClassic extends EyesCore {
     }
   }
   /**
-   * Use this method only if you made a previous call to {@link #open(WebDriver, String, String)} or one of its variants.
-   *
-   * @override
-   * @inheritDoc
-   */
-  async getViewportSize() {
-    const viewportSize = this._viewportSizeHandler.get()
-    return viewportSize
-      ? viewportSize
-      : EyesUtils.getTopContextViewportSize(this._logger, this._driver)
-  }
-  /**
-   * Use this method only if you made a previous call to {@link #open(WebDriver, String, String)} or one of its variants.
-   *
-   * @protected
    * @override
    */
-  async setViewportSize(viewportSize) {
-    if (this._viewportSizeHandler instanceof ReadOnlyPropertyHandler) {
-      this._logger.verbose('Ignored (viewport size given explicitly)')
-      return Promise.resolve()
-    }
-
-    if (!(await this._controller.isMobile())) {
-      ArgumentGuard.notNull(viewportSize, 'viewportSize')
-      viewportSize = new RectangleSize(viewportSize)
-      try {
-        await EyesUtils.setViewportSize(this._logger, this._driver, new RectangleSize(viewportSize))
-        this._effectiveViewport = new Region(Location.ZERO, viewportSize)
-      } catch (e) {
-        throw new TestFailedError('Failed to set the viewport size', e)
-      }
-    }
-
-    this._viewportSizeHandler.set(new RectangleSize(viewportSize))
-  }
-
   async getAppEnvironment() {
     const appEnv = await super.getAppEnvironment()
 
@@ -955,19 +845,24 @@ class EyesClassic extends EyesCore {
     EyesCore.prototype.setFailureReport.call(this, mode)
   }
   /**
+   * @override
    * @return {boolean}
    */
   async getSendDom() {
     return !(await this._controller.isNative()) && super.getSendDom()
   }
-
+  /**
+   * @private
+   */
   getImageLocation() {
     if (this._regionToCheck) {
       return this._regionToCheck.getLocation()
     }
     return Location.ZERO
   }
-
+  /**
+   * @private
+   */
   async getInferredEnvironment() {
     try {
       const userAgent = await this._controller.getUserAgent()
@@ -975,16 +870,6 @@ class EyesClassic extends EyesCore {
     } catch (err) {
       return null
     }
-  }
-
-  async getAndSaveRenderingInfo() {
-    const renderingInfo = await this._runner.getRenderingInfoWithCache()
-    this._serverConnector.setRenderingInfo(renderingInfo)
-  }
-
-  async _getAndSaveBatchInfoFromServer(batchId) {
-    ArgumentGuard.notNullOrEmpty(batchId, 'batchId')
-    return this._runner.getBatchInfoWithCache(batchId)
   }
 
   // TODO Do we need this method?

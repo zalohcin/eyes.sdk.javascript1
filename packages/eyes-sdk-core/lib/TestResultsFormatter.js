@@ -271,4 +271,4 @@ class TestResultsFormatter {
   }
 }
 
-exports.TestResultsFormatter = TestResultsFormatter
+module.exports = TestResultsFormatter

@@ -7,11 +7,12 @@ const {GeneralUtils} = require('../..')
  */
 class RunningRender {
   /**
-   * @param {string} renderId
-   * @param {string} jobId
-   * @param {RenderStatus} renderStatus
-   * @param {string[]} needMoreResources
-   * @param {boolean} needMoreDom
+   * @param data
+   * @param {string} data.renderId
+   * @param {string} data.jobId
+   * @param {RenderStatus} data.renderStatus
+   * @param {string[]} data.needMoreResources
+   * @param {boolean} data.needMoreDom
    */
   constructor({renderId, jobId, renderStatus, needMoreResources, needMoreDom} = {}) {
     this._renderId = renderId
@@ -105,5 +106,4 @@ class RunningRender {
     return `RunningRender { ${JSON.stringify(this)} }`
   }
 }
-
-exports.RunningRender = RunningRender
+module.exports = RunningRender

@@ -3,61 +3,86 @@ const FrameChain = require('../frames/FrameChain')
 const EyesUtils = require('../EyesUtils')
 
 /**
- * @typedef {import('../logging/Logger').Logger} Logger
- * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
- * @typedef {import('../wrappers/EyesWrappedDriver').unwrapped} UnwrappedDriver
- * @typedef {import('../frames/Frame').FrameReference} FrameReference
- * @typedef {import('../frames/Frame')} Frame
+ * @typedef {import('../logging/Logger')} Logger
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./EyesWrappedDriver')<TDriver, TElement, TSelector>} EyesWrappedDriver
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('../frames/Frame')<TDriver, TElement, TSelector>} Frame
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('../frames/Frame').FrameReference<TDriver, TElement, TSelector>} FrameReference
  */
 
 /**
  * The object which implements the lowest-level functions to work with browsing context
- * @typedef {Object} SpecsBrowsingContext
- * @property {(leftFrame: FrameReference, rightFrame: FrameReference) => Promise<boolean>} isEqualFrames - return true if two frames are equal, false otherwise
- * @property {(reference: FrameReference) => Frame} createFrameReference - return new frame reference
- * @property {(driver: UnwrappedDriver, reference: FrameReference) => void} switchToFrame - switch to frame specified with a reference
- * @property {(driver: UnwrappedDriver) => void} switchToParentFrame - switch to parent frame
+ * @template TDriver, TElement, TSelector
+ * @typedef SpecBrowsingContext
+ * @prop {(reference: FrameReference<TDriver, TElement, TSelector>) => Frame} createFrameReference - return new frame reference
+ * @prop {(leftFrame: Frame<TDriver, TElement, TSelector>, rightFrame: Frame<TDriver, TElement, TSelector>) => Promise<boolean>} isEqualFrames - return true if two frames are equal, false otherwise
+ * @prop {(driver: TDriver, reference: FrameReference<TDriver, TElement, TSelector>) => void} switchToFrame - switch to frame specified with a reference
+ * @prop {(driver: TDriver) => void} switchToParentFrame - switch to parent frame
  */
 
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {new (logger: Logger, driver: EyesWrappedDriver<TDriver, TElement, TSelector>) => EyesBrowsingContext<TDriver, TElement, TSelector>} EyesBrowsingContextCtor
+ */
+
+/**
+ * @template TDriver - TDriver provided by wrapped framework
+ * @template TElement - TElement provided by wrapped framework
+ * @template TSelector - TSelector supported by framework
+ */
 class EyesBrowsingContext {
   /**
-   * @param {SpecsBrowsingContext} SpecsBrowsingContext - specifications for the specific framework
-   * @return {EyesBrowsingContext} specialized version of this class
+   * @template TDriver, TElement, TSelector
+   * @param {SpecBrowsingContext<TDriver, TElement, TSelector>} spec - specifications for the specific framework
+   * @return {EyesBrowsingContextCtor<TDriver, TElement, TSelector>} specialized version of this class
    */
-  static specialize(SpecsBrowsingContext) {
+  static specialize(spec) {
     return class extends EyesBrowsingContext {
       /** @override */
-      static get specs() {
-        return SpecsBrowsingContext
+      static get spec() {
+        return spec
       }
       /** @override */
-      get specs() {
-        return SpecsBrowsingContext
+      get spec() {
+        return spec
       }
     }
   }
-  /** @type {SpecsBrowsingContext} */
-  static get specs() {
+  /**
+   * @type {SpecBrowsingContext}
+   */
+  static get spec() {
     throw new TypeError('The class is not specialized')
   }
-  /** @type {SpecsBrowsingContext} */
-  get specs() {
+  /** @type {SpecBrowsingContext<TDriver, TElement, TSelector>} */
+  get spec() {
     throw new TypeError('The class is not specialized')
   }
   /**
    * Construct browsing context instance
    * @param {Logger} logger - logger instance
-   * @param {EyesWrappedDriver} driver - parent driver instance
+   * @param {EyesWrappedDriver<TDriver, TElement, TSelector>} driver - parent driver instance
    */
   constructor(logger, driver) {
     this._logger = logger
     this._driver = driver
-    this._topContext = this.specs.createFrameReference(null)
+    this._topContext = this.spec.createFrameReference(null)
     this._frameChain = new FrameChain(this._logger)
   }
   /**
    * Representation of the top-level context
-   * @type {Frame}
+   * @type {Frame<TDriver, TElement, TSelector>}
    */
   get topContext() {
     return this._topContext
@@ -77,7 +102,7 @@ class EyesBrowsingContext {
   }
   /**
    * Switch to the child (frame) context by reference
-   * @param {FrameReference} reference - reference to the frame
+   * @param {FrameReference<TDriver, TElement, TSelector>} reference - reference to the frame
    * @return {Promise<void>}
    */
   async frame(reference) {
@@ -87,10 +112,10 @@ class EyesBrowsingContext {
       return this.frameDefault()
     }
     const parentFrame = this._frameChain.isEmpty ? this._topContext : this._frameChain.current
-    const frame = await this.specs
+    const frame = await this.spec
       .createFrameReference(reference)
       .init(this._logger, this._driver, parentFrame)
-    const result = await this.specs.switchToFrame(this._driver.unwrapped, frame.element.unwrapped)
+    const result = await this.spec.switchToFrame(this._driver.unwrapped, frame.element.unwrapped)
     if (frame.scrollRootElement) {
       await frame.scrollRootElement.init(this._driver)
     }
@@ -105,7 +130,7 @@ class EyesBrowsingContext {
   async frameDefault() {
     if (await this._driver.controller.isNative()) return
     this._logger.verbose('EyesBrowsingContext.frameDefault()')
-    const result = await this.specs.switchToFrame(this._driver.unwrapped, null)
+    const result = await this.spec.switchToFrame(this._driver.unwrapped, null)
     this._logger.verbose('Done! Switching to default content...')
     if (this._frameChain.size > 0) {
       this._frameChain.clear()
@@ -122,7 +147,7 @@ class EyesBrowsingContext {
     try {
       this._logger.verbose(`EyesBrowsingContext.frameParent(${elevation})`)
       while (elevation > 0) {
-        await this.specs.switchToParentFrame(this._driver.unwrapped)
+        await this.spec.switchToParentFrame(this._driver.unwrapped)
         this._logger.verbose('Done! Switching to parent frame..')
         if (this._frameChain.size > 0) {
           this._frameChain.pop()
@@ -138,7 +163,7 @@ class EyesBrowsingContext {
   }
   /**
    * Switch to the specified frame path from the top level
-   * @param {Iterable<FrameReference>} path
+   * @param {Iterable<FrameReference<TDriver, TElement, TSelector>>} path
    * @return {Promise<void>}
    */
   async frames(path) {
@@ -149,7 +174,7 @@ class EyesBrowsingContext {
     if (requiredPath.length === 0) return this.frameDefault()
     let diffIndex = -1
     for (const [index, frame] of requiredPath.entries()) {
-      if (!(await this.specs.isEqualFrames(currentPath[index], frame))) {
+      if (!(await this.spec.isEqualFrames(currentPath[index], frame))) {
         diffIndex = index
         break
       }
@@ -182,7 +207,7 @@ class EyesBrowsingContext {
   }
   /**
    * Append the specified frame path to the current context
-   * @param {Iterable<FrameReference>} path
+   * @param {Iterable<FrameReference<TDriver, TElement, TSelector>>} path
    * @return {Promise<void>}
    */
   async framesAppend(path) {
@@ -219,11 +244,11 @@ class EyesBrowsingContext {
             this._logger,
             this._driver,
             contextInfo,
-            this.specs.isEqualFrames,
+            this.spec.isEqualFrames,
           )
         }
         if (!frameElement) throw new Error('Unable to find out the chain of frames')
-        if (await this.specs.isEqualFrames(frameElement, frameChain.current)) {
+        if (await this.spec.isEqualFrames(frameElement, frameChain.current)) {
           await this.frameParent(frameChain.size - 1)
           framePath.unshift(...frameChain)
         } else {
@@ -238,7 +263,7 @@ class EyesBrowsingContext {
   }
   /**
    * Perform an operation in the browsing context with required frame chain and return it back after operation is finished
-   * @param {Iterable<FrameReference>} path
+   * @param {Iterable<FrameReference<TDriver, TElement, TSelector>>} path
    * @param {Function} operation
    * @return {Promise<any>} promise which resolve whatever an operation will resolve
    */
@@ -254,7 +279,7 @@ class EyesBrowsingContext {
   }
   /**
    * Perform an operation in the browsing context with appended frame chain and return it back after operation is finished
-   * @param {Iterable<FrameReference>} path
+   * @param {Iterable<FrameReference<TDriver, TElement, TSelector>>} path
    * @param {Function} operation
    * @return {Promise<any>} promise which resolve whatever an operation will resolve
    */

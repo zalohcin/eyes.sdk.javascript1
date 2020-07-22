@@ -1,22 +1,23 @@
-'use strict'
+const Enum = require('../utils/Enum')
 
-const {Enum} = require('../utils/Enum')
+/**
+ * @typedef {import('../utils/Enum').EnumValues<typeof AccessibilityLevels>} AccessibilityLevel
+ */
 
 /**
  * The extent in which to check the image visual accessibility level.
- *
- * @readonly
- * @enum {string}
  */
-const AccessibilityLevel = {
+const AccessibilityLevels = Enum('AccessibilityLevel', {
   /**
    * Low accessibility level.
+   * @type {'AA'}
    */
   AA: 'AA',
   /**
    * Highest accessibility level.
+   * @type {'AAA'}
    */
   AAA: 'AAA',
-}
+})
 
-exports.AccessibilityLevel = Enum('AccessibilityLevel', AccessibilityLevel)
+module.exports = AccessibilityLevels

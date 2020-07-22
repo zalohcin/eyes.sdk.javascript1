@@ -1,16 +1,27 @@
 'use strict'
+const BatchInfo = require('./BatchInfo')
+const PropertyData = require('./PropertyData')
+const ProxySettings = require('./ProxySettings')
+const BrowserType = require('./BrowserType')
+const StitchModes = require('./StitchMode')
+const ScreenOrientation = require('./ScreenOrientation')
+const ImageMatchSettings = require('./ImageMatchSettings')
+const RectangleSize = require('../geometry/RectangleSize')
+const ArgumentGuard = require('../utils/ArgumentGuard')
+const TypeUtils = require('../utils/TypeUtils')
+const GeneralUtils = require('../utils/GeneralUtils')
 
-const {BatchInfo} = require('./BatchInfo')
-const {PropertyData} = require('./PropertyData')
-const {ProxySettings} = require('./ProxySettings')
-const {BrowserType} = require('./BrowserType')
-const {StitchMode} = require('./StitchMode')
-const {ScreenOrientation} = require('./ScreenOrientation')
-const {ImageMatchSettings} = require('./ImageMatchSettings')
-const {RectangleSize} = require('../geometry/RectangleSize')
-const {ArgumentGuard} = require('../utils/ArgumentGuard')
-const {TypeUtils} = require('../utils/TypeUtils')
-const {GeneralUtils} = require('../utils/GeneralUtils')
+/**
+ * @typedef {import('./AccessibilityLevel').AccessibilityLevel} AccessibilityLevel
+ * @typedef {import('./AccessibilityGuidelinesVersion').AccessibilityGuidelinesVersion} AccessibilityGuidelinesVersion
+ * @typedef {import('./StitchMode').StitchMode} StitchMode
+ * @typedef {import('./SessionType').SessionType} SessionType
+ * @typedef {import('./ProxySettings')} ProxySettings
+ * @typedef {import('./ProxySettings').PlainProxySettings} PlainProxySettings
+ * @typedef {import('./ImageMatchSettings')} ImageMatchSettings
+ * @typedef {import('../geometry/RectangleSize')} RectangleSize
+ * @typedef {import('../geometry/RectangleSize').PlainRectangleSize} PlainRectangleSize
+ */
 
 /**
  * @typedef {{level: AccessibilityLevel, guidelinesVersion: AccessibilityGuidelinesVersion}} AccessibilitySettings
@@ -25,7 +36,7 @@ const {GeneralUtils} = require('../utils/GeneralUtils')
  * @typedef {{chromeEmulationInfo: EmulationInfo}} ChromeEmulationInfo
  */
 /**
- * @typedef {{iosDeviceInfo: {deviceName: IosDevieName, screenOrientation: (IosScreenOrientation|undefined)}}} IosDeviceInfo
+ * @typedef {{iosDeviceInfo: {deviceName: IosDevieName, screenOrientation: (ScreenOrientation|undefined)}}} IosDeviceInfo
  */
 /**
  * @typedef {(DesktopBrowserInfo|EmulationInfo|ChromeEmulationInfo|IosDeviceInfo)} RenderInfo
@@ -46,7 +57,7 @@ const DEFAULT_VALUES = {
 
   // classic (selenium)
   waitBeforeScreenshots: 100, // ms
-  stitchMode: StitchMode.SCROLL,
+  stitchMode: StitchModes.SCROLL,
   hideScrollbars: true,
   hideCaret: true,
   stitchOverlap: 50, // px
@@ -56,12 +67,74 @@ const DEFAULT_VALUES = {
   isThrowExceptionOn: false,
 }
 
+/**
+ * @typedef PlainConfiguration
+ * @prop {boolean} showLogs
+ * @prop {boolean} saveDebugData
+ *
+ * @prop {string} appName
+ * @prop {string} testName
+ * @prop {string} displayName
+ *
+ * @prop {string} serverUrl
+ * @prop {ProxySettings|PlainProxySettings} proxySettings
+ * @prop {number} connectionTimeout
+ * @prop {string} apiKey
+ *
+ * @prop {boolean} isDisabled
+ * @prop {SessionType} sessionType
+ * @prop {boolean} removeSession
+ * @prop {string} agentId
+ * @prop {PropertyData[]} properties
+ * @prop {RectangleSize|PlainRectangleSize} viewportSize
+ * @prop {BatchInfo} batch
+ * @prop {number} matchTimeout
+ * @prop {ImageMatchSettings} defaultMatchSettings
+ *
+ * @prop {string} baselineEnvName
+ * @prop {string} environmentName
+ * @prop {string} baselineName
+ * @prop {string} parentBranchName
+ * @prop {string} baselineBranchName
+ * @prop {boolean} compareWithParentBranch
+ *
+ * @prop {boolean} saveFailedTests
+ * @prop {boolean} saveNewTests
+ * @prop {boolean} ignoreBaseline
+ * @prop {boolean} saveDiffs
+ * @prop {boolean} sendDom
+ *
+ * @prop {string} hostApp
+ * @prop {string} hostOS
+ * @prop {string} hostAppInfo
+ * @prop {string} hostOSInfo
+ * @prop {string} deviceInfo
+ */
+
+/**
+ * @typedef PlainConfigurationClassic
+ * @prop {boolean} forceFullPageScreenshot
+ * @prop {number} waitBeforeScreenshots
+ * @prop {StitchMode} stitchMode
+ * @prop {number} stitchOverlap
+ * @prop {boolean} hideScrollbars
+ * @prop {boolean} hideCaret
+ */
+
+/**
+ * @typedef PlainConfigurationVisualGrid
+ * @prop {number} concurrentSessions
+ * @prop {boolean} isThrowExceptionOn
+ * @prop {RenderInfo[]} browsersInfo
+ * @prop {boolean} dontCloseBatches
+ */
+
 class Configuration {
   /**
    * @param {Configuration|object} [configuration]
    */
   constructor(configuration) {
-    /** @type {boolean} */
+    /** @private @type {boolean} */
     this._showLogs = undefined
     /** @type {boolean} */
     this._saveDebugData = undefined
@@ -257,7 +330,7 @@ class Configuration {
   /**
    * Sets the proxy settings to be used by the rest client.
    *
-   * @param {ProxySettings|ProxySettingsObject|string|boolean} value - The ProxySettings object or proxy url to be used.
+   * @param {ProxySettings|PlainProxySettings|string|boolean} value - The ProxySettings object or proxy url to be used.
    *   Use {@code false} to disable proxy (even if it set via env variables). Use {@code null} to reset proxy settings.
    * @return {this}
    */
@@ -808,7 +881,7 @@ class Configuration {
   }
 
   /**
-   * @param {RectangleSize|RectangleSizeObject} value
+   * @param {RectangleSize|PlainRectangleSize} value
    * @return {this}
    */
   setViewportSize(value) {
@@ -1279,4 +1352,4 @@ class Configuration {
   }
 }
 
-exports.Configuration = Configuration
+module.exports = Configuration

@@ -1,7 +1,5 @@
 'use strict'
 
-// Region must come from sdk-core o.w when initailizing Region with
-// Region we fail on not being an instance of Region.
 const {Region} = require('@applitools/eyes-sdk-core')
 const {presult} = require('@applitools/functional-commons')
 const saveData = require('../troubleshoot/saveData')
@@ -27,7 +25,7 @@ function makeCheckWindow({
   stepCounter,
   testName,
   openEyesPromises,
-  fetchHeaders,
+  userAgent,
   matchLevel: _matchLevel,
   isSingleWindow,
   getUserAgents,
@@ -64,7 +62,6 @@ function makeCheckWindow({
     } else if (target === 'region' && region) {
       sizeMode = 'region'
     }
-    fetchHeaders['Referer'] = url
 
     const accErr = isInvalidAccessibility(accessibility)
     if (accErr) {
@@ -93,6 +90,9 @@ function makeCheckWindow({
       resourceContents,
       cdt,
       frames,
+      userAgent,
+      referer: url,
+      proxySettings: wrappers[0].getProxy(),
     })
 
     const noOffsetSelectors = {

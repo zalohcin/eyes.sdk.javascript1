@@ -3,7 +3,9 @@ const {expect} = require('chai');
 const path = require('path');
 const {testServer} = require('@applitools/sdk-shared');
 const {delay: psetTimeout, presult} = require('@applitools/functional-commons');
-const {sh} = require('../../src/__process-commons');
+const {
+  processCommons: {sh},
+} = require('@applitools/sdk-shared');
 const {version} = require('../../package.json');
 
 describe('eyes-storybook', () => {

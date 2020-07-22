@@ -1,17 +1,11 @@
 const {findDifferencesBetweenCollections} = require('../common-util')
-const {makeCoverageTests, supportedCommands} = require('../tests')
+const coverageTests = require('../tests')
 const {isMatch} = require('micromatch')
 
 function findUnsupportedTests(sdkImplementation) {
-  const allTests = makeCoverageTests()
+  const allTests = coverageTests
   const sdkSupportedTests = sdkImplementation.supportedTests.map(test => test.name)
   return findDifferencesBetweenCollections(allTests, sdkSupportedTests)
-}
-
-function findUnimplementedCommands(sdkImplementation) {
-  const allCommands = supportedCommands
-  const sdkImplementedCommands = sdkImplementation.initialize()
-  return findDifferencesBetweenCollections(allCommands, sdkImplementedCommands)
 }
 
 function filterTestsByName(filter, tests) {
@@ -96,7 +90,6 @@ function needsChromeDriver(args, sdkImplementation) {
 
 module.exports = {
   findUnsupportedTests,
-  findUnimplementedCommands,
   filterTests,
   filterTestsByName,
   filterTestsByMode,

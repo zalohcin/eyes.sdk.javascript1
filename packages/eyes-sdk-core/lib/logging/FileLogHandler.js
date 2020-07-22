@@ -4,7 +4,7 @@ const path = require('path')
 const fs = require('fs')
 const os = require('os')
 
-const {LogHandler} = require('./LogHandler')
+const LogHandler = require('./LogHandler')
 
 /**
  * @private
@@ -78,4 +78,4 @@ class FileLogHandler extends LogHandler {
   }
 }
 
-exports.FileLogHandler = FileLogHandler
+module.exports = FileLogHandler

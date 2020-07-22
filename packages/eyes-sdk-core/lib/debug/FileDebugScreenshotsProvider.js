@@ -1,8 +1,8 @@
 'use strict'
 
-const {DateTimeUtils} = require('../utils/DateTimeUtils')
-const {FileUtils} = require('../utils/FileUtils')
-const {DebugScreenshotsProvider} = require('./DebugScreenshotsProvider')
+const DateTimeUtils = require('../utils/DateTimeUtils')
+const FileUtils = require('../utils/FileUtils')
+const DebugScreenshotsProvider = require('./DebugScreenshotsProvider')
 
 /**
  * A debug screenshot provider for saving screenshots to file.
@@ -22,4 +22,4 @@ class FileDebugScreenshotsProvider extends DebugScreenshotsProvider {
   }
 }
 
-exports.FileDebugScreenshotsProvider = FileDebugScreenshotsProvider
+module.exports = FileDebugScreenshotsProvider

@@ -1,23 +1,25 @@
 'use strict'
-
 const Axios = require('axios')
 const zlib = require('zlib')
-
-const {GeneralUtils, ArgumentGuard} = require('../..')
-
-const {RenderingInfo} = require('./RenderingInfo')
-const {RunningSession} = require('./RunningSession')
+const GeneralUtils = require('../utils/GeneralUtils')
+const ArgumentGuard = require('../utils/ArgumentGuard')
+const RenderingInfo = require('./RenderingInfo')
+const RunningSession = require('./RunningSession')
 const {
   configureAxios,
   delayRequest,
   handleRequestResponse,
   handleRequestError,
 } = require('./requestHelpers')
-const {TestResults} = require('../TestResults')
-const {MatchResult} = require('../match/MatchResult')
+const TestResults = require('../TestResults')
+const MatchResult = require('../match/MatchResult')
 
-const {RunningRender} = require('../renderer/RunningRender')
-const {RenderStatusResults} = require('../renderer/RenderStatusResults')
+const RunningRender = require('../renderer/RunningRender')
+const RenderStatusResults = require('../renderer/RenderStatusResults')
+
+/**
+ * @typedef {import('../geometry/Region').RegionObject} RegionObject
+ */
 
 // Constants
 const EYES_API_PATH = '/api/sessions'
@@ -750,6 +752,39 @@ class ServerConnector {
       throw new Error(`ServerConnector.getUserAgents - unexpected status (${response.statusText})`)
     }
   }
+
+  /**
+   * Visual locators
+   * @template {string} TLocatorName
+   * @param {Object} visualLocatorData
+   * @param {string} visualLocatorData.appName
+   * @param {string} visualLocatorData.imageUrl
+   * @param {Readonly<TLocatorName[]>} visualLocatorData.locatorNames
+   * @param {string} visualLocatorData.firstOnly
+   * @return {Promise<{[TKey in TLocatorName]: RegionObject[]}>}
+   */
+  async postLocators(visualLocatorData) {
+    ArgumentGuard.notNull(visualLocatorData, 'visualLocatorData')
+    this._logger.verbose(
+      `ServerConnector.postLocators called with ${JSON.stringify(visualLocatorData)}`,
+    )
+
+    const config = {
+      name: 'postLocators',
+      method: 'POST',
+      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), 'api/locators/locate'),
+      data: visualLocatorData,
+    }
+
+    const response = await this._axios.request(config)
+    const validStatusCodes = [HTTP_STATUS_CODES.OK]
+    if (validStatusCodes.includes(response.status)) {
+      this._logger.verbose('ServerConnector.postLocators - post succeeded', response.data)
+      return response.data
+    }
+
+    throw new Error(`ServerConnector.postLocators - unexpected status (${response.statusText})`)
+  }
 }
 
-exports.ServerConnector = ServerConnector
+module.exports = ServerConnector

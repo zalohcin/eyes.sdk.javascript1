@@ -1,22 +1,23 @@
-'use strict'
+const Enum = require('../utils/Enum')
+
+/**
+ * @typedef {import('../utils/Enum').EnumValues<typeof StitchModes>} StitchMode
+ */
 
 /**
  * Represents the types of available stitch modes.
- *
- * @readonly
- * @enum {string}
  */
-const StitchMode = {
+const StitchModes = Enum('StitchMode', {
   /**
    * Standard JS scrolling.
+   * @type {'Scroll'}
    */
   SCROLL: 'Scroll',
-
   /**
    * CSS translation based stitching.
+   * @type {'CSS'}
    */
   CSS: 'CSS',
-}
+})
 
-Object.freeze(StitchMode)
-exports.StitchMode = StitchMode
+module.exports = StitchModes

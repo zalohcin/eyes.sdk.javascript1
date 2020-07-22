@@ -40,7 +40,11 @@ const args = yargs
     default: process.env.APPLITOOLS_API_KEY,
   })
   .option('target-element', {
-    describe: '',
+    describe: 'translates to Target.region(...)',
+    type: 'string',
+  })
+  .option('target-frame', {
+    describe: 'translates to Target.frame(...)',
     type: 'string',
   })
   .option('vg', {
@@ -182,23 +186,22 @@ const args = yargs
     describe: 'attach to existing chrome via remote debugging port',
     type: 'boolean',
   })
+  .option('scroll-root-element', {
+    describe: 'selector to scroll root element',
+    type: 'string',
+  })
+  .option('stitch-overlap', {
+    describe: 'stitch overlap',
+    type: 'number',
+  })
   .help().argv
 
-const [url] = args._
-if (!url) {
+let [url] = args._
+if (!url && !args.attach) {
   throw new Error('missing url argument!')
 }
 
 ;(async function() {
-  console.log('Running Selenium render for', url)
-  console.log(
-    'Options:\n ',
-    Object.entries(args)
-      .map(argToString)
-      .filter(x => x)
-      .join('\n  '),
-  )
-
   const isMobileEmulation = args.deviceName && !args.vg
 
   if (args.webdriverProxy) {
@@ -217,6 +220,19 @@ if (!url) {
   }
 
   const driver = await buildDriver({...args, isMobileEmulation})
+
+  if (args.attach) {
+    url = await spec.executeScript(driver, 'return window.location.href')
+  }
+
+  console.log('Running Selenium render for', url)
+  console.log(
+    'Options:\n ',
+    Object.entries(args)
+      .map(argToString)
+      .filter(x => x)
+      .join('\n  '),
+  )
 
   const runner = args.vg ? new VisualGridRunner() : new ClassicRunner()
   const eyes = new Eyes(runner)
@@ -262,6 +278,10 @@ if (!url) {
   if (args.batchId) {
     configuration.setDontCloseBatches(true)
   }
+  if (args.stitchOverlap) {
+    configuration.setStitchOverlap(args.stitchOverlap)
+  }
+
   eyes.setConfiguration(configuration)
 
   const {logger, logFilePath} = initLog(eyes, new URL(url).hostname.replace(/\./g, '-'))
@@ -284,6 +304,8 @@ if (!url) {
 
     if (args.targetElement) {
       target = Target.region(args.targetElement)
+    } else if (args.targetFrame) {
+      target = Target.frame(args.targetFrame)
     } else {
       target = Target.window()
     }
@@ -304,6 +326,10 @@ if (!url) {
         target,
         args.layoutRegions.split(',').map(s => s.trim()),
       )
+    }
+
+    if (args.scrollRootElement) {
+      target.scrollRootElement(args.scrollRootElement)
     }
 
     logger.log('[render script] awaiting delay...', args.delay * 1000)
@@ -354,9 +380,10 @@ function buildDriver({
   const capabilities = {
     browserName: 'chrome',
     'goog:chromeOptions': {
+      // w3c: false,
       args: headless ? ['--headless'] : [],
       mobileEmulation: isMobileEmulation ? {deviceName} : undefined,
-      debuggerAddress: attach ? '127.0.0.1:9222' : undefined,
+      debuggerAddress: attach ? '127.0.01:9222' : undefined,
     },
     ...driverCapabilities,
   }

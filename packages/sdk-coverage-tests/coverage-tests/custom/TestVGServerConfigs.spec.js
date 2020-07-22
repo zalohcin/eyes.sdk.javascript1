@@ -5,7 +5,6 @@ const {getEyes, Browsers, batch} = require('../util/TestSetup')
 const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
 const {
   ScreenOrientation,
-  IosScreenOrientation,
   IosDeviceName,
   BrowserType,
   AccessibilityLevel,
@@ -51,7 +50,7 @@ describe('TestVGServerConfigs', () => {
     conf.addBrowser({
       iosDeviceInfo: {
         deviceName: IosDeviceName.iPhone_XR,
-        screenOrientation: IosScreenOrientation.LANDSCAPE_LEFT,
+        screenOrientation: ScreenOrientation.LANDSCAPE,
       },
     })
     eyes.setConfiguration(conf)

@@ -1,22 +1,31 @@
 'use strict'
-
-const {CoordinatesType, Region} = require('../..')
-const {GetRegion} = require('./GetRegion')
+const Region = require('../geometry/Region')
+const CoordinatesTypes = require('../geometry/CoordinatesType')
+const GetRegion = require('./GetRegion')
 const EyesUtils = require('../EyesUtils')
 
 /**
- * @typedef {import('../wrappers/EyesWrappedElement').SupportedSelector} SupportedSelector
- * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
+ * @typedef {import('../config/AccessibilityRegionType').AccessibilityRegionType} AccessibilityRegionType
+ * @typedef {import('../wrappers/EyesWrappedElement').EyesSelector} EyesSelector
  * @typedef {import('../EyesClassic')} EyesClassic
- *
- * @typedef {Object} PersistedRegions
- * @property {string} type - selector type (css or xpath)
- * @property {string} selector - selector itself
  */
 
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('../wrappers/EyesWrappedDriver')<TDriver, TElement, TSelector>} EyesWrappedDriver
+ */
+
+/**
+ * @typedef {EyesSelector} IgnorePersistedRegion
+ */
+
+/**
+ * @internal
+ * @template TSelector
+ */
 class IgnoreRegionBySelector extends GetRegion {
   /**
-   * @param {SupportedSelector} selector
+   * @param {TSelector} selector
    */
   constructor(selector) {
     super()
@@ -36,15 +45,16 @@ class IgnoreRegionBySelector extends GetRegion {
       const rect = await element.getRect()
       const lTag = screenshot.convertLocation(
         rect.getLocation(),
-        CoordinatesType.CONTEXT_RELATIVE,
-        CoordinatesType.SCREENSHOT_AS_IS,
+        CoordinatesTypes.CONTEXT_RELATIVE,
+        CoordinatesTypes.SCREENSHOT_AS_IS,
       )
       regions.push(new Region(lTag.getX(), lTag.getY(), rect.getWidth(), rect.getHeight()))
     }
     return regions
   }
   /**
-   * @param {EyesWrappedDriver} driver
+   * @template TDriver, TElement
+   * @param {EyesWrappedDriver<TDriver, TElement, TSelector>} driver
    * @return {Promise<PersistedRegions[]>}
    */
   async toPersistedRegions(driver) {
