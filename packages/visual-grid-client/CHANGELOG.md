@@ -1,6 +1,7 @@
 # Change Log
 
 ## Unreleased
+- updated to @applitools/dom-snapshot@3.7.2 (from 3.7.1)
 
 
 ## 14.5.12 - 2020/7/19
