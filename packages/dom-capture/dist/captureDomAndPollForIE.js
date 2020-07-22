@@ -11683,6 +11683,16 @@ function __captureDomAndPollForIE() {
 
             var parseCss_1 = parseCss;
 
+            var TEST_disableCache = false;
+
+            try {
+              if (window && window.DOM_CAPTURE_TEST_disableCache) {
+                TEST_disableCache = true;
+              }
+            } catch (err) {
+              /* ignore error*/
+            }
+
             function makeFetchCss(fetch) {
               var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
                   fetchTimeLimit = _ref.fetchTimeLimit;
@@ -11696,7 +11706,10 @@ function __captureDomAndPollForIE() {
                         case 0:
                           controller = new AbortController();
                           response = fetch(url, {
-                            cache: 'force-cache',
+                            cache: TEST_disableCache ? undefined : 'force-cache',
+                            headers: {
+                              'X-DomCapture': '1'
+                            },
                             signal: controller.signal
                           }).then(function (response) {
                             if (response.ok) {
