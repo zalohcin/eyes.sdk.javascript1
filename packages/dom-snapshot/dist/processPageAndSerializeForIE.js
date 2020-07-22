@@ -1,4 +1,4 @@
-/* @applitools/dom-snapshot@3.7.1 */
+/* @applitools/dom-snapshot@3.7.2 */
 
 function __processPageAndSerializeForIE() {
   var processPageAndSerializeForIE = (function () {
@@ -22842,7 +22842,7 @@ function __processPageAndSerializeForIE() {
             function toUnAnchoredUri(url) {
               var m = url && url.match(/(^[^#]*)/);
               var res = m && m[1] || url;
-              return res && res.replace(/\?\s*$/, '') || url;
+              return res && res.replace(/\?\s*$/, '?') || url;
             }
 
             var toUnAnchoredUri_1 = toUnAnchoredUri;
@@ -23460,7 +23460,7 @@ function __processPageAndSerializeForIE() {
               });
               return doProcessPage(doc).then(function (result) {
                 log('processPage end');
-                result.scriptVersion = '3.7.1';
+                result.scriptVersion = '3.7.2';
                 return result;
               });
 

@@ -1,4 +1,4 @@
-/* @applitools/dom-snapshot@3.7.1 */
+/* @applitools/dom-snapshot@3.7.2 */
 
 function __processPageAndSerializePoll() {
   var processPageAndSerializePoll = (function () {
@@ -13412,7 +13412,7 @@ function __processPageAndSerializePoll() {
   function toUnAnchoredUri(url) {
     const m = url && url.match(/(^[^#]*)/);
     const res = (m && m[1]) || url;
-    return (res && res.replace(/\?\s*$/, '')) || url;
+    return (res && res.replace(/\?\s*$/, '?')) || url;
   }
 
   var toUnAnchoredUri_1 = toUnAnchoredUri;
@@ -13986,7 +13986,7 @@ function __processPageAndSerializePoll() {
 
     return doProcessPage(doc).then(result => {
       log$$1('processPage end');
-      result.scriptVersion = '3.7.1';
+      result.scriptVersion = '3.7.2';
       return result;
     });
 

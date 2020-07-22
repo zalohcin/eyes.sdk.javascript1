@@ -1013,4 +1013,20 @@ describe('processPage', () => {
     expect(blobs.map(({url}) => url)).to.eql(['http://localhost:7373/import.css']);
     expect(resourceUrls).to.eql(['http://localhost:7373/imported.css']);
   });
+
+  it("keeps resource url's query part intact", async () => {
+    await page.goto(`http://localhost:7373/query.html`);
+    const {blobs, resourceUrls, cdt} = await processPage();
+    expect(blobs.map(({url}) => url)).to.eql([
+      'http://localhost:7373/imported2.css?',
+      'http://localhost:7373/query.css?',
+    ]);
+    expect(resourceUrls).to.eql(['http://localhost:8888/cors.css?']);
+
+    const linkAttrsFromCdt = cdt
+      .filter(({nodeName}) => nodeName === 'LINK')
+      .map(({attributes}) => attributes.find(({name}) => name === 'href'))
+      .map(({value}) => value);
+    expect(linkAttrsFromCdt).to.eql(['query.css?', 'http://localhost:8888/cors.css?']);
+  });
 });
