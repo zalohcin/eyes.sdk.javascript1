@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+
+## 3.7.2 - 2020/7/22
+
 - avoid removing single `?` from query param in resource urls (mainly to address `?#iefix`, see https://github.com/applitools/mono/issues/79)
 
 ## 3.7.1 - 2020/7/16
