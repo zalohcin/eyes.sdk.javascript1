@@ -1,18 +1,13 @@
-const fs = require('fs')
 const axios = require('axios')
-const path = require('path')
 const {findDifferencesBetweenCollections} = require('../common-util')
 const {isMatch} = require('micromatch')
+const vm = require('vm')
 
 async function fetchCoverageTests() {
-  const testFilePath = path.resolve(__dirname, 'tests.js')
-  const testsFileData = (
+  const testsFileScript = (
     await axios('https://raw.githubusercontent.com/applitools/sdk.coverage.tests/master/tests.js')
   ).data
-  fs.writeFileSync(testFilePath, testsFileData)
-  const coverageTests = require(testFilePath)
-  fs.unlinkSync(testFilePath)
-  return coverageTests
+  return vm.runInContext(testsFileScript, vm.createContext({module: {}, process}))
 }
 
 function findUnsupportedTests(sdkImplementation, coverageTests) {
