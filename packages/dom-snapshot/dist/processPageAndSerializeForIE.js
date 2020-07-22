@@ -22842,7 +22842,7 @@ function __processPageAndSerializeForIE() {
             function toUnAnchoredUri(url) {
               var m = url && url.match(/(^[^#]*)/);
               var res = m && m[1] || url;
-              return res && res.replace(/\?\s*$/, '') || url;
+              return res && res.replace(/\?\s*$/, '?') || url;
             }
 
             var toUnAnchoredUri_1 = toUnAnchoredUri;

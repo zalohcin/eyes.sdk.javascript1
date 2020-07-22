@@ -13326,7 +13326,7 @@ var filterInlineUrl_1 = filterInlineUrl;
 function toUnAnchoredUri(url) {
   const m = url && url.match(/(^[^#]*)/);
   const res = (m && m[1]) || url;
-  return (res && res.replace(/\?\s*$/, '')) || url;
+  return (res && res.replace(/\?\s*$/, '?')) || url;
 }
 
 var toUnAnchoredUri_1 = toUnAnchoredUri;
