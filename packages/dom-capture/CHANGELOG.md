@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- add X-DomCapture header to fetch requests
 
 ## 7.2.4 - 2020/6/3
 
