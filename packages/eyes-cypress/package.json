@@ -37,10 +37,10 @@
     "url": "git://github.com/applitools/eyes.sdk.javascript1.git"
   },
   "dependencies": {
-    "@applitools/dom-snapshot": "3.7.1",
-    "@applitools/eyes-sdk-core": "11.3.7",
+    "@applitools/dom-snapshot": "3.7.2",
+    "@applitools/eyes-sdk-core": "11.3.9",
     "@applitools/functional-commons": "1.5.4",
-    "@applitools/visual-grid-client": "14.5.11",
+    "@applitools/visual-grid-client": "14.5.13",
     "body-parser": "^1.19.0",
     "chalk": "3.0.0",
     "cors": "^2.8.5",
