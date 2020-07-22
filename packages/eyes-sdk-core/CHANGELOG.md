@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- avoid `error.getTestResults is not a function` error ([Trello 1](https://trello.com/c/XAmA255U) [Trello 2](https://trello.com/c/1Bl2EaDE))
 
 ## 11.3.8 - 2020/7/19
 
