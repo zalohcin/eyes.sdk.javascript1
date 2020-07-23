@@ -3,7 +3,7 @@ const cwd = process.cwd()
 const path = require('path')
 const {Target, StitchMode} = require(cwd)
 const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
-const {getEyes, batch} = require('../../util/TestSetup')
+const {getEyes} = require('../../util/TestSetup')
 
 const pages = ['mobile', 'desktop', 'scrolled_mobile']
 
@@ -22,15 +22,11 @@ function testMobileDevices(device, page) {
         capabilities: getDeviceEmulationCaps(device.mobileEmulation),
       })
       eyes = getEyes()
-      eyes.setBatch(batch)
       eyes.setParentBranchName('')
       eyes.setSaveNewTests(false)
-      eyes.StitchMode = StitchMode.SCROLL
+      eyes.setStitchMode(StitchMode.SCROLL)
       eyes.addProperty('Orientation', device.orientation.toLowerCase())
       eyes.addProperty('Page', page)
-      if (process.env['APPLITOOLS_API_KEY_SDK']) {
-        eyes.setApiKey(process.env['APPLITOOLS_API_KEY_SDK'])
-      }
       webDriver.get(`https://applitools.github.io/demo/TestPages/DynamicResolution/${page}.html`)
       await eyes.open(
         webDriver,

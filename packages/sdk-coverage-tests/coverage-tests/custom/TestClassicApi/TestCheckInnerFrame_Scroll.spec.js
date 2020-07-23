@@ -5,7 +5,7 @@ const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
 const {Browsers, getEyes} = require('../../util/TestSetup')
 const {TestCheckInnerFrame} = require('./TestClassicApi_utils')
 
-describe('Coverage tests', () => {
+describe.skip('Coverage tests', () => {
   let driver, eyes
 
   afterEach(async () => {

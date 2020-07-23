@@ -5,7 +5,7 @@ const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
 const appName = 'Eyes Selenium SDK - Classic API'
 
 async function TestCheckInnerFrame({testName, eyes, driver}) {
-  eyes.hideScrollbars = false
+  eyes.setHideScrollbars(false)
   driver = await eyes.open(driver, appName, testName, {
     width: 700,
     height: 460,

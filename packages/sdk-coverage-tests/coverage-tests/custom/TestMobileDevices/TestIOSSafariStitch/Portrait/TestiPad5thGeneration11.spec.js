@@ -1,19 +1,18 @@
 'use strict'
-const {
-  getMobileEmulation,
-  testMobileDevices,
-  pages,
-  iPadAgent10,
-} = require('../../TestMobileDevices')
+const {getMobileEmulation, testMobileDevices, iPadAgent10} = require('../../TestMobileDevices')
 let device = {
   mobileEmulation: getMobileEmulation(iPadAgent10, 768, 922, 2),
   name: 'iPad (5th generation) Simulator 11.0',
   orientation: 'Portrait',
 }
 describe(`${device.name} Portrait`, () => {
-  pages.forEach(page => {
-    describe(`${page}`, () => {
-      it('TestIOSSafariStitch', testMobileDevices(device, page))
-    })
+  describe(`mobile`, () => {
+    it('TestIOSSafariStitch', testMobileDevices(device, 'mobile'))
+  })
+  describe(`desktop`, () => {
+    it.skip('TestIOSSafariStitch', testMobileDevices(device, 'desktop'))
+  })
+  describe(`scrolled_mobile`, () => {
+    it('TestIOSSafariStitch', testMobileDevices(device, 'scrolled_mobile'))
   })
 })
