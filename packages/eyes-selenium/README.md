@@ -159,136 +159,98 @@ https://applitools.com/docs/topics/working-with-test-batches/working-with-test-b
 Generates a screenshot of the current page and add it to the Applitools Test.
 
 ```js
-eyes.check(tag, checkSettings)
+eyes.check(checkSettings)
 ```
 
-#### Arguments to `eyes.check`
-
-##### `tag`
-
-Defines a name for the checkpoint in the Eyes Test Manager. The name may be any string and serves to identify the step to the user in the Test manager. You may change the tag value without impacting testing in any way since Eyes does not use the tag to identify the baseline step that corresponds to the checkpoint - Eyes matches steps based on their content and position in the sequences of images of the test. See [How Eyes compares checkpoints and baseline images](https://applitools.com/docs/topics/general-concepts/how-eyes-compares-checkpoints.html) for details.
-
-##### `checkSettings`
+#### `checkSettings`
 
 Holds the checkpoint's configuration. This is defined using a fluent API, starting with `Target`.
 
-###### Page screenshot
+##### Page screenshot
 
 - For taking a viewport screenshot, call `Target.window()`.
 - For a full page screenshot, call `Target.window().fully()`.
 
-###### Region screenshot
+##### Region screenshot
 
 To take an element screenshot, it's possible to specify either a locator or the element representation itself. For example:
 
 ```js
+// region by locator
 const locator = by.css('.banner')
-eyes.check('region by locator', Target.region(locator))
+eyes.check(Target.region(locator))
 
+// region by element
 const el = element(locator)
-eyes.check('region by element', Target.region(el))
+eyes.check(Target.region(el))
 ```
 
 Passing a string is interpreted as a css selector:
 
 ```js
-eyes.check('region by css selector', Target.region('.banner'))
+// region by css selector
+eyes.check(Target.region('.banner'))
 ```
 
 It's also possible to specify the absolute coordinates for the desired region:
 
 ```js
-eyes.check('region by coordinates', Target.region({
-  left: 10,
-  top: 20,
-  width: 200,
-  height: 80
-}))
+// region by coordinates
+eyes.check(
+  Target.region({left: 10, top: 20, width: 200, height: 80})
+)
 ```
 
 For all the above options, it's possible to specify `.fully()` in order to take the entire content of an element that can be scrolled.
 
-###### Switching into frames
+##### Switching into frames
 
 For taking screenshots of elements inside iframes, it's possible to specify the frame using the `Target.frame` fluent API. For example:
 
 ```js
-eyes.check('element inside frame', Target.frame('frame-1').region(by.css('.element-inside frame')))
+// element inside frame
+eyes.check(
+  Target.frame('frame-1').region(by.css('.element-inside frame')
+)
 ```
 
 It's possible to take a screenshot of the entire frame:
 
 ```js
-eyes.check('entire frame', Target.frame('frame-1').fully())
+// entire frame
+eyes.check(
+  Target.frame('frame-1').fully()
+)
 ```
 
 Multiple frame calls can be made, thus creating a "frame chain". For example:
 
 ```js
-eyes.check('element inside nested frames', Target.frame('frame-1').frame('frame-1-1').region(by.css('.nested-element')))
-```
-
-###### Ignore Regions
-
-<!-- TODO add explanation -->
-
-```js
-eyes.check('viewport screenshot with ignore region', Target.window().ignoreRegion('.dynamic-content-here'))
-```
-
-Possible input types are:
-
-- string (interpreted as css selector)
-- `by` locator
-- element
-- coordinates (`{left, top, width, height}`)
-
-###### Floating Regions
-
-<!-- TODO add explanation -->
-
-```js
+// element inside nested frames
 eyes.check(
-  'viewport screenshot with floating region',
-  Target.window().floatingRegion('.floating-area', 10, 10, 10, 10)) // up, down, left, right
+  Target.frame('frame-1').frame('frame-1-1').region(by.css('.nested-element'))
+)
 ```
 
-Possible input types are:
-
-- string (interpreted as css selector)
-- `by` locator
-- element
-- coordinates (`{left, top, width, height}`)
-
-###### Content/Strict/Layout Regions
+##### Ignore Regions
 
 <!-- TODO add explanation -->
 
 ```js
-eyes.check('viewport screenshot with content region', Target.window().contentRegion('.some-element'))
-
-eyes.check('viewport screenshot with strict region', Target.window().strictRegion('.some-element'))
-
-eyes.check('viewport screenshot with layout region', Target.window().layoutRegion('.some-element'))
-```
-
-Possible input types are:
-
-- string (interpreted as css selector)
-- `by` locator
-- element
-- coordinates (`{left, top, width, height}`)
-
-###### Accessiblity Regions
-
-<!-- TODO add explanation -->
-
-```js
-const {AccessibilityRegionType} = require('@applitools/eyes-selenium')
-
+// single region
 eyes.check(
-  'viewport screenshot with accessibility region',
-  Target.window().accessibilityRegion('.some-element', AccessibilityRegionType.LargeText)
+  'viewport screenshot with ignore region',
+  Target
+    .window()
+    .ignoreRegion('.dynamic-content-here')
+)
+
+// multiple regions
+eyes.check(
+  'viewport screenshot with ignore region',
+  Target
+    .window()
+    .ignoreRegions('.dynamic-content-here', someElement, someCoordinates)
 )
 ```
 
@@ -299,13 +261,95 @@ Possible input types are:
 - element
 - coordinates (`{left, top, width, height}`)
 
-###### Scroll root element
+##### Floating Regions
 
 <!-- TODO add explanation -->
 
 ```js
+// viewport screenshot with floating region
 eyes.check(
-  'full page with custom scroll root element',
+  Target
+    .window()
+    .floatingRegion('.floating-area', 10, 10, 10, 10) // up, down, left, right
+)
+
+// multiple regions
+eyes.check(
+  Target
+    .window()
+    .floatingRegions(10, '.floating-area', someElement, someCoordinates) // up, down, left, right all equal to 10
+)
+```
+
+Possible input types are:
+
+- string (interpreted as css selector)
+- `by` locator
+- element
+- coordinates (`{left, top, width, height}`)
+
+##### Content/Strict/Layout Regions
+
+<!-- TODO add explanation -->
+
+```js
+// viewport screenshot with content region
+eyes.check(Target.window().contentRegion('.some-element'))
+
+// viewport screenshot with strict region
+eyes.check(Target.window().strictRegion('.some-element'))
+
+// viewport screenshot with layout region
+eyes.check(Target.window().layoutRegion('.some-element'))
+
+// multiple regions
+Target.window().contentRegions(region1, region2, region3)
+Target.window().strictRegions(region1, region2, region3)
+Target.window().layoutRegions(region1, region2, region3)
+```
+
+Possible input types are:
+
+- string (interpreted as css selector)
+- `by` locator
+- element
+- coordinates (`{left, top, width, height}`)
+
+##### Accessiblity Regions
+
+<!-- TODO add explanation -->
+
+```js
+const {AccessibilityRegionType} = require('@applitools/eyes-selenium')
+
+// viewport screenshot with accessibility region
+eyes.check(
+  Target.window().accessibilityRegion('.some-element', AccessibilityRegionType.LargeText)
+)
+
+// multiple regions is done by chaining the same method
+eyes.check(
+  Target.window()
+    .accessibilityRegion('.element-1', AccessibilityRegionType.LargeText)
+    .accessibilityRegion('.element-2', AccessibilityRegionType.IgnoreContrast)
+    .accessibilityRegion('.element-3', AccessibilityRegionType.BoldText)
+)
+```
+
+Possible input types are:
+
+- string (interpreted as css selector)
+- `by` locator
+- element
+- coordinates (`{left, top, width, height}`)
+
+##### Scroll root element
+
+<!-- TODO add explanation -->
+
+```js
+// full page with custom scroll root element
+eyes.check(
   Target.window().fully().scrollRootElement('.main-content')
 )
 ```
@@ -316,6 +360,14 @@ Possible input types are:
 - `by` locator
 - element
 
+##### Tag (`withName`)
+
+Defines a name for the checkpoint in the Eyes Test Manager. The name may be any string and serves to identify the step to the user in the Test manager. You may change the tag value without impacting testing in any way since Eyes does not use the tag to identify the baseline step that corresponds to the checkpoint - Eyes matches steps based on their content and position in the sequences of images of the test. See [How Eyes compares checkpoints and baseline images](https://applitools.com/docs/topics/general-concepts/how-eyes-compares-checkpoints.html) for details.
+
+```js
+eyes.check(Target.window().withName('Main page'))
+```
+
 ###### Other checkSettings configuration
 
 <!-- TODO add explanation -->
@@ -325,7 +377,6 @@ Possible input types are:
 - `ignoreDisplacements`
 - `useDom`
 - `enablePatterns`
-- `withName`
 
 ### close
 
