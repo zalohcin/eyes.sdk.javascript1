@@ -221,7 +221,7 @@ describe('SpecWrappedDriver', async () => {
     })
   })
 
-  describe.only('native app', async () => {
+  describe('native app', async () => {
     let driver
 
     before(async () => {
