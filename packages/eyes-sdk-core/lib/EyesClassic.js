@@ -163,12 +163,13 @@ class EyesClassic extends EyesCore {
     this._closePromise = Promise.resolve()
   }
   /**
-   * @param {TDriver} driver - driver object for the specific framework
+   * @template {TDriver} CDriver
+   * @param {CDriver} driver - driver object for the specific framework
    * @param {String} [appName] - application name
    * @param {String} [testName] - test name
    * @param {RectangleSize|{width: number, height: number}} [viewportSize] - viewport size
    * @param {SessionType} [sessionType] - type of test (e.g.,  standard test / visual performance test).
-   * @return {Promise<TDriver & EyesWrappedDriver<TDriver, TElement, TSelector>>}
+   * @return {Promise<CDriver & EyesWrappedDriver<TDriver, TElement, TSelector>>}
    */
   async open(driver, appName, testName, viewportSize, sessionType) {
     ArgumentGuard.notNull(driver, 'driver')
@@ -798,7 +799,7 @@ class EyesClassic extends EyesCore {
           this._runner._allTestResult.push(results)
         }
         if (isErrorCaught) {
-          if (throwEx) throw results
+          if (throwEx || !results.getTestResults) throw results
           else return results.getTestResults()
         }
         return results

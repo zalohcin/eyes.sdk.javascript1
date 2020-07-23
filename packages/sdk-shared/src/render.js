@@ -190,6 +190,10 @@ const args = yargs
     describe: 'selector to scroll root element',
     type: 'string',
   })
+  .option('stitch-overlap', {
+    describe: 'stitch overlap',
+    type: 'number',
+  })
   .help().argv
 
 let [url] = args._
@@ -274,6 +278,10 @@ if (!url && !args.attach) {
   if (args.batchId) {
     configuration.setDontCloseBatches(true)
   }
+  if (args.stitchOverlap) {
+    configuration.setStitchOverlap(args.stitchOverlap)
+  }
+
   eyes.setConfiguration(configuration)
 
   const {logger, logFilePath} = initLog(eyes, new URL(url).hostname.replace(/\./g, '-'))

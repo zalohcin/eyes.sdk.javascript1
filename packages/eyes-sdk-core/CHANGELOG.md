@@ -2,6 +2,28 @@
 
 ## Unreleased
 
+- updated enum types to be more explicit about values
+
+## 11.3.9 - 2020/7/22
+
+- avoid `error.getTestResults is not a function` error ([Trello 1](https://trello.com/c/XAmA255U) [Trello 2](https://trello.com/c/1Bl2EaDE))
+
+## 11.3.8 - 2020/7/19
+
+- fix `Date` typo in BatchInfo JSDoc
+- support duplicate copies of the SDK in CheckSettings constructor ([Trello](https://trello.com/c/4Gd7uWtS))
+
+## 11.3.7 - 2020/7/15
+
+- use EyesClassic type as a return type for EyesFactoryCtor
+
+## 11.3.6 - 2020/7/14
+
+- return extended driver from EyesVisualGrid#open
+
+## 11.3.5 - 2020/7/13
+
+- improve typings
 
 ## 11.3.4 - 2020/7/7
 

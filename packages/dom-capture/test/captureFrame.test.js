@@ -1,4 +1,5 @@
 'use strict';
+const {URL} = require('url');
 const {describe, it, after, before, beforeEach} = require('mocha');
 const {expect} = require('chai');
 const fs = require('fs');
@@ -6,6 +7,8 @@ const path = require('path');
 const puppeteer = require('puppeteer');
 const {testServer} = require('@applitools/sdk-shared');
 const {getCaptureDomScript} = require('../index');
+const recordFetchesMiddleware = require('./util/recordFetchesMiddleware');
+const {playback, startRecord} = recordFetchesMiddleware;
 const {beautifyOutput, getPerformanceMetrics} = require('./util/beautifyOutput');
 const {loadFixture} = require('./util/loadFixture');
 const {version} = require('../package.json');
@@ -21,7 +24,10 @@ describe('captureFrame', () => {
 
   before(async () => {
     browser = await puppeteer.launch();
-    const server = await testServer({port: 50993});
+    const server = await testServer({
+      port: 50993,
+      middlewareFile: path.resolve(__dirname, './util/recordFetchesMiddleware'),
+    });
     baseUrl = `http://localhost:${server.port}`;
     closeTestServer = server.close;
     const captureDomScript = await getCaptureDomScript();
@@ -36,6 +42,7 @@ describe('captureFrame', () => {
   });
 
   beforeEach(async () => {
+    startRecord();
     page = await browser.newPage();
     // page.on('console', msg => {
     //   console.log(msg.args().join(' '));
@@ -218,6 +225,25 @@ describe('captureFrame', () => {
     } finally {
       await anotherTestServer.close();
     }
+  });
+
+  it('should send X-Dom-Capture HTTP header when fetching CSS', async () => {
+    await page.goto(`${baseUrl}/test-with-disabled-cache.html`);
+
+    const regularPageFetches = playback();
+
+    await page.evaluate(captureFrame);
+
+    const urlsFetchedByDomCapture = playback().slice(regularPageFetches.length);
+    expect(urlsFetchedByDomCapture.length).to.be.gt(0);
+
+    urlsFetchedByDomCapture.forEach(urlFetched =>
+      expect(urlFetched).to.satisfy(
+        ({url, headers}) =>
+          new URL(url, 'http://dummy-domain').pathname.endsWith('.css') &&
+          headers['x-domcapture'] === '1',
+      ),
+    );
   });
 
   it.skip('handles custom page (use to try out stuff)', async () => {

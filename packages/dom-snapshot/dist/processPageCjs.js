@@ -1,4 +1,4 @@
-/* @applitools/dom-snapshot@3.7.0 */
+/* @applitools/dom-snapshot@3.7.2 */
 'use strict';
 
 function extractLinks(doc = document) {
@@ -13213,7 +13213,11 @@ function domNodesToCdt(docNode, baseUrl, log = noop$4) {
       addOrUpdateAttribute(node.attributes, 'value', elementNode.value);
     }
 
-    if (elementNode.tagName === 'OPTION' && elementNode.parentElement.value === elementNode.value) {
+    if (
+      elementNode.tagName === 'OPTION' &&
+      elementNode.parentElement.selectedOptions &&
+      Array.from(elementNode.parentElement.selectedOptions).indexOf(elementNode) > -1
+    ) {
       addOrUpdateAttribute(node.attributes, 'selected', '');
     }
 
@@ -13322,7 +13326,7 @@ var filterInlineUrl_1 = filterInlineUrl;
 function toUnAnchoredUri(url) {
   const m = url && url.match(/(^[^#]*)/);
   const res = (m && m[1]) || url;
-  return (res && res.replace(/\?\s*$/, '')) || url;
+  return (res && res.replace(/\?\s*$/, '?')) || url;
 }
 
 var toUnAnchoredUri_1 = toUnAnchoredUri;
@@ -13896,7 +13900,7 @@ function processPage(
 
   return doProcessPage(doc).then(result => {
     log$$1('processPage end');
-    result.scriptVersion = '3.7.0';
+    result.scriptVersion = '3.7.2';
     return result;
   });
 

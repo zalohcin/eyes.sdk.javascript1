@@ -6,6 +6,12 @@ const FakeWrappedDriver = require('../utils/FakeWrappedDriver')
 const MockDriver = require('../utils/MockDriver')
 const {Logger} = require('../../index')
 
+const fs = require('fs')
+const path = require('path')
+const ncp = require('ncp')
+const {promisify} = require('util')
+const pncp = promisify(ncp)
+
 describe('CheckSettings', () => {
   it('from(object)', () => {
     const object = {
@@ -73,5 +79,23 @@ describe('CheckSettings', () => {
       {accessibilityType: 'bla', selector: '/HTML[1]/BODY[1]/DIV[2]', type: 'xpath'},
       {accessibilityType: 'bla', selector: '//[data-fake-selector="not-mocked"]', type: 'xpath'},
     ])
+  })
+
+  // TODO this test makes more sense to run inside docker
+  it('resilient to duplicate copies of the SDK', async () => {
+    // create another lib folder inside this folder
+    const otherLibFolder = path.resolve(__dirname, 'lib2')
+    fs.rmdirSync(otherLibFolder, {recursive: true})
+    fs.mkdirSync(otherLibFolder)
+
+    // copy lib folder contents into the new lib folder
+    await pncp(path.resolve(__dirname, '../../lib'), otherLibFolder)
+
+    try {
+      const DriverCheckSettings2 = require('./lib2/fluent/DriverCheckSettings') // eslint-disable-line node/no-missing-require
+      new FakeCheckSettings(DriverCheckSettings2.window())
+    } finally {
+      fs.rmdirSync(otherLibFolder, {recursive: true})
+    }
   })
 })

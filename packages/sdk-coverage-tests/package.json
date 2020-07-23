@@ -1,6 +1,6 @@
 {
   "name": "@applitools/sdk-coverage-tests",
-  "version": "1.0.9",
+  "version": "1.0.12",
   "engines": {
     "node": ">=10.12.0"
   },
@@ -27,6 +27,7 @@
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "chalk": "3.0.0",

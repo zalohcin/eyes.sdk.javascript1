@@ -3,6 +3,32 @@
 ## Unreleased
 
 
+## 14.5.13 - 2020/7/22
+
+- updated to @applitools/dom-snapshot@3.7.2 (from 3.7.1)
+- updated to @applitools/eyes-sdk-core@11.3.9 (from 11.3.8)
+
+## 14.5.12 - 2020/7/19
+
+- updated to @applitools/eyes-sdk-core@11.3.8 (from 11.3.7)
+
+## 14.5.11 - 2020/7/16
+
+- updated to @applitools/dom-snapshot@3.7.1 (from 3.7.0)
+
+## 14.5.10 - 2020/7/15
+
+- updated to @applitools/eyes-sdk-core@11.3.7 (from 11.3.6)
+
+## 14.5.9 - 2020/7/14
+
+- updated to @applitools/eyes-sdk-core@11.3.6 (from 11.3.5)
+
+## 14.5.8 - 2020/7/14
+
+- updated to @applitools/dom-snapshot@3.7.0 (from 3.6.2)
+- updated to @applitools/eyes-sdk-core@11.3.5 (from 11.3.4)
+
 ## 14.5.7 - 2020/7/7
 
 - updated to @applitools/eyes-sdk-core@11.3.4 (from 11.3.3)

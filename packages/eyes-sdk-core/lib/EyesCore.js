@@ -360,7 +360,7 @@ class EyesCore extends EyesBase {
    * @param {RectangleSize|{width: number, height: number}} viewportSize - viewport size
    */
   static async setViewportSize(driver, viewportSize) {
-    const logger = new Logger()
+    const logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS)
     const wrappedDriver = new this.WrappedDriver(logger, driver)
     if (!(await wrappedDriver.controller.isMobile())) {
       ArgumentGuard.notNull(viewportSize, 'viewportSize')

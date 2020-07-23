@@ -1,4 +1,4 @@
-/* @applitools/dom-snapshot@3.7.0 */
+/* @applitools/dom-snapshot@3.7.2 */
 
 function __processPageAndSerializeForIE() {
   var processPageAndSerializeForIE = (function () {
@@ -22712,7 +22712,7 @@ function __processPageAndSerializeForIE() {
                   addOrUpdateAttribute(node.attributes, 'value', elementNode.value);
                 }
 
-                if (elementNode.tagName === 'OPTION' && elementNode.parentElement.value === elementNode.value) {
+                if (elementNode.tagName === 'OPTION' && elementNode.parentElement.selectedOptions && Array.from(elementNode.parentElement.selectedOptions).indexOf(elementNode) > -1) {
                   addOrUpdateAttribute(node.attributes, 'selected', '');
                 }
 
@@ -22842,7 +22842,7 @@ function __processPageAndSerializeForIE() {
             function toUnAnchoredUri(url) {
               var m = url && url.match(/(^[^#]*)/);
               var res = m && m[1] || url;
-              return res && res.replace(/\?\s*$/, '') || url;
+              return res && res.replace(/\?\s*$/, '?') || url;
             }
 
             var toUnAnchoredUri_1 = toUnAnchoredUri;
@@ -23460,7 +23460,7 @@ function __processPageAndSerializeForIE() {
               });
               return doProcessPage(doc).then(function (result) {
                 log('processPage end');
-                result.scriptVersion = '3.7.0';
+                result.scriptVersion = '3.7.2';
                 return result;
               });
 

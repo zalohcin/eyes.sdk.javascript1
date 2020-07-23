@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-sdk-core",
-  "version": "11.3.4",
+  "version": "11.3.9",
   "description": "The core components of Eyes JavaScript SDK",
   "keywords": [
     "applitools",
@@ -54,6 +54,7 @@
     "chromedriver": "^83.0.0",
     "jsdoc": "3.6.4",
     "mocha": "^8.0.1",
+    "ncp": "^2.0.0",
     "selenium-webdriver": "^4.0.0-alpha.5",
     "typescript": "^3.9.5"
   },
