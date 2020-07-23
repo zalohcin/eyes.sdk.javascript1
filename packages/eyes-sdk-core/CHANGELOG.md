@@ -6,6 +6,7 @@
 - remove type definitions
 - support Appium mobile selectors
 - updated to @applitools/dom-capture@7.2.5 (from 7.2.4)
+- updated to @applitools/dom-capture@7.2.6 (from 7.2.5)
 
 ## 11.3.9 - 2020/7/22
 
