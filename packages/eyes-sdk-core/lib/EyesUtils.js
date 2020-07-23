@@ -317,7 +317,7 @@ async function getElementEntireSize(_logger, executor, element) {
  * @return {Promise<Region>} element client rect
  */
 async function getElementClientRect(_logger, executor, element) {
-  const rect = await executor.executeScript(EyesJsSnippets.GET_ELEMENT_CLIENT_RECT, element)
+  const rect = await executor.execute(EyesJsSnippets.GET_ELEMENT_CLIENT_RECT, element)
   return new Region({
     left: Math.ceil(rect.x),
     top: Math.ceil(rect.y),
@@ -333,8 +333,8 @@ async function getElementClientRect(_logger, executor, element) {
  * @param {EyesWrappedElement} element - element to get rect
  * @return {Promise<Region>} element rect
  */
-async function getElementRect(_logger, executor, element) {
-  const rect = await executor.executeScript(EyesJsSnippets.GET_ELEMENT_RECT, element)
+async function getElementRect(_logger, context, element) {
+  const rect = await context.execute(EyesJsSnippets.GET_ELEMENT_RECT, element)
   return new Region({
     left: Math.ceil(rect.x),
     top: Math.ceil(rect.y),

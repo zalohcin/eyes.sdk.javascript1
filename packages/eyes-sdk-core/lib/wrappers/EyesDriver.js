@@ -12,6 +12,9 @@ const EyesUtils = require('../EyesUtils')
  * @prop {(selector: any) => selector is TSelector} isSelector
  * @prop {(driver: TDriver) => TDriver} [transformDriver]
  * @prop {(element: TElement) => TElement} [transformElement]
+ * @prop {(driver: TDriver, selector: TSelector) => TElement} findElement
+ * @prop {(driver: TDriver, selector: TSelector) => TElement[]} findElements
+ * @prop {(driver: TDriver, script: Function, ...args: any[]) => Promise<any>} executeScript
  */
 
 /**
@@ -21,37 +24,18 @@ const EyesUtils = require('../EyesUtils')
  */
 class EyesDriver {
   static specialize(spec) {
-    const SpecializedContext = EyesContext.specialize(spec)
     return class SpecializedDriver extends EyesDriver {
       static spec() {
         return spec
       }
       get spec() {
-        
+        return spec
       }
     }
   }
 
   static isDriver(driver) {
     return driver instanceof EyesDriver || this.spec.isDriver(driver)
-  }
-
-  static isElement(element) {
-    return element instanceof EyesElement || this.spec.isElement(element)
-  }
-
-  static isSelector(selector) {
-    return this.spec.isSelector(selector)
-  }
-
-  static isContext(context) {
-    return (
-      context instanceof EyesContext ||
-      TypeUtils.isInteger(context) ||
-      TypeUtils.isString(context) ||
-      this.spec.isSelector(context) ||
-      this.spec.isElement(context)
-    )
   }
 
   static toFrameworkSelector(selector) {
@@ -75,7 +59,8 @@ class EyesDriver {
       throw new TypeError('EyesDriver constructor called with argument of unknown type!')
     }
 
-    this._mainContext = this.Context.fromReference()
+    // TODO extract main context before pass it to the frame
+    this._mainContext = this.spec.newContext(this._logger, this._driver, {driver: this})
     this._currentContext = this._mainContext
   }
 
@@ -129,6 +114,10 @@ class EyesDriver {
     await this.framesAppend(framePath)
   }
 
+  updateCurrentContext(context) {
+    this._currentContext = context
+  }
+
   async switchTo(context) {
     if (await this._currentContext.equals(context)) return
     const currentPath = this._currentContext.path
@@ -145,40 +134,43 @@ class EyesDriver {
     if (diffIndex === 0) {
       throw Error('Impossible to switch, due to required context has different main context')
     } else if (diffIndex < 0) {
-      // required path is same as current or it is a sub-path of current
-
-      // required path is same as current
-      if (currentPath.length === requiredPath.length) return
+      if (currentPath.length === requiredPath.length) {
+        // required path is same as current
+        return this._currentContext
+      } else if (requiredPath.length > currentPath.length) {
+        // required path is a superset of current
+        return this.switchToChildContext(...requiredPath)
+      }
 
       // required path is a sub-path of current
       // chose an optimal way to traverse from current context to target context
       if (currentPath.length - requiredPath.length <= requiredPath.length) {
-        await this.parentContext(currentPath.length - requiredPath.length)
+        await this.switchToParentContext(currentPath.length - requiredPath.length)
       } else {
-        await this.mainContext()
-        await this.childContext(...requiredPath)
+        await this.switchToMainContext()
+        await this.switchToChildContext(...requiredPath)
       }
     } else if (currentPath.length - diffIndex <= diffIndex) {
       // required path is different from current or they are partially intersected
       // chose an optimal way to traverse from current context to target context
 
-      await this.parentContext(currentPath.length - diffIndex)
-      return this.childContext(...requiredPath.slice(diffIndex))
+      await this.switchToParentContext(currentPath.length - diffIndex)
+      return this.switchToChildContext(...requiredPath.slice(diffIndex))
     } else {
-      await this.mainMain()
-      await this.childContext(...requiredPath)
+      await this.switchToMainContext()
+      await this.switchToChildContext(...requiredPath)
     }
 
     return this._currentContext
   }
 
-  async childContext(...references) {
-    // TODO not native platform
+  async switchToChildContext(...references) {
+    if (this._isNative) return
     this._logger.verbose('EyesDriver.childContext()')
     for (const reference of references) {
       if (reference === this._mainContext) continue
-      this._currentContext = await this._currentContext.context(reference)
-      await this._context.focus()
+      const context = await this._currentContext.context(reference)
+      await context.focus()
     }
     return this._currentContext
   }
@@ -194,7 +186,7 @@ class EyesDriver {
   }
 
   async switchToParentContext(elevation = 1) {
-    // TODO not native platform
+    if (this._isNative) return this._currentContext
     this._logger.verbose(`EyesDriver.switchToParentContext(${elevation})`)
     if (this.isInitialized && this._currentContext.path.length <= elevation) {
       return this.mainContext()
@@ -218,8 +210,55 @@ class EyesDriver {
     return this._currentContext
   }
 
-  async findElement(selector) {
-    return this._currentContext.findElement(selector)
+  async element(selector) {
+    return this._currentContext.element(selector)
+  }
+
+  async elements(selector) {
+    return this._currentContext.elements(selector)
+  }
+
+  async execute(script, ...args) {
+    return this._currentContext.execute(script, ...args)
+  }
+
+  async takeScreenshot() {
+    const screenshot = await this.spec.takeScreenshot(this._driver)
+    return new MutableImage(screenshot)
+  }
+
+  async getViewportSize() {
+    return this.spec.getViewportSize
+      ? this.spec.getViewportSize(this._driver)
+      : EyesUtils.getViewportSize(this._logger, this._mainContext)
+  }
+
+  async setViewportSize(size) {
+    return this.spec.setViewportSize
+      ? this.spec.setViewportSize(this._driver, size)
+      : EyesUtils.setViewportSize(this._logger, this._mainContext, new RectangleSize(size))
+  }
+
+  async getWindowRect() {
+    return this.spec.getWindowRect
+      ? this.spec.getWindowRect(this._driver)
+      : this.spec.getViewportSize(this._driver)
+  }
+
+  async setWindowRect(rect) {
+    return this.spec.getWindowRect
+      ? this.spec.getWindowRect(this._driver)
+      : this.spec.getViewportSize(this._driver, {width: rect.width, height: rect.height})
+  }
+
+  async getTitle() {
+    if (this._isNative) return null
+    return this.spec.getTitle(this._driver)
+  }
+
+  async getUrl() {
+    if (this._isNative) return null
+    return this.spec.getTitle(this._driver)
   }
 
   async proxify(driver) {

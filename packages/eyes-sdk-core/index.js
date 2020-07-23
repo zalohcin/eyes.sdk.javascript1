@@ -28,6 +28,8 @@
  */
 
 exports.EyesDriver = require('./lib/wrappers/EyesDriver')
+exports.EyesContext = require('./lib/wrappers/EyesContext')
+exports.EyesElement = require('./lib/wrappers/EyesElement')
 
 // config
 exports.AccessibilityLevel = require('./lib/config/AccessibilityLevel')
@@ -226,10 +228,7 @@ exports.TestResultsStatus = require('./lib/TestResultsStatus')
 exports.FrameChain = require('./lib/frames/FrameChain')
 exports.Frame = require('./lib/frames/Frame')
 
-exports.EyesWrappedDriver = require('./lib/wrappers/EyesWrappedDriver')
 exports.EyesWrappedElement = require('./lib/wrappers/EyesWrappedElement')
-exports.EyesJsExecutor = require('./lib/wrappers/EyesJsExecutor')
-exports.EyesElementFinder = require('./lib/wrappers/EyesElementFinder')
 exports.EyesBrowsingContext = require('./lib/wrappers/EyesBrowsingContext')
 
 exports.EyesRunner = require('./lib/runner/EyesRunner')

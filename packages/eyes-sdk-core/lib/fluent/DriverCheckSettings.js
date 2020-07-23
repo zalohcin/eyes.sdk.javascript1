@@ -154,7 +154,7 @@ class CheckSettings {
     /** @private @type {Region} */
     this._targetRegion = null
     // /** @private @type {Frame<TElement, TSelector>[]} */ TODO
-    this._context = this.spec.createContextReference(null)
+    this._context = this.spec.newContext()
     /** @private @type {GetRegion[]} */
     this._ignoreRegions = []
     /** @private @type {GetRegion[]} */
@@ -327,10 +327,8 @@ class CheckSettings {
     if (Region.isRegionCompatible(region)) {
       this._targetRegion = new Region(region)
       this._targetRegion.setCoordinatesType(CoordinatesType.CONTEXT_RELATIVE)
-    } else if (this.spec.isSelector(region)) {
-      this._targetElement = this.spec.createElementFromSelector(region)
-    } else if (this.spec.isCompatibleElement(region)) {
-      this._targetElement = this.spec.createElementFromElement(region)
+    } else if (this.spec.isSelector(region) || this.spec.isElement(region)) {
+      this._targetElement = this._context.element(region)
     } else {
       throw new TypeError('region method called with argument of unknown type!')
     }
@@ -364,8 +362,8 @@ class CheckSettings {
    * @return {this}
    */
   frame(reference) {
-    if (this.spec.isFrameReference(reference)) {
-      this._context = this._context.childContext(this.spec.createContextReference({reference}))
+    if (this.spec.isContext(reference)) {
+      this._context = this._context.context(reference)
     } else {
       throw new TypeError('frame method called with argument of unknown type!')
     }
@@ -391,8 +389,8 @@ class CheckSettings {
       ignoreRegion = new IgnoreRegionByRectangle(new Region(region))
     } else if (this.spec.isSelector(region)) {
       ignoreRegion = new IgnoreRegionBySelector(region)
-    } else if (this.spec.isCompatibleElement(region)) {
-      ignoreRegion = new IgnoreRegionByElement(this.spec.createElementFromElement(region))
+    } else if (this.spec.isElement(region)) {
+      ignoreRegion = new IgnoreRegionByElement(this._context.element(region))
     } else {
       throw new TypeError('Method called with argument of unknown type!')
     }
@@ -445,8 +443,8 @@ class CheckSettings {
       layoutRegion = new IgnoreRegionByRectangle(new Region(region))
     } else if (this.spec.isSelector(region)) {
       layoutRegion = new IgnoreRegionBySelector(region)
-    } else if (this.spec.isCompatibleElement(region)) {
-      layoutRegion = new IgnoreRegionByElement(this.spec.createElementFromElement(region))
+    } else if (this.spec.isElement(region)) {
+      layoutRegion = new IgnoreRegionByElement(this._context.element(region))
     } else {
       throw new TypeError('Method called with argument of unknown type!')
     }
@@ -483,8 +481,8 @@ class CheckSettings {
       strictRegion = new IgnoreRegionByRectangle(new Region(region))
     } else if (this.spec.isSelector(region)) {
       strictRegion = new IgnoreRegionBySelector(region)
-    } else if (this.spec.isCompatibleElement(region)) {
-      strictRegion = new IgnoreRegionByElement(this.spec.createElementFromElement(region))
+    } else if (this.spec.isElement(region)) {
+      strictRegion = new IgnoreRegionByElement(this._context.element(region))
     } else {
       throw new TypeError('Method called with argument of unknown type!')
     }
@@ -521,8 +519,8 @@ class CheckSettings {
       contentRegion = new IgnoreRegionByRectangle(new Region(region))
     } else if (this.spec.isSelector(region)) {
       contentRegion = new IgnoreRegionBySelector(region)
-    } else if (this.spec.isCompatibleElement(region)) {
-      contentRegion = new IgnoreRegionByElement(this.spec.createElementFromElement(region))
+    } else if (this.spec.isElement(region)) {
+      contentRegion = new IgnoreRegionByElement(this._context.element(region))
     } else {
       throw new TypeError('Method called with argument of unknown type!')
     }
@@ -584,9 +582,9 @@ class CheckSettings {
         maxLeftOffset,
         maxRightOffset,
       )
-    } else if (this.spec.isCompatibleElement(region)) {
+    } else if (this.spec.isElement(region)) {
       floatingRegion = new FloatingRegionByElement(
-        this.spec.createElementFromElement(region),
+        this._context.element(region),
         maxUpOffset,
         maxDownOffset,
         maxLeftOffset,
@@ -658,9 +656,9 @@ class CheckSettings {
       accessibilityRegion = new AccessibilityRegionByRectangle(new Region(region), regionType)
     } else if (this.spec.isSelector(region)) {
       accessibilityRegion = new AccessibilityRegionBySelector(region, regionType)
-    } else if (this.spec.isCompatibleElement(region)) {
+    } else if (this.spec.isElement(region)) {
       accessibilityRegion = new AccessibilityRegionByElement(
-        this.spec.createElementFromElement(region),
+        this._context.element(region),
         regionType,
       )
     } else {
@@ -692,10 +690,8 @@ class CheckSettings {
    */
   scrollRootElement(element) {
     let scrollRootElement
-    if (this.spec.isSelector(element)) {
-      scrollRootElement = this.spec.createElementFromSelector(element)
-    } else if (this.spec.isCompatibleElement(element)) {
-      scrollRootElement = this.spec.createElementFromElement(element)
+    if (this.spec.isSelector(element) || this.spec.isElement(element)) {
+      scrollRootElement = this._context.element(element)
     } else {
       throw new TypeError('scrollRootElement method called with argument of unknown type!')
     }

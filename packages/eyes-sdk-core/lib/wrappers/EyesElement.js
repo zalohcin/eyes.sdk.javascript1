@@ -8,6 +8,17 @@ const EyesUtils = require('../EyesUtils')
  * @template TSelector - TSelector supported by framework
  */
 class EyesElement {
+  static specialize(spec) {
+    return class SpecializedElement extends EyesElement {
+      static get spec() {
+        return spec
+      }
+      get spec() {
+        return spec
+      }
+    }
+  }
+
   get spec() {
     throw new TypeError('The class is not specialized')
   }
@@ -20,7 +31,7 @@ class EyesElement {
       this._element = this.spec.extractElement ? this.spec.extractElement(element) : element
       // Some frameworks contains information about the selector inside an element
       this._selector = selector || (this.spec.extractSelector && this.spec.extractSelector(element))
-    } else if (this.constructor.isSelector(selector)) {
+    } else if (this.spec.isSelector(selector)) {
       this._selector = selector
     } else {
       throw new TypeError('EyesElement constructor called with argument of unknown type!')
@@ -33,15 +44,24 @@ class EyesElement {
     }
   }
 
-  get selector() {
-    return this._selector
-  }
-
   get unwrapped() {
     return this._element
   }
 
+  get selector() {
+    return this._selector
+  }
+
+  get context() {
+    return this._context
+  }
+
+  get isRef() {
+    return this._context.isRef || !this._element
+  }
+
   async equals(otherElement) {
+    if (!otherElement) return false
     return this.spec.isEqualElements(
       this._context.unwrapped,
       this.unwrapped,

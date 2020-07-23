@@ -2,6 +2,7 @@ const png = require('png-async')
 const EyesJsSnippets = require('../../lib/EyesJsSnippets')
 const {TypeUtils} = require('../../index')
 const FakeDomSnapshot = require('./FakeDomSnapshot')
+const snippets = require('@applitools/snippets')
 
 const DEFAULT_STYLES = {
   'border-left-width': '0px',
@@ -175,25 +176,29 @@ class MockDriver {
   }
   async switchToFrame(reference) {
     if (reference === null) {
-      return (this._contextId = null)
+      this._contextId = null
+      return this
     }
     if (TypeUtils.isString(reference)) {
       reference = await this.findElement(reference)
     }
     const frame = this._contexts.get(reference.contextId)
     if (frame && this._contextId === frame.parentId) {
-      return (this._contextId = frame.id)
+      this._contextId = frame.id
+      return this
     } else {
       throw new Error('Frame not found')
     }
   }
   async switchToParentFrame() {
-    if (!this._contextId) return
+    if (!this._contextId) return this
     for (const frame of this._contexts.values()) {
       if (frame.id === this._contextId) {
-        return (this._contextId = frame.parentId)
+        this._contextId = frame.parentId
+        return this
       }
     }
+    return this
   }
   async getWindowRect() {
     return this._window.rect
@@ -227,6 +232,15 @@ class MockDriver {
       stream.on('end', () => resolve(buffer))
       stream.on('error', reject)
     })
+  }
+  toString() {
+    return 'MockDriver'
+  }
+  toJSON() {
+    return 'MockDriver'
+  }
+  [require('util').inspect.custom]() {
+    return 'MockDriver'
   }
 }
 

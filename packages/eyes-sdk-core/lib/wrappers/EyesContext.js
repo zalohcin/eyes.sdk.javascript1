@@ -5,6 +5,9 @@ const EyesElement = require('./EyesElement')
 class EyesContext {
   static specialize(spec) {
     return class SpecializedContext extends EyesContext {
+      static get spec() {
+        return spec
+      }
       get spec() {
         return spec
       }
@@ -34,32 +37,26 @@ class EyesContext {
     this._context = context
 
     if (!options || (!options.reference && !options.element)) {
+      // main context
       this._element = null
-      this._reference = null
-      this._scrollRootElement = options.scrollRootElement
       this._parent = null
+      this._scrollRootElement = options && options.scrollRootElement
+      this._driver = options && options.driver
     } else if (this.constructor.isReference(options.reference)) {
+      // child context
       if (options.reference instanceof EyesContext) {
         return options.reference
       }
+      if (!options.parent) {
+        throw new Error('Cannot construct child context without reference to the parent')
+      }
       this._reference = options.reference
-      this._scrollRootElement = options.scrollRootElement
       this._parent = options.parent
-    } else if (TypeUtils.isPlainObject(options)) {
-      this._element = options.element
       this._scrollRootElement = options.scrollRootElement
-      this._parent = options.parent
-      this._driver = options.driver
-      this._rect = options.rect
-      this._clientRect = options.clientRect
-      this._offset = null
+      this._driver = options.driver || this._parent.driver
     } else {
       throw new TypeError('EyesContext constructor called with argument of unknown type!')
     }
-  }
-
-  static fromReference(reference) {
-    return new this(null, null, {reference})
   }
 
   get unwrapped() {
@@ -67,11 +64,35 @@ class EyesContext {
   }
 
   get driver() {
-    return this._driver
+    return this._driver || this.main._driver
   }
 
   get parent() {
     return this._parent
+  }
+
+  get main() {
+    return this._parent ? this._parent.main : this
+  }
+
+  get path() {
+    return [...(this._parent ? this._parent.path : []), this]
+  }
+
+  get isDetached() {
+    return !this.main.driver
+  }
+
+  get isRef() {
+    return !this._context
+  }
+
+  get isMain() {
+    return this.main === this
+  }
+
+  get isCurrent() {
+    return !this.isDetached && this._driver.contexts.current === this
   }
 
   get scrollRootElement() {
@@ -82,44 +103,36 @@ class EyesContext {
     this._scrollRootElement = scrollRootElement
   }
 
-  get isInitialized() {
-    return !this._reference
-  }
-
-  get isDetached() {
-    return !this._parent && !this._element && !this._reference
-  }
-
-  get isMain() {
-    return this === this._driver.contexts.main
-  }
-
-  get isCurrent() {
-    return this === this._driver.currentContext
-  }
-
-  get path() {
-    return [...(this._parent ? this._parent.path : []), this]
-  }
-
-  extend(context) {
-    const [first, second] = this.path
-    if (first.isMain) {
-      context.scrollRootElement = this._scrollRootElement
-      if (second) {
-        second._parent = context
-      }
-    } else {
-      first._parent = context
+  attach(context) {
+    if (!context.isDetached) {
+      throw new Error('Context need to be detached before attach')
     }
-    return this
+    const [main, second, ...others] = context.path
+    this._scrollRootElement = main.scrollRootElement
+    if (second) {
+      second._parent = this
+      second._driver = this._driver
+      others.forEach(context => (context._driver = this._driver))
+    }
+    return context
+  }
+
+  async equals(context) {
+    if (context === this) return true
+    if (!this._element) return false
+    return this._element.equals(context.element)
   }
 
   async init(driver) {
+    if (this.isDetached) {
+      throw new Error('Cannot initialize detached context')
+    }
+
     this._driver = driver
-    console.log(this.isMain)
+    this._logger = driver._logger
+
     if (this.isMain) return this
-    if (!this._parent.isInitialized) {
+    if (this._parent.isRef) {
       await this._parent.init(driver)
     }
 
@@ -130,7 +143,7 @@ class EyesContext {
 
       if (TypeUtils.isInteger(this._reference)) {
         this._logger.verbose('Getting frames list...')
-        const elements = await this._parent.findElements('frame, iframe')
+        const elements = await this._parent.elements('frame, iframe')
         if (this._reference > elements.length) {
           throw new TypeError(`Frame index [${this._reference}] is invalid!`)
         }
@@ -138,18 +151,18 @@ class EyesContext {
       } else if (TypeUtils.isString(this._reference) || this.spec.isSelector(this._reference)) {
         this._logger.verbose('Getting frames by name or id or selector...')
         if (TypeUtils.isString(this._reference)) {
-          this._element = await this.parent.findElement(
+          this._element = await this._parent.element(
             `iframe[name="${this._reference}"], iframe#${this._reference}`,
           )
         }
         if (!this._element && this.spec.isSelector(this._reference)) {
-          this._element = await this._parent.findElement(this._reference)
+          this._element = await this._parent.element(this._reference)
         }
         if (!this._element) {
           throw new TypeError(`No frame with selector, name or id '${this._reference}' exists!`)
         }
       } else if (this.spec.isElement(this._reference)) {
-        this._element = this.spec.createElement(this._logger, this._driver, this._reference)
+        this._element = this.spec.newElement(this._logger, this._parent, this._reference)
       } else {
         throw new TypeError('Reference type does not supported!')
       }
@@ -166,20 +179,15 @@ class EyesContext {
   }
 
   async focus() {
-    if (this.isDetached && !this.isMain) {
-      throw Error('dfgdg')
-    }
-
-    if (this.isMain) {
+    if (this.isDetached) {
+      throw new Error('Cannot focus on the detached context')
+    } else if (this.isMain) {
       return this._driver.switchToMainContext()
+    } else if (!this._parent.isCurrent) {
+      return this._driver.switchTo(this)
     }
 
-    if (!this._parent.isCurrent) {
-      await this._driver.switchTo(this)
-      return
-    }
-
-    await this._parent.preserveOffset()
+    // await this._parent.preserveOffset()
 
     this._context = await this.spec.childContext(this._parent.unwrapped, this._element.unwrapped)
 
@@ -194,34 +202,42 @@ class EyesContext {
     const context =
       reference instanceof EyesContext
         ? reference
-        : EyesContext.fromReference({reference, parent: this})
+        : new this.constructor(null, null, {reference, parent: this})
+
     if (context.parent !== this) {
-      throw Error(`Couldn't switch to a child context because it has a different parent`)
+      throw Error(`Couldn't find a child context because it has a different parent`)
     }
-    return this.isInitialized ? context.init(this._driver) : context
+    return this.isCurrent ? context.init(this._driver) : context
   }
 
-  async findElement(selector) {
-    await this.focus()
-    if (!this.spec.isSelector(selector)) {
+  async element(selectorOrElement) {
+    if (this.constructor.isElement(selectorOrElement)) {
+      return this.spec.newElement(this._logger, this, selectorOrElement)
+    }
+    let selector = selectorOrElement
+    if (!this.constructor.isSelector(selector)) {
       selector = this.spec.toFrameworkSelector(selector)
     }
+    if (this.isDetached) {
+      return this.spec.newElement(null, this, null, selector)
+    }
+    await this.focus()
     const element = await this.spec.findElement(this._context, selector)
-    return element ? this.spec.createElement(this._logger, this, element, selector) : null
+    return element ? this.spec.newElement(this._logger, this, element, selector) : null
   }
 
-  async findElements(selector) {
-    await this.focus()
-    if (!this.spec.isSelector(selector)) {
+  async elements(selector) {
+    if (!this.constructor.isSelector(selector)) {
       selector = this.spec.toFrameworkSelector(selector)
     }
+    await this.focus()
     const elements = await this.spec.findElements(this._context, selector)
     return elements.map(element =>
-      this.spec.createElement(this._logger, this._driver, element, selector),
+      this.spec.newElement(this._logger, this._driver, element, selector),
     )
   }
 
-  async executeScript(script, ...args) {
+  async execute(script, ...args) {
     await this.focus()
     try {
       const result = await this.spec.executeScript(this._context, script, ...args)
