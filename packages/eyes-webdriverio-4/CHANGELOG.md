@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- remove type definitions
 
 ## 2.19.2 - 2020/7/19
 
