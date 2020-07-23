@@ -40,17 +40,23 @@ describe('processPage', () => {
       middlewareFile: path.resolve(__dirname, 'util/hang.js'),
     });
     const _processPageAndSerialize = await getProcessPageAndSerialize();
-    processPage = ({showLogs, useSessionCache, dontFetchResources, fetchTimeout} = {}) =>
-      page
-        .evaluate(
-          `(${_processPageAndSerialize})(document, {
-            showLogs: ${showLogs},
-            useSessionCache: ${useSessionCache},
-            dontFetchResources: ${dontFetchResources},
-            fetchTimeout: ${fetchTimeout},
-          })`,
-        )
-        .then(decodeFrame);
+    processPage = ({
+      showLogs,
+      useSessionCache,
+      dontFetchResources,
+      fetchTimeout,
+      skipResources,
+    } = {}) => {
+      const script = `(${_processPageAndSerialize})(document, {
+        showLogs: ${showLogs},
+        useSessionCache: ${useSessionCache},
+        dontFetchResources: ${dontFetchResources},
+        fetchTimeout: ${fetchTimeout},
+        skipResources: ${skipResources ? JSON.stringify(skipResources) : undefined}
+      })`;
+
+      return page.evaluate(script).then(decodeFrame);
+    };
   });
 
   after(async () => {
@@ -951,13 +957,13 @@ describe('processPage', () => {
     expect(blobs).to.eql([]);
   });
 
-  it("handles frame that we're redirected in JavaScript", async () => {
+  it('handles frame that were redirected in JavaScript', async () => {
     await page.goto('http://localhost:7373/redirected-frame/page-with-redirected-frame.html');
     const {frames} = await processPage();
     frames[0].cdt = 'overriden cdt';
     expect(frames).to.eql([
       {
-        url: 'http://localhost:7373/redirected-frame/frame/frame.html',
+        url: 'http://localhost:7373/redirected-frame/frame/inner-page.html',
         srcAttr: 'blank.html',
         blobs: [
           {
@@ -971,5 +977,56 @@ describe('processPage', () => {
         cdt: 'overriden cdt',
       },
     ]);
+  });
+
+  it("does't fetch resources from skip list", async () => {
+    await page.goto(`http://localhost:7373/test-iframe.html`);
+    const {blobs, resourceUrls, frames} = await processPage({
+      skipResources: [
+        'http://localhost:7373/smurfs.jpg',
+        'http://localhost:7373/iframes/inner/smurfs.jpg',
+      ],
+    });
+
+    // top page
+    expect(blobs.map(({url}) => url)).to.eql(['http://localhost:7373/test.css']);
+    expect(resourceUrls).to.eql(['http://localhost:7373/smurfs.jpg']);
+
+    // frame #1
+    expect(frames[0].frames[0].blobs.map(({url}) => url)).to.eql([
+      'http://localhost:7373/test.css',
+    ]);
+    expect(frames[0].frames[0].resourceUrls).to.eql(['http://localhost:7373/smurfs.jpg']);
+
+    // frame #2
+    expect(frames[0].frames[1].blobs).to.eql([]);
+    expect(frames[0].frames[1].resourceUrls).to.eql([
+      'http://localhost:7373/iframes/inner/smurfs.jpg',
+    ]);
+  });
+
+  it("does't fetch resources from skip list (nested css reference)", async () => {
+    await page.goto(`http://localhost:7373/import.html`);
+    const {blobs, resourceUrls} = await processPage({
+      skipResources: ['http://localhost:7373/imported.css'],
+    });
+    expect(blobs.map(({url}) => url)).to.eql(['http://localhost:7373/import.css']);
+    expect(resourceUrls).to.eql(['http://localhost:7373/imported.css']);
+  });
+
+  it("keeps resource url's query part intact", async () => {
+    await page.goto(`http://localhost:7373/query.html`);
+    const {blobs, resourceUrls, cdt} = await processPage();
+    expect(blobs.map(({url}) => url)).to.eql([
+      'http://localhost:7373/imported2.css?',
+      'http://localhost:7373/query.css?',
+    ]);
+    expect(resourceUrls).to.eql(['http://localhost:8888/cors.css?']);
+
+    const linkAttrsFromCdt = cdt
+      .filter(({nodeName}) => nodeName === 'LINK')
+      .map(({attributes}) => attributes.find(({name}) => name === 'href'))
+      .map(({value}) => value);
+    expect(linkAttrsFromCdt).to.eql(['query.css?', 'http://localhost:8888/cors.css?']);
   });
 });

@@ -37,6 +37,7 @@
       "**/@wdio/*",
       "**/wdio-*",
       "**/webdriverio",
+      "**/webdriverio-4",
       "**/webdriverio-5",
       "**/webdriverio-6",
       "**/protractor",

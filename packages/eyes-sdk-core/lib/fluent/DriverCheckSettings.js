@@ -144,11 +144,12 @@ class CheckSettings {
    * @param {PlainCheckSettings<TElement, TSelector>} [checkSettings]
    */
   constructor(checkSettings) {
-    if (checkSettings instanceof CheckSettings) {
-      return checkSettings
-    } else if (checkSettings) {
-      return this.constructor.from(checkSettings)
+    if (checkSettings) {
+      return checkSettings.constructor && checkSettings.constructor.name === 'CheckSettings'
+        ? checkSettings
+        : this.constructor.from(checkSettings)
     }
+
     /** @private @type {EyesWrappedElement<TElement, TSelector>} */
     this._targetElement = null
     /** @private @type {Region} */

@@ -40,7 +40,11 @@ const args = yargs
     default: process.env.APPLITOOLS_API_KEY,
   })
   .option('target-element', {
-    describe: '',
+    describe: 'translates to Target.region(...)',
+    type: 'string',
+  })
+  .option('target-frame', {
+    describe: 'translates to Target.frame(...)',
     type: 'string',
   })
   .option('vg', {
@@ -186,6 +190,10 @@ const args = yargs
     describe: 'selector to scroll root element',
     type: 'string',
   })
+  .option('stitch-overlap', {
+    describe: 'stitch overlap',
+    type: 'number',
+  })
   .help().argv
 
 let [url] = args._
@@ -270,6 +278,10 @@ if (!url && !args.attach) {
   if (args.batchId) {
     configuration.setDontCloseBatches(true)
   }
+  if (args.stitchOverlap) {
+    configuration.setStitchOverlap(args.stitchOverlap)
+  }
+
   eyes.setConfiguration(configuration)
 
   const {logger, logFilePath} = initLog(eyes, new URL(url).hostname.replace(/\./g, '-'))
@@ -292,6 +304,8 @@ if (!url && !args.attach) {
 
     if (args.targetElement) {
       target = Target.region(args.targetElement)
+    } else if (args.targetFrame) {
+      target = Target.frame(args.targetFrame)
     } else {
       target = Target.window()
     }

@@ -1,17 +1,18 @@
+const axios = require('axios')
 const {findDifferencesBetweenCollections} = require('../common-util')
-const {makeCoverageTests, supportedCommands} = require('../tests')
 const {isMatch} = require('micromatch')
+const vm = require('vm')
 
-function findUnsupportedTests(sdkImplementation) {
-  const allTests = makeCoverageTests()
-  const sdkSupportedTests = sdkImplementation.supportedTests.map(test => test.name)
-  return findDifferencesBetweenCollections(allTests, sdkSupportedTests)
+async function fetchCoverageTests() {
+  const testsFileScript = (
+    await axios('https://raw.githubusercontent.com/applitools/sdk.coverage.tests/master/tests.js')
+  ).data
+  return vm.runInContext(testsFileScript, vm.createContext({module: {}, process}))
 }
 
-function findUnimplementedCommands(sdkImplementation) {
-  const allCommands = supportedCommands
-  const sdkImplementedCommands = sdkImplementation.initialize()
-  return findDifferencesBetweenCollections(allCommands, sdkImplementedCommands)
+function findUnsupportedTests(sdkImplementation, coverageTests) {
+  const sdkSupportedTests = sdkImplementation.supportedTests.map(test => test.name)
+  return findDifferencesBetweenCollections(coverageTests, sdkSupportedTests)
 }
 
 function filterTestsByName(filter, tests) {
@@ -96,7 +97,6 @@ function needsChromeDriver(args, sdkImplementation) {
 
 module.exports = {
   findUnsupportedTests,
-  findUnimplementedCommands,
   filterTests,
   filterTestsByName,
   filterTestsByMode,
@@ -107,4 +107,5 @@ module.exports = {
   numberOfUniqueTests,
   numberOfTestVariations,
   needsChromeDriver,
+  fetchCoverageTests,
 }

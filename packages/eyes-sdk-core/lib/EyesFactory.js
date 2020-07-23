@@ -6,6 +6,10 @@ const ClassicRunner = require('./runner/ClassicRunner')
 const VisualGridRunner = require('./runner/VisualGridRunner')
 
 /**
+ * @typedef {import('./runner/EyesRunner')} EyesRunner
+ */
+
+/**
  * @template TDriver, TElement, TSelector
  * @typedef {import('./EyesClassic')<TDriver, TElement, TSelector>} EyesClassic
  */
@@ -17,7 +21,7 @@ const VisualGridRunner = require('./runner/VisualGridRunner')
 
 /**
  * @template TDriver, TElement, TSelector
- * @typedef {new <TRunner>(serverUrl?: string|boolean|TRunner, isDisabled?: boolean, runner?: TRunner) => TRunner extends VisualGridRunner ? EyesVisualGrid<TDriver, TElement, TSelector> : EyesClassic<TDriver, TElement, TSelector>} EyesFactoryCtor
+ * @typedef {new (serverUrl?: string|boolean|EyesRunner, isDisabled?: boolean, runner?: EyesRunner) => EyesClassic<TDriver, TElement, TSelector>} EyesFactoryCtor
  */
 
 /**

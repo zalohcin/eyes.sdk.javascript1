@@ -55,166 +55,80 @@ async function setViewportSize(logger, {controller, executor, context}, required
 
     // We move the window to (0,0) to have the best chance to be able to
     // set the viewport size as requested.
-    await controller.setWindowLocation({x: 0, y: 0}).catch(() => {
-      logger.verbose('Warning: Failed to move the browser window to (0,0)')
+    await controller.setWindowLocation({x: 0, y: 0}).catch(err => {
+      logger.verbose('Warning: Failed to move the browser window to (0,0)', err)
     })
 
-    await _setWindowSizeByViewportSize(
-      logger,
-      {controller},
+    // window size is changed after setting window location
+    actualViewportSize = await getViewportSize(logger, {executor})
+
+    const requiredWindowSize = await _getRequiredWindowSize({
+      controller,
       actualViewportSize,
       requiredViewportSize,
-    )
+    })
+    await _setWindowSize({logger, controller, requiredWindowSize})
     actualViewportSize = await getViewportSize(logger, {executor})
     if (actualViewportSize.equals(requiredViewportSize)) return true
 
-    // Additional attempt. This Solves the "maximized browser" bug
-    // (border size for maximized browser sometimes different than non-maximized, so the original browser size calculation is wrong).
     logger.verbose(
-      `Failed attempt to set viewport size. actualViewportSize=${actualViewportSize}, requiredViewportSize=${requiredViewportSize}. Trying workaround for maximization...`,
+      `Failed attempt to set viewport size. actualViewportSize=${actualViewportSize}, requiredViewportSize=${requiredViewportSize}. Trying again...`,
     )
-    await _setWindowSizeByViewportSize(
-      logger,
-      {controller},
-      actualViewportSize,
-      requiredViewportSize,
-    )
-    actualViewportSize = await getViewportSize(logger, {executor})
-    if (actualViewportSize.equals(requiredViewportSize)) return true
 
-    const MAX_DIFF = 3
-    const widthDiff = Math.abs(actualViewportSize.getWidth() - requiredViewportSize.getWidth())
-    const heightDiff = Math.abs(actualViewportSize.getHeight() - requiredViewportSize.getHeight())
+    // // Additional attempt. This Solves the "maximized browser" bug
+    // // (border size for maximized browser sometimes different than non-maximized, so the original browser size calculation is wrong).
+    // logger.verbose(
+    //   `Failed attempt to set viewport size. actualViewportSize=${actualViewportSize}, requiredViewportSize=${requiredViewportSize}`,
+    // )
 
-    // We try the zoom workaround only if size difference is reasonable.
-    if (widthDiff <= MAX_DIFF && heightDiff <= MAX_DIFF) {
-      logger.verbose('Trying workaround for zoom...')
-
-      return _adjustWindowSizeByViewportSize(
-        logger,
-        {controller, executor},
-        actualViewportSize,
-        requiredViewportSize,
-      )
-    } else {
-      throw new Error('Failed to set viewport size!')
-    }
+    throw new Error('Failed to set viewport size!')
   })
 }
 /**
  * Set window size by the actual size of the top-level context viewport
- * @param {Logger} logger - logger instance
- * @param {Object} driver
- * @param {EyesDriverController} driver.controller - driver controller
- * @param {RectangleSize} actualViewportSize - actual viewport size
- * @param {RectangleSize} requiredViewportSize - required size to set
+ * @param {Object} obj
+ * @param {EyesDriverController} obj.controller - driver controller
+ * @param {RectangleSize} obj.actualViewportSize - actual viewport size
+ * @param {RectangleSize} obj.requiredViewportSize - required size to set
  */
-async function _setWindowSizeByViewportSize(
-  logger,
-  {controller},
-  actualViewportSize,
-  requiredViewportSize,
-) {
+async function _getRequiredWindowSize({controller, actualViewportSize, requiredViewportSize}) {
   const actualWindowSize = await controller.getWindowSize()
-  const requiredWindowSize = new RectangleSize(
+  return new RectangleSize(
     actualWindowSize.getWidth() + (requiredViewportSize.getWidth() - actualViewportSize.getWidth()),
     actualWindowSize.getHeight() +
       (requiredViewportSize.getHeight() - actualViewportSize.getHeight()),
   )
-  return _setWindowSize(logger, {controller}, requiredWindowSize)
 }
-/**
- * Adjust the size of the preview window so that the size of the top-level context window matches the required value
- * @param {Logger} logger - logger instance
- * @param {Object} driver
- * @param {EyesDriverController} driver.controller - driver controller
- * @param {EyesJsExecutor} driver.executor - js executor
- * @param {RectangleSize} actualViewportSize - actual viewport size
- * @param {RectangleSize} requiredViewportSize - required viewport size to set
- */
-async function _adjustWindowSizeByViewportSize(
-  logger,
-  {controller, executor},
-  actualViewportSize,
-  requiredViewportSize,
-) {
-  const widthDiff = actualViewportSize.getWidth() - requiredViewportSize.getWidth()
-  const widthStep = widthDiff > 0 ? -1 : 1 // -1 for smaller size, 1 for larger
-  const heightDiff = actualViewportSize.getHeight() - requiredViewportSize.getHeight()
-  const heightStep = heightDiff > 0 ? -1 : 1
 
-  const actualWindowSize = await controller.getWindowSize()
-  let lastRequiredBrowserSize = null
-  let retries = Math.abs((widthDiff || 1) * (heightDiff || 1)) * 2
-  let widthChange = 0
-  let heightChange = 0
-  while (
-    --retries > 0 &&
-    (Math.abs(widthChange) <= Math.abs(widthDiff) || Math.abs(heightChange) <= Math.abs(heightDiff))
-  ) {
-    logger.verbose(`Retries left: ${retries}`)
-    // We specifically use "<=" (and not "<"), so to give an extra resize attempt
-    // in addition to reaching the diff, due to floating point issues.
-    if (
-      Math.abs(widthChange) <= Math.abs(widthDiff) &&
-      actualViewportSize.getWidth() !== requiredViewportSize.getWidth()
-    ) {
-      widthChange += widthStep
-    }
-
-    if (
-      Math.abs(heightChange) <= Math.abs(heightDiff) &&
-      actualViewportSize.getHeight() !== requiredViewportSize.getHeight()
-    ) {
-      heightChange += heightStep
-    }
-
-    const requiredWindowSize = new RectangleSize(
-      actualWindowSize.getWidth() + widthChange,
-      actualWindowSize.getHeight() + heightChange,
-    )
-
-    if (requiredWindowSize.equals(lastRequiredBrowserSize)) {
-      logger.verbose('Browser size is as required but viewport size does not match!')
-      logger.verbose(`Browser size: ${requiredWindowSize}, Viewport size: ${actualViewportSize}`)
-      logger.verbose('Stopping viewport size attempts.')
-      return true
-    }
-
-    await _setWindowSize(logger, {controller}, requiredWindowSize)
-    lastRequiredBrowserSize = requiredWindowSize
-    actualViewportSize = getViewportSize(logger, {executor})
-
-    logger.verbose('Current viewport size:', actualViewportSize)
-    if (actualViewportSize.equals(requiredViewportSize)) {
-      return true
-    }
-  }
-  throw new Error('EyesError: failed to set window size! Zoom workaround failed.')
-}
 /**
  * Set window size with retries
- * @param {Logger} logger - logger instance
- * @param {Object} driver
- * @param {EyesDriverController} driver.controller - driver controller
- * @param {RectangleSize} requiredViewportSize - required viewport size to set
- * @param {number} [sleep=3000] - delay between retries
- * @param {number} [retries=3] - number of retries
+ * @param {Object} obj
+ * @param {Logger} obj.logger - logger instance
+ * @param {EyesDriverController} obj.controller - driver controller
+ * @param {RectangleSize} obj.requiredViewportSize - required viewport size to set
  * @return {boolean} true if operation finished successfully, false otherwise
  */
-async function _setWindowSize(logger, {controller}, requiredWindowSize, sleep = 3000, retries = 3) {
+async function _setWindowSize({logger, controller, requiredWindowSize}) {
+  const sleep = 3000
+  let retries = 3
+  let windowSizeToSend = requiredWindowSize
   try {
     while (retries >= 0) {
-      logger.verbose(
-        `Attempt to set window size to ${requiredWindowSize}. Retries left: ${retries}`,
-      )
-      await controller.setWindowSize(requiredWindowSize)
+      logger.verbose(`Attempt to set window size to ${windowSizeToSend}. Retries left: ${retries}`)
+      await controller.setWindowSize(windowSizeToSend)
       await GeneralUtils.sleep(sleep)
       const actualWindowSize = await controller.getWindowSize()
       if (actualWindowSize.equals(requiredWindowSize)) return true
       logger.verbose(
         `Attempt to set window size to ${requiredWindowSize} failed. actualWindowSize=${actualWindowSize}`,
       )
+      windowSizeToSend = new RectangleSize({
+        width:
+          windowSizeToSend.getWidth() - (actualWindowSize.getWidth() - windowSizeToSend.getWidth()),
+        height:
+          windowSizeToSend.getHeight() -
+          (actualWindowSize.getHeight() - windowSizeToSend.getHeight()),
+      })
       retries -= 1
     }
     logger.verbose('Failed to set browser size: no more retries.')
