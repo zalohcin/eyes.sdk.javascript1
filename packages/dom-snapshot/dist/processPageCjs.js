@@ -1,4 +1,4 @@
-/* @applitools/dom-snapshot@3.7.2 */
+/* @applitools/dom-snapshot@3.7.3 */
 'use strict';
 
 function extractLinks(doc = document) {
@@ -8,7 +8,7 @@ function extractLinks(doc = document) {
   ).reduce((acc, urls) => acc.concat(urls), []);
 
   const srcUrls = Array.from(
-    doc.querySelectorAll('img[src],source[src],input[type="image"][src],audio[src]'),
+    doc.querySelectorAll('img[src],source[src],input[type="image"][src],audio[src],video[src]'),
   ).map(srcEl => srcEl.getAttribute('src'));
 
   const imageUrls = Array.from(doc.querySelectorAll('image,use'))
@@ -13900,7 +13900,7 @@ function processPage(
 
   return doProcessPage(doc).then(result => {
     log$$1('processPage end');
-    result.scriptVersion = '3.7.2';
+    result.scriptVersion = '3.7.3';
     return result;
   });
 

@@ -1,4 +1,4 @@
-/* @applitools/dom-snapshot@3.7.2 */
+/* @applitools/dom-snapshot@3.7.3 */
 
 function __processPageAndSerialize() {
   var processPageAndSerialize = (function () {
@@ -63,7 +63,7 @@ function __processPageAndSerialize() {
     ).reduce((acc, urls) => acc.concat(urls), []);
 
     const srcUrls = Array.from(
-      doc.querySelectorAll('img[src],source[src],input[type="image"][src],audio[src]'),
+      doc.querySelectorAll('img[src],source[src],input[type="image"][src],audio[src],video[src]'),
     ).map(srcEl => srcEl.getAttribute('src'));
 
     const imageUrls = Array.from(doc.querySelectorAll('image,use'))
@@ -13955,7 +13955,7 @@ function __processPageAndSerialize() {
 
     return doProcessPage(doc).then(result => {
       log$$1('processPage end');
-      result.scriptVersion = '3.7.2';
+      result.scriptVersion = '3.7.3';
       return result;
     });
 

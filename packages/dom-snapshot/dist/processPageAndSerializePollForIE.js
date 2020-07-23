@@ -1,4 +1,4 @@
-/* @applitools/dom-snapshot@3.7.2 */
+/* @applitools/dom-snapshot@3.7.3 */
 
 function __processPageAndSerializePollForIE() {
   var processPageAndSerializePollForIE = (function () {
@@ -10373,7 +10373,7 @@ function __processPageAndSerializePollForIE() {
               }).reduce(function (acc, urls) {
                 return acc.concat(urls);
               }, []);
-              var srcUrls = Array.from(doc.querySelectorAll('img[src],source[src],input[type="image"][src],audio[src]')).map(function (srcEl) {
+              var srcUrls = Array.from(doc.querySelectorAll('img[src],source[src],input[type="image"][src],audio[src],video[src]')).map(function (srcEl) {
                 return srcEl.getAttribute('src');
               });
               var imageUrls = Array.from(doc.querySelectorAll('image,use')).map(function (hrefEl) {
@@ -23508,7 +23508,7 @@ function __processPageAndSerializePollForIE() {
               });
               return doProcessPage(doc).then(function (result) {
                 log('processPage end');
-                result.scriptVersion = '3.7.2';
+                result.scriptVersion = '3.7.3';
                 return result;
               });
 

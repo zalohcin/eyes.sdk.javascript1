@@ -3,6 +3,7 @@
 ## Unreleased
 
 - updated enum types to be more explicit about values
+- remove type definitions
 
 ## 11.3.9 - 2020/7/22
 
