@@ -70,7 +70,7 @@
     "coverage:generate": "coverage-tests create-tests",
     "coverage:sandbox": "yarn coverage:generate && yarn test:coverage && coverage-tests process-report",
     "coverage:prod": "yarn coverage:generate && yarn test:coverage && coverage-tests process-report --send-report prod",
-    "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-protractor' APPLITOOLS_BATCH_ID=$(uuidgen) XUNIT_FILE=coverage-test-report.xml mocha --no-timeouts --reporter spec-xunit-file --parallel --jobs 15 --grep '^(?!.*(@native))' {'./test/coverage/generic/*.spec.js','../sdk-coverage-tests/coverage-tests/custom/**/*.spec.js'}",
+    "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-protractor' APPLITOOLS_BATCH_ID=$(uuidgen) XUNIT_FILE=coverage-test-report.xml mocha --no-timeouts --reporter spec-xunit-file --parallel --jobs 15 --grep '(@native|AppiumAndroidCheckRegion)' --invert {'./test/coverage/generic/*.spec.js','../sdk-coverage-tests/coverage-tests/custom/**/*.spec.js'}",
     "types:generate": "rm -rf ./typings && tsc --declaration --declarationDir ./typings --allowJs --emitDeclarationOnly ./index.js",
     "preversion": "bongo preversion && yarn test && yarn coverage:prod",
     "version": "bongo version",
