@@ -160,17 +160,13 @@ async function visit(driver, url) {
 }
 
 async function getNativeElementLocation(driver, element) {
-  if (!element.getLocation) {
-    element = await driver.$(element)
-  }
-  return element.getLocation()
+  const extended = await driver.$(element)
+  return extended.getLocation()
 }
 
 async function getNativeElementSize(driver, element) {
-  if (!element.getSize) {
-    element = await driver.$(element)
-  }
-  return element.getSize()
+  const extended = await driver.$(element)
+  return extended.getSize()
 }
 
 /* -------- FOR TESTING PURPOSES -------- */
@@ -253,3 +249,5 @@ exports.click = click
 exports.type = type
 exports.waitUntilDisplayed = waitUntilDisplayed
 exports.getElementRect = getElementRect
+exports.getNativeElementLocation = getNativeElementLocation
+exports.getNativeElementSize = getNativeElementSize

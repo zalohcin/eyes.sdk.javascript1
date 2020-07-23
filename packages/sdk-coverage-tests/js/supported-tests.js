@@ -314,5 +314,5 @@ module.exports = [
   {name: 'TestSetViewportSizeEdge', executionMode: {isCssStitching: true}},
   {name: 'TestVisualLocators', executionMode: {isCssStitching: true}},
   {name: 'TestVisualLocators', executionMode: {isVisualGrid: true}},
-  {name: 'TestMobileNativeRegion', executionMode: {isCssStitching: true}},
+  {name: 'AppiumAndroidCheckRegion', executionMode: {isCssStitching: true}},
 ]
