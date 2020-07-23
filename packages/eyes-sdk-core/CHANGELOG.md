@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 11.4.0 - 2020/7/24
+
 - updated enum types to be more explicit about values
 - remove type definitions
 - support Appium mobile selectors
