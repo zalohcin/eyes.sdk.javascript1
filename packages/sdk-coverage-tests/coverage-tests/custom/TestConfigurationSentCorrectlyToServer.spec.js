@@ -17,8 +17,8 @@ describe('TestEyesConfiguration', async () => {
   // testCase(true, undefined, 'Test Sequence Name Env Var')
   // testCase(true, undefined, undefined)
 
-  testCases.forEach((data, index) => {
-    it(`TestEyesConfiguration_${index}`, async () => {
+  testCases.forEach(data => {
+    it(`TestEyesConfiguration`, async () => {
       let eyes = getEyes({isVisualGrid: data.useVisualGrid})
       let driver = await spec.build({capabilities: Browsers.chrome()})
       await spec.visit(driver, 'https://applitools.github.io/demo/TestPages/FramesTestPage/')

@@ -27,7 +27,10 @@ function testMobileDevices(device, page) {
       eyes.setStitchMode(StitchMode.SCROLL)
       eyes.addProperty('Orientation', device.orientation.toLowerCase())
       eyes.addProperty('Page', page)
-      webDriver.get(`https://applitools.github.io/demo/TestPages/DynamicResolution/${page}.html`)
+      await spec.visit(
+        webDriver,
+        `https://applitools.github.io/demo/TestPages/DynamicResolution/${page}.html`,
+      )
       await eyes.open(
         webDriver,
         'Eyes Selenium SDK - iOS Safari Cropping',
@@ -36,7 +39,7 @@ function testMobileDevices(device, page) {
       await eyes.check('step 1', Target.window().fully())
       await eyes.close()
     } finally {
-      await webDriver.quit()
+      await spec.cleanup(webDriver)
       await eyes.abortIfNotClosed()
     }
   }
