@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+
+## 3.7.3 - 2020/7/23
+
 - support src attribute in video tags
 
 ## 3.7.2 - 2020/7/22
