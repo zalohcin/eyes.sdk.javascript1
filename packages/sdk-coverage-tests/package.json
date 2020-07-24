@@ -40,6 +40,7 @@
     "@applitools/sdk-shared": "0.1.0",
     "@typescript-eslint/parser": "^2.14.0",
     "mocha": "^6.2.2",
+    "ncp": "^2.0.0",
     "typescript": "^3.7.4"
   },
   "bin": {
