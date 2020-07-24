@@ -51,13 +51,7 @@ async function createCopyOfSdk(pathToExistingSdk) {
   await pncp(path.resolve(pathToExistingSdk, 'src'), targetSrcPath)
 
   // fix references in src folder
-  const filesInSrc = fs.readdirSync(path.resolve(pathToExistingSdk, 'src2'))
-  for (const file of filesInSrc) {
-    const filepath = path.resolve(pathToExistingSdk, 'src2', file)
-    const content = fs.readFileSync(filepath).toString()
-    const newContent = content.replace('@applitools/eyes-sdk-core', `../eyes-sdk-core`)
-    fs.writeFileSync(filepath, newContent)
-  }
+  fixReferencesInFolder(path.resolve(pathToExistingSdk, 'src2'))
 
   // create copy of index file
   const targetIndexPath = path.resolve(pathToExistingSdk, 'index2.js')
@@ -76,5 +70,22 @@ async function createCopyOfSdk(pathToExistingSdk) {
     fs.rmdirSync(targetSrcPath, {recursive: true})
     fs.rmdirSync(targetCorePath, {recursive: true})
     fs.unlinkSync(targetIndexPath)
+  }
+}
+
+function fixReferencesInFolder(folderPath, depth = 1) {
+  const filesInSrc = fs.readdirSync(folderPath)
+  for (const file of filesInSrc) {
+    const filepath = path.resolve(folderPath, file)
+    if (fs.statSync(filepath).isDirectory()) {
+      fixReferencesInFolder(filepath, depth + 1)
+    } else {
+      const content = fs.readFileSync(filepath).toString()
+      const newContent = content.replace(
+        '@applitools/eyes-sdk-core',
+        `${new Array(depth).fill('../').join('')}eyes-sdk-core`,
+      )
+      fs.writeFileSync(filepath, newContent)
+    }
   }
 }
