@@ -224,7 +224,6 @@ function instanceOf(obj, constructor) {
   return obj && obj.constructor[`__${constructor.name}`]
 }
 
-
 module.exports = {
   isNull,
   isNotNull,
