@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix issue with duplicate copies of the SDK ([Trello](https://trello.com/c/4Gd7uWtS))
 
 ## 11.4.0 - 2020/7/24
 
