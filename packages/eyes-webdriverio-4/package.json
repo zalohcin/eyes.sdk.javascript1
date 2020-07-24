@@ -27,8 +27,8 @@
   "license": "SEE LICENSE IN LICENSE",
   "repository": "https://github.com/applitools/eyes.sdk.javascript1",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "11.3.8",
-    "@applitools/visual-grid-client": "14.5.12"
+    "@applitools/eyes-sdk-core": "11.4.1",
+    "@applitools/visual-grid-client": "14.5.15"
   },
   "peerDependencies": {
     "webdriverio": "~4.14.4"
