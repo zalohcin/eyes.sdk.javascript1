@@ -31,7 +31,7 @@ describe('Coverage tests', () => {
       const sdk = require(sdkPath)
 
       await eyes.open(driver, 'Eyes JS SDK', 'duplicate copies of SDK', {width: 700, height: 460})
-      await eyes.check(sdk.Target.region('#overflowing-div'))
+      await eyes.check(sdk.Target.region('#overflowing-div').fully())
       await eyes.close()
     } finally {
       cleanup()

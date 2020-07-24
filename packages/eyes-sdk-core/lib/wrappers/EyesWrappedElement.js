@@ -114,6 +114,11 @@ class EyesWrappedElement {
       this._driver = driver
     }
   }
+
+  static get __EyesWrappedElement() {
+    return true
+  }
+
   /**
    * Create partial wrapped element object from the element, this object need to be initialized before use
    * @template TDriver, TElement, TSelector
