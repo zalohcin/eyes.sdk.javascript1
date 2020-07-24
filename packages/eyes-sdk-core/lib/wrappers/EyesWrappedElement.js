@@ -247,9 +247,11 @@ class EyesWrappedElement {
    * @return {Promise<Region>} rect of the element
    */
   async getRect() {
-    return this.withRefresh(() =>
-      EyesUtils.getElementRect(this._logger, this._driver.executor, this),
-    )
+    return this.withRefresh(async () => {
+      return (await this._driver.controller.isNative())
+        ? EyesUtils.getNativeElementRect({driver: this._driver, element: this})
+        : EyesUtils.getElementRect({executor: this._driver.executor, element: this})
+    })
   }
   /**
    * Returns element client rect (element rect without borders) related to context
@@ -260,25 +262,38 @@ class EyesWrappedElement {
       EyesUtils.getElementClientRect(this._logger, this._driver.executor, this),
     )
   }
+
   /**
    * Returns element's size
    * @return {Promise<RectangleSize>} size of the element
    */
   async getSize() {
-    const rect = await this.withRefresh(() =>
-      EyesUtils.getElementRect(this._logger, this._driver.executor, this),
-    )
-    return rect.getSize()
+    return this.withRefresh(async () => {
+      return (await this._driver.controller.isNative())
+        ? EyesUtils.getNativeElementSize({driver: this._driver, element: this})
+        : (
+            await EyesUtils.getElementRect({
+              executor: this._driver.executor,
+              element: this,
+            })
+          ).getSize()
+    })
   }
   /**
    * Returns element's location related to context
    * @return {Promise<Location>} location of the element
    */
   async getLocation() {
-    const rect = await this.withRefresh(() =>
-      EyesUtils.getElementRect(this._logger, this._driver.executor, this),
-    )
-    return rect.getLocation()
+    return this.withRefresh(async () => {
+      return (await this._driver.controller.isNative())
+        ? EyesUtils.getNativeElementLocation({driver: this._driver, element: this})
+        : (
+            await EyesUtils.getElementRect({
+              executor: this._driver.executor,
+              element: this,
+            })
+          ).getLocation()
+    })
   }
   /**
    * Returns computed values for specified css properties

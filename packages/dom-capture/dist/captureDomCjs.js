@@ -1,4 +1,4 @@
-/* @applitools/dom-capture@7.2.5 */
+/* @applitools/dom-capture@7.2.6 */
 'use strict';
 
 const styleProps = [
@@ -178,23 +178,10 @@ function parseCss(styleContent) {
 
 var parseCss_1 = parseCss;
 
-let TEST_disableCache = false;
-try {
-  if (window && window.DOM_CAPTURE_TEST_disableCache) {
-    TEST_disableCache = true;
-  }
-} catch (err) {
-  /* ignore error*/
-}
-
 function makeFetchCss(fetch, {fetchTimeLimit} = {}) {
   return async function fetchCss(url) {
     const controller = new AbortController();
-    const response = fetch(url, {
-      cache: TEST_disableCache ? undefined : 'force-cache',
-      headers: {'X-DomCapture': '1'},
-      signal: controller.signal,
-    })
+    const response = fetch(url, {cache: 'force-cache', signal: controller.signal})
       .then(response => {
         if (response.ok) {
           return response.text();
@@ -455,7 +442,7 @@ async function captureFrame(
 
   // Note: Change the API_VERSION when changing json structure.
   capturedFrame.version = API_VERSION;
-  capturedFrame.scriptVersion = '7.2.5';
+  capturedFrame.scriptVersion = '7.2.6';
 
   const iframePrefix = iframeCors.length ? `${iframeCors.join('\n')}\n` : '';
   const unfetchedPrefix = unfetchedResources.size

@@ -159,6 +159,16 @@ async function visit(driver, url) {
   return driver.url(url)
 }
 
+async function getNativeElementLocation(driver, element) {
+  const extended = await driver.$(element)
+  return extended.getLocation()
+}
+
+async function getNativeElementSize(driver, element) {
+  const extended = await driver.$(element)
+  return extended.getSize()
+}
+
 /* -------- FOR TESTING PURPOSES -------- */
 
 /** @return {WDIOAsyncDriver} */
@@ -239,3 +249,5 @@ exports.click = click
 exports.type = type
 exports.waitUntilDisplayed = waitUntilDisplayed
 exports.getElementRect = getElementRect
+exports.getNativeElementLocation = getNativeElementLocation
+exports.getNativeElementSize = getNativeElementSize

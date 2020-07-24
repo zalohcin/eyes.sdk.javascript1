@@ -24,7 +24,7 @@ const EyesDriverOperationError = require('../errors/EyesDriverOperationError')
  * @prop {(driver: TDriver) => Promise<boolean>} isNative - true if a native app, false otherwise
  * @prop {(driver: TDriver) => Promise<string>} getPlatformVersion - return version of the device's platform
  * @prop {(driver: TDriver) => Promise<string>} getSessionId - return id of the running session
- * @prop {(driver: TDriver) => Promise<string|Buffer>} takeScreenshot - return screenshot of the viewport
+ * @prop {(driver: TDriver) => Promise<MutableImage>} takeScreenshot - return screenshot of the viewport
  * @prop {(driver: TDriver) => Promise<string>} getTitle - return page title
  * @prop {(driver: TDriver) => Promise<string>} getSource - return current url
  * @prop {(driver: TDriver, url: string) => Promise<void>} visit - redirect to the specified url
@@ -141,14 +141,18 @@ class EyesDriverController {
    * @return {Promise<boolean>} true if mobile, false otherwise
    */
   async isMobile() {
-    return this.spec.isMobile(this._driver.unwrapped)
+    return (
+      this._isMobilePromise || (this._isMobilePromise = this.spec.isMobile(this._driver.unwrapped))
+    )
   }
   /**
    * Check if running in mobile device with native context
    * @return {Promise<boolean>} true if native, false otherwise
    */
   async isNative() {
-    return this.spec.isNative(this._driver.unwrapped)
+    return (
+      this._isNativePromise || (this._isNativePromise = this.spec.isNative(this._driver.unwrapped))
+    )
   }
   /**
    * Get mobile OS if detected

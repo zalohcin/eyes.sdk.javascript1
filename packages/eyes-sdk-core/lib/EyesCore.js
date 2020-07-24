@@ -464,28 +464,29 @@ class EyesCore extends EyesBase {
       return new ScaleProviderIdentityFactory(this._scaleProviderHandler.get(), nullProvider)
     }
 
-    this._logger.verbose('Trying to extract device pixel ratio...')
-    this._devicePixelRatio = await EyesUtils.getDevicePixelRatio(this._logger, this._driver)
-      .catch(async err => {
-        const isNative = await this._controller.isNative()
-        if (!isNative) throw err
-        const viewportSize = await this.getViewportSize()
-        return EyesUtils.getMobilePixelRatio(this._logger, this._driver, viewportSize)
-      })
-      .catch(err => {
-        this._logger.verbose('Failed to extract device pixel ratio! Using default.', err)
-        return DEFAULT_DEVICE_PIXEL_RATIO
-      })
+    this._devicePixelRatio = await this._getDevicePixelRatio()
 
-    this._logger.verbose(`Device pixel ratio: ${this._devicePixelRatio}`)
     this._logger.verbose('Setting scale provider...')
-    const factory = await this._getScaleProviderFactory().catch(err => {
-      this._logger.verbose('Failed to set ContextBasedScaleProvider.', err)
-      this._logger.verbose('Using FixedScaleProvider instead...')
-      return new FixedScaleProviderFactory(1 / this._devicePixelRatio, this._scaleProviderHandler)
-    })
-    this._logger.verbose('Done!')
-    return factory
+    return this._getScaleProviderFactory()
+  }
+
+  async _getDevicePixelRatio() {
+    this._logger.verbose('Trying to extract device pixel ratio...')
+    let devicePixelRatio
+    try {
+      if (await this._controller.isNative()) {
+        const viewportSize = await this.getViewportSize()
+        devicePixelRatio = EyesUtils.getMobilePixelRatio(this._logger, this._driver, viewportSize)
+      } else {
+        devicePixelRatio = EyesUtils.getDevicePixelRatio(this._logger, this._driver)
+      }
+    } catch (err) {
+      this._logger.verbose('Failed to extract device pixel ratio! Using default.', err)
+      devicePixelRatio = DEFAULT_DEVICE_PIXEL_RATIO
+    }
+
+    this._logger.verbose(`Device pixel ratio: ${devicePixelRatio}`)
+    return devicePixelRatio
   }
 
   /**
@@ -493,18 +494,33 @@ class EyesCore extends EyesBase {
    * @return {Promise<ScaleProviderFactory>}
    */
   async _getScaleProviderFactory() {
-    const entireSize = await EyesUtils.getCurrentFrameContentEntireSize(
-      this._logger,
-      this._executor,
-    )
-    return new ContextBasedScaleProviderFactory(
-      this._logger,
-      entireSize,
-      this._viewportSizeHandler.get(),
-      this._devicePixelRatio,
-      false,
+    const defaultScaleProviderFactory = new FixedScaleProviderFactory(
+      1 / this._devicePixelRatio,
       this._scaleProviderHandler,
     )
+
+    if (await this._controller.isNative()) {
+      return defaultScaleProviderFactory
+    } else {
+      try {
+        const entireSize = await EyesUtils.getCurrentFrameContentEntireSize(
+          this._logger,
+          this._executor,
+        )
+        return new ContextBasedScaleProviderFactory(
+          this._logger,
+          entireSize,
+          this._viewportSizeHandler.get(),
+          this._devicePixelRatio,
+          false,
+          this._scaleProviderHandler,
+        )
+      } catch (err) {
+        this._logger.verbose('Failed to set ContextBasedScaleProvider.', err)
+        this._logger.verbose('Using FixedScaleProvider instead...')
+        return defaultScaleProviderFactory
+      }
+    }
   }
 
   /**
