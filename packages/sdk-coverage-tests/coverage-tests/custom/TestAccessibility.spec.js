@@ -13,7 +13,7 @@ describe('Coverage tests', () => {
     driver = await spec.build({capabilities: Browsers.chrome()})
   })
 
-  it('TestAccessibility', testAccessibility(true))
+  it.skip('TestAccessibility', testAccessibility(true))
   it('TestAccessibility', testAccessibility(false))
 
   afterEach(async () => {

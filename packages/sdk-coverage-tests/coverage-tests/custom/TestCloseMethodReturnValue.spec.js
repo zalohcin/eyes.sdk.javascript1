@@ -6,7 +6,7 @@ const {getEyes, Browsers} = require('../util/TestSetup')
 const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
 const {Target, TestResults} = require(cwd)
 
-describe('Coverage tests', () => {
+describe.skip('Coverage tests', () => {
   let driver, eyes
   beforeEach(async () => {
     driver = await spec.build({capabilities: Browsers.chrome()})
