@@ -149,7 +149,7 @@ class EyesScreenshot {
     const scrollRootElement = !this._frameChain.isEmpty
       ? this._frameChain.current.scrollRootElement
       : positionProvider.scrollRootElement
-    this._currentFrameScrollPosition = await EyesUtils.getInnerOffsets(
+    this._currentFrameScrollPosition = await EyesUtils.getInnerOffset(
       this._logger,
       this._eyes._executor,
       scrollRootElement,

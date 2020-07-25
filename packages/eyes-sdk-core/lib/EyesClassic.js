@@ -48,26 +48,6 @@ const EyesCore = require('./EyesCore')
  */
 
 /**
- * @template TDriver, TElement, TSelector
- * @typedef {import('./wrappers/EyesJsExecutor')<TDriver, TElement, TSelector>} EyesJsExecutor
- */
-
-/**
- * @template TDriver, TElement, TSelector
- * @typedef {import('./wrappers/EyesBrowsingContext')<TDriver, TElement, TSelector>} EyesBrowsingContext
- */
-
-/**
- * @template TDriver, TElement, TSelector
- * @typedef {import('./wrappers/EyesElementFinder')<TDriver, TElement, TSelector>} EyesElementFinder
- */
-
-/**
- * @template TDriver, TElement, TSelector
- * @typedef {import('./wrappers/EyesDriverController')<TDriver, TElement, TSelector>} EyesDriverController
- */
-
-/**
  * @template TElement, TSelector
  * @typedef {import('./fluent/DriverCheckSettings')<TElement, TSelector>} CheckSettings
  */
@@ -176,11 +156,8 @@ class EyesClassic extends EyesCore {
 
     this._logger.verbose('Running using Webdriverio module')
 
-    this._driver = new this.constructor.WrappedDriver(this._logger, driver)
-    this._executor = this._driver.executor
-    this._finder = this._driver.finder
-    this._context = this._driver.context
-    this._controller = this._driver.controller
+    this._driver = this.spec.newDriver(this._logger, driver)
+    this._context = this._driver.currentContext
 
     this._configuration.setAppName(
       TypeUtils.getOrDefault(appName, this._configuration.getAppName()),
@@ -196,7 +173,7 @@ class EyesClassic extends EyesCore {
     )
 
     if (!this._configuration.getViewportSize()) {
-      const vs = await EyesUtils.getTopContextViewportSize(this._logger, this._driver)
+      const vs = await this._driver.getViewportSize()
       this._configuration.setViewportSize(vs)
     }
 
@@ -205,7 +182,7 @@ class EyesClassic extends EyesCore {
       return driver
     }
 
-    if (await this._controller.isMobile()) {
+    if (this._driver.isMobile) {
       // set viewportSize to null if browser is mobile
       this._configuration.setViewportSize(null)
     }
@@ -227,7 +204,7 @@ class EyesClassic extends EyesCore {
       this._configuration.getSessionType(),
     )
 
-    return this._driver
+    return this._driver.proxy
   }
   /**
    * @param {string|CheckSettings<TElement, TSelector>} [nameOrCheckSettings] - name of the test case
@@ -246,7 +223,7 @@ class EyesClassic extends EyesCore {
       nameOrCheckSettings = null
     }
 
-    checkSettings = new this.constructor.CheckSettings(checkSettings)
+    checkSettings = this.spec.newCheckSettings(checkSettings)
 
     if (TypeUtils.isString(nameOrCheckSettings)) {
       checkSettings.withName(nameOrCheckSettings)
@@ -258,8 +235,8 @@ class EyesClassic extends EyesCore {
     this._checkSettings = checkSettings // TODO remove
 
     return this._checkPrepare(checkSettings, async () => {
-      const targetRegion = checkSettings.getTargetRegion()
-      const targetElement = checkSettings.targetElement
+      const targetRegion = await checkSettings.targetRegion
+      const targetElement = await checkSettings.targetElement
       if (targetRegion) {
         if (this._stitchContent) {
           return this._checkFullRegion(checkSettings, targetRegion)
@@ -267,20 +244,20 @@ class EyesClassic extends EyesCore {
           return this._checkRegion(checkSettings, targetRegion)
         }
       } else if (targetElement) {
-        await targetElement.init(this._driver)
+        await targetElement.init(this._context)
         if (this._stitchContent) {
           return this._checkFullElement(checkSettings, targetElement)
         } else {
           return this._checkElement(checkSettings, targetElement)
         }
-      } else if (checkSettings.frameChain.length > 0) {
+      } else if (!checkSettings.context.isMain) {
         if (this._stitchContent) {
           return this._checkFullFrame(checkSettings)
         } else {
           return this._checkFrame(checkSettings)
         }
       } else {
-        const source = await this._controller.getSource()
+        const source = await this._driver.getUrl()
         return this.checkWindowBase(
           new NullRegionProvider(),
           checkSettings.getName(),
@@ -298,81 +275,51 @@ class EyesClassic extends EyesCore {
    * @return {Promise<MatchResult>}
    */
   async _checkPrepare(checkSettings, operation) {
-    if (await this._controller.isNative()) return operation()
+    if (this._driver.isNative) return operation()
     this._stitchContent = checkSettings.getStitchContent()
     // sync stored frame chain with actual browsing context
-    await this._context.framesRefresh()
-    const originalFrameChain = this._context.frameChain
-    const appendFrameChain = checkSettings.frameChain
+    this._context = await this._driver.refreshContexts()
+
+    if (this._scrollRootElement) {
+      this._context.main.scrollRootElement = this._scrollRootElement
+    }
+
+    const originalContext = this._context
+    this._context = this._context.attach(checkSettings.context)
+
+    if (this._context.main.scrollRootElement) {
+      await this._context.main.scrollRootElement.init(this._context.main)
+    } else {
+      this._context.main.scrollRootElement = await this._context.main.element('html')
+    }
+
+    const positionProvider = this._createPositionProvider(this._context.main.scrollRootElement)
+    this.setPositionProvider(positionProvider)
 
     const shouldHideScrollbars =
-      !(await this._controller.isMobile()) &&
+      !this._driver.isMobile &&
       (this._configuration.getHideScrollbars() ||
         (this._configuration.getStitchMode() === StitchMode.CSS && this._stitchContent))
 
-    if (this._scrollRootElement) {
-      this._context.topContext.scrollRootElement = this._scrollRootElement
-    }
-
-    const scrollRootElement = checkSettings.getScrollRootElement()
-    if (scrollRootElement) {
-      await scrollRootElement.init(this._driver)
-      if (originalFrameChain.isEmpty) {
-        this._context.topContext.scrollRootElement = scrollRootElement
-      } else {
-        this._context.frameChain.current.scrollRootElement = scrollRootElement
-      }
-    }
-
-    await this._context.frameDefault()
-
-    if (this._context.topContext.scrollRootElement) {
-      await this._context.topContext.scrollRootElement.init(this._driver)
-    } else {
-      this._context.topContext.scrollRootElement = await this._finder.findElement({
-        type: 'css',
-        selector: 'html',
-      })
-    }
-
-    const positionProvider = this._createPositionProvider(
-      this._context.topContext.scrollRootElement,
-    )
-    this.setPositionProvider(positionProvider)
-
-    await this._context.topContext.scrollRootElement.preservePosition(positionProvider)
-    if (shouldHideScrollbars) {
-      await this._context.topContext.scrollRootElement.hideScrollbars()
-    }
-
-    // If we changing a frame (hiding scrollbars in this case) then we need to switch to the frame by a reference
-    const absoluteFrameChain = shouldHideScrollbars
-      ? Array.from(originalFrameChain, frame => frame.toReference()).concat(appendFrameChain)
-      : Array.from(originalFrameChain).concat(appendFrameChain)
-
-    for (const frame of absoluteFrameChain) {
-      await this._context.frame(frame)
+    for (const context of this._context.path) {
+      await context.scrollRootElement.preservePosition(positionProvider)
       if (shouldHideScrollbars) {
-        await frame.hideScrollbars()
+        await context.scrollRootElement.hideScrollbars()
       }
-      await frame.preservePosition(positionProvider)
     }
 
     try {
       return await operation()
     } finally {
-      const currentFrameChain = this._context.frameChain
-      for (let index = currentFrameChain.size - 1; index >= 0; --index) {
-        const frame = currentFrameChain.frameAt(index)
-        await frame.restorePosition(positionProvider)
+      let currentContext = this._context
+      while (currentContext) {
         if (shouldHideScrollbars) {
-          await frame.restoreScrollbars()
+          await currentContext.scrollRootElement.restoreScrollbars()
         }
-        await this._context.frameParent()
+        await currentContext.scrollRootElement.restorePosition()
+        currentContext = currentContext.parent
       }
-      await this._context.topContext.scrollRootElement.restorePosition(positionProvider)
-      await this._context.topContext.scrollRootElement.restoreScrollbars()
-      await this._context.frames(originalFrameChain)
+      this._context = await originalContext.focus()
       this._stitchContent = false
     }
   }
@@ -387,12 +334,12 @@ class EyesClassic extends EyesCore {
       this._regionToCheck = targetRegion
       await EyesUtils.ensureRegionVisible(
         this._logger,
-        this._driver,
+        this._context,
         this._positionProviderHandler.get(),
         this._regionToCheck,
       )
 
-      const source = await this._controller.getSource()
+      const source = await this._driver.getUrl()
       return super.checkWindowBase(
         new RegionProvider(this._regionToCheck),
         checkSettings.getName(),
@@ -416,36 +363,21 @@ class EyesClassic extends EyesCore {
     this._regionToCheck = new Region(targetRegion)
     const remainingOffset = await EyesUtils.ensureRegionVisible(
       this._logger,
-      this._driver,
+      this._context,
       this._positionProviderHandler.get(),
       this._regionToCheck,
     )
 
-    const frameChain = this._context.frameChain
-    const scrollRootElement = !frameChain.isEmpty
-      ? frameChain.current.scrollRootElement
-      : this._context.topContext.scrollRootElement
-    this._targetPositionProvider = this._createPositionProvider(scrollRootElement)
+    this._targetPositionProvider = this._createPositionProvider(this._context.scrollRootElement)
 
     this._regionFullArea = new Region(
       this._regionToCheck.getLocation().offsetNegative(remainingOffset),
       this._regionToCheck.getSize(),
     )
-    // const effectiveViewport = new Region(this._effectiveViewport)
-
-    // if (!frameChain.isEmpty) {
-    //   const effectiveSize = frameChain.getCurrentFrameEffectiveSize()
-    //   effectiveViewport.intersect(new Region(Location.ZERO, effectiveSize))
-    // }
-    // if (!effectiveViewport.isSizeEmpty()) {
-    //   this._regionToCheck.intersect(
-    //     new Region(this._regionToCheck.getLocation(), effectiveViewport),
-    //   )
-    // }
 
     this._logger.verbose('Region to check: ' + this._regionToCheck)
     try {
-      const source = await this._controller.getSource()
+      const source = await this._driver.getUrl()
       return await super.checkWindowBase(
         new NullRegionProvider(),
         checkSettings.getName(),
@@ -471,12 +403,12 @@ class EyesClassic extends EyesCore {
 
       await EyesUtils.ensureRegionVisible(
         this._logger,
-        this._driver,
+        this._context,
         this._positionProviderHandler.get(),
         this._regionToCheck,
       )
 
-      const source = await this._controller.getSource()
+      const source = await this._driver.getUrl()
       return super.checkWindowBase(
         new RegionProvider(this._regionToCheck),
         checkSettings.getName(),
@@ -506,7 +438,7 @@ class EyesClassic extends EyesCore {
 
     const remainingOffset = await EyesUtils.ensureRegionVisible(
       this._logger,
-      this._driver,
+      this._context,
       this._positionProviderHandler.get(),
       this._regionToCheck,
     )
@@ -515,24 +447,20 @@ class EyesClassic extends EyesCore {
     if (stitchMode === StitchMode.CSS) {
       this._targetPositionProvider = new CssTranslateElementPositionProvider(
         this._logger,
-        this._executor,
+        this._context,
         targetElement,
       )
       this._regionFullArea = null
       await targetElement.preservePosition(this._targetPositionProvider)
-    } else if (await EyesUtils.isScrollable(this._logger, this._executor, targetElement)) {
+    } else if (await EyesUtils.isScrollable(this._logger, this._context, targetElement)) {
       this._targetPositionProvider = new ScrollElementPositionProvider(
         this._logger,
-        this._executor,
+        this._context,
         targetElement,
       )
       this._regionFullArea = null
     } else {
-      const frameChain = this._context.frameChain
-      const scrollRootElement = !frameChain.isEmpty
-        ? frameChain.current.scrollRootElement
-        : this._context.topContext.scrollRootElement
-      this._targetPositionProvider = this._createPositionProvider(scrollRootElement)
+      this._targetPositionProvider = this._createPositionProvider(this._context.scrollRootElement)
       this._regionFullArea = new Region(
         this._regionToCheck.getLocation().offsetNegative(remainingOffset),
         this._regionToCheck.getSize(),
@@ -540,7 +468,7 @@ class EyesClassic extends EyesCore {
     }
 
     try {
-      const source = await this._controller.getSource()
+      const source = await this._driver.getUrl()
       return await super.checkWindowBase(
         new NullRegionProvider(),
         checkSettings.getName(),
@@ -563,13 +491,13 @@ class EyesClassic extends EyesCore {
    * @return {Promise<MatchResult>}
    */
   async _checkFrame(checkSettings) {
-    const targetFrame = this._context.frameChain.current
-    const targetElement = targetFrame.element
-    await this._context.frameParent()
+    const targetElement = this._context._element // TODO property to get an element
+    const originalContext = this._context
+    this._context = this._context.parent
     try {
       return await this._checkElement(checkSettings, targetElement)
     } finally {
-      await this._context.frame(targetFrame)
+      this._context = await originalContext.focus()
     }
   }
   /**
@@ -579,26 +507,24 @@ class EyesClassic extends EyesCore {
    */
   async _checkFullFrame(checkSettings) {
     this._shouldCheckFullRegion = true
-    await EyesUtils.ensureFrameVisible(
+    await EyesUtils.ensureRegionVisible(
       this._logger,
       this._context,
       this._positionProviderHandler.get(),
+      new Region(Location.ZERO, await this._context.getClientSize()),
     )
 
-    const frameChain = this._context.frameChain
-    const targetFrame = frameChain.current
-    const scrollRootElement = targetFrame.scrollRootElement
-    this._targetPositionProvider = this._createPositionProvider(scrollRootElement)
+    this._targetPositionProvider = this._createPositionProvider(this._context.scrollRootElement)
 
     // we don't need to specify it explicitly since this is the same as entire size
     this._regionFullArea = null
     this._regionToCheck = new Region(
       Location.ZERO,
-      targetFrame.innerSize,
+      this._context.innerSize,
       CoordinatesType.CONTEXT_RELATIVE,
     )
 
-    const effectiveSize = frameChain.getCurrentFrameEffectiveSize()
+    const effectiveSize = this._context.getCurrentFrameEffectiveSize() // TODO add a property to get it
     this._effectiveViewport.intersect(new Region(Location.ZERO, effectiveSize))
     if (!this._effectiveViewport.isSizeEmpty()) {
       this._regionToCheck.intersect(this._effectiveViewport)
@@ -607,7 +533,7 @@ class EyesClassic extends EyesCore {
     this._logger.verbose('TElement region: ' + this._regionToCheck)
 
     try {
-      const source = await this._controller.getSource()
+      const source = await this._driver.getUrl()
       return await super.checkWindowBase(
         new NullRegionProvider(),
         checkSettings.getName(),
@@ -631,8 +557,8 @@ class EyesClassic extends EyesCore {
     this._logger.verbose('initializing position provider. stitchMode:', stitchMode)
 
     return stitchMode === StitchMode.CSS
-      ? new CssTranslatePositionProvider(this._logger, this._executor, scrollRootElement)
-      : new ScrollPositionProvider(this._logger, this._executor, scrollRootElement)
+      ? new CssTranslatePositionProvider(this._logger, this._context, scrollRootElement)
+      : new ScrollPositionProvider(this._logger, this._context, scrollRootElement)
   }
   /**
    * Create a screenshot of the specified in check method region
@@ -641,10 +567,9 @@ class EyesClassic extends EyesCore {
   async getScreenshot() {
     this._logger.verbose('getScreenshot()')
 
-    const isNative = await this._controller.isNative()
     let activeElement = null
-    if (this._configuration.getHideCaret() && !isNative) {
-      activeElement = await EyesUtils.blurElement(this._logger, this._executor)
+    if (this._configuration.getHideCaret() && !this._driver.isNative) {
+      activeElement = await EyesUtils.blurElement(this._logger, this._context)
     }
 
     try {
@@ -657,7 +582,7 @@ class EyesClassic extends EyesCore {
       }
     } finally {
       if (this._configuration.getHideCaret() && activeElement) {
-        await EyesUtils.focusElement(this._logger, this._executor, activeElement)
+        await EyesUtils.focusElement(this._logger, this._context, activeElement)
       }
       this._logger.verbose('Done!')
     }
@@ -677,15 +602,11 @@ class EyesClassic extends EyesCore {
 
     const scaleProviderFactory = await this._updateScalingParams()
     if (!this._targetPositionProvider) {
-      const frameChain = this._context.frameChain
-      const scrollRootElement = !frameChain.isEmpty
-        ? frameChain.current.scrollRootElement
-        : this._context.topContext.scrollRootElement
-      this._targetPositionProvider = this._createPositionProvider(scrollRootElement)
+      this._targetPositionProvider = this._createPositionProvider(this._context.scrollRootElement)
     }
     const originProvider = new ScrollPositionProvider(
       this._logger,
-      this._executor,
+      this._context,
       this._targetPositionProvider.scrollRootElement,
     )
     const fullPageCapture = new FullPageCaptureAlgorithm(
@@ -726,8 +647,8 @@ class EyesClassic extends EyesCore {
     const scaleProviderFactory = await this._updateScalingParams()
     const originProvider = new ScrollPositionProvider(
       this._logger,
-      this._executor,
-      this._context.topContext.scrollRootElement,
+      this._context.main,
+      this._context.main.scrollRootElement,
     )
     const fullCapture = new FullPageCaptureAlgorithm(
       this._logger,
@@ -742,36 +663,31 @@ class EyesClassic extends EyesCore {
       this._imageProvider,
     )
     const positionProvider = this._positionProviderHandler.get()
-    const fullPageImage = await this._context.framesSwitchAndReturn(null, async () => {
-      await positionProvider.markScrollRootElement()
 
-      let scrollRootElement = positionProvider.scrollRootElement
-      if (!scrollRootElement) {
-        scrollRootElement = await this._finder.findElement({type: 'css', selector: 'html'})
-      }
-      const location = await scrollRootElement.getLocation()
-      const [borderLeftWidth, borderTopWidth] = await scrollRootElement.getCssProperty(
-        'border-left-width',
-        'border-top-width',
-      )
-      const [clientWidth, clientHeight] = await scrollRootElement.getProperty(
-        'clientWidth',
-        'clientHeight',
-      )
-      const region = new Region(
-        Math.round(location.getX() + Number.parseFloat(borderLeftWidth)),
-        Math.round(location.getY() + Number.parseFloat(borderTopWidth)),
-        Math.round(clientWidth),
-        Math.round(clientHeight),
-      )
-      return fullCapture.getStitchedRegion(region, null, positionProvider)
-    })
+    await positionProvider.markScrollRootElement()
 
-    const frameChain = this._context.frameChain
-    const originalFramePosition = !frameChain.isEmpty
-      ? frameChain.first.parentScrollLocation
-      : Location.ZERO
+    let scrollRootElement = positionProvider.scrollRootElement
+    if (!scrollRootElement) {
+      scrollRootElement = await this._context.main.element('html')
+    }
+    const location = await scrollRootElement.getLocation()
+    const [borderLeftWidth, borderTopWidth] = await scrollRootElement.getCssProperty(
+      'border-left-width',
+      'border-top-width',
+    )
+    const [clientWidth, clientHeight] = await scrollRootElement.getProperty(
+      'clientWidth',
+      'clientHeight',
+    )
+    const region = new Region(
+      Math.round(location.getX() + Number.parseFloat(borderLeftWidth)),
+      Math.round(location.getY() + Number.parseFloat(borderTopWidth)),
+      Math.round(clientWidth),
+      Math.round(clientHeight),
+    )
+    const fullPageImage = fullCapture.getStitchedRegion(region, null, positionProvider)
 
+    const originalFramePosition = this._context.main.offset //TODO
     this._logger.verbose('Building screenshot object...')
     return EyesScreenshot.fromScreenshotType(
       this._logger,
@@ -825,7 +741,7 @@ class EyesClassic extends EyesCore {
     const appEnv = await super.getAppEnvironment()
 
     if (!appEnv._os) {
-      const os = await this._controller.getMobileOS()
+      const os = await this._driver.os
       if (os) {
         appEnv.setOs(os)
       }
@@ -848,8 +764,8 @@ class EyesClassic extends EyesCore {
    * @override
    * @return {boolean}
    */
-  async getSendDom() {
-    return !(await this._controller.isNative()) && super.getSendDom()
+  getSendDom() {
+    return !this._driver.isNative && super.getSendDom()
   }
   /**
    * @private
@@ -865,7 +781,7 @@ class EyesClassic extends EyesCore {
    */
   async getInferredEnvironment() {
     try {
-      const userAgent = await this._controller.getUserAgent()
+      const userAgent = await this._driver.userAgentString //TODO
       return userAgent ? 'useragent:' + userAgent : userAgent
     } catch (err) {
       return null
@@ -878,10 +794,9 @@ class EyesClassic extends EyesCore {
    * @returns {Region}
    */
   async getRegionByLocator(locator) {
-    const element = await this._finder.findElement(locator)
-    const elementSize = await element.getSize()
-    const point = await element.getLocation()
-    return new Region(point.x, point.y, elementSize.width, elementSize.height)
+    const element = await this._driver.element(locator)
+    const rect = await element.getElementRect()
+    return rect
   }
 }
 

@@ -1,4 +1,7 @@
 const TypeUtils = require('../utils/TypeUtils')
+const Location = require('../geometry/Location')
+const RectangleSize = require('../geometry/RectangleSize')
+const Region = require('../geometry/Region')
 const EyesUtils = require('../EyesUtils')
 const EyesElement = require('./EyesElement')
 
@@ -92,7 +95,7 @@ class EyesContext {
   }
 
   get isCurrent() {
-    return !this.isDetached && this._driver.contexts.current === this
+    return !this.isDetached && this._driver.currentContext === this
   }
 
   get scrollRootElement() {
@@ -246,6 +249,65 @@ class EyesContext {
       this._logger.verbose(`WARNING: execute script error: ${err}`)
       throw err
     }
+  }
+
+  async getClientLocation() {
+    return // TODO
+  }
+
+  async getClientSize() {
+    return // TODO
+  }
+
+  async getRect() {
+    return // TODO
+  }
+
+  async getClientRect() {
+    return // TODO
+  }
+
+  async getLocationInPage() {
+    return this.path.reduce(
+      (location, context) =>
+        location.then(async location => {
+          return location.offset(await context.getClientLocation())
+        }),
+      Promise.resolve(Location.ZERO),
+    )
+  }
+
+  async getLocationInViewport() {
+    return this.path.reduce(
+      (location, context) =>
+        location.then(async location => {
+          const contextLocation = await context.getClientLocation()
+          const parentContextLocation = context.parent
+            ? await context.parent.getOffset()
+            : Location.ZERO
+          return location.offset(
+            contextLocation.getX() - parentContextLocation.getX(),
+            contextLocation.getY() - parentContextLocation.getY(),
+          )
+        }),
+      Promise.resolve(Location.ZERO),
+    )
+  }
+
+  async getEffectiveSize() {
+    const rect = await this.path.reduce(
+      (rect, context) =>
+        rect.then(async rect => {
+          rect.intersect(new Region(Location.ZERO, context.getClientSize()))
+          return rect
+        }),
+      Promise.resolve(new Region(Location.ZERO, this.main.getClientSize())),
+    )
+    return rect.getSize()
+  }
+
+  async getDocumentSize() {
+    return // TODO
   }
 }
 

@@ -2,7 +2,6 @@ const ArgumentGuard = require('./utils/ArgumentGuard')
 const Region = require('./geometry/Region')
 const Location = require('./geometry/Location')
 const RectangleSize = require('./geometry/RectangleSize')
-const FrameChain = require('./frames/FrameChain')
 const ImageRotation = require('./positioning/ImageRotation')
 const ReadOnlyPropertyHandler = require('./handler/ReadOnlyPropertyHandler')
 const TestFailedError = require('./errors/TestFailedError')
@@ -53,17 +52,10 @@ class EyesCore extends EyesBase {
 
     /** @type {EyesWrappedDriver<TDriver, TElement, TSelector>} */
     this._driver = undefined
-    /** @private @type {EyesJsExecutor<TDriver, TElement, TSelector>} */
-    this._executor = undefined
-    /** @private @type {EyesElementFinder<TDriver, TElement, TSelector>} */
-    this._finder = undefined
     /** @private @type {EyesBrowsingContext<TDriver, TElement, TSelector>} */
     this._context = undefined
-    /** @private @type {EyesDriverController<TDriver, TElement, TSelector>} */
-    this._controller = undefined
     /** @private @type {boolean} */
     this._dontGetTitle = false
-
     /** @private @type {number} */
     this._devicePixelRatio = UNKNOWN_DEVICE_PIXEL_RATIO
     /** @private */
@@ -73,10 +65,7 @@ class EyesCore extends EyesBase {
   async _initCommon() {
     this._devicePixelRatio = UNKNOWN_DEVICE_PIXEL_RATIO
 
-    const userAgentString = await this._controller.getUserAgent()
-    if (userAgentString) {
-      this._userAgent = UserAgent.parseUserAgentString(userAgentString, true)
-    }
+    this._userAgent = this._driver.userAgent
 
     this._imageProvider = ImageProviderFactory.getImageProvider(
       this._logger,
@@ -238,9 +227,7 @@ class EyesCore extends EyesBase {
       return
     }
 
-    if (
-      !(await FrameChain.equals(this._context.frameChain, this._lastScreenshot.getFrameChain()))
-    ) {
+    if (!(await this._context.equals(this._lastScreenshot.context))) {
       this._logger.verbose(`Ignoring ${action} (different frame)`)
       return
     }
@@ -265,9 +252,7 @@ class EyesCore extends EyesBase {
       return Promise.resolve()
     }
 
-    if (
-      !(await FrameChain.equals(this._context.frameChain, this._lastScreenshot.getFrameChain()))
-    ) {
+    if (!(await this._context.equals(this._lastScreenshot.context))) {
       this._logger.verbose(`Ignoring ${action} (different frame)`)
       return Promise.resolve()
     }
@@ -301,9 +286,7 @@ class EyesCore extends EyesBase {
       return
     }
 
-    if (
-      !(await FrameChain.equals(this._context.frameChain, this._lastScreenshot.getFrameChain()))
-    ) {
+    if (!(await this._context.equals(this._lastScreenshot.context))) {
       this._logger.verbose(`Ignoring ${text} (different frame)`)
       return
     }
@@ -328,9 +311,7 @@ class EyesCore extends EyesBase {
       return Promise.resolve()
     }
 
-    if (
-      !(await FrameChain.equals(this._context.frameChain, this._lastScreenshot.getFrameChain()))
-    ) {
+    if (!(await this._context.equals(this._lastScreenshot.context))) {
       this._logger.verbose(`Ignoring ${text} (different frame)`)
       return Promise.resolve()
     }
@@ -349,9 +330,7 @@ class EyesCore extends EyesBase {
    */
   async getViewportSize() {
     const viewportSize = this._viewportSizeHandler.get()
-    return viewportSize
-      ? viewportSize
-      : EyesUtils.getTopContextViewportSize(this._logger, this._driver)
+    return viewportSize ? viewportSize : this._driver.getViewportSize()
   }
 
   /**
@@ -379,14 +358,14 @@ class EyesCore extends EyesBase {
       return Promise.resolve()
     }
 
-    if (!(await this._controller.isMobile())) {
+    if (!this._driver.isMobile) {
       ArgumentGuard.notNull(viewportSize, 'viewportSize')
       viewportSize = new RectangleSize(viewportSize)
       try {
-        await EyesUtils.setViewportSize(this._logger, this._driver, new RectangleSize(viewportSize))
+        await this._driver.setViewportSize(viewportSize)
         this._effectiveViewport = new Region(Location.ZERO, viewportSize)
       } catch (e) {
-        const viewportSize = await EyesUtils.getTopContextViewportSize(this._logger, this._driver)
+        const viewportSize = await this._driver.getViewportSize()
         this._viewportSizeHandler.set(viewportSize)
         throw new TestFailedError('Failed to set the viewport size', e)
       }
@@ -465,17 +444,10 @@ class EyesCore extends EyesBase {
     }
 
     this._logger.verbose('Trying to extract device pixel ratio...')
-    this._devicePixelRatio = await EyesUtils.getDevicePixelRatio(this._logger, this._driver)
-      .catch(async err => {
-        const isNative = await this._controller.isNative()
-        if (!isNative) throw err
-        const viewportSize = await this.getViewportSize()
-        return EyesUtils.getMobilePixelRatio(this._logger, this._driver, viewportSize)
-      })
-      .catch(err => {
-        this._logger.verbose('Failed to extract device pixel ratio! Using default.', err)
-        return DEFAULT_DEVICE_PIXEL_RATIO
-      })
+    this._devicePixelRatio = await this._driver.getPixelRatio().catch(err => {
+      this._logger.verbose('Failed to extract device pixel ratio! Using default.', err)
+      return DEFAULT_DEVICE_PIXEL_RATIO
+    })
 
     this._logger.verbose(`Device pixel ratio: ${this._devicePixelRatio}`)
     this._logger.verbose('Setting scale provider...')
@@ -493,10 +465,7 @@ class EyesCore extends EyesBase {
    * @return {Promise<ScaleProviderFactory>}
    */
   async _getScaleProviderFactory() {
-    const entireSize = await EyesUtils.getCurrentFrameContentEntireSize(
-      this._logger,
-      this._executor,
-    )
+    const entireSize = await this._context.getDocumentSize()
     return new ContextBasedScaleProviderFactory(
       this._logger,
       entireSize,
@@ -533,7 +502,7 @@ class EyesCore extends EyesBase {
   async getTitle() {
     if (!this._dontGetTitle) {
       try {
-        return await this._controller.getTitle()
+        return await this._driver.getTitle()
       } catch (e) {
         this._logger.verbose(`failed (${e})`)
         this._dontGetTitle = true
@@ -552,13 +521,6 @@ class EyesCore extends EyesBase {
    */
   getRemoteWebDriver() {
     return this._driver.unwrapped
-  }
-  /**
-   * Get jsExecutor
-   * @return {EyesJsExecutor<TDriver, TElement, TSelector>}
-   */
-  get jsExecutor() {
-    return this._executor
   }
   /**
    * @return {EyesRunner}

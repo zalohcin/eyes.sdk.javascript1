@@ -152,11 +152,8 @@ class EyesVisualGrid extends EyesCore {
   async open(driver, optArg1, optArg2, optArg3, optArg4) {
     ArgumentGuard.notNull(driver, 'driver')
 
-    this._driver = new this.constructor.WrappedDriver(this._logger, driver)
-    this._executor = this._driver.executor
-    this._finder = this._driver.finder
-    this._context = this._driver.context
-    this._controller = this._driver.controller
+    this._driver = this.spec.newDriver(this._logger, driver)
+    this._context = this._driver.currentContext
 
     if (optArg1 instanceof Configuration) {
       this._configuration.mergeConfig(optArg1)
@@ -187,7 +184,7 @@ class EyesVisualGrid extends EyesCore {
     }
 
     if (!this._configuration.getViewportSize()) {
-      const vs = await EyesUtils.getTopContextViewportSize(this._logger, this._driver)
+      const vs = await this._driver.getViewportSize()
       this._configuration.setViewportSize(vs)
     }
 
@@ -226,7 +223,7 @@ class EyesVisualGrid extends EyesCore {
 
     this._initCommon()
 
-    return this._driver
+    return this._driver.proxy
   }
   /**
    * @param {string|CheckSettings<TElement, TSelector>} [nameOrCheckSettings] - name of the test case
@@ -251,11 +248,10 @@ class EyesVisualGrid extends EyesCore {
       checkSettings.withName(nameOrCheckSettings)
     }
 
-    await this._context.framesRefresh()
     return this._checkPrepare(checkSettings, async () => {
       // this._logger.verbose(`Dom extraction starting   (${checkSettings.toString()})   $$$$$$$$$$$$`)
       const pageDomResults = await this.constructor.VisualGridClient.takeDomSnapshot({
-        executeScript: this._executor.executeScript.bind(this._executor),
+        executeScript: this._context.execute.bind(this._context),
       })
       const {cdt, url, resourceContents, resourceUrls, frames} = pageDomResults
       if (this.getCorsIframeHandle() === CorsIframeHandles.BLANK) {
@@ -291,13 +287,13 @@ class EyesVisualGrid extends EyesCore {
    * @param {Function} operation
    */
   async _checkPrepare(checkSettings, operation) {
-    const originalFrameChain = this._context.frameChain
-    const appendFrameChain = checkSettings.frameChain
-    await this._context.framesAppend(appendFrameChain)
+    this._context = await this._context.refreshContexts()
+    const originalContext = this._context
+    this._context = await this._context.attach(checkSettings.context).focus()
     try {
       return await operation()
     } finally {
-      await this._context.frames(originalFrameChain)
+      this._context = await originalContext.focus()
     }
   }
   /**

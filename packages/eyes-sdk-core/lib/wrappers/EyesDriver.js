@@ -1,7 +1,9 @@
 'use strict'
 const ArgumentGuard = require('../utils/ArgumentGuard')
 const TypeUtils = require('../utils/TypeUtils')
-const EyesContext = require('./EyesContext')
+const RectangleSize = require('../geometry/RectangleSize')
+const Region = require('../geometry/Region')
+const MutableImage = require('../images/MutableImage')
 const EyesUtils = require('../EyesUtils')
 
 /**
@@ -68,12 +70,16 @@ class EyesDriver {
     throw new TypeError('The class is not specialized. Create a specialize EyesDriver first')
   }
 
-  get proxify() {
-    throw new TypeError('The class is not specialized. Create a specialized EyesDriver first')
+  get currentContext() {
+    return this._currentContext
   }
 
-  get contexts() {
-    return {main: this._mainContext, current: this._currentContext}
+  get mainContext() {
+    return this._mainContext
+  }
+
+  updateCurrentContext(context) {
+    this._currentContext = context
   }
 
   async init() {
@@ -87,35 +93,43 @@ class EyesDriver {
     return this
   }
 
-  async _init() {
-    if (this.isNative) return
-    let contextInfo = await EyesUtils.getCurrentContextInfo(this._logger, this._currentContext)
+  async refreshContexts() {
+    if (this._isNative || this._isStateless) return
+    let contextInfo = await EyesUtils.getContextInfo(this._logger, this)
     if (contextInfo.isRoot) {
-      this._currentContext = await this._mainContext.init()
-      return
+      return (this._currentContext = this._mainContext)
     }
-    const contextPath = []
+    const path = []
     while (!contextInfo.isRoot) {
-      await this.switchToParentContext()
-      const frameElement = contextInfo.selector
-        ? await this._currentContext.findElement({type: 'xpath', selector: contextInfo.selector})
-        : await EyesUtils.findFrameByContext(this._logger, this._currentContext, contextInfo)
-      if (!frameElement) throw new Error('Unable to find out the chain of frames')
-      if (frameChain.current && (await frameChain.current.equals(frameElement))) {
-        await this.frameParent(frameChain.size - 1)
-        framePath.unshift(...frameChain)
+      await this.spec.parentContext()
+      let contextReference
+      if (contextInfo.selector) {
+        contextReference = await this.spec.findElement(
+          this._driver,
+          this.spec.toFrameworkSelector({type: 'xpath', selector: contextInfo.selector}),
+        )
       } else {
-        framePath.unshift(frameElement)
+        const framesInfo = await EyesUtils.getChildFramesInfo(this._logger, this)
+        for (const frameInfo of framesInfo) {
+          if (frameInfo.isCORS !== contextInfo.isCORS) continue
+          await this.spec.childContext(frameInfo.element)
+          const contentDocument = await this.spec.findElement(
+            this._driver,
+            this.spec.toFrameworkSelector({type: 'css', selector: 'html'}),
+          )
+          if (await this.spec.isEqualElements(contentDocument, contextInfo.contentDocument)) {
+            contextReference = frameInfo.element
+            await context.frameParent()
+            break
+          }
+        }
       }
-      contextInfo = await EyesUtils.getCurrentContextInfo(this._logger, this._driver.executor)
+      if (!contextReference) throw new Error('Unable to find out the chain of frames')
+      path.unshift(contextReference)
+      contextInfo = await EyesUtils.getContextInfo(this._logger, this)
     }
-    if (contextInfo.isRoot) this._frameChain.clear()
-    await this._topContext.init(this._logger, this._driver)
-    await this.framesAppend(framePath)
-  }
-
-  updateCurrentContext(context) {
-    this._currentContext = context
+    this._currentContext = this._mainContext
+    return this.switchToChildContext(...path)
   }
 
   async switchTo(context) {
@@ -132,47 +146,31 @@ class EyesDriver {
     }
 
     if (diffIndex === 0) {
-      throw Error('Impossible to switch, due to required context has different main context')
-    } else if (diffIndex < 0) {
+      throw new Error('Cannot switch to the context, because it has different main context')
+    } else if (diffIndex === -1) {
       if (currentPath.length === requiredPath.length) {
-        // required path is same as current
+        // required and current paths are the same
         return this._currentContext
       } else if (requiredPath.length > currentPath.length) {
-        // required path is a superset of current
+        // current path is a sub-path of required path
         return this.switchToChildContext(...requiredPath)
-      }
-
-      // required path is a sub-path of current
-      // chose an optimal way to traverse from current context to target context
-      if (currentPath.length - requiredPath.length <= requiredPath.length) {
-        await this.switchToParentContext(currentPath.length - requiredPath.length)
+      } else if (currentPath.length - requiredPath.length <= requiredPath.length) {
+        // required path is a sub-path of current path
+        return this.switchToParentContext(currentPath.length - requiredPath.length)
       } else {
+        // required path is a sub-path of current path
         await this.switchToMainContext()
-        await this.switchToChildContext(...requiredPath)
+        return this.switchToChildContext(...requiredPath)
       }
     } else if (currentPath.length - diffIndex <= diffIndex) {
       // required path is different from current or they are partially intersected
       // chose an optimal way to traverse from current context to target context
-
       await this.switchToParentContext(currentPath.length - diffIndex)
       return this.switchToChildContext(...requiredPath.slice(diffIndex))
     } else {
       await this.switchToMainContext()
-      await this.switchToChildContext(...requiredPath)
+      return this.switchToChildContext(...requiredPath)
     }
-
-    return this._currentContext
-  }
-
-  async switchToChildContext(...references) {
-    if (this._isNative) return
-    this._logger.verbose('EyesDriver.childContext()')
-    for (const reference of references) {
-      if (reference === this._mainContext) continue
-      const context = await this._currentContext.context(reference)
-      await context.focus()
-    }
-    return this._currentContext
   }
 
   async switchToMainContext() {
@@ -188,25 +186,34 @@ class EyesDriver {
   async switchToParentContext(elevation = 1) {
     if (this._isNative) return this._currentContext
     this._logger.verbose(`EyesDriver.switchToParentContext(${elevation})`)
-    if (this.isInitialized && this._currentContext.path.length <= elevation) {
-      return this.mainContext()
+    if (this._currentContext.path.length <= elevation) {
+      return this.switchToMainContext()
     }
+
     try {
       while (elevation > 0) {
-        const context = await this.spec.parentContext(this._currentContext.unwrapped)
+        await this.spec.parentContext(this._currentContext.unwrapped)
         this._currentContext = this._currentContext.parent
         elevation -= 1
       }
     } catch (err) {
       this._logger.verbose('WARNING: error during switch to parent frame', err)
       const path = this._currentContext.path.slice(1, -elevation)
-      await this.mainFrame()
-      await this.childFrame(...path)
+      await this.switchToMainContext()
+      await this.switchToChildContext(...path)
       elevation = 0
     }
-    this._currentContext = this._currentContext.path[
-      this._currentContext.path.length - elevation - 1
-    ]
+    return this._currentContext
+  }
+
+  async switchToChildContext(...references) {
+    if (this._isNative) return
+    this._logger.verbose('EyesDriver.childContext()')
+    for (const reference of references) {
+      if (reference === this._mainContext) continue
+      const context = await this._currentContext.context(reference)
+      await context.focus()
+    }
     return this._currentContext
   }
 
@@ -228,9 +235,10 @@ class EyesDriver {
   }
 
   async getViewportSize() {
-    return this.spec.getViewportSize
-      ? this.spec.getViewportSize(this._driver)
-      : EyesUtils.getViewportSize(this._logger, this._mainContext)
+    const size = this.spec.getViewportSize
+      ? await this.spec.getViewportSize(this._driver)
+      : await EyesUtils.getViewportSize(this._logger, this._mainContext)
+    return new RectangleSize(size)
   }
 
   async setViewportSize(size) {
@@ -240,15 +248,26 @@ class EyesDriver {
   }
 
   async getWindowRect() {
-    return this.spec.getWindowRect
-      ? this.spec.getWindowRect(this._driver)
-      : this.spec.getViewportSize(this._driver)
+    const {x = 0, y = 0, width, height} = this.spec.getWindowRect
+      ? await this.spec.getWindowRect(this._driver)
+      : await this.spec.getViewportSize(this._driver)
+    return new Region({x, y, width, height})
   }
 
   async setWindowRect(rect) {
     return this.spec.getWindowRect
       ? this.spec.getWindowRect(this._driver)
       : this.spec.getViewportSize(this._driver, {width: rect.width, height: rect.height})
+  }
+
+  async getPixelRatio() {
+    if (this._isNative) {
+      const viewportSize = await this.getViewportSize()
+      const screenshot = await this.takeScreenshot()
+      return screenshot.getWidth() / viewportSize.getWidth()
+    } else {
+      return EyesUtils.getPixelRatio()
+    }
   }
 
   async getTitle() {

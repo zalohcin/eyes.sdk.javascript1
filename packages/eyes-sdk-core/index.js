@@ -27,10 +27,6 @@
  * @typedef {import('./lib/fluent/DriverCheckSettings').SpecCheckSettings<TElement, TSelector>} SpecCheckSettings
  */
 
-exports.EyesDriver = require('./lib/wrappers/EyesDriver')
-exports.EyesContext = require('./lib/wrappers/EyesContext')
-exports.EyesElement = require('./lib/wrappers/EyesElement')
-
 // config
 exports.AccessibilityLevel = require('./lib/config/AccessibilityLevel')
 exports.AccessibilityGuidelinesVersion = require('./lib/config/AccessibilityGuidelinesVersion')
@@ -225,11 +221,9 @@ exports.AccessibilityStatus = require('./lib/AccessibilityStatus')
 exports.TestResultsFormatter = require('./lib/TestResultsFormatter')
 exports.TestResultsStatus = require('./lib/TestResultsStatus')
 
-exports.FrameChain = require('./lib/frames/FrameChain')
-exports.Frame = require('./lib/frames/Frame')
-
-exports.EyesWrappedElement = require('./lib/wrappers/EyesWrappedElement')
-exports.EyesBrowsingContext = require('./lib/wrappers/EyesBrowsingContext')
+exports.EyesDriver = require('./lib/wrappers/EyesDriver')
+exports.EyesContext = require('./lib/wrappers/EyesContext')
+exports.EyesElement = require('./lib/wrappers/EyesElement')
 
 exports.EyesRunner = require('./lib/runner/EyesRunner')
 exports.ClassicRunner = require('./lib/runner/ClassicRunner')

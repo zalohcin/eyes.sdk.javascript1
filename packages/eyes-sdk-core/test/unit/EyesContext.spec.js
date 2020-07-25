@@ -30,7 +30,7 @@ describe('EyesContext', () => {
         },
       ])
       driver = new FakeDriver(logger, mock)
-      context = driver.contexts.current
+      context = driver.currentContext
     })
 
     it('constructor(logger, context, {driver})', async () => {
@@ -50,7 +50,7 @@ describe('EyesContext', () => {
       const element = await attachedContext.element('frame1-1--element1')
       assert.strictEqual(element.context, attachedContext)
       assert.strictEqual(element.selector, 'frame1-1--element1')
-      assert.strictEqual(driver.contexts.current, attachedContext)
+      assert.strictEqual(driver.currentContext, attachedContext)
     })
 
     it('context(element)', async () => {
@@ -68,7 +68,7 @@ describe('EyesContext', () => {
 
       assert.strictEqual(childContext1._element.unwrapped.selector, 'frame1')
       assert.strictEqual(childContext11._element.unwrapped.selector, 'frame1-1')
-      assert.strictEqual(driver.contexts.current, childContext1)
+      assert.strictEqual(driver.currentContext, childContext1)
     })
 
     it('focus()', async () => {
@@ -77,7 +77,7 @@ describe('EyesContext', () => {
       await childContext11.init(driver)
       await childContext11.focus()
 
-      assert.strictEqual(driver.contexts.current, childContext11)
+      assert.strictEqual(driver.currentContext, childContext11)
     })
 
     it('element(selector)', async () => {
@@ -86,7 +86,7 @@ describe('EyesContext', () => {
       await childContext11.init(driver)
       const element = await childContext11.element('frame1-1--element1')
 
-      assert.strictEqual(driver.contexts.current, childContext11)
+      assert.strictEqual(driver.currentContext, childContext11)
       assert.strictEqual(element.unwrapped.selector, 'frame1-1--element1')
     })
 
@@ -97,7 +97,7 @@ describe('EyesContext', () => {
       await childContext11.init(driver)
       const element = await childContext2.element('frame2--element1')
 
-      assert.strictEqual(driver.contexts.current, childContext2)
+      assert.strictEqual(driver.currentContext, childContext2)
       assert.strictEqual(element.unwrapped.selector, 'frame2--element1')
     })
   })

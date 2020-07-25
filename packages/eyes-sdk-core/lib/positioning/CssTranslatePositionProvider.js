@@ -58,7 +58,7 @@ class CssTranslatePositionProvider extends PositionProvider {
   async getCurrentPosition(customScrollRootElement) {
     try {
       this._logger.verbose('CssTranslatePositionProvider - getCurrentPosition()')
-      const position = await EyesUtils.getTranslateLocation(
+      const position = await EyesUtils.getTranslateOffset(
         this._logger,
         this._executor,
         customScrollRootElement || this._scrollRootElement,

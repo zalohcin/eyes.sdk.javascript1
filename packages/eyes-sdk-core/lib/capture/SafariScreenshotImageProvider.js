@@ -83,7 +83,7 @@ class SafariScreenshotImageProvider extends ImageProvider {
       let loc =
         frameChain.size > 0
           ? frameChain.first.parentScrollLocation
-          : await EyesUtils.getScrollLocation(this._logger, this._driver.executor).catch(
+          : await EyesUtils.getScrollOffset(this._logger, this._driver.executor).catch(
               () => Location.ZERO,
             )
       loc = new Location(Math.ceil(loc.getX() * scaleRatio), Math.ceil(loc.getY() * scaleRatio))

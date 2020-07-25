@@ -59,7 +59,7 @@ class ScrollElementPositionProvider extends PositionProvider {
   async getCurrentPosition(customScrollRootElement) {
     try {
       this._logger.verbose('ScrollElementPositionProvider - getCurrentPosition()')
-      const position = await EyesUtils.getScrollLocation(
+      const position = await EyesUtils.getScrollOffset(
         this._logger,
         this._executor,
         customScrollRootElement || this._element,
