@@ -13443,19 +13443,25 @@ function __processPageAndSerialize() {
               throw e;
             }
           })
-          .then(({url, type, value, probablyCORS, isTimeout}) => {
+          .then(({url, type, value, probablyCORS, errorStatusCode, isTimeout}) => {
             if (probablyCORS) {
               log('not fetched due to CORS', `[${Date.now() - now}ms]`, url);
               sessionCache && sessionCache.setItem(url, []);
               return {resourceUrls: [url]};
             }
 
+            if (errorStatusCode) {
+              const blobsObj = {[url]: {errorStatusCode}};
+              sessionCache && sessionCache.setItem(url, []);
+              return {blobsObj};
+            }
+
             if (isTimeout) {
               // TODO return errorStatusCode once VG supports it (https://trello.com/c/J5lBWutP/92-when-capturing-dom-add-non-200-urls-to-resource-map)
-              log('not fetched due to timeout, returning empty resource');
+              log('not fetched due to timeout, returning error status code 504 (Gateway timeout)');
               sessionCache && sessionCache.setItem(url, []);
               return {
-                blobsObj: {[url]: {type: 'application/x-applitools-empty', value: new ArrayBuffer()}},
+                blobsObj: {[url]: {errorStatusCode: 504}},
               };
             }
 
@@ -13640,7 +13646,7 @@ function __processPageAndSerialize() {
                 value: buff,
               }));
             } else {
-              return Promise.reject(new Error(`bad status code ${resp.status}`));
+              return {url, errorStatusCode: resp.status};
             }
           })
           .then(resolve)
@@ -14044,11 +14050,9 @@ function __processPageAndSerialize() {
   }
 
   function serializeFrame(frame) {
-    frame.blobs = frame.blobs.map(({url, type, value}) => ({
-      url,
-      type,
-      value: arrayBufferToBase64_1(value),
-    }));
+    frame.blobs = frame.blobs.map(blob =>
+      blob.value ? Object.assign(blob, {value: arrayBufferToBase64_1(blob.value)}) : blob,
+    );
     frame.frames.forEach(serializeFrame);
     return frame;
   }

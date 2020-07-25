@@ -95,6 +95,9 @@ describe('processResource', () => {
         type: 'image/jpeg',
         value: bufferToArrayBuffer(loadFixtureBuffer('smurfs.jpg')),
       },
+      'http://localhost:7373/blabla': {
+        errorStatusCode: 404,
+      },
     });
   });
 
@@ -238,6 +241,22 @@ describe('processResource', () => {
 
     expect(resourceUrls).to.eql(['https://fonts.googleapis.com/some-font']);
     expect(blobsObj).to.eql(undefined);
+  });
+
+  it('handles non-200 urls', async () => {
+    const doc = createDoc();
+
+    const {blobsObj} = await processResource({
+      url: 'http://localhost:7373/http-status/404',
+      documents: [doc],
+      getResourceUrlsAndBlobs,
+    });
+
+    expect(blobsObj).to.eql({
+      'http://localhost:7373/http-status/404': {
+        errorStatusCode: 404,
+      },
+    });
   });
 });
 

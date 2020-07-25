@@ -17,11 +17,11 @@ const path = require('path');
 
 function decodeFrame(frame) {
   return Object.assign(frame, {
-    blobs: frame.blobs.map(({url, type, value}) => ({
-      url,
-      type,
-      value: Buffer.from(value, 'base64'),
-    })),
+    blobs: frame.blobs.map(blob =>
+      blob.value !== undefined
+        ? Object.assign(blob, {value: Buffer.from(blob.value, 'base64')})
+        : blob,
+    ),
     frames: frame.frames.map(decodeFrame),
   });
 }
@@ -135,6 +135,10 @@ describe('processPage', () => {
         value: loadFixtureBuffer('smurfs.jpg'),
       },
       {
+        url: 'http://localhost:7373/blabla',
+        errorStatusCode: 404,
+      },
+      {
         url: 'http://localhost:7373/test.css',
         type: 'text/css; charset=UTF-8',
         value: loadFixtureBuffer('test.css'),
@@ -211,6 +215,10 @@ describe('processPage', () => {
         value: loadFixtureBuffer('smurfs.jpg'),
       },
       {
+        url: 'http://localhost:7373/blabla',
+        errorStatusCode: 404,
+      },
+      {
         url: 'http://localhost:7373/test.css',
         type: 'text/css; charset=UTF-8',
         value: loadFixtureBuffer('test.css'),
@@ -254,6 +262,10 @@ describe('processPage', () => {
         value: loadFixtureBuffer('smurfs.jpg'),
       },
       {
+        url: 'http://localhost:7373/blabla',
+        errorStatusCode: 404,
+      },
+      {
         url: 'http://localhost:7373/test.css',
         type: 'text/css; charset=UTF-8',
         value: loadFixtureBuffer('test.css'),
@@ -270,6 +282,10 @@ describe('processPage', () => {
           url: 'http://localhost:7373/smurfs.jpg',
           type: 'image/jpeg',
           value: loadFixtureBuffer('smurfs.jpg'),
+        },
+        {
+          url: 'http://localhost:7373/blabla',
+          errorStatusCode: 404,
         },
         {
           url: 'http://localhost:7373/test.css',
@@ -670,8 +686,12 @@ describe('processPage', () => {
       expect(srcAttr).to.eq('cors-css-rules.html');
       expect(url).to.eq('http://localhost:7373/cors-css-rules.html');
       expect(resourceUrls).to.eql([]);
-      expect(blobs.length).to.eq(2);
+      expect(blobs.length).to.eq(3);
       expect(blobs).to.eql([
+        {
+          url: 'http://localhost:7374/not-here.css',
+          errorStatusCode: 404,
+        },
         {
           url: 'http://localhost:7374/gargamel.jpg',
           type: 'image/jpeg',
@@ -941,8 +961,7 @@ describe('processPage', () => {
     expect(result.blobs).to.eql([
       {
         url: 'http://localhost:7373/hanging.css',
-        type: 'application/x-applitools-empty',
-        value: Buffer.from(''),
+        errorStatusCode: 504,
       },
     ]);
     expect(flag).to.equal(true);
@@ -984,19 +1003,26 @@ describe('processPage', () => {
     const {blobs, resourceUrls, frames} = await processPage({
       skipResources: [
         'http://localhost:7373/smurfs.jpg',
+        'http://localhost:7373/blabla',
         'http://localhost:7373/iframes/inner/smurfs.jpg',
       ],
     });
 
     // top page
     expect(blobs.map(({url}) => url)).to.eql(['http://localhost:7373/test.css']);
-    expect(resourceUrls).to.eql(['http://localhost:7373/smurfs.jpg']);
+    expect(resourceUrls).to.eql([
+      'http://localhost:7373/smurfs.jpg',
+      'http://localhost:7373/blabla',
+    ]);
 
     // frame #1
     expect(frames[0].frames[0].blobs.map(({url}) => url)).to.eql([
       'http://localhost:7373/test.css',
     ]);
-    expect(frames[0].frames[0].resourceUrls).to.eql(['http://localhost:7373/smurfs.jpg']);
+    expect(frames[0].frames[0].resourceUrls).to.eql([
+      'http://localhost:7373/smurfs.jpg',
+      'http://localhost:7373/blabla',
+    ]);
 
     // frame #2
     expect(frames[0].frames[1].blobs).to.eql([]);
