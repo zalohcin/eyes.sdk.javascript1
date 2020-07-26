@@ -247,13 +247,13 @@ describe('processResource', () => {
     const doc = createDoc();
 
     const {blobsObj} = await processResource({
-      url: 'http://localhost:7373/http-status/404',
+      url: 'http://localhost:7373/predefined-status/404',
       documents: [doc],
       getResourceUrlsAndBlobs,
     });
 
     expect(blobsObj).to.eql({
-      'http://localhost:7373/http-status/404': {
+      'http://localhost:7373/predefined-status/404': {
         errorStatusCode: 404,
       },
     });
