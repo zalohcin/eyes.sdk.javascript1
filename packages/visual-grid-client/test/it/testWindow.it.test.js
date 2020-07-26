@@ -6,7 +6,7 @@ const createFakeWrapper = require('../util/createFakeWrapper')
 const {testServer} = require('@applitools/sdk-shared')
 const {loadJsonFixture} = require('../util/loadFixture')
 const nock = require('nock')
-const {ptimeoutWithError} = require('@applitools/functional-commons')
+const {ptimeoutWithError, presult} = require('@applitools/functional-commons')
 
 describe('testWindow', () => {
   let baseUrl, closeServer, testWindow
@@ -28,7 +28,7 @@ describe('testWindow', () => {
   beforeEach(() => {
     wrapper = createFakeWrapper(baseUrl)
     testWindow = makeRenderingGridClient({
-      showLogs: true,
+      showLogs: process.env.APPLITOOLS_SHOW_LOGS,
       apiKey,
       renderWrapper: wrapper,
       fetchResourceTimeout: 2000,
@@ -69,7 +69,10 @@ describe('testWindow', () => {
       done3(args)
     })
 
-    const [results] = await testWindow({openParams, checkParams})
+    const [err, resultsArr] = await presult(testWindow({openParams, checkParams}))
+
+    expect(err).to.be.undefined
+    const results = resultsArr[0]
 
     const [openArgs, testWindowArgs, closeTestWindowArgs] = await ptimeoutWithError(
       Promise.all([p, p2, p3]),

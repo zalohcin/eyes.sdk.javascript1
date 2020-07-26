@@ -14,17 +14,7 @@ const {resolve} = require('path');
 const {JSDOM} = require('jsdom');
 const {version} = require('../package.json');
 const path = require('path');
-
-function decodeFrame(frame) {
-  return Object.assign(frame, {
-    blobs: frame.blobs.map(blob =>
-      blob.value !== undefined
-        ? Object.assign(blob, {value: Buffer.from(blob.value, 'base64')})
-        : blob,
-    ),
-    frames: frame.frames.map(decodeFrame),
-  });
-}
+const decodeFrame = require('./util/decodeFrame');
 
 describe('processPage', () => {
   let server;
