@@ -1,4 +1,4 @@
-/* @applitools/dom-snapshot@3.7.3 */
+/* @applitools/dom-snapshot@4.0.0 */
 'use strict';
 
 function extractLinks(doc = document) {
@@ -13402,7 +13402,6 @@ function makeProcessResource({
           }
 
           if (isTimeout) {
-            // TODO return errorStatusCode once VG supports it (https://trello.com/c/J5lBWutP/92-when-capturing-dom-add-non-200-urls-to-resource-map)
             log('not fetched due to timeout, returning error status code 504 (Gateway timeout)');
             sessionCache && sessionCache.setItem(url, []);
             return {
@@ -13906,7 +13905,7 @@ function processPage(
 
   return doProcessPage(doc).then(result => {
     log$$1('processPage end');
-    result.scriptVersion = '3.7.3';
+    result.scriptVersion = '4.0.0';
     return result;
   });
 
