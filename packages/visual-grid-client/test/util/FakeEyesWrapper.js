@@ -97,7 +97,7 @@ class FakeEyesWrapper extends EventEmitter {
     const resources = renderRequest.getResources()
     const actualResources = resources.map(resource => ({
       url: resource.getUrl(),
-      hash: resource.getSha256Hash(),
+      hashOrErrorStatusCode: resource.getErrorStatusCode() || resource.getSha256Hash(),
     }))
     const isGoodResources =
       !actualResources.length ||
@@ -300,13 +300,14 @@ class FakeEyesWrapper extends EventEmitter {
   getExpectedResources() {
     const urlResources = this.goodResourceUrls.map(resourceUrl => ({
       url: resourceUrl,
-      hash: getSha256Hash(loadFixtureBuffer(new URL(resourceUrl).pathname.slice(1))),
+      hashOrErrorStatusCode: getSha256Hash(
+        loadFixtureBuffer(new URL(resourceUrl).pathname.slice(1)),
+      ),
     }))
 
     const recs = this.goodResources.map(resource => ({
       url: resource.url,
-      //content: resource.content,
-      hash: getSha256Hash(resource.content),
+      hashOrErrorStatusCode: getSha256Hash(resource.content),
     }))
     return [...urlResources, ...recs]
   }

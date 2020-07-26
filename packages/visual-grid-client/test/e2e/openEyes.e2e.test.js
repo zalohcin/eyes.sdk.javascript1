@@ -103,7 +103,10 @@ describe('openEyes', () => {
       scriptHooks,
     })
 
-    const results = await close()
+    const [errArr, results] = await presult(close())
+    errArr && console.log(errArr)
+    expect(errArr).to.be.undefined
+
     expect(results.length).to.eq(3)
     expect(results.map(r => r.getStatus())).to.eql(['Passed', 'Passed', 'Passed'])
   })

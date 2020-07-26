@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- support non-200 resources ([Trello](https://trello.com/c/J5lBWutP))
 
 ## 3.7.3 - 2020/7/23
 
