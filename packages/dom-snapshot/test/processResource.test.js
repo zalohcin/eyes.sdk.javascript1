@@ -210,12 +210,11 @@ describe('processResource', () => {
   });
 
   it('handles fetch timeout', async () => {
-    const fetchThatHangs = async url => {
+    const fetchThatHangs = async () => {
       await new Promise(r => setTimeout(r, 1000));
-      return url;
     };
     processResource = makeProcessResource({
-      fetchUrl: makeFetchUrl({fetch: fetchThatHangs, AbortController}),
+      fetchUrl: makeFetchUrl({fetch: fetchThatHangs, AbortController, timeout: 100}),
       findStyleSheetByUrl,
       getCorsFreeStyleSheet,
       extractResourcesFromStyleSheet,
@@ -225,13 +224,18 @@ describe('processResource', () => {
 
     const doc = createDoc('test.css');
 
+    const url = 'http://localhost:7373/test.css';
     const result = await processResource({
-      url: 'http://localhost:7373/test.css',
+      url,
       documents: [doc],
       getResourceUrlsAndBlobs,
     });
 
-    expect(result).to.eql({});
+    expect(result).to.eql({
+      blobsObj: {
+        [url]: {errorStatusCode: 504},
+      },
+    });
   });
 
   it("doesn't fetch google fonts", async () => {
