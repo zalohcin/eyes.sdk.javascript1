@@ -3,6 +3,8 @@
 ## Unreleased
 
 - support non-200 resources ([Trello](https://trello.com/c/J5lBWutP))
+- updated to @applitools/dom-snapshot@4.0.0 (from 3.7.3)
+- updated to @applitools/eyes-sdk-core@11.5.0 (from 11.4.1)
 
 ## 14.5.15 - 2020/7/24
 
