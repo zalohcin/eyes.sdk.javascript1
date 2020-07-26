@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 11.5.0 - 2020/7/26
+
 - support non-200 resources ([Trello](https://trello.com/c/J5lBWutP))
 
 ## 11.4.1 - 2020/7/24
