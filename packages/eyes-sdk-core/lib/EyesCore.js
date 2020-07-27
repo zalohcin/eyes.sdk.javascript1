@@ -574,10 +574,8 @@ class EyesCore extends EyesBase {
    * @return {Promise<EyesWrappedElement<TDriver, TElement, TSelector>|TElement|TSelector>}
    */
   async getScrollRootElement() {
-    if (this._scrollRootElement) {
-      return this._driver ? this._scrollRootElement.init(this._driver) : this._scrollRootElement
-    }
-    return null
+    // TODO fix
+    return this._scrollRootElement ? this._scrollRootElement.unwrapped : null
   }
 
   /**

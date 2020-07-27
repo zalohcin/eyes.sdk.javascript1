@@ -37,6 +37,10 @@ class EyesDriver {
     }
   }
 
+  static get spec() {
+    throw new TypeError('The class is not specialized. Create a specialize EyesDriver first')
+  }
+
   static isDriver(driver) {
     return driver instanceof EyesDriver || this.spec.isDriver(driver)
   }

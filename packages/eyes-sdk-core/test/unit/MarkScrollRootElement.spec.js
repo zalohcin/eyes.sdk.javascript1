@@ -27,7 +27,7 @@ describe('MarkScrollRootElement', () => {
     await server.close()
   })
 
-  it.only('scroll root element is marked', async () => {
+  it('scroll root element is marked', async () => {
     const scrollRootElement = await driver.findElement('scroll-root-element')
     await eyes.check(
       'diff',

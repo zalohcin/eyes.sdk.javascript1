@@ -8,7 +8,11 @@ module.exports = {
     return TypeUtils.has(element, 'id')
   },
   isSelector(selector) {
-    return TypeUtils.isString(selector) || TypeUtils.has(selector, ['using', 'value'])
+    return (
+      TypeUtils.isString(selector) ||
+      TypeUtils.has(selector, ['using', 'value']) ||
+      TypeUtils.has(selector, ['type', 'selector'])
+    )
   },
   toEyesSelector(selector) {
     if (TypeUtils.isString(selector)) {

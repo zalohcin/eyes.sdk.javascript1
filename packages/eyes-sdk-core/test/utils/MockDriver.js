@@ -172,7 +172,7 @@ class MockDriver {
     }
   }
   async executeScript(script, args = []) {
-    args = JSON.parse(JSON.stringify(args))
+    args = serialize(args)
     const resultGenerator = this._scripts.get(script)
     if (resultGenerator) {
       return TypeUtils.isFunction(resultGenerator) ? resultGenerator(...args) : resultGenerator
@@ -260,6 +260,23 @@ class MockDriver {
   }
   [require('util').inspect.custom]() {
     return 'MockDriver'
+  }
+}
+
+function serialize(value) {
+  if (TypeUtils.hasMethod(value, 'toJSON')) {
+    return value.toJSON()
+  } else if (TypeUtils.isArray(value)) {
+    return value.map(serialize)
+  } else if (TypeUtils.isObject(value)) {
+    return Object.entries(value).reduce(
+      (json, [key, value]) => Object.assign(json, {[key]: serialize(value)}),
+      {},
+    )
+  } else if (TypeUtils.isFunction(value)) {
+    return value.toString()
+  } else {
+    return value
   }
 }
 

@@ -145,7 +145,7 @@ class EyesVisualGrid extends EyesCore {
   async open(driver, optArg1, optArg2, optArg3, optArg4) {
     ArgumentGuard.notNull(driver, 'driver')
 
-    this._driver = this.spec.newDriver(this._logger, driver)
+    this._driver = await this.spec.newDriver(this._logger, driver).init()
     this._context = this._driver.currentContext
 
     if (optArg1 instanceof Configuration) {

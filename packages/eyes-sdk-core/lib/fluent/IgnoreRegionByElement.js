@@ -41,10 +41,8 @@ class IgnoreRegionByElement extends GetRegion {
    * @param {EyesScreenshot} screenshot
    * @return {Promise<Region[]>}
    */
-  async getRegion(eyes, screenshot) {
+  async getRegion(_eyes, screenshot) {
     this._element = await this._element
-    // TODO eyes should be replaced with driver once all SDKs will use this implementation
-    await this._element.init(eyes.getDriver())
     const rect = await this._element.getRect()
     const lTag = screenshot.convertLocation(
       rect.getLocation(),

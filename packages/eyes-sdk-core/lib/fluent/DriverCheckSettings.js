@@ -708,8 +708,8 @@ class CheckSettings {
     } else {
       throw new TypeError('scrollRootElement method called with argument of unknown type!')
     }
-    this._context = this._context.then(context => {
-      context.setScrollRootElement(scrollRootElement)
+    this._context = this._context.then(async context => {
+      context.setScrollRootElement(await scrollRootElement)
       return context
     })
 

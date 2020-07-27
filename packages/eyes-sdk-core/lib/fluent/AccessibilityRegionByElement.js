@@ -43,10 +43,9 @@ class AccessibilityRegionByElement extends GetAccessibilityRegion {
    * @param {EyesScreenshot} screenshot
    * @return {Promise<AccessibilityMatchSettings[]>}
    */
-  async getRegion(eyes, screenshot) {
+  async getRegion(_eyes, screenshot) {
     // TODO eyes should be replaced with driver once all SDKs will use this implementation
     this._element = await this._element
-    await this._element.init(eyes.getDriver())
     const rect = await this._element.getRect()
     const pTag = screenshot.convertLocation(
       rect.getLocation(),

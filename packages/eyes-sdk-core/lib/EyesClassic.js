@@ -214,7 +214,6 @@ class EyesClassic extends EyesCore {
           return this._checkRegion(checkSettings, targetRegion)
         }
       } else if (targetElement) {
-        await targetElement.init(this._context)
         if (this._stitchContent) {
           return this._checkFullElement(checkSettings, targetElement)
         } else {
@@ -257,11 +256,9 @@ class EyesClassic extends EyesCore {
     const originalContext = this._context
     this._context = this._context.attach(await checkSettings.context)
 
-    // if (this._context.main.scrollRootElement) {
-    //   await this._context.main.scrollRootElement.init(this._context.main)
-    // }
-
-    const positionProvider = this._createPositionProvider(this._context.main.scrollRootElement)
+    const positionProvider = this._createPositionProvider(
+      await this._context.main.getScrollRootElement(),
+    )
     this.setPositionProvider(positionProvider)
 
     const shouldHideScrollbars =
@@ -618,7 +615,7 @@ class EyesClassic extends EyesCore {
     const originProvider = new ScrollPositionProvider(
       this._logger,
       this._context.main,
-      this._context.main.scrollRootElement,
+      await this._context.main.getScrollRootElement(),
     )
     const fullCapture = new FullPageCaptureAlgorithm(
       this._logger,
@@ -655,7 +652,7 @@ class EyesClassic extends EyesCore {
       Math.round(clientWidth),
       Math.round(clientHeight),
     )
-    const fullPageImage = fullCapture.getStitchedRegion(region, null, positionProvider)
+    const fullPageImage = await fullCapture.getStitchedRegion(region, null, positionProvider)
 
     const originalFramePosition = this._context.main.offset //TODO
     this._logger.verbose('Building screenshot object...')

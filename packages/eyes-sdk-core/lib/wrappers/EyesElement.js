@@ -19,8 +19,8 @@ class EyesElement {
     }
   }
 
-  get spec() {
-    throw new TypeError('The class is not specialized')
+  static get spec() {
+    throw new TypeError('The class is not specialized. Create a specialize EyesElement first')
   }
 
   constructor(logger, context, element, selector) {
@@ -44,6 +44,10 @@ class EyesElement {
     }
   }
 
+  get spec() {
+    throw new TypeError('The class is not specialized. Create a specialize EyesElement first')
+  }
+
   get unwrapped() {
     return this._element
   }
@@ -60,41 +64,41 @@ class EyesElement {
     return this._context.isRef || !this._element
   }
 
-  async equals(otherElement) {
-    if (!otherElement) return false
+  async equals(element) {
+    if (this.isRef) return false
     return this.spec.isEqualElements(
       this._context.unwrapped,
-      this.unwrapped,
-      otherElement instanceof EyesElement ? otherElement.unwrapped : otherElement,
+      this._element,
+      element instanceof EyesElement ? element.unwrapped : element,
     )
   }
 
-  async init(context) {
+  async init() {
     if (!this._element) {
-      const element = await context.element(this._selector)
+      const element = await this._context.element(this._selector)
       if (!element) {
         throw new ElementNotFoundError(this._selector)
       }
       this._element = element.unwrapped
     }
-    if (!this._context) {
-      this._context = context
-      if (!this._logger) {
-        this._logger = context._logger
-      }
+    if (!this._logger) {
+      this._logger = this._context._logger
     }
     return this
   }
 
   async getRect() {
+    await this.init()
     return this.withRefresh(() => EyesUtils.getElementRect(this._logger, this._context, this))
   }
 
   async getClientRect() {
+    await this.init()
     return this.withRefresh(() => EyesUtils.getElementClientRect(this._logger, this._context, this))
   }
 
   async getCssProperty(...properties) {
+    await this.init()
     const values = await this.withRefresh(() =>
       EyesUtils.getElementCssProperties(this._logger, this._context, properties, this),
     )
@@ -102,6 +106,7 @@ class EyesElement {
   }
 
   async getProperty(...properties) {
+    await this.init()
     const values = await this.withRefresh(() =>
       EyesUtils.getElementProperties(this._logger, this._context, properties, this),
     )
@@ -109,6 +114,7 @@ class EyesElement {
   }
 
   async hideScrollbars() {
+    await this.init()
     return this.withRefresh(async () => {
       this._originalOverflow = await EyesUtils.setOverflow(
         this._logger,
@@ -121,12 +127,14 @@ class EyesElement {
   }
 
   async restoreScrollbars() {
+    await this.init()
     return this.withRefresh(async () => {
       await EyesUtils.setOverflow(this._logger, this._context, this._originalOverflow, this)
     })
   }
 
   async preservePosition(positionProvider) {
+    await this.init()
     return this.withRefresh(async () => {
       this._positionMemento = await positionProvider.getState(this)
       return this._positionMemento
@@ -135,6 +143,7 @@ class EyesElement {
 
   async restorePosition(positionProvider) {
     if (this._positionMemento) {
+      await this.init()
       return this.withRefresh(async () => {
         await positionProvider.restoreState(this._positionMemento, this)
       })
@@ -160,6 +169,9 @@ class EyesElement {
    */
   async withRefresh(operation) {
     try {
+      // this.spec.handleStaleElement(operation, async freshElement => {
+      //   return this.refresh(freshElement)
+      // })
       const result = await operation()
       // Some frameworks could handle stale element reference error by itself or doesn't throw an error
       const isStaleElementReferenceResult = this.spec.isStaleElementReferenceResult
