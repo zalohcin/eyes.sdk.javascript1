@@ -56,6 +56,13 @@ class MockDriver {
     this.mockScript(snippets.getElementProperties, ({element, properties}) => {
       return properties.map(property => (element.props || {})[property] || DEFAULT_PROPS[property])
     })
+    this.mockScript(snippets.setElementStyleProperties, ({element, properties}) => {
+      return Object.entries(properties).reduce((original, [name, value]) => {
+        original[name] = element.style[name]
+        element.style[name] = value
+        return original
+      }, {})
+    })
     this.mockScript(snippets.scrollTo, ({element, offset}) => {
       let scrollingElement = element
       if (!element) {
@@ -72,7 +79,17 @@ class MockDriver {
       if (!scrollingElement.scrollPosition) {
         scrollingElement.scrollPosition = {x: 0, y: 0}
       }
-      return [scrollingElement.scrollPosition.x, scrollingElement.scrollPosition.y]
+      return {x: scrollingElement.scrollPosition.x, y: scrollingElement.scrollPosition.y}
+    })
+    this.mockScript(snippets.getElementInnerOffset, ({element}) => {
+      let scrollingElement = element
+      if (!element) {
+        scrollingElement = this.findElement('html')
+      }
+      if (!scrollingElement.scrollPosition) {
+        scrollingElement.scrollPosition = {x: 0, y: 0}
+      }
+      return {x: scrollingElement.scrollPosition.x, y: scrollingElement.scrollPosition.y}
     })
     this.mockScript(snippets.getPixelRatio, () => {
       return 1
@@ -84,9 +101,10 @@ class MockDriver {
       element.attrs[attr] = value
     })
     this.mockScript(snippets.getViewportSize, () => {
-      return [this._window.rect.width, this._window.rect.height]
+      return {width: this._window.rect.width, height: this._window.rect.height}
     })
-    this.mockScript(snippets.getElementXpath, element => {
+    this.mockScript(snippets.getElementXpath, ({element}) => {
+      if (element.xpath) return element.xpath
       const elements = Array.from(this._elements.values()).reduce(
         (elements, array) => elements.concat(array),
         [],
@@ -95,6 +113,9 @@ class MockDriver {
       return index >= 0
         ? `/HTML[1]/BODY[1]/DIV[${index + 1}]`
         : `//[data-fake-selector="${element.selector}"]`
+    })
+    this.mockScript(snippets.blurElement, () => {
+      return null
     })
     this.mockScript(
       script => /^\/\* @applitools\/dom-snapshot@[\d.]+ \*\//.test(script),
@@ -108,6 +129,7 @@ class MockDriver {
     const element = {
       id: Symbol('elementId' + Math.floor(Math.random() * 100)),
       attrs: {},
+      style: {},
       selector,
       parentId: null,
       parentContextId: null,
@@ -150,6 +172,7 @@ class MockDriver {
     }
   }
   async executeScript(script, args = []) {
+    args = JSON.parse(JSON.stringify(args))
     const resultGenerator = this._scripts.get(script)
     if (resultGenerator) {
       return TypeUtils.isFunction(resultGenerator) ? resultGenerator(...args) : resultGenerator

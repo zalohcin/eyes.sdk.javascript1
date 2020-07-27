@@ -1,8 +1,7 @@
 const assert = require('assert')
 const {Logger} = require('../../index')
 const MockDriver = require('../utils/MockDriver')
-const FakeDriver = require('../utils/FakeDriver')
-const FakeContext = require('../utils/FakeContext')
+const {Driver, Context} = require('../utils/FakeSDK')
 
 describe('EyesContext', () => {
   describe('attached', () => {
@@ -29,7 +28,7 @@ describe('EyesContext', () => {
           children: [{selector: 'frame2--element1'}],
         },
       ])
-      driver = new FakeDriver(logger, mock)
+      driver = new Driver(logger, mock)
       context = driver.currentContext
     })
 
@@ -39,7 +38,7 @@ describe('EyesContext', () => {
     })
 
     it('attach(detached-context)', async () => {
-      const detachedContext = new FakeContext()
+      const detachedContext = new Context()
       const detachedContext1 = await detachedContext.context('frame1')
       const detachedContext11 = await detachedContext1.context('frame1-1')
       assert.ok(detachedContext11.isDetached)
@@ -104,7 +103,7 @@ describe('EyesContext', () => {
     let context
 
     beforeEach(() => {
-      context = new FakeContext()
+      context = new Context()
     })
 
     it('constructor()', async () => {

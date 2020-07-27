@@ -10,17 +10,15 @@ const EyesDriverOperationError = require('./errors/EyesDriverOperationError')
 
 /**
  * @typedef {import('./logging/Logger')} Logger
- * @typedef {import('./wrappers/EyesBrowsingContext')} EyesBrowsingContext
- * @typedef {import('./wrappers/EyesDriverController')} EyesDriverController
- * @typedef {import('./wrappers/EyesElementFinder')} EyesElementFinder
- * @typedef {import('./wrappers/EyesJsExecutor')} EyesJsExecutor
- * @typedef {import('./wrappers/EyesWrappedElement')} EyesWrappedElement
+ * @typedef {import('./wrappers/EyesElement')} EyesElement
+ * @typedef {import('./wrappers/EyesContext')} EyesContext
+ * @typedef {import('./wrappers/EyesElement')} EyesElement
  * @typedef {import('./positioning/PositionProvider')} PositionProvider
  */
 
 /**
  * Returns viewport size of current context
- * @param {Logger} logger - logger instance
+ * @param {Logger} logger
  * @param {EyesContext} context
  * @return {RectangleSize} viewport size
  */
@@ -46,11 +44,8 @@ async function getViewportSize(logger, context) {
 }
 /**
  * Set viewport size of the window
- * @param {Logger} logger - logger instance
- * @param {Object} driver
- * @param {EyesDriverController} driver.controller - driver controller
- * @param {EyesJsExecutor} driver.executor - js executor
- * @param {EyesBrowsingContext} driver.context - browsing context
+ * @param {Logger} logger
+ * @param {EyesContext} context
  * @param {RectangleSize} requiredViewportSize - required viewport size to set
  */
 async function setViewportSize(logger, context, viewportSize) {
@@ -96,10 +91,9 @@ async function setViewportSize(logger, context, viewportSize) {
 }
 /**
  * Set window size with retries
- * @param {Object} obj
- * @param {Logger} obj.logger - logger instance
- * @param {EyesDriverController} obj.controller - driver controller
- * @param {RectangleSize} obj.requiredViewportSize - required viewport size to set
+ * @param {Logger} logger
+ * @param {EyesContext} context
+ * @param {RectangleSize} requiredViewportSize
  * @return {boolean} true if operation finished successfully, false otherwise
  */
 async function _setWindowSize(logger, context, windowSize) {
@@ -134,8 +128,8 @@ async function _setWindowSize(logger, context, windowSize) {
 }
 /**
  * Get current context content size
- * @param {Logger} _logger - logger instance
- * @param {EyesJsExecutor} executor - js executor
+ * @param {Logger} _logger
+ * @param {EyesContext} context
  * @return {Region} current context content size
  */
 async function getDocumentSize(_logger, context) {
@@ -148,9 +142,9 @@ async function getDocumentSize(_logger, context) {
 }
 /**
  * Get content size of the specified element
- * @param {Logger} _logger - logger instance
- * @param {EyesJsExecutor} executor - js executor
- * @param {EyesWrappedElement} element - element to get size
+ * @param {Logger} _logger
+ * @param {EyesContext} context
+ * @param {EyesElement} element
  * @returns {Promise<Region>} element content size
  */
 async function getElementEntireSize(_logger, context, element) {
@@ -165,9 +159,9 @@ async function getElementEntireSize(_logger, context, element) {
 }
 /**
  * Get element client rect relative to the current context
- * @param {Logger} _logger - logger instance
- * @param {EyesJsExecutor} executor - js executor
- * @param {EyesWrappedElement} element - element to get client rect
+ * @param {Logger} _logger
+ * @param {EyesContext} context
+ * @param {EyesElement} element
  * @return {Promise<Region>} element client rect
  */
 async function getElementClientRect(_logger, context, element) {
@@ -180,12 +174,11 @@ async function getElementClientRect(_logger, context, element) {
     coordinatesType: CoordinatesTypes.CONTEXT_RELATIVE,
   })
 }
-
 /**
  * Get element rect relative to the current context
- * @param obj
- * @param {EyesJsExecutor} obj.executor - js executor
- * @param {EyesWrappedElement} obj.element - element to get rect
+ * @param {Logger} _logger
+ * @param {EyesContext} context
+ * @param {EyesElement} element
  * @return {Promise<Region>} element rect
  */
 async function getElementRect(_logger, context, element) {
@@ -199,11 +192,12 @@ async function getElementRect(_logger, context, element) {
   })
 }
 
+// TODO move to EyesElement
 /**
  * Get native mobile element rect relative to the current context
  * @param obj
  * @param {EyesWrappedDriver} obj.driver - driver
- * @param {EyesWrappedElement} obj.element - element to get rect
+ * @param {EyesElement} obj.element - element to get rect
  * @return {Promise<Region>} element rect
  */
 async function getNativeElementRect({driver, element}) {
@@ -218,11 +212,12 @@ async function getNativeElementRect({driver, element}) {
   })
 }
 
+// TODO move to EyesElement
 /**
  * Get native mobile element size
  * @param obj
  * @param {EyesWrappedDriver} obj.driver - driver
- * @param {EyesWrappedElement} obj.element - element to get rect
+ * @param {EyesElement} obj.element - element to get rect
  * @return {Promise<RectangleSize>} element size
  */
 async function getNativeElementSize({driver, element}) {
@@ -233,11 +228,12 @@ async function getNativeElementSize({driver, element}) {
   })
 }
 
+// TODO move to EyesElement
 /**
  * Get native mobile element location
  * @param obj
  * @param {EyesWrappedDriver} obj.driver - driver
- * @param {EyesWrappedElement} obj.element - element to get rect
+ * @param {EyesElement} obj.element - element to get rect
  * @return {Promise<Location>} element location
  */
 async function getNativeElementLocation({driver, element}) {
@@ -250,10 +246,10 @@ async function getNativeElementLocation({driver, element}) {
 
 /**
  * Extract values of specified properties for specified element
- * @param {Logger} _logger - logger instance
- * @param {EyesJsExecutor} executor - js executor
- * @param {string[]} properties - names of properties to extract
- * @param {EyesWrappedElement} element - element to extract properties
+ * @param {Logger} _logger
+ * @param {EyesContext} context
+ * @param {string[]} properties
+ * @param {EyesElement} element
  * @return {*[]} extracted values
  */
 async function getElementProperties(_logger, context, properties, element) {
@@ -263,10 +259,10 @@ async function getElementProperties(_logger, context, properties, element) {
 // TODO rename
 /**
  * Extract css values of specified css properties for specified element
- * @param {Logger} _logger - logger instance
- * @param {EyesJsExecutor} executor - js executor
- * @param {string[]} properties - names of css properties to extract
- * @param {EyesWrappedElement} element - element to extract css properties
+ * @param {Logger} _logger
+ * @param {EyesContext} context
+ * @param {string[]} properties
+ * @param {EyesElement} element
  * @return {string[]} extracted css values
  */
 async function getElementCssProperties(_logger, context, properties, element) {
@@ -274,9 +270,8 @@ async function getElementCssProperties(_logger, context, properties, element) {
 }
 /**
  * Get device pixel ratio
- * @param {Logger} _logger - logger instance
- * @param {Object} driver
- * @param {EyesJsExecutor} driver.executor - js executor
+ * @param {Logger} _logger
+ * @param {EyesContext} context
  * @return {Promise<number>} device pixel ratio
  */
 async function getPixelRatio(_logger, context) {
@@ -293,9 +288,9 @@ async function getInnerOffset(_logger, context, element) {
 }
 /**
  * Get current context scroll position of the specified element or default scrolling element
- * @param {Logger} _logger - logger instance
- * @param {EyesJsExecutor} executor - js executor
- * @param {EyesWrappedElement} [element] - element to extract scroll position
+ * @param {Logger} _logger
+ * @param {EyesContext} context
+ * @param {EyesElement} [element] - element to extract scroll position
  * @return {Promise<Location>} scroll position
  */
 async function getScrollOffset(_logger, context, element) {
@@ -304,10 +299,10 @@ async function getScrollOffset(_logger, context, element) {
 }
 /**
  * Set current context scroll position for the specified element or default scrolling element
- * @param {Logger} _logger - logger instance
- * @param {EyesJsExecutor} executor - js executor
+ * @param {Logger} _logger
+ * @param {EyesContext} context
  * @param {Location} location - required scroll position
- * @param {EyesWrappedElement} [element] - element to set scroll position
+ * @param {EyesElement} [element] - element to set scroll position
  * @return {Promise<Location>} actual scroll position after set
  */
 async function scrollTo(_logger, context, location, element) {
@@ -319,9 +314,9 @@ async function scrollTo(_logger, context, location, element) {
 }
 /**
  * Get translate position of the specified element or default scrolling element
- * @param {Logger} _logger - logger instance
- * @param {EyesJsExecutor} executor - js executor
- * @param {EyesWrappedElement} [element] - element to extract translate position
+ * @param {Logger} _logger
+ * @param {EyesContext} context
+ * @param {EyesElement} [element] - element to extract translate position
  * @return {Promise<Location>} translate position
  */
 async function getTranslateOffset(_logger, context, element) {
@@ -329,10 +324,10 @@ async function getTranslateOffset(_logger, context, element) {
 }
 /**
  * Set translate position of the specified element or default scrolling element
- * @param {Logger} _logger - logger instance
- * @param {EyesJsExecutor} executor - js executor
+ * @param {Logger} _logger
+ * @param {EyesContext} context
  * @param {Location} location - required translate position
- * @param {EyesWrappedElement} [element] - element to set translate position
+ * @param {EyesElement} [element] - element to set translate position
  * @return {Promise<Location>} actual translate position after set
  */
 async function translateTo(_logger, context, location, element) {
@@ -344,9 +339,9 @@ async function translateTo(_logger, context, location, element) {
 }
 /**
  * Check if the specified element or default scrolling element is scrollable
- * @param {Logger} _logger - logger instance
- * @param {EyesJsExecutor} executor - js executor
- * @param {EyesWrappedElement} [element] - element to check
+ * @param {Logger} _logger
+ * @param {EyesContext} context
+ * @param {EyesElement} [element] - element to check
  * @return {Promise<boolean>} true if element is scrollable, false otherwise
  */
 async function isScrollable(_logger, context, element) {
@@ -354,9 +349,9 @@ async function isScrollable(_logger, context, element) {
 }
 /**
  * Mark the specified element or default scrolling element with `data-applitools-scroll`
- * @param {Logger} _logger - logger instance
- * @param {EyesJsExecutor} executor - js executor
- * @param {EyesWrappedElement} [element] - element to mark
+ * @param {Logger} _logger
+ * @param {EyesContext} context
+ * @param {EyesElement} [element] - element to mark
  */
 async function markScrollRootElement(_logger, context, element) {
   return context.execute(snippets.setElementAttribute, {
@@ -367,9 +362,9 @@ async function markScrollRootElement(_logger, context, element) {
 }
 /**
  * Get transforms of the specified element or default scrolling element
- * @param {Logger} _logger - logger instance
- * @param {EyesJsExecutor} executor - js executor
- * @param {EyesWrappedElement} [element] - element to extract transforms
+ * @param {Logger} _logger
+ * @param {EyesContext} context
+ * @param {EyesElement} [element] - element to extract transforms
  * @return {Promise<Object>} element transforms
  */
 async function getTransforms(_logger, context, element) {
@@ -380,19 +375,19 @@ async function getTransforms(_logger, context, element) {
 }
 /**
  * Set transforms for the specified element or default scrolling element
- * @param {Logger} _logger - logger instance
- * @param {EyesJsExecutor} executor - js executor
+ * @param {Logger} _logger
+ * @param {EyesContext} context
  * @param {Object} transforms - collection of transforms to set
- * @param {EyesWrappedElement} [element] - element to set transforms
+ * @param {EyesElement} [element] - element to set transforms
  */
 async function setTransforms(_logger, context, transforms, element) {
   return context.execute(snippets.setElementStyleProperties, {element, properties: transforms})
 }
 /**
  * Get overflow style property of the specified element
- * @param {Logger} _logger - logger instance
- * @param {EyesJsExecutor} executor - js executor
- * @param {EyesWrappedElement} element - element to get overflow
+ * @param {Logger} _logger
+ * @param {EyesContext} context
+ * @param {EyesElement} element - element to get overflow
  * @return {Promise<string?>} overflow value
  */
 async function getOverflow(_logger, context, element) {
@@ -404,14 +399,14 @@ async function getOverflow(_logger, context, element) {
 }
 /**
  * Set overflow style property of the specified element
- * @param {Logger} _logger - logger instance
- * @param {EyesJsExecutor} executor - js executor
- * @param {EyesWrappedElement} element - element to set overflow
+ * @param {Logger} _logger
+ * @param {EyesContext} context
+ * @param {EyesElement} element - element to set overflow
  * @return {Promise<string?>} original overflow value before set
  */
 async function setOverflow(_logger, context, overflow, element) {
   try {
-    const original = await context.execute(snippets.setElementStyleProperty, {
+    const original = await context.execute(snippets.setElementStyleProperties, {
       element,
       properties: {overflow},
     })
@@ -424,9 +419,9 @@ async function setOverflow(_logger, context, overflow, element) {
 /**
  * Blur the specified element or current active element
  * @template TElement
- * @param {Logger} logger - logger instance
- * @param {EyesJsExecutor} executor - js executor
- * @param {EyesWrappedElement} [element] - element to blur
+ * @param {Logger} logger
+ * @param {EyesContext} context
+ * @param {EyesElement} [element] - element to blur
  * @return {Promise<TElement>} actually blurred element if there is any
  */
 async function blurElement(logger, context, element) {
@@ -437,9 +432,9 @@ async function blurElement(logger, context, element) {
 }
 /**
  * Focus the specified element
- * @param {Logger} logger - logger instance
- * @param {EyesJsExecutor} executor - js executor
- * @param {EyesWrappedElement} element - element to focus
+ * @param {Logger} logger
+ * @param {EyesContext} context
+ * @param {EyesElement} element - element to focus
  */
 async function focusElement(logger, context, element) {
   return context.execute(snippets.focusElement, {element}).catch(err => {
@@ -449,9 +444,9 @@ async function focusElement(logger, context, element) {
 }
 /**
  * Get element xpath selector related to the current context
- * @param {Logger} logger - logger instance
- * @param {EyesJsExecutor} executor - js executor
- * @param {EyesWrappedElement} element - element to calculate xpath
+ * @param {Logger} logger
+ * @param {EyesContext} context
+ * @param {EyesElement} element - element to calculate xpath
  * @return {Promise<string>} xpath selector
  */
 async function getElementXpath(logger, context, element) {
@@ -463,10 +458,8 @@ async function getElementXpath(logger, context, element) {
 /**
  * Translate element selector to the persisted regions
  * @template TSelector
- * @param {Logger} logger - logger instance
- * @param {Object} driver
- * @param {EyesElementFinder} driver.finder - element finder
- * @param {EyesJsExecutor} driver.executor - js executor
+ * @param {Logger} logger
+ * @param {EyesContext} context
  * @param {TSelector} selector - element selector
  * @return {Promise<{type: string, selector: string}[]>} persisted regions for selector
  */
@@ -495,8 +488,8 @@ async function locatorToPersistedRegions(logger, context, selector) {
  *
  * Extract information about relations between current context and its parent
  * @template TElement
- * @param {Logger} _logger - logger instance
- * @param {EyesJsExecutor} executor - js executor
+ * @param {Logger} _logger
+ * @param {EyesContext} context
  * @return {Promise<ContextInfo<TElement>>} frame info
  */
 async function getContextInfo(_logger, context) {
@@ -504,10 +497,8 @@ async function getContextInfo(_logger, context) {
 }
 /**
  * Find by context information
- * @param {Logger} _logger - logger instance
- * @param {Object} driver
- * @param {EyesBrowsingContext} driver.context - browsing context
- * @param {EyesJsExecutor} driver.executor - js executor
+ * @param {Logger} _logger
+ * @param {EyesContext} context
  * @param {ContextInfo} contextInfo - target context info
  * @return {Promise<Frame>} frame
  */
@@ -516,11 +507,8 @@ async function getChildFramesInfo(_logger, context) {
 }
 /**
  * Ensure provided region is visible as much as possible
- * @param {Logger} logger - logger instance
- * @param {Object} driver
- * @param {EyesDriverController} driver.controller - driver controller
- * @param {EyesBrowsingContext} driver.context - browsing context
- * @param {EyesJsExecutor} driver.executor - js executor
+ * @param {Logger} logger
+ * @param {EyesContext} context
  * @param {PositionProvider} positionProvider - position provider
  * @param {Promise<Region>} region - region to ensure visible
  */
@@ -532,7 +520,10 @@ async function ensureRegionVisible(logger, context, positionProvider, region) {
   }
   const elementContextRect = new Region(region)
   const contextViewportLocation = await context.getLocationInViewport()
-  const elementViewportRect = elementContextRect.offsetByLocation(contextViewportLocation)
+  const elementViewportRect = elementContextRect.offset(
+    contextViewportLocation.getX(),
+    contextViewportLocation.getY(),
+  )
   const viewportRect = await context.main.getRect() // TODO check api viewport size + scroll/transition
   if (viewportRect.contains(elementViewportRect)) {
     return Location.ZERO
@@ -551,7 +542,9 @@ async function ensureRegionVisible(logger, context, positionProvider, region) {
     )
     remainingOffset = remainingOffset.offsetNegative(actualOffset)
     currentContext = currentContext.parent
-    remainingOffset = remainingOffset.offsetByLocation(await currentContext.getClientLocation())
+    if (currentContext) {
+      remainingOffset = remainingOffset.offsetByLocation(await currentContext.getClientLocation())
+    }
   }
   return remainingOffset
 }

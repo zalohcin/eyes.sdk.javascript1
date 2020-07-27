@@ -16,21 +16,19 @@ const {
   AccessibilityRegionBySelector,
   AccessibilityRegionType,
 } = require('../../index')
-const EyesJsSnippets = require('../../lib/EyesJsSnippets')
 const MockDriver = require('../utils/MockDriver')
-const FakeWrappedDriver = require('../utils/FakeWrappedDriver')
+const {Driver} = require('../utils/FakeSDK')
 
 describe('toPersistedRegions()', () => {
   let driver, element
 
   before(async () => {
     const mock = new MockDriver()
-    mock.mockScript(EyesJsSnippets.GET_ELEMENT_XPATH, element => element.xpath)
     mock.mockElement('custom selector', {
       xpath: '/calculated[1]/xpath[1]/some[1]',
     })
-    driver = new FakeWrappedDriver(new Logger(false), mock)
-    element = await driver.finder.findElement('custom selector')
+    driver = new Driver(new Logger(false), mock)
+    element = await driver.element('custom selector')
   })
 
   it('IgnoreRegionByRectangle', async () => {

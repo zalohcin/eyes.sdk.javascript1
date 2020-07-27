@@ -38,7 +38,7 @@ class IgnoreRegionBySelector extends GetRegion {
    */
   async getRegion(eyes, screenshot) {
     // TODO eyes should be replaced with driver once all SDKs will use this implementation
-    const elements = await eyes.getDriver().finder.findElements(this._selector)
+    const elements = await eyes.getDriver().elements(this._selector)
 
     const regions = []
     for (const element of elements) {

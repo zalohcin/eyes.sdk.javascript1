@@ -1,6 +1,5 @@
 const TypeUtils = require('../utils/TypeUtils')
 const Location = require('../geometry/Location')
-const RectangleSize = require('../geometry/RectangleSize')
 const Region = require('../geometry/Region')
 const EyesUtils = require('../EyesUtils')
 const EyesElement = require('./EyesElement')
@@ -45,6 +44,8 @@ class EyesContext {
       this._parent = null
       this._scrollRootElement = options && options.scrollRootElement
       this._driver = options && options.driver
+      this._rect = Region.EMPTY
+      this._clientRect = Region.EMPTY
     } else if (this.constructor.isReference(options.reference)) {
       // child context
       if (options.reference instanceof EyesContext) {
@@ -102,28 +103,26 @@ class EyesContext {
     return !this.isDetached && this._driver.currentContext === this
   }
 
-  get scrollRootElement() {
-    return this._scrollRootElement
-  }
-
-  set scrollRootElement(scrollRootElement) {
-    this._scrollRootElement = scrollRootElement
-  }
-
   attach(context) {
     if (!context.isDetached) {
       throw new Error('Context need to be detached before attach')
     }
     const [main, ...path] = context.path
     this._scrollRootElement = main.scrollRootElement
+    main._element = this._element
+    main._context = this._context
+    main._driver = this._driver
+    main._parent = this._parent
     if (path.length > 0) {
       path[0]._parent = this
       path.forEach(context => {
         context._driver = this._driver
         context._logger = this._logger
       })
+      return context
+    } else {
+      return this
     }
-    return context
   }
 
   async equals(context) {
@@ -196,7 +195,8 @@ class EyesContext {
     }
 
     // TODO preserve metrics
-    // await this._parent.preserveOffset()
+    await this._parent.cacheInnerOffset()
+    await this.cacheMetrics()
 
     this._context = await this.spec.childContext(this._parent.unwrapped, this._element.unwrapped)
 
@@ -217,7 +217,7 @@ class EyesContext {
     if (context.parent !== this) {
       throw Error(`Couldn't find a child context because it has a different parent`)
     }
-    return this.isCurrent ? context.init(this._driver) : context
+    return this.isCurrent ? context.init() : context
   }
 
   async element(selectorOrElement) {
@@ -225,9 +225,6 @@ class EyesContext {
       return this.spec.newElement(this._logger, this, selectorOrElement)
     }
     let selector = selectorOrElement
-    if (!this.constructor.isSelector(selector)) {
-      selector = this.spec.toFrameworkSelector(selector)
-    }
     if (this.isDetached) {
       return this.spec.newElement(null, this, null, selector)
     }
@@ -237,14 +234,9 @@ class EyesContext {
   }
 
   async elements(selector) {
-    if (!this.constructor.isSelector(selector)) {
-      selector = this.spec.toFrameworkSelector(selector)
-    }
     await this.focus()
     const elements = await this.spec.findElements(this._context, selector)
-    return elements.map(element =>
-      this.spec.newElement(this._logger, this._driver, element, selector),
-    )
+    return elements.map(element => this.spec.newElement(this._logger, this, element, selector))
   }
 
   async execute(script, ...args) {
@@ -258,15 +250,39 @@ class EyesContext {
     }
   }
 
+  async cacheInnerOffset() {
+    this._innerOffset = await this.getInnerOffset()
+  }
+
+  async cacheMetrics() {
+    this._rect = await this._element.getRect()
+    this._clientRect = await this._element.getClientRect()
+    if (this._parent.isMain) {
+      this._parent._rect = new Region(Location.ZERO, await this._driver.getViewportSize())
+      this._parent._clientRect = this._parent._rect
+    }
+  }
+
   async getFrameElement() {
     if (this.isMain) return null
     await this.init()
     return this._element
   }
 
+  async getScrollRootElement() {
+    if (!this._scrollRootElement) {
+      this._scrollRootElement = await this.element({type: 'css', selector: 'html'})
+    }
+    return this._scrollRootElement
+  }
+
+  async setScrollRootElement(scrollRootElement) {
+    this._scrollRootElement = scrollRootElement
+  }
+
   async getClientLocation() {
     await this.init()
-    if (this.isCurrent) {
+    if (this.isCurrent && !this.isMain) {
       this._clientRect = await this._element.getClientRect()
     }
     return this._clientRect.getLocation()
@@ -274,7 +290,7 @@ class EyesContext {
 
   async getClientSize() {
     await this.init()
-    if (this.isCurrent) {
+    if (this.isCurrent && !this.isMain) {
       this._clientRect = await this._element.getClientRect()
     }
     return this._clientRect.getSize()
@@ -282,7 +298,7 @@ class EyesContext {
 
   async getRect() {
     await this.init()
-    if (this.isCurrent) {
+    if (this.isCurrent && !this.isMain) {
       this._rect = await this._element.getRect()
     }
     return this._rect
@@ -290,7 +306,7 @@ class EyesContext {
 
   async getClientRect() {
     await this.init()
-    if (this.isCurrent) {
+    if (this.isCurrent && !this.isMain) {
       this._clientRect = await this._element.getClientRect()
     }
     return this._clientRect
@@ -312,7 +328,7 @@ class EyesContext {
         location.then(async location => {
           const contextLocation = await context.getClientLocation()
           const parentContextLocation = context.parent
-            ? await context.parent.getOffset()
+            ? await context.parent.getInnerOffset()
             : Location.ZERO
           return location.offset(
             contextLocation.getX() - parentContextLocation.getX(),
@@ -327,16 +343,23 @@ class EyesContext {
     const rect = await this.path.reduce(
       (rect, context) =>
         rect.then(async rect => {
-          rect.intersect(new Region(Location.ZERO, context.getClientSize()))
+          rect.intersect(new Region(Location.ZERO, await context.getClientSize()))
           return rect
         }),
-      Promise.resolve(new Region(Location.ZERO, this.main.getClientSize())),
+      Promise.resolve(new Region(Location.ZERO, await this.main.getClientSize())),
     )
     return rect.getSize()
   }
 
   async getDocumentSize() {
     return EyesUtils.getDocumentSize(this._logger, this)
+  }
+
+  async getInnerOffset() {
+    if (this.isCurrent) {
+      this._innerOffset = EyesUtils.getInnerOffset(this._logger, this, this._scrollRootElement)
+    }
+    return this._innerOffset
   }
 }
 

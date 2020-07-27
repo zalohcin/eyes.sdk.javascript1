@@ -250,7 +250,7 @@ class EyesWrappedElement {
    */
   async getRect() {
     return this.withRefresh(async () => {
-      return (await this._driver.controller.isNative())
+      return (await this._driver.isNative)
         ? EyesUtils.getNativeElementRect({driver: this._driver, element: this})
         : EyesUtils.getElementRect({executor: this._driver.executor, element: this})
     })
@@ -271,7 +271,7 @@ class EyesWrappedElement {
    */
   async getSize() {
     return this.withRefresh(async () => {
-      return (await this._driver.controller.isNative())
+      return (await this._driver.isNative)
         ? EyesUtils.getNativeElementSize({driver: this._driver, element: this})
         : (
             await EyesUtils.getElementRect({
@@ -287,7 +287,7 @@ class EyesWrappedElement {
    */
   async getLocation() {
     return this.withRefresh(async () => {
-      return (await this._driver.controller.isNative())
+      return (await this._driver.isNative)
         ? EyesUtils.getNativeElementLocation({driver: this._driver, element: this})
         : (
             await EyesUtils.getElementRect({

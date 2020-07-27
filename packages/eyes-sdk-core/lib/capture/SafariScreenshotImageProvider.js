@@ -1,9 +1,7 @@
 'use strict'
 const OSNames = require('../useragent/OSNames')
-const Location = require('../geometry/Location')
 const Region = require('../geometry/Region')
 const ImageProvider = require('./ImageProvider')
-const EyesUtils = require('../EyesUtils')
 
 class SafariScreenshotImageProvider extends ImageProvider {
   /**
@@ -32,7 +30,7 @@ class SafariScreenshotImageProvider extends ImageProvider {
    */
   async getImage() {
     this._logger.verbose('Getting screenshot as base64...')
-    const image = await this._driver.controller.takeScreenshot()
+    const image = await this._driver.takeScreenshot()
     if (this._rotation) {
       await image.rotate(this._rotation)
     }
@@ -79,16 +77,8 @@ class SafariScreenshotImageProvider extends ImageProvider {
       this._userAgent.getBrowserMajorVersion() === '11' &&
       !this._eyes.getForceFullPageScreenshot()
     ) {
-      const frameChain = this._driver.context.frameChain
-      let loc =
-        frameChain.size > 0
-          ? frameChain.first.parentScrollLocation
-          : await EyesUtils.getScrollOffset(this._logger, this._driver.executor).catch(
-              () => Location.ZERO,
-            )
-      loc = new Location(Math.ceil(loc.getX() * scaleRatio), Math.ceil(loc.getY() * scaleRatio))
-
-      await image.crop(new Region(loc.scale(scaleRatio), viewportSize))
+      const location = await this._driver.getInnerOffset()
+      await image.crop(new Region(location.scale(scaleRatio), viewportSize))
     }
 
     return image

@@ -339,10 +339,10 @@ class EyesCore extends EyesBase {
    */
   static async setViewportSize(driver, viewportSize) {
     const logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS)
-    const wrappedDriver = new this.WrappedDriver(logger, driver)
-    if (!(await wrappedDriver.controller.isMobile())) {
+    const eyesDriver = this.spec.newDriver(logger, driver)
+    if (!eyesDriver.isMobile) {
       ArgumentGuard.notNull(viewportSize, 'viewportSize')
-      await EyesUtils.setViewportSize(logger, wrappedDriver, new RectangleSize(viewportSize))
+      await eyesDriver.setViewportSize(viewportSize)
     }
   }
 
@@ -461,14 +461,11 @@ class EyesCore extends EyesBase {
       this._scaleProviderHandler,
     )
 
-    if (await this._controller.isNative()) {
+    if (this._driver.isNative) {
       return defaultScaleProviderFactory
     } else {
       try {
-        const entireSize = await EyesUtils.getCurrentFrameContentEntireSize(
-          this._logger,
-          this._executor,
-        )
+        const entireSize = await this._context.getDocumentSize()
         return new ContextBasedScaleProviderFactory(
           this._logger,
           entireSize,
@@ -505,7 +502,7 @@ class EyesCore extends EyesBase {
     if (!this._driver) {
       return undefined
     }
-    return this._controller.getAUTSessionId()
+    return this._driver.sessionId
   }
 
   async getTitle() {

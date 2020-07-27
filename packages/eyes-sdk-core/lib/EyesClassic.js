@@ -24,27 +24,12 @@ const EyesCore = require('./EyesCore')
 
 /**
  * @template TDriver, TElement, TSelector
- * @typedef {import('./wrappers/EyesWrappedDriver')<TDriver, TElement, TSelector>} EyesWrappedDriver
+ * @typedef {import('./wrappers/EyesDriver')<TDriver, TElement, TSelector>} EyesDriver
  */
 
 /**
  * @template TDriver, TElement, TSelector
- * @typedef {import('./wrappers/EyesWrappedElement')<TDriver, TElement, TSelector>} EyesWrappedElement
- */
-
-/**
- * @template TDriver, TElement, TSelector
- * @typedef {import('./wrappers/EyesWrappedDriver').EyesWrappedDriverCtor<TDriver, TElement, TSelector>} EyesWrappedDriverCtor
- */
-
-/**
- * @template TDriver, TElement, TSelector
- * @typedef {import('./wrappers/EyesWrappedElement').EyesWrappedElementCtor<TDriver, TElement, TSelector>} EyesWrappedElementCtor
- */
-
-/**
- * @template TDriver, TElement, TSelector
- * @typedef {import('./wrappers/EyesWrappedElement').EyesWrappedElementStatics<TDriver, TElement, TSelector>} EyesWrappedElementStatics
+ * @typedef {import('./wrappers/EyesElement')<TDriver, TElement, TSelector>} EyesElement
  */
 
 /**
@@ -69,25 +54,10 @@ class EyesClassic extends EyesCore {
    * @param {CheckSettings<TElement, TSelector>} implementations.CheckSettings - specialized version of {@link DriverCheckSettings}
    * @return {new (...args: ConstructorParameters<typeof EyesClassic>) => EyesClassic<TDriver, TElement, TSelector>} specialized version of this class
    */
-  static specialize({agentId, WrappedDriver, WrappedElement, CheckSettings}) {
+  static specialize({agentId, spec}) {
     return class extends EyesClassic {
-      /**
-       * @return {typeof WrappedDriver} implementation for {@link EyesWrappedDriver}
-       */
-      static get WrappedDriver() {
-        return WrappedDriver
-      }
-      /**
-       * @return {typeof WrappedElement} implementation for {@link EyesWrappedElement}
-       */
-      static get WrappedElement() {
-        return WrappedElement
-      }
-      /**
-       * @return {typeof CheckSettings} specialized version of {@link DriverCheckSettings}
-       */
-      static get CheckSettings() {
-        return CheckSettings
+      get spec() {
+        return spec
       }
       /**
        * @return {string} base agent id
@@ -156,7 +126,7 @@ class EyesClassic extends EyesCore {
 
     this._logger.verbose('Running using Webdriverio module')
 
-    this._driver = this.spec.newDriver(this._logger, driver)
+    this._driver = await this.spec.newDriver(this._logger, driver).init()
     this._context = this._driver.currentContext
 
     this._configuration.setAppName(
@@ -250,7 +220,7 @@ class EyesClassic extends EyesCore {
         } else {
           return this._checkElement(checkSettings, targetElement)
         }
-      } else if (!checkSettings.context.isMain) {
+      } else if (!(await checkSettings.context).isMain) {
         if (this._stitchContent) {
           return this._checkFullFrame(checkSettings)
         } else {
@@ -281,17 +251,15 @@ class EyesClassic extends EyesCore {
     this._context = await this._driver.refreshContexts()
 
     if (this._scrollRootElement) {
-      this._context.main.scrollRootElement = this._scrollRootElement
+      this._context.main.setScrollRootElement(this._scrollRootElement)
     }
 
     const originalContext = this._context
-    this._context = this._context.attach(checkSettings.context)
+    this._context = this._context.attach(await checkSettings.context)
 
-    if (this._context.main.scrollRootElement) {
-      await this._context.main.scrollRootElement.init(this._context.main)
-    } else {
-      this._context.main.scrollRootElement = await this._context.main.element('html')
-    }
+    // if (this._context.main.scrollRootElement) {
+    //   await this._context.main.scrollRootElement.init(this._context.main)
+    // }
 
     const positionProvider = this._createPositionProvider(this._context.main.scrollRootElement)
     this.setPositionProvider(positionProvider)
@@ -302,9 +270,10 @@ class EyesClassic extends EyesCore {
         (this._configuration.getStitchMode() === StitchMode.CSS && this._stitchContent))
 
     for (const context of this._context.path) {
-      await context.scrollRootElement.preservePosition(positionProvider)
+      const scrollRootElement = await context.getScrollRootElement()
+      await scrollRootElement.preservePosition(positionProvider)
       if (shouldHideScrollbars) {
-        await context.scrollRootElement.hideScrollbars()
+        await scrollRootElement.hideScrollbars()
       }
     }
 
@@ -313,10 +282,11 @@ class EyesClassic extends EyesCore {
     } finally {
       let currentContext = this._context
       while (currentContext) {
+        const scrollRootElement = await currentContext.getScrollRootElement()
         if (shouldHideScrollbars) {
-          await currentContext.scrollRootElement.restoreScrollbars()
+          await scrollRootElement.restoreScrollbars()
         }
-        await currentContext.scrollRootElement.restorePosition()
+        await scrollRootElement.restorePosition(positionProvider)
         currentContext = currentContext.parent
       }
       this._context = await originalContext.focus()
@@ -520,7 +490,7 @@ class EyesClassic extends EyesCore {
     this._regionFullArea = null
     this._regionToCheck = new Region(
       Location.ZERO,
-      this._context.innerSize,
+      await this._context.getClientSize(),
       CoordinatesType.CONTEXT_RELATIVE,
     )
 
@@ -670,7 +640,7 @@ class EyesClassic extends EyesCore {
     if (!scrollRootElement) {
       scrollRootElement = await this._context.main.element('html')
     }
-    const location = await scrollRootElement.getLocation()
+    const location = await scrollRootElement.getRect().then(rect => rect.getLocation())
     const [borderLeftWidth, borderTopWidth] = await scrollRootElement.getCssProperty(
       'border-left-width',
       'border-top-width',

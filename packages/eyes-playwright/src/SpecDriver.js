@@ -2,15 +2,15 @@ const {TypeUtils} = require('@applitools/eyes-sdk-core')
 
 // #region HELPERS
 
-async function _handleToObject(handle) {
+async function handleToObject(handle) {
   const type = handle._objectType
   if (type === 'array') {
     const map = await handle.getProperties()
-    return Promise.all(Array.from(map.values(), _handleToObject))
+    return Promise.all(Array.from(map.values(), handleToObject))
   } else if (type === 'object') {
     const map = await handle.getProperties()
     const chunks = await Promise.all(
-      Array.from(map, async ([key, handle]) => ({[key]: await _handleToObject(handle)})),
+      Array.from(map, async ([key, handle]) => ({[key]: await handleToObject(handle)})),
     )
     return Object.assign(...chunks)
   } else if (type === 'node') {
@@ -18,6 +18,14 @@ async function _handleToObject(handle) {
   } else {
     return handle.jsonValue()
   }
+}
+
+function transformSelector(selector) {
+  if (TypeUtils.has(selector, ['type', 'selector'])) {
+    if (selector.type === 'css') return `css=${selector.selector}`
+    else if (selector.type === 'xpath') return `xpath=${selector.selector}`
+  }
+  return selector
 }
 
 // #endregion
@@ -33,13 +41,6 @@ function isElement(element) {
 }
 function isSelector(selector) {
   return TypeUtils.isString(selector)
-}
-function toFrameworkSelector(selector) {
-  if (TypeUtils.has(selector, ['type', 'selector'])) {
-    if (selector.type === 'css') return `css=${selector.selector}`
-    else if (selector.type === 'xpath') return `xpath=${selector.selector}`
-  }
-  return selector
 }
 function toEyesSelector(selector) {
   if (!TypeUtils.isString(selector)) return {selector}
@@ -62,7 +63,7 @@ async function isEqualElements(frame, element1, element2) {
 }
 async function executeScript(frame, script, arg) {
   const result = await frame.evaluateHandle(script, arg)
-  return _handleToObject(result)
+  return handleToObject(result)
 }
 async function mainContext(frame) {
   return frame._page.mainFrame()
@@ -74,10 +75,10 @@ async function childContext(_frame, element) {
   return element.contentFrame()
 }
 async function findElement(frame, selector) {
-  return frame.$(selector)
+  return frame.$(transformSelector(selector))
 }
 async function findElements(frame, selector) {
-  return frame.$$(selector)
+  return frame.$$(transformSelector(selector))
 }
 async function getViewportSize(page) {
   return page.viewportSize()
@@ -130,7 +131,6 @@ exports.isDriver = isDriver
 exports.isElement = isElement
 exports.isSelector = isSelector
 exports.isEqualElements = isEqualElements
-exports.toFrameworkSelector = toFrameworkSelector
 exports.toEyesSelector = toEyesSelector
 
 exports.executeScript = executeScript

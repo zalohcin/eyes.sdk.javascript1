@@ -71,7 +71,7 @@ class EyesElement {
 
   async init(context) {
     if (!this._element) {
-      const element = await context.findElement(this._selector)
+      const element = await context.element(this._selector)
       if (!element) {
         throw new ElementNotFoundError(this._selector)
       }

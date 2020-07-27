@@ -10,11 +10,18 @@ module.exports = {
   isSelector(selector) {
     return TypeUtils.isString(selector) || TypeUtils.has(selector, ['using', 'value'])
   },
+  toEyesSelector(selector) {
+    if (TypeUtils.isString(selector)) {
+      const match = selector.match(/(css|xpath):(.+)/)
+      if (match) {
+        const [_, type, selector] = match
+        return {type, selector}
+      }
+    }
+    return {selector}
+  },
   isEqualElements(_driver, element1, element2) {
     return element1.id === element2.id
-  },
-  toFrameworkSelector({selector}) {
-    return selector
   },
   executeScript(driver, script, ...args) {
     return driver.executeScript(script, args)

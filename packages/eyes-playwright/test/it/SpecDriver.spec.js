@@ -36,7 +36,6 @@ describe('SpecDriver', async () => {
         expected: false,
       }),
     )
-    it('toFrameworkSelector(eyes-selector)', toFrameworkSelector())
     it('toEyesSelector(framework-selector)', toEyesSelector())
     it('executeScript(script, args)', executeScript())
     it('mainContext()', mainContext())
@@ -94,21 +93,6 @@ describe('SpecDriver', async () => {
       const {element1, element2} = await input()
       const result = await spec.isEqualElements(page, element1, element2)
       assert.deepStrictEqual(result, expected)
-    }
-  }
-  function toFrameworkSelector() {
-    return async () => {
-      const xpathEyesSelector = {type: 'xpath', selector: '/html[1]/body[1]/div[1]'}
-      const xpathResult = spec.toFrameworkSelector(xpathEyesSelector)
-      assert.deepStrictEqual(xpathResult, `xpath=${xpathEyesSelector.selector}`)
-
-      const cssEyesSelector = {type: 'css', selector: 'html > body > div'}
-      const cssResult = spec.toFrameworkSelector(cssEyesSelector)
-      assert.deepStrictEqual(cssResult, `css=${cssEyesSelector.selector}`)
-
-      const wrongEyesSelector = {type: 'wrong type', selector: 'wrong selector'}
-      const wrongResult = spec.toFrameworkSelector(wrongEyesSelector)
-      assert.deepStrictEqual(wrongResult, wrongEyesSelector)
     }
   }
   function toEyesSelector() {

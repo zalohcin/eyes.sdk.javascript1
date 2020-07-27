@@ -1,7 +1,7 @@
 const assert = require('assert')
 const {Logger} = require('../../index')
 const MockDriver = require('../utils/MockDriver')
-const FakeDriver = require('../utils/FakeDriver')
+const {Driver} = require('../utils/FakeSDK')
 
 describe('EyesDriver', () => {
   let mock, driver
@@ -40,7 +40,7 @@ describe('EyesDriver', () => {
         ],
       },
     ])
-    driver = new FakeDriver(new Logger(Boolean(process.env.APPLITOOLS_SHOW_LOGS)), mock)
+    driver = new Driver(new Logger(Boolean(process.env.APPLITOOLS_SHOW_LOGS)), mock)
     await driver.init()
   })
 
@@ -248,7 +248,7 @@ describe('EyesDriver native', () => {
   let driver
 
   before(async () => {
-    driver = new FakeDriver(
+    driver = new Driver(
       new Logger(Boolean(process.env.APPLITOOLS_SHOW_LOGS)),
       new MockDriver({isNative: true}),
     )

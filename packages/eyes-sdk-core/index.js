@@ -9,7 +9,7 @@
 
 /**
  * @template TDriver, TElement, TSelector
- * @typedef {import('./lib/wrappers/EyesWrappedDriver').SpecDriver<TDriver, TElement, TSelector>} SpecDriver
+ * @typedef {import('./lib/wrappers/EyesDriver').SpecDriver<TDriver, TElement, TSelector>} SpecDriver
  */
 
 /**
@@ -224,6 +224,7 @@ exports.TestResultsStatus = require('./lib/TestResultsStatus')
 exports.EyesDriver = require('./lib/wrappers/EyesDriver')
 exports.EyesContext = require('./lib/wrappers/EyesContext')
 exports.EyesElement = require('./lib/wrappers/EyesElement')
+exports.EyesSDK = require('./lib/EyesSDK')
 
 exports.EyesRunner = require('./lib/runner/EyesRunner')
 exports.ClassicRunner = require('./lib/runner/ClassicRunner')

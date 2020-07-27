@@ -2106,13 +2106,7 @@ class EyesBase {
     let isMobileDevice, originalPosition
     const positionProvider = this.getPositionProvider()
     if (this._driver) {
-      if (typeof this._driver.isMobile === 'function') {
-        isMobileDevice = await this._driver.isMobile()
-      } else if (typeof this._driver.isMobile === 'object') {
-        isMobileDevice = await this._driver.isMobile
-      } else if (typeof this._driver.controller === 'object') {
-        isMobileDevice = await this._driver.controller.isNative()
-      }
+      isMobileDevice = await this._driver.isNative
 
       if (!isMobileDevice && positionProvider) {
         originalPosition = await positionProvider.getState()

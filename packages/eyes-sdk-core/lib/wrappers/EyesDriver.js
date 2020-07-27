@@ -28,7 +28,7 @@ const EyesUtils = require('../EyesUtils')
 class EyesDriver {
   static specialize(spec) {
     return class SpecializedDriver extends EyesDriver {
-      static spec() {
+      static get spec() {
         return spec
       }
       get spec() {
@@ -39,10 +39,6 @@ class EyesDriver {
 
   static isDriver(driver) {
     return driver instanceof EyesDriver || this.spec.isDriver(driver)
-  }
-
-  static toFrameworkSelector(selector) {
-    return this.spec.toFrameworkSelector(selector)
   }
 
   static toEyesSelector(selector) {
@@ -118,6 +114,7 @@ class EyesDriver {
   }
 
   async init() {
+    this._sessionId = this.spec.getSessionId(this._driver)
     this._isStateless = this.spec.isStateless ? await this.spec.isStateless(this._driver) : false
     this._isNative = this.spec.isNative ? await this.spec.isNative(this._driver) : false
     this._isMobile = this.spec.isMobile ? await this.spec.isMobile(this._driver) : undefined
@@ -201,7 +198,7 @@ class EyesDriver {
         return this._currentContext
       } else if (requiredPath.length > currentPath.length) {
         // current path is a sub-path of required path
-        return this.switchToChildContext(...requiredPath)
+        return this.switchToChildContext(...requiredPath.slice(currentPath.length))
       } else if (currentPath.length - requiredPath.length <= requiredPath.length) {
         // required path is a sub-path of current path
         return this.switchToParentContext(currentPath.length - requiredPath.length)

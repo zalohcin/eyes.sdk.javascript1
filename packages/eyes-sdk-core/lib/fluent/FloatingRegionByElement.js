@@ -50,6 +50,7 @@ class FloatingRegionByElement extends GetFloatingRegion {
    * @return {Promise<FloatingMatchSettings[]>}
    */
   async getRegion(eyes, screenshot) {
+    this._element = await this._element
     // TODO eyes should be replaced with driver once all SDKs will use this implementation
     await this._element.init(eyes.getDriver())
     const rect = await this._element.getRect()
@@ -76,8 +77,8 @@ class FloatingRegionByElement extends GetFloatingRegion {
    * @param {EyesWrappedDriver<TDriver, TElement, TSelector>} driver
    * @return {Promise<FloatingPersistedRegion[]>}
    */
-  async toPersistedRegions(driver) {
-    const xpath = await EyesUtils.getElementXpath(driver._logger, driver.executor, this._element)
+  async toPersistedRegions(context) {
+    const xpath = await EyesUtils.getElementXpath(context._logger, context, await this._element)
     return [
       {
         type: 'xpath',

@@ -43,11 +43,6 @@ const EyesCore = require('./EyesCore')
 
 /**
  * @template TDriver, TElement, TSelector
- * @typedef {import('./wrappers/EyesJsExecutor')<TDriver, TElement, TSelector>} EyesJsExecutor
- */
-
-/**
- * @template TDriver, TElement, TSelector
  * @typedef {import('./wrappers/EyesBrowsingContext')<TDriver, TElement, TSelector>} EyesBrowsingContext
  */
 
@@ -124,8 +119,6 @@ class EyesVisualGrid extends EyesCore {
     this._isOpen = false
     /** @private @type {boolean} */
     this._isVisualGrid = true
-    /** @private @type {EyesJsExecutor<TDriver, TElement, TSelector>} */
-    this._jsExecutor = undefined
     /** @private @type {CorsIframeHandle} */
     this._corsIframeHandle = CorsIframeHandles.BLANK
 

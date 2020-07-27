@@ -40,9 +40,9 @@ class TargetRegionByElement extends GetRegion {
    * @param {EyesWrappedDriver<TDriver, TElement, TSelector>} driver
    * @return {Promise<TargetPersistedRegion[]>}
    */
-  async toPersistedRegions(driver) {
-    await this._element.init(driver)
-    const xpath = await EyesUtils.getElementXpath(driver._logger, driver.executor, this._element)
+  async toPersistedRegions(context) {
+    await this._element.init(context)
+    const xpath = await EyesUtils.getElementXpath(context._logger, context, await this._element)
     return [{type: 'xpath', selector: xpath}]
   }
 }

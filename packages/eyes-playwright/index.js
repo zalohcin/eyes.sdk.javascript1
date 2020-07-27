@@ -1,4 +1,8 @@
 const core = require('@applitools/eyes-sdk-core')
+const {EyesFactory, CheckSettings} = require('./src/PlaywrightSDK')
+
+exports.Eyes = EyesFactory
+exports.Target = CheckSettings
 
 exports.AccessibilityLevel = core.AccessibilityLevel
 exports.AccessibilityMatchSettings = core.AccessibilityMatchSettings
