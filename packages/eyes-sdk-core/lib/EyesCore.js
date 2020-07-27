@@ -16,7 +16,6 @@ const NullScaleProvider = require('./scaling/NullScaleProvider')
 const ScaleProviderIdentityFactory = require('./scaling/ScaleProviderIdentityFactory')
 const FixedScaleProviderFactory = require('./scaling/FixedScaleProviderFactory')
 const ContextBasedScaleProviderFactory = require('./scaling/ContextBasedScaleProviderFactory')
-const UserAgent = require('./useragent/UserAgent')
 const ImageProviderFactory = require('./capture/ImageProviderFactory')
 
 const UNKNOWN_DEVICE_PIXEL_RATIO = 0
@@ -443,21 +442,13 @@ class EyesCore extends EyesBase {
       return new ScaleProviderIdentityFactory(this._scaleProviderHandler.get(), nullProvider)
     }
 
-    this._logger.verbose('Trying to extract device pixel ratio...')
     this._devicePixelRatio = await this._driver.getPixelRatio().catch(err => {
       this._logger.verbose('Failed to extract device pixel ratio! Using default.', err)
       return DEFAULT_DEVICE_PIXEL_RATIO
     })
 
-    this._logger.verbose(`Device pixel ratio: ${this._devicePixelRatio}`)
     this._logger.verbose('Setting scale provider...')
-    const factory = await this._getScaleProviderFactory().catch(err => {
-      this._logger.verbose('Failed to set ContextBasedScaleProvider.', err)
-      this._logger.verbose('Using FixedScaleProvider instead...')
-      return new FixedScaleProviderFactory(1 / this._devicePixelRatio, this._scaleProviderHandler)
-    })
-    this._logger.verbose('Done!')
-    return factory
+    return this._getScaleProviderFactory()
   }
 
   /**
@@ -465,15 +456,33 @@ class EyesCore extends EyesBase {
    * @return {Promise<ScaleProviderFactory>}
    */
   async _getScaleProviderFactory() {
-    const entireSize = await this._context.getDocumentSize()
-    return new ContextBasedScaleProviderFactory(
-      this._logger,
-      entireSize,
-      this._viewportSizeHandler.get(),
-      this._devicePixelRatio,
-      false,
+    const defaultScaleProviderFactory = new FixedScaleProviderFactory(
+      1 / this._devicePixelRatio,
       this._scaleProviderHandler,
     )
+
+    if (await this._controller.isNative()) {
+      return defaultScaleProviderFactory
+    } else {
+      try {
+        const entireSize = await EyesUtils.getCurrentFrameContentEntireSize(
+          this._logger,
+          this._executor,
+        )
+        return new ContextBasedScaleProviderFactory(
+          this._logger,
+          entireSize,
+          this._viewportSizeHandler.get(),
+          this._devicePixelRatio,
+          false,
+          this._scaleProviderHandler,
+        )
+      } catch (err) {
+        this._logger.verbose('Failed to set ContextBasedScaleProvider.', err)
+        this._logger.verbose('Using FixedScaleProvider instead...')
+        return defaultScaleProviderFactory
+      }
+    }
   }
 
   /**

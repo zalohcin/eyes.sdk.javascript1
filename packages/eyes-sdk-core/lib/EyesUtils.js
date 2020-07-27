@@ -83,7 +83,7 @@ async function setViewportSize(logger, context, viewportSize) {
   if (actualViewportSize.equals(viewportSize)) return true
 
   logger.verbose(
-    `Failed attempt to set viewport size. actualViewportSize=${actualViewportSize}, requiredViewportSize=${requiredViewportSize}. Trying again...`,
+    `Failed attempt to set viewport size. actualViewportSize=${actualViewportSize}, requiredViewportSize=${viewportSize}. Trying again...`,
   )
 
   // // Additional attempt. This Solves the "maximized browser" bug
@@ -180,11 +180,12 @@ async function getElementClientRect(_logger, context, element) {
     coordinatesType: CoordinatesTypes.CONTEXT_RELATIVE,
   })
 }
+
 /**
  * Get element rect relative to the current context
- * @param {Logger} _logger - logger instance
- * @param {EyesJsExecutor} executor - js executor
- * @param {EyesWrappedElement} element - element to get rect
+ * @param obj
+ * @param {EyesJsExecutor} obj.executor - js executor
+ * @param {EyesWrappedElement} obj.element - element to get rect
  * @return {Promise<Region>} element rect
  */
 async function getElementRect(_logger, context, element) {
@@ -197,6 +198,56 @@ async function getElementRect(_logger, context, element) {
     coordinatesType: CoordinatesTypes.CONTEXT_RELATIVE,
   })
 }
+
+/**
+ * Get native mobile element rect relative to the current context
+ * @param obj
+ * @param {EyesWrappedDriver} obj.driver - driver
+ * @param {EyesWrappedElement} obj.element - element to get rect
+ * @return {Promise<Region>} element rect
+ */
+async function getNativeElementRect({driver, element}) {
+  const {x, y} = await driver.specs.getNativeElementLocation(driver, element.unwrapped)
+  const {width, height} = await driver.specs.getNativeElementSize(driver, element.unwrapped)
+  return new Region({
+    left: Math.ceil(x),
+    top: Math.ceil(y),
+    width: Math.ceil(width),
+    height: Math.ceil(height),
+    coordinatesType: CoordinatesTypes.CONTEXT_RELATIVE,
+  })
+}
+
+/**
+ * Get native mobile element size
+ * @param obj
+ * @param {EyesWrappedDriver} obj.driver - driver
+ * @param {EyesWrappedElement} obj.element - element to get rect
+ * @return {Promise<RectangleSize>} element size
+ */
+async function getNativeElementSize({driver, element}) {
+  const {width, height} = await driver.specs.getNativeElementSize(driver, element.unwrapped)
+  return new RectangleSize({
+    width: Math.ceil(width),
+    height: Math.ceil(height),
+  })
+}
+
+/**
+ * Get native mobile element location
+ * @param obj
+ * @param {EyesWrappedDriver} obj.driver - driver
+ * @param {EyesWrappedElement} obj.element - element to get rect
+ * @return {Promise<Location>} element location
+ */
+async function getNativeElementLocation({driver, element}) {
+  const {x, y} = await driver.specs.getNativeElementLocation(driver, element.unwrapped)
+  return new Location({
+    left: Math.ceil(x),
+    top: Math.ceil(y),
+  })
+}
+
 /**
  * Extract values of specified properties for specified element
  * @param {Logger} _logger - logger instance
@@ -512,6 +563,9 @@ module.exports = {
   getElementEntireSize,
   getElementClientRect,
   getElementRect,
+  getNativeElementRect,
+  getNativeElementSize,
+  getNativeElementLocation,
   getElementProperties,
   getElementCssProperties,
   getPixelRatio,

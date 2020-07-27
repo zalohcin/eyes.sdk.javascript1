@@ -301,6 +301,18 @@ describe('SpecDriver', async () => {
     it('isNative()', isNative({expected: true}))
     it('getOrientation()', getOrientation({expected: 'landscape'}))
     it('getPlatformVersion()', getPlatformVersion({expected: '6.0'}))
+
+    it('getNativeElementLocation()', async () => {
+      const el = await spec.findElement(browser, 'android.widget.Button')
+      const result = await spec.getNativeElementLocation(browser, el)
+      assert.deepStrictEqual(result, {x: 904, y: 781})
+    })
+
+    it('getNativeElementSize()', async () => {
+      const el = await spec.findElement(browser, 'android.widget.Button')
+      const result = await spec.getNativeElementSize(browser, el)
+      assert.deepStrictEqual(result, {height: 144, width: 269})
+    })
   })
 
   function isDriver({input, expected}) {
