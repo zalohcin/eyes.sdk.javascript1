@@ -3,6 +3,16 @@
 ## Unreleased
 
 
+## 5.19.2 - 2020/7/26
+
+- updated to @applitools/eyes-sdk-core@11.5.0 (from 11.4.1)
+- updated to @applitools/visual-grid-client@14.6.0 (from 14.5.15)
+
+## 5.19.1 - 2020/7/24
+
+- updated to @applitools/eyes-sdk-core@11.4.1 (from 11.4.0)
+- updated to @applitools/visual-grid-client@14.5.15 (from 14.5.14)
+
 ## 5.19.0 - 2020/7/24
 
 - remove type definitions
