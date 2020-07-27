@@ -13,14 +13,14 @@ module.exports = {
   isEqualElements(_driver, element1, element2) {
     return element1.id === element2.id
   },
-  toFrameworkSelector(selector) {
-    return selector.toString()
+  toFrameworkSelector({selector}) {
+    return selector
   },
   executeScript(driver, script, ...args) {
     return driver.executeScript(script, args)
   },
   findElement(driver, selector) {
-    return driver.findElement(selector)
+    return driver.findElement(selector.selector || selector)
   },
   findElements(driver, selector) {
     return driver.findElements(selector)
@@ -54,9 +54,11 @@ module.exports = {
     await driver.setWindowRect(rect)
   },
   async getUrl(driver) {
+    if (this._isNative) return null
     return driver.getUrl()
   },
   async getTitle(driver) {
+    if (this._isNative) return null
     return driver.getTitle()
   },
   async visit(driver, url) {

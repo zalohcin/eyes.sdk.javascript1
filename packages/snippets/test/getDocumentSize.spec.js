@@ -1,9 +1,9 @@
 const playwright = require('playwright')
 const {remote} = require('webdriverio')
 const assert = require('assert')
-const {getElementEntireSize} = require('../dist/index')
+const {getDocumentSize} = require('../dist/index')
 
-describe('getElementEntireSize', () => {
+describe('getDocumentSize', () => {
   const url = 'https://applitools.github.io/demo/TestPages/SnippetsTestPage/'
 
   describe('chrome', () => {
@@ -19,18 +19,10 @@ describe('getElementEntireSize', () => {
       await browser.close()
     })
 
-    it('return size of scrollable element', async () => {
+    it('return document size', async () => {
       await page.goto(url)
-      const element = await page.$('#scrollable')
-      const size = await page.evaluate(getElementEntireSize, {element})
-      assert.deepStrictEqual(size, {width: 600, height: 600})
-    })
-
-    it('return size of static element', async () => {
-      await page.goto(url)
-      const element = await page.$('#static')
-      const size = await page.evaluate(getElementEntireSize, {element})
-      assert.deepStrictEqual(size, {width: 294, height: 294})
+      const size = await page.evaluate(getDocumentSize)
+      assert.deepStrictEqual(size, {width: 3000, height: 3000})
     })
   })
 
@@ -60,18 +52,10 @@ describe('getElementEntireSize', () => {
       await driver.deleteSession()
     })
 
-    it('return size of scrollable element', async () => {
+    it('return document size', async () => {
       await driver.url(url)
-      const element = await driver.$('#scrollable')
-      const size = await driver.execute(getElementEntireSize, {element})
-      assert.deepStrictEqual(size, {width: 566, height: 566})
-    })
-
-    it('return size of static element', async () => {
-      await driver.url(url)
-      const element = await driver.$('#static')
-      const size = await driver.execute(getElementEntireSize, {element})
-      assert.deepStrictEqual(size, {width: 294, height: 294})
+      const size = await driver.execute(getDocumentSize)
+      assert.deepStrictEqual(size, {width: 3000, height: 3000})
     })
   })
 })

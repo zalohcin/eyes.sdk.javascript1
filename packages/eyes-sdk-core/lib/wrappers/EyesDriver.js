@@ -4,6 +4,7 @@ const TypeUtils = require('../utils/TypeUtils')
 const RectangleSize = require('../geometry/RectangleSize')
 const Region = require('../geometry/Region')
 const MutableImage = require('../images/MutableImage')
+const UserAgent = require('../useragent/UserAgent')
 const EyesUtils = require('../EyesUtils')
 
 /**
@@ -70,6 +71,10 @@ class EyesDriver {
     throw new TypeError('The class is not specialized. Create a specialize EyesDriver first')
   }
 
+  get proxy() {
+    return this._proxy
+  }
+
   get currentContext() {
     return this._currentContext
   }
@@ -78,18 +83,58 @@ class EyesDriver {
     return this._mainContext
   }
 
+  get isNative() {
+    return this._isNative
+  }
+
+  get isMobile() {
+    return this._isMobile === undefined
+      ? ['iOS', 'Android'].includes(this._userAgent.getOS())
+      : this._isMobile
+  }
+
+  get osName() {
+    return this._osName || this._userAgent.getOS()
+  }
+
+  get browserName() {
+    return this._browserName || this._userAgent.getBrowser()
+  }
+
+  get browserVersion() {
+    return this._browserVersion || this._userAgent.getBrowserMajorVersion()
+  }
+
+  get userAgent() {
+    return this._userAgent
+  }
+
+  get userAgentString() {
+    return this._userAgentString
+  }
+
   updateCurrentContext(context) {
     this._currentContext = context
   }
 
   async init() {
-    await this._mainContext.init(this)
-    this._mainContext._context = this._driver
-    // this._isStateless = await this.spec.isStateless(this._driver)
-    // this._isNative = await this.spec.isNative(this._driver)
-    // this._isMobile = await this.spec.isMobile(this._driver)
-    // this._isAndroid = await this.spec.isAndroid(this._driver)
-    // this._isIOS = await this.spec.isIOS(this._driver)
+    this._isStateless = this.spec.isStateless ? await this.spec.isStateless(this._driver) : false
+    this._isNative = this.spec.isNative ? await this.spec.isNative(this._driver) : false
+    this._isMobile = this.spec.isMobile ? await this.spec.isMobile(this._driver) : undefined
+    this._osName = this.spec.getOSName ? await this.spec.getOSName(this._driver) : undefined
+    this._browserName = this.spec.getBrowserName
+      ? await this.spec.getBrowserName(this._driver)
+      : undefined
+    this._browserVersion = this.spec.getBrowserVersion
+      ? await this.spec.getBrowserVersion(this._driver)
+      : undefined
+    if (!this._isNative) {
+      this._userAgentString = await EyesUtils.getUserAgent(this._logger, this)
+      this._userAgent = UserAgent.parseUserAgentString(this._userAgentString, true)
+    }
+    this._proxy = this.spec.proxifyDriver
+      ? this.spec.proxifyDriver(this._driver, this)
+      : this._driver
     return this
   }
 
@@ -101,35 +146,38 @@ class EyesDriver {
     }
     const path = []
     while (!contextInfo.isRoot) {
-      await this.spec.parentContext()
-      let contextReference
-      if (contextInfo.selector) {
-        contextReference = await this.spec.findElement(
-          this._driver,
-          this.spec.toFrameworkSelector({type: 'xpath', selector: contextInfo.selector}),
-        )
-      } else {
-        const framesInfo = await EyesUtils.getChildFramesInfo(this._logger, this)
-        for (const frameInfo of framesInfo) {
-          if (frameInfo.isCORS !== contextInfo.isCORS) continue
-          await this.spec.childContext(frameInfo.element)
-          const contentDocument = await this.spec.findElement(
-            this._driver,
-            this.spec.toFrameworkSelector({type: 'css', selector: 'html'}),
-          )
-          if (await this.spec.isEqualElements(contentDocument, contextInfo.contentDocument)) {
-            contextReference = frameInfo.element
-            await context.frameParent()
-            break
-          }
-        }
-      }
+      await this.spec.parentContext(this._driver)
+      const contextReference = await this.findChildContext(contextInfo)
       if (!contextReference) throw new Error('Unable to find out the chain of frames')
       path.unshift(contextReference)
       contextInfo = await EyesUtils.getContextInfo(this._logger, this)
     }
     this._currentContext = this._mainContext
     return this.switchToChildContext(...path)
+  }
+
+  async findChildContext(contextInfo) {
+    if (contextInfo.selector) {
+      return this.spec.findElement(this._driver, {
+        type: 'xpath',
+        selector: contextInfo.selector,
+      })
+    }
+    const framesInfo = await EyesUtils.getChildFramesInfo(this._logger, this)
+    const contextDocument = contextInfo.contentDocument
+    for (const frameInfo of framesInfo) {
+      if (frameInfo.isCORS !== contextInfo.isCORS) continue
+      await this.spec.childContext(this._driver, frameInfo.element)
+      const contentDocument = await this.spec.findElement(this._driver, {
+        type: 'css',
+        selector: 'html',
+      })
+      if (await this.spec.isEqualElements(this._driver, contentDocument, contextDocument)) {
+        await this.spec.parentContext(this._driver)
+        return frameInfo.element
+      }
+      await this.spec.parentContext(this._driver)
+    }
   }
 
   async switchTo(context) {
@@ -260,6 +308,10 @@ class EyesDriver {
       : this.spec.getViewportSize(this._driver, {width: rect.width, height: rect.height})
   }
 
+  async getOrientation() {
+    return this.spec.getOrientation(this._driver)
+  }
+
   async getPixelRatio() {
     if (this._isNative) {
       const viewportSize = await this.getViewportSize()
@@ -278,10 +330,6 @@ class EyesDriver {
   async getUrl() {
     if (this._isNative) return null
     return this.spec.getTitle(this._driver)
-  }
-
-  async proxify(driver) {
-    return this.spec.proxyDriver(driver, this)
   }
 }
 

@@ -1,9 +1,9 @@
 const playwright = require('playwright')
 const {remote} = require('webdriverio')
 const assert = require('assert')
-const {getElementOffsets} = require('../dist/index')
+const {getElementInnerOffset} = require('../dist/index')
 
-describe('getElementOffsets', () => {
+describe('getElementInnerOffset', () => {
   const url = 'https://applitools.github.io/demo/TestPages/SnippetsTestPage/'
 
   describe('chrome', () => {
@@ -26,7 +26,7 @@ describe('getElementOffsets', () => {
         element.style.transform = 'translate(-10px, -11px)'
         element.scrollTo(10, 11)
       }, element)
-      const offset = await page.evaluate(getElementOffsets, {element})
+      const offset = await page.evaluate(getElementInnerOffset, {element})
       assert.deepStrictEqual(offset, {x: 20, y: 22})
     })
 
@@ -36,7 +36,7 @@ describe('getElementOffsets', () => {
         document.documentElement.style.transform = 'translate(-10px, -11px)'
         document.documentElement.scrollTo(10, 11)
       })
-      const offset = await page.evaluate(getElementOffsets)
+      const offset = await page.evaluate(getElementInnerOffset)
       assert.deepStrictEqual(offset, {x: 20, y: 22})
     })
   })
@@ -75,7 +75,7 @@ describe('getElementOffsets', () => {
         element.scrollLeft = 10
         element.scrollTop = 11
       }, element)
-      const offset = await driver.execute(getElementOffsets, {element})
+      const offset = await driver.execute(getElementInnerOffset, {element})
       assert.deepStrictEqual(offset, {x: 20, y: 22})
     })
 
@@ -86,7 +86,7 @@ describe('getElementOffsets', () => {
         document.documentElement.scrollLeft = 10
         document.documentElement.scrollTop = 11
       })
-      const offset = await driver.execute(getElementOffsets)
+      const offset = await driver.execute(getElementInnerOffset)
       assert.deepStrictEqual(offset, {x: 20, y: 22})
     })
   })

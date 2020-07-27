@@ -491,7 +491,7 @@ class EyesClassic extends EyesCore {
    * @return {Promise<MatchResult>}
    */
   async _checkFrame(checkSettings) {
-    const targetElement = this._context._element // TODO property to get an element
+    const targetElement = await this._context.getFrameElement()
     const originalContext = this._context
     this._context = this._context.parent
     try {
@@ -524,7 +524,7 @@ class EyesClassic extends EyesCore {
       CoordinatesType.CONTEXT_RELATIVE,
     )
 
-    const effectiveSize = this._context.getCurrentFrameEffectiveSize() // TODO add a property to get it
+    const effectiveSize = await this._context.getEffectiveSize()
     this._effectiveViewport.intersect(new Region(Location.ZERO, effectiveSize))
     if (!this._effectiveViewport.isSizeEmpty()) {
       this._regionToCheck.intersect(this._effectiveViewport)
@@ -741,7 +741,7 @@ class EyesClassic extends EyesCore {
     const appEnv = await super.getAppEnvironment()
 
     if (!appEnv._os) {
-      const os = await this._driver.os
+      const os = await this._driver.osName
       if (os) {
         appEnv.setOs(os)
       }

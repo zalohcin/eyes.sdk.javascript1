@@ -23,7 +23,7 @@ describe('getElementStyleProperties', () => {
       await page.goto(url)
       const element = await page.$('#static')
       await page.evaluate(element => (element.style.backgroundColor = 'red'), element)
-      const [backgroundColor] = await page.evaluate(getElementStyleProperties, {
+      const {backgroundColor} = await page.evaluate(getElementStyleProperties, {
         element,
         properties: ['backgroundColor'],
       })
@@ -63,7 +63,7 @@ describe('getElementStyleProperties', () => {
       await driver.execute(function(element) {
         element.style.backgroundColor = 'red'
       }, element)
-      const [backgroundColor] = await driver.execute(getElementStyleProperties, {
+      const {backgroundColor} = await driver.execute(getElementStyleProperties, {
         element,
         properties: ['backgroundColor'],
       })

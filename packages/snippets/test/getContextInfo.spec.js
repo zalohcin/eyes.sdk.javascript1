@@ -27,7 +27,7 @@ describe('getContextInfo', () => {
       assert.deepStrictEqual(contextInfo, {
         isRoot: false,
         isCORS: false,
-        selector: null,
+        selector: '/HTML[1]/BODY[1]/DIV[1]/IFRAME[1]',
         documentElement,
       })
     })
@@ -79,7 +79,7 @@ describe('getContextInfo', () => {
       assert.deepStrictEqual(contextInfo, {
         isRoot: false,
         isCORS: false,
-        selector: null,
+        selector: '/HTML[1]/BODY[1]/DIV[1]/IFRAME[1]',
         documentElement,
       })
     })

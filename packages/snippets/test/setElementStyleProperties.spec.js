@@ -1,9 +1,9 @@
 const playwright = require('playwright')
 const {remote} = require('webdriverio')
 const assert = require('assert')
-const {getDocumentEntireSize} = require('../dist/index')
+const {setElementStyleProperties} = require('../dist/index')
 
-describe('getDocumentEntireSize', () => {
+describe('setElementStyleProperties', () => {
   const url = 'https://applitools.github.io/demo/TestPages/SnippetsTestPage/'
 
   describe('chrome', () => {
@@ -19,10 +19,16 @@ describe('getDocumentEntireSize', () => {
       await browser.close()
     })
 
-    it('return document size', async () => {
+    it('set element style properties', async () => {
       await page.goto(url)
-      const size = await page.evaluate(getDocumentEntireSize)
-      assert.deepStrictEqual(size, {width: 3000, height: 3000})
+      const element = await page.$('#scrollable')
+      const {overflow} = await page.evaluate(setElementStyleProperties, {
+        element,
+        properties: {overflow: 'hidden'},
+      })
+      assert.deepStrictEqual(overflow, '')
+      const actualOverflow = await page.evaluate(element => element.style.overflow, element)
+      assert.deepStrictEqual(actualOverflow, 'hidden')
     })
   })
 
@@ -52,10 +58,18 @@ describe('getDocumentEntireSize', () => {
       await driver.deleteSession()
     })
 
-    it('return document size', async () => {
+    it('set element style properties', async () => {
       await driver.url(url)
-      const size = await driver.execute(getDocumentEntireSize)
-      assert.deepStrictEqual(size, {width: 3000, height: 3000})
+      const element = await driver.$('#scrollable')
+      const {overflow} = await driver.execute(setElementStyleProperties, {
+        element,
+        properties: {overflow: 'hidden'},
+      })
+      assert.deepStrictEqual(overflow, '')
+      const actualOverflow = await driver.execute(function(element) {
+        return element.style.overflow
+      }, element)
+      assert.deepStrictEqual(actualOverflow, 'hidden')
     })
   })
 })

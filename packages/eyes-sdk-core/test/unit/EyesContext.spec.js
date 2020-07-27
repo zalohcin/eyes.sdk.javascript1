@@ -5,7 +5,7 @@ const FakeDriver = require('../utils/FakeDriver')
 const FakeContext = require('../utils/FakeContext')
 
 describe('EyesContext', () => {
-  describe('real', () => {
+  describe('attached', () => {
     let logger = new Logger(false)
     let mock, driver, context
 
@@ -61,10 +61,10 @@ describe('EyesContext', () => {
       assert.strictEqual(childContext.main, context)
     })
 
-    it('init(driver)', async () => {
+    it('init()', async () => {
       const childContext1 = await context.context('frame1')
       const childContext11 = await childContext1.context('frame1-1')
-      await childContext11.init(driver)
+      await childContext11.init()
 
       assert.strictEqual(childContext1._element.unwrapped.selector, 'frame1')
       assert.strictEqual(childContext11._element.unwrapped.selector, 'frame1-1')
@@ -74,7 +74,6 @@ describe('EyesContext', () => {
     it('focus()', async () => {
       const childContext1 = await context.context('frame1')
       const childContext11 = await childContext1.context('frame1-1')
-      await childContext11.init(driver)
       await childContext11.focus()
 
       assert.strictEqual(driver.currentContext, childContext11)
@@ -83,18 +82,17 @@ describe('EyesContext', () => {
     it('element(selector)', async () => {
       const childContext1 = await context.context('frame1')
       const childContext11 = await childContext1.context('frame1-1')
-      await childContext11.init(driver)
       const element = await childContext11.element('frame1-1--element1')
 
       assert.strictEqual(driver.currentContext, childContext11)
       assert.strictEqual(element.unwrapped.selector, 'frame1-1--element1')
     })
 
-    it('element(selector)', async () => {
+    it('element(selector + another-context)', async () => {
       const childContext1 = await context.context('frame1')
       const childContext11 = await childContext1.context('frame1-1')
       const childContext2 = await context.context('frame2')
-      await childContext11.init(driver)
+      await childContext11.focus(driver)
       const element = await childContext2.element('frame2--element1')
 
       assert.strictEqual(driver.currentContext, childContext2)
@@ -114,7 +112,7 @@ describe('EyesContext', () => {
       assert.ok(context.isDetached)
     })
 
-    it('context()', async () => {
+    it('context(selector)', async () => {
       const childContext = await context.context('frame')
       assert.ok(context.isRef)
       assert.ok(context.isDetached)
@@ -122,13 +120,13 @@ describe('EyesContext', () => {
       assert.strictEqual(childContext.main, context)
     })
 
-    it('element()', async () => {
+    it('element(selector)', async () => {
       const element = await context.element('element')
       assert.ok(element.isRef)
       assert.strictEqual(element.context, context)
     })
 
-    it('element()', async () => {
+    it('element(element)', async () => {
       const element = await context.element({id: 'elementId'})
       assert.ok(element.isRef)
       assert.strictEqual(element.context, context)

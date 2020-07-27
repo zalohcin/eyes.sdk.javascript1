@@ -229,8 +229,12 @@ async function getElementCssProperties(_logger, context, properties, element) {
  * @return {Promise<number>} device pixel ratio
  */
 async function getPixelRatio(_logger, context) {
-  const pixelRatio = await context.execute('return window.devicePixelRatio')
+  const pixelRatio = await context.execute(snippets.getPixelRatio)
   return Number.parseFloat(pixelRatio)
+}
+async function getUserAgent(_logger, context) {
+  const userAgent = await context.execute(snippets.getUserAgent)
+  return userAgent
 }
 async function getInnerOffset(_logger, context, element) {
   const {x = 0, y = 0} = await context.execute(snippets.getElementInnerOffset, {element})
@@ -511,6 +515,7 @@ module.exports = {
   getElementProperties,
   getElementCssProperties,
   getPixelRatio,
+  getUserAgent,
   getScrollOffset,
   scrollTo,
   getTranslateOffset,

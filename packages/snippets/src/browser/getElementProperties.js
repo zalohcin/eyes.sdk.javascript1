@@ -1,5 +1,8 @@
 function getElementProperties({element, properties = []} = {}) {
-  return properties.map(property => element[property])
+  return properties.reduce((properties, property) => {
+    properties[property] = element[property]
+    return properties
+  }, {})
 }
 
 module.exports = getElementProperties

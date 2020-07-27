@@ -1,9 +1,9 @@
 const playwright = require('playwright')
 const {remote} = require('webdriverio')
 const assert = require('assert')
-const {setElementStyleProperty} = require('../dist/index')
+const {getElementContentSize} = require('../dist/index')
 
-describe('setElementStyleProperty', () => {
+describe('getElementContentSize', () => {
   const url = 'https://applitools.github.io/demo/TestPages/SnippetsTestPage/'
 
   describe('chrome', () => {
@@ -19,17 +19,18 @@ describe('setElementStyleProperty', () => {
       await browser.close()
     })
 
-    it('set element style properties', async () => {
+    it('return size of scrollable element', async () => {
       await page.goto(url)
       const element = await page.$('#scrollable')
-      const originalOverflow = await page.evaluate(setElementStyleProperty, {
-        element,
-        property: 'overflow',
-        value: 'hidden',
-      })
-      assert.deepStrictEqual(originalOverflow, '')
-      const actualOverflow = await page.evaluate(element => element.style.overflow, element)
-      assert.deepStrictEqual(actualOverflow, 'hidden')
+      const size = await page.evaluate(getElementContentSize, {element})
+      assert.deepStrictEqual(size, {width: 600, height: 600})
+    })
+
+    it('return size of static element', async () => {
+      await page.goto(url)
+      const element = await page.$('#static')
+      const size = await page.evaluate(getElementContentSize, {element})
+      assert.deepStrictEqual(size, {width: 294, height: 294})
     })
   })
 
@@ -59,19 +60,18 @@ describe('setElementStyleProperty', () => {
       await driver.deleteSession()
     })
 
-    it('set element style properties', async () => {
+    it('return size of scrollable element', async () => {
       await driver.url(url)
       const element = await driver.$('#scrollable')
-      const originalOverflow = await driver.execute(setElementStyleProperty, {
-        element,
-        property: 'overflow',
-        value: 'hidden',
-      })
-      assert.deepStrictEqual(originalOverflow, '')
-      const actualOverflow = await driver.execute(function(element) {
-        return element.style.overflow
-      }, element)
-      assert.deepStrictEqual(actualOverflow, 'hidden')
+      const size = await driver.execute(getElementContentSize, {element})
+      assert.deepStrictEqual(size, {width: 566, height: 566})
+    })
+
+    it('return size of static element', async () => {
+      await driver.url(url)
+      const element = await driver.$('#static')
+      const size = await driver.execute(getElementContentSize, {element})
+      assert.deepStrictEqual(size, {width: 294, height: 294})
     })
   })
 })

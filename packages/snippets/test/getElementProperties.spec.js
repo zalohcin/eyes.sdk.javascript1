@@ -22,7 +22,7 @@ describe('getElementProperties', () => {
     it('return element properties', async () => {
       await page.goto(url)
       const element = await page.$('#static')
-      const [tagName] = await page.evaluate(getElementProperties, {
+      const {tagName} = await page.evaluate(getElementProperties, {
         element,
         properties: ['tagName'],
       })
@@ -59,7 +59,7 @@ describe('getElementProperties', () => {
     it('return element properties', async () => {
       await driver.url(url)
       const element = await driver.$('#static')
-      const [tagName] = await driver.execute(getElementProperties, {
+      const {tagName} = await driver.execute(getElementProperties, {
         element,
         properties: ['tagName'],
       })

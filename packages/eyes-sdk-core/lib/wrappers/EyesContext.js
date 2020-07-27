@@ -22,8 +22,8 @@ class EyesContext {
       reference instanceof EyesContext ||
       TypeUtils.isInteger(reference) ||
       TypeUtils.isString(reference) ||
-      this.spec.isSelector(reference) ||
-      this.spec.isElement(reference)
+      this.isSelector(reference) ||
+      this.isElement(reference)
     )
   }
 
@@ -83,7 +83,11 @@ class EyesContext {
   }
 
   get isDetached() {
-    return !this.main.driver
+    return !this._driver
+  }
+
+  get isInitialized() {
+    return Boolean(this._element) || this.isMain
   }
 
   get isRef() {
@@ -110,33 +114,31 @@ class EyesContext {
     if (!context.isDetached) {
       throw new Error('Context need to be detached before attach')
     }
-    const [main, second, ...others] = context.path
+    const [main, ...path] = context.path
     this._scrollRootElement = main.scrollRootElement
-    if (second) {
-      second._parent = this
-      second._driver = this._driver
-      others.forEach(context => (context._driver = this._driver))
+    if (path.length > 0) {
+      path[0]._parent = this
+      path.forEach(context => {
+        context._driver = this._driver
+        context._logger = this._logger
+      })
     }
     return context
   }
 
   async equals(context) {
-    if (context === this) return true
+    if (context === this || (this.isMain && context === null)) return true
     if (!this._element) return false
-    return this._element.equals(context.element)
+    return this._element.equals(
+      context instanceof EyesContext ? await context.getFrameElement() : context,
+    )
   }
 
-  async init(driver) {
+  async init() {
     if (this.isDetached) {
       throw new Error('Cannot initialize detached context')
-    }
-
-    this._driver = driver
-    this._logger = driver._logger
-
-    if (this.isMain) return this
-    if (this._parent.isRef) {
-      await this._parent.init(driver)
+    } else if (this.isInitialized) {
+      return this
     }
 
     await this._parent.focus()
@@ -164,7 +166,7 @@ class EyesContext {
         if (!this._element) {
           throw new TypeError(`No frame with selector, name or id '${this._reference}' exists!`)
         }
-      } else if (this.spec.isElement(this._reference)) {
+      } else if (this.constructor.isElement(this._reference)) {
         this._element = this.spec.newElement(this._logger, this._parent, this._reference)
       } else {
         throw new TypeError('Reference type does not supported!')
@@ -173,23 +175,27 @@ class EyesContext {
       this._logger.verbose('Done! getting the specific frame...')
     }
 
-    if (this._element) {
-      this._rect = await this._element.getRect()
-      this._clientRect = await this._element.getClientRect()
-    }
-
     return this
   }
 
   async focus() {
     if (this.isDetached) {
       throw new Error('Cannot focus on the detached context')
+    } else if (this.isCurrent) {
+      return this
     } else if (this.isMain) {
       return this._driver.switchToMainContext()
-    } else if (!this._parent.isCurrent) {
+    }
+
+    if (this.isRef) {
+      await this.init()
+    }
+
+    if (!this._parent.isCurrent) {
       return this._driver.switchTo(this)
     }
 
+    // TODO preserve metrics
     // await this._parent.preserveOffset()
 
     this._context = await this.spec.childContext(this._parent.unwrapped, this._element.unwrapped)
@@ -198,6 +204,7 @@ class EyesContext {
       await this._scrollRootElement.init(this._context)
     }
 
+    // TODO think how to replace
     await this._driver.updateCurrentContext(this)
   }
 
@@ -205,7 +212,7 @@ class EyesContext {
     const context =
       reference instanceof EyesContext
         ? reference
-        : new this.constructor(null, null, {reference, parent: this})
+        : new this.constructor(this._logger, this._driver, {reference, parent: this})
 
     if (context.parent !== this) {
       throw Error(`Couldn't find a child context because it has a different parent`)
@@ -251,20 +258,42 @@ class EyesContext {
     }
   }
 
+  async getFrameElement() {
+    if (this.isMain) return null
+    await this.init()
+    return this._element
+  }
+
   async getClientLocation() {
-    return // TODO
+    await this.init()
+    if (this.isCurrent) {
+      this._clientRect = await this._element.getClientRect()
+    }
+    return this._clientRect.getLocation()
   }
 
   async getClientSize() {
-    return // TODO
+    await this.init()
+    if (this.isCurrent) {
+      this._clientRect = await this._element.getClientRect()
+    }
+    return this._clientRect.getSize()
   }
 
   async getRect() {
-    return // TODO
+    await this.init()
+    if (this.isCurrent) {
+      this._rect = await this._element.getRect()
+    }
+    return this._rect
   }
 
   async getClientRect() {
-    return // TODO
+    await this.init()
+    if (this.isCurrent) {
+      this._clientRect = await this._element.getClientRect()
+    }
+    return this._clientRect
   }
 
   async getLocationInPage() {
@@ -307,7 +336,7 @@ class EyesContext {
   }
 
   async getDocumentSize() {
-    return // TODO
+    return EyesUtils.getDocumentSize(this._logger, this)
   }
 }
 
