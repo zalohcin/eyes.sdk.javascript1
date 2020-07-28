@@ -28,7 +28,7 @@ describe('EyesUtils', function() {
       })
       const driver = new FakeWrappedDriver(logger, mockDriver)
       const location = await EyesUtils.getTranslateLocation(logger, driver.executor)
-      assert.deepStrictEqual(location, new Location({x: -4, y: -4}))
+      assert.deepStrictEqual(location, new Location({x: -4, y: -0}))
     })
   })
 })
