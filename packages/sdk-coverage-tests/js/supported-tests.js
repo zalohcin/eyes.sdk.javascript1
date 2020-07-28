@@ -317,5 +317,4 @@ module.exports = [
   {name: 'AppiumAndroidCheckRegion', executionMode: {isCssStitching: true}},
   {name: 'TestHorizonalScroll', executionMode: {isCssStitching: true}},
   {name: 'TestHorizonalScroll', executionMode: {isScrollStitching: true}},
-  {name: 'TestHorizonalScroll', executionMode: {isVisualGrid: true}},
 ]
