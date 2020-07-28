@@ -437,11 +437,14 @@ async function getTranslateLocation(_logger, executor, element) {
   const translateLocations = Object.values(transforms)
     .filter(transform => Boolean(transform))
     .map(transform => {
-      const data = transform.match(/^translate\(\s*(\-?[\d, \.]+)px,\s*(\-?[\d, \.]+)px\s*\)/)
-      if (!data) {
+      const match = transform.match(
+        /^translate\s*\(\s*(\-?[\d, \.]+)px\s*(,\s*(-?[\d, \.]+)px)?\s*\)/,
+      )
+      if (!match) {
         throw new Error(`Can't parse CSS transition: ${transform}!`)
       }
-      const [_, x, y] = data
+      const x = match[1]
+      const y = match[3] !== undefined ? match[3] : 0
       return new Location(Math.round(-Number.parseFloat(x)), Math.round(-Number.parseFloat(y)))
     })
   if (translateLocations.some(location => !translateLocations[0].equals(location))) {

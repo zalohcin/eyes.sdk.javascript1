@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix parsing of translate values in Firefox ([Trello](https://trello.com/c/encLpr4g))
 
 ## 11.5.0 - 2020/7/26
 
