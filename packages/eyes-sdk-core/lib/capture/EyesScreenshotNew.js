@@ -155,7 +155,10 @@ class EyesScreenshot {
       this._logger,
       this._eyes._executor,
       scrollRootElement,
-    ).catch(() => Location.ZERO)
+    ).catch(err => {
+      this._logger.verbose('failed to get inner offsets, setting to (0,0)', err)
+      return Location.ZERO
+    })
 
     if (!this._frameChain.isEmpty) {
       this._frameLocationInScreenshot = this._frameChain.getCurrentFrameLocationInViewport()
@@ -453,6 +456,8 @@ class EyesScreenshot {
     this._logger.verbose(`getSubScreenshot([${region}], ${throwIfClipped})`)
 
     ArgumentGuard.notNull(region, 'region')
+
+    debugger
 
     // We calculate intersection based on as-is coordinates.
     const asIsSubScreenshotRegion = this.getIntersectedRegion(

@@ -77,7 +77,7 @@ function toEyesSelector(selector) {
   return WDIOWrappedElement.toEyesSelector(selector)
 }
 async function executeScript(driver, script, ...args) {
-  return driver.execute(script, ...args)
+  return driver.executeScript(script, ...args)
 }
 async function sleep(driver, ms) {
   return driver.pause(ms)
@@ -105,7 +105,9 @@ async function getWindowLocation(driver) {
   return {x: rect.x, y: rect.y}
 }
 async function setWindowLocation(driver, location) {
-  return driver.setWindowRect(location.x, location.y, null, null)
+  return typeof driver.setWindowRect === 'function'
+    ? driver.setWindowRect(location.x, location.y, null, null)
+    : driver.setWindowPosition(location.x, location.y)
 }
 async function getWindowSize(driver) {
   const rect = driver.hasOwnProperty('getWindowRect')

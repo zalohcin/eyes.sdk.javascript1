@@ -87,6 +87,12 @@ class ScrollPositionProvider extends PositionProvider {
         position,
         customScrollRootElement || this._scrollRootElement,
       )
+      if (!actualLocation.equals(position)) {
+        this._logger.verbose(
+          'WARNING: failed to scroll using window. Rest of the operation is at risk.',
+        )
+      }
+
       return actualLocation
     } catch (err) {
       // Sometimes it is expected e.g. on Appium, otherwise, take care

@@ -196,8 +196,8 @@ const SCROLL_TO = `
   if (element.scrollTo) {
     element.scrollTo(offset.x, offset.y);
   } else {
-    element.scrollTop = offset.x;
-    element.scrollLeft = offset.y;
+    element.scrollTop = offset.y;
+    element.scrollLeft = offset.x;
   }
   return [element.scrollLeft, element.scrollTop];
 `
