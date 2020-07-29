@@ -5,6 +5,7 @@ const isInlineFrame = require('./isInlineFrame');
 const isAccessibleFrame = require('./isAccessibleFrame');
 const absolutizeUrl = require('./absolutizeUrl');
 const processInlineCss = require('./cssom/processInlineCss');
+const extractLinksFromElement = require('./extractLinksFromElement');
 const noop = require('./noop');
 const NEED_MAP_INPUT_TYPES = new Set([
   'date',
@@ -27,9 +28,10 @@ function domNodesToCdt(docNode, baseUrl, log = noop) {
   const docRoots = [docNode];
   const canvasElements = [];
   const inlineFrames = [];
+  let linkUrls = [];
 
   cdt[0].childNodeIndexes = childrenFactory(cdt, docNode.childNodes);
-  return {cdt, docRoots, canvasElements, inlineFrames};
+  return {cdt, docRoots, canvasElements, inlineFrames, linkUrls};
 
   function childrenFactory(cdt, elementNodes) {
     if (!elementNodes || elementNodes.length === 0) return null;
@@ -109,6 +111,12 @@ function domNodesToCdt(docNode, baseUrl, log = noop) {
     }
 
     if (node) {
+      if (nodeType === Node.ELEMENT_NODE) {
+        const linkUrlsFromElement = extractLinksFromElement(elementNode);
+        if (linkUrlsFromElement.length > 0) {
+          linkUrls = linkUrls.concat(linkUrlsFromElement);
+        }
+      }
       cdt.push(node);
       return cdt.length - 1;
     } else {

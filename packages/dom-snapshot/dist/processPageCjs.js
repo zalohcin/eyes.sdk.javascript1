@@ -1,55 +1,6 @@
 /* @applitools/dom-snapshot@4.0.0 */
 'use strict';
 
-function extractLinks(doc = document) {
-  const srcsetRegexp = /(\S+)(?:\s+[\d.]+[wx])?(?:,|$)/g;
-  const srcsetUrls = Array.from(doc.querySelectorAll('img[srcset],source[srcset]'), srcsetEl =>
-    execAll(srcsetRegexp, srcsetEl.getAttribute('srcset'), match => match[1]),
-  ).reduce((acc, urls) => acc.concat(urls), []);
-
-  const srcUrls = Array.from(
-    doc.querySelectorAll('img[src],source[src],input[type="image"][src],audio[src],video[src]'),
-  ).map(srcEl => srcEl.getAttribute('src'));
-
-  const imageUrls = Array.from(doc.querySelectorAll('image,use'))
-    .map(hrefEl => hrefEl.getAttribute('href') || hrefEl.getAttribute('xlink:href'))
-    .filter(u => u && u[0] !== '#');
-
-  const objectUrls = Array.from(doc.querySelectorAll('object'))
-    .map(el => el.getAttribute('data'))
-    .filter(Boolean);
-
-  const cssUrls = Array.from(
-    doc.querySelectorAll('link[rel~="stylesheet"], link[as="stylesheet"]'),
-  ).map(link => link.getAttribute('href'));
-
-  const videoPosterUrls = Array.from(doc.querySelectorAll('video[poster]')).map(videoEl =>
-    videoEl.getAttribute('poster'),
-  );
-
-  return Array.from(srcsetUrls)
-    .concat(Array.from(srcUrls))
-    .concat(Array.from(imageUrls))
-    .concat(Array.from(cssUrls))
-    .concat(Array.from(videoPosterUrls))
-    .concat(Array.from(objectUrls));
-
-  // can be replaced with matchAll once Safari supports it
-  function execAll(regexp, string, mapper) {
-    const matches = [];
-    const clonedRegexp = new RegExp(regexp.source, regexp.flags);
-    const isGlobal = clonedRegexp.global;
-    let match;
-    while ((match = clonedRegexp.exec(string))) {
-      matches.push(mapper(match));
-      if (!isGlobal) break;
-    }
-    return matches;
-  }
-}
-
-var extractLinks_1 = extractLinks;
-
 function uuid() {
   return window.crypto.getRandomValues(new Uint32Array(1))[0];
 }
@@ -13049,6 +13000,89 @@ function processInlineCss(styleNode, log = noop$4) {
 
 var processInlineCss_1 = processInlineCss;
 
+function getUrlFromCssText(cssText) {
+  const re = /url\((?!['"]?:)['"]?([^'")]*)['"]?\)/g;
+  const ret = [];
+  let result;
+  while ((result = re.exec(cssText)) !== null) {
+    ret.push(result[1]);
+  }
+  return ret;
+}
+
+var getUrlFromCssText_1 = getUrlFromCssText;
+
+function extractResourceUrlsFromStyleAttrs(el) {
+  const style = el.getAttribute('style');
+  if (style) return getUrlFromCssText_1(style);
+}
+
+var extractResourceUrlsFromStyleAttrs_1 = extractResourceUrlsFromStyleAttrs;
+
+const srcsetRegexp = /(\S+)(?:\s+[\d.]+[wx])?(?:,|$)/g;
+
+function extractLinksFromElement(el) {
+  const matches = (el.matches || el.msMatchesSelector).bind(el);
+
+  let urls = [];
+
+  // srcset urls
+  if (matches('img[srcset],source[srcset]')) {
+    urls = urls.concat(execAll(srcsetRegexp, el.getAttribute('srcset'), match => match[1]));
+  }
+
+  // src urls
+  if (matches('img[src],source[src],input[type="image"][src],audio[src],video[src]')) {
+    urls.push(el.getAttribute('src'));
+  }
+
+  // image urls
+  if (matches('image,use')) {
+    const href = el.getAttribute('href') || el.getAttribute('xlink:href');
+    if (href && href[0] !== '#') {
+      urls.push(href);
+    }
+  }
+
+  // object urls
+  if (matches('object') && el.getAttribute('data')) {
+    urls.push(el.getAttribute('data'));
+  }
+
+  // css urls
+  if (matches('link[rel~="stylesheet"], link[as="stylesheet"]')) {
+    urls.push(el.getAttribute('href'));
+  }
+
+  // video poster urls
+  if (matches('video[poster]')) {
+    urls.push(el.getAttribute('poster'));
+  }
+
+  // style attribute urls
+  const styleAttrUrls = extractResourceUrlsFromStyleAttrs_1(el);
+  if (styleAttrUrls) {
+    urls = urls.concat(styleAttrUrls);
+  }
+
+  return urls;
+
+  // can be replaced with matchAll once Safari supports it
+  function execAll(regexp, string, mapper) {
+    const matches = [];
+    const clonedRegexp = new RegExp(regexp.source, regexp.flags);
+    const isGlobal = clonedRegexp.global;
+    let match;
+    while ((match = clonedRegexp.exec(string))) {
+      matches.push(mapper(match));
+      if (!isGlobal) break;
+    }
+    return matches;
+  }
+}
+
+var extractLinksFromElement_1 = extractLinksFromElement;
+
 const NEED_MAP_INPUT_TYPES = new Set([
   'date',
   'datetime-local',
@@ -13070,9 +13104,10 @@ function domNodesToCdt(docNode, baseUrl, log = noop$4) {
   const docRoots = [docNode];
   const canvasElements = [];
   const inlineFrames = [];
+  let linkUrls = [];
 
   cdt[0].childNodeIndexes = childrenFactory(cdt, docNode.childNodes);
-  return {cdt, docRoots, canvasElements, inlineFrames};
+  return {cdt, docRoots, canvasElements, inlineFrames, linkUrls};
 
   function childrenFactory(cdt, elementNodes) {
     if (!elementNodes || elementNodes.length === 0) return null;
@@ -13152,6 +13187,12 @@ function domNodesToCdt(docNode, baseUrl, log = noop$4) {
     }
 
     if (node) {
+      if (nodeType === Node.ELEMENT_NODE) {
+        const linkUrlsFromElement = extractLinksFromElement_1(elementNode);
+        if (linkUrlsFromElement.length > 0) {
+          linkUrls = linkUrls.concat(linkUrlsFromElement);
+        }
+      }
       cdt.push(node);
       return cdt.length - 1;
     } else {
@@ -13505,18 +13546,6 @@ function makeProcessResource({
 
 var processResource = makeProcessResource;
 
-function getUrlFromCssText(cssText) {
-  const re = /url\((?!['"]?:)['"]?([^'")]*)['"]?\)/g;
-  const ret = [];
-  let result;
-  while ((result = re.exec(cssText)) !== null) {
-    ret.push(result[1]);
-  }
-  return ret;
-}
-
-var getUrlFromCssText_1 = getUrlFromCssText;
-
 function makeExtractResourcesFromSvg({parser, decoder, extractResourceUrlsFromStyleTags}) {
   return function(svgArrayBuffer) {
     const decooder = decoder || new TextDecoder('utf-8');
@@ -13686,20 +13715,6 @@ function makeExtractResourcesFromStyleSheet({styleSheetCache, CSSRule = window.C
 }
 
 var extractResourcesFromStyleSheet = makeExtractResourcesFromStyleSheet;
-
-function extractResourceUrlsFromStyleAttrs(cdt) {
-  return cdt.reduce((acc, node) => {
-    if (node.nodeType === 1) {
-      const styleAttr =
-        node.attributes && node.attributes.find(attr => attr.name.toUpperCase() === 'STYLE');
-
-      if (styleAttr) acc = acc.concat(getUrlFromCssText_1(styleAttr.value));
-    }
-    return acc;
-  }, []);
-}
-
-var extractResourceUrlsFromStyleAttrs_1 = extractResourceUrlsFromStyleAttrs;
 
 function makeExtractResourceUrlsFromStyleTags(extractResourcesFromStyleSheet) {
   return function extractResourceUrlsFromStyleTags(doc, onlyDocStylesheet = true) {
@@ -13924,32 +13939,17 @@ function processPage(
     return result;
   });
 
-  function getLinksFromCdtElements(cdt) {
-    const links = [];
-    cdt.forEach(el => {
-      if (el.nodeName === 'IMG') {
-        const srcAttr = el.attributes.find(({name}) => name.toUpperCase() === 'SRC');
-        if (srcAttr) {
-          links.push(srcAttr.value);
-        }
-      }
-    });
-    return links;
-  }
-
   function doProcessPage(doc, pageUrl = doc.location.href) {
     const baseUrl = getBaseUrl(doc) || pageUrl;
-    const {cdt, docRoots, canvasElements, inlineFrames} = domNodesToCdt_1(doc, baseUrl, log$$1);
+    const {cdt, docRoots, canvasElements, inlineFrames, linkUrls} = domNodesToCdt_1(
+      doc,
+      baseUrl,
+      log$$1,
+    );
 
-    const linkUrls = flat_1(docRoots.map(extractLinks_1));
     const styleTagUrls = flat_1(docRoots.map(extractResourceUrlsFromStyleTags$$1));
     const absolutizeThisUrl = getAbsolutizeByUrl(baseUrl);
-    const urls = uniq_1(
-      Array.from(linkUrls)
-        .concat(Array.from(styleTagUrls))
-        .concat(extractResourceUrlsFromStyleAttrs_1(cdt))
-        .concat(getLinksFromCdtElements(cdt)),
-    )
+    const urls = uniq_1(Array.from(linkUrls).concat(Array.from(styleTagUrls)))
       .map(toUriEncoding_1)
       .map(absolutizeThisUrl)
       .map(toUnAnchoredUri_1)

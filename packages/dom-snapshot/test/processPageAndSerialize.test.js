@@ -11,7 +11,7 @@ const fs = require('fs');
 const util = require('util');
 const writeFile = util.promisify(fs.writeFile);
 const {resolve} = require('path');
-const {JSDOM} = require('jsdom');
+const getDocNode = require('./util/getDocNode');
 const {version} = require('../package.json');
 const path = require('path');
 const decodeFrame = require('./util/decodeFrame');
@@ -120,11 +120,6 @@ describe('processPage', () => {
         value: loadFixtureBuffer('smurfs.jpg'),
       },
       {
-        url: 'http://localhost:7373/blob1',
-        type: 'image/jpeg',
-        value: loadFixtureBuffer('smurfs.jpg'),
-      },
-      {
         url: 'http://localhost:7373/blabla',
         errorStatusCode: 404,
       },
@@ -144,14 +139,19 @@ describe('processPage', () => {
         value: loadFixtureBuffer('blob.css'),
       },
       {
-        url: 'http://localhost:7373/imported2.css',
-        type: 'text/css; charset=UTF-8',
-        value: loadFixtureBuffer('imported2.css'),
-      },
-      {
         url: 'http://localhost:7373/smurfs-style-attr.jpg',
         type: 'image/jpeg',
         value: loadFixtureBuffer('smurfs-style-attr.jpg'),
+      },
+      {
+        url: 'http://localhost:7373/blob1',
+        type: 'image/jpeg',
+        value: loadFixtureBuffer('smurfs.jpg'),
+      },
+      {
+        url: 'http://localhost:7373/imported2.css',
+        type: 'text/css; charset=UTF-8',
+        value: loadFixtureBuffer('imported2.css'),
       },
     ];
 
@@ -342,7 +342,18 @@ describe('processPage', () => {
     const url = 'http://localhost:7373/cssUri.html';
     await page.goto(url);
     const {blobs} = await processPage();
+    expect(blobs.map(b => b.url)).to.eql([
+      'http://localhost:7373/somePath/gargamel.jpg',
+      'http://localhost:7373/somePath/gargamel3.jpg',
+      'http://localhost:7373/cssUri.css',
+      'http://localhost:7373/somePath/gargamel2.jpg',
+    ]);
     expect(blobs).to.eql([
+      {
+        url: 'http://localhost:7373/somePath/gargamel.jpg',
+        type: 'image/jpeg',
+        value: loadFixtureBuffer('somePath/gargamel.jpg'),
+      },
       {
         url: 'http://localhost:7373/somePath/gargamel3.jpg',
         type: 'image/jpeg',
@@ -357,11 +368,6 @@ describe('processPage', () => {
         url: 'http://localhost:7373/somePath/gargamel2.jpg',
         type: 'image/jpeg',
         value: loadFixtureBuffer('somePath/gargamel2.jpg'),
-      },
-      {
-        url: 'http://localhost:7373/somePath/gargamel.jpg',
-        type: 'image/jpeg',
-        value: loadFixtureBuffer('somePath/gargamel.jpg'),
       },
     ]);
   });
@@ -599,16 +605,16 @@ describe('processPage', () => {
         type: 'image/jpeg',
       },
       {
+        url: 'http://localhost:7373/basic3.svg',
+        type: 'image/svg+xml',
+      },
+      {
         url: 'http://localhost:7373/basic4.svg',
         type: 'image/svg+xml',
       },
       {
         url: 'http://localhost:7373/svg.css',
         type: 'text/css; charset=UTF-8',
-      },
-      {
-        url: 'http://localhost:7373/basic3.svg',
-        type: 'image/svg+xml',
       },
       {
         url: 'http://localhost:7373/smurfs5.jpg',
@@ -711,11 +717,18 @@ describe('processPage', () => {
 
     expect(resourceUrls).to.eql(['https://localhost:1010/getting-cors.jpg']);
     expect(cdt).to.eql(expectedCdt);
+    expect(blobs.map(b => b.url)).to.eql([
+      'http://localhost:7373/smurfs2.jpg',
+      'http://localhost:7373/smurfs3.jpg',
+      'http://localhost:7373/shadow.css',
+      'http://localhost:7373/gargamel.jpg',
+      'http://localhost:7373/smurfs1.jpg',
+    ]);
     expect(blobs).to.eql([
       {
-        url: 'http://localhost:7373/gargamel.jpg',
+        url: 'http://localhost:7373/smurfs2.jpg',
         type: 'image/jpeg',
-        value: loadFixtureBuffer('gargamel.jpg'),
+        value: loadFixtureBuffer('smurfs3.jpg'),
       },
       {
         url: 'http://localhost:7373/smurfs3.jpg',
@@ -728,16 +741,17 @@ describe('processPage', () => {
         value: loadFixtureBuffer('shadow.css'),
       },
       {
+        url: 'http://localhost:7373/gargamel.jpg',
+        type: 'image/jpeg',
+        value: loadFixtureBuffer('gargamel.jpg'),
+      },
+      {
         url: 'http://localhost:7373/smurfs1.jpg',
         type: 'image/jpeg',
         value: loadFixtureBuffer('smurfs3.jpg'),
       },
-      {
-        url: 'http://localhost:7373/smurfs2.jpg',
-        type: 'image/jpeg',
-        value: loadFixtureBuffer('smurfs3.jpg'),
-      },
     ]);
+    expect(frames[0].blobs.map(b => b.url)).to.eql(['http://localhost:7373/smurfs.jpg']);
     expect(frames[0].blobs).to.eql([
       {
         url: 'http://localhost:7373/smurfs.jpg',
@@ -779,8 +793,7 @@ describe('processPage', () => {
     };
 
     const htmlStr = fs.readFileSync(resolve(__dirname, 'fixtures/canvas.html'));
-    const dom = new JSDOM(htmlStr, {url: 'http://something.org/'});
-    const doc = dom.window.document;
+    const doc = getDocNode(htmlStr);
 
     // Build the Canvas the same way as in the html file.
     const c = doc.getElementById('textCanvas');
@@ -881,7 +894,7 @@ describe('processPage', () => {
     await logPromise;
   });
 
-  it.only("doesn't fetch any external resource, internal resource and blob when 'dontFetchResources' is set", async () => {
+  it("doesn't fetch any external resource, internal resource and blob when 'dontFetchResources' is set", async () => {
     const url = 'http://localhost:7373/test-visual-grid.html';
     await page.goto(url);
     await delay(500);
@@ -915,13 +928,13 @@ describe('processPage', () => {
     });
 
     const resourceUrls = [
-      'http://localhost:7373/smurfs.jpg',
-      'http://localhost:7373/blob1',
       'http://localhost:7373/test.css',
       'http://localhost:7374/get-cors.css',
       'http://localhost:7373/blob2',
-      'http://localhost:7373/imported2.css',
+      'http://localhost:7373/smurfs.jpg',
       'http://localhost:7373/smurfs-style-attr.jpg',
+      'http://localhost:7373/blob1',
+      'http://localhost:7373/imported2.css',
     ];
 
     // the following assertions are here so that the mocha doesn't get stuck if the test fails on big blobs
