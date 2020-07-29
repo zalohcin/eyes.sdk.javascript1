@@ -216,9 +216,11 @@ describe('processPage', () => {
     ];
     const resourceUrls = [];
 
+    // so that the mocha doesn't get stuck if the test fails on big blobs
     expect(result.blobs.map(b => b.url)).to.eql(blobs.map(b => b.url));
     expect(result.cdt).to.eql(cdt);
     expect(result.resourceUrls).to.eql(resourceUrls);
+    expect(result.blobs).to.eql(blobs);
   });
 
   it('works for iframes', async () => {
@@ -342,12 +344,15 @@ describe('processPage', () => {
     const url = 'http://localhost:7373/cssUri.html';
     await page.goto(url);
     const {blobs} = await processPage();
+
+    // so that the mocha doesn't get stuck if the test fails on big blobs
     expect(blobs.map(b => b.url)).to.eql([
       'http://localhost:7373/somePath/gargamel.jpg',
       'http://localhost:7373/somePath/gargamel3.jpg',
       'http://localhost:7373/cssUri.css',
       'http://localhost:7373/somePath/gargamel2.jpg',
     ]);
+
     expect(blobs).to.eql([
       {
         url: 'http://localhost:7373/somePath/gargamel.jpg',
@@ -575,6 +580,8 @@ describe('processPage', () => {
   it('works for svg', async () => {
     await page.goto('http://localhost:7373/svg-links.html');
     const {blobs} = await processPage();
+
+    // so that the mocha doesn't get stuck if the test fails on big blobs
     expect(blobs.map(b => ({url: b.url, type: b.type}))).to.eql([
       {
         url: 'http://localhost:7373/smurfs.jpg',
@@ -717,6 +724,8 @@ describe('processPage', () => {
 
     expect(resourceUrls).to.eql(['https://localhost:1010/getting-cors.jpg']);
     expect(cdt).to.eql(expectedCdt);
+
+    // so that the mocha doesn't get stuck if the test fails on big blobs
     expect(blobs.map(b => b.url)).to.eql([
       'http://localhost:7373/smurfs2.jpg',
       'http://localhost:7373/smurfs3.jpg',
@@ -724,6 +733,7 @@ describe('processPage', () => {
       'http://localhost:7373/gargamel.jpg',
       'http://localhost:7373/smurfs1.jpg',
     ]);
+
     expect(blobs).to.eql([
       {
         url: 'http://localhost:7373/smurfs2.jpg',
@@ -751,7 +761,10 @@ describe('processPage', () => {
         value: loadFixtureBuffer('smurfs3.jpg'),
       },
     ]);
+
+    // so that the mocha doesn't get stuck if the test fails on big blobs
     expect(frames[0].blobs.map(b => b.url)).to.eql(['http://localhost:7373/smurfs.jpg']);
+
     expect(frames[0].blobs).to.eql([
       {
         url: 'http://localhost:7373/smurfs.jpg',
@@ -1012,7 +1025,7 @@ describe('processPage', () => {
     });
 
     // top page
-    expect(blobs.map(({url}) => url)).to.eql(['http://localhost:7373/test.css']);
+    expect(blobs.map(({url}) => url)).to.eql(['http://localhost:7373/test.css']); // so that the mocha doesn't get stuck if the test fails on big blobs
     expect(resourceUrls).to.eql([
       'http://localhost:7373/smurfs.jpg',
       'http://localhost:7373/blabla',
@@ -1021,7 +1034,8 @@ describe('processPage', () => {
     // frame #1
     expect(frames[0].frames[0].blobs.map(({url}) => url)).to.eql([
       'http://localhost:7373/test.css',
-    ]);
+    ]); // so that the mocha doesn't get stuck if the test fails on big blobs
+
     expect(frames[0].frames[0].resourceUrls).to.eql([
       'http://localhost:7373/smurfs.jpg',
       'http://localhost:7373/blabla',

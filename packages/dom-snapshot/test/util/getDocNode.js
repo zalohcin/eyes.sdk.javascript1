@@ -1,5 +1,8 @@
 const {JSDOM, ResourceLoader} = require('jsdom');
 
+/*
+This is needed to avoid errors in the console with JSDOM. The tests still pass without it, but it creates noise and a false sense of failure.
+*/
 class CustomResourceLoader extends ResourceLoader {
   async fetch(url, options) {
     if (process.env.APPLITOOLS_SHOW_LOGS) console.log('[jsdom resource]', url);
