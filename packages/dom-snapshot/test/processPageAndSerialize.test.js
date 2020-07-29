@@ -1072,4 +1072,13 @@ describe('processPage', () => {
       .map(({value}) => value);
     expect(linkAttrsFromCdt).to.eql(['query.css?', 'http://localhost:8888/cors.css?']);
   });
+
+  it('unescapes css in stylesheets', async () => {
+    await page.goto('http://localhost:7373/css-vars.html');
+    const {blobs} = await processPage();
+    expect(blobs.map(b => b.url)).to.eql([
+      'http://localhost:7373/somePath/gargamel.jpg',
+      'http://localhost:7373/somePath/gargamel2.jpg',
+    ]);
+  });
 });

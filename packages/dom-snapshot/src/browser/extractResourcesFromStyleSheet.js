@@ -22,7 +22,7 @@ function makeExtractResourcesFromStyleSheet({styleSheetCache, CSSRule = window.C
               const property = rule.style[i];
               let propertyValue = rule.style.getPropertyValue(property);
               if (/^\s*var\s*\(/.test(propertyValue) || /^--/.test(property)) {
-                propertyValue = propertyValue.replace(/\\/g, '');
+                propertyValue = unescapeCss(propertyValue);
               }
               const urls = getUrlFromCssText(propertyValue);
               rv = rv.concat(urls);
@@ -37,6 +37,15 @@ function makeExtractResourcesFromStyleSheet({styleSheetCache, CSSRule = window.C
     );
     return urls.filter(u => u[0] !== '#');
   };
+}
+
+// copied from https://github.com/applitools/mono/commit/512ed8b805ab0ee6701ee04301e982afb382a7f0#diff-4d4bb24a63912943219ab77a43b29ee3R99
+function unescapeCss(text) {
+  return text
+    .replace(/(\\[0-9a-fA-F]{1,6}\s?)/g, original =>
+      String.fromCodePoint(parseInt(original.substr(1).trim(), 16)),
+    )
+    .replace(/\\([^0-9a-fA-F])/g, '$1');
 }
 
 module.exports = makeExtractResourcesFromStyleSheet;

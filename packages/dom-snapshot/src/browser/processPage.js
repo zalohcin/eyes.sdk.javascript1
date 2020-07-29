@@ -70,7 +70,7 @@ function processPage(
       log,
     );
 
-    const styleTagUrls = flat(docRoots.map(extractResourceUrlsFromStyleTags));
+    const styleTagUrls = flat(docRoots.map(docRoot => extractResourceUrlsFromStyleTags(docRoot)));
     const absolutizeThisUrl = getAbsolutizeByUrl(baseUrl);
     const urls = uniq(Array.from(linkUrls).concat(Array.from(styleTagUrls)))
       .map(toUriEncoding)

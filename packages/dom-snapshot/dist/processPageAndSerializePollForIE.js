@@ -24334,7 +24334,7 @@ function __processPageAndSerializePollForIE() {
             var propertyValue = rule.style.getPropertyValue(property);
 
             if (/^\s*var\s*\(/.test(propertyValue) || /^--/.test(property)) {
-              propertyValue = propertyValue.replace(/\\/g, '');
+              propertyValue = unescapeCss(propertyValue); //.replace(/\\/g, '');
             }
 
             var _urls = getUrlFromCssText_1(propertyValue);
@@ -24351,6 +24351,13 @@ function __processPageAndSerializePollForIE() {
         return u[0] !== '#';
       });
     };
+  } // copied from https://github.com/applitools/mono/commit/512ed8b805ab0ee6701ee04301e982afb382a7f0#diff-4d4bb24a63912943219ab77a43b29ee3R99
+
+
+  function unescapeCss(text) {
+    return text.replace(/(\\[0-9a-fA-F]{1,6}\s?)/g, function (original) {
+      return String.fromCodePoint(parseInt(original.substr(1).trim(), 16));
+    }).replace(/\\([^0-9a-fA-F])/g, '$1');
   }
 
   var extractResourcesFromStyleSheet = makeExtractResourcesFromStyleSheet;
@@ -24609,7 +24616,9 @@ function __processPageAndSerializePollForIE() {
           inlineFrames = _domNodesToCdt.inlineFrames,
           linkUrls = _domNodesToCdt.linkUrls;
 
-      var styleTagUrls = flat_1(docRoots.map(extractResourceUrlsFromStyleTags$$1));
+      var styleTagUrls = flat_1(docRoots.map(function (docRoot) {
+        return extractResourceUrlsFromStyleTags$$1(docRoot);
+      }));
       var absolutizeThisUrl = getAbsolutizeByUrl(baseUrl);
       var urls = uniq_1(Array.from(linkUrls).concat(Array.from(styleTagUrls))).map(toUriEncoding_1).map(absolutizeThisUrl).map(toUnAnchoredUri_1).filter(filterInlineUrlsIfExisting);
       var resourceUrlsAndBlobsPromise = dontFetchResources ? Promise.resolve({
