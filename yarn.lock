@@ -17,14 +17,6 @@
     "@applitools/functional-commons" "^1.5.4"
     css-tree "^1.0.0-alpha.39"
 
-"@applitools/dom-snapshot@3.7.3":
-  version "3.7.3"
-  resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-3.7.3.tgz#f6e71ec8caa989f52f644d246bb3f2fc7c4c2f0b"
-  integrity sha512-8jHaxRxdiYnZQqKMlvB4DyUvKv536O0dHuh9oDnV10tPZvqe0LU15AlIQeMUzlwQkcGWo4wHCMiYzae5TYQ0gw==
-  dependencies:
-    "@applitools/functional-commons" "1.5.4"
-    css-tree "^1.0.0-alpha.39"
-
 "@applitools/eslint-plugin-compat@^0.7.0":
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@applitools/eslint-plugin-compat/-/eslint-plugin-compat-0.7.0.tgz#61785cfb4156ddbb06141116b7fd381ecf11afea"
@@ -72,23 +64,6 @@
     stack-trace "^0.0.10"
     tunnel "0.0.6"
 
-"@applitools/eyes-sdk-core@11.4.1":
-  version "11.4.1"
-  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-11.4.1.tgz#a37724f790b7869f8d608d87703b9480008640ec"
-  integrity sha512-VWOwr/I7ynfWI8Di5HbJp2TQB5ij/rrM9lF1/PMfgTn+Yk8swno0A/ZRJ7VZI9TwtHC7VE5uhrUf574rHHqC7g==
-  dependencies:
-    "@applitools/dom-capture" "7.2.6"
-    "@applitools/isomorphic-fetch" "3.0.0"
-    axios "0.19.2"
-    chalk "3.0.0"
-    cosmiconfig "^6.0.0"
-    dateformat "^3.0.3"
-    debug "^4.1.1"
-    deepmerge "^4.2.2"
-    png-async "^0.9.4"
-    stack-trace "^0.0.10"
-    tunnel "0.0.6"
-
 "@applitools/eyes-sdk-core@11.5.0":
   version "11.5.0"
   resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-11.5.0.tgz#f84fe74f16a2d702d52ba0c2fd63648ead4c4a14"
@@ -105,14 +80,6 @@
     png-async "^0.9.4"
     stack-trace "^0.0.10"
     tunnel "0.0.6"
-
-"@applitools/eyes.webdriverio@2.20.0":
-  version "2.20.0"
-  resolved "https://registry.yarnpkg.com/@applitools/eyes.webdriverio/-/eyes.webdriverio-2.20.0.tgz#47d6ff8bf6a7eb58f8cfd9021396521e0a1ce921"
-  integrity sha512-e7FMV/EjKsCNnO7icLGzt0j93coAX7mlrG49CAEt775Qchdqm+za/a0hgxS8oh2hIzNFsQY7V94SBjeAReAcyA==
-  dependencies:
-    "@applitools/eyes-sdk-core" "11.4.1"
-    "@applitools/visual-grid-client" "14.5.15"
 
 "@applitools/feature-flags@2.1.1":
   version "2.1.1"
@@ -229,26 +196,6 @@
   dependencies:
     "@applitools/dom-snapshot" "3.5.2"
     "@applitools/eyes-sdk-core" "10.3.0"
-    "@applitools/feature-flags" "2.1.1"
-    "@applitools/functional-commons" "1.5.4"
-    "@applitools/http-commons" "2.3.12"
-    "@applitools/isomorphic-fetch" "3.0.0"
-    "@applitools/jsdom" "1.0.2"
-    chalk "3.0.0"
-    he "1.2.0"
-    lodash.mapvalues "^4.6.0"
-    mime-types "^2.1.24"
-    mkdirp "^0.5.1"
-    postcss-value-parser "^4.0.2"
-    throat "^5.0.0"
-
-"@applitools/visual-grid-client@14.5.15":
-  version "14.5.15"
-  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-14.5.15.tgz#fa9d2aa4efcde6d2aa683e9d01845d0165ec2b74"
-  integrity sha512-SkJSUxDoc1bNzD9AL6HnxP4Bj7xfWw732Ey/rpcQXPIAEFNhC0zlWte8fQ04Ww8v3JMMzAeyn98mAouoSFC5oQ==
-  dependencies:
-    "@applitools/dom-snapshot" "3.7.3"
-    "@applitools/eyes-sdk-core" "11.4.1"
     "@applitools/feature-flags" "2.1.1"
     "@applitools/functional-commons" "1.5.4"
     "@applitools/http-commons" "2.3.12"
@@ -5323,7 +5270,7 @@ babel-runtime@^5.8.20, babel-runtime@^5.8.34:
   dependencies:
     core-js "^1.0.0"
 
-babel-runtime@^6.11.6, babel-runtime@^6.18.0, babel-runtime@^6.22.0, babel-runtime@^6.23.0, babel-runtime@^6.26.0, babel-runtime@^6.9.1:
+babel-runtime@^6.11.6, babel-runtime@^6.18.0, babel-runtime@^6.22.0, babel-runtime@^6.26.0, babel-runtime@^6.9.1:
   version "6.26.0"
   resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.26.0.tgz#965c7058668e82b55d7bfe04ff2337bc8b5647fe"
   integrity sha1-llxwWGaOgrVde/4E/yM3vItWR/4=
@@ -15115,7 +15062,7 @@ object-visit@^1.0.0:
   dependencies:
     isobject "^3.0.0"
 
-object.assign@4.1.0, object.assign@^4.0.3, object.assign@^4.1.0:
+object.assign@4.1.0, object.assign@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/object.assign/-/object.assign-4.1.0.tgz#968bf1100d7956bb3ca086f006f846b3bc4008da"
   integrity sha512-exHJeq6kBKj58mqGyTQ9DFvrZC/eR6OwxzoM9YRoGBqrXYonaFyGiFMuc9VZrXf7DarreEwMpurG3dd+CNyW5w==
@@ -20832,13 +20779,6 @@ wd@^1.2.0:
     request "2.88.0"
     vargs "^0.1.0"
 
-wdio-chromedriver-service@^0.1.5:
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/wdio-chromedriver-service/-/wdio-chromedriver-service-0.1.5.tgz#d8e8bc817d9c961bd37910f02b3da47863d5508a"
-  integrity sha512-/b9rVXwXnXJKSLqcNpW/tC2U7BVM3Lzj2NuT2MWPLnGmzHZ6JZpTlSLoRSW5bVsaZcolEb22m0pAPLxwy6reBQ==
-  dependencies:
-    fs-extra "^0.30.0"
-
 wdio-chromedriver-service@^5.0.2:
   version "5.0.2"
   resolved "https://registry.yarnpkg.com/wdio-chromedriver-service/-/wdio-chromedriver-service-5.0.2.tgz#171c642252b7ab3bab610b366ddcfe6018a7d67a"
@@ -20846,26 +20786,10 @@ wdio-chromedriver-service@^5.0.2:
   dependencies:
     fs-extra "^0.30.0"
 
-wdio-dot-reporter@0.0.10, wdio-dot-reporter@~0.0.8:
+wdio-dot-reporter@~0.0.8:
   version "0.0.10"
   resolved "https://registry.yarnpkg.com/wdio-dot-reporter/-/wdio-dot-reporter-0.0.10.tgz#facfb7c9c5984149951f59cbc3cd0752101cf0e0"
   integrity sha512-A0TCk2JdZEn3M1DSG9YYbNRcGdx/YRw19lTiRpgwzH4qqWkO/oRDZRmi3Snn4L2j54KKTfPalBhlOtc8fojVgg==
-
-wdio-mocha-framework@applitools/wdio-mocha-framework:
-  version "0.6.4"
-  resolved "https://codeload.github.com/applitools/wdio-mocha-framework/tar.gz/674c22db1d7ec070e2822d6d1f6598e7c41c1119"
-  dependencies:
-    babel-runtime "^6.23.0"
-    mocha "^5.2.0"
-    wdio-sync webdriverio-boneyard/wdio-sync
-
-wdio-sync@webdriverio-boneyard/wdio-sync:
-  version "0.7.3"
-  resolved "https://codeload.github.com/webdriverio-boneyard/wdio-sync/tar.gz/dce97e0482a712660d269beb9b575bd731f26977"
-  dependencies:
-    babel-runtime "^6.26.0"
-    fibers "^4.0.1"
-    object.assign "^4.0.3"
 
 web-ext-submit@^3.1.1:
   version "3.2.1"
@@ -21050,7 +20974,7 @@ webdriverio@5.18.6:
     serialize-error "^5.0.0"
     webdriver "5.18.6"
 
-webdriverio@^4.14.4, webdriverio@~4.14.4:
+webdriverio@~4.14.4:
   version "4.14.4"
   resolved "https://registry.yarnpkg.com/webdriverio/-/webdriverio-4.14.4.tgz#f7a94e9a6530819796088f42b009833d83de0386"
   integrity sha512-Knp2vzuzP5c5ybgLu+zTwy/l1Gh0bRP4zAr8NWcrStbuomm9Krn9oRF0rZucT6AyORpXinETzmeowFwIoo7mNA==
