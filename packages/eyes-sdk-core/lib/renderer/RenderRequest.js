@@ -7,18 +7,19 @@ const {ArgumentGuard} = require('../..')
  */
 class RenderRequest {
   /**
-   * @param {string} webhook
-   * @param {string} url
-   * @param {RGridDom} dom
-   * @param {RGridResource[]} resources
-   * @param {RenderInfo} [renderInfo]
-   * @param {string} [platform]
-   * @param {string} [browserName]
-   * @param {Object} [scriptHooks]
-   * @param {string[]} selectorsToFindRegionsFor
-   * @param {boolean} sendDom
-   * @param {string} renderId
-   * @param {string} agentId
+   * @param request
+   * @param {string} request.webhook
+   * @param {string} request.url
+   * @param {RGridDom} request.dom
+   * @param {RGridResource[]} request.resources
+   * @param {RenderInfo} [request.renderInfo]
+   * @param {string} [request.platform]
+   * @param {string} [request.browserName]
+   * @param {Object} [request.scriptHooks]
+   * @param {string[]} request.selectorsToFindRegionsFor
+   * @param {boolean} request.sendDom
+   * @param {string} request.renderId
+   * @param {string} request.agentId
    */
   constructor({
     webhook,
@@ -245,4 +246,4 @@ class RenderRequest {
   }
 }
 
-exports.RenderRequest = RenderRequest
+module.exports = RenderRequest

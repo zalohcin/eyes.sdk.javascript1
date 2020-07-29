@@ -1,10 +1,10 @@
 'use strict'
 
-const {EyesError} = require('./EyesError')
+const EyesError = require('./EyesError')
 
 /**
  * Encapsulates an error when trying to perform an action using WebDriver.
  */
 class EyesDriverOperationError extends EyesError {}
 
-exports.EyesDriverOperationError = EyesDriverOperationError
+module.exports = EyesDriverOperationError

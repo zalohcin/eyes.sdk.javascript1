@@ -1,6 +1,7 @@
 const {EyesWrappedDriver} = require('@applitools/eyes-sdk-core')
-const SpecWrappedDriver = require('./SpecWrappedDriver')
 const LegacyWrappedDriver = require('./LegacyWrappedDriver')
+/** @type {import('./SpecWrappedDriver'.WDIOSpecDriver)} */
+const SpecWrappedDriver = require('./SpecWrappedDriver')
 
 const WDIOWrappedDriver = EyesWrappedDriver.specialize(SpecWrappedDriver, {
   /** @override */

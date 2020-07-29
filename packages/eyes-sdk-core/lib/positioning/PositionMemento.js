@@ -1,5 +1,4 @@
-'use strict'
-const {Location} = require('../geometry/Location')
+const Location = require('../geometry/Location')
 
 /**
  * Encapsulates state for {@link PositionProvider} instances

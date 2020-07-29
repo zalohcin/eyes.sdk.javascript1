@@ -1,6 +1,6 @@
 {
   "name": "@applitools/dom-snapshot",
-  "version": "3.5.3",
+  "version": "4.0.0",
   "main": "index.js",
   "license": "SEE LICENSE IN LICENSE",
   "scripts": {
@@ -32,6 +32,7 @@
     "@applitools/sdk-release-kit": "0.1.0",
     "@applitools/sdk-shared": "0.1.0",
     "@babel/preset-env": "^7.8.3",
+    "abort-controller": "^3.0.0",
     "canvas": "^2.6.1",
     "chai": "^4.2.0",
     "core-js": "^3.6.4",

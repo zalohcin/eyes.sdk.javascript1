@@ -2,21 +2,22 @@
 
 const {GeneralUtils, Region} = require('../..')
 
-const {EmulationInfo} = require('./EmulationInfo')
+const EmulationInfo = require('./EmulationInfo')
 
 /**
- * @typedef {{iosDeviceInfo: {deviceName: IosDevieName, screenOrientation: (IosScreenOrientation|undefined)})}} IosDeviceInfo
+ * @typedef {{iosDeviceInfo: {deviceName: IosDevieName, screenOrientation: (ScreenOrientation|undefined)})}} IosDeviceInfo
  */
 
 class RenderInfo {
   /**
-   * @param {number} width
-   * @param {number} height
-   * @param {string} sizeMode
-   * @param {string} selector
-   * @param {Region|Object} region
-   * @param {EmulationInfo|Object} emulationInfo
-   * @param {IosDeviceInfo} iosDeviceInfo
+   * @param info
+   * @param {number} info.width
+   * @param {number} info.height
+   * @param {string} info.sizeMode
+   * @param {string} info.selector
+   * @param {Region|object} info.region
+   * @param {EmulationInfo|object} info.emulationInfo
+   * @param {IosDeviceInfo} info.iosDeviceInfo
    */
   constructor({width, height, sizeMode, selector, region, emulationInfo, iosDeviceInfo} = {}) {
     if (region && !(region instanceof Region)) {
@@ -169,4 +170,4 @@ class RenderInfo {
   }
 }
 
-exports.RenderInfo = RenderInfo
+module.exports = RenderInfo

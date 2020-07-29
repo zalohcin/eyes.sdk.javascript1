@@ -1,5 +1,13 @@
+/**
+ * @template T
+ * @param {T} EyesWrappedElement
+ * @return {T}
+ */
 function LegacyAPIElement(EyesWrappedElement) {
   return class EyesWebElement extends EyesWrappedElement {
+    get __EyesWebElement() {
+      return true
+    }
     get element() {
       return this.unwrapped
     }

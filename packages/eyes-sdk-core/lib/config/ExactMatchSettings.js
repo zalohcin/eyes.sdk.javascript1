@@ -1,6 +1,5 @@
 'use strict'
-
-const {GeneralUtils} = require('../utils/GeneralUtils')
+const GeneralUtils = require('../utils/GeneralUtils')
 
 /**
  * Encapsulates match settings for the a session.
@@ -8,14 +7,14 @@ const {GeneralUtils} = require('../utils/GeneralUtils')
 class ExactMatchSettings {
   /**
    * Encapsulate threshold settings for the "Exact" match level.
-   *
-   * @param {number} [minDiffIntensity=0] - The minimum intensity difference of pixel to be considered a change. Valid
+   * @param settings
+   * @param {number} [settings.minDiffIntensity=0] - The minimum intensity difference of pixel to be considered a change. Valid
    *   values are 0-255.
-   * @param {number} [minDiffWidth=0] - The minimum width of an intensity filtered pixels cluster to be considered a
+   * @param {number} [settings.minDiffWidth=0] - The minimum width of an intensity filtered pixels cluster to be considered a
    *   change. Must be >= 0.
-   * @param {number} [minDiffHeight=0] - The minimum height of an intensity filtered pixels cluster to be considered a
+   * @param {number} [settings.minDiffHeight=0] - The minimum height of an intensity filtered pixels cluster to be considered a
    *   change. Must be >= 0.
-   * @param {number} [matchThreshold=0] - The maximum percentage(!) of different pixels (after intensity, width and
+   * @param {number} [settings.matchThreshold=0] - The maximum percentage(!) of different pixels (after intensity, width and
    *   height filtering) which is still considered as a match. Valid values are fractions between 0-1.
    */
   constructor({minDiffIntensity, minDiffWidth, minDiffHeight, matchThreshold} = {}) {
@@ -104,4 +103,4 @@ class ExactMatchSettings {
   }
 }
 
-exports.ExactMatchSettings = ExactMatchSettings
+module.exports = ExactMatchSettings

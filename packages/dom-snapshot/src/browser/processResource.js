@@ -21,12 +21,19 @@ function makeProcessResource({
     documents,
     getResourceUrlsAndBlobs,
     forceCreateStyle = false,
+    skipResources,
   }) {
     if (!cache[url]) {
       if (sessionCache && sessionCache.getItem(url)) {
         const resourceUrls = getDependencies(url);
         log('doProcessResource from sessionStorage', url, 'deps:', resourceUrls.slice(1));
         cache[url] = Promise.resolve({resourceUrls});
+      } else if (
+        (skipResources && skipResources.indexOf(url) > -1) ||
+        /https:\/\/fonts.googleapis.com/.test(url)
+      ) {
+        log('not processing resource from skip list (or google font):', url);
+        cache[url] = Promise.resolve({resourceUrls: [url]});
       } else {
         const now = Date.now();
         cache[url] = doProcessResource(url).then(result => {
@@ -44,15 +51,31 @@ function makeProcessResource({
         .catch(e => {
           if (probablyCORS(e)) {
             return {probablyCORS: true, url};
+          } else if (e.isTimeout) {
+            return {isTimeout: true, url};
           } else {
             throw e;
           }
         })
-        .then(({url, type, value, probablyCORS}) => {
+        .then(({url, type, value, probablyCORS, errorStatusCode, isTimeout}) => {
           if (probablyCORS) {
             log('not fetched due to CORS', `[${Date.now() - now}ms]`, url);
             sessionCache && sessionCache.setItem(url, []);
             return {resourceUrls: [url]};
+          }
+
+          if (errorStatusCode) {
+            const blobsObj = {[url]: {errorStatusCode}};
+            sessionCache && sessionCache.setItem(url, []);
+            return {blobsObj};
+          }
+
+          if (isTimeout) {
+            log('not fetched due to timeout, returning error status code 504 (Gateway timeout)');
+            sessionCache && sessionCache.setItem(url, []);
+            return {
+              blobsObj: {[url]: {errorStatusCode: 504}},
+            };
           }
 
           log(`fetched [${Date.now() - now}ms] ${url} bytes: ${value.byteLength}`);
@@ -90,6 +113,7 @@ function makeProcessResource({
               documents,
               urls: absoluteDependentUrls,
               forceCreateStyle,
+              skipResources,
             }).then(({resourceUrls, blobsObj}) => ({
               resourceUrls,
               blobsObj: Object.assign(blobsObj, thisBlob),

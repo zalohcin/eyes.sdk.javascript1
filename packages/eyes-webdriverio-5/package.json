@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-webdriverio",
-  "version": "5.14.2",
+  "version": "5.19.3",
   "description": "Applitools Eyes SDK for WebdriverIO",
   "keywords": [
     "eyes-webdriverio",
@@ -31,15 +31,16 @@
     "test": "./test"
   },
   "main": "./index.js",
+  "types": "./typings/index.d.ts",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "11.0.10",
-    "@applitools/visual-grid-client": "14.4.9"
+    "@applitools/eyes-sdk-core": "11.5.1",
+    "@applitools/visual-grid-client": "14.6.1"
   },
   "peerDependencies": {
     "webdriverio": ">=5.18.0"
   },
   "devDependencies": {
-    "@applitools/sdk-coverage-tests": "1.0.0",
+    "@applitools/sdk-coverage-tests": "^1.0.9",
     "@applitools/sdk-fake-eyes-server": "^2.0.0",
     "@applitools/sdk-release-kit": "0.1.0",
     "@wdio/cli": "5.18.6",
@@ -55,7 +56,11 @@
     "geckodriver": "^1.19.1",
     "mocha": "^8.0.1",
     "shared-examples-for": "^0.1.3",
-    "spec-xunit-file": "0.0.1-3"
+    "spec-xunit-file": "0.0.1-3",
+    "typescript": "^3.9.6",
+    "webdriverio": "^6.2.0",
+    "webdriverio-5": "npm:webdriverio@^5.18.0",
+    "webdriverio-6": "npm:webdriverio@^6.2.0"
   },
   "scripts": {
     "lint": "eslint '**/*.js'",
@@ -69,6 +74,7 @@
     "coverage:sandbox": "coverage-tests create-tests && yarn test:coverage && coverage-tests process-report",
     "coverage:prod": "coverage-tests create-tests && yarn test:coverage && coverage-tests process-report --send-report prod",
     "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-webdriverio-5' APPLITOOLS_BATCH_ID=$(uuidgen) XUNIT_FILE=coverage-test-report.xml mocha --no-timeouts --reporter spec-xunit-file --parallel --jobs 15 {'./test/coverage/generic/*.spec.js','../sdk-coverage-tests/coverage-tests/custom/**/*.spec.js'}",
+    "types:generate": "rm -rf ./typings && tsc --declaration --declarationDir ./typings --allowJs --emitDeclarationOnly ./index.js && tsc --noEmit ./typings/index.d.ts",
     "preversion": "bongo preversion && yarn test && yarn coverage:prod",
     "version": "bongo version",
     "postversion": "bongo postversion"

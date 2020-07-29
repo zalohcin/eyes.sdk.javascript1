@@ -1,11 +1,9 @@
 'use strict'
-
 const DEFAULT_PREFIX = 'screenshot_'
 const DEFAULT_PATH = ''
 
 /**
  * Interface for saving debug screenshots!
- *
  * @abstract
  */
 class DebugScreenshotsProvider {
@@ -58,4 +56,4 @@ class DebugScreenshotsProvider {
   }
 }
 
-exports.DebugScreenshotsProvider = DebugScreenshotsProvider
+module.exports = DebugScreenshotsProvider

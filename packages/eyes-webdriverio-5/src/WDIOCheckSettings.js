@@ -2,7 +2,15 @@ const {DriverCheckSettings} = require('@applitools/eyes-sdk-core')
 const WDIOWrappedElement = require('./WDIOWrappedElement')
 const WDIOFrame = require('./WDIOFrame')
 
-module.exports = DriverCheckSettings.specialize({
+/**
+ * @typedef {import('./SpecWrappedElement').Element} Element
+ * @typedef {import('./SpecWrappedElement').Selector} Selector
+ *
+ * @typedef {import('@applitools/eyes-sdk-core').SpecCheckSettings<Element, Selector>} WDIOSpecCheckSettings
+ */
+
+/** @type {WDIOSpecCheckSettings} */
+const SpecCheckSettings = {
   isSelector(selector) {
     return WDIOWrappedElement.isSelector(selector)
   },
@@ -21,4 +29,8 @@ module.exports = DriverCheckSettings.specialize({
   createFrameReference(reference) {
     return WDIOFrame.fromReference(reference)
   },
-})
+}
+
+const CheckSettings = DriverCheckSettings.specialize(SpecCheckSettings)
+
+module.exports = CheckSettings

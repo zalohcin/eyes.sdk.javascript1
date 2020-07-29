@@ -1,18 +1,89 @@
 'use strict'
 
-const {BrowserType} = require('./config/BrowserType')
-const {Configuration} = require('./config/Configuration')
-const {TypeUtils} = require('./utils/TypeUtils')
-const {ArgumentGuard} = require('./utils/ArgumentGuard')
-const {RectangleSize} = require('./geometry/RectangleSize')
+const BrowserType = require('./config/BrowserType')
+const Configuration = require('./config/Configuration')
+const TypeUtils = require('./utils/TypeUtils')
+const ArgumentGuard = require('./utils/ArgumentGuard')
 const TestResultsFormatter = require('./TestResultsFormatter')
-const {MatchResult} = require('./match/MatchResult')
-const {CorsIframeHandler, CorsIframeHandle} = require('./capture/CorsIframeHandler')
-const {VisualGridRunner} = require('./runner/VisualGridRunner')
+const MatchResult = require('./match/MatchResult')
+const CorsIframeHandler = require('./capture/CorsIframeHandler')
+const CorsIframeHandles = require('./capture/CorsIframeHandles')
+const VisualGridRunner = require('./runner/VisualGridRunner')
 const EyesUtils = require('./EyesUtils')
 const EyesCore = require('./EyesCore')
 
+/**
+ * @typedef {import('./capture/CorsIframeHandles').CorsIframeHandle} CorsIframeHandle
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesWrappedDriver')<TDriver, TElement, TSelector>} EyesWrappedDriver
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesWrappedElement')<TDriver, TElement, TSelector>} EyesWrappedElement
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesWrappedDriver').EyesWrappedDriverCtor<TDriver, TElement, TSelector>} EyesWrappedDriverCtor
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesWrappedElement').EyesWrappedElementCtor<TDriver, TElement, TSelector>} EyesWrappedElementCtor
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesWrappedElement').EyesWrappedElementStatics<TDriver, TElement, TSelector>} EyesWrappedElementStatics
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesJsExecutor')<TDriver, TElement, TSelector>} EyesJsExecutor
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesBrowsingContext')<TDriver, TElement, TSelector>} EyesBrowsingContext
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesElementFinder')<TDriver, TElement, TSelector>} EyesElementFinder
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesDriverController')<TDriver, TElement, TSelector>} EyesDriverController
+ */
+
+/**
+ * @template TElement, TSelector
+ * @typedef {import('./fluent/DriverCheckSettings')<TElement, TSelector>} CheckSettings
+ */
+
+/**
+ * @template TDriver
+ * @template TElement
+ * @template TSelector
+ * @extends {EyesCore<TDriver, TElement, TSelector>}
+ */
 class EyesVisualGrid extends EyesCore {
+  /**
+   * Create a specialized version of this class
+   * @template TDriver, TElement, TSelector
+   * @param {Object} implementations - implementations of related classes
+   * @param {string} implementations.agentId - base agent id
+   * @param {EyesWrappedDriverCtor<TDriver, TElement, TSelector>} implementations.WrappedDriver - implementation for {@link EyesWrappedDriver}
+   * @param {EyesWrappedElementCtor<TDriver, TElement, TSelector> & EyesWrappedElementStatics<TDriver, TElement, TSelector>} implementations.WrappedElement - implementation for {@link EyesWrappedElement}
+   * @param {CheckSettings<TElement, TSelector>} implementations.CheckSettings - specialized version of {@link DriverCheckSettings}
+   * @param {VisualGridClient} implementations.VisualGridClient - visual grid client
+   * @return {new (...args: ConstructorParameters<typeof EyesVisualGrid>) => EyesVisualGrid<TDriver, TElement, TSelector>} specialized version of this class
+   */
   static specialize({agentId, WrappedDriver, WrappedElement, CheckSettings, VisualGridClient}) {
     return class extends EyesVisualGrid {
       static get WrappedDriver() {
@@ -40,37 +111,43 @@ class EyesVisualGrid extends EyesCore {
    *
    * @param {string} [serverUrl=EyesBase.getDefaultServerUrl()] The Eyes server URL.
    * @param {boolean} [isDisabled=false] Set to true to disable Applitools Eyes and use the webdriver directly.
-   * @param {EyesRunner} [runner] - Set {@code true} to disable Applitools Eyes and use the WebDriver directly.
+   * @param {VisualGridRunner} [runner] - Set {@code true} to disable Applitools Eyes and use the WebDriver directly.
    */
   constructor(serverUrl, isDisabled, runner = new VisualGridRunner()) {
     super(serverUrl, isDisabled)
+    /** @private */
     this._runner = runner
     this._runner.attachEyes(this, this._serverConnector)
     this._runner.makeGetVisualGridClient(this.constructor.VisualGridClient.makeVisualGridClient)
 
-    /** @type {boolean} */ this._isOpen = false
-    /** @type {boolean} */ this._isVisualGrid = true
-    /** @type {EyesJsExecutor} */ this._jsExecutor = undefined
-    /** @type {CorsIframeHandle} */ this._corsIframeHandle = CorsIframeHandle.BLANK
+    /** @private @type {boolean} */
+    this._isOpen = false
+    /** @private @type {boolean} */
+    this._isVisualGrid = true
+    /** @private @type {EyesJsExecutor<TDriver, TElement, TSelector>} */
+    this._jsExecutor = undefined
+    /** @private @type {CorsIframeHandle} */
+    this._corsIframeHandle = CorsIframeHandles.BLANK
 
-    /** @function */ this._checkWindowCommand = undefined
-    /** @function */ this._closeCommand = undefined
-    /** @function */ this._abortCommand = undefined
+    /** @private */
+    this._checkWindowCommand = undefined
+    /** @private */
+    this._closeCommand = undefined
+    /** @private */
+    this._abortCommand = undefined
 
-    /** @type {Promise<void>} */
+    /** @private @type {Promise<void>} */
     this._closePromise = Promise.resolve()
   }
   /**
-   * @signature `open(driver, configuration)`
-   * @signature `open(driver, appName, testName, ?viewportSize, ?configuration)`
-   *
-   * @param {object} driver The web driver that controls the browser hosting the application under test.
+   * @template {TDriver} CDriver
+   * @param {CDriver} driver The web driver that controls the browser hosting the application under test.
    * @param {Configuration|string} optArg1 The Configuration for the test or the name of the application under the test.
    * @param {string} [optArg2] The test name.
    * @param {RectangleSize|object} [optArg3] The required browser's viewport size
    *   (i.e., the visible part of the document's body) or to use the current window's viewport.
    * @param {Configuration} [optArg4] The Configuration for the test
-   * @return {Promise<EyesWrappedDriver>} A wrapped WebDriver which enables Eyes trigger recording and frame handling.
+   * @return {Promise<CDriver & EyesWrappedDriver<TDriver, TElement, TSelector>>} A wrapped WebDriver which enables Eyes trigger recording and frame handling.
    */
   async open(driver, optArg1, optArg2, optArg3, optArg4) {
     ArgumentGuard.notNull(driver, 'driver')
@@ -147,11 +224,13 @@ class EyesVisualGrid extends EyesCore {
     this._closeCommand = close
     this._abortCommand = abort
 
+    await this._initCommon()
+
     return this._driver
   }
   /**
-   * @param {string|DriverCheckSettings} [nameOrCheckSettings] - name of the test case
-   * @param {DriverCheckSettings} [checkSettings] - check settings for the described test case
+   * @param {string|CheckSettings<TElement, TSelector>} [nameOrCheckSettings] - name of the test case
+   * @param {CheckSettings<TElement, TSelector>} [checkSettings] - check settings for the described test case
    * @returns {Promise<MatchResult>}
    */
   async check(nameOrCheckSettings, checkSettings) {
@@ -179,8 +258,8 @@ class EyesVisualGrid extends EyesCore {
         executeScript: this._executor.executeScript.bind(this._executor),
       })
       const {cdt, url, resourceContents, resourceUrls, frames} = pageDomResults
-      if (this.getCorsIframeHandle() === CorsIframeHandle.BLANK) {
-        CorsIframeHandler.blankCorsIframeSrcOfCdt(cdt, frames)
+      if (this.getCorsIframeHandle() === CorsIframeHandles.BLANK) {
+        CorsIframeHandler.blankCorsIframeSrcOfCdt({url, cdt, frames})
       }
       // this._logger.verbose(`Dom extracted  (${checkSettings.toString()})   $$$$$$$$$$$$`)
 
@@ -206,7 +285,11 @@ class EyesVisualGrid extends EyesCore {
       })
     })
   }
-
+  /**
+   * @private
+   * @param {CheckSettings<TElement, TSelector>} checkSettings
+   * @param {Function} operation
+   */
   async _checkPrepare(checkSettings, operation) {
     const originalFrameChain = this._context.frameChain
     const appendFrameChain = checkSettings.frameChain
@@ -217,7 +300,10 @@ class EyesVisualGrid extends EyesCore {
       await this._context.frames(originalFrameChain)
     }
   }
-
+  /**
+   * @private
+   * @param {CheckSettings<TElement, TSelector>} checkSettings
+   */
   async _getTargetConfiguration(checkSettings) {
     const targetSelector =
       checkSettings.getTargetProvider() &&
@@ -259,7 +345,7 @@ class EyesVisualGrid extends EyesCore {
         }
         if (isErrorCaught) {
           const error = TypeUtils.isArray(results) ? results[0] : results
-          if (throwEx) throw error
+          if (throwEx || !error.getTestResults) throw error
           else return error.getTestResults()
         }
         return TypeUtils.isArray(results) ? results[0] : results
@@ -279,40 +365,17 @@ class EyesVisualGrid extends EyesCore {
     console.log(testResultsFormatter.asFormatterString())
   }
   /**
-   * @return {Promise<?TestResults>}
+   * @return {Promise<TestResults>}
    */
   async abort() {
     this._isOpen = false
     return this._abortCommand()
   }
   /**
-   * @return {Promise<RectangleSize>}
-   */
-  async getViewportSize() {
-    return this._configuration.getViewportSize()
-  }
-  /**
-   * @param {RectangleSize|object} viewportSize
-   */
-  async setViewportSize(viewportSize) {
-    ArgumentGuard.notNull(viewportSize, 'viewportSize')
-    viewportSize = new RectangleSize(viewportSize)
-    this._configuration.setViewportSize(viewportSize)
-
-    if (this._driver) {
-      await EyesUtils.setViewportSize(this._logger, this._driver, viewportSize)
-    }
-  }
-  /**
    * @inheritDoc
    */
   async getInferredEnvironment() {
     return undefined
-  }
-
-  async _getAndSaveBatchInfoFromServer(batchId) {
-    ArgumentGuard.notNullOrEmpty(batchId, 'batchId')
-    return this._runner.getBatchInfoWithCache(batchId)
   }
 }
 module.exports = EyesVisualGrid

@@ -1,25 +1,38 @@
 'use strict'
-const {ArgumentGuard} = require('../utils/ArgumentGuard')
-const {Location} = require('../geometry/Location')
+const ArgumentGuard = require('../utils/ArgumentGuard')
+const Location = require('../geometry/Location')
 const PositionProvider = require('./PositionProvider')
 const PositionMemento = require('./PositionMemento')
 const EyesUtils = require('../EyesUtils')
 
 /**
- * @typedef {import('../geometry/RectangleSize').RectangleSize} RectangleSize
- * @typedef {import('../wrappers/EyesJsExecutor')} EyesJsExecutor
- * @typedef {import('../wrappers/EyesWrappedElement')} EyesWrappedElement
+ * @typedef {import('../geometry/RectangleSize')} RectangleSize
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('../wrappers/EyesJsExecutor')<TDriver, TElement, TSelector>} EyesJsExecutor
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('../wrappers/EyesWrappedElement')<TDriver, TElement, TSelector>} EyesWrappedElement
  */
 
 /**
  * A {@link PositionProvider} which is based on CSS translates. This is
  * useful when we want to stitch a page which contains fixed position elements.
+ *
+ * @internal
+ * @template TDriver
+ * @template TElement
+ * @template TSelector
  */
 class CssTranslateElementPositionProvider extends PositionProvider {
   /**
    * @param {Logger} logger - logger instance
-   * @param {EyesJsExecutor} executor - js executor
-   * @param {EyesWrappedElement} element - scrolling element
+   * @param {EyesJsExecutor<TDriver, TElement, TSelector>} executor - js executor
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>} element - scrolling element
    */
   constructor(logger, executor, element) {
     ArgumentGuard.notNull(logger, 'logger')
@@ -31,33 +44,30 @@ class CssTranslateElementPositionProvider extends PositionProvider {
     this._executor = executor
     this._element = element
   }
-
   /**
-   * @return {EyesWrappedElement} scroll root element
+   * @type {EyesWrappedElement<TDriver, TElement, TSelector>}
    */
   get scrollRootElement() {
     return this._element
   }
-
   /**
    * Get position of the provided element using css translate algorithm
-   * @param {EyesWrappedElement} [customScrollRootElement] - if custom scroll root element provided
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>} [customScrollRootElement] - if custom scroll root element provided
    *  it will be user as a base element for this operation
+   * @return {Promise<Location>}
    */
   async getCurrentPosition(customScrollRootElement) {
     try {
-      const [scrollPosition, translatePosition] = await Promise.all([
-        EyesUtils.getScrollLocation(
-          this._logger,
-          this._executor,
-          customScrollRootElement || this._element,
-        ),
-        EyesUtils.getTranslateLocation(
-          this._logger,
-          this._executor,
-          customScrollRootElement || this._element,
-        ),
-      ])
+      const scrollPosition = await EyesUtils.getScrollLocation(
+        this._logger,
+        this._executor,
+        customScrollRootElement || this._element,
+      )
+      const translatePosition = await EyesUtils.getTranslateLocation(
+        this._logger,
+        this._executor,
+        customScrollRootElement || this._element,
+      )
       return scrollPosition.offsetByLocation(translatePosition)
     } catch (err) {
       // Sometimes it is expected e.g. on Appium, otherwise, take care
@@ -65,13 +75,12 @@ class CssTranslateElementPositionProvider extends PositionProvider {
       return Location.ZERO
     }
   }
-
   /**
    * Set position of the provided element using css translate algorithm
    * @param {Location} position - position to set
-   * @param {EyesWrappedElement} [customScrollRootElement] - if custom scroll root element provided
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>} [customScrollRootElement] - if custom scroll root element provided
    *  it will be user as a base element for this operation
-   * @return {Location} actual position after set
+   * @return {Promise<Location>} actual position after set
    */
   async setPosition(position, customScrollRootElement) {
     try {
@@ -97,17 +106,15 @@ class CssTranslateElementPositionProvider extends PositionProvider {
       return Location.ZERO
     }
   }
-
   /**
    * Returns entire size of the scrolling element
-   * @return {RectangleSize} container's entire size
+   * @return {Promise<RectangleSize>} container's entire size
    */
   async getEntireSize() {
     const size = await EyesUtils.getElementEntireSize(this._logger, this._executor, this._element)
     this._logger.verbose(`CssTranslatePositionProvider - Entire size: ${size}`)
     return size
   }
-
   /**
    * Add "data-applitools-scroll" attribute to the scrolling element
    */
@@ -118,10 +125,9 @@ class CssTranslateElementPositionProvider extends PositionProvider {
       this._logger.verbose("Can't set data attribute for element", err)
     }
   }
-
   /**
    * Returns current position of the scrolling element for future restoring
-   * @param {EyesWrappedElement} [customScrollRootElement] - if custom scroll root element provided
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>} [customScrollRootElement] - if custom scroll root element provided
    *  it will be user as a base element for this operation
    * @return {Promise<PositionMemento>} current state of scrolling element
    */
@@ -144,13 +150,12 @@ class CssTranslateElementPositionProvider extends PositionProvider {
       return new PositionMemento({})
     }
   }
-
   /**
    * Restore position of the element from the state
    * @param {PositionMemento} state - initial state of position
-   * @param {EyesWrappedElement} [customScrollRootElement] - if custom scroll root element provided
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>} [customScrollRootElement] - if custom scroll root element provided
    *  it will be user as a base element for this operation
-   * @return {Promise}
+   * @return {Promise<void>}
    */
   async restoreState(state, customScrollRootElement) {
     try {

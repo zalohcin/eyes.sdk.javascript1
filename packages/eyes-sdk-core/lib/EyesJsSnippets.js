@@ -18,13 +18,15 @@ const GET_TRANSLATE_OFFSET_FUNC = `
     var translates = [${TRANSFORM_KEYS.map(key => `element.style['${key}']`).join(',')}]
       .reduce(function(translates, transform) {
         if (transform) {
-          var data = transform.match(/^translate\\(\\s*(\\-?[\\d, \\.]+)px,\\s*(\-?[\\d, \\.]+)px\\s*\\)/);
-          if (!data) {
+          var match = transform.match(/^translate\\s*\\(\\s*(\\-?[\\d, \\.]+)px\\s*(,\\s*(\\-?[\\d, \\.]+)px)?\\s*\\)/);
+          if (!match) {
             throw new Error(\`Can't parse CSS transition: \${transform}!\`);
           }
+          const x = match[1]
+          const y = match[3] !== undefined ? match[3] : 0
           translates.push({
-            x: Math.round(-parseFloat(data[1])),
-            y: Math.round(-parseFloat(data[2]))
+            x: Math.round(-parseFloat(x)),
+            y: Math.round(-parseFloat(y))
           });
         }
         return translates;
@@ -127,6 +129,7 @@ const GET_ELEMENT_RECT = `
 
 const GET_ELEMENT_CLIENT_RECT = `
   ${GET_FIXED_ANCESTOR_FUNC}
+  ${GET_OFFSET_FROM_ANCESTOR_FUNCT}
   ${IS_SCROLLABLE_ELEMENT_FUNC}
   var element = arguments[0];
   var rect = element.getBoundingClientRect();
@@ -134,15 +137,16 @@ const GET_ELEMENT_CLIENT_RECT = `
   var borderLeftWidth = parseInt(computedStyle.getPropertyValue('border-left-width'));
   var borderTopWidth = parseInt(computedStyle.getPropertyValue('border-top-width'));
   var fixedElement = getFixedAncestor(element);
-  var isFixedElementScrollable = fixedElement ? isScrollableElement(fixedElement) : false
   var fixedElementRect = fixedElement && fixedElement !== element ? fixedElement.getBoundingClientRect() : null
+  var offsetFromFixedElement = fixedElement ? getOffsetFromAncestor(element, fixedElement) : null
+  var isFixedElementScrollable = fixedElement ? isScrollableElement(fixedElement) : false
   return {
     x: (fixedElement
-      ? (fixedElement !== element && isFixedElementScrollable ? element.offsetLeft + fixedElementRect.left : rect.left)
+      ? (fixedElement !== element && isFixedElementScrollable ? offsetFromFixedElement.x + fixedElementRect.left : rect.left)
       : rect.left + (window.scrollX || window.pageXOffset)
     ) + borderLeftWidth,
     y: (fixedElement
-      ? (fixedElement !== element && isFixedElementScrollable ? element.offsetTop + fixedElementRect.top : rect.top)
+      ? (fixedElement !== element && isFixedElementScrollable ? offsetFromFixedElement.y + fixedElementRect.top : rect.top)
       : rect.top + (window.scrollY || window.pageYOffset)
     ) + borderTopWidth,
     width: element.clientWidth,
@@ -200,7 +204,7 @@ const SCROLL_TO = `
 
 const GET_TRANSFORMS = `
   var element = arguments[0] || document.documentElement;
-  return {${TRANSFORM_KEYS.map(key => `['${key}']: element.style['${key}']`).join(',')}};
+  return {${TRANSFORM_KEYS.map(key => `'${key}': element.style['${key}']`).join(',')}};
 `
 
 const SET_TRANSFORMS = transforms => `

@@ -20,21 +20,20 @@ Applitools Eyes SDK for [Storybook](http://storybook.js.org).
   * [Getting a screenshot of multiple browsers in parallel](#getting-a-screenshot-of-multiple-browsers-in-parallel)
   * [Device emulation](#device-emulation)
 - [Per component configuration](#per-component-configuration)
-    + [The following properties are supported:](#the-following-properties-are-supported-)
-  * [`include`](#-include-)
-  * [`variations`](#-variations-)
-  * [`waitBeforeScreenshot`](#-waitbeforescreenshot-)
-  * [`properties`](#-properties-)
-  * [`ignoreRegions`](#-ignoreregions-)
-  * [`floatingRegions`](#-floatingregions-)
-  * [`layoutRegions`](#-layoutregions-)
-  * [`contentRegions`](#-contentregions-)
-  * [`strictRegions`](#-strictregions-)
-  * [`accessibilityRegions`](#-accessibilityregions-)
-  * [`accessibilityValidation`](#-accessibilityvalidation-)
-  * [Parameters that cannot be set as an Advanced configuration](#parameters-that-cannot-be-set-as-an--advanced-configuration---advanced-configuration-)
-  * [`runBefore`](#-runbefore-)
-  * [`scriptHooks`](#-scripthooks-)
+  * [`include`](#include)
+  * [`variations`](#variations)
+  * [`waitBeforeScreenshot`](#waitbeforescreenshot)
+  * [`properties`](#properties)
+  * [`ignoreRegions`](#ignoreregions)
+  * [`floatingRegions`](#floatingregions)
+  * [`layoutRegions`](#layoutregions)
+  * [`contentRegions`](#contentregions)
+  * [`strictRegions`](#strictregions)
+  * [`accessibilityRegions`](#accessibilityregions)
+  * [`accessibilityValidation`](#accessibilityvalidation)
+  * [Parameters that cannot be set as an Advanced configuration](#parameters-that-cannot-be-set-as-an--advanced-configuration---advanced-configuration)
+  * [`runBefore`](#runbefore)
+  * [`scriptHooks`](#scripthooks)
     + [beforeCaptureScreenshot](#beforecapturescreenshot)
 - [Running Eyes-Storybook in Docker](#running-eyes-storybook-in-docker)
 - [Dealing with dynamic data](#dealing-with-dynamic-data)
@@ -277,11 +276,7 @@ module.exports = {
 
 Possible values for screen orientation are `landscape` and `portrait`, and if no value is specified, the default is `portrait`.
 
-The list of device names is taken from [chrome devtools predefined devices](https://raw.githubusercontent.com/chromium/chromium/0aee4434a4dba42a42abaea9bfbc0cd196a63bc1/third_party/blink/renderer/devtools/front_end/emulated_devices/module.json), and can be obtained by running the following command in a unix-based shell (installing [`jq`](https://stedolan.github.io/jq/) might be needed):
-
-```sh
-curl -s https://raw.githubusercontent.com/chromium/chromium/0aee4434a4dba42a42abaea9bfbc0cd196a63bc1/third_party/blink/renderer/devtools/front_end/emulated_devices/module.json | jq '.extensions[].device.title'
-```
+The list of device names is available at https://github.com/applitools/eyes.sdk.javascript1/blob/master/packages/eyes-sdk-core/lib/config/DeviceName.js
 
 In addition, it's possible to use chrome's device emulation with custom viewport sizes, pixel density and mobile mode, by passing `deviceScaleFactor` and `mobile` in addition to `width` and `height`. For example:
 
@@ -297,6 +292,21 @@ module.exports = {
 }
 ```
 
+### iOS device
+
+```js
+module.exports = {
+  browser: {
+    iosDeviceInfo: {
+      deviceName: 'iPhone XR',
+      screenOrientation: 'landscape',
+    },
+  }
+}
+```
+
+The list of devices is available at https://github.com/applitools/eyes.sdk.javascript1/blob/master/packages/eyes-sdk-core/lib/config/IosDeviceName.js
+
 ## Per component configuration
 
 **_Only supported in Storybook version >= 4_**
@@ -309,7 +319,7 @@ There are two ways to provide configuration for a specific story, or a group of 
 
 _Specifying a value locally in the story takes precedence over the global config value._
 
-#### The following properties are supported:
+**The following properties are supported:**
 
 ### `include`
 
@@ -369,6 +379,20 @@ _Note that the predicate option for `waitBeforeScreenshot` is currently not avai
 ### `properties`
 
 Adds custom properties for each test. These show up in Test Manager, and tests can be grouped by custom properties. By default, Eyes-Storybook adds 2 custom properties for each test: the **Component name** and **State** of each component. Adding more properties via this config param will **not** override these two properties.
+
+For example:
+
+```js
+storiesOf('Components with custom properties', module)
+  .add(
+    'Some story',
+    () => <span id="container" class="loading"></span>,
+    {eyes: { properties: [
+      {name: 'some prop #1', value: 'some value #1'},
+      {name: 'some prop #2', value: 'some value #2'},
+    ] }}
+  );
+```
 
 ### `ignoreRegions`
 

@@ -1,32 +1,28 @@
-const {
-  GeneralUtils,
-  ArgumentGuard,
-  CoordinatesType,
-  Location,
-  RectangleSize,
-  Region,
-  MutableImage,
-  EyesError,
-} = require('..')
-const {EyesDriverOperationError} = require('./errors/EyesDriverOperationError')
+const GeneralUtils = require('./utils/GeneralUtils')
+const ArgumentGuard = require('./utils/ArgumentGuard')
+const CoordinatesTypes = require('./geometry/CoordinatesType')
+const Location = require('./geometry/Location')
+const RectangleSize = require('./geometry/RectangleSize')
+const Region = require('./geometry/Region')
+const EyesError = require('./errors/EyesError')
+const EyesDriverOperationError = require('./errors/EyesDriverOperationError')
 const EyesJsSnippets = require('./EyesJsSnippets')
 
 /**
- * @typedef {import('./logging/Logger').Logger} Logger
+ * @typedef {import('./logging/Logger')} Logger
  * @typedef {import('./wrappers/EyesBrowsingContext')} EyesBrowsingContext
  * @typedef {import('./wrappers/EyesDriverController')} EyesDriverController
  * @typedef {import('./wrappers/EyesElementFinder')} EyesElementFinder
  * @typedef {import('./wrappers/EyesJsExecutor')} EyesJsExecutor
  * @typedef {import('./wrappers/EyesWrappedElement')} EyesWrappedElement
- * @typedef {import('./wrappers/EyesWrappedElement').UnwrappedElement} UnwrappedElement
- * @typedef {import('./wrappers/EyesWrappedElement').SupportedSelector} SupportedSelector
  * @typedef {import('./positioning/PositionProvider')} PositionProvider
  */
 
 /**
  * Returns viewport size of current context
  * @param {Logger} _logger - logger instance
- * @param {EyesJsExecutor} executor - js executor
+ * @param {Object} driver
+ * @param {EyesJsExecutor} driver.executor - js executor
  * @return {RectangleSize} viewport size
  */
 async function getViewportSize(_logger, {executor}) {
@@ -57,166 +53,80 @@ async function setViewportSize(logger, {controller, executor, context}, required
 
     // We move the window to (0,0) to have the best chance to be able to
     // set the viewport size as requested.
-    await controller.setWindowLocation({x: 0, y: 0}).catch(() => {
-      logger.verbose('Warning: Failed to move the browser window to (0,0)')
+    await controller.setWindowLocation({x: 0, y: 0}).catch(err => {
+      logger.verbose('Warning: Failed to move the browser window to (0,0)', err)
     })
 
-    await _setWindowSizeByViewportSize(
-      logger,
-      {controller},
+    // window size is changed after setting window location
+    actualViewportSize = await getViewportSize(logger, {executor})
+
+    const requiredWindowSize = await _getRequiredWindowSize({
+      controller,
       actualViewportSize,
       requiredViewportSize,
-    )
+    })
+    await _setWindowSize({logger, controller, requiredWindowSize})
     actualViewportSize = await getViewportSize(logger, {executor})
     if (actualViewportSize.equals(requiredViewportSize)) return true
 
-    // Additional attempt. This Solves the "maximized browser" bug
-    // (border size for maximized browser sometimes different than non-maximized, so the original browser size calculation is wrong).
     logger.verbose(
-      `Failed attempt to set viewport size. actualViewportSize=${actualViewportSize}, requiredViewportSize=${requiredViewportSize}. Trying workaround for maximization...`,
+      `Failed attempt to set viewport size. actualViewportSize=${actualViewportSize}, requiredViewportSize=${requiredViewportSize}. Trying again...`,
     )
-    await _setWindowSizeByViewportSize(
-      logger,
-      {controller},
-      actualViewportSize,
-      requiredViewportSize,
-    )
-    actualViewportSize = await getViewportSize(logger, {executor})
-    if (actualViewportSize.equals(requiredViewportSize)) return true
 
-    const MAX_DIFF = 3
-    const widthDiff = Math.abs(actualViewportSize.getWidth() - requiredViewportSize.getWidth())
-    const heightDiff = Math.abs(actualViewportSize.getHeight() - requiredViewportSize.getHeight())
+    // // Additional attempt. This Solves the "maximized browser" bug
+    // // (border size for maximized browser sometimes different than non-maximized, so the original browser size calculation is wrong).
+    // logger.verbose(
+    //   `Failed attempt to set viewport size. actualViewportSize=${actualViewportSize}, requiredViewportSize=${requiredViewportSize}`,
+    // )
 
-    // We try the zoom workaround only if size difference is reasonable.
-    if (widthDiff <= MAX_DIFF && heightDiff <= MAX_DIFF) {
-      logger.verbose('Trying workaround for zoom...')
-
-      return _adjustWindowSizeByViewportSize(
-        logger,
-        {controller, executor},
-        actualViewportSize,
-        requiredViewportSize,
-      )
-    } else {
-      throw new Error('Failed to set viewport size!')
-    }
+    throw new Error('Failed to set viewport size!')
   })
 }
 /**
  * Set window size by the actual size of the top-level context viewport
- * @param {Logger} logger - logger instance
- * @param {Object} driver
- * @param {EyesDriverController} driver.controller - driver controller
- * @param {RectangleSize} actualViewportSize - actual viewport size
- * @param {RectangleSize} requiredViewportSize - required size to set
+ * @param {Object} obj
+ * @param {EyesDriverController} obj.controller - driver controller
+ * @param {RectangleSize} obj.actualViewportSize - actual viewport size
+ * @param {RectangleSize} obj.requiredViewportSize - required size to set
  */
-async function _setWindowSizeByViewportSize(
-  logger,
-  {controller},
-  actualViewportSize,
-  requiredViewportSize,
-) {
+async function _getRequiredWindowSize({controller, actualViewportSize, requiredViewportSize}) {
   const actualWindowSize = await controller.getWindowSize()
-  const requiredWindowSize = new RectangleSize(
+  return new RectangleSize(
     actualWindowSize.getWidth() + (requiredViewportSize.getWidth() - actualViewportSize.getWidth()),
     actualWindowSize.getHeight() +
       (requiredViewportSize.getHeight() - actualViewportSize.getHeight()),
   )
-  return _setWindowSize(logger, {controller}, requiredWindowSize)
 }
-/**
- * Adjust the size of the preview window so that the size of the top-level context window matches the required value
- * @param {Logger} logger - logger instance
- * @param {Object} driver
- * @param {EyesDriverController} driver.controller - driver controller
- * @param {EyesJsExecutor} driver.executor - js executor
- * @param {RectangleSize} actualViewportSize - actual viewport size
- * @param {RectangleSize} requiredViewportSize - required viewport size to set
- */
-async function _adjustWindowSizeByViewportSize(
-  logger,
-  {controller, executor},
-  actualViewportSize,
-  requiredViewportSize,
-) {
-  const widthDiff = actualViewportSize.getWidth() - requiredViewportSize.getWidth()
-  const widthStep = widthDiff > 0 ? -1 : 1 // -1 for smaller size, 1 for larger
-  const heightDiff = actualViewportSize.getHeight() - requiredViewportSize.getHeight()
-  const heightStep = heightDiff > 0 ? -1 : 1
 
-  const actualWindowSize = await controller.getWindowSize()
-  let lastRequiredBrowserSize = null
-  let retries = Math.abs((widthDiff || 1) * (heightDiff || 1)) * 2
-  let widthChange = 0
-  let heightChange = 0
-  while (
-    --retries > 0 &&
-    (Math.abs(widthChange) <= Math.abs(widthDiff) || Math.abs(heightChange) <= Math.abs(heightDiff))
-  ) {
-    logger.verbose(`Retries left: ${retries}`)
-    // We specifically use "<=" (and not "<"), so to give an extra resize attempt
-    // in addition to reaching the diff, due to floating point issues.
-    if (
-      Math.abs(widthChange) <= Math.abs(widthDiff) &&
-      actualViewportSize.getWidth() !== requiredViewportSize.getWidth()
-    ) {
-      widthChange += widthStep
-    }
-
-    if (
-      Math.abs(heightChange) <= Math.abs(heightDiff) &&
-      actualViewportSize.getHeight() !== requiredViewportSize.getHeight()
-    ) {
-      heightChange += heightStep
-    }
-
-    const requiredWindowSize = new RectangleSize(
-      actualWindowSize.getWidth() + widthChange,
-      actualWindowSize.getHeight() + heightChange,
-    )
-
-    if (requiredWindowSize.equals(lastRequiredBrowserSize)) {
-      logger.verbose('Browser size is as required but viewport size does not match!')
-      logger.verbose(`Browser size: ${requiredWindowSize}, Viewport size: ${actualViewportSize}`)
-      logger.verbose('Stopping viewport size attempts.')
-      return true
-    }
-
-    await _setWindowSize(logger, {controller}, requiredWindowSize)
-    lastRequiredBrowserSize = requiredWindowSize
-    actualViewportSize = getViewportSize(logger, {executor})
-
-    logger.verbose('Current viewport size:', actualViewportSize)
-    if (actualViewportSize.equals(requiredViewportSize)) {
-      return true
-    }
-  }
-  throw new Error('EyesError: failed to set window size! Zoom workaround failed.')
-}
 /**
  * Set window size with retries
- * @param {Logger} logger - logger instance
- * @param {Object} driver
- * @param {EyesDriverController} driver.controller - driver controller
- * @param {RectangleSize} requiredViewportSize - required viewport size to set
- * @param {number} [sleep=3000] - delay between retries
- * @param {number} [retries=3] - number of retries
+ * @param {Object} obj
+ * @param {Logger} obj.logger - logger instance
+ * @param {EyesDriverController} obj.controller - driver controller
+ * @param {RectangleSize} obj.requiredViewportSize - required viewport size to set
  * @return {boolean} true if operation finished successfully, false otherwise
  */
-async function _setWindowSize(logger, {controller}, requiredWindowSize, sleep = 3000, retries = 3) {
+async function _setWindowSize({logger, controller, requiredWindowSize}) {
+  const sleep = 3000
+  let retries = 3
+  let windowSizeToSend = requiredWindowSize
   try {
     while (retries >= 0) {
-      logger.verbose(
-        `Attempt to set window size to ${requiredWindowSize}. Retries left: ${retries}`,
-      )
-      await controller.setWindowSize(requiredWindowSize)
+      logger.verbose(`Attempt to set window size to ${windowSizeToSend}. Retries left: ${retries}`)
+      await controller.setWindowSize(windowSizeToSend)
       await GeneralUtils.sleep(sleep)
       const actualWindowSize = await controller.getWindowSize()
       if (actualWindowSize.equals(requiredWindowSize)) return true
       logger.verbose(
         `Attempt to set window size to ${requiredWindowSize} failed. actualWindowSize=${actualWindowSize}`,
       )
+      windowSizeToSend = new RectangleSize({
+        width:
+          windowSizeToSend.getWidth() - (actualWindowSize.getWidth() - windowSizeToSend.getWidth()),
+        height:
+          windowSizeToSend.getHeight() -
+          (actualWindowSize.getHeight() - windowSizeToSend.getHeight()),
+      })
       retries -= 1
     }
     logger.verbose('Failed to set browser size: no more retries.')
@@ -256,29 +166,37 @@ async function getTopContextViewportSize(logger, {controller, context, executor}
   return context.framesSwitchAndReturn(null, async () => {
     logger.verbose('Extracting viewport size...')
     let viewportSize
-    try {
-      viewportSize = await getViewportSize(logger, {executor})
-    } catch (err) {
-      logger.verbose('Failed to extract viewport size using Javascript:', err)
-      // If we failed to extract the viewport size using JS, will use the window size instead.
-      logger.verbose('Using window size as viewport size.')
-
-      const windowSize = await controller.getWindowSize()
-      let width = windowSize.getWidth()
-      let height = windowSize.getHeight()
-      const isLandscapeOrientation = await controller.isLandscapeOrientation().catch(() => {
-        // Not every IWebDriver supports querying for orientation.
-      })
-      if (isLandscapeOrientation && height > width) {
-        const temp = width
-        width = height
-        height = temp
+    if (await controller.isNative()) {
+      viewportSize = await _getPortraitWindowSize(logger, controller)
+    } else {
+      try {
+        viewportSize = await getViewportSize(logger, {executor})
+      } catch (err) {
+        logger.verbose('Failed to extract viewport size using Javascript:', err)
+        // If we failed to extract the viewport size using JS, will use the window size instead.
+        viewportSize = await _getPortraitWindowSize(logger, controller)
       }
-      viewportSize = new RectangleSize(width, height)
     }
-    logger.verbose('Done! Viewport size: ', viewportSize)
+    logger.verbose('Done extracting viewport size! Viewport size: ', viewportSize)
     return viewportSize
   })
+}
+
+async function _getPortraitWindowSize(logger, controller) {
+  logger.verbose('Using window size as viewport size.')
+
+  const windowSize = await controller.getWindowSize()
+  let width = windowSize.getWidth()
+  let height = windowSize.getHeight()
+  const isLandscapeOrientation = await controller.isLandscapeOrientation().catch(() => {
+    // Not every IWebDriver supports querying for orientation.
+  })
+  if (isLandscapeOrientation && height > width) {
+    const temp = width
+    width = height
+    height = temp
+  }
+  return new RectangleSize(width, height)
 }
 /**
  * Get current context content size
@@ -298,7 +216,7 @@ async function getCurrentFrameContentEntireSize(_logger, executor) {
  * Get content size of the specified element
  * @param {Logger} _logger - logger instance
  * @param {EyesJsExecutor} executor - js executor
- * @param {EyesWrappedElement|UnwrappedElement} element - element to get size
+ * @param {EyesWrappedElement} element - element to get size
  * @returns {Promise<Region>} element content size
  */
 async function getElementEntireSize(_logger, executor, element) {
@@ -316,7 +234,7 @@ async function getElementEntireSize(_logger, executor, element) {
  * Get element client rect relative to the current context
  * @param {Logger} _logger - logger instance
  * @param {EyesJsExecutor} executor - js executor
- * @param {EyesWrappedElement|UnwrappedElement} element - element to get client rect
+ * @param {EyesWrappedElement} element - element to get client rect
  * @return {Promise<Region>} element client rect
  */
 async function getElementClientRect(_logger, executor, element) {
@@ -326,32 +244,83 @@ async function getElementClientRect(_logger, executor, element) {
     top: Math.ceil(rect.y),
     width: Math.ceil(rect.width),
     height: Math.ceil(rect.height),
-    coordinatesType: CoordinatesType.CONTEXT_RELATIVE,
+    coordinatesType: CoordinatesTypes.CONTEXT_RELATIVE,
   })
 }
+
 /**
  * Get element rect relative to the current context
- * @param {Logger} _logger - logger instance
- * @param {EyesJsExecutor} executor - js executor
- * @param {EyesWrappedElement|UnwrappedElement} element - element to get rect
+ * @param obj
+ * @param {EyesJsExecutor} obj.executor - js executor
+ * @param {EyesWrappedElement} obj.element - element to get rect
  * @return {Promise<Region>} element rect
  */
-async function getElementRect(_logger, executor, element) {
+async function getElementRect({executor, element}) {
   const rect = await executor.executeScript(EyesJsSnippets.GET_ELEMENT_RECT, element)
   return new Region({
     left: Math.ceil(rect.x),
     top: Math.ceil(rect.y),
     width: Math.ceil(rect.width),
     height: Math.ceil(rect.height),
-    coordinatesType: CoordinatesType.CONTEXT_RELATIVE,
+    coordinatesType: CoordinatesTypes.CONTEXT_RELATIVE,
   })
 }
+
+/**
+ * Get native mobile element rect relative to the current context
+ * @param obj
+ * @param {EyesWrappedDriver} obj.driver - driver
+ * @param {EyesWrappedElement} obj.element - element to get rect
+ * @return {Promise<Region>} element rect
+ */
+async function getNativeElementRect({driver, element}) {
+  const {x, y} = await driver.specs.getNativeElementLocation(driver, element.unwrapped)
+  const {width, height} = await driver.specs.getNativeElementSize(driver, element.unwrapped)
+  return new Region({
+    left: Math.ceil(x),
+    top: Math.ceil(y),
+    width: Math.ceil(width),
+    height: Math.ceil(height),
+    coordinatesType: CoordinatesTypes.CONTEXT_RELATIVE,
+  })
+}
+
+/**
+ * Get native mobile element size
+ * @param obj
+ * @param {EyesWrappedDriver} obj.driver - driver
+ * @param {EyesWrappedElement} obj.element - element to get rect
+ * @return {Promise<RectangleSize>} element size
+ */
+async function getNativeElementSize({driver, element}) {
+  const {width, height} = await driver.specs.getNativeElementSize(driver, element.unwrapped)
+  return new RectangleSize({
+    width: Math.ceil(width),
+    height: Math.ceil(height),
+  })
+}
+
+/**
+ * Get native mobile element location
+ * @param obj
+ * @param {EyesWrappedDriver} obj.driver - driver
+ * @param {EyesWrappedElement} obj.element - element to get rect
+ * @return {Promise<Location>} element location
+ */
+async function getNativeElementLocation({driver, element}) {
+  const {x, y} = await driver.specs.getNativeElementLocation(driver, element.unwrapped)
+  return new Location({
+    left: Math.ceil(x),
+    top: Math.ceil(y),
+  })
+}
+
 /**
  * Extract values of specified properties for specified element
  * @param {Logger} _logger - logger instance
  * @param {EyesJsExecutor} executor - js executor
  * @param {string[]} properties - names of properties to extract
- * @param {EyesWrappedElement|UnwrappedElement} element - element to extract properties
+ * @param {EyesWrappedElement} element - element to extract properties
  * @return {*[]} extracted values
  */
 async function getElementProperties(_logger, executor, properties, element) {
@@ -362,7 +331,7 @@ async function getElementProperties(_logger, executor, properties, element) {
  * @param {Logger} _logger - logger instance
  * @param {EyesJsExecutor} executor - js executor
  * @param {string[]} properties - names of css properties to extract
- * @param {EyesWrappedElement|UnwrappedElement} element - element to extract css properties
+ * @param {EyesWrappedElement} element - element to extract css properties
  * @return {string[]} extracted css values
  */
 async function getElementCssProperties(_logger, executor, properties, element) {
@@ -387,8 +356,7 @@ async function getDevicePixelRatio(_logger, {executor}) {
  * @return {Promise<number>} mobile device pixel ratio
  */
 async function getMobilePixelRatio(_logger, {controller}, viewportSize) {
-  const screenshot64 = await controller.takeScreenshot()
-  const screenshot = new MutableImage(screenshot64)
+  const screenshot = await controller.takeScreenshot()
   return screenshot.getWidth() / viewportSize.getWidth()
 }
 
@@ -414,7 +382,7 @@ async function getTopContextScrollLocation(logger, {context, executor}) {
  * Get current context scroll position of the specified element or default scrolling element
  * @param {Logger} _logger - logger instance
  * @param {EyesJsExecutor} executor - js executor
- * @param {EyesWrappedElement|UnwrappedElement} [element] - element to extract scroll position
+ * @param {EyesWrappedElement} [element] - element to extract scroll position
  * @return {Promise<Location>} scroll position
  */
 async function getScrollLocation(_logger, executor, element) {
@@ -426,7 +394,7 @@ async function getScrollLocation(_logger, executor, element) {
  * @param {Logger} _logger - logger instance
  * @param {EyesJsExecutor} executor - js executor
  * @param {Location} location - required scroll position
- * @param {EyesWrappedElement|UnwrappedElement} [element] - element to set scroll position
+ * @param {EyesWrappedElement} [element] - element to set scroll position
  * @return {Promise<Location>} actual scroll position after set
  */
 async function scrollTo(_logger, executor, location, element) {
@@ -441,7 +409,7 @@ async function scrollTo(_logger, executor, location, element) {
  * Get transforms of the specified element or default scrolling element
  * @param {Logger} _logger - logger instance
  * @param {EyesJsExecutor} executor - js executor
- * @param {EyesWrappedElement|UnwrappedElement} [element] - element to extract transforms
+ * @param {EyesWrappedElement} [element] - element to extract transforms
  * @return {Promise<Object>} element transforms
  */
 async function getTransforms(_logger, executor, element) {
@@ -452,7 +420,7 @@ async function getTransforms(_logger, executor, element) {
  * @param {Logger} _logger - logger instance
  * @param {EyesJsExecutor} executor - js executor
  * @param {Object} transforms - collection of transforms to set
- * @param {EyesWrappedElement|UnwrappedElement} [element] - element to set transforms
+ * @param {EyesWrappedElement} [element] - element to set transforms
  */
 async function setTransforms(_logger, executor, transforms, element) {
   return executor.executeScript(EyesJsSnippets.SET_TRANSFORMS(transforms), element)
@@ -461,7 +429,7 @@ async function setTransforms(_logger, executor, transforms, element) {
  * Get translate position of the specified element or default scrolling element
  * @param {Logger} _logger - logger instance
  * @param {EyesJsExecutor} executor - js executor
- * @param {EyesWrappedElement|UnwrappedElement} [element] - element to extract translate position
+ * @param {EyesWrappedElement} [element] - element to extract translate position
  * @return {Promise<Location>} translate position
  */
 async function getTranslateLocation(_logger, executor, element) {
@@ -469,11 +437,14 @@ async function getTranslateLocation(_logger, executor, element) {
   const translateLocations = Object.values(transforms)
     .filter(transform => Boolean(transform))
     .map(transform => {
-      const data = transform.match(/^translate\(\s*(\-?[\d, \.]+)px,\s*(\-?[\d, \.]+)px\s*\)/)
-      if (!data) {
+      const match = transform.match(
+        /^translate\s*\(\s*(\-?[\d, \.]+)px\s*(,\s*(-?[\d, \.]+)px)?\s*\)/,
+      )
+      if (!match) {
         throw new Error(`Can't parse CSS transition: ${transform}!`)
       }
-      const [_, x, y] = data
+      const x = match[1]
+      const y = match[3] !== undefined ? match[3] : 0
       return new Location(Math.round(-Number.parseFloat(x)), Math.round(-Number.parseFloat(y)))
     })
   if (translateLocations.some(location => !translateLocations[0].equals(location))) {
@@ -486,7 +457,7 @@ async function getTranslateLocation(_logger, executor, element) {
  * @param {Logger} _logger - logger instance
  * @param {EyesJsExecutor} executor - js executor
  * @param {Location} location - required translate position
- * @param {EyesWrappedElement|UnwrappedElement} [element] - element to set translate position
+ * @param {EyesWrappedElement} [element] - element to set translate position
  * @return {Promise<Location>} actual translate position after set
  */
 async function translateTo(_logger, executor, location, element) {
@@ -500,7 +471,7 @@ async function translateTo(_logger, executor, location, element) {
  * Check if the specified element or default scrolling element is scrollable
  * @param {Logger} _logger - logger instance
  * @param {EyesJsExecutor} executor - js executor
- * @param {EyesWrappedElement|UnwrappedElement} [element] - element to check
+ * @param {EyesWrappedElement} [element] - element to check
  * @return {Promise<boolean>} true if element is scrollable, false otherwise
  */
 async function isScrollable(_logger, executor, element) {
@@ -510,7 +481,7 @@ async function isScrollable(_logger, executor, element) {
  * Mark the specified element or default scrolling element with `data-applitools-scroll`
  * @param {Logger} _logger - logger instance
  * @param {EyesJsExecutor} executor - js executor
- * @param {EyesWrappedElement|UnwrappedElement} [element] - element to mark
+ * @param {EyesWrappedElement} [element] - element to mark
  */
 async function markScrollRootElement(_logger, executor, element) {
   return executor.executeScript(EyesJsSnippets.MARK_SCROLL_ROOT_ELEMENT, element)
@@ -519,7 +490,7 @@ async function markScrollRootElement(_logger, executor, element) {
  * Get overflow style property of the specified element
  * @param {Logger} _logger - logger instance
  * @param {EyesJsExecutor} executor - js executor
- * @param {EyesWrappedElement|UnwrappedElement} element - element to get overflow
+ * @param {EyesWrappedElement} element - element to get overflow
  * @return {Promise<string?>} overflow value
  */
 async function getOverflow(_logger, executor, element) {
@@ -531,7 +502,7 @@ async function getOverflow(_logger, executor, element) {
  * Set overflow style property of the specified element
  * @param {Logger} _logger - logger instance
  * @param {EyesJsExecutor} executor - js executor
- * @param {EyesWrappedElement|UnwrappedElement} element - element to set overflow
+ * @param {EyesWrappedElement} element - element to set overflow
  * @return {Promise<string?>} original overflow value before set
  */
 async function setOverflow(_logger, executor, overflow, element) {
@@ -551,10 +522,11 @@ async function setOverflow(_logger, executor, overflow, element) {
 }
 /**
  * Blur the specified element or current active element
+ * @template TElement
  * @param {Logger} logger - logger instance
  * @param {EyesJsExecutor} executor - js executor
- * @param {EyesWrappedElement|UnwrappedElement} [element] - element to blur
- * @return {Promise<UnwrappedElement?>} actually blurred element if there is any
+ * @param {EyesWrappedElement} [element] - element to blur
+ * @return {Promise<TElement>} actually blurred element if there is any
  */
 async function blurElement(logger, executor, element) {
   try {
@@ -567,7 +539,7 @@ async function blurElement(logger, executor, element) {
  * Focus the specified element
  * @param {Logger} logger - logger instance
  * @param {EyesJsExecutor} executor - js executor
- * @param {EyesWrappedElement|UnwrappedElement} element - element to focus
+ * @param {EyesWrappedElement} element - element to focus
  */
 async function focusElement(logger, executor, element) {
   try {
@@ -580,7 +552,7 @@ async function focusElement(logger, executor, element) {
  * Get element absolute xpath selector related to the top-level context
  * @param {Logger} _logger - logger instance
  * @param {EyesJsExecutor} executor - js executor
- * @param {EyesWrappedElement|UnwrappedElement} element - element to calculate xpath
+ * @param {EyesWrappedElement} element - element to calculate xpath
  * @return {Promise<string>} xpath selector
  */
 async function getElementAbsoluteXpath(_logger, executor, element) {
@@ -590,7 +562,7 @@ async function getElementAbsoluteXpath(_logger, executor, element) {
  * Get element xpath selector related to the current context
  * @param {Logger} logger - logger instance
  * @param {EyesJsExecutor} executor - js executor
- * @param {EyesWrappedElement|UnwrappedElement} element - element to calculate xpath
+ * @param {EyesWrappedElement} element - element to calculate xpath
  * @return {Promise<string>} xpath selector
  */
 async function getElementXpath(logger, executor, element) {
@@ -603,64 +575,66 @@ async function getElementXpath(logger, executor, element) {
 }
 /**
  * Translate element selector to the persisted regions
+ * @template TSelector
  * @param {Logger} logger - logger instance
  * @param {Object} driver
  * @param {EyesElementFinder} driver.finder - element finder
  * @param {EyesJsExecutor} driver.executor - js executor
- * @param {SupportedSelector} selector - element selector
+ * @param {TSelector} selector - element selector
  * @return {Promise<{type: string, selector: string}[]>} persisted regions for selector
  */
 async function locatorToPersistedRegions(logger, {finder, executor}, selector) {
-  const eyesSelector = finder.specs.toEyesSelector(selector)
+  const eyesSelector = finder.spec.toEyesSelector(selector)
   if (eyesSelector.type === 'css' || eyesSelector.type === 'xpath') {
     return [eyesSelector]
   }
   const elements = await finder.findElements(selector)
-  return Promise.all(
-    elements.map(async element => ({
+  const persistedRegions = []
+  for (const element of elements) {
+    persistedRegions.push({
       type: 'xpath',
       selector: await getElementXpath(logger, executor, element),
-    })),
-  )
+    })
+  }
+  return persistedRegions
 }
 /**
- * @typedef {Object} ContextInfo
- * @property {boolean} isRoot - is root context
- * @property {boolean} isCORS - is cors context related to the parent
- * @property {UnwrappedElement} document - context document element
- * @property {string} frameSelector - xpath to the frame element related to the parent context
+ * @template TElement
+ * @typedef ContextInfo
+ * @prop {boolean} isRoot - is root context
+ * @prop {boolean} isCORS - is cors context related to the parent
+ * @prop {TElement} document - context document element
+ * @prop {string} frameSelector - xpath to the frame element related to the parent context
  *
  * Extract information about relations between current context and its parent
+ * @template TElement
  * @param {Logger} _logger - logger instance
  * @param {EyesJsExecutor} executor - js executor
- * @return {Promise<ContextInfo>} frame info
+ * @return {Promise<ContextInfo<TElement>>} frame info
  */
 async function getCurrentContextInfo(_logger, executor) {
   return executor.executeScript(EyesJsSnippets.GET_CURRENT_CONTEXT_INFO)
 }
 /**
  * Get frame element by name or id
+ * @template TElement
  * @param {Logger} _logger - logger instance
  * @param {EyesJsExecutor} executor - js executor
  * @param {string} nameOrId - name or id of the element
- * @return {UnwrappedElement} frame element
+ * @return {TElement} frame element
  */
 async function getFrameByNameOrId(_logger, executor, nameOrId) {
   return executor.executeScript(EyesJsSnippets.GET_FRAME_BY_NAME_OR_ID, nameOrId)
 }
 /**
- * @typedef {Object} FrameInfo
- * @property {boolean} isCORS - is cors frame related to the current context
- * @property {UnwrappedElement} element - frame element
- * @property {string} selector - xpath to the frame element related to the parent context
- *
  * Find by context information
+ * @template TElement
  * @param {Logger} _logger - logger instance
  * @param {Object} driver
- * @param {EyesElementFinder} driver.finder - element finder
+ * @param {EyesBrowsingContext} driver.context - browsing context
  * @param {EyesJsExecutor} driver.executor - js executor
  * @param {ContextInfo} contextInfo - target context info
- * @param {(left: UnwrappedElement, right: UnwrappedElement) => Promise<boolean>} comparator - check if two document elements are equal
+ * @param {(left: TElement, right: TElement) => Promise<boolean>} comparator - check if two document elements are equal
  * @return {Promise<Frame>} frame
  */
 async function findFrameByContext(_logger, {executor, context}, contextInfo, comparator) {
@@ -761,6 +735,9 @@ module.exports = {
   getElementEntireSize,
   getElementClientRect,
   getElementRect,
+  getNativeElementRect,
+  getNativeElementSize,
+  getNativeElementLocation,
   getElementProperties,
   getElementCssProperties,
   getDevicePixelRatio,

@@ -1,6 +1,5 @@
-'use strict'
-
-const {ArgumentGuard} = require('../utils/ArgumentGuard')
+const ArgumentGuard = require('../utils/ArgumentGuard')
+const TypeUtils = require('../utils/TypeUtils')
 
 /**
  * @typedef {{x: number, y: number}} LocationObject
@@ -12,17 +11,6 @@ const {ArgumentGuard} = require('../utils/ArgumentGuard')
 class Location {
   /**
    * Creates a Location instance.
-   *
-   * @signature `new Location(location)`
-   * @sigparam {Location} location - The Location instance to clone from.
-   *
-   * @signature `new Location(object)`
-   * @sigparam {{x: number, y: number}} object - The location object to clone from.
-   *
-   * @signature `new Location(x, y)`
-   * @sigparam {number} x - The X coordinate of this location.
-   * @sigparam {number} y - The Y coordinate of this location.
-   *
    * @param {Location|LocationObject|number} varArg1 - The Location (or object) to clone from or the X coordinate of new Location.
    * @param {number} [varArg2] - The Y coordinate of new Location.
    */
@@ -31,7 +19,7 @@ class Location {
       return new Location({x: varArg1, y: varArg2})
     }
 
-    if (varArg1 instanceof Location) {
+    if (TypeUtils.instanceOf(varArg1, Location)) {
       return new Location({x: varArg1.getX(), y: varArg1.getY()})
     }
 
@@ -44,8 +32,12 @@ class Location {
     this._y = Math.ceil(y)
   }
 
+  static get __Location() {
+    return true
+  }
+
   /**
-   * @return {number} - The X coordinate of this location.
+   * @return {number} The X coordinate of this location.
    */
   getX() {
     return this._x
@@ -61,7 +53,7 @@ class Location {
   /**
    * Indicates whether some other Location is "equal to" this one.
    *
-   * @param {object|Location} obj - The reference object with which to compare.
+   * @param {Location} obj - The reference object with which to compare.
    * @return {boolean} - A {@code true} if this object is the same as the obj argument, {@code false} otherwise.
    */
   equals(obj) {
@@ -131,6 +123,7 @@ class Location {
   }
 }
 
+/** @type {Location} */
 Location.ZERO = new Location({x: 0, y: 0})
 
-exports.Location = Location
+module.exports = Location

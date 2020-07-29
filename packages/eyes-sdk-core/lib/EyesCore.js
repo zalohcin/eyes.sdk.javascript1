@@ -1,18 +1,92 @@
-const {ArgumentGuard} = require('./utils/ArgumentGuard')
-const {Region} = require('./geometry/Region')
+const ArgumentGuard = require('./utils/ArgumentGuard')
+const Region = require('./geometry/Region')
+const Location = require('./geometry/Location')
+const RectangleSize = require('./geometry/RectangleSize')
 const FrameChain = require('./frames/FrameChain')
 const ImageRotation = require('./positioning/ImageRotation')
-const {EyesBase} = require('./EyesBase')
+const ReadOnlyPropertyHandler = require('./handler/ReadOnlyPropertyHandler')
+const TestFailedError = require('./errors/TestFailedError')
+const EyesUtils = require('./EyesUtils')
+const EyesBase = require('./EyesBase')
+const Logger = require('./logging/Logger')
+const NullCutProvider = require('./cropping/NullCutProvider')
+const EyesScreenshot = require('./capture/EyesScreenshotNew')
+const GeneralUtils = require('./utils/GeneralUtils')
+const SimplePropertyHandler = require('./handler/SimplePropertyHandler')
+const NullScaleProvider = require('./scaling/NullScaleProvider')
+const ScaleProviderIdentityFactory = require('./scaling/ScaleProviderIdentityFactory')
+const FixedScaleProviderFactory = require('./scaling/FixedScaleProviderFactory')
+const ContextBasedScaleProviderFactory = require('./scaling/ContextBasedScaleProviderFactory')
+const UserAgent = require('./useragent/UserAgent')
+const ImageProviderFactory = require('./capture/ImageProviderFactory')
+
+const UNKNOWN_DEVICE_PIXEL_RATIO = 0
+const DEFAULT_DEVICE_PIXEL_RATIO = 1
 
 /**
- * @typedef {import('./wrappers/EyesWrappedDriver')} EyesWrappedDriver
- * @typedef {import('./wrappers/EyesWrappedElement')} EyesWrappedElement
- * @typedef {import('./wrappers/EyesWrappedElement').SupportedElement} SupportedElement
- * @typedef {import('./wrappers/EyesWrappedElement').SupportedSelector} SupportedSelector
- * @typedef {import('./frames/Frame').FrameReference} FrameReference
+ * @typedef {import('./geometry/Region').RegionObject} RegionObject
  */
 
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesWrappedDriver')<TDriver, TElement, TSelector>} EyesWrappedDriver
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./wrappers/EyesWrappedElement')<TDriver, TElement, TSelector>} EyesWrappedElement
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./frames/Frame').FrameReference<TDriver, TElement, TSelector>} FrameReference
+ */
+
+/**
+ * @template TDriver
+ * @template TElement
+ * @template TSelector
+ */
 class EyesCore extends EyesBase {
+  constructor(serverUrl, isDisabled) {
+    super(serverUrl, isDisabled)
+
+    /** @type {EyesWrappedDriver<TDriver, TElement, TSelector>} */
+    this._driver = undefined
+    /** @private @type {EyesJsExecutor<TDriver, TElement, TSelector>} */
+    this._executor = undefined
+    /** @private @type {EyesElementFinder<TDriver, TElement, TSelector>} */
+    this._finder = undefined
+    /** @private @type {EyesBrowsingContext<TDriver, TElement, TSelector>} */
+    this._context = undefined
+    /** @private @type {EyesDriverController<TDriver, TElement, TSelector>} */
+    this._controller = undefined
+    /** @private @type {boolean} */
+    this._dontGetTitle = false
+
+    /** @private @type {number} */
+    this._devicePixelRatio = UNKNOWN_DEVICE_PIXEL_RATIO
+    /** @private */
+    this._rotation = undefined
+  }
+
+  async _initCommon() {
+    this._devicePixelRatio = UNKNOWN_DEVICE_PIXEL_RATIO
+
+    const userAgentString = await this._controller.getUserAgent()
+    if (userAgentString) {
+      this._userAgent = UserAgent.parseUserAgentString(userAgentString, true)
+    }
+
+    this._imageProvider = ImageProviderFactory.getImageProvider(
+      this._logger,
+      this._driver,
+      this._rotation,
+      this,
+      this._userAgent,
+    )
+  }
+
   /* ------------ Classic API ------------ */
   /**
    * Takes a snapshot of the application under test and matches it with the expected output.
@@ -31,7 +105,7 @@ class EyesCore extends EyesBase {
   }
   /**
    * Matches the frame given as parameter, by switching into the frame and using stitching to get an image of the frame.
-   * @param {FrameReference} element - The element which is the frame to switch to.
+   * @param {FrameReference<TDriver, TElement, TSelector>} element - The element which is the frame to switch to.
    * @param {number} [matchTimeout] - The amount of time to retry matching (milliseconds).
    * @param {string} [tag] - An optional tag to be associated with the match.
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
@@ -46,8 +120,8 @@ class EyesCore extends EyesBase {
   }
   /**
    * Takes a snapshot of the application under test and matches a specific element with the expected region output.
-   * @param {EyesWrappedElement|SupportedElement} element - The element to check.
-   * @param {?number} [matchTimeout] - The amount of time to retry matching (milliseconds).
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>|TElement} element - The element to check.
+   * @param {number} [matchTimeout] - The amount of time to retry matching (milliseconds).
    * @param {string} [tag] - An optional tag to be associated with the match.
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
@@ -61,8 +135,8 @@ class EyesCore extends EyesBase {
   }
   /**
    * Takes a snapshot of the application under test and matches a specific element with the expected region output.
-   * @param {SupportedSelector} locator - The element to check.
-   * @param {?number} [matchTimeout] - The amount of time to retry matching (milliseconds).
+   * @param {TSelector} locator - The element to check.
+   * @param {number} [matchTimeout] - The amount of time to retry matching (milliseconds).
    * @param {string} [tag] - An optional tag to be associated with the match.
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
@@ -87,7 +161,7 @@ class EyesCore extends EyesBase {
   /**
    * Visually validates a region in the screenshot.
    *
-   * @param {EyesWrappedElement|SupportedElement} element - The element defining the region to validate.
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>|TElement} element - The element defining the region to validate.
    * @param {string} [tag] - An optional tag to be associated with the screenshot.
    * @param {number} [matchTimeout] - The amount of time to retry matching.
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
@@ -98,7 +172,7 @@ class EyesCore extends EyesBase {
   /**
    * Visually validates a region in the screenshot.
    *
-   * @param {SupportedSelector} by - The selector used for finding the region to validate.
+   * @param {TSelector} by - The selector used for finding the region to validate.
    * @param {string} [tag] - An optional tag to be associated with the screenshot.
    * @param {number} [matchTimeout] - The amount of time to retry matching.
    * @param {boolean} [stitchContent] - If {@code true}, stitch the internal content of the region (i.e., perform
@@ -116,8 +190,8 @@ class EyesCore extends EyesBase {
   /**
    * Switches into the given frame, takes a snapshot of the application under test and matches a region specified by
    * the given selector.
-   * @param {FrameReference} frameReference - The name or id of the frame to switch to.
-   * @param {SupportedSelector} locator - A Selector specifying the region to check.
+   * @param {FrameReference<TDriver, TElement, TSelector>} frameReference - The name or id of the frame to switch to.
+   * @param {TSelector} locator - A TSelector specifying the region to check.
    * @param {?number} [matchTimeout] - The amount of time to retry matching. (Milliseconds)
    * @param {string} [tag] - An optional tag to be associated with the snapshot.
    * @param {boolean} [stitchContent] - If {@code true}, stitch the internal content of the region (i.e., perform
@@ -176,7 +250,7 @@ class EyesCore extends EyesBase {
   /**
    * Adds a mouse trigger.
    * @param {MouseTrigger.MouseAction} action  Mouse action.
-   * @param {EyesWrappedElement} element The element on which the click was called.
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>} element The element on which the click was called.
    * @return {Promise}
    */
   async addMouseTriggerForElement(action, element) {
@@ -238,7 +312,7 @@ class EyesCore extends EyesBase {
   }
   /**
    * Adds a keyboard trigger.
-   * @param {EyesWrappedElement} element The element for which we sent keys.
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>} element The element for which we sent keys.
    * @param {String} text  The trigger's text.
    * @return {Promise}
    */
@@ -269,6 +343,202 @@ class EyesCore extends EyesBase {
     EyesBase.prototype.addTextTrigger.call(this, elementRegion, text)
   }
   /* ------------ Getters/Setters ------------ */
+  /**
+   * Use this method only if you made a previous call to {@link #open(WebDriver, String, String)} or one of its variants.
+   * @override
+   */
+  async getViewportSize() {
+    const viewportSize = this._viewportSizeHandler.get()
+    return viewportSize
+      ? viewportSize
+      : EyesUtils.getTopContextViewportSize(this._logger, this._driver)
+  }
+
+  /**
+   * Sets the browser's viewport size
+   * @param {TDriver} driver - driver object for the specific framework
+   * @param {RectangleSize|{width: number, height: number}} viewportSize - viewport size
+   */
+  static async setViewportSize(driver, viewportSize) {
+    const logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS)
+    const wrappedDriver = new this.WrappedDriver(logger, driver)
+    if (!(await wrappedDriver.controller.isMobile())) {
+      ArgumentGuard.notNull(viewportSize, 'viewportSize')
+      await EyesUtils.setViewportSize(logger, wrappedDriver, new RectangleSize(viewportSize))
+    }
+  }
+
+  /**
+   * Use this method only if you made a previous call to {@link #open(WebDriver, String, String)} or one of its variants.
+   * @protected
+   * @override
+   */
+  async setViewportSize(viewportSize) {
+    if (this._viewportSizeHandler instanceof ReadOnlyPropertyHandler) {
+      this._logger.verbose('Ignored (viewport size given explicitly)')
+      return Promise.resolve()
+    }
+
+    if (!(await this._controller.isMobile())) {
+      ArgumentGuard.notNull(viewportSize, 'viewportSize')
+      viewportSize = new RectangleSize(viewportSize)
+      try {
+        await EyesUtils.setViewportSize(this._logger, this._driver, new RectangleSize(viewportSize))
+        this._effectiveViewport = new Region(Location.ZERO, viewportSize)
+      } catch (e) {
+        const viewportSize = await EyesUtils.getTopContextViewportSize(this._logger, this._driver)
+        this._viewportSizeHandler.set(viewportSize)
+        throw new TestFailedError('Failed to set the viewport size', e)
+      }
+    }
+
+    this._viewportSizeHandler.set(new RectangleSize(viewportSize))
+  }
+
+  /**
+   * Run visual locators
+   * @template {string} TLocatorName
+   * @param {Object} visualLocatorSettings
+   * @param {Readonly<TLocatorName[]>} visualLocatorSettings.locatorNames
+   * @param {boolean} visualLocatorSettings.firstOnly
+   * @return {Promise<{[TKey in TLocatorName]: RegionObject[]}>}
+   */
+  async locate(visualLocatorSettings) {
+    ArgumentGuard.notNull(visualLocatorSettings, 'visualLocatorSettings')
+    this._logger.verbose('Get locators with given names: ', visualLocatorSettings.locatorNames)
+    const screenshot = await this._getViewportScreenshot()
+    const screenshotBuffer = await screenshot.getImage().getImageBuffer()
+    const id = GeneralUtils.guid()
+    await this.getAndSaveRenderingInfo()
+    const imageUrl = await this._serverConnector.uploadScreenshot(id, screenshotBuffer)
+    const appName = this._configuration.getAppName()
+    return this._serverConnector.postLocators({
+      appName,
+      imageUrl,
+      locatorNames: visualLocatorSettings.locatorNames,
+      firstOnly: visualLocatorSettings.firstOnly,
+    })
+  }
+
+  /**
+   * Create a viewport page screenshot
+   * @return {Promise<EyesScreenshot>}
+   */
+  async _getViewportScreenshot() {
+    this._logger.verbose('Screenshot requested...')
+    const scaleProviderFactory = await this._updateScalingParams()
+
+    let screenshotImage = await this._imageProvider.getImage()
+    await this._debugScreenshotsProvider.save(screenshotImage, 'original')
+
+    const scaleProvider = scaleProviderFactory.getScaleProvider(screenshotImage.getWidth())
+    if (scaleProvider.getScaleRatio() !== 1) {
+      this._logger.verbose('scaling...')
+      screenshotImage = await screenshotImage.scale(scaleProvider.getScaleRatio())
+      await this._debugScreenshotsProvider.save(screenshotImage, 'scaled')
+    }
+
+    const cutProvider = this._cutProviderHandler.get()
+    if (!(cutProvider instanceof NullCutProvider)) {
+      this._logger.verbose('cutting...')
+      screenshotImage = await cutProvider.cut(screenshotImage)
+      await this._debugScreenshotsProvider.save(screenshotImage, 'cut')
+    }
+
+    this._logger.verbose('Building screenshot object...')
+    return EyesScreenshot.fromScreenshotType(this._logger, this, screenshotImage)
+  }
+
+  /**
+   * @private
+   * @return {Promise<ScaleProviderFactory>}
+   */
+  async _updateScalingParams() {
+    // Update the scaling params only if we haven't done so yet, and the user hasn't set anything else manually.
+    if (
+      this._devicePixelRatio !== UNKNOWN_DEVICE_PIXEL_RATIO &&
+      !(this._scaleProviderHandler.get() instanceof NullScaleProvider)
+    ) {
+      // If we already have a scale provider set, we'll just use it, and pass a mock as provider handler.
+      const nullProvider = new SimplePropertyHandler()
+      return new ScaleProviderIdentityFactory(this._scaleProviderHandler.get(), nullProvider)
+    }
+
+    this._devicePixelRatio = await this._getDevicePixelRatio()
+
+    this._logger.verbose('Setting scale provider...')
+    return this._getScaleProviderFactory()
+  }
+
+  async _getDevicePixelRatio() {
+    this._logger.verbose('Trying to extract device pixel ratio...')
+    let devicePixelRatio
+    try {
+      if (await this._controller.isNative()) {
+        const viewportSize = await this.getViewportSize()
+        devicePixelRatio = EyesUtils.getMobilePixelRatio(this._logger, this._driver, viewportSize)
+      } else {
+        devicePixelRatio = EyesUtils.getDevicePixelRatio(this._logger, this._driver)
+      }
+    } catch (err) {
+      this._logger.verbose('Failed to extract device pixel ratio! Using default.', err)
+      devicePixelRatio = DEFAULT_DEVICE_PIXEL_RATIO
+    }
+
+    this._logger.verbose(`Device pixel ratio: ${devicePixelRatio}`)
+    return devicePixelRatio
+  }
+
+  /**
+   * @private
+   * @return {Promise<ScaleProviderFactory>}
+   */
+  async _getScaleProviderFactory() {
+    const defaultScaleProviderFactory = new FixedScaleProviderFactory(
+      1 / this._devicePixelRatio,
+      this._scaleProviderHandler,
+    )
+
+    if (await this._controller.isNative()) {
+      return defaultScaleProviderFactory
+    } else {
+      try {
+        const entireSize = await EyesUtils.getCurrentFrameContentEntireSize(
+          this._logger,
+          this._executor,
+        )
+        return new ContextBasedScaleProviderFactory(
+          this._logger,
+          entireSize,
+          this._viewportSizeHandler.get(),
+          this._devicePixelRatio,
+          false,
+          this._scaleProviderHandler,
+        )
+      } catch (err) {
+        this._logger.verbose('Failed to set ContextBasedScaleProvider.', err)
+        this._logger.verbose('Using FixedScaleProvider instead...')
+        return defaultScaleProviderFactory
+      }
+    }
+  }
+
+  /**
+   * @private
+   */
+  async _getAndSaveBatchInfoFromServer(batchId) {
+    ArgumentGuard.notNullOrEmpty(batchId, 'batchId')
+    return this._runner.getBatchInfoWithCache(batchId)
+  }
+
+  /**
+   * @private
+   */
+  async getAndSaveRenderingInfo() {
+    const renderingInfo = await this._runner.getRenderingInfoWithCache()
+    this._serverConnector.setRenderingInfo(renderingInfo)
+  }
+
   async getAUTSessionId() {
     if (!this._driver) {
       return undefined
@@ -288,18 +558,20 @@ class EyesCore extends EyesBase {
     return ''
   }
   /**
-   * @return {?EyesWrappedDriver}
+   * @return {EyesWrappedDriver<TDriver, TElement, TSelector>}
    */
   getDriver() {
     return this._driver
   }
-
+  /**
+   * @return {TDriver}
+   */
   getRemoteWebDriver() {
     return this._driver.unwrapped
   }
   /**
    * Get jsExecutor
-   * @return {EyesJsExecutor}
+   * @return {EyesJsExecutor<TDriver, TElement, TSelector>}
    */
   get jsExecutor() {
     return this._executor
@@ -335,7 +607,7 @@ class EyesCore extends EyesBase {
     return this._stitchContent
   }
   /**
-   * @param {EyesWrappedElement|SupportedElement|SupportedSelector} element
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>|TElement|TSelector} element
    */
   setScrollRootElement(scrollRootElement) {
     if (this.constructor.WrappedElement.isSelector(scrollRootElement)) {
@@ -347,7 +619,7 @@ class EyesCore extends EyesBase {
     }
   }
   /**
-   * @return {Promise<(EyesWrappedElement|SupportedElement|SupportedSelector)?>}
+   * @return {Promise<EyesWrappedElement<TDriver, TElement, TSelector>|TElement|TSelector>}
    */
   async getScrollRootElement() {
     if (this._scrollRootElement) {
@@ -397,7 +669,7 @@ class EyesCore extends EyesBase {
    *
    * @override
    * @protected
-   * @return {Promise<?string>}
+   * @return {Promise<string>}
    */
   async getDomUrl() {
     return this._domUrl

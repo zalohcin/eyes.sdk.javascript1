@@ -1,16 +1,13 @@
 'use strict'
-
 const stackTrace = require('stack-trace')
-
-const {ArgumentGuard} = require('../utils/ArgumentGuard')
-const {GeneralUtils} = require('../utils/GeneralUtils')
-const {TypeUtils} = require('../utils/TypeUtils')
-const {DateTimeUtils} = require('../utils/DateTimeUtils')
-const {PerformanceUtils} = require('../utils/PerformanceUtils')
-
-const {NullLogHandler} = require('./NullLogHandler')
-const {ConsoleLogHandler} = require('./ConsoleLogHandler')
-const {DebugLogHandler} = require('./DebugLogHandler')
+const ArgumentGuard = require('../utils/ArgumentGuard')
+const GeneralUtils = require('../utils/GeneralUtils')
+const TypeUtils = require('../utils/TypeUtils')
+const DateTimeUtils = require('../utils/DateTimeUtils')
+const PerformanceUtils = require('../utils/PerformanceUtils')
+const NullLogHandler = require('./NullLogHandler')
+const ConsoleLogHandler = require('./ConsoleLogHandler')
+const DebugLogHandler = require('./DebugLogHandler')
 
 const timeStorage = PerformanceUtils.start()
 
@@ -129,14 +126,14 @@ class Logger {
   _getMethodName() {
     if (typeof Error.captureStackTrace === 'function') {
       /**
-       * @typedef {object} CallSite
-       * @property {function(): string} getTypeName returns the type of this as a string.
-       * @property {function(): string} getFunctionName returns the name of the current function, typically its name property.
-       * @property {function(): string} getMethodName returns the name of the property of this or one of its prototypes that holds the current function
-       * @property {function(): string} getFileName if this function was defined in a script returns the name of the script
-       * @property {function(): number} getLineNumber if this function was defined in a script returns the current line number
-       * @property {function(): number} getColumnNumber if this function was defined in a script returns the current column number
-       * @property {function(): boolean} isNative is this call in native V8 code?
+       * @typedef CallSite
+       * @prop {function(): string} getTypeName returns the type of this as a string.
+       * @prop {function(): string} getFunctionName returns the name of the current function, typically its name property.
+       * @prop {function(): string} getMethodName returns the name of the property of this or one of its prototypes that holds the current function
+       * @prop {function(): string} getFileName if this function was defined in a script returns the name of the script
+       * @prop {function(): number} getLineNumber if this function was defined in a script returns the current line number
+       * @prop {function(): number} getColumnNumber if this function was defined in a script returns the current column number
+       * @prop {function(): boolean} isNative is this call in native V8 code?
        */
 
       /** @type {CallSite[]} */
@@ -154,4 +151,4 @@ class Logger {
   }
 }
 
-exports.Logger = Logger
+module.exports = Logger

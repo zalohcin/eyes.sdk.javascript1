@@ -19,43 +19,43 @@ const {
   GeneralUtils,
 } = require('..')
 
-const {AppOutputProvider} = require('./capture/AppOutputProvider')
-const {AppOutputWithScreenshot} = require('./capture/AppOutputWithScreenshot')
-const {AppOutput} = require('./match/AppOutput')
+const AppOutputProvider = require('./capture/AppOutputProvider')
+const AppOutputWithScreenshot = require('./capture/AppOutputWithScreenshot')
+const AppOutput = require('./match/AppOutput')
 
-const {FixedScaleProvider} = require('./scaling/FixedScaleProvider')
-const {NullScaleProvider} = require('./scaling/NullScaleProvider')
+const FixedScaleProvider = require('./scaling/FixedScaleProvider')
+const NullScaleProvider = require('./scaling/NullScaleProvider')
 
-const {NullCutProvider} = require('./cropping/NullCutProvider')
+const NullCutProvider = require('./cropping/NullCutProvider')
 
 const InvalidPositionProvider = require('./positioning/InvalidPositionProvider')
 
-const {TextTrigger} = require('./triggers/TextTrigger')
-const {MouseTrigger} = require('./triggers/MouseTrigger')
+const TextTrigger = require('./triggers/TextTrigger')
+const MouseTrigger = require('./triggers/MouseTrigger')
 
-const {MatchResult} = require('./match/MatchResult')
-const {MatchWindowData} = require('./match/MatchWindowData')
+const MatchResult = require('./match/MatchResult')
+const MatchWindowData = require('./match/MatchWindowData')
 
-const {DiffsFoundError} = require('./errors/DiffsFoundError')
-const {NewTestError} = require('./errors/NewTestError')
-const {OutOfBoundsError} = require('./errors/OutOfBoundsError')
-const {TestFailedError} = require('./errors/TestFailedError')
+const DiffsFoundError = require('./errors/DiffsFoundError')
+const NewTestError = require('./errors/NewTestError')
+const OutOfBoundsError = require('./errors/OutOfBoundsError')
+const TestFailedError = require('./errors/TestFailedError')
 
-const {ValidationInfo} = require('./events/ValidationInfo')
-const {ValidationResult} = require('./events/ValidationResult')
-const {SessionEventHandlers} = require('./events/SessionEventHandlers')
+const ValidationInfo = require('./events/ValidationInfo')
+const ValidationResult = require('./events/ValidationResult')
+const SessionEventHandlers = require('./events/SessionEventHandlers')
 
-const {CheckSettings} = require('./fluent/CheckSettings')
+const CheckSettings = require('./fluent/CheckSettings')
 
-const {SessionStartInfo} = require('./server/SessionStartInfo')
-const {TestResultsStatus} = require('./TestResultsStatus')
-const {TestResults} = require('./TestResults')
-const {ServerConnector} = require('./server/ServerConnector')
+const SessionStartInfo = require('./server/SessionStartInfo')
+const TestResultsStatus = require('./TestResultsStatus')
+const TestResults = require('./TestResults')
+const ServerConnector = require('./server/ServerConnector')
 
-const {FailureReports} = require('./FailureReports')
-const {AppEnvironment} = require('./AppEnvironment')
-const {MatchWindowTask} = require('./MatchWindowTask')
-const {MatchSingleWindowTask} = require('./MatchSingleWindowTask')
+const FailureReports = require('./FailureReports')
+const AppEnvironment = require('./AppEnvironment')
+const MatchWindowTask = require('./MatchWindowTask')
+const MatchSingleWindowTask = require('./MatchSingleWindowTask')
 const getScmInfo = require('./getScmInfo')
 
 const USE_DEFAULT_TIMEOUT = -1
@@ -1611,7 +1611,7 @@ class EyesBase {
    * @protected
    * @param {string} appName - The name of the application under test.
    * @param {string} testName - The test name.
-   * @param {RectangleSize|RectangleSizeObject} [viewportSize] - The client's viewport size (i.e., the
+   * @param {RectangleSize|PalinRectangleSize} [viewportSize] - The client's viewport size (i.e., the
    *   visible part of the document's body) or {@code null} to allow any viewport size.
    * @param {SessionType} [sessionType=SessionType.SEQUENTIAL] - The type of test (e.g., Progression for timing tests),
    *   or {@code null} to use the default.
@@ -2352,4 +2352,4 @@ class EyesBase {
   }
 }
 
-exports.EyesBase = EyesBase
+module.exports = EyesBase

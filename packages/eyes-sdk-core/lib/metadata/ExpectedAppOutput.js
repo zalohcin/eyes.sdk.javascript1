@@ -2,16 +2,17 @@
 
 const {GeneralUtils, DateTimeUtils} = require('../..')
 
-const {Annotations} = require('./Annotations')
-const {Image} = require('./Image')
+const Annotations = require('./Annotations')
+const Image = require('./Image')
 
 class ExpectedAppOutput {
   /**
-   * @param {string} tag
-   * @param {Image|object} image
-   * @param {Image|object} thumbprint
-   * @param {Date|string} occurredAt
-   * @param {Annotations|object} annotations
+   * @param output
+   * @param {string} output.tag
+   * @param {Image|object} output.image
+   * @param {Image|object} output.thumbprint
+   * @param {Date|string} output.occurredAt
+   * @param {Annotations|object} output.annotations
    */
   constructor({tag, image, thumbprint, occurredAt, annotations} = {}) {
     if (image && !(image instanceof Image)) {
@@ -122,4 +123,4 @@ class ExpectedAppOutput {
   }
 }
 
-exports.ExpectedAppOutput = ExpectedAppOutput
+module.exports = ExpectedAppOutput

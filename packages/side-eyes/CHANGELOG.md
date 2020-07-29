@@ -1,6 +1,22 @@
 # Changelog
 
 ## Unreleased
+- updated to @applitools/dom-capture@7.2.6 (from 7.2.4)
+- updated to @applitools/dom-snapshot@4.0.0 (from 3.6.2)
+- updated to @applitools/visual-grid-client@14.6.0 (from 14.5.7)
+
+
+## 1.11.2 - 2020/7/8
+
+- fix issue with redirected iframes for the ultra fast grid ([Trello](https://trello.com/c/egprwtNp))
+- updated to @applitools/dom-snapshot@3.6.2 (from 3.6.1)
+- updated to @applitools/eyes-images@4.14.2 (from 4.14.1)
+- updated to @applitools/visual-grid-client@14.5.7 (from 14.5.3)
+
+## 1.11.1 - 2020/7/7
+
+- updated to @applitools/dom-snapshot@3.6.1 (from 3.5.3)
+- updated to @applitools/visual-grid-client@14.5.3 (from 14.4.4)
 
 ## v1.11.0
 - updated browser and device list to support new options in the Ultrafast Grid [Trello 337](https://trello.com/c/epkkyC4m)

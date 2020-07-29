@@ -5,7 +5,7 @@ const aggregateResourceUrlsAndBlobs = require('./aggregateResourceUrlsAndBlobs')
 const makeGetResourceUrlsAndBlobs = require('./getResourceUrlsAndBlobs');
 const makeProcessResource = require('./processResource');
 const makeExtractResourcesFromSvg = require('./makeExtractResourcesFromSvg');
-const fetchUrl = require('./fetchUrl');
+const makeFetchUrl = require('./fetchUrl');
 const makeFindStyleSheetByUrl = require('./findStyleSheetByUrl');
 const makeExtractResourcesFromStyleSheet = require('./extractResourcesFromStyleSheet');
 const extractResourceUrlsFromStyleAttrs = require('./extractResourceUrlsFromStyleAttrs');
@@ -24,10 +24,14 @@ const makeLog = require('./log');
 const noop = require('./noop');
 const makeSessionCache = require('./sessionCache');
 
-function processPage(doc = document, {showLogs, useSessionCache, dontFetchResources} = {}) {
+function processPage(
+  doc = document,
+  {showLogs, useSessionCache, dontFetchResources, fetchTimeout, skipResources} = {},
+) {
   /* MARKER FOR TEST - DO NOT DELETE */
   const log = showLogs ? makeLog(Date.now()) : noop;
   log('processPage start');
+  log(`skipResources length: ${skipResources && skipResources.length}`);
   const sessionCache = useSessionCache && makeSessionCache({log});
   const styleSheetCache = {};
   const extractResourcesFromStyleSheet = makeExtractResourcesFromStyleSheet({styleSheetCache});
@@ -37,6 +41,7 @@ function processPage(doc = document, {showLogs, useSessionCache, dontFetchResour
   );
 
   const extractResourcesFromSvg = makeExtractResourcesFromSvg({extractResourceUrlsFromStyleTags});
+  const fetchUrl = makeFetchUrl({timeout: fetchTimeout});
   const processResource = makeProcessResource({
     fetchUrl,
     findStyleSheetByUrl,
@@ -92,16 +97,14 @@ function processPage(doc = document, {showLogs, useSessionCache, dontFetchResour
 
     const resourceUrlsAndBlobsPromise = dontFetchResources
       ? Promise.resolve({resourceUrls: urls, blobsObj: {}})
-      : getResourceUrlsAndBlobs({documents: docRoots, urls}).then(result => {
+      : getResourceUrlsAndBlobs({documents: docRoots, urls, skipResources}).then(result => {
           sessionCache && sessionCache.persist();
           return result;
         });
     const canvasBlobs = buildCanvasBlobs(canvasElements);
     const frameDocs = extractFrames(docRoots);
 
-    const processFramesPromise = frameDocs.map(f =>
-      doProcessPage(f, f.defaultView.frameElement.src),
-    );
+    const processFramesPromise = frameDocs.map(f => doProcessPage(f));
     const processInlineFramesPromise = inlineFrames.map(({element, url}) =>
       doProcessPage(element.contentDocument, url),
     );

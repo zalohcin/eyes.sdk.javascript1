@@ -17,7 +17,17 @@ function loadFixture(fileName) {
 }
 
 const xmlResult = loadFixture('multiple-suites-multiple-tests.xml')
-
+const metaData = {
+  TestCheckWindow: {
+    isGeneric: true,
+  },
+  TestCheckWindow_VG: {
+    isGeneric: true,
+  },
+  TestCheckWindow_Scroll: {
+    isGeneric: true,
+  },
+}
 describe('Report', () => {
   describe('JUnit XML Parser', () => {
     it('should throw if parsing an unsupported xml', () => {
@@ -27,6 +37,16 @@ describe('Report', () => {
     })
     it('should support multiple suites with multiple tests', () => {
       const result = parseJunitXmlForTests(xmlResult)
+      assert(result[0].hasOwnProperty('_attributes'))
+    })
+    it('should support multiple suites with multiple tests at every suite', () => {
+      const altXmlResult = loadFixture('multiple-suites-multiple-tests-each.xml')
+      const result = parseJunitXmlForTests(altXmlResult)
+      assert(result[0].hasOwnProperty('_attributes'))
+    })
+    it('should support multiple suites with one suite with multiple tests', () => {
+      const altXmlResult = loadFixture('multiple-suites-multiple-tests-one.xml')
+      const result = parseJunitXmlForTests(altXmlResult)
       assert(result[0].hasOwnProperty('_attributes'))
     })
     it('should support multiple suites with a single test', () => {
@@ -70,8 +90,18 @@ describe('Report', () => {
     assert.deepStrictEqual(parseExecutionMode('TestCheckWindow_Scroll'), 'scroll')
     assert.deepStrictEqual(parseExecutionMode('TestCheckWindow'), 'css')
   })
+  it(`should omit skipped testcases`, () => {
+    const altXmlResult = loadFixture('single-suite-skipped-test.xml')
+    const result = convertJunitXmlToResultSchema({xmlResult: altXmlResult})
+    assert.deepStrictEqual(result.length, 0)
+  })
+  it(`should omit skipped testcases with multiple testcases`, () => {
+    const altXmlResult = loadFixture('single-suite-multiple-tests-with-skipped.xml')
+    const result = convertJunitXmlToResultSchema({xmlResult: altXmlResult, metaData: {}})
+    assert.deepStrictEqual(result.length, 3)
+  })
   it('should convert xml report to QA report schema as JSON', () => {
-    assert.deepStrictEqual(convertJunitXmlToResultSchema({xmlResult}), [
+    assert.deepStrictEqual(convertJunitXmlToResultSchema({xmlResult, metaData: {}}), [
       {
         test_name: 'TestCheckWindow',
         parameters: {
@@ -98,37 +128,114 @@ describe('Report', () => {
       },
     ])
   })
-  it('should create a report payload', () => {
-    assert.deepStrictEqual(createReport({sdkName: 'eyes-selenium', xmlResult}), {
-      sdk: 'js_selenium_4',
-      group: 'selenium',
-      sandbox: true,
-      results: [
-        {
-          test_name: 'TestCheckWindow',
-          parameters: {
-            browser: 'chrome',
-            mode: 'visualgrid',
-          },
-          passed: false,
+  it('should convert xml report to QA report schema as JSON with generic set to false', () => {
+    assert.deepStrictEqual(convertJunitXmlToResultSchema({metaData: {}, xmlResult}), [
+      {
+        test_name: 'TestCheckWindow',
+        parameters: {
+          browser: 'chrome',
+          mode: 'visualgrid',
         },
-        {
-          test_name: 'TestCheckWindow',
-          parameters: {
-            browser: 'chrome',
-            mode: 'css',
-          },
-          passed: true,
+        passed: false,
+      },
+      {
+        test_name: 'TestCheckWindow',
+        parameters: {
+          browser: 'chrome',
+          mode: 'css',
         },
-        {
-          test_name: 'TestCheckWindow',
-          parameters: {
-            browser: 'chrome',
-            mode: 'scroll',
-          },
-          passed: true,
+        passed: true,
+      },
+      {
+        test_name: 'TestCheckWindow',
+        parameters: {
+          browser: 'chrome',
+          mode: 'scroll',
         },
-      ],
-    })
+        passed: true,
+      },
+    ])
+  })
+
+  it('should create a report payload without id', () => {
+    assert.deepStrictEqual(
+      createReport({sdkName: 'eyes-selenium', metaData: metaData, xmlResult}),
+      {
+        sdk: 'js_selenium_4',
+        group: 'selenium',
+        sandbox: true,
+        results: [
+          {
+            test_name: 'TestCheckWindow',
+            isGeneric: true,
+            parameters: {
+              browser: 'chrome',
+              mode: 'visualgrid',
+            },
+            passed: false,
+          },
+          {
+            test_name: 'TestCheckWindow',
+            isGeneric: true,
+            parameters: {
+              browser: 'chrome',
+              mode: 'css',
+            },
+            passed: true,
+          },
+          {
+            test_name: 'TestCheckWindow',
+            isGeneric: true,
+            parameters: {
+              browser: 'chrome',
+              mode: 'scroll',
+            },
+            passed: true,
+          },
+        ],
+        id: undefined,
+      },
+    )
+  })
+
+  it('should create a report payload with id', () => {
+    assert.deepStrictEqual(
+      createReport({sdkName: 'eyes-selenium', id: '111111', metaData: metaData, xmlResult}),
+      {
+        sdk: 'js_selenium_4',
+        group: 'selenium',
+        sandbox: true,
+        results: [
+          {
+            test_name: 'TestCheckWindow',
+            isGeneric: true,
+            parameters: {
+              browser: 'chrome',
+              mode: 'visualgrid',
+            },
+            passed: false,
+          },
+          {
+            test_name: 'TestCheckWindow',
+            isGeneric: true,
+            parameters: {
+              browser: 'chrome',
+              mode: 'css',
+            },
+            passed: true,
+          },
+          {
+            test_name: 'TestCheckWindow',
+            isGeneric: true,
+            parameters: {
+              browser: 'chrome',
+              mode: 'scroll',
+            },
+            passed: true,
+          },
+        ],
+        id: '111111',
+      },
+    )
   })
 })

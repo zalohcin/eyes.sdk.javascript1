@@ -40,7 +40,11 @@ const args = yargs
     default: process.env.APPLITOOLS_API_KEY,
   })
   .option('target-element', {
-    describe: '',
+    describe: 'translates to Target.region(...)',
+    type: 'string',
+  })
+  .option('target-frame', {
+    describe: 'translates to Target.frame(...)',
     type: 'string',
   })
   .option('vg', {
@@ -182,6 +186,18 @@ const args = yargs
     describe: 'attach to existing chrome via remote debugging port',
     type: 'boolean',
   })
+  .option('scroll-root-element', {
+    describe: 'selector to scroll root element',
+    type: 'string',
+  })
+  .option('stitch-overlap', {
+    describe: 'stitch overlap',
+    type: 'number',
+  })
+  .option('save-debug-screenshots', {
+    describe: 'saveDebugScreenshots',
+    type: 'boolean',
+  })
   .help().argv
 
 let [url] = args._
@@ -266,12 +282,24 @@ if (!url && !args.attach) {
   if (args.batchId) {
     configuration.setDontCloseBatches(true)
   }
+  if (args.stitchOverlap) {
+    configuration.setStitchOverlap(args.stitchOverlap)
+  }
+
   eyes.setConfiguration(configuration)
 
   const {logger, logFilePath} = initLog(eyes, new URL(url).hostname.replace(/\./g, '-'))
   logger.log('[render script] Running Selenium render for', url)
   logger.log(`[render script] process versions: ${JSON.stringify(process.versions)}`)
   console.log('log file at:', logFilePath)
+
+  if (args.saveDebugScreenshots) {
+    eyes.setSaveDebugScreenshots(true)
+    const debugScreenshotsPath = logFilePath.replace('.log', '')
+    console.log('debug screenshots at:', debugScreenshotsPath)
+    fs.mkdirSync(debugScreenshotsPath)
+    eyes.setDebugScreenshotsPath(debugScreenshotsPath)
+  }
 
   if (!args.attach) {
     await spec.visit(driver, url)
@@ -288,6 +316,8 @@ if (!url && !args.attach) {
 
     if (args.targetElement) {
       target = Target.region(args.targetElement)
+    } else if (args.targetFrame) {
+      target = Target.frame(args.targetFrame)
     } else {
       target = Target.window()
     }
@@ -308,6 +338,10 @@ if (!url && !args.attach) {
         target,
         args.layoutRegions.split(',').map(s => s.trim()),
       )
+    }
+
+    if (args.scrollRootElement) {
+      target.scrollRootElement(args.scrollRootElement)
     }
 
     logger.log('[render script] awaiting delay...', args.delay * 1000)
@@ -372,6 +406,14 @@ function buildDriver({
       accesskey: process.env.SAUCE_ACCESS_KEY,
     }
   }
+
+  console.log(
+    'Running with capabilities:\n',
+    Object.entries(capabilities)
+      .map(argToString)
+      .join('\n '),
+    '\n',
+  )
 
   return spec.build({capabilities, serverUrl: driverServer, webdriverProxy})
 }
@@ -445,7 +487,7 @@ function parseCompoundParameter(str) {
 
   return str
     .split(',')
-    .map(keyValue => keyValue.split(':'))
+    .map(keyValue => keyValue.split('=>'))
     .reduce((acc, [key, value]) => {
       acc[key] = value // not casting to Number or Boolean since I didn't need it
       return acc

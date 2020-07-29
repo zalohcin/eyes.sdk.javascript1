@@ -2,26 +2,27 @@
 
 const {GeneralUtils} = require('../..')
 
-const {ImageMatchSettings} = require('./ImageMatchSettings')
-const {BatchInfo} = require('./BatchInfo')
-const {AppEnvironment} = require('../AppEnvironment')
+const ImageMatchSettings = require('./ImageMatchSettings')
+const BatchInfo = require('./BatchInfo')
+const AppEnvironment = require('../AppEnvironment')
 
 class StartInfo {
   /**
-   * @param {string} sessionType
-   * @param {boolean} isTransient
-   * @param {boolean} ignoreBaseline
-   * @param {string} appIdOrName
-   * @param {boolean} compareWithParentBranch
-   * @param {string} scenarioIdOrName
-   * @param {string} displayName
-   * @param {BatchInfo|object} batchInfo
-   * @param {AppEnvironment|object} environment
-   * @param {MatchLevel|string} matchLevel
-   * @param {ImageMatchSettings|object} defaultMatchSettings
-   * @param {string} agentId
-   * @param {object[]} properties
-   * @param {boolean} render
+   * @param info
+   * @param {string} info.sessionType
+   * @param {boolean} info.isTransient
+   * @param {boolean} info.ignoreBaseline
+   * @param {string} info.appIdOrName
+   * @param {boolean} info.compareWithParentBranch
+   * @param {string} info.scenarioIdOrName
+   * @param {string} info.displayName
+   * @param {BatchInfo|object} info.batchInfo
+   * @param {AppEnvironment|object} info.environment
+   * @param {MatchLevel|string} info.matchLevel
+   * @param {ImageMatchSettings|object} info.defaultMatchSettings
+   * @param {string} info.agentId
+   * @param {object[]} info.properties
+   * @param {boolean} info.render
    */
   constructor({
     sessionType,
@@ -278,4 +279,4 @@ class StartInfo {
   }
 }
 
-exports.StartInfo = StartInfo
+module.exports = StartInfo

@@ -1,63 +1,77 @@
 'use strict'
-const {Location} = require('../geometry/Location')
-const {RectangleSize} = require('../geometry/RectangleSize')
-const {MutableImage} = require('../images/MutableImage')
+const Location = require('../geometry/Location')
+const RectangleSize = require('../geometry/RectangleSize')
+const MutableImage = require('../images/MutableImage')
 const EyesDriverOperationError = require('../errors/EyesDriverOperationError')
 
 /**
- * @typedef {import('./EyesWrappedDriver')} EyesWrappedDriver
- * @typedef {import('./EyesWrappedDriver').UnwrappedDriver} UnwrappedDriver
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./EyesWrappedDriver')<TDriver, TElement, TSelector>} EyesWrappedDriver
  */
 
 /**
  * The object which implements the lowest-level functions to work with element finder
- * @typedef {Object} SpecsDriverController
- * @property {(driver: UnwrappedDriver) => Promise<{x: number, y: number}>} getWindowLocation - return location of the window on the screen
- * @property {(driver: UnwrappedDriver, location: {x: number, y: number}) => Promise<void>} setWindowLocation - set location of the window on the screen
- * @property {(driver: UnwrappedDriver) => Promise<{width: number, height: number}>} getWindowSize - return size of the window
- * @property {(driver: UnwrappedDriver, location: {width: number, height: number}) => Promise<void>} setWindowSize - set size of the window
- * @property {(driver: UnwrappedDriver) => Promise<'landscape'|'portrait'>} getOrientation - return string which represents screen orientation
- * @property {(driver: UnwrappedDriver) => Promise<boolean>} isMobile - true if a mobile device, false otherwise
- * @property {(driver: UnwrappedDriver) => Promise<boolean>} isAndroid - true if an Android device, false otherwise
- * @property {(driver: UnwrappedDriver) => Promise<boolean>} isIOS - true if an iOS device, false otherwise
- * @property {(driver: UnwrappedDriver) => Promise<boolean>} isNative - true if a native app, false otherwise
- * @property {(driver: UnwrappedDriver) => Promise<string>} getPlatformVersion - return version of the device's platform
- * @property {(driver: UnwrappedDriver) => Promise<string>} getSessionId - return id of the running session
- * @property {(driver: UnwrappedDriver) => Promise<string|Buffer>} takeScreenshot - return screenshot of the viewport
- * @property {(driver: UnwrappedDriver) => Promise<string>} getTitle - return page title
- * @property {(driver: UnwrappedDriver) => Promise<string>} getSource - return current url
- * @property {(driver: UnwrappedDriver, url: string) => Promise<void>} visit - redirect to the specified url
+ * @template TDriver, TElement, TSelector
+ * @typedef SpecDriverController
+ * @prop {(driver: TDriver) => Promise<{x: number, y: number}>} getWindowLocation - return location of the window on the screen
+ * @prop {(driver: TDriver, location: {x: number, y: number}) => Promise<void>} setWindowLocation - set location of the window on the screen
+ * @prop {(driver: TDriver) => Promise<{width: number, height: number}>} getWindowSize - return size of the window
+ * @prop {(driver: TDriver, size: {width: number, height: number}) => Promise<void>} setWindowSize - set size of the window
+ * @prop {(driver: TDriver) => Promise<'landscape'|'portrait'>} getOrientation - return string which represents screen orientation
+ * @prop {(driver: TDriver) => Promise<boolean>} isMobile - true if a mobile device, false otherwise
+ * @prop {(driver: TDriver) => Promise<boolean>} isAndroid - true if an Android device, false otherwise
+ * @prop {(driver: TDriver) => Promise<boolean>} isIOS - true if an iOS device, false otherwise
+ * @prop {(driver: TDriver) => Promise<boolean>} isNative - true if a native app, false otherwise
+ * @prop {(driver: TDriver) => Promise<string>} getPlatformVersion - return version of the device's platform
+ * @prop {(driver: TDriver) => Promise<string>} getSessionId - return id of the running session
+ * @prop {(driver: TDriver) => Promise<MutableImage>} takeScreenshot - return screenshot of the viewport
+ * @prop {(driver: TDriver) => Promise<string>} getTitle - return page title
+ * @prop {(driver: TDriver) => Promise<string>} getSource - return current url
+ * @prop {(driver: TDriver, url: string) => Promise<void>} visit - redirect to the specified url
  */
 
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {new (logger: Logger, driver: EyesWrappedDriver<TDriver, TElement, TSelector>) => EyesDriverController<TDriver, TElement, TSelector>} EyesDriverControllerCtor
+ */
+
+/**
+ * @template TDriver - TDriver provided by wrapped framework
+ * @template TElement - TElement provided by wrapped framework
+ * @template TSelector - TSelector supported by framework
+ */
 class EyesDriverController {
   /**
-   * @param {SpecsDriverController} SpecsDriverController - specifications for the specific framework
-   * @return {EyesDriverController} specialized version of this class
+   * @template TDriver, TElement, TSelector
+   * @param {SpecDriverController<TDriver, TElement, TSelector>} spec - specifications for the specific framework
+   * @return {EyesDriverControllerCtor<TDriver, TElement, TSelector>} specialized version of this class
    */
-  static specialize(SpecsDriverController) {
+  static specialize(spec) {
     return class extends EyesDriverController {
       /** @override */
-      static get specs() {
-        return SpecsDriverController
+      static get spec() {
+        return spec
       }
       /** @override */
-      get specs() {
-        return SpecsDriverController
+      get spec() {
+        return spec
       }
     }
   }
-  /** @type {SpecsDriverController} */
-  static get specs() {
+  /**
+   * @type {SpecDriverController}
+   */
+  static get spec() {
     throw new TypeError('EyesDriverController is not specialized')
   }
-  /** @type {SpecsDriverController} */
-  get specs() {
+  /** @type {SpecDriverController<TDriver, TElement, TSelector>} */
+  get spec() {
     throw new TypeError('EyesDriverController is not specialized')
   }
   /**
    * Construct a driver controller instance
    * @param {Logger} logger - logger instance
-   * @param {EyesWrappedDriver} driver - wrapped driver instance
+   * @param {EyesWrappedDriver<TDriver, TElement, TSelector>} driver - wrapped driver instance
    */
   constructor(logger, driver) {
     this._logger = logger
@@ -68,7 +82,7 @@ class EyesDriverController {
    * @return {Promise<Location>} windows location
    */
   async getWindowLocation() {
-    const location = await this.specs.getWindowLocation(this._driver.unwrapped)
+    const location = await this.spec.getWindowLocation(this._driver.unwrapped)
     return new Location(location)
   }
   /**
@@ -80,14 +94,14 @@ class EyesDriverController {
     if (location instanceof Location) {
       location = location.toJSON()
     }
-    await this.specs.setWindowLocation(this._driver.unwrapped, location)
+    await this.spec.setWindowLocation(this._driver.unwrapped, location)
   }
   /**
    * Get window size
    * @return {Promise<RectangleSize>} windows size
    */
   async getWindowSize() {
-    const size = await this.specs.getWindowSize(this._driver.unwrapped)
+    const size = await this.spec.getWindowSize(this._driver.unwrapped)
     return new RectangleSize(size)
   }
   /**
@@ -99,14 +113,14 @@ class EyesDriverController {
     if (size instanceof RectangleSize) {
       size = size.toJSON()
     }
-    await this.specs.setWindowSize(this._driver.unwrapped, size)
+    await this.spec.setWindowSize(this._driver.unwrapped, size)
   }
   /**
    * Take screenshot of the current viewport
    * @return {Promise<MutableImage>} image of screenshot
    */
   async takeScreenshot() {
-    const screenshot64 = await this.specs.takeScreenshot(this._driver.unwrapped)
+    const screenshot64 = await this.spec.takeScreenshot(this._driver.unwrapped)
     const image = new MutableImage(screenshot64)
     return image
   }
@@ -116,7 +130,7 @@ class EyesDriverController {
    */
   async isLandscapeOrientation() {
     try {
-      const orientation = await this.specs.getOrientation(this._driver.unwrapped)
+      const orientation = await this.spec.getOrientation(this._driver.unwrapped)
       return orientation === 'landscape'
     } catch (err) {
       throw new EyesDriverOperationError('Failed to get orientation!', err)
@@ -127,36 +141,40 @@ class EyesDriverController {
    * @return {Promise<boolean>} true if mobile, false otherwise
    */
   async isMobile() {
-    return this.specs.isMobile(this._driver.unwrapped)
+    return (
+      this._isMobilePromise || (this._isMobilePromise = this.spec.isMobile(this._driver.unwrapped))
+    )
   }
   /**
    * Check if running in mobile device with native context
    * @return {Promise<boolean>} true if native, false otherwise
    */
   async isNative() {
-    return this.specs.isNative(this._driver.unwrapped)
+    return (
+      this._isNativePromise || (this._isNativePromise = this.spec.isNative(this._driver.unwrapped))
+    )
   }
   /**
    * Get mobile OS if detected
    * @return {Promise<?string>} mobile OS if detected, null otherwise
    */
   async getMobileOS() {
-    if (!(await this.specs.isMobile(this._driver.unwrapped))) {
+    if (!(await this.spec.isMobile(this._driver.unwrapped))) {
       this._logger.log('No mobile OS detected.')
       return
     }
     let os = ''
-    if (await this.specs.isAndroid(this._driver.unwrapped)) {
+    if (await this.spec.isAndroid(this._driver.unwrapped)) {
       this._logger.log('Android detected.')
       os = 'Android'
-    } else if (await this.specs.isIOS(this._driver.unwrapped)) {
+    } else if (await this.spec.isIOS(this._driver.unwrapped)) {
       this._logger.log('iOS detected.')
       os = 'iOS'
     } else {
       this._logger.log('Unknown device type.')
       return
     }
-    const version = await this.specs.getPlatformVersion(this._driver.unwrapped)
+    const version = await this.spec.getPlatformVersion(this._driver.unwrapped)
     if (version) {
       os += ` ${version}`
     }
@@ -168,7 +186,7 @@ class EyesDriverController {
    * @return {Promise<?string>} browser name if detected, null otherwise
    */
   async getBrowserName() {
-    const browserName = await this.specs.getBrowserName(this._driver.unwrapped)
+    const browserName = await this.spec.getBrowserName(this._driver.unwrapped)
     return browserName || null
   }
   /**
@@ -176,7 +194,7 @@ class EyesDriverController {
    * @return {Promise<?string>} browser version if detected, null otherwise
    */
   async getBrowserVersion() {
-    const browserVersion = await this.specs.getBrowserVersion(this._driver.unwrapped)
+    const browserVersion = await this.spec.getBrowserVersion(this._driver.unwrapped)
     return browserVersion || null
   }
   /**
@@ -184,13 +202,14 @@ class EyesDriverController {
    * @return {Promise<string>} AUT session ID
    */
   async getAUTSessionId() {
-    return this.specs.getSessionId(this._driver.unwrapped)
+    return this.spec.getSessionId(this._driver.unwrapped)
   }
   /**
    * Get user agent
    * @return {Promise<string>} user agent
    */
   async getUserAgent() {
+    if (await this.spec.isNative(this._driver.unwrapped)) return null
     try {
       const userAgent = await this._driver.executor.executeScript('return navigator.userAgent')
       this._logger.verbose(`user agent: ${userAgent}`)
@@ -205,18 +224,16 @@ class EyesDriverController {
    * @return {Promise<string>} current page title
    */
   async getTitle() {
-    return this.specs.getTitle(this._driver.unwrapped)
+    if (await this.spec.isNative(this._driver.unwrapped)) return null
+    return this.spec.getTitle(this._driver.unwrapped)
   }
   /**
    * Get current page url
    * @return {Promise<string>} current page url
    */
   async getSource() {
-    if (!(await this.specs.isMobile(this._driver.unwrapped))) {
-      return this.specs.getUrl(this._driver.unwrapped)
-    } else {
-      return null
-    }
+    if (await this.spec.isNative(this._driver.unwrapped)) return null
+    return this.spec.getUrl(this._driver.unwrapped)
   }
 }
 

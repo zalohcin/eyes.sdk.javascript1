@@ -1,47 +1,66 @@
 'use strict'
 const EyesWrappedElement = require('./EyesWrappedElement')
+const TypeUtils = require('../utils/TypeUtils')
 
 /**
- * @typedef {import('../logging/Logger').Logger} Logger
- * @typedef {import('./EyesWrappedDriver')} EyesWrappedDriver
+ * @typedef {import('../logging/Logger')} Logger
+ */
+
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {import('./EyesWrappedDriver')<TDriver, TElement, TSelector>} EyesWrappedDriver
  */
 
 /**
  * The object which implements the lowest-level functions to work with element finder
- * @typedef {Object} SpecsJsExecutor
- * @property {(driver: UnwrappedDriver, script: string|Function, ...args) => Promise<*>} executeScript - execute script and return result
- * @property {(driver: UnwrappedDriver, ms: number) => Promise<void>} sleep - makes the driver sleep for the given amount of time in ms
+ * @template TDriver, TElement, TSelector
+ * @typedef SpecJsExecutor
+ * @prop {(driver: TDriver, script: string|Function, ...args) => Promise<*>} executeScript - execute script and return result
+ * @prop {(driver: TDriver, ms: number) => Promise<void>} sleep - makes the driver sleep for the given amount of time in ms
  */
 
+/**
+ * @template TDriver, TElement, TSelector
+ * @typedef {new (logger: Logger, driver: EyesWrappedDriver<TDriver, TElement, TSelector>) => EyesJsExecutor<TDriver, TElement, TSelector>} EyesJsExecutorCtor
+ */
+
+/**
+ * @template TDriver - TDriver provided by wrapped framework
+ * @template TElement - TElement provided by wrapped framework
+ * @template TSelector - TSelector supported by framework
+ */
 class EyesJsExecutor {
   /**
-   * @param {SpecsJsExecutor} SpecsJsExecutor - specifications for the specific framework
-   * @return {EyesJsExecutor} specialized version of this class
+   * @template TDriver, TElement, TSelector
+   * @param {SpecJsExecutor<TDriver, TElement, TSelector>} spec - specifications for the specific framework
+   * @return {EyesJsExecutorCtor<TDriver, TElement, TSelector>} specialized version of this class
    */
-  static specialize(SpecsJsExecutor) {
+  static specialize(spec) {
     return class extends EyesJsExecutor {
       /** @override */
-      static get specs() {
-        return SpecsJsExecutor
+      static get spec() {
+        return spec
       }
       /** @override */
-      get specs() {
-        return SpecsJsExecutor
+      get spec() {
+        return spec
       }
     }
   }
-  /** @type {SpecsJsExecutor} */
-  static get specs() {
+  /**
+   * @type {SpecsJsExecutor}
+   */
+  static get spec() {
     throw new TypeError('The class is not specialized')
   }
-  /** @type {SpecsJsExecutor} */
-  get specs() {
+  /** @type {SpecsJsExecutor<TDriver, TElement, TSelector>} */
+  get spec() {
     throw new TypeError('The class is not specialized')
   }
   /**
    * Construct js executor instance
    * @param {Logger} logger - logger instance
-   * @param {EyesWrappedDriver} driver - wrapped driver instance
+   * @param {EyesWrappedDriver<TDriver, TElement, TSelector>} driver - wrapped driver instance
    */
   constructor(logger, driver) {
     this._logger = logger
@@ -58,10 +77,10 @@ class EyesJsExecutor {
    */
   async executeScript(script, ...args) {
     try {
-      const result = await this.specs.executeScript(
+      const result = await this.spec.executeScript(
         this._driver.unwrapped,
         script,
-        ...args.map(arg => (arg instanceof EyesWrappedElement ? arg.unwrapped : arg)),
+        ...args.map(arg => (TypeUtils.instanceOf(arg, EyesWrappedElement) ? arg.unwrapped : arg)),
       )
       this._logger.verbose('Done!')
       return result
@@ -75,8 +94,8 @@ class EyesJsExecutor {
    * @param {number} ms - amount of time, in milliseconds, to sleep
    * @return {Promise<void>} promise that will be resolved when the sleep has finished
    */
-  sleep(ms) {
-    return this.specs.pause(this._driver.unwrapped, ms)
+  async sleep(ms) {
+    return this.spec.pause(this._driver.unwrapped, ms)
   }
 }
 

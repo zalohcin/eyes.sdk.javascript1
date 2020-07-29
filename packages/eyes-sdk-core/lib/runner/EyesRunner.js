@@ -1,7 +1,7 @@
 'use strict'
 
 const {GeneralUtils} = require('../..')
-const {TestResultsSummary} = require('./TestResultsSummary')
+const TestResultsSummary = require('./TestResultsSummary')
 
 class EyesRunner {
   constructor() {
@@ -18,6 +18,10 @@ class EyesRunner {
       const fetchBatchInfo = serverConnector.batchInfo.bind(serverConnector)
       this._getBatchInfo = GeneralUtils.cachify(fetchBatchInfo)
     }
+    if (!this._getRenderingInfo) {
+      const getRenderingInfo = serverConnector.renderInfo.bind(serverConnector)
+      this._getRenderingInfo = GeneralUtils.cachify(getRenderingInfo)
+    }
   }
 
   async getBatchInfoWithCache(batchId) {
@@ -25,6 +29,16 @@ class EyesRunner {
       return this._getBatchInfo(batchId)
     } else {
       throw new Error('Eyes runner could not get batch info since attachEyes was not called before')
+    }
+  }
+
+  async getRenderingInfoWithCache() {
+    if (this._getRenderingInfo) {
+      return this._getRenderingInfo()
+    } else {
+      throw new Error(
+        'Eyes runner could not get rendering info since attachEyes was not called before',
+      )
     }
   }
 
@@ -75,4 +89,4 @@ class EyesRunner {
   }
 }
 
-exports.EyesRunner = EyesRunner
+module.exports = EyesRunner

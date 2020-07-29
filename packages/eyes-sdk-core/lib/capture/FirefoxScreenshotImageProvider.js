@@ -1,7 +1,7 @@
 'use strict'
 
-const {Region} = require('../..')
-const {ImageProvider} = require('./ImageProvider')
+const Region = require('../geometry/Region')
+const ImageProvider = require('./ImageProvider')
 const EyesScreenshot = require('./EyesScreenshotNew')
 
 /**
@@ -45,7 +45,7 @@ class FirefoxScreenshotImageProvider extends ImageProvider {
     if (frameChain.size > 0) {
       const screenshotType = await EyesScreenshot.getScreenshotType(image, this._eyes)
       let location = this._frameChain.getCurrentFrameLocationInViewport()
-      if (screenshotType === EyesScreenshot.ScreenshotType.ENTIRE_FRAME) {
+      if (screenshotType === EyesScreenshot.ScreenshotTypes.ENTIRE_FRAME) {
         location = location.offsetByLocation(frameChain.first.parentScrollLocation)
       }
       const viewportSize = await this._eyes.getViewportSize()

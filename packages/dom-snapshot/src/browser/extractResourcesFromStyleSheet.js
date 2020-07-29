@@ -10,8 +10,8 @@ function makeExtractResourcesFromStyleSheet({styleSheetCache, CSSRule = window.C
           [CSSRule.IMPORT_RULE]: () => {
             if (rule.styleSheet) {
               styleSheetCache[rule.styleSheet.href] = rule.styleSheet;
-              return rule.href;
             }
+            return rule.href;
           },
           [CSSRule.FONT_FACE_RULE]: () => getUrlFromCssText(rule.cssText),
           [CSSRule.SUPPORTS_RULE]: () => extractResourcesFromStyleSheet(rule),
