@@ -1,7 +1,7 @@
 'use strict'
 const cwd = process.cwd()
 const path = require('path')
-const {Browsers, batch, Remotes} = require('../util/TestSetup')
+const {batch} = require('../util/TestSetup')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 chai.use(chaiAsPromised)
@@ -17,7 +17,7 @@ const {
   Eyes,
   StitchMode,
 } = require(cwd)
-const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
+const spec = require(path.resolve(cwd, 'src/SpecDriver'))
 
 const appName = 'Test abort'
 const testedUrl = 'https://applitools.com/docs/topics/overview.html'
@@ -45,7 +45,7 @@ describe(appName, () => {
     async function beforeEach() {
       eyes = new Eyes(runner)
       eyes.setConfiguration(config)
-      webDriver = await spec.build({capabilities: Browsers.chrome()})
+      webDriver = await spec.build({browser: 'chrome'})
     }
 
     it(`Test_GetAllResults`, async () => {
@@ -73,7 +73,7 @@ describe(appName, () => {
     async function beforeEach() {
       eyes = new Eyes(runner)
       eyes.setConfiguration(config)
-      webDriver = await spec.build({capabilities: Browsers.chrome()})
+      webDriver = await spec.build({browser: 'chrome'})
     }
 
     it.skip(`Test_GetAllResults_VG`, async () => {

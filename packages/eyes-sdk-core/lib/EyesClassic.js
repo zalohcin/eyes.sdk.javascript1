@@ -56,6 +56,9 @@ class EyesClassic extends EyesCore {
    */
   static specialize({agentId, spec}) {
     return class extends EyesClassic {
+      static get spec() {
+        return spec
+      }
       get spec() {
         return spec
       }
@@ -244,7 +247,10 @@ class EyesClassic extends EyesCore {
    * @return {Promise<MatchResult>}
    */
   async _checkPrepare(checkSettings, operation) {
-    if (this._driver.isNative) return operation()
+    if (this._driver.isNative) {
+      this._context = this._context.attach(await checkSettings.context)
+      return operation()
+    }
     this._stitchContent = checkSettings.getStitchContent()
     // sync stored frame chain with actual browsing context
     this._context = await this._driver.refreshContexts()
@@ -299,6 +305,7 @@ class EyesClassic extends EyesCore {
   async _checkRegion(checkSettings, targetRegion) {
     try {
       this._regionToCheck = targetRegion
+
       await EyesUtils.ensureRegionVisible(
         this._logger,
         this._context,
@@ -335,10 +342,15 @@ class EyesClassic extends EyesCore {
       this._regionToCheck,
     )
 
-    this._targetPositionProvider = this._createPositionProvider(this._context.scrollRootElement)
+    this._targetPositionProvider = this._createPositionProvider(
+      await this._context.getScrollRootElement(),
+    )
 
     this._regionFullArea = new Region(
-      this._regionToCheck.getLocation().offsetNegative(remainingOffset),
+      this._regionToCheck
+        .getLocation()
+        .offsetNegative(remainingOffset)
+        .offsetByLocation(await this._context.getLocationInViewport()),
       this._regionToCheck.getSize(),
     )
 
@@ -427,9 +439,14 @@ class EyesClassic extends EyesCore {
       )
       this._regionFullArea = null
     } else {
-      this._targetPositionProvider = this._createPositionProvider(this._context.scrollRootElement)
+      this._targetPositionProvider = this._createPositionProvider(
+        await this._context.getScrollRootElement(),
+      )
       this._regionFullArea = new Region(
-        this._regionToCheck.getLocation().offsetNegative(remainingOffset),
+        this._regionToCheck
+          .getLocation()
+          .offsetNegative(remainingOffset)
+          .offsetNegative(await this._context.getInnerOffset()),
         this._regionToCheck.getSize(),
       )
     }
@@ -481,7 +498,9 @@ class EyesClassic extends EyesCore {
       new Region(Location.ZERO, await this._context.getClientSize()),
     )
 
-    this._targetPositionProvider = this._createPositionProvider(this._context.scrollRootElement)
+    this._targetPositionProvider = this._createPositionProvider(
+      await this._context.getScrollRootElement(),
+    )
 
     // we don't need to specify it explicitly since this is the same as entire size
     this._regionFullArea = null
@@ -569,7 +588,9 @@ class EyesClassic extends EyesCore {
 
     const scaleProviderFactory = await this._updateScalingParams()
     if (!this._targetPositionProvider) {
-      this._targetPositionProvider = this._createPositionProvider(this._context.scrollRootElement)
+      this._targetPositionProvider = this._createPositionProvider(
+        await this._context.getScrollRootElement(),
+      )
     }
     const originProvider = new ScrollPositionProvider(
       this._logger,
@@ -635,26 +656,12 @@ class EyesClassic extends EyesCore {
 
     let scrollRootElement = positionProvider.scrollRootElement
     if (!scrollRootElement) {
-      scrollRootElement = await this._context.main.element('html')
+      scrollRootElement = await this._context.main.getScrollRootElement()
     }
-    const location = await scrollRootElement.getRect().then(rect => rect.getLocation())
-    const [borderLeftWidth, borderTopWidth] = await scrollRootElement.getCssProperty(
-      'border-left-width',
-      'border-top-width',
-    )
-    const [clientWidth, clientHeight] = await scrollRootElement.getProperty(
-      'clientWidth',
-      'clientHeight',
-    )
-    const region = new Region(
-      Math.round(location.getX() + Number.parseFloat(borderLeftWidth)),
-      Math.round(location.getY() + Number.parseFloat(borderTopWidth)),
-      Math.round(clientWidth),
-      Math.round(clientHeight),
-    )
+    const region = await scrollRootElement.getClientRect()
     const fullPageImage = await fullCapture.getStitchedRegion(region, null, positionProvider)
 
-    const originalFramePosition = this._context.main.offset //TODO
+    const originalFramePosition = await this._context.main.getInnerOffset()
     this._logger.verbose('Building screenshot object...')
     return EyesScreenshot.fromScreenshotType(
       this._logger,
@@ -707,8 +714,11 @@ class EyesClassic extends EyesCore {
   async getAppEnvironment() {
     const appEnv = await super.getAppEnvironment()
 
-    if (!appEnv._os) {
-      const os = await this._driver.osName
+    if (!appEnv._os && this._driver.isNative) {
+      let os = this._driver.platformName
+      if (this._driver.platformVersion) {
+        os += ` ${this._driver.platformVersion}`
+      }
       if (os) {
         appEnv.setOs(os)
       }
@@ -748,7 +758,7 @@ class EyesClassic extends EyesCore {
    */
   async getInferredEnvironment() {
     try {
-      const userAgent = await this._driver.userAgentString //TODO
+      const userAgent = await this._driver.userAgentString
       return userAgent ? 'useragent:' + userAgent : userAgent
     } catch (err) {
       return null

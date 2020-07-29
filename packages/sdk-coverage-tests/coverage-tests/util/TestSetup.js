@@ -40,6 +40,29 @@ const SAUCE_BROWSERS = {
     browserName: 'internet explorer',
     browserVersion: '11.285',
     platformName: 'Windows 10',
+    'sauce:options': {
+      screenResolution: '1920x1080',
+    },
+  },
+  safari11: {
+    seleniumVersion: '3.4.0',
+    browserName: 'safari',
+    version: '11.0',
+    platform: 'macOS 10.12',
+  },
+  safari12: {
+    seleniumVersion: '3.4.0',
+    browserName: 'safari',
+    version: '12.1',
+    platform: 'macOS 10.13',
+  },
+  edge18: {
+    browserName: 'MicrosoftEdge',
+    browserVersion: '18',
+    platformName: 'Windows 10',
+    'sauce:options': {
+      screenResolution: '1920x1080',
+    },
   },
 }
 
@@ -59,16 +82,23 @@ function Env({
       env.url = new URL(url)
     } else if (remote === 'sauce') {
       env.url = new URL('https://ondemand.saucelabs.com/wd/hub')
-      env.username = process.env.SAUCE_USERNAME
-      env.accessKey = process.env.SAUCE_ACCESS_KEY
-      env.capabilities = SAUCE_DEVICES[device] || SAUCE_BROWSERS[browser]
+      env.credentials = {
+        username: process.env.SAUCE_USERNAME,
+        accessKey: process.env.SAUCE_ACCESS_KEY,
+      }
+      env.capabilities = {
+        ...(SAUCE_DEVICES[device] || SAUCE_BROWSERS[browser]),
+        ...env.capabilities,
+      }
       if (app) {
         env.capabilities.app = app
       }
     } else if (remote === 'bstack') {
       env.url = new URL('https://hub-cloud.browserstack.com/wd/hub')
-      env.username = process.env.BROWSERSTACK_USERNAME
-      env.accessKey = process.env.BROWSERSTACK_ACCESS_KEY
+      env.credentials = {
+        username: process.env.BROWSERSTACK_USERNAME,
+        accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
+      }
     }
   }
   return env

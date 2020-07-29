@@ -4,8 +4,8 @@ const path = require('path')
 const cwd = process.cwd()
 const {testServer} = require('@applitools/sdk-shared')
 const {Target} = require(cwd)
-const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
-const {getEyes, Browsers} = require('../util/TestSetup')
+const spec = require(path.resolve(cwd, 'src/SpecDriver'))
+const {getEyes} = require('../util/TestSetup')
 
 describe('TestVisualGridRefererHeader', () => {
   let testServer1, testServer2
@@ -28,7 +28,7 @@ describe('TestVisualGridRefererHeader', () => {
   })
 
   beforeEach(async () => {
-    driver = await spec.build({capabilities: Browsers.chrome()})
+    driver = await spec.build({browser: 'chrome'})
   })
 
   it('send referer header', async () => {

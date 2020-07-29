@@ -58,13 +58,14 @@ class CssTranslatePositionProvider extends PositionProvider {
   async getCurrentPosition(customScrollRootElement) {
     try {
       this._logger.verbose('CssTranslatePositionProvider - getCurrentPosition()')
+      const scrollRootElement = customScrollRootElement || this._element
       const position = await EyesUtils.getTranslateOffset(
         this._logger,
-        this._executor,
-        customScrollRootElement || this._scrollRootElement,
+        scrollRootElement ? scrollRootElement.context : this._executor,
+        scrollRootElement,
       )
       this._logger.verbose(`Current position: ${position}`)
-      return position
+      return new Location(position)
     } catch (err) {
       // Sometimes it is expected e.g. on Appium, otherwise, take care
       this._logger.verbose(`Failed to extract current translate position!`, err)
@@ -82,17 +83,18 @@ class CssTranslatePositionProvider extends PositionProvider {
     try {
       ArgumentGuard.notNull(position, 'position')
       this._logger.verbose(`CssTranslatePositionProvider - Setting position to: ${position}`)
+      const scrollRootElement = customScrollRootElement || this._element
       await EyesUtils.scrollTo(
         this._logger,
-        this._executor,
+        scrollRootElement ? scrollRootElement.context : this._executor,
         Location.ZERO,
-        customScrollRootElement || this._scrollRootElement,
+        scrollRootElement,
       )
       const actualPosition = await EyesUtils.translateTo(
         this._logger,
-        this._executor,
+        scrollRootElement ? scrollRootElement.context : this._executor,
         position,
-        customScrollRootElement || this._scrollRootElement,
+        scrollRootElement,
       )
       return actualPosition
     } catch (err) {

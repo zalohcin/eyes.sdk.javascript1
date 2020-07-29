@@ -65,7 +65,7 @@ class ScrollElementPositionProvider extends PositionProvider {
         customScrollRootElement || this._element,
       )
       this._logger.verbose(`Current position: ${position}`)
-      return position
+      return new Location(position)
     } catch (err) {
       // Sometimes it is expected e.g. on Appium, otherwise, take care
       this._logger.verbose(`Failed to extract current scroll position!`, err)
@@ -83,11 +83,12 @@ class ScrollElementPositionProvider extends PositionProvider {
     try {
       ArgumentGuard.notNull(position, 'position')
       this._logger.verbose(`ScrollElementPositionProvider - Scrolling to ${position}`)
+      const scrollRootElement = customScrollRootElement || this._element
       await EyesUtils.scrollTo(
         this._logger,
-        this._executor,
+        scrollRootElement ? scrollRootElement.context : this._executor,
         position,
-        customScrollRootElement || this._element,
+        scrollRootElement,
       )
       this._logger.verbose('ScrollElementPositionProvider - Done scrolling!')
     } catch (err) {

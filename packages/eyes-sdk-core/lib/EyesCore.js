@@ -78,121 +78,91 @@ class EyesCore extends EyesBase {
   /* ------------ Classic API ------------ */
   /**
    * Takes a snapshot of the application under test and matches it with the expected output.
-   * @param {string} [tag] - An optional tag to be associated with the snapshot.
-   * @param {number} [matchTimeout] - The amount of time to retry matching (Milliseconds).
-   * @param {boolean} [stitchContent=false] - If {@code true}, stitch the internal content of the window.
+   * @param {string} [name] - An optional name to be associated with the snapshot.
+   * @param {number} [timeout] - The amount of time to retry matching (Milliseconds).
+   * @param {boolean} [isFully=false] - If {@code true}, stitch the internal content of the window.
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
-  async checkWindow(tag, matchTimeout, stitchContent = false) {
-    return this.check(
-      tag,
-      this.constructor.CheckSettings.window()
-        .timeout(matchTimeout)
-        .stitchContent(stitchContent),
-    )
+  async checkWindow(name, timeout, isFully = false) {
+    return this.check({name, timeout, isFully})
   }
   /**
    * Matches the frame given as parameter, by switching into the frame and using stitching to get an image of the frame.
    * @param {FrameReference<TDriver, TElement, TSelector>} element - The element which is the frame to switch to.
-   * @param {number} [matchTimeout] - The amount of time to retry matching (milliseconds).
-   * @param {string} [tag] - An optional tag to be associated with the match.
+   * @param {number} [timeout] - The amount of time to retry matching (milliseconds).
+   * @param {string} [name] - An optional tag to be associated with the match.
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
-  async checkFrame(element, matchTimeout, tag) {
-    return this.check(
-      tag,
-      this.constructor.CheckSettings.frame(element)
-        .timeout(matchTimeout)
-        .fully(),
-    )
+  async checkFrame(element, timeout, name) {
+    return this.check({name, frames: [element], timeout, isFully: true})
   }
   /**
    * Takes a snapshot of the application under test and matches a specific element with the expected region output.
    * @param {EyesWrappedElement<TDriver, TElement, TSelector>|TElement} element - The element to check.
-   * @param {number} [matchTimeout] - The amount of time to retry matching (milliseconds).
-   * @param {string} [tag] - An optional tag to be associated with the match.
+   * @param {number} [timeout] - The amount of time to retry matching (milliseconds).
+   * @param {string} [name] - An optional name to be associated with the match.
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
-  async checkElement(element, matchTimeout, tag) {
-    return this.check(
-      tag,
-      this.constructor.CheckSettings.region(element)
-        .timeout(matchTimeout)
-        .fully(),
-    )
+  async checkElement(element, timeout, name) {
+    return this.check({name, region: element, timeout, isFully: true})
   }
   /**
    * Takes a snapshot of the application under test and matches a specific element with the expected region output.
    * @param {TSelector} locator - The element to check.
-   * @param {number} [matchTimeout] - The amount of time to retry matching (milliseconds).
-   * @param {string} [tag] - An optional tag to be associated with the match.
+   * @param {number} [timeout] - The amount of time to retry matching (milliseconds).
+   * @param {string} [name] - An optional name to be associated with the match.
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
-  async checkElementBy(locator, matchTimeout, tag) {
-    return this.check(
-      tag,
-      this.constructor.CheckSettings.region(locator)
-        .timeout(matchTimeout)
-        .fully(),
-    )
+  async checkElementBy(locator, timeout, name) {
+    return this.check({name, region: locator, timeout, isFully: true})
   }
   /**
    * Visually validates a region in the screenshot.
    * @param {Region} region - The region to validate (in screenshot coordinates).
-   * @param {string} [tag] - An optional tag to be associated with the screenshot.
-   * @param {number} [matchTimeout] - The amount of time to retry matching.
+   * @param {string} [name] - An optional name to be associated with the screenshot.
+   * @param {number} [timeout] - The amount of time to retry matching.
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
-  async checkRegion(region, tag, matchTimeout) {
-    return this.check(tag, this.constructor.CheckSettings.region(region).timeout(matchTimeout))
+  async checkRegion(region, name, timeout) {
+    return this.check({name, region, timeout})
   }
   /**
    * Visually validates a region in the screenshot.
    *
    * @param {EyesWrappedElement<TDriver, TElement, TSelector>|TElement} element - The element defining the region to validate.
-   * @param {string} [tag] - An optional tag to be associated with the screenshot.
-   * @param {number} [matchTimeout] - The amount of time to retry matching.
+   * @param {string} [name] - An optional name to be associated with the screenshot.
+   * @param {number} [timeout] - The amount of time to retry matching.
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
-  async checkRegionByElement(element, tag, matchTimeout) {
-    return this.check(tag, this.constructor.CheckSettings.region(element).timeout(matchTimeout))
+  async checkRegionByElement(element, name, timeout) {
+    return this.check({name, region: element, timeout})
   }
   /**
    * Visually validates a region in the screenshot.
    *
    * @param {TSelector} by - The selector used for finding the region to validate.
-   * @param {string} [tag] - An optional tag to be associated with the screenshot.
-   * @param {number} [matchTimeout] - The amount of time to retry matching.
-   * @param {boolean} [stitchContent] - If {@code true}, stitch the internal content of the region (i.e., perform
+   * @param {string} [name] - An optional name to be associated with the screenshot.
+   * @param {number} [timeout] - The amount of time to retry matching.
+   * @param {boolean} [isFully] - If {@code true}, stitch the internal content of the region (i.e., perform
    *   {@link #checkElement(By, number, string)} on the region.
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
-  async checkRegionBy(by, tag, matchTimeout, stitchContent = false) {
-    return this.check(
-      tag,
-      this.constructor.CheckSettings.region(by)
-        .timeout(matchTimeout)
-        .stitchContent(stitchContent),
-    )
+  async checkRegionBy(by, name, timeout, isFully = false) {
+    return this.check({name, region: by, timeout, isFully})
   }
   /**
    * Switches into the given frame, takes a snapshot of the application under test and matches a region specified by
    * the given selector.
    * @param {FrameReference<TDriver, TElement, TSelector>} frameReference - The name or id of the frame to switch to.
    * @param {TSelector} locator - A TSelector specifying the region to check.
-   * @param {?number} [matchTimeout] - The amount of time to retry matching. (Milliseconds)
-   * @param {string} [tag] - An optional tag to be associated with the snapshot.
-   * @param {boolean} [stitchContent] - If {@code true}, stitch the internal content of the region (i.e., perform
+   * @param {?number} [timeout] - The amount of time to retry matching. (Milliseconds)
+   * @param {string} [name] - An optional name to be associated with the snapshot.
+   * @param {boolean} [isFully] - If {@code true}, stitch the internal content of the region (i.e., perform
    *   {@link #checkElement(By, number, string)} on the region.
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
-  async checkRegionInFrame(frameReference, locator, matchTimeout, tag, stitchContent = false) {
-    return this.check(
-      tag,
-      this.constructor.CheckSettings.region(locator, frameReference)
-        .timeout(matchTimeout)
-        .stitchContent(stitchContent),
-    )
+  async checkRegionInFrame(frameReference, locator, timeout, name, isFully = false) {
+    return this.check({name, region: locator, frames: [frameReference], timeout, isFully})
   }
   /* ------------ Redundant API ------------ */
   /**
@@ -339,7 +309,7 @@ class EyesCore extends EyesBase {
    */
   static async setViewportSize(driver, viewportSize) {
     const logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS)
-    const eyesDriver = this.spec.newDriver(logger, driver)
+    const eyesDriver = await this.spec.newDriver(logger, driver).init()
     if (!eyesDriver.isMobile) {
       ArgumentGuard.notNull(viewportSize, 'viewportSize')
       await eyesDriver.setViewportSize(viewportSize)
@@ -561,11 +531,11 @@ class EyesCore extends EyesBase {
   /**
    * @param {EyesWrappedElement<TDriver, TElement, TSelector>|TElement|TSelector} element
    */
-  setScrollRootElement(scrollRootElement) {
-    if (this.constructor.WrappedElement.isSelector(scrollRootElement)) {
-      this._scrollRootElement = this.constructor.WrappedElement.fromSelector(scrollRootElement)
-    } else if (this.constructor.WrappedElement.isCompatible(scrollRootElement)) {
-      this._scrollRootElement = scrollRootElement
+  async setScrollRootElement(scrollRootElement) {
+    if (this.spec.isSelector(scrollRootElement)) {
+      this._scrollRootElement = await this._context.element(scrollRootElement)
+    } else if (this.spec.isElement(scrollRootElement)) {
+      this._scrollRootElement = await this._context.element(scrollRootElement)
     } else {
       this._scrollRootElement = null
     }

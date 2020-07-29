@@ -2,19 +2,19 @@
 
 const cwd = process.cwd()
 const path = require('path')
-const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
+const spec = require(path.resolve(cwd, 'src/SpecDriver'))
 const {Target} = require(cwd)
-const {getEyes, Browsers} = require('../util/TestSetup')
+const {getEyes} = require('../util/TestSetup')
 
 describe('CheckRegionInFrameLargerThenViewport', () => {
   let driver, eyes
 
   before(async () => {
-    driver = await spec.build({capabilities: Browsers.chrome()})
+    driver = await spec.build({browser: 'chrome'})
   })
 
   beforeEach(async () => {
-    await spec.switchToFrame(driver, null)
+    await spec.childContext(driver, null)
   })
 
   afterEach(async () => {

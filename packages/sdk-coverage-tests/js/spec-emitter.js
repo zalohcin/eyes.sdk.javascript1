@@ -24,7 +24,7 @@ function makeSpecEmitter(options) {
   tracker.storeHook('deps', `const cwd = process.cwd()`)
   tracker.storeHook('deps', `const assert = require('assert')`)
   tracker.storeHook('deps', `const path = require('path')`)
-  tracker.storeHook('deps', `const specs = require(path.resolve(cwd, 'src/SpecWrappedDriver'))`)
+  tracker.storeHook('deps', `const specs = require(path.resolve(cwd, 'src/SpecDriver'))`)
   tracker.storeHook('deps', `const {Eyes} = require(cwd)`)
   tracker.storeHook(
     'deps',
@@ -37,10 +37,10 @@ function makeSpecEmitter(options) {
 
   tracker.storeHook(
     'beforeEach',
-    js`driver = await specs.build({
-      capabilities: ${options.capabilities} || TestSetup.Browsers.chrome(),
-      server: ${options.server} || ${options.host},
-      logLevel: 'error',
+    js`driver = await specs.build(${
+      options.capabilities
+        ? {capabilities: options.capabilities, url: options.host}
+        : {browser: 'chrome'}
     })`,
   )
 
@@ -72,23 +72,19 @@ function makeSpecEmitter(options) {
       tracker.storeCommand(js`await specs.sleep(driver, ${ms})`)
     },
     switchToFrame(selector) {
-      tracker.storeCommand(js`await specs.switchToFrame(driver, ${selector})`)
+      tracker.storeCommand(js`await specs.childContext(driver, ${selector})`)
     },
     switchToParentFrame() {
-      tracker.storeCommand(js`await specs.switchToParentFrame(driver)`)
+      tracker.storeCommand(js`await specs.mainContext(driver)`)
     },
     findElement(selector) {
       return tracker
-        .storeCommand(
-          js`await specs.findElement(driver, specs.toSupportedSelector({type: 'css', selector: ${selector}}))`,
-        )
+        .storeCommand(js`await specs.findElement(driver, {type: 'css', selector: ${selector}})`)
         .type('Element')
     },
     findElements(selector) {
       return tracker
-        .storeCommand(
-          js`await specs.findElements(driver, specs.toSupportedSelector({type: 'css', selector: ${selector}}))`,
-        )
+        .storeCommand(js`await specs.findElements(driver, {type: 'css', selector: ${selector}})`)
         .type('Array<Element>')
     },
     getWindowLocation() {

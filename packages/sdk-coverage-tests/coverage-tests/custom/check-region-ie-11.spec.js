@@ -3,26 +3,16 @@
 
 const cwd = process.cwd()
 const path = require('path')
-const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
+const spec = require(path.resolve(cwd, 'src/SpecDriver'))
 const {Target} = require(cwd)
-const {getEyes, Remotes} = require('../util/TestSetup')
+const {getEyes} = require('../util/TestSetup')
 
 describe('Check Region IE11', () => {
   let eyes
   let driver
 
   beforeEach(async () => {
-    driver = await spec.build({
-      capabilities: {
-        browserName: 'internet explorer',
-        browserVersion: '11.285',
-        platformName: 'Windows 10',
-        'sauce:options': {
-          screenResolution: '1920x1080',
-        },
-      },
-      server: Remotes.sauce(),
-    })
+    driver = await spec.build({browser: 'ie11', remote: 'sauce'})
     eyes = getEyes()
   })
 

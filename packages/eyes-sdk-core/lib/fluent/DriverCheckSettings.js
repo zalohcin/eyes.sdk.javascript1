@@ -218,9 +218,6 @@ class CheckSettings {
         settings.hook(name, script)
       })
     }
-    if (object.region) {
-      settings.region(object.region)
-    }
     if (object.frames) {
       object.frames.forEach(reference => {
         if (reference.frame) {
@@ -232,6 +229,9 @@ class CheckSettings {
           settings.frame(reference)
         }
       })
+    }
+    if (object.region) {
+      settings.region(object.region)
     }
     if (object.ignoreRegions) {
       object.ignoreRegions.forEach(ignoreRegion => settings.ignoreRegion(ignoreRegion))
@@ -264,9 +264,6 @@ class CheckSettings {
           ? settings.accessibilityRegion(accessibilityRegion.region, accessibilityRegion.type)
           : settings.accessibilityRegion(accessibilityRegion),
       )
-    }
-    if (object.matchLevel) {
-      settings.matchLevel(object.matchLevel)
     }
     if (object.matchLevel) {
       settings.matchLevel(object.matchLevel)
@@ -353,6 +350,13 @@ class CheckSettings {
    * @return {Region}
    */
   getTargetRegion() {
+    return this._targetRegion
+  }
+  /**
+   * @private
+   * @type {EyesWrappedElement<TElement, TSelector>}
+   */
+  get targetRegion() {
     return this._targetRegion
   }
   /**

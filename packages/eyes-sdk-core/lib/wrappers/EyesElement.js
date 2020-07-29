@@ -1,5 +1,7 @@
 'use strict'
 const ElementNotFoundError = require('../errors/ElementNotFoundError')
+const Region = require('../geometry/Region')
+const CoordinatesTypes = require('../geometry/CoordinatesType')
 const EyesUtils = require('../EyesUtils')
 
 /**
@@ -28,7 +30,7 @@ class EyesElement {
       return element
     }
     if (this.spec.isElement(element)) {
-      this._element = this.spec.extractElement ? this.spec.extractElement(element) : element
+      this._element = this.spec.transformElement ? this.spec.transformElement(element) : element
       // Some frameworks contains information about the selector inside an element
       this._selector = selector || (this.spec.extractSelector && this.spec.extractSelector(element))
     } else if (this.spec.isSelector(selector)) {
@@ -89,7 +91,20 @@ class EyesElement {
 
   async getRect() {
     await this.init()
-    return this.withRefresh(() => EyesUtils.getElementRect(this._logger, this._context, this))
+    return this.withRefresh(async () => {
+      if (this.context.driver.isNative) {
+        const rect = await this.spec.getElementRect(this._context.unwrapped, this._element)
+        return new Region({
+          left: Math.ceil(rect.x),
+          top: Math.ceil(rect.y),
+          width: Math.ceil(rect.width),
+          height: Math.ceil(rect.height),
+          coordinatesType: CoordinatesTypes.CONTEXT_RELATIVE,
+        })
+      } else {
+        return EyesUtils.getElementRect(this._logger, this._context, this)
+      }
+    })
   }
 
   async getClientRect() {

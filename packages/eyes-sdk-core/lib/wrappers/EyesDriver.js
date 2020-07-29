@@ -1,6 +1,7 @@
 'use strict'
 const ArgumentGuard = require('../utils/ArgumentGuard')
 const TypeUtils = require('../utils/TypeUtils')
+const Location = require('../geometry/Location')
 const RectangleSize = require('../geometry/RectangleSize')
 const Region = require('../geometry/Region')
 const MutableImage = require('../images/MutableImage')
@@ -62,8 +63,11 @@ class EyesDriver {
       throw new TypeError('EyesDriver constructor called with argument of unknown type!')
     }
 
-    // TODO extract main context before pass it to the frame
-    this._mainContext = this.spec.newContext(this._logger, this._driver, {driver: this})
+    this._mainContext = this.spec.newContext(
+      this._logger,
+      this.spec.extractContext ? this.spec.extractContext(this._driver) : this._driver,
+      {driver: this},
+    )
     this._currentContext = this._mainContext
   }
 
@@ -93,8 +97,12 @@ class EyesDriver {
       : this._isMobile
   }
 
-  get osName() {
-    return this._osName || this._userAgent.getOS()
+  get platformName() {
+    return this._platformName || this._userAgent.getOS()
+  }
+
+  get platformVersion() {
+    return this._platformVersion || this._userAgent.getOSMajorVersion()
   }
 
   get browserName() {
@@ -118,11 +126,16 @@ class EyesDriver {
   }
 
   async init() {
-    this._sessionId = this.spec.getSessionId(this._driver)
+    this._sessionId = this.spec.getSessionId ? this.spec.getSessionId(this._driver) : null
     this._isStateless = this.spec.isStateless ? await this.spec.isStateless(this._driver) : false
     this._isNative = this.spec.isNative ? await this.spec.isNative(this._driver) : false
     this._isMobile = this.spec.isMobile ? await this.spec.isMobile(this._driver) : undefined
-    this._osName = this.spec.getOSName ? await this.spec.getOSName(this._driver) : undefined
+    this._platformName = this.spec.getPlatformName
+      ? await this.spec.getPlatformName(this._driver)
+      : undefined
+    this._platformVersion = this.spec.getPlatformVersion
+      ? await this.spec.getPlatformVersion(this._driver)
+      : undefined
     this._browserName = this.spec.getBrowserName
       ? await this.spec.getBrowserName(this._driver)
       : undefined
@@ -140,7 +153,7 @@ class EyesDriver {
   }
 
   async refreshContexts() {
-    if (this._isNative || this._isStateless) return
+    if (this._isNative || this._isStateless) return this._currentContext
     let contextInfo = await EyesUtils.getContextInfo(this._logger, this)
     if (contextInfo.isRoot) {
       return (this._currentContext = this._mainContext)
@@ -291,6 +304,9 @@ class EyesDriver {
   }
 
   async setViewportSize(size) {
+    if (size instanceof RectangleSize) {
+      size = size.toJSON()
+    }
     return this.spec.setViewportSize
       ? this.spec.setViewportSize(this._driver, size)
       : EyesUtils.setViewportSize(this._logger, this._mainContext, new RectangleSize(size))
@@ -300,13 +316,20 @@ class EyesDriver {
     const {x = 0, y = 0, width, height} = this.spec.getWindowRect
       ? await this.spec.getWindowRect(this._driver)
       : await this.spec.getViewportSize(this._driver)
-    return new Region({x, y, width, height})
+    return new Region({left: x, top: y, width, height})
   }
 
   async setWindowRect(rect) {
-    return this.spec.getWindowRect
-      ? this.spec.getWindowRect(this._driver)
-      : this.spec.getViewportSize(this._driver, {width: rect.width, height: rect.height})
+    if (rect instanceof Location || rect instanceof RectangleSize) {
+      rect = rect.toJSON()
+    } else if (rect instanceof Region) {
+      rect = {x: rect.getLeft(), y: rect.getTop(), width: rect.getWidth(), height: rect.getHeight()}
+    }
+    if (this.spec.setWindowRect) {
+      await this.spec.setWindowRect(this._driver, rect)
+    } else if (rect.width && rect.height) {
+      await this.spec.setViewportSize(this._driver, {width: rect.width, height: rect.height})
+    }
   }
 
   async getOrientation() {
@@ -319,7 +342,7 @@ class EyesDriver {
       const screenshot = await this.takeScreenshot()
       return screenshot.getWidth() / viewportSize.getWidth()
     } else {
-      return EyesUtils.getPixelRatio()
+      return EyesUtils.getPixelRatio(this._logger, this._currentContext)
     }
   }
 

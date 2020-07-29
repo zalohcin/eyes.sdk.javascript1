@@ -30,10 +30,10 @@ async function getViewportSize(logger, context) {
   } catch (err) {
     logger.verbose('Failed to extract viewport size using Javascript:', err)
     // If we failed to extract the viewport size using JS, will use the window size instead.
-    const rect = await context.getWindowRect()
+    const rect = await context.driver.getWindowRect()
     size = {width: rect.getWidth(), height: rect.getHeight()}
     if (size.height > size.width) {
-      const orientation = await context.getOrientation()
+      const orientation = await context.driver.getOrientation()
       if (orientation === 'landscape') {
         size = {width: size.height, height: size.width}
       }
@@ -56,7 +56,6 @@ async function setViewportSize(logger, context, viewportSize) {
 
   let actualViewportSize = await getViewportSize(logger, context)
   logger.verbose(`Initial viewport size: ${actualViewportSize}`)
-
   // If the viewport size is already the required size
   if (actualViewportSize.equals(viewportSize)) return true
 
@@ -189,58 +188,6 @@ async function getElementRect(_logger, context, element) {
     width: Math.ceil(rect.width),
     height: Math.ceil(rect.height),
     coordinatesType: CoordinatesTypes.CONTEXT_RELATIVE,
-  })
-}
-
-// TODO move to EyesElement
-/**
- * Get native mobile element rect relative to the current context
- * @param obj
- * @param {EyesWrappedDriver} obj.driver - driver
- * @param {EyesElement} obj.element - element to get rect
- * @return {Promise<Region>} element rect
- */
-async function getNativeElementRect({driver, element}) {
-  const {x, y} = await driver.specs.getNativeElementLocation(driver, element.unwrapped)
-  const {width, height} = await driver.specs.getNativeElementSize(driver, element.unwrapped)
-  return new Region({
-    left: Math.ceil(x),
-    top: Math.ceil(y),
-    width: Math.ceil(width),
-    height: Math.ceil(height),
-    coordinatesType: CoordinatesTypes.CONTEXT_RELATIVE,
-  })
-}
-
-// TODO move to EyesElement
-/**
- * Get native mobile element size
- * @param obj
- * @param {EyesWrappedDriver} obj.driver - driver
- * @param {EyesElement} obj.element - element to get rect
- * @return {Promise<RectangleSize>} element size
- */
-async function getNativeElementSize({driver, element}) {
-  const {width, height} = await driver.specs.getNativeElementSize(driver, element.unwrapped)
-  return new RectangleSize({
-    width: Math.ceil(width),
-    height: Math.ceil(height),
-  })
-}
-
-// TODO move to EyesElement
-/**
- * Get native mobile element location
- * @param obj
- * @param {EyesWrappedDriver} obj.driver - driver
- * @param {EyesElement} obj.element - element to get rect
- * @return {Promise<Location>} element location
- */
-async function getNativeElementLocation({driver, element}) {
-  const {x, y} = await driver.specs.getNativeElementLocation(driver, element.unwrapped)
-  return new Location({
-    left: Math.ceil(x),
-    top: Math.ceil(y),
   })
 }
 
@@ -524,27 +471,25 @@ async function ensureRegionVisible(logger, context, positionProvider, region) {
     contextViewportLocation.getX(),
     contextViewportLocation.getY(),
   )
-  const viewportRect = await context.main.getRect() // TODO check api viewport size + scroll/transition
+  const viewportRect = await context.main.getRect()
   if (viewportRect.contains(elementViewportRect)) {
     return Location.ZERO
   }
   let currentContext = context
   let remainingOffset = elementContextRect.getLocation()
-
   while (currentContext) {
-    const scrollRootElement = context.scrollRootElement
+    const scrollRootElement = await currentContext.getScrollRootElement()
     const scrollRootOffset = scrollRootElement
       ? await scrollRootElement.getClientRect().then(rect => rect.getLocation())
       : Location.ZERO
+
     const actualOffset = await positionProvider.setPosition(
       remainingOffset.offsetNegative(scrollRootOffset),
       scrollRootElement,
     )
     remainingOffset = remainingOffset.offsetNegative(actualOffset)
+    remainingOffset = remainingOffset.offsetByLocation(await currentContext.getClientLocation())
     currentContext = currentContext.parent
-    if (currentContext) {
-      remainingOffset = remainingOffset.offsetByLocation(await currentContext.getClientLocation())
-    }
   }
   return remainingOffset
 }
@@ -556,9 +501,6 @@ module.exports = {
   getElementEntireSize,
   getElementClientRect,
   getElementRect,
-  getNativeElementRect,
-  getNativeElementSize,
-  getNativeElementLocation,
   getElementProperties,
   getElementCssProperties,
   getPixelRatio,

@@ -41,8 +41,9 @@ class TargetRegionByElement extends GetRegion {
    * @return {Promise<TargetPersistedRegion[]>}
    */
   async toPersistedRegions(context) {
+    this._element = await this._element
     await this._element.init(context)
-    const xpath = await EyesUtils.getElementXpath(context._logger, context, await this._element)
+    const xpath = await EyesUtils.getElementXpath(context._logger, context, this._element)
     return [{type: 'xpath', selector: xpath}]
   }
 }

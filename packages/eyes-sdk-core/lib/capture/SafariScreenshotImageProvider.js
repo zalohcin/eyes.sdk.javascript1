@@ -2,6 +2,7 @@
 const OSNames = require('../useragent/OSNames')
 const Region = require('../geometry/Region')
 const ImageProvider = require('./ImageProvider')
+const EyesUtils = require('../EyesUtils')
 
 class SafariScreenshotImageProvider extends ImageProvider {
   /**
@@ -77,7 +78,7 @@ class SafariScreenshotImageProvider extends ImageProvider {
       this._userAgent.getBrowserMajorVersion() === '11' &&
       !this._eyes.getForceFullPageScreenshot()
     ) {
-      const location = await this._driver.getInnerOffset()
+      const location = await EyesUtils.getScrollOffset(this._logger, this._driver.mainContext)
       await image.crop(new Region(location.scale(scaleRatio), viewportSize))
     }
 

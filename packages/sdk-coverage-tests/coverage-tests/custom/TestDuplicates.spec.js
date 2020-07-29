@@ -1,8 +1,8 @@
 'use strict'
 const cwd = process.cwd()
 const path = require('path')
-const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
-const {getEyes, Browsers} = require('../util/TestSetup')
+const spec = require(path.resolve(cwd, 'src/SpecDriver'))
+const {getEyes} = require('../util/TestSetup')
 const appName = 'Eyes Selenium SDK - Duplicates'
 
 describe(appName, async () => {
@@ -13,7 +13,7 @@ describe(appName, async () => {
   })
   describe('CSS', async () => {
     beforeEach(async () => {
-      driver = await spec.build({capabilities: Browsers.chrome()})
+      driver = await spec.build({browser: 'chrome'})
       eyes = await getEyes({isCssStitching: true})
     })
     it('TestDuplicatedIFrames', TestDuplicatedIFrames('TestDuplicatedIFrames'))
@@ -21,7 +21,7 @@ describe(appName, async () => {
 
   describe('SCROLL', async () => {
     beforeEach(async () => {
-      driver = await spec.build({capabilities: Browsers.chrome()})
+      driver = await spec.build({browser: 'chrome'})
       eyes = await getEyes()
     })
     it('TestDuplicatedIFrames', TestDuplicatedIFrames('TestDuplicatedIFrames_Scroll'))
@@ -29,7 +29,7 @@ describe(appName, async () => {
 
   describe.skip('VG', async () => {
     beforeEach(async () => {
-      driver = await spec.build({capabilities: Browsers.chrome()})
+      driver = await spec.build({browser: 'chrome'})
       eyes = await getEyes({isVisualGrid: true})
     })
     it('TestDuplicatedIFrames', TestDuplicatedIFrames('TestDuplicatedIFrames_VG'))
@@ -42,9 +42,9 @@ describe(appName, async () => {
         driver,
         'https://applitools.github.io/demo/TestPages/VisualGridTestPage/duplicates.html',
       )
-      await spec.switchToFrame(driver, 2)
+      await spec.childContext(driver, 2)
       await spec.waitUntilDisplayed(driver, '#p2', 20000)
-      await spec.switchToFrame(driver, null)
+      await spec.mainContext(driver)
       await eyes.checkWindow('Duplicated Iframes')
       await eyes.close()
     }

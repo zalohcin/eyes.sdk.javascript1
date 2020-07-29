@@ -32,6 +32,9 @@ function transformSelector(selector) {
 
 // #region UTILITY
 
+function isStateless() {
+  return true
+}
 function isDriver(page) {
   return page.constructor.name === 'Page'
 }
@@ -41,6 +44,9 @@ function isElement(element) {
 }
 function isSelector(selector) {
   return TypeUtils.isString(selector)
+}
+function extractContext(page) {
+  return page.constructor.name === 'Page' ? page.mainFrame() : page
 }
 function toEyesSelector(selector) {
   if (!TypeUtils.isString(selector)) return {selector}
@@ -53,14 +59,16 @@ function toEyesSelector(selector) {
   if (type === 'css:light') return {type: 'css', selector: value}
   else if (type === 'xpath') return {type: 'xpath', selector: value}
 }
+async function isEqualElements(frame, element1, element2) {
+  return frame
+    .evaluate(([element1, element2]) => element1 === element2, [element1, element2])
+    .catch(() => false)
+}
 
 // #endregion
 
 // #region COMMANDS
 
-async function isEqualElements(frame, element1, element2) {
-  return frame.evaluate(([element1, element2]) => element1 === element2, [element1, element2])
-}
 async function executeScript(frame, script, arg) {
   const result = await frame.evaluateHandle(script, arg)
   return handleToObject(result)
@@ -95,8 +103,8 @@ async function getUrl(page) {
 async function visit(page, url) {
   return page.goto(url)
 }
-async function takeScreenshot(driver) {
-  return driver.takeScreenshot()
+async function takeScreenshot(page) {
+  return page.screenshot()
 }
 
 // #endregion
@@ -127,9 +135,11 @@ async function type(_frame, element, keys) {
 
 // #endregion
 
+// exports.isStateless = isStateless
 exports.isDriver = isDriver
 exports.isElement = isElement
 exports.isSelector = isSelector
+exports.extractContext = extractContext
 exports.isEqualElements = isEqualElements
 exports.toEyesSelector = toEyesSelector
 

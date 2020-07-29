@@ -1,4 +1,5 @@
 const assert = require('assert')
+const os = require('os')
 const {TestSetup} = require('@applitools/sdk-coverage-tests/coverage-tests')
 const spec = require('../../src/SpecDriver')
 const {By} = require('../../index')
@@ -59,7 +60,6 @@ describe('SpecDriver', async () => {
       'extractSelector(extended-element)',
       extractSelector({input: () => browser.$('div'), expected: 'div'}),
     )
-    it('toFrameworkSelector(eyes-selector)', toFrameworkSelector())
     it('toEyesSelector(selector)', toEyesSelector())
     it('executeScript(strings, ...args)', executeScript())
     it('findElement(string)', findElement({input: '#overflowing-div'}))
@@ -90,6 +90,7 @@ describe('SpecDriver', async () => {
     it('getUrl()', getUrl())
     it('visit()', visit())
     it('isMobile()', isMobile({expected: false}))
+    it('getPlatformName()', getPlatformName({expected: 'linux'}))
   })
 
   describe('onscreen desktop (@webdriver)', async () => {
@@ -163,7 +164,6 @@ describe('SpecDriver', async () => {
       'extractSelector(extended-element)',
       extractSelector({input: () => browser.$('div'), expected: 'div'}),
     )
-    it('toFrameworkSelector(eyes-selector)', toFrameworkSelector())
     it('toEyesSelector(selector)', toEyesSelector())
     it('executeScript(strings, ...args)', executeScript())
     it('mainContext()', mainContext())
@@ -194,6 +194,7 @@ describe('SpecDriver', async () => {
     it('getUrl()', getUrl())
     it('visit()', visit())
     it('isMobile()', isMobile({expected: false}))
+    it('getPlatformName()', getPlatformName({expected: os.type().toLowerCase()}))
   })
 
   describe('onscreen desktop (@puppeteer)', async () => {
@@ -258,6 +259,7 @@ describe('SpecDriver', async () => {
         expected: {x: 11, y: 12, width: 551, height: 552},
       }),
     )
+    it('getPlatformName()', getPlatformName({expected: 'windows'}))
   })
 
   describe('mobile browser (@appium)', async () => {
@@ -272,8 +274,7 @@ describe('SpecDriver', async () => {
     })
 
     it('isMobile()', isMobile({expected: true}))
-    it('isAndroid()', isAndroid({expected: true}))
-    it('isIOS()', isIOS({expected: false}))
+    it('getPlatformName()', getPlatformName({expected: 'android'}))
     it('isNative()', isNative({expected: false}))
     it('getOrientation()', getOrientation({expected: 'portrait'}))
     it('getPlatformVersion()', getPlatformVersion({expected: '10'}))
@@ -296,11 +297,10 @@ describe('SpecDriver', async () => {
     })
 
     it('isMobile()', isMobile({expected: true}))
-    it('isAndroid()', isAndroid({expected: true}))
-    it('isIOS()', isIOS({expected: false}))
     it('isNative()', isNative({expected: true}))
-    it('getOrientation()', getOrientation({expected: 'landscape'}))
+    it('getPlatformName()', getPlatformName({expected: 'android'}))
     it('getPlatformVersion()', getPlatformVersion({expected: '6.0'}))
+    it('getOrientation()', getOrientation({expected: 'landscape'}))
 
     it('getNativeElementLocation()', async () => {
       const el = await spec.findElement(browser, 'android.widget.Button')
@@ -357,21 +357,6 @@ describe('SpecDriver', async () => {
     return async () => {
       const selector = spec.extractSelector(await input())
       assert.deepStrictEqual(selector, expected)
-    }
-  }
-  function toFrameworkSelector() {
-    return async () => {
-      const xpathEyesSelector = {type: 'xpath', selector: '/html[1]/body[1]/div[1]'}
-      const xpathResult = spec.toFrameworkSelector(xpathEyesSelector)
-      assert.deepStrictEqual(xpathResult, `xpath:${xpathEyesSelector.selector}`)
-
-      const cssEyesSelector = {type: 'css', selector: 'html > body > div'}
-      const cssResult = spec.toFrameworkSelector(cssEyesSelector)
-      assert.deepStrictEqual(cssResult, `css selector:${cssEyesSelector.selector}`)
-
-      const wrongEyesSelector = {type: 'wrong type', selector: 'wrong selector'}
-      const wrongResult = spec.toFrameworkSelector(wrongEyesSelector)
-      assert.deepStrictEqual(wrongResult, wrongEyesSelector)
     }
   }
   function toEyesSelector() {
@@ -495,6 +480,12 @@ describe('SpecDriver', async () => {
       assert.deepStrictEqual(rect, expected)
     }
   }
+  function getOrientation({expected} = {}) {
+    return async () => {
+      const result = await spec.getOrientation(browser)
+      assert.strictEqual(result, expected)
+    }
+  }
   function getSessionId() {
     return async () => {
       const expected = browser.sessionId
@@ -530,27 +521,15 @@ describe('SpecDriver', async () => {
       assert.deepStrictEqual(result, expected)
     }
   }
-  function isAndroid({expected} = {}) {
-    return async () => {
-      const result = await spec.isAndroid(browser)
-      assert.strictEqual(result, expected)
-    }
-  }
-  function isIOS({expected} = {}) {
-    return async () => {
-      const result = await spec.isIOS(browser)
-      assert.strictEqual(result, expected)
-    }
-  }
   function isNative({expected} = {}) {
     return async () => {
       const result = await spec.isNative(browser)
       assert.strictEqual(result, expected)
     }
   }
-  function getOrientation({expected} = {}) {
+  function getPlatformName({expected} = {}) {
     return async () => {
-      const result = await spec.getOrientation(browser)
+      const result = await spec.getPlatformName(browser)
       assert.strictEqual(result, expected)
     }
   }

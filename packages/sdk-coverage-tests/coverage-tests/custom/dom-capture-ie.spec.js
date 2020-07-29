@@ -1,8 +1,8 @@
 // re: https://trello.com/c/EQD3JUOf
 const cwd = process.cwd()
 const path = require('path')
-const {getEyes, Remotes} = require('../util/TestSetup')
-const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
+const {getEyes} = require('../util/TestSetup')
+const spec = require(path.resolve(cwd, 'src/SpecDriver'))
 const {Target} = require(cwd)
 const {assertImage} = require('../util/ApiAssertions')
 
@@ -12,17 +12,7 @@ describe('Coverage Tests', async () => {
     let driver
 
     before(async () => {
-      driver = await spec.build({
-        capabilities: {
-          browserName: 'MicrosoftEdge',
-          browserVersion: '18',
-          platformName: 'Windows 10',
-          'sauce:options': {
-            screenResolution: '1920x1080',
-          },
-        },
-        server: Remotes.sauce(),
-      })
+      driver = await spec.build({browser: 'edge18', remote: 'sauce'})
       eyes = getEyes()
     })
 
@@ -47,17 +37,7 @@ describe('Coverage Tests', async () => {
     let driver
 
     before(async () => {
-      driver = await spec.build({
-        capabilities: {
-          browserName: 'internet explorer',
-          browserVersion: '11.285',
-          platformName: 'Windows 10',
-          'sauce:options': {
-            screenResolution: '1920x1080',
-          },
-        },
-        server: Remotes.sauce(),
-      })
+      driver = await spec.build({browser: 'ie11', remote: 'sauce', legacy: true})
       eyes = getEyes()
     })
 

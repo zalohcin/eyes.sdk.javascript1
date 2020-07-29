@@ -1,7 +1,7 @@
 'use strict'
 const path = require('path')
 const cwd = process.cwd()
-const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
+const spec = require(path.resolve(cwd, 'src/SpecDriver'))
 const {Target, Region} = require(cwd)
 const appName = 'Eyes Selenium SDK - Fluent API'
 
@@ -46,7 +46,7 @@ async function TestCheckLongIFrameModal({testName, eyes, driver}) {
   const el = await spec.findElement(driver, '#stretched')
   await spec.click(driver, el)
   let frame = await spec.findElement(driver, '#modal2 iframe')
-  await spec.switchToFrame(driver, frame)
+  await spec.childContext(driver, frame)
   let element = await spec.findElement(driver, 'html')
   let rect = await getElementRect(driver, element)
   eyes.setScrollRootElement('#modal2')
@@ -62,7 +62,7 @@ async function TestCheckLongOutOfBoundsIFrameModal({testName, eyes, driver}) {
   const el = await spec.findElement(driver, '#hidden_click')
   await spec.click(driver, el)
   let frame = await spec.findElement(driver, '#modal3 iframe')
-  await spec.switchToFrame(driver, frame)
+  await spec.childContext(driver, frame)
   let element = await spec.findElement(driver, 'html')
   let rect = await getElementRect(driver, element)
   eyes.setScrollRootElement('#modal3')

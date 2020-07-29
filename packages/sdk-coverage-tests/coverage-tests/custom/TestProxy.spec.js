@@ -1,8 +1,8 @@
 'use strict'
 const cwd = process.cwd()
 const path = require('path')
-const {getEyes, Browsers} = require('../util/TestSetup')
-const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
+const {getEyes} = require('../util/TestSetup')
+const spec = require(path.resolve(cwd, 'src/SpecDriver'))
 const {ProxySettings} = require(cwd)
 const childProcess = require('child_process')
 const chai = require('chai')
@@ -22,7 +22,7 @@ describe.skip('TestProxy', () => {
   })
 
   async function checkNetworkPassThroughProxy() {
-    const webDriver = await spec.build({capabilities: Browsers.chrome()})
+    const webDriver = await spec.build({browser: 'chrome'})
     const eyes = await getEyes({isVisualGrid: true})
     try {
       let conf = eyes.getConfiguration()
@@ -45,7 +45,7 @@ describe.skip('TestProxy', () => {
   }
 
   async function checkNetworkFailIfNoProxy() {
-    const webDriver = await spec.build({capabilities: Browsers.chrome()})
+    const webDriver = await spec.build({browser: 'chrome'})
     const eyes = await getEyes({isVisualGrid: true})
     try {
       let conf = eyes.getConfiguration()

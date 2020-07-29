@@ -1,11 +1,11 @@
 'use strict'
 const cwd = process.cwd()
 const path = require('path')
-const {getEyes, Remotes} = require('../util/TestSetup')
-const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
+const {getEyes} = require('../util/TestSetup')
+const spec = require(path.resolve(cwd, 'src/SpecDriver'))
 const {Target, Region} = require(cwd)
 
-describe('TestAppiumNative (@native)', () => {
+describe.skip('TestAppiumNative (@native)', () => {
   let driver, eyes
   afterEach(async () => {
     await spec.cleanup(driver)
@@ -53,7 +53,7 @@ describe('TestAppiumNative (@native)', () => {
     await eyes.open(driver, 'Mobile Native Tests', 'Android Native App 2')
 
     let scrollableElement = await driver.findElement(
-      new By('-android uiautomator', 'new UiSelector().scrollable(true)'), // TODO figure out how to use in SpecWrappedDriver
+      new By('-android uiautomator', 'new UiSelector().scrollable(true)'), // TODO figure out how to use in SpecDriver
     )
     await eyes.check(
       'Main window with ignore',

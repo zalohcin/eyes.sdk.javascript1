@@ -2,8 +2,8 @@
 const path = require('path')
 const assert = require('assert')
 const cwd = process.cwd()
-const {Browsers, getEyes, batch} = require('../util/TestSetup')
-const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
+const {getEyes, batch} = require('../util/TestSetup')
+const spec = require(path.resolve(cwd, 'src/SpecDriver'))
 const {Target, ClassicRunner, VisualGridRunner, Eyes} = require(cwd)
 
 const appName = 'Eyes Selenium SDK - Double Open Close'
@@ -18,7 +18,7 @@ describe(appName, () => {
   describe('Classic', () => {
     let runner
     beforeEach(async () => {
-      webDriver = await spec.build({capabilities: Browsers.chrome()})
+      webDriver = await spec.build({browser: 'chrome'})
       eyes = await getEyes({isCssStitching: true})
       runner = eyes.getRunner()
     })
@@ -86,7 +86,7 @@ describe(appName, () => {
   describe('VG', () => {
     let runner
     beforeEach(async () => {
-      webDriver = await spec.build({capabilities: Browsers.chrome()})
+      webDriver = await spec.build({browser: 'chrome'})
       eyes = await getEyes({isVisualGrid: true})
       runner = eyes.getRunner()
     })
@@ -137,7 +137,7 @@ describe(appName, () => {
 describe(appName, () => {
   let webDriver
   beforeEach(async () => {
-    webDriver = await spec.build({capabilities: Browsers.chrome()})
+    webDriver = await spec.build({browser: 'chrome'})
   })
   afterEach(async () => {
     await spec.cleanup(webDriver)

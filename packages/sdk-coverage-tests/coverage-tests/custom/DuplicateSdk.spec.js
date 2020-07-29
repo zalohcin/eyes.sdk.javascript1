@@ -1,8 +1,8 @@
 'use strict'
 const cwd = process.cwd()
 const path = require('path')
-const {getEyes, Browsers} = require('../util/TestSetup')
-const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
+const {getEyes} = require('../util/TestSetup')
+const spec = require(path.resolve(cwd, 'src/SpecDriver'))
 const fs = require('fs')
 const {promisify} = require('util')
 const ncp = require('ncp')
@@ -16,7 +16,7 @@ describe('Coverage tests', () => {
   })
 
   beforeEach(async () => {
-    driver = await spec.build({capabilities: Browsers.chrome()})
+    driver = await spec.build({browser: 'chrome'})
     eyes = await getEyes({isCssStitching: true})
   })
 

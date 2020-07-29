@@ -6,8 +6,7 @@ if (!process.env.APPLITOOLS_WDIO_MAJOR_VERSION) {
   process.env.APPLITOOLS_WDIO_MAJOR_VERSION = major
 }
 
-const WDIOCheckSettings = require('./src/WDIOCheckSettings')
-const {WDIOEyesClassic, WDIOEyesVisualGrid, WDIOEyesFactory} = require('./src/WDIOSpecializedEyes')
+const {EyesClassic, EyesVisualGrid, EyesFactory, CheckSettings} = require('./src/WDIOSDK')
 const LegacySelector = require('./src/LegacySelector')
 
 /**
@@ -30,11 +29,11 @@ const LegacySelector = require('./src/LegacySelector')
  * @typedef {typeof core.ClassicRunner} ClassicRunner
  */
 
-exports.Eyes = WDIOEyesFactory
-exports.EyesWDIO = WDIOEyesClassic
-exports.EyesVisualGrid = WDIOEyesVisualGrid
-exports.Target = WDIOCheckSettings
-exports.WebdriverioCheckSettings = WDIOCheckSettings
+exports.Eyes = EyesFactory
+exports.EyesWDIO = EyesClassic
+exports.EyesVisualGrid = EyesVisualGrid
+exports.Target = CheckSettings
+exports.WebdriverioCheckSettings = CheckSettings
 exports.By = LegacySelector
 exports.EyesService = require('./src/EyesService')
 

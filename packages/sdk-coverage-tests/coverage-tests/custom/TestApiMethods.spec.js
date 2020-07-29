@@ -1,14 +1,14 @@
 'use strict'
 const cwd = process.cwd()
 const path = require('path')
-const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
-const {getEyes, Browsers} = require('../util/TestSetup')
+const spec = require(path.resolve(cwd, 'src/SpecDriver'))
+const {getEyes} = require('../util/TestSetup')
 const {Target} = require(cwd)
 
 describe('api methods', () => {
   let driver, eyes
   beforeEach(async () => {
-    driver = await spec.build({capabilities: Browsers.chrome()})
+    driver = await spec.build({browser: 'chrome'})
   })
   afterEach(async function() {
     await spec.cleanup(driver)

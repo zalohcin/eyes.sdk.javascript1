@@ -1,8 +1,8 @@
 'use strict'
 const cwd = process.cwd()
 const path = require('path')
-const {getEyes, Browsers, batch} = require('../util/TestSetup')
-const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
+const {getEyes, batch} = require('../util/TestSetup')
+const spec = require(path.resolve(cwd, 'src/SpecDriver'))
 const {Eyes, Target} = require(cwd)
 const {assertImage} = require('../util/ApiAssertions')
 const {expect} = require('chai')
@@ -19,7 +19,7 @@ describe(appName, () => {
   describe(`TestSendDom Intercepted`, () => {
     let driver
     beforeEach(async () => {
-      driver = await spec.build({capabilities: Browsers.chrome()})
+      driver = await spec.build({browser: 'chrome'})
     })
 
     afterEach(async () => {
@@ -55,7 +55,7 @@ describe(appName, () => {
   describe(`TestSendDom`, () => {
     let webDriver, eyes
     beforeEach(async () => {
-      webDriver = await spec.build({capabilities: Browsers.chrome()})
+      webDriver = await spec.build({browser: 'chrome'})
       eyes = await getEyes('classic', 'CSS')
     })
 

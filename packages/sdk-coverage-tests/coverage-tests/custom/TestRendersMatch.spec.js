@@ -2,8 +2,8 @@
 const assert = require('assert')
 const path = require('path')
 const cwd = process.cwd()
-const {batch, Browsers} = require('../util/TestSetup')
-const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
+const {batch} = require('../util/TestSetup')
+const spec = require(path.resolve(cwd, 'src/SpecDriver'))
 const {Configuration, Eyes, VisualGridRunner, RectangleSize, Target} = require(cwd)
 
 const appName = 'TestRendersMatch'
@@ -18,7 +18,7 @@ describe(appName, async () => {
   it('TestSuccess', async () => {
     const runner = new VisualGridRunner(10)
 
-    const driver = await spec.build({capabilities: Browsers.chrome()})
+    const driver = await spec.build({browser: 'chrome'})
     await spec.visit(driver, 'https://applitools.com/helloworld')
     let eyes
     try {
@@ -42,7 +42,7 @@ describe(appName, async () => {
   it.skip('TestFailure', async () => {
     const runner = new VisualGridRunner(10)
 
-    const driver = await spec.build({capabilities: Browsers.chrome()})
+    const driver = await spec.build({browser: 'chrome'})
     await spec.visit(driver, 'https://applitools.com/helloworld')
     let eyes
     try {

@@ -1,8 +1,8 @@
 'use strict'
 const path = require('path')
 const cwd = process.cwd()
-const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
-const {getEyes, Browsers} = require('../util/TestSetup')
+const spec = require(path.resolve(cwd, 'src/SpecDriver'))
+const {getEyes} = require('../util/TestSetup')
 const {TestCheckScrollableModal} = require('./TestFluentApi_utils')
 
 describe('Coverage tests', () => {
@@ -14,7 +14,7 @@ describe('Coverage tests', () => {
   })
 
   beforeEach(async () => {
-    driver = await spec.build({capabilities: Browsers.chrome()})
+    driver = await spec.build({browser: 'chrome'})
     await spec.visit(driver, 'https://applitools.github.io/demo/TestPages/FramesTestPage/')
     eyes = await getEyes({isCssStitching: true, branchName: 'v2'})
     eyes.setMatchTimeout(0)

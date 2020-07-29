@@ -79,19 +79,16 @@ class EyesVisualGrid extends EyesCore {
    * @param {VisualGridClient} implementations.VisualGridClient - visual grid client
    * @return {new (...args: ConstructorParameters<typeof EyesVisualGrid>) => EyesVisualGrid<TDriver, TElement, TSelector>} specialized version of this class
    */
-  static specialize({agentId, WrappedDriver, WrappedElement, CheckSettings, VisualGridClient}) {
+  static specialize({agentId, spec, VisualGridClient}) {
     return class extends EyesVisualGrid {
-      static get WrappedDriver() {
-        return WrappedDriver
-      }
-      static get WrappedElement() {
-        return WrappedElement
-      }
-      static get CheckSettings() {
-        return CheckSettings
+      static get spec() {
+        return spec
       }
       static get VisualGridClient() {
         return VisualGridClient
+      }
+      get spec() {
+        return spec
       }
       /**
        * @return {string} base agent id
@@ -235,7 +232,7 @@ class EyesVisualGrid extends EyesCore {
       nameOrCheckSettings = null
     }
 
-    checkSettings = new this.constructor.CheckSettings(checkSettings)
+    checkSettings = this.spec.newCheckSettings(checkSettings)
 
     if (TypeUtils.isString(nameOrCheckSettings)) {
       checkSettings.withName(nameOrCheckSettings)
@@ -280,9 +277,9 @@ class EyesVisualGrid extends EyesCore {
    * @param {Function} operation
    */
   async _checkPrepare(checkSettings, operation) {
-    this._context = await this._context.refreshContexts()
+    this._context = await this._driver.refreshContexts()
     const originalContext = this._context
-    this._context = await this._context.attach(checkSettings.context).focus()
+    this._context = await this._context.attach(await checkSettings.context).focus()
     try {
       return await operation()
     } finally {

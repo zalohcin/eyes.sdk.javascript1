@@ -81,7 +81,7 @@ class EyesScreenshot {
     if (
       (image.getWidth() <= viewportSize.getWidth() &&
         image.getHeight() <= viewportSize.getHeight()) ||
-      (!eyes._checkSettings.context.isMain && // workaround: define screenshotType as VIEWPORT
+      (!(await eyes._checkSettings.context).isMain && // workaround: define screenshotType as VIEWPORT
         eyes._userAgent.getBrowser() === BrowserNames.Firefox &&
         Number.parseInt(eyes._userAgent.getBrowserMajorVersion(), 10) < 48)
     ) {
@@ -144,23 +144,16 @@ class EyesScreenshot {
     this._context = this._eyes._context
 
     // TODO this throws exception on mobile native apps
-    this._currentFrameScrollPosition = await EyesUtils.getInnerOffset(
-      this._logger,
-      this._context,
-      this._context.scrollRootElement,
-    ).catch(() => Location.ZERO)
+    this._currentFrameScrollPosition = await this._context
+      .getInnerOffset()
+      .catch(() => Location.ZERO)
 
     this._frameLocationInScreenshot = await this._context.getLocationInViewport()
     this._frameSize = await this._context.getClientSize()
-    // TODO handle
-    // get entire page size might throw an exception for applications which don't support Javascript (e.g., Appium).
-    // In that case we'll use the viewport size as the frame's size.
-    // .catch(() => EyesUtils.getTopContextViewportSize(this._logger, this._eyes.getDriver()))
 
-    // TODO review
     if (this._context.isMain && this._screenshotType === ScreenshotTypes.ENTIRE_FRAME) {
       this._frameLocationInScreenshot = this._frameLocationInScreenshot.offsetByLocation(
-        await this._context.main.getInnerOffset(),
+        await this._context.main.getInnerOffset().catch(() => Location.ZERO),
       )
     }
 

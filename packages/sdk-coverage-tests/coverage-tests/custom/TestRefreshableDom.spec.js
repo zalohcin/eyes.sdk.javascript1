@@ -3,8 +3,8 @@
 const assert = require('assert')
 const cwd = process.cwd()
 const path = require('path')
-const {getEyes, Browsers} = require('../util/TestSetup')
-const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
+const {getEyes} = require('../util/TestSetup')
+const spec = require(path.resolve(cwd, 'src/SpecDriver'))
 const {Target} = require(cwd)
 
 let browser, eyes, driver
@@ -15,7 +15,7 @@ describe('TestRefreshableDom', function() {
   })
 
   beforeEach(async function() {
-    browser = await spec.build({capabilities: Browsers.chrome()})
+    browser = await spec.build({browser: 'chrome'})
     driver = await eyes.open(browser, 'AppName', this.currentTest.fullTitle(), {
       width: 600,
       height: 500,
@@ -29,12 +29,12 @@ describe('TestRefreshableDom', function() {
 
   it('refresh element inside iframe after StaleElementReference', async () => {
     await spec.visit(driver, 'https://applitools.github.io/demo/TestPages/RefreshDomPage/iframe')
-    await spec.switchToFrame(driver)
-    await spec.switchToFrame(driver, 'frame')
+    await spec.mainContext(driver)
+    await spec.childContext(driver, await spec.findElement(driver, '[name="frame"]'))
     const el = await spec.findElement(driver, '#refresh-button')
     await spec.click(driver, el)
 
-    await spec.switchToFrame(driver)
+    await spec.mainContext(driver)
 
     await eyes.check('Handle', Target.frame('frame').region('#inner-img'))
     return eyes.close()
