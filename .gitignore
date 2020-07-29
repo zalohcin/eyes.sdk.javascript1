@@ -30,3 +30,6 @@ coverage-tests-metadata.json
 
 # yarn
 .yarn
+
+# other
+tags

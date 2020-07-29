@@ -315,4 +315,6 @@ module.exports = [
   {name: 'TestVisualLocators', executionMode: {isCssStitching: true}},
   {name: 'TestVisualLocators', executionMode: {isVisualGrid: true}},
   {name: 'AppiumAndroidCheckRegion', executionMode: {isCssStitching: true}},
+  {name: 'TestHorizonalScroll', executionMode: {isCssStitching: true}},
+  {name: 'TestHorizonalScroll', executionMode: {isScrollStitching: true}},
 ]

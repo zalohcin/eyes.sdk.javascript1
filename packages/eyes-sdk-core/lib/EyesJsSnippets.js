@@ -18,13 +18,15 @@ const GET_TRANSLATE_OFFSET_FUNC = `
     var translates = [${TRANSFORM_KEYS.map(key => `element.style['${key}']`).join(',')}]
       .reduce(function(translates, transform) {
         if (transform) {
-          var data = transform.match(/^translate\\(\\s*(\\-?[\\d, \\.]+)px,\\s*(\-?[\\d, \\.]+)px\\s*\\)/);
-          if (!data) {
+          var match = transform.match(/^translate\\s*\\(\\s*(\\-?[\\d, \\.]+)px\\s*(,\\s*(\\-?[\\d, \\.]+)px)?\\s*\\)/);
+          if (!match) {
             throw new Error(\`Can't parse CSS transition: \${transform}!\`);
           }
+          const x = match[1]
+          const y = match[3] !== undefined ? match[3] : 0
           translates.push({
-            x: Math.round(-parseFloat(data[1])),
-            y: Math.round(-parseFloat(data[2]))
+            x: Math.round(-parseFloat(x)),
+            y: Math.round(-parseFloat(y))
           });
         }
         return translates;

@@ -24,8 +24,8 @@
     "mocha": "^6.2.2",
     "wdio-chromedriver-service": "^0.1.5",
     "wdio-dot-reporter": "0.0.10",
-    "wdio-mocha-framework": "^0.6.4",
-    "wdio-sync": "^0.7.3",
+    "wdio-mocha-framework": "applitools/wdio-mocha-framework",
+    "wdio-sync": "webdriverio-boneyard/wdio-sync",
     "webdriverio": "^4.14.4"
   },
   "engines": {

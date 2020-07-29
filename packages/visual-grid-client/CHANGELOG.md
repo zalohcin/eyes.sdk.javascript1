@@ -3,6 +3,10 @@
 ## Unreleased
 
 
+## 14.6.1 - 2020/7/28
+
+- updated to @applitools/eyes-sdk-core@11.5.1 (from 11.5.0)
+
 ## 14.6.0 - 2020/7/26
 
 - support non-200 resources ([Trello](https://trello.com/c/J5lBWutP))

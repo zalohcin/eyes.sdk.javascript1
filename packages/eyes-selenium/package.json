@@ -37,11 +37,11 @@
   "main": "./index.js",
   "typings": "./typings/index.d.ts",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "11.5.0",
+    "@applitools/eyes-sdk-core": "11.5.1",
     "@applitools/visual-grid-client": "14.6.0"
   },
   "devDependencies": {
-    "@applitools/sdk-coverage-tests": "1.0.9",
+    "@applitools/sdk-coverage-tests": "^1.0.9",
     "@applitools/sdk-fake-eyes-server": "^2.0.0",
     "@applitools/sdk-release-kit": "0.1.0",
     "@applitools/sdk-shared": "0.1.0",
