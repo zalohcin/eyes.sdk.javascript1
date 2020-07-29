@@ -106,6 +106,14 @@
     stack-trace "^0.0.10"
     tunnel "0.0.6"
 
+"@applitools/eyes-webdriverio@5.19.2":
+  version "5.19.2"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-webdriverio/-/eyes-webdriverio-5.19.2.tgz#c29a6368bac45d06b83aacb386857ca374b9fb3b"
+  integrity sha512-gVY0ucTRX3YXyEIqBz8QmdJD6wV51gHUkidaNvG1OH4GyvKMpDZaO0kiiZC/MDEh3T4FDwvOZ28W74RGGBqnIw==
+  dependencies:
+    "@applitools/eyes-sdk-core" "11.5.0"
+    "@applitools/visual-grid-client" "14.6.0"
+
 "@applitools/eyes.webdriverio@2.20.0":
   version "2.20.0"
   resolved "https://registry.yarnpkg.com/@applitools/eyes.webdriverio/-/eyes.webdriverio-2.20.0.tgz#47d6ff8bf6a7eb58f8cfd9021396521e0a1ce921"
