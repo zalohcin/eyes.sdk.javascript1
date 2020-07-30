@@ -37,11 +37,7 @@ function makeSpecEmitter(options) {
 
   tracker.storeHook(
     'beforeEach',
-    js`driver = await specs.build(${
-      options.capabilities
-        ? {capabilities: options.capabilities, url: options.host}
-        : {browser: 'chrome'}
-    })`,
+    js`driver = await specs.build(${options.env} || {browser: 'chrome'})`,
   )
 
   tracker.storeHook(

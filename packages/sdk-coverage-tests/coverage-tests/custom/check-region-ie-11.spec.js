@@ -7,7 +7,7 @@ const spec = require(path.resolve(cwd, 'src/SpecDriver'))
 const {Target} = require(cwd)
 const {getEyes} = require('../util/TestSetup')
 
-describe('Check Region IE11', () => {
+describe('Check Region IE11 (@ie11)', () => {
   let eyes
   let driver
 

@@ -5,7 +5,6 @@ const RectangleSize = require('./geometry/RectangleSize')
 const ImageRotation = require('./positioning/ImageRotation')
 const ReadOnlyPropertyHandler = require('./handler/ReadOnlyPropertyHandler')
 const TestFailedError = require('./errors/TestFailedError')
-const EyesUtils = require('./EyesUtils')
 const EyesBase = require('./EyesBase')
 const Logger = require('./logging/Logger')
 const NullCutProvider = require('./cropping/NullCutProvider')
@@ -53,8 +52,6 @@ class EyesCore extends EyesBase {
     this._driver = undefined
     /** @private @type {EyesBrowsingContext<TDriver, TElement, TSelector>} */
     this._context = undefined
-    /** @private @type {boolean} */
-    this._dontGetTitle = false
     /** @private @type {number} */
     this._devicePixelRatio = UNKNOWN_DEVICE_PIXEL_RATIO
     /** @private */
@@ -476,15 +473,7 @@ class EyesCore extends EyesBase {
   }
 
   async getTitle() {
-    if (!this._dontGetTitle) {
-      try {
-        return await this._driver.getTitle()
-      } catch (e) {
-        this._logger.verbose(`failed (${e})`)
-        this._dontGetTitle = true
-      }
-    }
-    return ''
+    return this._driver.getTitle()
   }
   /**
    * @return {EyesWrappedDriver<TDriver, TElement, TSelector>}

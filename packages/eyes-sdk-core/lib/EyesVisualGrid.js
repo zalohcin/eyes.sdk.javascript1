@@ -9,7 +9,6 @@ const MatchResult = require('./match/MatchResult')
 const CorsIframeHandler = require('./capture/CorsIframeHandler')
 const CorsIframeHandles = require('./capture/CorsIframeHandles')
 const VisualGridRunner = require('./runner/VisualGridRunner')
-const EyesUtils = require('./EyesUtils')
 const EyesCore = require('./EyesCore')
 
 /**

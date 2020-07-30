@@ -5,7 +5,7 @@ const {getEyes} = require('../util/TestSetup')
 const spec = require(path.resolve(cwd, 'src/SpecDriver'))
 const {Target, Region} = require(cwd)
 
-describe.skip('TestAppiumNative (@native)', () => {
+describe.skip('TestAppiumNative (@native @mobile)', () => {
   let driver, eyes
   afterEach(async () => {
     await spec.cleanup(driver)

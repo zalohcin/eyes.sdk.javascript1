@@ -82,22 +82,8 @@ class EyesClassic extends EyesCore {
     this._runner = runner
     this._runner.attachEyes(this, this._serverConnector)
 
-    /** @private */
-    this._imageRotationDegrees = 0
-    /** @private */
-    this._automaticRotation = true
-    /** @private @type {boolean} */
-    this._isLandscape = false
     /** @private @type {boolean} */
     this._checkFullFrameOrElement = false
-
-    /** @private @type {String} */
-    this._originalDefaultContentOverflow = false
-    /** @private @type {String} */
-    this._originalFrameOverflow = false
-
-    /** @private @type {String} */
-    this._originalOverflow = null
     /** @private @type {RegionPositionCompensation} */
     this._regionPositionCompensation = undefined
     /** @private @type {Region} */
@@ -126,8 +112,6 @@ class EyesClassic extends EyesCore {
    */
   async open(driver, appName, testName, viewportSize, sessionType) {
     ArgumentGuard.notNull(driver, 'driver')
-
-    this._logger.verbose('Running using Webdriverio module')
 
     this._driver = await this.spec.newDriver(this._logger, driver).init()
     this._context = this._driver.currentContext

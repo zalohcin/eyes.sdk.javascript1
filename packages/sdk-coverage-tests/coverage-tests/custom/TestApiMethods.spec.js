@@ -36,8 +36,7 @@ describe('api methods', () => {
     await eyes.check('step 1', Target.window())
     await eyes.closeAsync()
 
-    const el = await spec.findElement(driver, 'button')
-    await spec.click(driver, el)
+    await spec.click(driver, 'button')
     await eyes.open(driver, 'TestApiMethods', `TestCloseAsync_2`, {
       width: 800,
       height: 600,

@@ -35,13 +35,20 @@ function makeEmitTests(initializeSdkImplementation, coverageTests) {
         branchName,
         host,
         ...supportedTest,
-        ...coverageTest.options,
+        ...coverageTest,
       })
+      const meta = {...coverageTest.meta}
+      if (coverageTest.env) {
+        meta.browser = coverageTest.env.browser
+        meta.mobile = Boolean(coverageTest.env.device)
+        meta.native = Boolean(coverageTest.env.device) && !coverageTest.env.browser
+      }
       // test
       coverageTestFunc(sdkImplementation)
       // store
       output.push({
         name: baselineTestName,
+        meta,
         disabled: !all && supportedTest.disabled,
         ...sdkImplementation.tracker,
       })

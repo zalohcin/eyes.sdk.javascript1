@@ -42,7 +42,7 @@ describe(appName, async () => {
         driver,
         'https://applitools.github.io/demo/TestPages/VisualGridTestPage/duplicates.html',
       )
-      await spec.childContext(driver, 2)
+      await spec.childContext(driver, await spec.findElement(driver, '#localFrame2'))
       await spec.waitUntilDisplayed(driver, '#p2', 20000)
       await spec.mainContext(driver)
       await eyes.checkWindow('Duplicated Iframes')

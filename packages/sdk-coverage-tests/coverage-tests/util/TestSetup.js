@@ -33,6 +33,15 @@ const SAUCE_DEVICES = {
     clearSystemFiles: true,
     noReset: true,
   },
+  'Samsung Galaxy S8': {
+    browserName: '',
+    name: 'Android Demo',
+    platformName: 'Android',
+    platformVersion: '7.0',
+    appiumVersion: '1.17.1',
+    deviceName: 'Samsung Galaxy S8 FHD GoogleAPI Emulator',
+    automationName: 'uiautomator2',
+  },
 }
 
 const SAUCE_BROWSERS = {
@@ -62,6 +71,12 @@ const SAUCE_BROWSERS = {
     platformName: 'Windows 10',
     'sauce:options': {
       screenResolution: '1920x1080',
+    },
+  },
+  firefox: {
+    browserName: 'firefox',
+    'sauce:options': {
+      seleniumVersion: '3.141.59',
     },
   },
 }

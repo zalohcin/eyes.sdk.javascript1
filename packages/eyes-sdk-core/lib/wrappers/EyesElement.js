@@ -25,7 +25,7 @@ class EyesElement {
     throw new TypeError('The class is not specialized. Create a specialize EyesElement first')
   }
 
-  constructor(logger, context, element, selector) {
+  constructor(logger, context, {element, selector} = {}) {
     if (element instanceof EyesElement) {
       return element
     }

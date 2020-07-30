@@ -7,7 +7,7 @@ const {Target} = require(cwd)
 const {assertImage} = require('../util/ApiAssertions')
 
 describe('Coverage Tests', async () => {
-  describe('edge', () => {
+  describe('edge (@edge18)', () => {
     let eyes
     let driver
 
@@ -32,7 +32,7 @@ describe('Coverage Tests', async () => {
       })
     })
   })
-  describe('ie', () => {
+  describe('ie (@ie11)', () => {
     let eyes
     let driver
 

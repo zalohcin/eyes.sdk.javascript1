@@ -8,7 +8,6 @@ const RectangleSize = require('../geometry/RectangleSize')
 const CoordinatesTypeConversionError = require('../errors/CoordinatesTypeConversionError')
 const OutOfBoundsError = require('../errors/OutOfBoundsError')
 const Enum = require('../utils/Enum')
-const EyesUtils = require('../EyesUtils')
 
 /**
  * @typedef {import('../logging/Logger')} Logger

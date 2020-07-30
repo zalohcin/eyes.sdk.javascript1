@@ -7,4 +7,5 @@ module.exports = {
   initialize: makeEmitter,
   testFrameworkTemplate: makeTemplate,
   supportedTests,
+  tests: require('./tests'),
 }

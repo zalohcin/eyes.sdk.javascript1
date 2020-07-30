@@ -42,8 +42,7 @@ describe('TestRefreshableDom', function() {
 
   it('refresh element after StaleElementReference', async () => {
     await spec.visit(driver, 'https://applitools.github.io/demo/TestPages/RefreshDomPage')
-    const el = await spec.findElement(driver, '#refresh-button')
-    await spec.click(driver, el)
+    await spec.click(driver, '#refresh-button')
 
     await eyes.check('Handle', Target.region('#inner-img'))
     return eyes.close()
@@ -52,8 +51,7 @@ describe('TestRefreshableDom', function() {
   it('throw after unhandled StaleElementReference', async () => {
     await spec.visit(driver, 'https://applitools.github.io/demo/TestPages/RefreshDomPage')
 
-    const el = await spec.findElement(driver, '#invalidate-button')
-    await spec.click(driver, el)
+    await spec.click(driver, '#invalidate-button')
     try {
       await eyes.check('Throw', Target.region('#inner-img'))
       assert.fail()

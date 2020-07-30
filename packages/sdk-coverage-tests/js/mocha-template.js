@@ -1,16 +1,26 @@
-function makeMochaTestTemplate(emittedTest) {
-  return `${emittedTest.hooks.deps.join('\n')}
+function makeMochaTestTemplate(test) {
+  const meta = Object.entries(test.meta).reduce((meta, [name, value]) => {
+    if (typeof value === 'string') {
+      return meta.concat(`@${value}`)
+    } else if (value === true) {
+      return meta.concat(`@${name}`)
+    } else {
+      return meta
+    }
+  }, [])
 
-describe${emittedTest.disabled ? '.skip' : ''}('Coverage Tests', () => {
-  ${emittedTest.hooks.vars.join('\n  ')}
+  return `${test.hooks.deps.join('\n')}
+
+describe${test.disabled ? '.skip' : ''}('Coverage Tests', () => {
+  ${test.hooks.vars.join('\n  ')}
   beforeEach(async () => {
-    ${emittedTest.hooks.beforeEach.join('\n    ')}
+    ${test.hooks.beforeEach.join('\n    ')}
   })
   afterEach(async () => {
-    ${emittedTest.hooks.afterEach.join('\n    ')}
+    ${test.hooks.afterEach.join('\n    ')}
   })
-  it('${emittedTest.name}', async () => {
-    ${emittedTest.commands.join('\n    ')}
+  it('${test.name}${meta.length > 0 ? ` (${meta.join(' ')})` : ''}', async () => {
+    ${test.commands.join('\n    ')}
   })
 })`
 }

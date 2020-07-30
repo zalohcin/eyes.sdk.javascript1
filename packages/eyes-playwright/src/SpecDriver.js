@@ -70,6 +70,7 @@ async function isEqualElements(frame, element1, element2) {
 // #region COMMANDS
 
 async function executeScript(frame, script, arg) {
+  script = TypeUtils.isString(script) ? new Function(script) : script
   const result = await frame.evaluateHandle(script, arg)
   return handleToObject(result)
 }
@@ -87,6 +88,9 @@ async function findElement(frame, selector) {
 }
 async function findElements(frame, selector) {
   return frame.$$(transformSelector(selector))
+}
+async function getElementRect(_frame, element) {
+  return element.boundingBox()
 }
 async function getViewportSize(page) {
   return page.viewportSize()
@@ -117,20 +121,29 @@ const browserNames = {
   firefox: 'firefox',
 }
 
-async function build({browser, device, headless, args} = {}) {
+async function build(env) {
   const playwright = require('playwright')
-  const driver = await playwright[browserNames[browser] || browser].launch({headless, args})
+  const {TestSetup} = require('@applitools/sdk-coverage-tests/coverage-tests')
+  const {browser, device, headless, args} = TestSetup.Env(env)
+  const driver = await playwright[browserNames[browser] || browser].launch({
+    headless,
+    args,
+    ignoreDefaultArgs: ['--hide-scrollbars'],
+  })
   const context = await driver.newContext(device ? playwright.devices[device] : {})
   return context.newPage()
 }
 async function cleanup(page) {
   return page.context()._browserBase.close()
 }
-async function click(_frame, element) {
-  return element.click()
+async function click(frame, selector) {
+  await frame.click(selector)
 }
 async function type(_frame, element, keys) {
   return element.type(keys)
+}
+async function waitUntilDisplayed(frame, selector) {
+  return frame.waitForSelector(selector)
 }
 
 // #endregion
@@ -149,6 +162,7 @@ exports.parentContext = parentContext
 exports.childContext = childContext
 exports.findElement = findElement
 exports.findElements = findElements
+exports.getElementRect = getElementRect
 exports.getViewportSize = getViewportSize
 exports.setViewportSize = setViewportSize
 exports.getTitle = getTitle
@@ -160,3 +174,4 @@ exports.build = build
 exports.cleanup = cleanup
 exports.click = click
 exports.type = type
+exports.waitUntilDisplayed = waitUntilDisplayed

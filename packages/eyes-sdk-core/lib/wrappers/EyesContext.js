@@ -127,6 +127,37 @@ class EyesContext {
     }
   }
 
+  context(reference) {
+    const context =
+      reference instanceof EyesContext
+        ? reference
+        : new this.constructor(this._logger, null, {reference, driver: this._driver, parent: this})
+
+    if (context.parent !== this) {
+      throw Error(`Couldn't find a child context because it has a different parent`)
+    }
+    return context
+  }
+
+  element(selector) {
+    if (this.constructor.isElement(selector)) {
+      return this.spec.newElement(this._logger, this, {element: selector})
+    } else if (this.isDetached) {
+      return this.spec.newElement(null, this, {selector})
+    }
+    return this.focus().then(async () => {
+      const element = await this.spec.findElement(this._context, selector)
+      return element ? this.spec.newElement(this._logger, this, {element, selector}) : null
+    })
+  }
+
+  elements(selector) {
+    return this.focus().then(async () => {
+      const elements = await this.spec.findElements(this._context, selector)
+      return elements.map(element => this.spec.newElement(this._logger, this, {element, selector}))
+    })
+  }
+
   async equals(context) {
     if (context === this || (this.isMain && context === null)) return true
     if (!this._element) return false
@@ -204,37 +235,6 @@ class EyesContext {
     // TODO replace
     await this._driver.updateCurrentContext(this)
     return this
-  }
-
-  async context(reference) {
-    const context =
-      reference instanceof EyesContext
-        ? reference
-        : new this.constructor(this._logger, null, {reference, driver: this._driver, parent: this})
-
-    if (context.parent !== this) {
-      throw Error(`Couldn't find a child context because it has a different parent`)
-    }
-    return context
-  }
-
-  async element(selectorOrElement) {
-    if (this.constructor.isElement(selectorOrElement)) {
-      return this.spec.newElement(this._logger, this, selectorOrElement)
-    }
-    let selector = selectorOrElement
-    if (this.isDetached) {
-      return this.spec.newElement(null, this, null, selector)
-    }
-    await this.focus()
-    const element = await this.spec.findElement(this._context, selector)
-    return element ? this.spec.newElement(this._logger, this, element, selector) : null
-  }
-
-  async elements(selector) {
-    await this.focus()
-    const elements = await this.spec.findElements(this._context, selector)
-    return elements.map(element => this.spec.newElement(this._logger, this, element, selector))
   }
 
   async execute(script, ...args) {
@@ -338,7 +338,9 @@ class EyesContext {
     let location = Location.ZERO
     for (const context of this.path) {
       const contextLocation = await context.getClientLocation()
-      const parentContextInnerOffset = Location.ZERO
+      const parentContextInnerOffset = context.parent
+        ? await context.parent.getInnerOffset()
+        : Location.ZERO
 
       location = location.offset(
         contextLocation.getX() - parentContextInnerOffset.getX(),

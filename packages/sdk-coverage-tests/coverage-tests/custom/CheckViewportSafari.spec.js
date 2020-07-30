@@ -14,7 +14,7 @@ describe('CheckViewportSafari', () => {
     await spec.cleanup(driver)
   })
 
-  it('Safari11', async () => {
+  it('Safari11 (@safari11)', async () => {
     driver = await spec.build({browser: 'safari11', remote: 'sauce', legacy: true})
     eyes = new getEyes()
     await spec.visit(driver, 'https://applitools.github.io/demo/TestPages/FramesTestPage/')
@@ -24,7 +24,7 @@ describe('CheckViewportSafari', () => {
     return eyes.close()
   })
 
-  it('Safari12', async () => {
+  it('Safari12 (@safari12)', async () => {
     driver = await spec.build({browser: 'safari12', remote: 'sauce', legacy: true})
     eyes = new getEyes()
     await spec.visit(driver, 'https://applitools.github.io/demo/TestPages/FramesTestPage/')

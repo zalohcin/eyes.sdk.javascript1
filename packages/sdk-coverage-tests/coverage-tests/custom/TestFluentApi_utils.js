@@ -27,8 +27,7 @@ async function TestCheckScrollableModal({testName, eyes, driver}) {
     width: 700,
     height: 460,
   })
-  const el = await spec.findElement(driver, '#centered')
-  await spec.click(driver, el)
+  await spec.click(driver, '#centered')
   await eyes.check(
     'TestCheckScrollableModal',
     Target.region('#modal-content')
@@ -43,8 +42,7 @@ async function TestCheckLongIFrameModal({testName, eyes, driver}) {
     width: 700,
     height: 460,
   })
-  const el = await spec.findElement(driver, '#stretched')
-  await spec.click(driver, el)
+  await spec.click(driver, '#stretched')
   let frame = await spec.findElement(driver, '#modal2 iframe')
   await spec.childContext(driver, frame)
   let element = await spec.findElement(driver, 'html')
@@ -59,8 +57,7 @@ async function TestCheckLongOutOfBoundsIFrameModal({testName, eyes, driver}) {
     width: 700,
     height: 460,
   })
-  const el = await spec.findElement(driver, '#hidden_click')
-  await spec.click(driver, el)
+  await spec.click(driver, '#hidden_click')
   let frame = await spec.findElement(driver, '#modal3 iframe')
   await spec.childContext(driver, frame)
   let element = await spec.findElement(driver, 'html')
