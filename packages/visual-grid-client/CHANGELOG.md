@@ -3,6 +3,7 @@
 ## Unreleased
 
 - remove feature-flags package dependency
+- updated to @applitools/dom-snapshot@4.0.1 (from 4.0.0)
 
 ## 14.6.1 - 2020/7/28
 
