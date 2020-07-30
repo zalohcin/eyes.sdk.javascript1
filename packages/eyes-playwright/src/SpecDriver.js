@@ -90,7 +90,8 @@ async function findElements(frame, selector) {
   return frame.$$(transformSelector(selector))
 }
 async function getElementRect(_frame, element) {
-  return element.boundingBox()
+  const {x, y, width, height} = await element.boundingBox()
+  return {x: Math.round(x), y: Math.round(y), width: Math.round(width), height: Math.round(height)}
 }
 async function getViewportSize(page) {
   return page.viewportSize()
