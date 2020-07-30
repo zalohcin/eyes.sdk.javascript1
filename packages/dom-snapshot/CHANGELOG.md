@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+- fix faux shadow DOM
+- fix url in css variable
 
 ## 4.0.0 - 2020/7/26
 
