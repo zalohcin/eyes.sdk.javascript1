@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- remove feature-flags package dependency
 
 ## 14.6.1 - 2020/7/28
 
