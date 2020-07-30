@@ -10,7 +10,7 @@
     "sourceType": "module"
   },
   "extends": ["plugin:node/recommended", "plugin:testcafe/recommended"],
-  "plugins": ["prettier", "mocha-no-only", "node", "testcafe", "node/recommended"],
+  "plugins": ["prettier", "mocha-no-only", "node", "testcafe"],
   "ignorePatterns": [
     "node_modules/",
     "dist/",
