@@ -1,4 +1,4 @@
-/* @applitools/dom-snapshot@4.0.0 */
+/* @applitools/dom-snapshot@4.0.1 */
 
 function __processPageAndSerializeForIE() {
   var processPageAndSerializeForIE = (function () {
@@ -24286,7 +24286,7 @@ function __processPageAndSerializeForIE() {
             var propertyValue = rule.style.getPropertyValue(property);
 
             if (/^\s*var\s*\(/.test(propertyValue) || /^--/.test(property)) {
-              propertyValue = unescapeCss(propertyValue); //.replace(/\\/g, '');
+              propertyValue = unescapeCss(propertyValue);
             }
 
             var _urls = getUrlFromCssText_1(propertyValue);
@@ -24553,7 +24553,7 @@ function __processPageAndSerializeForIE() {
     });
     return doProcessPage(doc).then(function (result) {
       log('processPage end');
-      result.scriptVersion = '4.0.0';
+      result.scriptVersion = '4.0.1';
       return result;
     });
 

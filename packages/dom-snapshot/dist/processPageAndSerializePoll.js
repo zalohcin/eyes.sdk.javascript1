@@ -1,4 +1,4 @@
-/* @applitools/dom-snapshot@4.0.0 */
+/* @applitools/dom-snapshot@4.0.1 */
 
 function __processPageAndSerializePoll() {
   var processPageAndSerializePoll = (function () {
@@ -13783,7 +13783,7 @@ function __processPageAndSerializePoll() {
                 const property = rule.style[i];
                 let propertyValue = rule.style.getPropertyValue(property);
                 if (/^\s*var\s*\(/.test(propertyValue) || /^--/.test(property)) {
-                  propertyValue = unescapeCss(propertyValue); //.replace(/\\/g, '');
+                  propertyValue = unescapeCss(propertyValue);
                 }
                 const urls = getUrlFromCssText_1(propertyValue);
                 rv = rv.concat(urls);
@@ -14030,7 +14030,7 @@ function __processPageAndSerializePoll() {
 
     return doProcessPage(doc).then(result => {
       log$$1('processPage end');
-      result.scriptVersion = '4.0.0';
+      result.scriptVersion = '4.0.1';
       return result;
     });
 
