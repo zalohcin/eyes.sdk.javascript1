@@ -2,7 +2,7 @@
 const {describe, it} = require('mocha');
 const {expect} = require('chai');
 const getElementAttrSelector = require('../src/browser/getElementAttrSelector');
-const getDocNode = require('./util/getDocNode')
+const getDocNode = require('./util/getDocNode');
 
 describe('getElementAttrSelector', () => {
   it('works', () => {
