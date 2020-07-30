@@ -747,7 +747,7 @@ function getStepStatus(step) {
 }
 ```
 
-_For the full list of methods, visit our documentation page: https://applitools.com/docs/api/eyes-sdk/index-gen/class-testresults-selenium4-javascript.html_ (This is for our Selenium SDK, but all methods are relevant for Eyes-Selenium as well)
+_For the full list of methods, visit our documentation page: https://applitools.com/docs/api/eyes-sdk/index-gen/class-testresults-selenium4-javascript.html_
 
 ### Logging
 
