@@ -1,6 +1,5 @@
 const assert = require('assert')
 const os = require('os')
-const {TestSetup} = require('@applitools/sdk-coverage-tests/coverage-tests')
 const spec = require('../../src/SpecDriver')
 const {By} = require('../../index')
 
@@ -10,7 +9,7 @@ describe('SpecDriver', async () => {
 
   describe('headless desktop (@webdriver)', async () => {
     before(async () => {
-      browser = await spec.build(TestSetup.Env({browser: 'chrome'}))
+      browser = await spec.build({browser: 'chrome'})
       await browser.url(url)
     })
 
@@ -95,7 +94,7 @@ describe('SpecDriver', async () => {
 
   describe('onscreen desktop (@webdriver)', async () => {
     before(async () => {
-      browser = await spec.build(TestSetup.Env({browser: 'chrome', headless: false}))
+      browser = await spec.build({browser: 'chrome', headless: false})
     })
 
     after(async () => {
@@ -128,7 +127,7 @@ describe('SpecDriver', async () => {
 
   describe('headless desktop (@puppeteer)', async () => {
     before(async () => {
-      browser = await spec.build(TestSetup.Env({browser: 'chrome', protocol: 'cdp'}))
+      browser = await spec.build({browser: 'chrome', protocol: 'cdp'})
       await browser.url(url)
     })
 
@@ -199,9 +198,7 @@ describe('SpecDriver', async () => {
 
   describe('onscreen desktop (@puppeteer)', async () => {
     before(async () => {
-      browser = await spec.build(
-        TestSetup.Env({browser: 'chrome', protocol: 'cdp', headless: false}),
-      )
+      browser = await spec.build({browser: 'chrome', protocol: 'cdp', headless: false})
     })
 
     after(async () => {
@@ -227,7 +224,7 @@ describe('SpecDriver', async () => {
 
   describe('legacy browser (@webdriver)', async () => {
     before(async () => {
-      browser = await spec.build(TestSetup.Env({browser: 'ie11', remote: 'sauce', legacy: true}))
+      browser = await spec.build({browser: 'ie-11'})
     })
 
     after(async () => {
@@ -259,14 +256,12 @@ describe('SpecDriver', async () => {
         expected: {x: 11, y: 12, width: 551, height: 552},
       }),
     )
-    it('getPlatformName()', getPlatformName({expected: 'windows'}))
+    it('getPlatformName()', getPlatformName({expected: 'WINDOWS'}))
   })
 
-  describe('mobile browser (@appium)', async () => {
+  describe('mobile browser (@mobile)', async () => {
     before(async () => {
-      browser = await spec.build(
-        TestSetup.Env({browser: 'chrome', device: 'Pixel 3a XL', remote: 'sauce', legacy: true}),
-      )
+      browser = await spec.build({browser: 'chrome', device: 'Pixel 3a XL'})
     })
 
     after(async () => {
@@ -274,22 +269,18 @@ describe('SpecDriver', async () => {
     })
 
     it('isMobile()', isMobile({expected: true}))
-    it('getPlatformName()', getPlatformName({expected: 'android'}))
+    it('getPlatformName()', getPlatformName({expected: 'Android'}))
     it('isNative()', isNative({expected: false}))
     it('getOrientation()', getOrientation({expected: 'portrait'}))
     it('getPlatformVersion()', getPlatformVersion({expected: '10'}))
   })
 
-  describe('native app (@appium @native)', async () => {
+  describe('native app (@mobile @native)', async () => {
     before(async () => {
-      browser = await spec.build(
-        TestSetup.Env({
-          app: 'http://saucelabs.com/example_files/ContactManager.apk',
-          device: 'Android Emulator',
-          remote: 'sauce',
-          legacy: true,
-        }),
-      )
+      browser = await spec.build({
+        app: 'http://saucelabs.com/example_files/ContactManager.apk',
+        device: 'Android Emulator',
+      })
     })
 
     after(async () => {
@@ -298,21 +289,9 @@ describe('SpecDriver', async () => {
 
     it('isMobile()', isMobile({expected: true}))
     it('isNative()', isNative({expected: true}))
-    it('getPlatformName()', getPlatformName({expected: 'android'}))
+    it('getPlatformName()', getPlatformName({expected: 'Android'}))
     it('getPlatformVersion()', getPlatformVersion({expected: '6.0'}))
     it('getOrientation()', getOrientation({expected: 'landscape'}))
-
-    it('getNativeElementLocation()', async () => {
-      const el = await spec.findElement(browser, 'android.widget.Button')
-      const result = await spec.getNativeElementLocation(browser, el)
-      assert.deepStrictEqual(result, {x: 904, y: 781})
-    })
-
-    it('getNativeElementSize()', async () => {
-      const el = await spec.findElement(browser, 'android.widget.Button')
-      const result = await spec.getNativeElementSize(browser, el)
-      assert.deepStrictEqual(result, {height: 144, width: 269})
-    })
   })
 
   function isDriver({input, expected}) {

@@ -59,6 +59,11 @@ function toEyesSelector(selector) {
   }
   return {selector}
 }
+function isStaleElementError(error) {
+  if (!error) return false
+  const errOrResult = error.originalError || error
+  return errOrResult instanceof Error && errOrResult.name === 'stale element reference'
+}
 async function isEqualElements(browser, element1, element2) {
   if (browser.isDevTools) {
     return browser
@@ -189,6 +194,18 @@ async function visit(browser, url) {
 async function takeScreenshot(driver) {
   return driver.takeScreenshot()
 }
+async function click(browser, element) {
+  const extendedElement = await browser.$(element)
+  return extendedElement.click()
+}
+async function type(browser, element, keys) {
+  const extendedElement = await browser.$(element)
+  return extendedElement.setValue(keys)
+}
+async function waitUntilDisplayed(browser, selector, timeout) {
+  const element = await findElement(browser, selector)
+  return element.waitForDisplayed({timeout})
+}
 
 // #endregion
 
@@ -200,18 +217,16 @@ const browserOptionsNames = {
 }
 async function build(env) {
   const webdriverio = require('webdriverio')
-  const {TestSetup} = require('@applitools/sdk-coverage-tests/coverage-tests')
+  const {testSetup} = require('@applitools/sdk-shared')
   const {
     browser,
     capabilities,
     headless,
     url,
-    credentials,
     protocol,
     args = [],
     logLevel = 'silent',
-    legacy = false,
-  } = TestSetup.Env(env)
+  } = testSetup.Env(env)
 
   const options = {
     capabilities: {browserName: browser, ...capabilities},
@@ -228,52 +243,16 @@ async function build(env) {
     options.hostname = url.hostname
     options.port = Number(url.port)
     options.path = url.pathname
-    if (url.hostname.includes('saucelabs.com') && credentials) {
-      if (legacy) {
-        options.capabilities.username = credentials.username
-        options.capabilities.accessKey = credentials.accessKey
-      } else {
-        if (!options.capabilities['sauce:options']) {
-          options.capabilities['sauce:options'] = {}
-        }
-        options.capabilities['sauce:options'].username = credentials.username
-        options.capabilities['sauce:options'].accessKey = credentials.accessKey
-      }
-    } else if (url.hostname.includes('browserstack.com') && credentials) {
-      if (legacy) {
-        options.capabilities['browserstack.user'] = credentials.username
-        options.capabilities['browserstack.key'] = credentials.accessKey
-      } else {
-        if (!options.capabilities['bstack:options']) {
-          options.capabilities['bstack:options'] = {}
-        }
-        options.capabilities['bstack:options'].username = credentials.username
-        options.capabilities['bstack:options'].accessKey = credentials.accessKey
-      }
-    } else {
-      if (browserOptionsName) {
-        options.capabilities[browserOptionsName] = {
-          args: headless ? args.concat('headless') : args,
-        }
+    if (browserOptionsName) {
+      options.capabilities[browserOptionsName] = {
+        args: headless ? args.concat('headless') : args,
       }
     }
   }
   return webdriverio.remote(options)
 }
 async function cleanup(browser) {
-  return browser.deleteSession()
-}
-async function click(browser, element) {
-  const extendedElement = await browser.$(element)
-  return extendedElement.click()
-}
-async function type(browser, element, keys) {
-  const extendedElement = await browser.$(element)
-  return extendedElement.setValue(keys)
-}
-async function waitUntilDisplayed(browser, selector, timeout) {
-  const element = await findElement(browser, selector)
-  return element.waitForDisplayed({timeout})
+  return browser && browser.deleteSession()
 }
 
 // #endregion
@@ -285,6 +264,7 @@ exports.transformElement = transformElement
 exports.extractSelector = extractSelector
 exports.toEyesSelector = toEyesSelector
 exports.isEqualElements = isEqualElements
+exports.isStaleElementError = isStaleElementError
 
 exports.executeScript = executeScript
 exports.mainContext = mainContext
@@ -307,9 +287,9 @@ exports.getTitle = getTitle
 exports.getUrl = getUrl
 exports.visit = visit
 exports.takeScreenshot = takeScreenshot
-
-exports.build = build
-exports.cleanup = cleanup
 exports.click = click
 exports.type = type
 exports.waitUntilDisplayed = waitUntilDisplayed
+
+exports.build = build
+exports.cleanup = cleanup

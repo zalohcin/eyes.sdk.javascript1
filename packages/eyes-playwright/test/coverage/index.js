@@ -1,4 +1,8 @@
-const {makeEmitter, makeTemplate, supportedTests} = require('@applitools/sdk-coverage-tests/js')
+const {
+  makeEmitter,
+  makeTemplate,
+  supportedTests,
+} = require('@applitools/sdk-shared/coverage-tests/generic')
 
 module.exports = {
   name: 'eyes.playwright',
@@ -7,5 +11,5 @@ module.exports = {
   initialize: makeEmitter,
   testFrameworkTemplate: makeTemplate,
   supportedTests,
-  tests: require('./tests'),
+  testsUrl: 'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/env-and-meta/tests.js',
 }

@@ -92,7 +92,7 @@ class EyesElement {
   async getRect() {
     await this.init()
     return this.withRefresh(async () => {
-      if (this.context.driver.isNative) {
+      if (this._context.driver.isNative) {
         const rect = await this.spec.getElementRect(this._context.unwrapped, this._element)
         return new Region({
           left: Math.ceil(rect.x),
@@ -171,7 +171,7 @@ class EyesElement {
       return true
     }
     if (!this._selector) return false
-    const element = await this._context.findElement(this._selector)
+    const element = await this._context.element(this._selector)
     if (element) {
       this._element = element.unwrapped
     }
@@ -183,26 +183,19 @@ class EyesElement {
    * @return {Promise<*>} promise which resolve whatever an operation will resolve
    */
   async withRefresh(operation) {
+    if (!this.spec.isStaleElementError) return operation()
     try {
-      // this.spec.handleStaleElement(operation, async freshElement => {
-      //   return this.refresh(freshElement)
-      // })
       const result = await operation()
       // Some frameworks could handle stale element reference error by itself or doesn't throw an error
-      const isStaleElementReferenceResult = this.spec.isStaleElementReferenceResult
-        ? this.spec.isStaleElementReferenceResult(result, this)
-        : false
-      if (isStaleElementReferenceResult) {
+      if (this.spec.isStaleElementError(result)) {
         const freshElement = this.spec.extractElement ? this.spec.extractElement(result) : result
         await this.refresh(freshElement)
         return operation()
       }
+
       return result
     } catch (err) {
-      const isStaleElementReferenceError = this.spec.isStaleElementReferenceResult
-        ? this.spec.isStaleElementReferenceResult(err, this)
-        : false
-      if (!isStaleElementReferenceError) throw err
+      if (!this.spec.isStaleElementError(err)) throw err
       const refreshed = await this.refresh()
       if (refreshed) return operation()
       else throw err

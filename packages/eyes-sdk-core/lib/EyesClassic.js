@@ -249,6 +249,7 @@ class EyesClassic extends EyesCore {
     const positionProvider = this._createPositionProvider(
       await this._context.main.getScrollRootElement(),
     )
+
     this.setPositionProvider(positionProvider)
 
     const shouldHideScrollbars =
@@ -642,6 +643,7 @@ class EyesClassic extends EyesCore {
     if (!scrollRootElement) {
       scrollRootElement = await this._context.main.getScrollRootElement()
     }
+
     const region = await scrollRootElement.getClientRect()
     const fullPageImage = await fullCapture.getStitchedRegion(region, null, positionProvider)
 

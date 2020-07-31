@@ -77,6 +77,7 @@ yargs
       process.exit(1)
     }
   } catch (error) {
+    console.log(error)
     console.log(chalk.red(error.message))
     process.exit(1)
   }

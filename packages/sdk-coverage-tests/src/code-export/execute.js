@@ -37,7 +37,7 @@ function makeEmitTests(initializeSdkImplementation, coverageTests) {
         ...supportedTest,
         ...coverageTest,
       })
-      const meta = {...coverageTest.meta}
+      const meta = {features: coverageTest.features}
       if (coverageTest.env) {
         meta.browser = coverageTest.env.browser
         meta.mobile = Boolean(coverageTest.env.device)
@@ -50,7 +50,7 @@ function makeEmitTests(initializeSdkImplementation, coverageTests) {
         name: baselineTestName,
         meta,
         disabled: !all && supportedTest.disabled,
-        ...sdkImplementation.tracker,
+        ...sdkImplementation.tracker.getOutput(),
       })
     })
     return output

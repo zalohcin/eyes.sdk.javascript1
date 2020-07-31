@@ -36,6 +36,7 @@ describe('SpecDriver', async () => {
         expected: false,
       }),
     )
+    it('isStaleElementError(err)', isStaleElementError())
     it('toEyesSelector(framework-selector)', toEyesSelector())
     it('executeScript(script, args)', executeScript())
     it('mainContext()', mainContext())
@@ -93,6 +94,18 @@ describe('SpecDriver', async () => {
       const {element1, element2} = await input()
       const result = await spec.isEqualElements(page, element1, element2)
       assert.deepStrictEqual(result, expected)
+    }
+  }
+  function isStaleElementError() {
+    return async () => {
+      const element = await page.$('#overflowing-div')
+      await page.reload()
+      try {
+        await element.click()
+      } catch (err) {
+        return assert.ok(spec.isStaleElementError(err))
+      }
+      assert.fail()
     }
   }
   function toEyesSelector() {

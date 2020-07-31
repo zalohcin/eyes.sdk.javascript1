@@ -36,12 +36,13 @@
     "@applitools/visual-grid-client": "14.6.0"
   },
   "peerDependencies": {
-    "playwright": "5.0.0 - 6.x.x"
+    "playwright": ">=1.0.0"
   },
   "devDependencies": {
     "@applitools/sdk-coverage-tests": "^1.0.7",
     "@applitools/sdk-fake-eyes-server": "^2.0.0",
     "@applitools/sdk-release-kit": "0.1.0",
+    "@applitools/sdk-shared": "0.1.0",
     "eslint": "^7.2.0",
     "mocha": "^8.0.1",
     "spec-xunit-file": "0.0.1-3",

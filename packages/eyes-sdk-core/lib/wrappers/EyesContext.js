@@ -109,7 +109,9 @@ class EyesContext {
     //   throw new Error('Context need to be detached before attach')
     // }
     const [main, ...path] = context.path
-    this._scrollRootElement = main._scrollRootElement
+    if (main._scrollRootElement) {
+      this._scrollRootElement = main._scrollRootElement
+    }
     main._element = this._element
     main._context = this._context
     main._driver = this._driver
@@ -199,7 +201,7 @@ class EyesContext {
           throw new TypeError(`No frame with selector, name or id '${this._reference}' exists!`)
         }
       } else if (this.constructor.isElement(this._reference)) {
-        this._element = this.spec.newElement(this._logger, this._parent, this._reference)
+        this._element = this.spec.newElement(this._logger, this._parent, {element: this._reference})
       } else {
         throw new TypeError('Reference type does not supported!')
       }

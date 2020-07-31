@@ -59,6 +59,9 @@ function toEyesSelector(selector) {
   if (type === 'css:light') return {type: 'css', selector: value}
   else if (type === 'xpath') return {type: 'xpath', selector: value}
 }
+function isStaleElementError(err) {
+  return err && err.message && err.message.includes('Protocol error (DOM.describeNode)')
+}
 async function isEqualElements(frame, element1, element2) {
   return frame
     .evaluate(([element1, element2]) => element1 === element2, [element1, element2])
@@ -75,9 +78,11 @@ async function executeScript(frame, script, arg) {
   return handleToObject(result)
 }
 async function mainContext(frame) {
+  frame = extractContext(frame)
   return frame._page.mainFrame()
 }
 async function parentContext(frame) {
+  frame = extractContext(frame)
   return frame.parentFrame()
 }
 async function childContext(_frame, element) {
@@ -111,32 +116,6 @@ async function visit(page, url) {
 async function takeScreenshot(page) {
   return page.screenshot()
 }
-
-// #endregion
-
-// #region TESTING
-
-const browserNames = {
-  chrome: 'chromium',
-  safari: 'webkit',
-  firefox: 'firefox',
-}
-
-async function build(env) {
-  const playwright = require('playwright')
-  const {TestSetup} = require('@applitools/sdk-coverage-tests/coverage-tests')
-  const {browser, device, headless, args} = TestSetup.Env(env)
-  const driver = await playwright[browserNames[browser] || browser].launch({
-    headless,
-    args,
-    ignoreDefaultArgs: ['--hide-scrollbars'],
-  })
-  const context = await driver.newContext(device ? playwright.devices[device] : {})
-  return context.newPage()
-}
-async function cleanup(page) {
-  return page.context()._browserBase.close()
-}
 async function click(frame, selector) {
   await frame.click(selector)
 }
@@ -149,11 +128,48 @@ async function waitUntilDisplayed(frame, selector) {
 
 // #endregion
 
+// #region BUILD
+
+const browserNames = {
+  chrome: 'chromium',
+  safari: 'webkit',
+  firefox: 'firefox',
+}
+async function build(env) {
+  const playwright = require('playwright')
+  const {testSetup} = require('@applitools/sdk-shared')
+  const {browser, device, url, headless, args = []} = testSetup.Env(env, 'cdp')
+  const launcher = playwright[browserNames[browser] || browser]
+  if (!launcher) throw new Error(`Browser "${browser}" is not supported.`)
+  const options = {
+    args,
+    headless,
+    ignoreDefaultArgs: ['--hide-scrollbars'],
+  }
+  let driver
+  if (url) {
+    url.searchParams.set('ignoreDefaultArgs', options.ignoreDefaultArgs.join(','))
+    url.searchParams.set('headless', options.headless)
+    options.args.forEach(arg => url.searchParams.set(...arg.split('=')))
+    driver = await launcher.connect({wsEndpoint: url.href})
+  } else {
+    driver = launcher.launch(options)
+  }
+  const context = await driver.newContext(device ? playwright.devices[device] : {})
+  return context.newPage()
+}
+async function cleanup(page) {
+  return page && page.context()._browserBase.close()
+}
+
+// #endregion
+
 // exports.isStateless = isStateless
 exports.isDriver = isDriver
 exports.isElement = isElement
 exports.isSelector = isSelector
 exports.extractContext = extractContext
+exports.isStaleElementError = isStaleElementError
 exports.isEqualElements = isEqualElements
 exports.toEyesSelector = toEyesSelector
 
@@ -170,9 +186,9 @@ exports.getTitle = getTitle
 exports.getUrl = getUrl
 exports.visit = visit
 exports.takeScreenshot = takeScreenshot
-
-exports.build = build
-exports.cleanup = cleanup
 exports.click = click
 exports.type = type
 exports.waitUntilDisplayed = waitUntilDisplayed
+
+exports.build = build
+exports.cleanup = cleanup
