@@ -12,14 +12,13 @@ const absolutizeUrl = require('./absolutizeUrl');
 const makeLog = require('./log');
 const noop = require('./noop');
 
-function processResourceUrlsAndBlobs(
-  {fetchUrl, resourceUrls, showLogs} = {
-    fetchUrl: () => {
-      throw new Error('fetchUrl not implemented');
-    },
-    resourceUrls: [],
+function processResourceUrlsAndBlobs({
+  fetchUrl = () => {
+    throw new Error('fetchUrl not implemented');
   },
-) {
+  resourceUrls = [],
+  showLogs,
+} = {}) {
   const styleSheetCache = {};
   const findStyleSheetByUrl = makeFindStyleSheetByUrl({styleSheetCache});
   const extractResourcesFromStyleSheet = makeExtractResourcesFromStyleSheet({
