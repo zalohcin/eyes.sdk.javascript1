@@ -9,6 +9,7 @@ const getProcessPageAndSerialize = makeGetScript('processPageAndSerialize');
 const getProcessPageAndSerializePoll = makeGetScript('processPageAndSerializePoll');
 const getProcessPageAndSerializeForIE = makeGetScript('processPageAndSerializeForIE');
 const getProcessPageAndSerializePollForIE = makeGetScript('processPageAndSerializePollForIE');
+const processResourceUrlsAndBlobs = require('./src/browser/processResourceUrlsAndBlobs');
 
 module.exports = {
   getProcessPage,
@@ -16,6 +17,7 @@ module.exports = {
   getProcessPageAndSerializeForIE,
   getProcessPageAndSerializePoll,
   getProcessPageAndSerializePollForIE,
+  processResourceUrlsAndBlobs,
   makeExtractResourcesFromSvg,
   toUriEncoding,
   toUnAnchoredUri,
