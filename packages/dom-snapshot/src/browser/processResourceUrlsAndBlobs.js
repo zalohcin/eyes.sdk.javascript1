@@ -5,6 +5,7 @@ const makeGetResourceUrlsAndBlobs = require('./getResourceUrlsAndBlobs');
 const makeFindStyleSheetByUrl = require('./findStyleSheetByUrl');
 const getCorsFreeStyleSheet = require('./getCorsFreeStyleSheet');
 const makeExtractResourcesFromStyleSheet = require('./extractResourcesFromStyleSheet');
+const {CSSRule} = require('cssom');
 const makeExtractResourceUrlsFromStyleTags = require('./extractResourceUrlsFromStyleTags');
 const makeExtractResourcesFromSvg = require('./makeExtractResourcesFromSvg');
 const absolutizeUrl = require('./absolutizeUrl');
@@ -21,7 +22,10 @@ function processResourceUrlsAndBlobs(
 ) {
   const styleSheetCache = {};
   const findStyleSheetByUrl = makeFindStyleSheetByUrl({styleSheetCache});
-  const extractResourcesFromStyleSheet = makeExtractResourcesFromStyleSheet({styleSheetCache});
+  const extractResourcesFromStyleSheet = makeExtractResourcesFromStyleSheet({
+    styleSheetCache,
+    CSSRule,
+  });
   const extractResourceUrlsFromStyleTags = makeExtractResourceUrlsFromStyleTags(
     extractResourcesFromStyleSheet,
   );
@@ -40,9 +44,11 @@ function processResourceUrlsAndBlobs(
     processResource,
     aggregateResourceUrlsAndBlobs,
   });
-  return getResourceUrlsAndBlobs({urls: resourceUrls}).then((resourceUrls, blobsObj) => {
+  return getResourceUrlsAndBlobs({urls: resourceUrls}).then(result => {
+    const urls = Object.keys(result.blobsObj);
+    const blobsObj = result.blobsObj;
     return {
-      resourceUrls: resourceUrls.map(url => url.replace(/^blob:/, '')),
+      resourceUrls: urls.map(url => url.replace(/^blob:/, '')),
       blobs: blobsObjToArray(blobsObj),
     };
   });
