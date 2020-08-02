@@ -7,12 +7,12 @@ const spec = require(path.resolve(cwd, 'src/SpecDriver'))
 const {Target} = require(cwd)
 const {getEyes} = require('../../src/test-setup')
 
-describe('Check Region IE11 (@ie11)', () => {
+describe('Check Region IE11 (@ie)', () => {
   let eyes
   let driver
 
   beforeEach(async () => {
-    driver = await spec.build({browser: 'ie11', remote: 'sauce'})
+    driver = await spec.build({browser: 'ie-11', remote: 'sauce'})
     eyes = getEyes()
   })
 

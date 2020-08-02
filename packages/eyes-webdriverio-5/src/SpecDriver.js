@@ -1,5 +1,5 @@
 const {TypeUtils} = require('@applitools/eyes-sdk-core')
-const LegacySelector = require('./LegacySelector')
+const {LegacySelector, withLegacyDriverAPI} = require('./LegacyAPI')
 
 // #region HELPERS
 
@@ -257,6 +257,14 @@ async function cleanup(browser) {
 
 // #endregion
 
+// #region LEGACY API
+
+function wrapDriver(browser) {
+  return withLegacyDriverAPI(browser)
+}
+
+// #endregion
+
 exports.isDriver = isDriver
 exports.isElement = isElement
 exports.isSelector = isSelector
@@ -293,3 +301,5 @@ exports.waitUntilDisplayed = waitUntilDisplayed
 
 exports.build = build
 exports.cleanup = cleanup
+
+exports.wrapDriver = wrapDriver

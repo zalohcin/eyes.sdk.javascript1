@@ -319,4 +319,6 @@ module.exports = [
   {name: 'CheckStaleElement', executionMode: {isCssStitching: true}},
   {name: 'CheckRefreshableElement', executionMode: {isCssStitching: true}},
   {name: 'CheckRefreshableElementInsideFrame', executionMode: {isCssStitching: true}},
+  {name: 'CheckRegionInFrameLargerThenViewport', executionMode: {isCssStitching: true}},
+  {name: 'CheckRegionInFrameLargerThenViewport', executionMode: {isScrollStitching: true}},
 ]

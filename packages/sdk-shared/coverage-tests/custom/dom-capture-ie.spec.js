@@ -7,12 +7,12 @@ const {Target} = require(cwd)
 const {assertImage} = require('../util/ApiAssertions')
 
 describe('Coverage Tests', async () => {
-  describe('edge (@edge18)', () => {
+  describe('edge (@edge)', () => {
     let eyes
     let driver
 
     before(async () => {
-      driver = await spec.build({browser: 'edge18', remote: 'sauce'})
+      driver = await spec.build({browser: 'edge-18', remote: 'sauce'})
       eyes = getEyes()
     })
 
@@ -32,12 +32,12 @@ describe('Coverage Tests', async () => {
       })
     })
   })
-  describe('ie (@ie11)', () => {
+  describe('ie (@ie)', () => {
     let eyes
     let driver
 
     before(async () => {
-      driver = await spec.build({browser: 'ie11', remote: 'sauce', legacy: true})
+      driver = await spec.build({browser: 'ie-11', remote: 'sauce', legacy: true})
       eyes = getEyes()
     })
 

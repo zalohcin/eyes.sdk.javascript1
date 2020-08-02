@@ -7,7 +7,7 @@ if (!process.env.APPLITOOLS_WDIO_MAJOR_VERSION) {
 }
 
 const {EyesClassic, EyesVisualGrid, EyesFactory, CheckSettings} = require('./src/WDIOSDK')
-const LegacySelector = require('./src/LegacySelector')
+const {LegacySelector} = require('./src/LegacyAPI')
 
 /**
  * @typedef {import('./src/SpecWrappedDriver').Driver} Driver

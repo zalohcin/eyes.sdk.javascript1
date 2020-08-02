@@ -212,7 +212,7 @@ class EyesVisualGrid extends EyesCore {
 
     await this._initCommon()
 
-    return this._driver.proxy
+    return this._driver.wrapper
   }
   /**
    * @param {string|CheckSettings<TElement, TSelector>} [nameOrCheckSettings] - name of the test case

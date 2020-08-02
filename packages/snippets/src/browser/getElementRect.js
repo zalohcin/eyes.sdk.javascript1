@@ -26,7 +26,7 @@ module.exports = function getElementRect({element, isClient = false} = {}) {
       rect.y += fixedAncestorInnerOffset.y
     }
   } else {
-    const documentInnerOffset = getElementInnerOffset({element: document.documentElement})
+    const documentInnerOffset = getElementInnerOffset()
     rect.x += documentInnerOffset.x
     rect.y += documentInnerOffset.y
   }

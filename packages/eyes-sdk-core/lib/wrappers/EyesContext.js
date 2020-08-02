@@ -338,16 +338,15 @@ class EyesContext {
 
   async getLocationInViewport() {
     let location = Location.ZERO
-    for (const context of this.path) {
-      const contextLocation = await context.getClientLocation()
-      const parentContextInnerOffset = context.parent
-        ? await context.parent.getInnerOffset()
+    let currentContext = this
+    while (currentContext) {
+      const contextLocation = await currentContext.getClientLocation()
+      const parentContextInnerOffset = currentContext.parent
+        ? await currentContext.parent.getInnerOffset()
         : Location.ZERO
 
-      location = location.offset(
-        contextLocation.getX() - parentContextInnerOffset.getX(),
-        contextLocation.getY() - parentContextInnerOffset.getY(),
-      )
+      location = location.offsetByLocation(contextLocation).offsetNegative(parentContextInnerOffset)
+      currentContext = currentContext.parent
     }
     return location
   }

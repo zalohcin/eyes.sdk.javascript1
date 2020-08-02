@@ -75,8 +75,8 @@ class EyesDriver {
     throw new TypeError('The class is not specialized. Create a specialize EyesDriver first')
   }
 
-  get proxy() {
-    return this._proxy
+  get wrapper() {
+    return this._wrapper
   }
 
   get currentContext() {
@@ -146,9 +146,7 @@ class EyesDriver {
       this._userAgentString = await EyesUtils.getUserAgent(this._logger, this)
       this._userAgent = UserAgent.parseUserAgentString(this._userAgentString, true)
     }
-    this._proxy = this.spec.proxifyDriver
-      ? this.spec.proxifyDriver(this._driver, this)
-      : this._driver
+    this._wrapper = this.spec.wrapDriver ? this.spec.wrapDriver(this._driver, this) : this._driver
     return this
   }
 

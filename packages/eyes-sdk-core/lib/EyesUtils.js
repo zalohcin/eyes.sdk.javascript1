@@ -487,8 +487,10 @@ async function ensureRegionVisible(logger, context, positionProvider, region) {
       remainingOffset.offsetNegative(scrollRootOffset),
       scrollRootElement,
     )
-    remainingOffset = remainingOffset.offsetNegative(actualOffset)
-    remainingOffset = remainingOffset.offsetByLocation(await currentContext.getClientLocation())
+
+    remainingOffset = remainingOffset
+      .offsetNegative(actualOffset)
+      .offsetByLocation(await currentContext.getClientLocation())
     currentContext = currentContext.parent
   }
   return remainingOffset
