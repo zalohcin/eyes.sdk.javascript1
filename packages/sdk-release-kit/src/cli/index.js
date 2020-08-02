@@ -57,8 +57,12 @@ const {gitAdd, gitCommit, gitPullWithRebase, gitPushWithTags, isStagedForCommit}
         await gitPullWithRebase()
         await lint(cwd)
         await verifyChangelog(cwd)
-        await verifyVersions({isFix: args.fix, pkgPath: cwd})
-        await verifyCommits({pkgPath: cwd, isForce: process.env.BONGO_VERIFY_COMMITS_FORCE})
+        if (!process.env.BONGO_SKIP_VERIFY_VERSIONS) {
+          await verifyVersions({isFix: args.fix, pkgPath: cwd})
+        }
+        if (!process.env.BONGO_SKIP_VERIFY_COMMITS) {
+          await verifyCommits({pkgPath: cwd})
+        }
         createDotFolder(cwd)
         await packInstall(cwd)
         return await verifyInstalledVersions({
