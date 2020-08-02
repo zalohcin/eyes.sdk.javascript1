@@ -7,7 +7,7 @@ async function yarnInstall() {
 }
 
 async function yarnUpgrade() {
-  await pexec(`yarn upgrade`)
+  await pexec(`yarn upgrade --exact --latest --pattern "@applitools/"`)
 }
 
 module.exports = {
