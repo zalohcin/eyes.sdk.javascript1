@@ -63,12 +63,14 @@ const {gitAdd, gitCommit, gitPullWithRebase, gitPushWithTags, isStagedForCommit}
         if (!process.env.BONGO_SKIP_VERIFY_COMMITS) {
           await verifyCommits({pkgPath: cwd})
         }
-        createDotFolder(cwd)
-        await packInstall(cwd)
-        return await verifyInstalledVersions({
-          pkgPath: cwd,
-          installedDirectory: path.join('.bongo', 'dry-run'),
-        })
+        if (!process.env.BONGO_SKIP_VERIFY_INSTALLED_VERSIONS) {
+          createDotFolder(cwd)
+          await packInstall(cwd)
+          return await verifyInstalledVersions({
+            pkgPath: cwd,
+            installedDirectory: path.join('.bongo', 'dry-run'),
+          })
+        }
       case 'send-release-notification':
       case 'hello-world':
         return await sendReleaseNotification(cwd, args.recipient)
