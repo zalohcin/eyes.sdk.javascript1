@@ -57,6 +57,14 @@
 			"path": "packages/snippets"
 		},
 		{
+			"name": "dom-capture",
+			"path": "packages/dom-capture"
+		},
+		{
+			"name": "dom-snapshot",
+			"path": "packages/dom-snapshot"
+		},
+		{
 			"name": "vgc",
 			"path": "packages/visual-grid-client"
 		},
