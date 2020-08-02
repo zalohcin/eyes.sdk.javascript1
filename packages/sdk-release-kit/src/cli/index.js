@@ -71,6 +71,7 @@ const {gitAdd, gitCommit, gitPullWithRebase, gitPushWithTags, isStagedForCommit}
             installedDirectory: path.join('.bongo', 'dry-run'),
           })
         }
+        return
       case 'send-release-notification':
       case 'hello-world':
         return await sendReleaseNotification(cwd, args.recipient)
