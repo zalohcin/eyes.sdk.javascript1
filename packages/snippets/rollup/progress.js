@@ -20,7 +20,7 @@ module.exports = function progress({total} = {}) {
         const percent = Math.round((100 * loaded.size) / total)
         output += `${Math.min(100, percent)}% `
       }
-      output += `(${chalk.green(loaded.size)}): ${id}`
+      output += `(${chalk.green(`${loaded.size}/${total}`)}): ${id}`
       if (output.length < process.stdout.columns) {
         process.stdout.write(output)
       } else {
