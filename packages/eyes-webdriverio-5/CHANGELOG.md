@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- removed yarn workspaces
 
 ## 5.19.3 - 2020/7/29
 

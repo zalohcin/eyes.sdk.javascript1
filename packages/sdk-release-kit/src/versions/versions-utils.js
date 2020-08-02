@@ -1,9 +1,11 @@
+const fs = require('fs')
 const path = require('path')
 const chalk = require('chalk')
 const {isMatch} = require('micromatch')
 const {exec} = require('child_process')
 const {promisify} = require('util')
 const pexec = promisify(exec)
+const cwd = process.cwd()
 
 function _isAlreadyChecked({pkgName, dep, results}) {
   return results.find(result => result.pkgName === pkgName && result.dep === dep)
@@ -14,16 +16,9 @@ function _isWorkspacePackage({pkgs, pkgName}) {
 }
 
 function makePackagesList() {
-  const {packages} = require(path.join(
-    __dirname,
-    '..',
-    '..',
-    '..',
-    '..',
-    'package.json',
-  )).workspaces
+  const packages = fs.readdirSync(path.join(cwd, '..'))
   return packages.map(pkgPath => {
-    const pkgDir = path.join(__dirname, '..', '..', '..', '..', pkgPath)
+    const pkgDir = path.join(cwd, '..', pkgPath)
     const packageJson = require(path.join(pkgDir, 'package.json'))
     return {
       name: packageJson.name,

@@ -33,6 +33,7 @@ const sendReleaseNotification = require('../send-report')
 const {createDotFolder} = require('../setup')
 const {verifyCommits, verifyInstalledVersions, verifyVersions} = require('../versions')
 const {gitAdd, gitCommit, gitPullWithRebase, gitPushWithTags, isStagedForCommit} = require('../git')
+const {yarnInstall, yarnUpgrade} = require('../yarn')
 
 ;(async () => {
   try {
@@ -54,17 +55,28 @@ const {gitAdd, gitCommit, gitPullWithRebase, gitPushWithTags, isStagedForCommit}
       case 'preversion':
       case 'pre-version':
       case 'release-pre-check':
+        console.log('git pull')
         await gitPullWithRebase()
+        console.log('lint')
         await lint(cwd)
+        console.log('verify changelog')
         await verifyChangelog(cwd)
+        console.log('yarn install')
+        await yarnInstall()
+        console.log('yarn upgrade')
+        await yarnUpgrade()
+        console.log('verify versions')
         await verifyVersions({isFix: args.fix, pkgPath: cwd})
+        console.log('verify commits')
         await verifyCommits({pkgPath: cwd, isForce: process.env.BONGO_VERIFY_COMMITS_FORCE})
+        console.log('verify installed versions')
         createDotFolder(cwd)
         await packInstall(cwd)
         return await verifyInstalledVersions({
           pkgPath: cwd,
           installedDirectory: path.join('.bongo', 'dry-run'),
         })
+        console.log('done!')
       case 'send-release-notification':
       case 'hello-world':
         return await sendReleaseNotification(cwd, args.recipient)
