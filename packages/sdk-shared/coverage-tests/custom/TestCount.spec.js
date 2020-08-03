@@ -17,7 +17,7 @@ describe('TestCounts', () => {
   })
 
   it('Test_VGTestsCount_1', async () => {
-    await eyes.open(driver, 'Test Count', 'Test_VGTestsCount_1')
+    await eyes.open(driver, 'Test Count', 'Test_VGTestsCount_1', {width: 800, height: 600})
     await eyes.check('Test', Target.window())
     await eyes.close()
     let results = await runner.getAllTestResults()
@@ -55,7 +55,7 @@ describe('TestCounts', () => {
     conf.setAppName('Test Count')
     conf.setTestName('Test_VGTestsCount_4')
     eyes.setConfiguration(conf)
-    await eyes.open(driver)
+    await eyes.open(driver, undefined, undefined, {width: 800, height: 600})
     await eyes.check('Test', Target.window())
     await eyes.close()
     let results = await runner.getAllTestResults()

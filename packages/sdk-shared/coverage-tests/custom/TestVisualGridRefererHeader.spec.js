@@ -35,7 +35,7 @@ describe('TestVisualGridRefererHeader', () => {
     const url = 'http://localhost:5555/cors.html'
     await spec.visit(driver, url)
     const eyes = getEyes('VG')
-    await eyes.open(driver, 'VgFetch', ' VgFetch referer')
+    await eyes.open(driver, 'VgFetch', ' VgFetch referer', {width: 800, height: 600})
     await eyes.check('referer', Target.window())
     await eyes.close()
   })
