@@ -133,7 +133,8 @@ function Env(
       env.capabilities = Object.assign(env.capabilities, preset.capabilities)
     }
   } else if (protocol === 'cdp') {
-    env.url = new URL(url || process.env.CVG_TESTS_CDP_REMOTE)
+    url = url || process.env.CVG_TESTS_CDP_REMOTE
+    env.url = url ? new URL(url) : undefined
   }
   return env
 }

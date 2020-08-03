@@ -1,5 +1,5 @@
 const assert = require('assert')
-const {TestSetup} = require('@applitools/sdk-coverage-tests/coverage-tests')
+const {testSetup} = require('@applitools/sdk-shared')
 const spec = require('../../src/SpecDriver')
 
 describe('SpecDriver', async () => {
@@ -8,7 +8,7 @@ describe('SpecDriver', async () => {
 
   describe('headless desktop', async () => {
     before(async () => {
-      page = await spec.build(TestSetup.Env({browser: 'chrome'}))
+      page = await spec.build(testSetup.Env({browser: 'chrome'}, 'cdp'))
       await page.goto(url)
     })
 
@@ -53,7 +53,7 @@ describe('SpecDriver', async () => {
 
   describe('onscreen desktop', async () => {
     before(async () => {
-      page = await spec.build(TestSetup.Env({browser: 'chrome', headless: false}))
+      page = await spec.build(testSetup.Env({browser: 'chrome', headless: false}, 'cdp'))
     })
 
     after(async () => {

@@ -153,7 +153,7 @@ async function build(env) {
     options.args.forEach(arg => url.searchParams.set(...arg.split('=')))
     driver = await launcher.connect({wsEndpoint: url.href})
   } else {
-    driver = launcher.launch(options)
+    driver = await launcher.launch(options)
   }
   const context = await driver.newContext(device ? playwright.devices[device] : {})
   return context.newPage()

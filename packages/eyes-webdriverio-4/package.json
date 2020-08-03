@@ -37,6 +37,7 @@
     "@applitools/sdk-coverage-tests": "1.0.0",
     "@applitools/sdk-fake-eyes-server": "^2.0.0",
     "@applitools/sdk-release-kit": "0.1.0",
+    "@applitools/sdk-shared": "0.1.0",
     "@types/webdriverio": "^4.13.3",
     "axios": "^0.19.2",
     "chai": "^4.2.0",
