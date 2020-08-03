@@ -25,7 +25,7 @@
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
   },
   "dependencies": {
-    "@applitools/sdk-coverage-tests": "1.0.13",
+    "@applitools/sdk-coverage-tests": "1.0.12",
     "@applitools/functional-commons": "1.5.4",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",

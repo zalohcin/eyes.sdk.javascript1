@@ -347,7 +347,7 @@ async function setOverflow(_logger, context, overflow, element) {
  * @return {Promise<TElement>} actually blurred element if there is any
  */
 async function blurElement(logger, context, element) {
-  return context.execute(snippets.blurElement, {element}).then(err => {
+  return context.execute(snippets.blurElement, {element}).catch(err => {
     logger.verbose('WARNING: Cannot hide caret!', err)
     return null
   })

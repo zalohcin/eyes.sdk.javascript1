@@ -165,7 +165,7 @@ class EyesElement {
     try {
       const result = await operation()
       // Some frameworks could handle stale element reference error by itself or doesn't throw an error
-      if (this.spec.isStaleElementError(result)) {
+      if (this.spec.isStaleElementError(result, this.selector)) {
         const freshElement = this.spec.extractElement ? this.spec.extractElement(result) : result
         await this.refresh(freshElement)
         return operation()

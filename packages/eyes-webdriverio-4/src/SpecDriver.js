@@ -60,12 +60,13 @@ function toEyesSelector(selector) {
   }
   return {selector}
 }
-function isStaleElementError(error, element) {
+function isStaleElementError(error, selector) {
   if (!error) return false
   const errOrResult = error.originalError || error
+  console.log(errOrResult)
   return errOrResult instanceof Error
     ? errOrResult.seleniumStack && errOrResult.seleniumStack.type === 'StaleElementReference'
-    : errOrResult.value && errOrResult.selector && errOrResult.selector === element.selector
+    : errOrResult.value && errOrResult.selector && errOrResult.selector === selector
 }
 function isEqualElements(_browser, element1, element2) {
   if (!element1 || !element2) return false
@@ -95,10 +96,11 @@ async function childContext(browser, element) {
   return browser
 }
 async function findElement(browser, selector) {
-  const {value} = await browser.element(
+  // We don't need to destruct "value" to be able to extract a selector from response
+  const element = await browser.element(
     selector instanceof LegacySelector ? selector.toString() : transformSelector(selector),
   )
-  return value
+  return element
 }
 async function findElements(browser, selector) {
   const {value} = await browser.elements(

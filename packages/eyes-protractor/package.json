@@ -35,13 +35,12 @@
     "test": "./test"
   },
   "main": "./index.js",
-  "typings": "./typings/index.d.ts",
   "dependencies": {
     "@applitools/eyes-sdk-core": "11.5.0",
     "@applitools/visual-grid-client": "14.6.0"
   },
   "devDependencies": {
-    "@applitools/sdk-coverage-tests": "1.0.0",
+    "@applitools/sdk-coverage-tests": "1.0.12",
     "@applitools/sdk-fake-eyes-server": "^2.0.0",
     "@applitools/sdk-release-kit": "0.1.0",
     "@applitools/sdk-shared": "0.1.0",
@@ -70,7 +69,7 @@
     "coverage:generate": "coverage-tests create-tests",
     "coverage:sandbox": "yarn coverage:generate && yarn test:coverage && coverage-tests process-report",
     "coverage:prod": "yarn coverage:generate && yarn test:coverage && coverage-tests process-report --send-report prod",
-    "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-protractor' APPLITOOLS_BATCH_ID=$(uuidgen) XUNIT_FILE=coverage-test-report.xml mocha --no-timeouts --reporter spec-xunit-file --parallel --jobs 15 --grep '(@native|AppiumAndroidCheckRegion)' --invert {'./test/coverage/generic/*.spec.js','../sdk-coverage-tests/coverage-tests/custom/**/*.spec.js'}",
+    "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-protractor' APPLITOOLS_BATCH_ID=$(uuidgen) XUNIT_FILE=coverage-test-report.xml mocha --config .mocharc.cvg.js",
     "types:generate": "rm -rf ./typings && tsc --declaration --declarationDir ./typings --allowJs --emitDeclarationOnly ./index.js",
     "preversion": "bongo preversion && yarn test && yarn coverage:prod",
     "version": "bongo version",
