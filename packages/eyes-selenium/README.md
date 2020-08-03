@@ -33,7 +33,7 @@
   * [close](#close)
 - [Runners](#runners)
   * [Purpose of runners](#purpose-of-runners)
-    + [1. Use the Ultra fast grid](#1-use-the-ultra-fast-grid)
+    + [1. Use the Ultrafast grid](#1-use-the-ultra-fast-grid)
     + [2. Manage tests across multiple `Eyes` instances](#2-manage-tests-across-multiple-eyes-instances)
 - [Recipes for common tasks](#recipes-for-common-tasks)
   * [Configure Server URL](#configure-server-url)
@@ -52,7 +52,7 @@
   * [Test properties](#test-properties)
   * [Test results](#test-results)
   * [Logging](#logging)
-  * [Configuring browsers for the Ultra fast grid](#configuring-browsers-for-the-ultra-fast-grid)
+  * [Configuring browsers for the Ultrafast grid](#configuring-browsers-for-the-ultra-fast-grid)
 
 
 ## Installation
@@ -403,7 +403,7 @@ const {ClassicRunner} = require('@applitools/eyes-selenium')
 const runner = new ClassicRunner()
 ```
 
-2. `VisualGridRunner` - used when the screenshot is taken by the **Ultra fast grid**.
+2. `VisualGridRunner` - used when the screenshot is taken by the **Ultrafast grid**.
 
 ```js
 const {VisualGridRunner} = require('@applitools/eyes-selenium')
@@ -416,7 +416,7 @@ const runner = new VisualGridRunner(concurrentSessions)
 
 There are two purposes for using runners:
 
-#### 1. Use the Ultra fast grid
+#### 1. Use the Ultrafast grid
 
 This is done simply by specifying the `VisualGridRunner`. Browsers are specified by using the [`Configuration`](#configuration) API. For example:
 
@@ -792,9 +792,9 @@ eyes.setLogHandler(new FileLogHandler(false, path.resolve('logs', 'eyes.log')))
 eyes.setLogHandler(new FileLogHandler(true, path.resolve('logs', `eyes-${Date.now()}.log`), false))
 ```
 
-### Configuring browsers for the Ultra fast grid
+### Configuring browsers for the Ultrafast grid
 
-When it comes to multiple browsers and mobile devices, the Ultra fast grid shines.
+When it comes to multiple browsers and mobile devices, the Ultrafast grid shines.
 It's now possible to run one functional test, and in the background have multiple screenshots rendered for different browsers, viewport sizes, and mobile devices.
 
 The API methods are:
