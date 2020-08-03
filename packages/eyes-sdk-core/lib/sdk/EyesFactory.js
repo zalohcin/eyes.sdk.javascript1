@@ -1,12 +1,12 @@
 'use strict'
-const Configuration = require('./config/Configuration')
-const CorsIframeHandles = require('./capture/CorsIframeHandles')
-const EyesRunner = require('./runner/EyesRunner')
-const ClassicRunner = require('./runner/ClassicRunner')
-const VisualGridRunner = require('./runner/VisualGridRunner')
+const Configuration = require('../config/Configuration')
+const CorsIframeHandles = require('../capture/CorsIframeHandles')
+const EyesRunner = require('../runner/EyesRunner')
+const ClassicRunner = require('../runner/ClassicRunner')
+const VisualGridRunner = require('../runner/VisualGridRunner')
 
 /**
- * @typedef {import('./runner/EyesRunner')} EyesRunner
+ * @typedef {import('../runner/EyesRunner')} EyesRunner
  */
 
 /**

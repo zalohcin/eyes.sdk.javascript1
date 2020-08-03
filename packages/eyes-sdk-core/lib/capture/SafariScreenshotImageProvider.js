@@ -2,7 +2,7 @@
 const OSNames = require('../useragent/OSNames')
 const Region = require('../geometry/Region')
 const ImageProvider = require('./ImageProvider')
-const EyesUtils = require('../EyesUtils')
+const EyesUtils = require('../sdk/EyesUtils')
 
 class SafariScreenshotImageProvider extends ImageProvider {
   /**

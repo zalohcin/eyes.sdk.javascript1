@@ -1,19 +1,19 @@
 const snippets = require('@applitools/snippets')
-const GeneralUtils = require('./utils/GeneralUtils')
-const ArgumentGuard = require('./utils/ArgumentGuard')
-const CoordinatesTypes = require('./geometry/CoordinatesType')
-const Location = require('./geometry/Location')
-const RectangleSize = require('./geometry/RectangleSize')
-const Region = require('./geometry/Region')
-const EyesError = require('./errors/EyesError')
-const EyesDriverOperationError = require('./errors/EyesDriverOperationError')
+const GeneralUtils = require('../utils/GeneralUtils')
+const ArgumentGuard = require('../utils/ArgumentGuard')
+const CoordinatesTypes = require('../geometry/CoordinatesType')
+const Location = require('../geometry/Location')
+const RectangleSize = require('../geometry/RectangleSize')
+const Region = require('../geometry/Region')
+const EyesError = require('../errors/EyesError')
+const EyesDriverOperationError = require('../errors/EyesDriverOperationError')
 
 /**
- * @typedef {import('./logging/Logger')} Logger
- * @typedef {import('./wrappers/EyesElement')} EyesElement
- * @typedef {import('./wrappers/EyesContext')} EyesContext
- * @typedef {import('./wrappers/EyesElement')} EyesElement
- * @typedef {import('./positioning/PositionProvider')} PositionProvider
+ * @typedef {import('../logging/Logger')} Logger
+ * @typedef {import('./EyesElement')} EyesElement
+ * @typedef {import('./EyesContext')} EyesContext
+ * @typedef {import('./EyesElement')} EyesElement
+ * @typedef {import('../positioning/PositionProvider')} PositionProvider
  */
 
 /**

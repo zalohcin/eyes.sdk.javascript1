@@ -6,7 +6,7 @@ const RectangleSize = require('../geometry/RectangleSize')
 const Region = require('../geometry/Region')
 const MutableImage = require('../images/MutableImage')
 const UserAgent = require('../useragent/UserAgent')
-const EyesUtils = require('../EyesUtils')
+const EyesUtils = require('./EyesUtils')
 
 /**
  * @template TDriver, TElement, TSelector

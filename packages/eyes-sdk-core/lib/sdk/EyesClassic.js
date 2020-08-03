@@ -1,24 +1,24 @@
 'use strict'
-const StitchMode = require('./config/StitchMode')
-const TypeUtils = require('./utils/TypeUtils')
-const ArgumentGuard = require('./utils/ArgumentGuard')
-const CoordinatesType = require('./geometry/CoordinatesType')
-const Region = require('./geometry/Region')
-const Location = require('./geometry/Location')
-const FailureReports = require('./FailureReports')
-const MatchResult = require('./match/MatchResult')
-const FullPageCaptureAlgorithm = require('./capture/FullPageCaptureAlgorithm')
-const EyesScreenshot = require('./capture/EyesScreenshotNew')
-const EyesScreenshotFactory = require('./capture/EyesScreenshotFactory')
-const NullRegionProvider = require('./positioning/NullRegionProvider')
-const RegionProvider = require('./positioning/RegionProvider')
-const RegionPositionCompensationFactory = require('./positioning/RegionPositionCompensationFactory')
-const CssTranslatePositionProvider = require('./positioning/CssTranslatePositionProvider')
-const ScrollPositionProvider = require('./positioning/ScrollPositionProvider')
-const CssTranslateElementPositionProvider = require('./positioning/CssTranslateElementPositionProvider')
-const ScrollElementPositionProvider = require('./positioning/ScrollElementPositionProvider')
-const ClassicRunner = require('./runner/ClassicRunner')
-const DomCapture = require('./DomCapture')
+const StitchMode = require('../config/StitchMode')
+const TypeUtils = require('../utils/TypeUtils')
+const ArgumentGuard = require('../utils/ArgumentGuard')
+const CoordinatesType = require('../geometry/CoordinatesType')
+const Region = require('../geometry/Region')
+const Location = require('../geometry/Location')
+const FailureReports = require('../FailureReports')
+const MatchResult = require('../match/MatchResult')
+const FullPageCaptureAlgorithm = require('../capture/FullPageCaptureAlgorithm')
+const EyesScreenshot = require('../capture/EyesScreenshotNew')
+const EyesScreenshotFactory = require('../capture/EyesScreenshotFactory')
+const NullRegionProvider = require('../positioning/NullRegionProvider')
+const RegionProvider = require('../positioning/RegionProvider')
+const RegionPositionCompensationFactory = require('../positioning/RegionPositionCompensationFactory')
+const CssTranslatePositionProvider = require('../positioning/CssTranslatePositionProvider')
+const ScrollPositionProvider = require('../positioning/ScrollPositionProvider')
+const CssTranslateElementPositionProvider = require('../positioning/CssTranslateElementPositionProvider')
+const ScrollElementPositionProvider = require('../positioning/ScrollElementPositionProvider')
+const ClassicRunner = require('../runner/ClassicRunner')
+const DomCapture = require('../DomCapture')
 const EyesUtils = require('./EyesUtils')
 const EyesCore = require('./EyesCore')
 
@@ -34,7 +34,7 @@ const EyesCore = require('./EyesCore')
 
 /**
  * @template TElement, TSelector
- * @typedef {import('./fluent/DriverCheckSettings')<TElement, TSelector>} CheckSettings
+ * @typedef {import('../fluent/DriverCheckSettings')<TElement, TSelector>} CheckSettings
  */
 
 /**

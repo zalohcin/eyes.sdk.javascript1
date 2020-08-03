@@ -1,7 +1,7 @@
 const TypeUtils = require('../utils/TypeUtils')
 const Location = require('../geometry/Location')
 const Region = require('../geometry/Region')
-const EyesUtils = require('../EyesUtils')
+const EyesUtils = require('./EyesUtils')
 const EyesElement = require('./EyesElement')
 
 class EyesContext {

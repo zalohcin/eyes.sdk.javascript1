@@ -3,7 +3,7 @@ const ArgumentGuard = require('../utils/ArgumentGuard')
 const Location = require('../geometry/Location')
 const PositionProvider = require('./PositionProvider')
 const PositionMemento = require('./PositionMemento')
-const EyesUtils = require('../EyesUtils')
+const EyesUtils = require('../sdk/EyesUtils')
 
 /**
  * @typedef {import('../geometry/RectangleSize')} RectangleSize

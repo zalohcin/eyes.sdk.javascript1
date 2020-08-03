@@ -2,7 +2,7 @@
 const AccessibilityMatchSettings = require('../config/AccessibilityMatchSettings')
 const CoordinatesTypes = require('../geometry/CoordinatesType')
 const GetAccessibilityRegion = require('./GetAccessibilityRegion')
-const EyesUtils = require('../EyesUtils')
+const EyesUtils = require('../sdk/EyesUtils')
 
 /**
  * @typedef {import('../config/AccessibilityRegionType').AccessibilityRegionType} AccessibilityRegionType

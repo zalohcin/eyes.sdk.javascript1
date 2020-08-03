@@ -1,6 +1,6 @@
 'use strict'
 const GetRegion = require('./GetRegion')
-const EyesUtils = require('../EyesUtils')
+const EyesUtils = require('../sdk/EyesUtils')
 
 /**
  * @typedef {import('../config/AccessibilityRegionType').AccessibilityRegionType} AccessibilityRegionType

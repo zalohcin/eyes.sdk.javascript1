@@ -2,7 +2,7 @@
 const CoordinatesType = require('../geometry/CoordinatesType')
 const FloatingMatchSettings = require('../config/FloatingMatchSettings')
 const GetFloatingRegion = require('./GetFloatingRegion')
-const EyesUtils = require('../EyesUtils')
+const EyesUtils = require('../sdk/EyesUtils')
 
 /**
  * @typedef {import('../config/AccessibilityRegionType').AccessibilityRegionType} AccessibilityRegionType

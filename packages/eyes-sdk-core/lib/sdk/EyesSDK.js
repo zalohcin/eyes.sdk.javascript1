@@ -1,10 +1,10 @@
 const EyesClassic = require('./EyesClassic')
 const EyesVisualGrid = require('./EyesVisualGrid')
 const EyesFactory = require('./EyesFactory')
-const EyesDriver = require('./wrappers/EyesDriver')
-const EyesContext = require('./wrappers/EyesContext')
-const EyesElement = require('./wrappers/EyesElement')
-const CheckSettings = require('./fluent/DriverCheckSettings')
+const EyesDriver = require('./EyesDriver')
+const EyesContext = require('./EyesContext')
+const EyesElement = require('./EyesElement')
+const CheckSettings = require('../fluent/DriverCheckSettings')
 
 function EyesSDK({name, version, spec, VisualGridClient}) {
   const SDKElement = EyesElement.specialize(spec)

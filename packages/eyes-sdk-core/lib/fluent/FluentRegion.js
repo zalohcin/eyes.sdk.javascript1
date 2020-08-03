@@ -1,6 +1,6 @@
 'use strict'
 const CoordinatesTypes = require('../geometry/CoordinatesType')
-const EyesUtils = require('../EyesUtils')
+const EyesUtils = require('../sdk/EyesUtils')
 
 /**
  * @internal

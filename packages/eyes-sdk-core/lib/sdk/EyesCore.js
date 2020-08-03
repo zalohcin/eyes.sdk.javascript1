@@ -1,27 +1,27 @@
-const ArgumentGuard = require('./utils/ArgumentGuard')
-const Region = require('./geometry/Region')
-const Location = require('./geometry/Location')
-const RectangleSize = require('./geometry/RectangleSize')
-const ImageRotation = require('./positioning/ImageRotation')
-const ReadOnlyPropertyHandler = require('./handler/ReadOnlyPropertyHandler')
-const TestFailedError = require('./errors/TestFailedError')
+const ArgumentGuard = require('../utils/ArgumentGuard')
+const Region = require('../geometry/Region')
+const Location = require('../geometry/Location')
+const RectangleSize = require('../geometry/RectangleSize')
+const ImageRotation = require('../positioning/ImageRotation')
+const ReadOnlyPropertyHandler = require('../handler/ReadOnlyPropertyHandler')
+const TestFailedError = require('../errors/TestFailedError')
 const EyesBase = require('./EyesBase')
-const Logger = require('./logging/Logger')
-const NullCutProvider = require('./cropping/NullCutProvider')
-const EyesScreenshot = require('./capture/EyesScreenshotNew')
-const GeneralUtils = require('./utils/GeneralUtils')
-const SimplePropertyHandler = require('./handler/SimplePropertyHandler')
-const NullScaleProvider = require('./scaling/NullScaleProvider')
-const ScaleProviderIdentityFactory = require('./scaling/ScaleProviderIdentityFactory')
-const FixedScaleProviderFactory = require('./scaling/FixedScaleProviderFactory')
-const ContextBasedScaleProviderFactory = require('./scaling/ContextBasedScaleProviderFactory')
-const ImageProviderFactory = require('./capture/ImageProviderFactory')
+const Logger = require('../logging/Logger')
+const NullCutProvider = require('../cropping/NullCutProvider')
+const EyesScreenshot = require('../capture/EyesScreenshotNew')
+const GeneralUtils = require('../utils/GeneralUtils')
+const SimplePropertyHandler = require('../handler/SimplePropertyHandler')
+const NullScaleProvider = require('../scaling/NullScaleProvider')
+const ScaleProviderIdentityFactory = require('../scaling/ScaleProviderIdentityFactory')
+const FixedScaleProviderFactory = require('../scaling/FixedScaleProviderFactory')
+const ContextBasedScaleProviderFactory = require('../scaling/ContextBasedScaleProviderFactory')
+const ImageProviderFactory = require('../capture/ImageProviderFactory')
 
 const UNKNOWN_DEVICE_PIXEL_RATIO = 0
 const DEFAULT_DEVICE_PIXEL_RATIO = 1
 
 /**
- * @typedef {import('./geometry/Region').RegionObject} RegionObject
+ * @typedef {import('../geometry/Region').RegionObject} RegionObject
  */
 
 /**

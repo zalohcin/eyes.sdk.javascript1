@@ -2,7 +2,7 @@
 const ElementNotFoundError = require('../errors/ElementNotFoundError')
 const Region = require('../geometry/Region')
 const CoordinatesTypes = require('../geometry/CoordinatesType')
-const EyesUtils = require('../EyesUtils')
+const EyesUtils = require('./EyesUtils')
 
 /**
  * @template TDriver - TDriver provided by wrapped framework

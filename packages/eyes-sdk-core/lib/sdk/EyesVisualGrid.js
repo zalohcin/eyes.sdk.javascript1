@@ -1,18 +1,18 @@
 'use strict'
 
-const BrowserType = require('./config/BrowserType')
-const Configuration = require('./config/Configuration')
-const TypeUtils = require('./utils/TypeUtils')
-const ArgumentGuard = require('./utils/ArgumentGuard')
-const TestResultsFormatter = require('./TestResultsFormatter')
-const MatchResult = require('./match/MatchResult')
-const CorsIframeHandler = require('./capture/CorsIframeHandler')
-const CorsIframeHandles = require('./capture/CorsIframeHandles')
-const VisualGridRunner = require('./runner/VisualGridRunner')
+const BrowserType = require('../config/BrowserType')
+const Configuration = require('../config/Configuration')
+const TypeUtils = require('../utils/TypeUtils')
+const ArgumentGuard = require('../utils/ArgumentGuard')
+const TestResultsFormatter = require('../TestResultsFormatter')
+const MatchResult = require('../match/MatchResult')
+const CorsIframeHandler = require('../capture/CorsIframeHandler')
+const CorsIframeHandles = require('../capture/CorsIframeHandles')
+const VisualGridRunner = require('../runner/VisualGridRunner')
 const EyesCore = require('./EyesCore')
 
 /**
- * @typedef {import('./capture/CorsIframeHandles').CorsIframeHandle} CorsIframeHandle
+ * @typedef {import('../capture/CorsIframeHandles').CorsIframeHandle} CorsIframeHandle
  */
 
 /**
@@ -57,7 +57,7 @@ const EyesCore = require('./EyesCore')
 
 /**
  * @template TElement, TSelector
- * @typedef {import('./fluent/DriverCheckSettings')<TElement, TSelector>} CheckSettings
+ * @typedef {import('../fluent/DriverCheckSettings')<TElement, TSelector>} CheckSettings
  */
 
 /**
