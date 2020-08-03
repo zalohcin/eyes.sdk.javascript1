@@ -25,7 +25,7 @@ class EyesElement {
     throw new TypeError('The class is not specialized. Create a specialize EyesElement first')
   }
 
-  constructor(logger, context, {element, selector} = {}) {
+  constructor(logger, context, {element, selector, index} = {}) {
     if (element instanceof EyesElement) {
       return element
     }
@@ -33,6 +33,7 @@ class EyesElement {
       this._element = this.spec.transformElement ? this.spec.transformElement(element) : element
       // Some frameworks contains information about the selector inside an element
       this._selector = selector || (this.spec.extractSelector && this.spec.extractSelector(element))
+      this._index = index
     } else if (this.spec.isSelector(selector)) {
       this._selector = selector
     } else {
@@ -75,22 +76,20 @@ class EyesElement {
     )
   }
 
-  async init() {
-    if (!this._element) {
+  async init(context) {
+    this._context = context
+    this._logger = context._logger
+    if (this._element) return this
+
+    if (this._selector) {
       const element = await this._context.element(this._selector)
-      if (!element) {
-        throw new ElementNotFoundError(this._selector)
-      }
+      if (!element) throw new ElementNotFoundError(this._selector)
       this._element = element.unwrapped
+      return element
     }
-    if (!this._logger) {
-      this._logger = this._context._logger
-    }
-    return this
   }
 
   async getRect() {
-    await this.init()
     return this.withRefresh(async () => {
       if (this._context.driver.isNative) {
         const rect = await this.spec.getElementRect(this._context.unwrapped, this._element)
@@ -108,28 +107,10 @@ class EyesElement {
   }
 
   async getClientRect() {
-    await this.init()
     return this.withRefresh(() => EyesUtils.getElementClientRect(this._logger, this._context, this))
   }
 
-  async getCssProperty(...properties) {
-    await this.init()
-    const values = await this.withRefresh(() =>
-      EyesUtils.getElementCssProperties(this._logger, this._context, properties, this),
-    )
-    return properties.length <= 1 ? values[0] : values
-  }
-
-  async getProperty(...properties) {
-    await this.init()
-    const values = await this.withRefresh(() =>
-      EyesUtils.getElementProperties(this._logger, this._context, properties, this),
-    )
-    return properties.length <= 1 ? values[0] : values
-  }
-
   async hideScrollbars() {
-    await this.init()
     return this.withRefresh(async () => {
       this._originalOverflow = await EyesUtils.setOverflow(
         this._logger,
@@ -142,14 +123,12 @@ class EyesElement {
   }
 
   async restoreScrollbars() {
-    await this.init()
     return this.withRefresh(async () => {
       await EyesUtils.setOverflow(this._logger, this._context, this._originalOverflow, this)
     })
   }
 
   async preservePosition(positionProvider) {
-    await this.init()
     return this.withRefresh(async () => {
       this._positionMemento = await positionProvider.getState(this)
       return this._positionMemento
@@ -158,7 +137,6 @@ class EyesElement {
 
   async restorePosition(positionProvider) {
     if (this._positionMemento) {
-      await this.init()
       return this.withRefresh(async () => {
         await positionProvider.restoreState(this._positionMemento, this)
       })

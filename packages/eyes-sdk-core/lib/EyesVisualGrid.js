@@ -248,20 +248,12 @@ class EyesVisualGrid extends EyesCore {
       }
       // this._logger.verbose(`Dom extracted  (${checkSettings.toString()})   $$$$$$$$$$$$`)
 
-      const [config, {region, selector}] = await Promise.all([
-        checkSettings.toCheckWindowConfiguration(this._driver),
-        this._getTargetConfiguration(checkSettings),
-      ])
-      const overrideConfig = {
-        fully: this.getForceFullPageScreenshot() || config.fully,
-        sendDom: (await this.getSendDom()) || config.sendDom,
-        matchLevel: this.getMatchLevel() || config.matchLevel,
-      }
+      const config = await checkSettings.toCheckWindowConfiguration(this._driver)
       await this._checkWindowCommand({
         ...config,
-        ...overrideConfig,
-        region,
-        selector,
+        fully: this.getForceFullPageScreenshot() || config.fully,
+        sendDom: this.getSendDom() || config.sendDom,
+        matchLevel: this.getMatchLevel() || config.matchLevel,
         resourceUrls,
         resourceContents,
         frames,
@@ -277,34 +269,18 @@ class EyesVisualGrid extends EyesCore {
    */
   async _checkPrepare(checkSettings, operation) {
     this._context = await this._driver.refreshContexts()
+    await this._context.main.setScrollRootElement(this._scrollRootElement)
+    await this._context.setScrollRootElement(checkSettings.getScrollRootElement())
     const originalContext = this._context
-    this._context = await this._context.attach(await checkSettings.context).focus()
+    if (checkSettings.getContext()) {
+      this._context = await this._context.context(checkSettings.getContext())
+      await this._context.focus()
+    }
     try {
       return await operation()
     } finally {
       this._context = await originalContext.focus()
     }
-  }
-  /**
-   * @private
-   * @param {CheckSettings<TElement, TSelector>} checkSettings
-   */
-  async _getTargetConfiguration(checkSettings) {
-    const targetSelector =
-      checkSettings.getTargetProvider() &&
-      checkSettings
-        .getTargetProvider()
-        .toPersistedRegions(this._driver)
-        .then(r => r[0])
-    const targetRegion =
-      checkSettings.getTargetRegion() &&
-      checkSettings
-        .getTargetRegion()
-        .toPersistedRegions(this._driver)
-        .then(r => r[0])
-
-    const [region, selector] = await Promise.all([targetRegion, targetSelector])
-    return {region, selector}
   }
   /**
    * @inheritDoc

@@ -4,19 +4,8 @@ const MatchLevel = require('../config/MatchLevel')
 const CoordinatesType = require('../geometry/CoordinatesType')
 const FloatingMatchSettings = require('../config/FloatingMatchSettings')
 const AccessibilityMatchSettings = require('../config/AccessibilityMatchSettings')
-const TargetRegionByElement = require('./TargetRegionByElement')
-const GetRegion = require('./GetRegion')
-const IgnoreRegionByRectangle = require('./IgnoreRegionByRectangle')
-const IgnoreRegionBySelector = require('./IgnoreRegionBySelector')
-const IgnoreRegionByElement = require('./IgnoreRegionByElement')
-const GetFloatingRegion = require('./GetFloatingRegion')
-const FloatingRegionByRectangle = require('./FloatingRegionByRectangle')
-const FloatingRegionBySelector = require('./FloatingRegionBySelector')
-const FloatingRegionByElement = require('./FloatingRegionByElement')
-const GetAccessibilityRegion = require('./GetAccessibilityRegion')
-const AccessibilityRegionByRectangle = require('./AccessibilityRegionByRectangle')
-const AccessibilityRegionBySelector = require('./AccessibilityRegionBySelector')
-const AccessibilityRegionByElement = require('./AccessibilityRegionByElement')
+const FluentRegion = require('./FluentRegion')
+
 const GeneralUtils = require('../utils/GeneralUtils')
 const TypeUtils = require('../utils/TypeUtils')
 
@@ -153,13 +142,13 @@ class CheckSettings {
         ? checkSettings
         : this.constructor.from(checkSettings)
     }
-
-    /** @private @type {EyesWrappedElement<TElement, TSelector>} */
+    /** @private @type {Frame<TElement, TSelector>[]} */
+    this._context = null
+    this._scrollRootElement = undefined
+    /** @private @type {EyesElement<TElement, TSelector>} */
     this._targetElement = null
     /** @private @type {Region} */
     this._targetRegion = null
-    // /** @private @type {Frame<TElement, TSelector>[]} */ TODO
-    this._context = Promise.resolve(this.spec.newContext())
     /** @private @type {GetRegion[]} */
     this._ignoreRegions = []
     /** @private @type {GetRegion[]} */
@@ -172,8 +161,7 @@ class CheckSettings {
     this._floatingRegions = []
     /** @private @type {GetAccessibilityRegion[]} */
     this._accessibilityRegions = []
-    /** @private @type {EyesWrappedElement<TElement, TSelector>} */
-    this._scrollRootElement = null
+
     /** @private @type {string} */
     this._name = undefined
     /** @private @type {number} */
@@ -220,6 +208,7 @@ class CheckSettings {
     }
     if (object.frames) {
       object.frames.forEach(reference => {
+        if (!reference) return
         if (reference.frame) {
           settings.frame(reference.frame)
           if (reference.scrollRootElement) {
@@ -310,7 +299,7 @@ class CheckSettings {
    * @return {CheckSettings<TElement, TSelector>} check settings object
    */
   static region(region, frame) {
-    return frame ? new this().frame(frame).region(region) : new this().region(region)
+    return this.from({region, frames: [frame]})
   }
   /**
    * Create check settings with bound frame
@@ -319,7 +308,7 @@ class CheckSettings {
    * @return {CheckSettings<TElement, TSelector>} check settings object
    */
   static frame(frame) {
-    return new this().frame(frame)
+    return this.from({frames: [frame]})
   }
   /**
    * @param {RegionReference<TElement, TSelector>} region
@@ -329,8 +318,13 @@ class CheckSettings {
     if (Region.isRegionCompatible(region)) {
       this._targetRegion = new Region(region)
       this._targetRegion.setCoordinatesType(CoordinatesType.CONTEXT_RELATIVE)
-    } else if (this.spec.isSelector(region) || this.spec.isElement(region)) {
-      this._targetElement = this._context.then(context => context.element(region))
+      this._targetProvider = new FluentRegion({region: this._targetRegion})
+    } else if (this.spec.isSelector(region)) {
+      this._targetElement = region
+      this._targetProvider = new FluentRegion({selector: this._targetElement})
+    } else if (this.spec.isElement(region)) {
+      this._targetElement = region
+      this._targetProvider = new FluentRegion({element: this._targetElement})
     } else {
       throw new TypeError('region method called with argument of unknown type!')
     }
@@ -341,13 +335,11 @@ class CheckSettings {
    * @return {TargetRegionByElement}
    */
   getTargetProvider() {
-    if (this._targetElement) {
-      return new TargetRegionByElement(this._targetElement)
-    }
+    return this._targetProvider
   }
   /**
    * @private
-   * @return {Region}
+   * @type {EyesWrappedElement<TElement, TSelector>}
    */
   getTargetRegion() {
     return this._targetRegion
@@ -356,14 +348,7 @@ class CheckSettings {
    * @private
    * @type {EyesWrappedElement<TElement, TSelector>}
    */
-  get targetRegion() {
-    return this._targetRegion
-  }
-  /**
-   * @private
-   * @type {EyesWrappedElement<TElement, TSelector>}
-   */
-  get targetElement() {
+  getTargetElement() {
     return this._targetElement
   }
   /**
@@ -372,7 +357,7 @@ class CheckSettings {
    */
   frame(reference) {
     if (this.spec.isContext(reference)) {
-      this._context = this._context.then(context => context.context(reference))
+      this._context = {reference, parent: this._context}
     } else {
       throw new TypeError('frame method called with argument of unknown type!')
     }
@@ -382,7 +367,7 @@ class CheckSettings {
    * @private
    * @type {Frame<TElement, TSelector>[]}
    */
-  get context() {
+  getContext() {
     return this._context
   }
   /**
@@ -391,21 +376,19 @@ class CheckSettings {
    * @return {this} this instance for chaining
    */
   ignoreRegion(region) {
-    let ignoreRegion
-    if (region instanceof GetRegion) {
-      ignoreRegion = region
+    let fluentRegion
+    if (region instanceof FluentRegion) {
+      fluentRegion = region
     } else if (Region.isRegionCompatible(region)) {
-      ignoreRegion = new IgnoreRegionByRectangle(new Region(region))
+      fluentRegion = new FluentRegion({region: new Region(region)})
     } else if (this.spec.isSelector(region)) {
-      ignoreRegion = new IgnoreRegionBySelector(region)
+      fluentRegion = new FluentRegion({selector: region})
     } else if (this.spec.isElement(region)) {
-      ignoreRegion = new IgnoreRegionByElement(
-        this._context.then(context => context.element(region)),
-      )
+      fluentRegion = new FluentRegion({element: region})
     } else {
-      throw new TypeError('Method called with argument of unknown type!')
+      throw new TypeError('Method "ignoreRegion" called with argument of unknown type!')
     }
-    this._ignoreRegions.push(ignoreRegion)
+    this._ignoreRegions.push(fluentRegion)
 
     return this
   }
@@ -447,21 +430,19 @@ class CheckSettings {
    * @return {this} this instance for chaining
    */
   layoutRegion(region) {
-    let layoutRegion
-    if (region instanceof GetRegion) {
-      layoutRegion = region
+    let fluentRegion
+    if (region instanceof FluentRegion) {
+      fluentRegion = region
     } else if (Region.isRegionCompatible(region)) {
-      layoutRegion = new IgnoreRegionByRectangle(new Region(region))
+      fluentRegion = new FluentRegion({region: new Region(region)})
     } else if (this.spec.isSelector(region)) {
-      layoutRegion = new IgnoreRegionBySelector(region)
+      fluentRegion = new FluentRegion({selector: region})
     } else if (this.spec.isElement(region)) {
-      layoutRegion = new IgnoreRegionByElement(
-        this._context.then(context => context.element(region)),
-      )
+      fluentRegion = new FluentRegion({element: region})
     } else {
       throw new TypeError('Method called with argument of unknown type!')
     }
-    this._layoutRegions.push(layoutRegion)
+    this._layoutRegions.push(fluentRegion)
 
     return this
   }
@@ -487,21 +468,19 @@ class CheckSettings {
    * @return {this} this instance for chaining
    */
   strictRegion(region) {
-    let strictRegion
-    if (region instanceof GetRegion) {
-      strictRegion = region
+    let fluentRegion
+    if (region instanceof FluentRegion) {
+      fluentRegion = region
     } else if (Region.isRegionCompatible(region)) {
-      strictRegion = new IgnoreRegionByRectangle(new Region(region))
+      fluentRegion = new FluentRegion({region: new Region(region)})
     } else if (this.spec.isSelector(region)) {
-      strictRegion = new IgnoreRegionBySelector(region)
+      fluentRegion = new FluentRegion({selector: region})
     } else if (this.spec.isElement(region)) {
-      strictRegion = new IgnoreRegionByElement(
-        this._context.then(context => context.element(region)),
-      )
+      fluentRegion = new FluentRegion({element: region})
     } else {
       throw new TypeError('Method called with argument of unknown type!')
     }
-    this._strictRegions.push(strictRegion)
+    this._strictRegions.push(fluentRegion)
 
     return this
   }
@@ -527,21 +506,19 @@ class CheckSettings {
    * @return {this} this instance for chaining
    */
   contentRegion(region) {
-    let contentRegion
-    if (region instanceof GetRegion) {
-      contentRegion = region
+    let fluentRegion
+    if (region instanceof FluentRegion) {
+      fluentRegion = region
     } else if (Region.isRegionCompatible(region)) {
-      contentRegion = new IgnoreRegionByRectangle(new Region(region))
+      fluentRegion = new FluentRegion({region: new Region(region)})
     } else if (this.spec.isSelector(region)) {
-      contentRegion = new IgnoreRegionBySelector(region)
+      fluentRegion = new FluentRegion({selector: region})
     } else if (this.spec.isElement(region)) {
-      contentRegion = new IgnoreRegionByElement(
-        this._context.then(context => context.element(region)),
-      )
+      fluentRegion = new FluentRegion({element: region})
     } else {
       throw new TypeError('Method called with argument of unknown type!')
     }
-    this._contentRegions.push(contentRegion)
+    this._contentRegions.push(fluentRegion)
 
     return this
   }
@@ -572,45 +549,38 @@ class CheckSettings {
    * @return {this} this instance for chaining
    */
   floatingRegion(region, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
-    let floatingRegion
-    if (region instanceof GetFloatingRegion) {
-      floatingRegion = region
+    let fluentRegion
+    if (region instanceof FluentRegion) {
+      fluentRegion = region
     } else if (region instanceof FloatingMatchSettings) {
-      floatingRegion = new FloatingRegionByRectangle(
-        region.getRegion(),
-        region.getMaxUpOffset(),
-        region.getMaxDownOffset(),
-        region.getMaxLeftOffset(),
-        region.getMaxRightOffset(),
-      )
+      fluentRegion = new FluentRegion({
+        region: region.getRegion(),
+        options: {
+          maxUpOffset: region.getMaxUpOffset(),
+          maxDownOffset: region.getMaxDownOffset(),
+          maxLeftOffset: region.getMaxLeftOffset(),
+          maxRightOffset: region.getMaxRightOffset(),
+        },
+      })
     } else if (Region.isRegionCompatible(region)) {
-      floatingRegion = new FloatingRegionByRectangle(
-        new Region(region),
-        maxUpOffset,
-        maxDownOffset,
-        maxLeftOffset,
-        maxRightOffset,
-      )
+      fluentRegion = new FluentRegion({
+        region: new Region(region),
+        options: {maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset},
+      })
     } else if (this.spec.isSelector(region)) {
-      floatingRegion = new FloatingRegionBySelector(
-        region,
-        maxUpOffset,
-        maxDownOffset,
-        maxLeftOffset,
-        maxRightOffset,
-      )
+      fluentRegion = new FluentRegion({
+        selector: region,
+        options: {maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset},
+      })
     } else if (this.spec.isElement(region)) {
-      floatingRegion = new FloatingRegionByElement(
-        this._context.then(context => context.element(region)),
-        maxUpOffset,
-        maxDownOffset,
-        maxLeftOffset,
-        maxRightOffset,
-      )
+      fluentRegion = new FluentRegion({
+        element: region,
+        options: {maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset},
+      })
     } else {
-      throw new TypeError('Method called with argument of unknown type!')
+      throw new TypeError('Method "floatingRegion" called with argument of unknown type!')
     }
-    this._floatingRegions.push(floatingRegion)
+    this._floatingRegions.push(fluentRegion)
 
     return this
   }
@@ -663,25 +633,25 @@ class CheckSettings {
    * @param {AccessibilityRegionType} [regionType] - type of accessibility
    * @return {this} this instance for chaining
    */
-  accessibilityRegion(region, regionType) {
-    let accessibilityRegion
-    if (region instanceof GetAccessibilityRegion) {
-      accessibilityRegion = region
+  accessibilityRegion(region, type) {
+    let fluentRegion
+    if (region instanceof FluentRegion) {
+      fluentRegion = region
     } else if (region instanceof AccessibilityMatchSettings) {
-      accessibilityRegion = new AccessibilityRegionByRectangle(region.getRegion(), region.getType())
+      fluentRegion = new FluentRegion({
+        region: region.getRegion(),
+        options: {type: region.getType()},
+      })
     } else if (Region.isRegionCompatible(region)) {
-      accessibilityRegion = new AccessibilityRegionByRectangle(new Region(region), regionType)
+      fluentRegion = new FluentRegion({region: new Region(region), options: {type}})
     } else if (this.spec.isSelector(region)) {
-      accessibilityRegion = new AccessibilityRegionBySelector(region, regionType)
+      fluentRegion = new FluentRegion({selector: region, options: {type}})
     } else if (this.spec.isElement(region)) {
-      accessibilityRegion = new AccessibilityRegionByElement(
-        this._context.then(context => context.element(region)),
-        regionType,
-      )
+      fluentRegion = new FluentRegion({element: region, options: {type}})
     } else {
       throw new TypeError('Method called with argument of unknown type!')
     }
-    this._accessibilityRegions.push(accessibilityRegion)
+    this._accessibilityRegions.push(fluentRegion)
 
     return this
   }
@@ -705,18 +675,16 @@ class CheckSettings {
    * @param {ElementReference<TElement, TSelector>} element
    * @return {this}
    */
-  scrollRootElement(element) {
-    let scrollRootElement
-    if (this.spec.isSelector(element) || this.spec.isElement(element)) {
-      scrollRootElement = this._context.then(context => context.element(element))
+  scrollRootElement(scrollRootElement) {
+    if (this.spec.isSelector(scrollRootElement) || this.spec.isElement(scrollRootElement)) {
+      if (this._context) {
+        this._context.scrollRootElement = scrollRootElement
+      } else {
+        this._scrollRootElement = scrollRootElement
+      }
     } else {
       throw new TypeError('scrollRootElement method called with argument of unknown type!')
     }
-    this._context = this._context.then(async context => {
-      context.setScrollRootElement(await scrollRootElement)
-      return context
-    })
-
     return this
   }
   /**
@@ -964,41 +932,31 @@ class CheckSettings {
   /**
    * @private
    */
-  _getTargetType() {
-    return !this._targetRegion && !this._targetElement ? 'window' : 'region'
-  }
-  /**
-   * @private
-   */
-  async toCheckWindowConfiguration(driver) {
-    const regions = await this._getPersistedRegions(driver)
-    return {
-      ...regions,
-      target: this._getTargetType(),
-      fully: this.getStitchContent(),
-      tag: this.getName(),
-      scriptHooks: this.getScriptHooks(),
-      sendDom: this.getSendDom(),
-      matchLevel: this.getMatchLevel(),
-    }
-  }
-  /**
-   * @private
-   */
-  async _getPersistedRegions(driver) {
-    return {
+  async toCheckWindowConfiguration(context) {
+    const config = {
       ignore: await persistRegions(this.getIgnoreRegions()),
       floating: await persistRegions(this.getFloatingRegions()),
       strict: await persistRegions(this.getStrictRegions()),
       layout: await persistRegions(this.getLayoutRegions()),
       content: await persistRegions(this.getContentRegions()),
       accessibility: await persistRegions(this.getAccessibilityRegions()),
+      target: !this._targetRegion && !this._targetElement ? 'window' : 'region',
+      fully: this.getStitchContent(),
+      tag: this.getName(),
+      scriptHooks: this.getScriptHooks(),
+      sendDom: this.getSendDom(),
+      matchLevel: this.getMatchLevel(),
     }
-
+    if (config.target === 'region') {
+      const type = this._targetRegion ? 'region' : 'selector'
+      const [region] = type ? await this.getTargetProvider().toPersistedRegions(context) : []
+      config[type] = region
+    }
+    return config
     async function persistRegions(regions = []) {
       const persisted = []
       for (const region of regions) {
-        const persistedRegions = await region.toPersistedRegions(driver)
+        const persistedRegions = await region.toPersistedRegions(context)
         persisted.push(...persistedRegions)
       }
       return persisted

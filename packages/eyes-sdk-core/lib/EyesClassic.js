@@ -97,7 +97,7 @@ class EyesClassic extends EyesCore {
     /** @private @type {EyesScreenshotFactory} */
     this._screenshotFactory = undefined
     /** @private @type {EyesWrappedElement<TDriver, TElement, TSelector>} */
-    this._scrollRootElement = null
+    this._scrollRootElement = undefined
     /** @private @type {Promise<void>} */
     this._closePromise = Promise.resolve()
   }
@@ -192,21 +192,20 @@ class EyesClassic extends EyesCore {
     this._checkSettings = checkSettings // TODO remove
 
     return this._checkPrepare(checkSettings, async () => {
-      const targetRegion = await checkSettings.targetRegion
-      const targetElement = await checkSettings.targetElement
-      if (targetRegion) {
+      if (checkSettings.getTargetRegion()) {
         if (this._stitchContent) {
-          return this._checkFullRegion(checkSettings, targetRegion)
+          return this._checkFullRegion(checkSettings, checkSettings.getTargetRegion())
         } else {
-          return this._checkRegion(checkSettings, targetRegion)
+          return this._checkRegion(checkSettings, checkSettings.getTargetRegion())
         }
-      } else if (targetElement) {
+      } else if (checkSettings.getTargetElement()) {
+        const targetElement = await this._context.element(checkSettings.getTargetElement())
         if (this._stitchContent) {
           return this._checkFullElement(checkSettings, targetElement)
         } else {
           return this._checkElement(checkSettings, targetElement)
         }
-      } else if (!(await checkSettings.context).isMain) {
+      } else if (checkSettings.getContext()) {
         if (this._stitchContent) {
           return this._checkFullFrame(checkSettings)
         } else {
@@ -232,22 +231,29 @@ class EyesClassic extends EyesCore {
    */
   async _checkPrepare(checkSettings, operation) {
     if (this._driver.isNative) {
-      this._context = this._context.attach(await checkSettings.context)
+      await this._context.main.setScrollRootElement(this._scrollRootElement)
+      await this._context.setScrollRootElement(checkSettings.getScrollRootElement())
+      if (checkSettings.getContext()) {
+        this._context = await this._context.context(checkSettings.getContext())
+      }
       return operation()
     }
     this._stitchContent = checkSettings.getStitchContent()
     // sync stored frame chain with actual browsing context
     this._context = await this._driver.refreshContexts()
 
-    if (this._scrollRootElement) {
-      this._context.main.setScrollRootElement(this._scrollRootElement)
-    }
+    await this._context.main.setScrollRootElement(this._scrollRootElement)
+    await this._context.setScrollRootElement(checkSettings.getScrollRootElement())
 
     const originalContext = this._context
-    this._context = this._context.attach(await checkSettings.context)
+
+    if (checkSettings.getContext()) {
+      this._context = await this._context.context(checkSettings.getContext())
+    }
 
     const positionProvider = this._createPositionProvider(
       await this._context.main.getScrollRootElement(),
+      this._context.main,
     )
 
     this.setPositionProvider(positionProvider)
@@ -260,6 +266,7 @@ class EyesClassic extends EyesCore {
     for (const context of this._context.path) {
       const scrollRootElement = await context.getScrollRootElement()
       await scrollRootElement.preservePosition(positionProvider)
+
       if (shouldHideScrollbars) {
         await scrollRootElement.hideScrollbars()
       }
@@ -523,13 +530,13 @@ class EyesClassic extends EyesCore {
    * @param {EyesWrappedElement<TDriver, TElement, Selecotr>} scrollRootElement - scroll root element
    * @return {PositionProvider}
    */
-  _createPositionProvider(scrollRootElement) {
+  _createPositionProvider(scrollRootElement, context = this._context) {
     const stitchMode = this._configuration.getStitchMode()
     this._logger.verbose('initializing position provider. stitchMode:', stitchMode)
 
     return stitchMode === StitchMode.CSS
-      ? new CssTranslatePositionProvider(this._logger, this._context, scrollRootElement)
-      : new ScrollPositionProvider(this._logger, this._context, scrollRootElement)
+      ? new CssTranslatePositionProvider(this._logger, context, scrollRootElement)
+      : new ScrollPositionProvider(this._logger, context, scrollRootElement)
   }
   /**
    * Create a screenshot of the specified in check method region
@@ -577,6 +584,7 @@ class EyesClassic extends EyesCore {
         await this._context.getScrollRootElement(),
       )
     }
+
     const originProvider = new ScrollPositionProvider(
       this._logger,
       this._context,

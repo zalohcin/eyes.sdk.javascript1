@@ -520,21 +520,20 @@ class EyesCore extends EyesBase {
   /**
    * @param {EyesWrappedElement<TDriver, TElement, TSelector>|TElement|TSelector} element
    */
-  async setScrollRootElement(scrollRootElement) {
-    if (this.spec.isSelector(scrollRootElement)) {
-      this._scrollRootElement = await this._context.element(scrollRootElement)
-    } else if (this.spec.isElement(scrollRootElement)) {
-      this._scrollRootElement = await this._context.element(scrollRootElement)
-    } else {
+  setScrollRootElement(scrollRootElement) {
+    if (scrollRootElement === null) {
       this._scrollRootElement = null
+    } else if (this.spec.isSelector(scrollRootElement) || this.spec.isElement(scrollRootElement)) {
+      this._scrollRootElement = scrollRootElement
+    } else {
+      this._scrollRootElement = undefined
     }
   }
   /**
-   * @return {Promise<EyesWrappedElement<TDriver, TElement, TSelector>|TElement|TSelector>}
+   * @return {Promise<TElement|TSelector>}
    */
-  async getScrollRootElement() {
-    // TODO fix
-    return this._scrollRootElement ? this._scrollRootElement.unwrapped : null
+  getScrollRootElement() {
+    return this._scrollRootElement
   }
 
   /**

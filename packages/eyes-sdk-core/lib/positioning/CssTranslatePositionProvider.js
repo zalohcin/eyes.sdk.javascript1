@@ -58,7 +58,7 @@ class CssTranslatePositionProvider extends PositionProvider {
   async getCurrentPosition(customScrollRootElement) {
     try {
       this._logger.verbose('CssTranslatePositionProvider - getCurrentPosition()')
-      const scrollRootElement = customScrollRootElement || this._element
+      const scrollRootElement = customScrollRootElement || this._scrollRootElement
       const position = await EyesUtils.getTranslateOffset(
         this._logger,
         scrollRootElement ? scrollRootElement.context : this._executor,
@@ -83,7 +83,7 @@ class CssTranslatePositionProvider extends PositionProvider {
     try {
       ArgumentGuard.notNull(position, 'position')
       this._logger.verbose(`CssTranslatePositionProvider - Setting position to: ${position}`)
-      const scrollRootElement = customScrollRootElement || this._element
+      const scrollRootElement = customScrollRootElement || this._scrollRootElement
       await EyesUtils.scrollTo(
         this._logger,
         scrollRootElement ? scrollRootElement.context : this._executor,
@@ -132,10 +132,11 @@ class CssTranslatePositionProvider extends PositionProvider {
    */
   async getState(customScrollRootElement) {
     try {
+      const scrollRootElement = customScrollRootElement || this._scrollRootElement
       const transforms = await EyesUtils.getTransforms(
         this._logger,
-        this._executor,
-        customScrollRootElement || this._scrollRootElement,
+        scrollRootElement ? scrollRootElement.context : this._executor,
+        scrollRootElement,
       )
       this._logger.verbose('Current transform', transforms)
       return new PositionMemento({transforms})
@@ -153,11 +154,12 @@ class CssTranslatePositionProvider extends PositionProvider {
    */
   async restoreState(state, customScrollRootElement) {
     try {
+      const scrollRootElement = customScrollRootElement || this._scrollRootElement
       await EyesUtils.setTransforms(
         this._logger,
-        this._executor,
+        scrollRootElement ? scrollRootElement.context : this._executor,
         state.transforms,
-        customScrollRootElement || this._scrollRootElement,
+        scrollRootElement,
       )
       this._logger.verbose('Transform (position) restored.')
     } catch (err) {

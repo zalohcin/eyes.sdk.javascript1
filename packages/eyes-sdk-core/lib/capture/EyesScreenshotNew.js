@@ -80,7 +80,7 @@ class EyesScreenshot {
     if (
       (image.getWidth() <= viewportSize.getWidth() &&
         image.getHeight() <= viewportSize.getHeight()) ||
-      (!(await eyes._checkSettings.context).isMain && // workaround: define screenshotType as VIEWPORT
+      (eyes._checkSettings.getContext() && // workaround: define screenshotType as VIEWPORT
         eyes._userAgent.getBrowser() === BrowserNames.Firefox &&
         Number.parseInt(eyes._userAgent.getBrowserMajorVersion(), 10) < 48)
     ) {

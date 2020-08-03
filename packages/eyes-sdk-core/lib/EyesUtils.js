@@ -190,31 +190,6 @@ async function getElementRect(_logger, context, element) {
     coordinatesType: CoordinatesTypes.CONTEXT_RELATIVE,
   })
 }
-
-/**
- * Extract values of specified properties for specified element
- * @param {Logger} _logger
- * @param {EyesContext} context
- * @param {string[]} properties
- * @param {EyesElement} element
- * @return {*[]} extracted values
- */
-async function getElementProperties(_logger, context, properties, element) {
-  return context.execute(snippets.getElementProperties, {element, properties})
-}
-
-// TODO rename
-/**
- * Extract css values of specified css properties for specified element
- * @param {Logger} _logger
- * @param {EyesContext} context
- * @param {string[]} properties
- * @param {EyesElement} element
- * @return {string[]} extracted css values
- */
-async function getElementCssProperties(_logger, context, properties, element) {
-  return context.execute(snippets.getElementComputedStyleProperties, {element, properties})
-}
 /**
  * Get device pixel ratio
  * @param {Logger} _logger
@@ -410,7 +385,7 @@ async function getElementXpath(logger, context, element) {
  * @param {TSelector} selector - element selector
  * @return {Promise<{type: string, selector: string}[]>} persisted regions for selector
  */
-async function locatorToPersistedRegions(logger, context, selector) {
+async function toPersistedRegions(logger, context, selector) {
   const eyesSelector = context.constructor.toEyesSelector(selector)
   if (eyesSelector.type === 'css' || eyesSelector.type === 'xpath') {
     return [eyesSelector]
@@ -503,8 +478,6 @@ module.exports = {
   getElementEntireSize,
   getElementClientRect,
   getElementRect,
-  getElementProperties,
-  getElementCssProperties,
   getPixelRatio,
   getUserAgent,
   getScrollOffset,
@@ -521,7 +494,7 @@ module.exports = {
   blurElement,
   focusElement,
   getElementXpath,
-  locatorToPersistedRegions,
+  toPersistedRegions,
   getContextInfo,
   getChildFramesInfo,
   ensureRegionVisible,

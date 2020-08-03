@@ -31,9 +31,6 @@ function EyesSDK({name, version, spec, VisualGridClient}) {
     isContext(context) {
       return SDKContext.isReference(context)
     },
-    newContext(...args) {
-      return new SDKContext(...args)
-    },
   })
 
   const SDKEyesClassic = EyesClassic.specialize({

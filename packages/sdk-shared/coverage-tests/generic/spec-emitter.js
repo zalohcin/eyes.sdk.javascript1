@@ -214,7 +214,7 @@ function makeSpecEmitter(options) {
     },
     throws(func, check, message) {
       addCommand(
-        js`assert.rejects(
+        js`await assert.rejects(
           async () => {${func}},
           error => {${withScope(check, ['error'])}},
           ${message},

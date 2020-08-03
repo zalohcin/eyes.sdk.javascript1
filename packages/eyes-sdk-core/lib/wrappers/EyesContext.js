@@ -88,11 +88,7 @@ class EyesContext {
   }
 
   get isCurrent() {
-    return !this.isDetached && this._driver.currentContext === this
-  }
-
-  get isDetached() {
-    return !this._driver
+    return this._driver.currentContext === this
   }
 
   get isInitialized() {
@@ -103,61 +99,44 @@ class EyesContext {
     return !this._context
   }
 
-  attach(context) {
-    // TODO fix bug with check settings
-    // if (!context.isDetached) {
-    //   throw new Error('Context need to be detached before attach')
-    // }
-    const [main, ...path] = context.path
-    if (main._scrollRootElement) {
-      this._scrollRootElement = main._scrollRootElement
-    }
-    main._element = this._element
-    main._context = this._context
-    main._driver = this._driver
-    main._logger = this._logger
-    main._parent = this._parent
-    if (path.length > 0) {
-      path[0]._parent = this
-      path.forEach(context => {
-        context._driver = this._driver
-        context._logger = this._logger
+  async context(reference) {
+    if (reference instanceof EyesContext) {
+      if (reference.parent !== this) {
+        throw Error('Cannot attach a child context because it has a different parent')
+      }
+      return reference
+    } else if (this.constructor.isReference(reference)) {
+      return new this.constructor(this._logger, null, {
+        parent: this,
+        driver: this._driver,
+        reference,
       })
-      return context
-    } else {
-      return this
+    } else if (TypeUtils.isPlainObject(reference)) {
+      const parent = reference.parent ? await this.context(reference.parent) : this
+      return new this.constructor(this._logger, null, {
+        parent,
+        driver: this._driver,
+        reference: reference.reference,
+        scrollRootElement: reference.scrollRootElement,
+      })
     }
   }
 
-  context(reference) {
-    const context =
-      reference instanceof EyesContext
-        ? reference
-        : new this.constructor(this._logger, null, {reference, driver: this._driver, parent: this})
-
-    if (context.parent !== this) {
-      throw Error(`Couldn't find a child context because it has a different parent`)
-    }
-    return context
-  }
-
-  element(selector) {
+  async element(selector) {
     if (this.constructor.isElement(selector)) {
       return this.spec.newElement(this._logger, this, {element: selector})
-    } else if (this.isDetached) {
-      return this.spec.newElement(null, this, {selector})
+    } else if (this.isRef) {
+      return this.spec.newElement(this._logger, this, {selector})
     }
-    return this.focus().then(async () => {
-      const element = await this.spec.findElement(this._context, selector)
-      return element ? this.spec.newElement(this._logger, this, {element, selector}) : null
-    })
+    await this.focus()
+    const element = await this.spec.findElement(this._context, selector)
+    return element ? this.spec.newElement(this._logger, this, {element, selector}) : null
   }
 
-  elements(selector) {
-    return this.focus().then(async () => {
-      const elements = await this.spec.findElements(this._context, selector)
-      return elements.map(element => this.spec.newElement(this._logger, this, {element, selector}))
-    })
+  async elements(selector) {
+    await this.focus()
+    const elements = await this.spec.findElements(this._context, selector)
+    return elements.map(element => this.spec.newElement(this._logger, this, {element, selector}))
   }
 
   async equals(context) {
@@ -169,11 +148,7 @@ class EyesContext {
   }
 
   async init() {
-    if (this.isDetached) {
-      throw new Error('Cannot initialize detached context')
-    } else if (this.isInitialized) {
-      return this
-    }
+    if (this.isInitialized) return this
 
     await this._parent.focus()
 
@@ -213,9 +188,7 @@ class EyesContext {
   }
 
   async focus() {
-    if (this.isDetached) {
-      throw new Error('Cannot focus on the detached context')
-    } else if (this.isCurrent) {
+    if (this.isCurrent) {
       return this
     } else if (this.isMain) {
       return this._driver.switchToMainContext()
@@ -228,7 +201,6 @@ class EyesContext {
     if (!this._parent.isCurrent) {
       return this._driver.switchTo(this)
     }
-
     await this._parent.cacheInnerOffset()
     await this.cacheMetrics()
 
@@ -285,20 +257,26 @@ class EyesContext {
   }
 
   async getScrollRootElement() {
-    if (!this._scrollRootElement) {
+    if (!(this._scrollRootElement instanceof EyesElement)) {
       await this.focus()
-      this._scrollRootElement = await this.element({type: 'css', selector: 'html'})
+      this._scrollRootElement = await this.element(
+        this._scrollRootElement || {type: 'css', selector: 'html'},
+      )
     }
     return this._scrollRootElement
   }
 
   async setScrollRootElement(scrollRootElement) {
-    this._scrollRootElement = await this.element(scrollRootElement)
+    if (scrollRootElement === undefined) return
+    else if (scrollRootElement === null) this._scrollRootElement = null
+    else this._scrollRootElement = await this.element(scrollRootElement)
   }
 
   async getRect() {
     if (this.isMain) {
-      this._rect = new Region(Location.ZERO, await this._driver.getViewportSize())
+      if (this.isCurrent) {
+        this._rect = new Region(Location.ZERO, await this._driver.getViewportSize())
+      }
     } else if (this._parent.isCurrent) {
       await this.init()
       this._rect = await this._element.getRect()
@@ -308,7 +286,9 @@ class EyesContext {
 
   async getClientRect() {
     if (this.isMain) {
-      this._clientRect = new Region(Location.ZERO, await this._driver.getViewportSize())
+      if (this.isCurrent) {
+        this._clientRect = new Region(Location.ZERO, await this._driver.getViewportSize())
+      }
     } else if (this._parent.isCurrent) {
       await this.init()
       this._clientRect = await this._element.getClientRect()
