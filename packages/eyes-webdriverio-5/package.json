@@ -31,7 +31,6 @@
     "test": "./test"
   },
   "main": "./index.js",
-  "types": "./typings/index.d.ts",
   "dependencies": {
     "@applitools/eyes-sdk-core": "11.5.0",
     "@applitools/visual-grid-client": "14.6.0"
@@ -40,7 +39,7 @@
     "webdriverio": "5.0.0 - 6.x.x"
   },
   "devDependencies": {
-    "@applitools/sdk-coverage-tests": "^1.0.9",
+    "@applitools/sdk-coverage-tests": "^1.0.12",
     "@applitools/sdk-fake-eyes-server": "^2.0.0",
     "@applitools/sdk-release-kit": "0.1.0",
     "@applitools/sdk-shared": "0.1.0",
@@ -76,7 +75,6 @@
     "coverage:sandbox": "coverage-tests create-tests && yarn test:coverage && coverage-tests process-report",
     "coverage:prod": "coverage-tests create-tests && yarn test:coverage && coverage-tests process-report --send-report prod",
     "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-webdriverio-5' APPLITOOLS_BATCH_ID=$(uuidgen) XUNIT_FILE=coverage-test-report.xml mocha --config .mocharc.cvg.js",
-    "types:generate": "rm -rf ./typings && tsc --declaration --declarationDir ./typings --allowJs --emitDeclarationOnly ./index.js && tsc --noEmit ./typings/index.d.ts",
     "preversion": "bongo preversion && yarn test && yarn coverage:prod",
     "version": "bongo version",
     "postversion": "bongo postversion"

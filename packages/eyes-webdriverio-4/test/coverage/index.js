@@ -11,4 +11,5 @@ module.exports = {
   initialize: makeEmitter,
   testFrameworkTemplate: makeTemplate,
   supportedTests,
+  testsUrl: 'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/env-and-meta/tests.js',
 }

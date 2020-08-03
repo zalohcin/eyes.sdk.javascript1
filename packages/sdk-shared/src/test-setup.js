@@ -59,12 +59,10 @@ const BROWSERS = {
   'edge-18': {
     capabilities: {
       browserName: 'MicrosoftEdge',
-      browserVersion: '18',
-      platformName: 'Windows 10',
-      'sauce:options': {
-        screenResolution: '1920x1080',
-        ...SAUCE_CREDENTIALS,
-      },
+      version: '18',
+      platform: 'Windows 10',
+      screenResolution: '1920x1080',
+      ...SAUCE_CREDENTIALS,
     },
     url: SAUCE_SERVER_URL,
   },
