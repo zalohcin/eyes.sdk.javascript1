@@ -1,6 +1,4 @@
 'use strict'
-const ArgumentGuard = require('../utils/ArgumentGuard')
-const TypeUtils = require('../utils/TypeUtils')
 const Location = require('../geometry/Location')
 const RectangleSize = require('../geometry/RectangleSize')
 const Region = require('../geometry/Region')

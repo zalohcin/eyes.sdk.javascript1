@@ -118,7 +118,10 @@ async function getElementRect(_driver, element) {
 async function getWindowRect(driver) {
   try {
     if (TypeUtils.isFunction(driver.manage().window().getRect)) {
-      return driver.manage().window().getRect()
+      return driver
+        .manage()
+        .window()
+        .getRect()
     } else {
       const rect = {x: 0, y: 0, width: 0, height: 0}
       if (TypeUtils.isFunction(driver.manage().window().getPosition)) {
@@ -149,7 +152,10 @@ async function getWindowRect(driver) {
 async function setWindowRect(driver, rect = {}) {
   const {x = null, y = null, width = null, height = null} = rect
   if (TypeUtils.isFunction(driver.manage().window().setRect)) {
-    await driver.manage().window().setRect({x, y, width, height})
+    await driver
+      .manage()
+      .window()
+      .setRect({x, y, width, height})
   } else {
     if (x !== null && y !== null) {
       await driver

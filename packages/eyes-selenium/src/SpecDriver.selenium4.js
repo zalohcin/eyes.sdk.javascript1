@@ -214,7 +214,7 @@ const browserOptionsNames = {
 }
 async function build(env) {
   const {testSetup} = require('@applitools/sdk-shared')
-  const {browser, capabilities, headless, url, args = []} = testSetup.Env(env)
+  const {browser, capabilities, headless, url, sauce, args = []} = testSetup.Env(env)
   const desiredCapabilities = {browserName: browser, ...capabilities}
   if (!sauce) {
     const browserOptionsName = browserOptionsNames[browser]
