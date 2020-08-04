@@ -25,7 +25,7 @@ describe('JS Coverage tests', () => {
       path.resolve(otherNodeModules, 'protractor'),
     )
     await pncp(
-      path.resolve(require.resolve('selenium-webdriver'), '..'), // eslint-disable-line node/no-extraneous-require
+      path.resolve(require.resolve('selenium-webdriver'), '..'), // eslint-disable-line node/no-extraneous-require,node/no-missing-require
       path.resolve(otherNodeModules, 'selenium-webdriver'),
     )
 

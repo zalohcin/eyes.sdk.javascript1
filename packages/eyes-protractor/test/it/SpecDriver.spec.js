@@ -5,7 +5,7 @@ describe('SpecDriver', async () => {
   let driver
   const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
 
-  describe.only('headless desktop', async () => {
+  describe('headless desktop', async () => {
     before(async () => {
       driver = await spec.build({browser: 'chrome'})
       driver = spec.transformDriver(driver)
@@ -63,7 +63,7 @@ describe('SpecDriver', async () => {
     it('getPlatformName()', getPlatformName({expected: 'linux'}))
   })
 
-  describe.only('headless desktop (@angular)', async () => {
+  describe('headless desktop (@angular)', async () => {
     before(async () => {
       driver = await spec.build({browser: 'chrome'})
       driver = spec.transformDriver(driver)
