@@ -1,12 +1,13 @@
+const fs = require('fs')
 const axios = require('axios')
 const {findDifferencesBetweenCollections} = require('../common-util')
 const {isMatch} = require('micromatch')
 const vm = require('vm')
 
-async function fetchCoverageTests(
-  url = 'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/master/tests.js',
-) {
-  const testsFileScript = (await axios(url)).data
+async function fetchCoverageTests({url = 'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/master/tests.js', localPath}) {
+  const testsFileScript = coverageTestsLocalPath
+    ? fs.readFileSync(localPath).toString()
+    : (await axios(url)).data
   return vm.runInContext(testsFileScript, vm.createContext({module: {}, process}))
 }
 
