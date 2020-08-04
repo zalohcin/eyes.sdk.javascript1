@@ -122,6 +122,7 @@ describe('UserAgent', () => {
       assert.strictEqual(userAgent.getBrowserMajorVersion(), '11')
       assert.strictEqual(userAgent.getBrowserMinorVersion(), '0')
     })
+
     ;[
       {
         uaStr:
@@ -403,6 +404,16 @@ describe('UserAgent', () => {
         expectedOsMinorVersion: '14',
         expectedBrowser: BrowserNames.Safari,
         expectedBrowserMajorVersion: '12',
+        expectedBrowserMinorVersion: '0',
+      },
+      {
+        uaStr:
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.29 Safari/537.36 Edg/79.0.309.18',
+        expectedOs: OSNames.MacOSX,
+        expectedOsMajorVersion: '10',
+        expectedOsMinorVersion: '15',
+        expectedBrowser: BrowserNames.Edge,
+        expectedBrowserMajorVersion: '79',
         expectedBrowserMinorVersion: '0',
       },
     ].forEach(
