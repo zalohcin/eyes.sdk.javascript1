@@ -48,6 +48,14 @@ describe('EyesDriver', () => {
     await driver.switchToMainContext()
   })
 
+  it('getTitle()', async () => {
+    assert.strictEqual(await driver.getTitle(), 'Default Page Title')
+  })
+
+  it('getUrl()', async () => {
+    assert.strictEqual(await driver.getUrl(), 'http://default.url')
+  })
+
   it('switchToChildContext(element)', async () => {
     const frameElement = await mock.findElement('frame0')
     await driver.switchToChildContext(frameElement)

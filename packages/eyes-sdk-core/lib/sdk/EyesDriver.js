@@ -349,7 +349,7 @@ class EyesDriver {
 
   async getUrl() {
     if (this._isNative) return null
-    return this.spec.getTitle(this._driver)
+    return this.spec.getUrl(this._driver)
   }
 }
 
