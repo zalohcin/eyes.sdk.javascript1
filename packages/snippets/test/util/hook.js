@@ -9,11 +9,11 @@ exports.mochaHooks = {
       port: 443,
       logLevel: 'silent',
       capabilities: {
-        name: 'Snippets tests',
         browserName: 'internet explorer',
         browserVersion: '11.285',
         platformName: 'Windows 10',
         'sauce:options': {
+          name: 'Snippets tests',
           username: process.env.SAUCE_USERNAME,
           accessKey: process.env.SAUCE_ACCESS_KEY,
         },
