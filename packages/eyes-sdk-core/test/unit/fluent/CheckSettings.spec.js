@@ -1,9 +1,9 @@
 'use strict'
 
 const assert = require('assert')
-const {Driver, CheckSettings} = require('../utils/FakeSDK')
-const MockDriver = require('../utils/MockDriver')
-const {Logger} = require('../../index')
+const {Driver, CheckSettings} = require('../../utils/FakeSDK')
+const MockDriver = require('../../utils/MockDriver')
+const {Logger} = require('../../../index')
 const vm = require('vm')
 const fs = require('fs')
 const path = require('path')
@@ -82,11 +82,11 @@ describe('CheckSettings', () => {
     const context = {
       require: modulePath =>
         require(modulePath.startsWith('.')
-          ? path.resolve(__dirname, '../utils/', modulePath)
+          ? path.resolve(__dirname, '../../utils/', modulePath)
           : modulePath),
       module: {exports: {}},
     }
-    const code = fs.readFileSync(path.resolve(__dirname, '../utils/FakeSDK.js'))
+    const code = fs.readFileSync(path.resolve(__dirname, '../../utils/FakeSDK.js'))
     vm.runInNewContext(code, context)
 
     const CheckSettings2 = context.module.exports.CheckSettings

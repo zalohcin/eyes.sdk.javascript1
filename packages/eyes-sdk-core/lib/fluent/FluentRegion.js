@@ -41,7 +41,7 @@ class FluentRegion {
         top: location.getY(),
         width: rect.getWidth(),
         height: rect.getHeight(),
-        ...this._options,
+        ...this._options
       })
     }
     return regions
@@ -56,10 +56,10 @@ class FluentRegion {
       return [{...this._region.toJSON(), ...this._options}]
     } else if (this._element) {
       const xpath = await EyesUtils.getElementXpath(context._logger, context, this._element)
-      return [{type: 'xpath', selector: xpath, ...this._options}]
+      return [{...this._options, type: 'xpath', selector: xpath}]
     } else if (this._selector) {
       const regions = await EyesUtils.toPersistedRegions(context._logger, context, this._selector)
-      return regions.map(regions => ({...regions, ...this._options}))
+      return regions.map(region => ({...this._options, ...region}))
     }
   }
 }

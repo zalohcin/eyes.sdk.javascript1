@@ -630,24 +630,24 @@ class CheckSettings {
   /**
    * Adds an accessibility region. An accessibility region is a region that has an accessibility type
    * @param {RegionReference<TElement, TSelector>} region - region reference of content rectangle or region container
-   * @param {AccessibilityRegionType} [regionType] - type of accessibility
+   * @param {AccessibilityRegionType} [accessibilityType] - type of accessibility
    * @return {this} this instance for chaining
    */
-  accessibilityRegion(region, type) {
+  accessibilityRegion(region, accessibilityType) {
     let fluentRegion
     if (region instanceof FluentRegion) {
       fluentRegion = region
     } else if (region instanceof AccessibilityMatchSettings) {
       fluentRegion = new FluentRegion({
         region: region.getRegion(),
-        options: {type: region.getType()},
+        options: {accessibilityType: region.getType(), type: region.getType()},
       })
     } else if (Region.isRegionCompatible(region)) {
-      fluentRegion = new FluentRegion({region: new Region(region), options: {type}})
+      fluentRegion = new FluentRegion({region: new Region(region), options: {accessibilityType, type: accessibilityType}})
     } else if (this.spec.isSelector(region)) {
-      fluentRegion = new FluentRegion({selector: region, options: {type}})
+      fluentRegion = new FluentRegion({selector: region, options: {accessibilityType, type: accessibilityType}})
     } else if (this.spec.isElement(region)) {
-      fluentRegion = new FluentRegion({element: region, options: {type}})
+      fluentRegion = new FluentRegion({element: region, options: {accessibilityType, type: accessibilityType}})
     } else {
       throw new TypeError('Method called with argument of unknown type!')
     }

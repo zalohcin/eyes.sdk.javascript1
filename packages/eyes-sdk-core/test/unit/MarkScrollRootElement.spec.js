@@ -36,7 +36,6 @@ describe('MarkScrollRootElement', () => {
         .fully(),
     )
     await eyes.close(false)
-
     assert.ok(scrollRootElement.attrs['data-applitools-scroll'])
   })
 })

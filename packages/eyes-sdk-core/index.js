@@ -128,6 +128,7 @@ exports.ValidationResult = require('./lib/events/ValidationResult')
 
 exports.CheckSettings = require('./lib/fluent/CheckSettings')
 exports.DriverCheckSettings = require('./lib/fluent/DriverCheckSettings')
+exports.FluentRegion = require('./lib/fluent/FluentRegion')
 exports.GetRegion = require('./lib/fluent/GetRegion')
 exports.IgnoreRegionByRectangle = require('./lib/fluent/IgnoreRegionByRectangle')
 exports.IgnoreRegionBySelector = require('./lib/fluent/IgnoreRegionBySelector')

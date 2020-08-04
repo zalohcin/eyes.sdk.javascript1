@@ -21,6 +21,7 @@ const ClassicRunner = require('../runner/ClassicRunner')
 const DomCapture = require('../DomCapture')
 const EyesUtils = require('./EyesUtils')
 const EyesCore = require('./EyesCore')
+const ElementNotFoundError = require('../errors/ElementNotFoundError')
 
 /**
  * @template TDriver, TElement, TSelector
@@ -200,6 +201,7 @@ class EyesClassic extends EyesCore {
         }
       } else if (checkSettings.getTargetElement()) {
         const targetElement = await this._context.element(checkSettings.getTargetElement())
+        if (!targetElement) throw new ElementNotFoundError() // TODO move in a proper place
         if (this._stitchContent) {
           return this._checkFullElement(checkSettings, targetElement)
         } else {

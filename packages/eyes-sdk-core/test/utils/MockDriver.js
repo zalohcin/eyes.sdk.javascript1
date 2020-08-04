@@ -63,6 +63,9 @@ class MockDriver {
         return original
       }, {})
     })
+    this.mockScript(snippets.setElementAttribute, ({element, attr, value}) => {
+      element.attrs[attr] = value
+    })
     this.mockScript(snippets.scrollTo, ({element, offset}) => {
       let scrollingElement = element
       if (!element) {
@@ -97,9 +100,6 @@ class MockDriver {
     this.mockScript(snippets.getUserAgent, () => {
       return 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36'
     })
-    this.mockScript(snippets.setElementAttribute, ({element, attr, value}) => {
-      element.attrs[attr] = value
-    })
     this.mockScript(snippets.getViewportSize, () => {
       return {width: this._window.rect.width, height: this._window.rect.height}
     })
@@ -118,7 +118,7 @@ class MockDriver {
       return null
     })
     this.mockScript(
-      script => /^\/\* @applitools\/dom-snapshot@[\d.]+ \*\//.test(script),
+      /^\/\* @applitools\/dom-snapshot@[\d.]+ \*\//,
       () => FakeDomSnapshot.generateDomSnapshot(this),
     )
   }
@@ -156,7 +156,7 @@ class MockDriver {
         scrollPosition: {x: 0, y: 0},
       })
     }
-    return Object.freeze(element)
+    return element
   }
   mockElements(nodes, {parentId = null, parentContextId = null} = {}) {
     for (const node of nodes) {
@@ -173,17 +173,16 @@ class MockDriver {
   }
   async executeScript(script, args = []) {
     args = serialize(args)
-    const resultGenerator = this._scripts.get(script)
-    if (resultGenerator) {
-      return TypeUtils.isFunction(resultGenerator) ? resultGenerator(...args) : resultGenerator
-    }
-    for (const [scriptMatcher, resultGenerator] of this._scripts.entries()) {
-      if (
-        TypeUtils.isFunction(scriptMatcher) ? scriptMatcher(script, args) : scriptMatcher === script
-      ) {
-        return TypeUtils.isFunction(resultGenerator) ? resultGenerator(...args) : resultGenerator
+    let resultGenerator = this._scripts.get(script)
+    if (!resultGenerator) {
+      for (const [tester, result] of this._scripts.entries()) {
+        if (TypeUtils.isFunction(tester.test) && tester.test(script)) {
+          resultGenerator = result
+          break
+        }
       }
     }
+    return TypeUtils.isFunction(resultGenerator) ? resultGenerator(...args) : resultGenerator
   }
   async findElement(selector) {
     const elements = this._elements.get(selector)
@@ -269,6 +268,7 @@ function serialize(value) {
   } else if (TypeUtils.isArray(value)) {
     return value.map(serialize)
   } else if (TypeUtils.isObject(value)) {
+    if (typeof value.id === 'symbol') return value
     return Object.entries(value).reduce(
       (json, [key, value]) => Object.assign(json, {[key]: serialize(value)}),
       {},
