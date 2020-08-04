@@ -22,9 +22,9 @@ describe('EyesClassic', () => {
   })
 
   describe('#open()', () => {
-    it.skip('should return EyesWebDriver', async () => {
+    it('should return Driver', async () => {
       driver = await eyes.open(driver, 'FakeApp', 'FakeTest')
-      assert.strictEqual(driver instanceof EyesWrappedDriver, true)
+      assert.strictEqual(driver instanceof MockDriver, true)
       await eyes.close()
     })
 
