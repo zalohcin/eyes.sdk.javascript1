@@ -31,6 +31,10 @@ describe('TestVisualGridRefererHeader', () => {
     driver = await spec.build({browser: 'chrome'})
   })
 
+  afterEach(async () => {
+    await spec.cleanup(driver)
+  })
+
   it('send referer header', async () => {
     const url = 'http://localhost:5555/cors.html'
     await spec.visit(driver, url)

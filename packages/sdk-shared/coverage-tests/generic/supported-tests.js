@@ -208,7 +208,7 @@ module.exports = [
   {name: 'TestCheckWindowAfterScroll', executionMode: {isCssStitching: true}},
   {name: 'TestCheckWindowAfterScroll', executionMode: {isScrollStitching: true}},
   {name: 'TestCheckWindow_Body', executionMode: {isVisualGrid: true}},
-  {name: 'TestCheckWindow_Body', executionMode: {isCssStitching: true}},
+  {name: 'TestCheckWindow_Body', executionMode: {isCssStitching: true}, baselineVersion: 2},
   {name: 'TestCheckWindow_Body', executionMode: {isScrollStitching: true}},
   {name: 'TestCheckWindow_Html', executionMode: {isVisualGrid: true}},
   {name: 'TestCheckWindow_Html', executionMode: {isCssStitching: true}},
