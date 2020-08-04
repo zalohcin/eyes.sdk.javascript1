@@ -9,11 +9,15 @@ function getTranslateOffset({
   })
   const translates = Object.keys(transforms).reduce((translates, key) => {
     if (transforms[key]) {
-      const data = transforms[key].match(/^translate\(\s*(\-?[\d, \.]+)px,\s*(\-?[\d, \.]+)px\s*\)/)
-      if (!data) {
+      const match = transforms[key].match(
+        /^translate\s*\(\s*(\-?[\d, \.]+)px\s*(,\s*(-?[\d, \.]+)px)?\s*\)/,
+      )
+      if (!match) {
         throw new Error(`Can't parse CSS transition: ${transforms[key]}!`)
       }
-      translates.push({x: Math.round(-parseFloat(data[1])), y: Math.round(-parseFloat(data[2]))})
+      const x = match[1]
+      const y = match[3] !== undefined ? match[3] : 0
+      translates.push({x: Math.round(-parseFloat(x)), y: Math.round(-parseFloat(y))})
     }
     return translates
   }, [])
