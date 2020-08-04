@@ -193,6 +193,9 @@ describe('Miscellaneous VG tests', () => {
   before(async () => {
     driver = await spec.build({browser: 'chrome'})
   })
+  after(async () => {
+    await spec.cleanup(driver)
+  })
 
   it('TestWarningForEDGE', async () => {
     const origConsoleLog = console.log
