@@ -58,9 +58,10 @@ const DEVICES = {
 const BROWSERS = {
   'edge-18': {
     capabilities: {
+      name: 'Edge 18',
       browserName: 'MicrosoftEdge',
-      version: '18',
-      platform: 'Windows 10',
+      browserVersion: '18',
+      platformName: 'Windows 10',
       screenResolution: '1920x1080',
       ...SAUCE_CREDENTIALS,
     },
@@ -68,9 +69,10 @@ const BROWSERS = {
   },
   'ie-11': {
     capabilities: {
+      name: 'IE 11',
       browserName: 'internet explorer',
-      version: '11.285',
-      platform: 'Windows 10',
+      browserVersion: '11.285',
+      platformName: 'Windows 10',
       screenResolution: '1920x1080',
       ...SAUCE_CREDENTIALS,
     },
@@ -78,26 +80,29 @@ const BROWSERS = {
   },
   'safari-11': {
     capabilities: {
+      name: 'Safari 11',
       seleniumVersion: '3.4.0',
       browserName: 'safari',
-      version: '11.0',
-      platform: 'macOS 10.12',
+      browserVersion: '11.0',
+      platformName: 'macOS 10.12',
       ...SAUCE_CREDENTIALS,
     },
     url: SAUCE_SERVER_URL,
   },
   'safari-12': {
     capabilities: {
+      name: 'Safari 12',
       seleniumVersion: '3.4.0',
       browserName: 'safari',
-      version: '12.1',
-      platform: 'macOS 10.13',
+      browserVersion: '12.1',
+      platformName: 'macOS 10.13',
       ...SAUCE_CREDENTIALS,
     },
     url: SAUCE_SERVER_URL,
   },
   firefox: {
     capabilities: {
+      name: 'Firefox',
       browserName: 'firefox',
       'sauce:options': {
         seleniumVersion: '3.141.59',
