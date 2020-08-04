@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- Fix git tagging
 
 ## 1.0.1 - 2020/8/4
 
