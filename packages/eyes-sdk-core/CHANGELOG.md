@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 12.0.0 - 2020/8/4
+
 - support devtools protocol ([Trello](https://trello.com/c/fNxDJDId))
 
 ## 11.5.1 - 2020/7/28
