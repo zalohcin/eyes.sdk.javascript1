@@ -17,6 +17,6 @@ module.exports = {
   parallel: true,
   jobs: 15,
   timeout: 0,
-  reported: 'spec-xunit-file',
+  reporter: 'spec-xunit-file',
   grep: new RegExp(`^[\\w\\s]*?(\\((?:@(${tags.join('|')}) ?)+\\))?$`),
 }
