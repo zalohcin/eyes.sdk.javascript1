@@ -1,7 +1,7 @@
 const assert = require('assert')
 const {Logger} = require('../../index')
 const MockDriver = require('../utils/MockDriver')
-const {Driver, Context} = require('../utils/FakeSDK')
+const {Driver} = require('../utils/FakeSDK')
 
 describe('EyesContext', () => {
   let logger = new Logger(false)

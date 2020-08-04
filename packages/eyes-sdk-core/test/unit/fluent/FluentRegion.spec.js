@@ -41,7 +41,9 @@ describe('FluentRegion', () => {
 
     const fluentRegionCustom = new FluentRegion({selector: 'custom selector'})
     const persistedRegionsCustom = await fluentRegionCustom.toPersistedRegions(driver)
-    assert.deepStrictEqual(persistedRegionsCustom, [{type: 'xpath', selector: element.unwrapped.xpath}])
+    assert.deepStrictEqual(persistedRegionsCustom, [
+      {type: 'xpath', selector: element.unwrapped.xpath},
+    ])
   })
 
   it('options', async () => {
@@ -52,7 +54,9 @@ describe('FluentRegion', () => {
 
     const fluentRegionElement = new FluentRegion({element, options: {key: 'b'}})
     const persistedRegionsElement = await fluentRegionElement.toPersistedRegions(driver)
-    assert.deepStrictEqual(persistedRegionsElement, [{type: 'xpath', selector: element.unwrapped.xpath, key: 'b'}])
+    assert.deepStrictEqual(persistedRegionsElement, [
+      {type: 'xpath', selector: element.unwrapped.xpath, key: 'b'},
+    ])
 
     const fluentRegionSelector = new FluentRegion({selector: 'css:.some', options: {key: 'c'}})
     const persistedRegionsSelector = await fluentRegionSelector.toPersistedRegions(driver)

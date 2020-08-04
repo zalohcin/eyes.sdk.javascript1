@@ -643,11 +643,20 @@ class CheckSettings {
         options: {accessibilityType: region.getType(), type: region.getType()},
       })
     } else if (Region.isRegionCompatible(region)) {
-      fluentRegion = new FluentRegion({region: new Region(region), options: {accessibilityType, type: accessibilityType}})
+      fluentRegion = new FluentRegion({
+        region: new Region(region),
+        options: {accessibilityType, type: accessibilityType},
+      })
     } else if (this.spec.isSelector(region)) {
-      fluentRegion = new FluentRegion({selector: region, options: {accessibilityType, type: accessibilityType}})
+      fluentRegion = new FluentRegion({
+        selector: region,
+        options: {accessibilityType, type: accessibilityType},
+      })
     } else if (this.spec.isElement(region)) {
-      fluentRegion = new FluentRegion({element: region, options: {accessibilityType, type: accessibilityType}})
+      fluentRegion = new FluentRegion({
+        element: region,
+        options: {accessibilityType, type: accessibilityType},
+      })
     } else {
       throw new TypeError('Method called with argument of unknown type!')
     }

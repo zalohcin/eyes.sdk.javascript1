@@ -79,8 +79,6 @@ async function runTest(driver, useVisualGrid) {
     expectedAccessibilitySettings,
   )
 
-  console.log(actualAppOutput[0].imageMatchSettings.accessibility)
-  
   assert.deepStrictEqual(
     actualAppOutput[0].imageMatchSettings.accessibility,
     expectedAccessibilityRegions,

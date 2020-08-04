@@ -41,7 +41,7 @@ class FluentRegion {
         top: location.getY(),
         width: rect.getWidth(),
         height: rect.getHeight(),
-        ...this._options
+        ...this._options,
       })
     }
     return regions

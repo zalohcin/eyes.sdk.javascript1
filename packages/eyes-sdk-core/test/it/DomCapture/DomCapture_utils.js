@@ -30,7 +30,7 @@ async function captureDom(logger, driver, url, testName) {
         toSupportedSelector({type, selector}) {
           return By[type](selector)
         },
-      }
+      },
     })
     logger.log(`Capturing actual dom took ${timeStart.end().summary}`)
 

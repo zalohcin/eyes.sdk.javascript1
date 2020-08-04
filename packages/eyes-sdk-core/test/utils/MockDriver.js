@@ -117,9 +117,8 @@ class MockDriver {
     this.mockScript(snippets.blurElement, () => {
       return null
     })
-    this.mockScript(
-      /^\/\* @applitools\/dom-snapshot@[\d.]+ \*\//,
-      () => FakeDomSnapshot.generateDomSnapshot(this),
+    this.mockScript(/^\/\* @applitools\/dom-snapshot@[\d.]+ \*\//, () =>
+      FakeDomSnapshot.generateDomSnapshot(this),
     )
   }
   mockScript(scriptMatcher, resultGenerator) {
