@@ -593,6 +593,9 @@ Run all the processes that execute Selenium with the same value for `APPLITOOLS_
 ```sh
 #! Unix based machines:
 APPLITOOLS_BATCH_ID=`uuidgen` npm test
+
+# Powershell on Windows:
+set APPLITOOLS_BATCH_ID = powershell -Command "[guid]::NewGuid().ToString()"
 ```
 
 It's also possible to control the batch name that shows up in Test Manager. For example:
