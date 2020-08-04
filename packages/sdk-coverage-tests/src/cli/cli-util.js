@@ -5,7 +5,7 @@ const {isMatch} = require('micromatch')
 const vm = require('vm')
 
 async function fetchCoverageTests({url = 'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/master/tests.js', localPath}) {
-  const testsFileScript = coverageTestsLocalPath
+  const testsFileScript = localPath
     ? fs.readFileSync(localPath).toString()
     : (await axios(url)).data
   return vm.runInContext(testsFileScript, vm.createContext({module: {}, process}))
