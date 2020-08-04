@@ -102,7 +102,6 @@ const BROWSERS = {
   },
   firefox: {
     capabilities: {
-      name: 'Firefox',
       browserName: 'firefox',
       'sauce:options': {
         seleniumVersion: '3.141.59',
