@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- added support of devtools protocol
 
 ## 5.19.3 - 2020/7/29
 

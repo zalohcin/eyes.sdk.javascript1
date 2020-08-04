@@ -112,6 +112,7 @@ const {gitAdd, gitCommit, gitPullWithRebase, gitPushWithTags, isStagedForCommit}
     }
   } catch (error) {
     console.log(chalk.red(error.message))
+    console.log(error)
     process.exit(1)
   }
 })()
