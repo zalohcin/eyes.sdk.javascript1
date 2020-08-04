@@ -122,7 +122,6 @@ describe('UserAgent', () => {
       assert.strictEqual(userAgent.getBrowserMajorVersion(), '11')
       assert.strictEqual(userAgent.getBrowserMinorVersion(), '0')
     })
-
     ;[
       {
         uaStr:

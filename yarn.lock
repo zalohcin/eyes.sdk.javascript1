@@ -209,6 +209,11 @@
     node-fetch "^2.6.0"
     yargs "^15.0.2"
 
+"@applitools/snippets@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@applitools/snippets/-/snippets-1.0.0.tgz#bb00a33adabf214e563546de00ff1773fe476a75"
+  integrity sha512-YBWrASSaZCNVIxBhJIyMDWRGVctNf5g0h7oDeBbIMJWIMeCyWWB7LdA9Qm9iAa9bEZ280Y8M83Ll6QH9WMxbog==
+
 "@applitools/visual-grid-client@14.0.1":
   version "14.0.1"
   resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-14.0.1.tgz#479f37c54fc9f05eeccc28de561ad6280d458ccf"
