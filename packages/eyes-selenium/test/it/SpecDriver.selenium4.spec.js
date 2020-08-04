@@ -182,11 +182,11 @@ describe('SpecDriver @selenium4', async () => {
     return async () => {
       const xpathSelector = By.xpath('/html[1]/body[1]/div[1]')
       const xpathResult = spec.toEyesSelector(xpathSelector)
-      assert.deepStrictEqual(xpathResult, {type: 'xpath', selector: '/html[1]/body[1]/div[1]'})
+      assert.deepStrictEqual(xpathResult, {selector: xpathSelector})
 
       const cssSelector = By.css('html > body > div')
       const cssResult = spec.toEyesSelector(cssSelector)
-      assert.deepStrictEqual(cssResult, {type: 'css', selector: 'html > body > div'})
+      assert.deepStrictEqual(cssResult, {selector: cssSelector})
 
       const tagSelector = By.linkText('text')
       const tagResult = spec.toEyesSelector(tagSelector)
