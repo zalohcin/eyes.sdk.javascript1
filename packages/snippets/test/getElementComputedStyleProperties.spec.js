@@ -1,5 +1,4 @@
 const playwright = require('playwright')
-const {remote} = require('webdriverio')
 const assert = require('assert')
 const {getElementComputedStyleProperties} = require('../dist/index')
 
@@ -33,27 +32,11 @@ describe('getElementComputedStyleProperties', () => {
   describe('ie', () => {
     let driver
 
-    before(async () => {
-      driver = await remote({
-        protocol: 'https',
-        hostname: 'ondemand.saucelabs.com',
-        path: '/wd/hub',
-        port: 443,
-        logLevel: 'silent',
-        capabilities: {
-          browserName: 'internet explorer',
-          browserVersion: '11.285',
-          platformName: 'Windows 10',
-          'sauce:options': {
-            username: process.env.SAUCE_USERNAME,
-            accessKey: process.env.SAUCE_ACCESS_KEY,
-          },
-        },
-      })
-    })
-
-    after(async () => {
-      await driver.deleteSession()
+    before(async function() {
+      driver = global.ieDriver
+      if (!driver) {
+        this.skip()
+      }
     })
 
     it('return element computed style properties', async () => {
