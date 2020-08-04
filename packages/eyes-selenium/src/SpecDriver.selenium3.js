@@ -86,7 +86,7 @@ async function mainContext(driver) {
   return driver
 }
 async function parentContext(driver) {
-  await driver.schedule(new cmd.Command(cmd.Name.SWITCH_TO_PARENT_FRAME))
+  await driver.execute(new cmd.Command(cmd.Name.SWITCH_TO_PARENT_FRAME))
   return driver
 }
 async function childContext(driver, element) {
@@ -117,15 +117,28 @@ async function getElementRect(_driver, element) {
 }
 async function getWindowRect(driver) {
   try {
-    const {x, y} = await driver
-      .manage()
-      .window()
-      .getPosition()
-    const {width, height} = await driver
-      .manage()
-      .window()
-      .getSize()
-    return {x, y, width, height}
+    if (TypeUtils.isFunction(driver.manage().window().getRect)) {
+      return driver.manage().window().getRect()
+    } else {
+      const rect = {x: 0, y: 0, width: 0, height: 0}
+      if (TypeUtils.isFunction(driver.manage().window().getPosition)) {
+        const {x, y} = await driver
+          .manage()
+          .window()
+          .setPosition()
+        rect.x = x
+        rect.y = y
+      }
+      if (TypeUtils.isFunction(driver.manage().window().getSize)) {
+        const {width, height} = await driver
+          .manage()
+          .window()
+          .setSize()
+        rect.width = width
+        rect.height = height
+      }
+      return rect
+    }
   } catch (err) {
     // workaround for Appium
     return driver.execute(
@@ -135,17 +148,21 @@ async function getWindowRect(driver) {
 }
 async function setWindowRect(driver, rect = {}) {
   const {x = null, y = null, width = null, height = null} = rect
-  if (x !== null && y !== null) {
-    await driver
-      .manage()
-      .window()
-      .setPosition(x, y)
-  }
-  if (width !== null && height !== null) {
-    await driver
-      .manage()
-      .window()
-      .setSize(width, height)
+  if (TypeUtils.isFunction(driver.manage().window().setRect)) {
+    await driver.manage().window().setRect({x, y, width, height})
+  } else {
+    if (x !== null && y !== null) {
+      await driver
+        .manage()
+        .window()
+        .setPosition(x, y)
+    }
+    if (width !== null && height !== null) {
+      await driver
+        .manage()
+        .window()
+        .setSize(width, height)
+    }
   }
 }
 async function getOrientation(driver) {
@@ -231,6 +248,7 @@ async function build(env) {
   if (browserOptionsName) {
     desiredCapabilities[browserOptionsName] = {
       args: headless ? args.concat('headless') : args,
+      w3c: false,
     }
   }
   return new Builder()

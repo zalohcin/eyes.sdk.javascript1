@@ -1,15 +1,20 @@
 const assert = require('assert')
-const spec = require('../../../src/SpecDriver')
+const spec = require('../../src/SpecDriver')
 const {By} = require('selenium-webdriver')
 
-describe('SpecDriver', async () => {
+before(function() {
+  if (process.env.APPLITOOLS_SELENIUM_MAJOR_VERSION !== '4') {
+    this.skip()
+  }
+})
+
+describe('SpecDriver @selenium4', async () => {
   let driver
   const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
 
   describe('headless desktop', async () => {
     before(async () => {
       driver = await spec.build({browser: 'chrome'})
-      driver = spec.transformDriver(driver)
       await driver.get(url)
     })
 
@@ -49,10 +54,10 @@ describe('SpecDriver', async () => {
     )
     it('toEyesSelector(selector)', toEyesSelector())
     it('executeScript(strings, ...args)', executeScript())
-    it('findElement(string)', findElement({input: By.css('#overflowing-div')}))
+    it('findElement(string)', findElement({input: By.id('overflowing-div')}))
     it('findElements(string)', findElements({input: By.css('div')}))
-    it('findElement(non-existent)', findElement({input: 'non-existent', expected: null}))
-    it('findElements(non-existent)', findElements({input: 'non-existent', expected: []}))
+    it('findElement(non-existent)', findElement({input: By.css('non-existent'), expected: null}))
+    it('findElements(non-existent)', findElements({input: By.css('non-existent'), expected: []}))
     it('mainContext()', mainContext())
     it('parentContext()', parentContext())
     it('childContext(element)', childContext())
@@ -277,15 +282,10 @@ describe('SpecDriver', async () => {
   }
   function getWindowRect() {
     return async () => {
-      const {x, y} = await driver
+      const rect = await driver
         .manage()
         .window()
-        .getPosition()
-      const {width, height} = await driver
-        .manage()
-        .window()
-        .getSize()
-      const rect = {x, y, width, height}
+        .getRect()
       const result = await spec.getWindowRect(driver)
       assert.deepStrictEqual(result, rect)
     }
@@ -293,15 +293,10 @@ describe('SpecDriver', async () => {
   function setWindowRect({input, expected} = {}) {
     return async () => {
       await spec.setWindowRect(driver, input)
-      const {x, y} = await driver
+      const rect = await driver
         .manage()
         .window()
-        .getPosition()
-      const {width, height} = await driver
-        .manage()
-        .window()
-        .getSize()
-      const rect = {x, y, width, height}
+        .getRect()
       assert.deepStrictEqual(rect, expected)
     }
   }
