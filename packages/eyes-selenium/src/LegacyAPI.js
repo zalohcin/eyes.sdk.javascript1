@@ -67,7 +67,7 @@ function withLegacyDriverAPI(driver) {
   }
   return new Proxy(driver, {
     get(target, key, receiver) {
-      if (key in api) {
+      if (Object.hasOwnProperty.call(api, key)) {
         return Reflect.get(api, key, receiver)
       }
       return Reflect.get(target, key)

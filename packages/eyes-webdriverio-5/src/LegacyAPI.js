@@ -210,7 +210,7 @@ function withLegacyDriverAPI(browser) {
   }
   return new Proxy(browser, {
     get(target, key, receiver) {
-      if (key in api) {
+      if (Object.hasOwnProperty.call(api, key)) {
         return Reflect.get(api, key, receiver)
       }
       return Reflect.get(target, key)
@@ -258,7 +258,7 @@ function withLegacyElementAPI(element, driver) {
   }
   return new Proxy(element, {
     get(target, key, receiver) {
-      if (key in api) {
+      if (Object.hasOwnProperty.call(api, key)) {
         return Reflect.get(api, key, receiver)
       }
       return Reflect.get(target, key)
