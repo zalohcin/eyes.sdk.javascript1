@@ -115,7 +115,8 @@ async function findElement(driver, selector) {
 }
 async function findElements(driver, selector) {
   if (TypeUtils.isString(selector)) selector = {css: selector}
-  return driver.element.all(transformSelector(selector))
+  const elements = await driver.element.all(transformSelector(selector))
+  return elements.getWebElements ? elements.getWebElements() : elements
 }
 async function getElementRect(_driver, element) {
   const {x, y} = await element.getLocation()

@@ -5,7 +5,7 @@ describe('SpecDriver', async () => {
   let driver
   const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
 
-  describe('headless desktop', async () => {
+  describe.only('headless desktop', async () => {
     before(async () => {
       driver = await spec.build({browser: 'chrome'})
       driver = spec.transformDriver(driver)
@@ -20,18 +20,18 @@ describe('SpecDriver', async () => {
     it('isDriver(wrong)', isDriver({input: {}, expected: false}))
     it(
       'isElement(element)',
-      isElement({input: () => driver.findElement(driver.by.css('div')), expected: true}),
+      isElement({input: () => driver.findElement({css: 'div'}), expected: true}),
     )
     it('isElement(wrong)', isElement({input: () => ({}), expected: false}))
     it('isSelector(string)', isSelector({input: 'div', expected: true}))
-    it('isSelector(by)', isSelector({input: driver.by.xpath('//div'), expected: true}))
+    it('isSelector(by)', isSelector({input: {xpath: '//div'}, expected: true}))
     it('isSelector(wrong)', isSelector({input: {}, expected: false}))
     it(
       'isEqualElements(element, element)',
       isEqualElements({
         input: () =>
           driver
-            .findElement(driver.by.css('div'))
+            .findElement({css: 'div'})
             .then(element => ({element1: element, element2: element})),
         expected: true,
       }),
@@ -40,16 +40,16 @@ describe('SpecDriver', async () => {
       'isEqualElements(element1, element2)',
       isEqualElements({
         input: async () => ({
-          element1: await driver.findElement(driver.by.css('div')),
-          element2: await driver.findElement(driver.by.css('h1')),
+          element1: await driver.findElement({css: 'div'}),
+          element2: await driver.findElement({css: 'h1'}),
         }),
         expected: false,
       }),
     )
     it('toEyesSelector(selector)', toEyesSelector())
     it('executeScript(strings, ...args)', executeScript())
-    it('findElement(string)', findElement({input: driver.by.css('#overflowing-div')}))
-    it('findElements(string)', findElements({input: driver.by.css('div')}))
+    it('findElement(by-hash)', findElement({input: {css: '#overflowing-div'}}))
+    it('findElements(by-hash)', findElements({input: {css: 'div'}}))
     it('findElement(non-existent)', findElement({input: 'non-existent', expected: null}))
     it('findElements(non-existent)', findElements({input: 'non-existent', expected: []}))
     it('mainContext()', mainContext())
@@ -61,6 +61,22 @@ describe('SpecDriver', async () => {
     it('visit()', visit())
     it('isMobile()', isMobile({expected: false}))
     it('getPlatformName()', getPlatformName({expected: 'linux'}))
+  })
+
+  describe.only('headless desktop (@angular)', async () => {
+    before(async () => {
+      driver = await spec.build({browser: 'chrome'})
+      driver = spec.transformDriver(driver)
+      await driver.get('https://applitools.github.io/demo/TestPages/AngularPage/')
+      await driver.waitForAngular()
+    })
+
+    after(async () => {
+      await spec.cleanup(driver)
+    })
+
+    it('findElement(by-ng)', findElement({input: () => driver.by.model('name')}))
+    it('findElements(by-ng)', findElements({input: () => driver.by.model('name')}))
   })
 
   describe('onscreen desktop (@webdriver)', async () => {
@@ -202,13 +218,13 @@ describe('SpecDriver', async () => {
   function mainContext() {
     return async () => {
       try {
-        const mainDocument = await driver.findElement(driver.by.css('html'))
-        await driver.switchTo().frame(await driver.findElement(driver.by.css('[name="frame1"]')))
-        await driver.switchTo().frame(await driver.findElement(driver.by.css('[name="frame1-1"]')))
-        const frameDocument = await driver.findElement(driver.by.css('html'))
+        const mainDocument = await driver.findElement({css: 'html'})
+        await driver.switchTo().frame(await driver.findElement({css: '[name="frame1"]'}))
+        await driver.switchTo().frame(await driver.findElement({css: '[name="frame1-1"]'}))
+        const frameDocument = await driver.findElement({css: 'html'})
         assert.ok(!(await spec.isEqualElements(driver, mainDocument, frameDocument)))
         await spec.mainContext(driver)
-        const resultDocument = await driver.findElement(driver.by.css('html'))
+        const resultDocument = await driver.findElement({css: 'html'})
         assert.ok(await spec.isEqualElements(driver, resultDocument, mainDocument))
       } finally {
         await driver
@@ -221,13 +237,13 @@ describe('SpecDriver', async () => {
   function parentContext() {
     return async () => {
       try {
-        await driver.switchTo().frame(await driver.findElement(driver.by.css('[name="frame1"]')))
-        const parentDocument = await driver.findElement(driver.by.css('html'))
-        await driver.switchTo().frame(await driver.findElement(driver.by.css('[name="frame1-1"]')))
-        const frameDocument = await driver.findElement(driver.by.css('html'))
+        await driver.switchTo().frame(await driver.findElement({css: '[name="frame1"]'}))
+        const parentDocument = await driver.findElement({css: 'html'})
+        await driver.switchTo().frame(await driver.findElement({css: '[name="frame1-1"]'}))
+        const frameDocument = await driver.findElement({css: 'html'})
         assert.ok(!(await spec.isEqualElements(driver, parentDocument, frameDocument)))
         await spec.parentContext(driver)
-        const resultDocument = await driver.findElement(driver.by.css('html'))
+        const resultDocument = await driver.findElement({css: 'html'})
         assert.ok(await spec.isEqualElements(driver, resultDocument, parentDocument))
       } finally {
         await driver
@@ -240,12 +256,12 @@ describe('SpecDriver', async () => {
   function childContext() {
     return async () => {
       try {
-        const element = await driver.findElement(driver.by.css('[name="frame1"]'))
+        const element = await driver.findElement({css: '[name="frame1"]'})
         await driver.switchTo().frame(element)
-        const expectedDocument = await driver.findElement(driver.by.css('html'))
+        const expectedDocument = await driver.findElement({css: 'html'})
         await driver.switchTo().frame(null)
         await spec.childContext(driver, element)
-        const resultDocument = await driver.findElement(driver.by.css('html'))
+        const resultDocument = await driver.findElement({css: 'html'})
         assert.ok(await spec.isEqualElements(driver, resultDocument, expectedDocument))
       } finally {
         await driver
@@ -257,6 +273,7 @@ describe('SpecDriver', async () => {
   }
   function findElement({input, expected} = {}) {
     return async () => {
+      input = typeof input === 'function' ? input() : input
       const result = expected !== undefined ? expected : await driver.findElement(input)
       const element = await spec.findElement(driver, input)
       if (element !== result) {
@@ -266,6 +283,7 @@ describe('SpecDriver', async () => {
   }
   function findElements({input, expected} = {}) {
     return async () => {
+      input = typeof input === 'function' ? input() : input
       const result = expected !== undefined ? expected : await driver.findElements(input)
       const elements = await spec.findElements(driver, input)
       assert.strictEqual(elements.length, result.length)

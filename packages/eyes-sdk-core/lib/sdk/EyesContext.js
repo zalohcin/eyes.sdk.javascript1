@@ -212,21 +212,12 @@ class EyesContext {
   }
 
   async execute(script, ...args) {
-    await this.focus()
-    try {
-      const result = await this.spec.executeScript(this._context, script, ...serialize(args))
-      return result
-    } catch (err) {
-      this._logger.verbose(`WARNING: execute script error: ${err}`)
-      throw err
-    }
-    function serialize(data) {
+    const serialize = data => {
       if (TypeUtils.isArray(data)) {
         return data.map(serialize)
       } else if (TypeUtils.isObject(data)) {
-        if (TypeUtils.isFunction(data.toJSON)) {
-          return data.toJSON()
-        }
+        if (this.spec.isElement(data)) return data
+        if (TypeUtils.isFunction(data.toJSON)) return data.toJSON()
         return Object.entries(data).reduce(
           (serialized, [key, value]) => Object.assign(serialized, {[key]: serialize(value)}),
           {},
@@ -234,6 +225,14 @@ class EyesContext {
       } else {
         return data
       }
+    }
+    await this.focus()
+    try {
+      const result = await this.spec.executeScript(this._context, script, ...serialize(args))
+      return result
+    } catch (err) {
+      this._logger.verbose(`WARNING: execute script error: ${err}`)
+      throw err
     }
   }
 
