@@ -1,8 +1,8 @@
 # Change Log
 
 ## Unreleased
-- updated to @applitools/snippets@1.0.2 (from 1.0.0)
 
+- support devtools protocol ([Trello](https://trello.com/c/fNxDJDId))
 
 ## 11.5.1 - 2020/7/28
 
