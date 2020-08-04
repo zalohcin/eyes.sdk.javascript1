@@ -63,7 +63,6 @@ function toEyesSelector(selector) {
 function isStaleElementError(error, selector) {
   if (!error) return false
   const errOrResult = error.originalError || error
-  console.log(errOrResult)
   return errOrResult instanceof Error
     ? errOrResult.seleniumStack && errOrResult.seleniumStack.type === 'StaleElementReference'
     : errOrResult.value && errOrResult.selector && errOrResult.selector === selector
@@ -96,11 +95,10 @@ async function childContext(browser, element) {
   return browser
 }
 async function findElement(browser, selector) {
-  // We don't need to destruct "value" to be able to extract a selector from response
-  const element = await browser.element(
+  const {value} = await browser.element(
     selector instanceof LegacySelector ? selector.toString() : transformSelector(selector),
   )
-  return element
+  return value
 }
 async function findElements(browser, selector) {
   const {value} = await browser.elements(
