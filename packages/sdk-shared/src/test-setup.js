@@ -29,6 +29,7 @@ const DEVICES = {
       ...SAUCE_CREDENTIALS,
     },
     url: SAUCE_SERVER_URL,
+    sauce: true,
   },
   'Pixel 3a XL': {
     capabilities: {
@@ -39,6 +40,7 @@ const DEVICES = {
       ...SAUCE_CREDENTIALS,
     },
     url: SAUCE_SERVER_URL,
+    sauce: true,
   },
   'Samsung Galaxy S8': {
     capabilities: {
@@ -52,6 +54,7 @@ const DEVICES = {
       ...SAUCE_CREDENTIALS,
     },
     url: SAUCE_SERVER_URL,
+    sauce: true,
   },
 }
 
@@ -66,6 +69,7 @@ const BROWSERS = {
       ...SAUCE_CREDENTIALS,
     },
     url: SAUCE_SERVER_URL,
+    sauce: true,
   },
   'ie-11': {
     capabilities: {
@@ -77,6 +81,7 @@ const BROWSERS = {
       ...SAUCE_CREDENTIALS,
     },
     url: SAUCE_SERVER_URL,
+    sauce: true,
   },
   'safari-11': {
     capabilities: {
@@ -88,6 +93,7 @@ const BROWSERS = {
       ...SAUCE_CREDENTIALS,
     },
     url: SAUCE_SERVER_URL,
+    sauce: true,
   },
   'safari-12': {
     capabilities: {
@@ -99,6 +105,7 @@ const BROWSERS = {
       ...SAUCE_CREDENTIALS,
     },
     url: SAUCE_SERVER_URL,
+    sauce: true,
   },
   firefox: {
     capabilities: {
@@ -107,6 +114,7 @@ const BROWSERS = {
       ...SAUCE_CREDENTIALS,
     },
     url: SAUCE_SERVER_URL,
+    sauce: true,
   },
   chrome: {
     capabilities: {

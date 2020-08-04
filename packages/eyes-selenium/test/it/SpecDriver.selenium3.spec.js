@@ -67,7 +67,7 @@ describe('SpecDriver @selenium3', async () => {
     it('getUrl()', getUrl())
     it('visit()', visit())
     it('isMobile()', isMobile({expected: false}))
-    it('getPlatformName()', getPlatformName({expected: 'linux'}))
+    it('getPlatformName()', getPlatformName({expected: 'Linux'}))
   })
 
   describe('onscreen desktop (@webdriver)', async () => {
@@ -112,12 +112,13 @@ describe('SpecDriver @selenium3', async () => {
       await spec.cleanup(driver)
     })
 
-    it('getWindowRect()', getWindowRect())
+    it('getWindowRect()', getWindowRect({legacy: true}))
     it(
       'setWindowRect({x, y, width, height})',
       setWindowRect({
         input: {x: 0, y: 0, width: 510, height: 511},
         expected: {x: 0, y: 0, width: 510, height: 511},
+        legacy: true,
       }),
     )
     it(
@@ -125,6 +126,7 @@ describe('SpecDriver @selenium3', async () => {
       setWindowRect({
         input: {x: 11, y: 12},
         expected: {x: 11, y: 12, width: 510, height: 511},
+        legacy: true,
       }),
     )
     it(
@@ -132,9 +134,10 @@ describe('SpecDriver @selenium3', async () => {
       setWindowRect({
         input: {width: 551, height: 552},
         expected: {x: 11, y: 12, width: 551, height: 552},
+        legacy: true,
       }),
     )
-    it('getPlatformName()', getPlatformName({expected: undefined}))
+    it('getPlatformName()', getPlatformName({expected: 'WINDOWS'}))
   })
 
   describe('mobile driver (@mobile)', async () => {
@@ -283,15 +286,23 @@ describe('SpecDriver @selenium3', async () => {
   }
   function getWindowRect() {
     return async () => {
-      const {x, y} = await driver
-        .manage()
-        .window()
-        .getPosition()
-      const {width, height} = await driver
-        .manage()
-        .window()
-        .getSize()
-      const rect = {x, y, width, height}
+      let rect
+      if (driver.manage().window().getRect) {
+        rect = await driver
+          .manage()
+          .window()
+          .getRect()
+      } else {
+        const {x, y} = await driver
+          .manage()
+          .window()
+          .getPosition()
+        const {width, height} = await driver
+          .manage()
+          .window()
+          .getSize()
+        rect = {x, y, width, height}
+      }
       const result = await spec.getWindowRect(driver)
       assert.deepStrictEqual(result, rect)
     }
@@ -299,15 +310,23 @@ describe('SpecDriver @selenium3', async () => {
   function setWindowRect({input, expected} = {}) {
     return async () => {
       await spec.setWindowRect(driver, input)
-      const {x, y} = await driver
-        .manage()
-        .window()
-        .getPosition()
-      const {width, height} = await driver
-        .manage()
-        .window()
-        .getSize()
-      const rect = {x, y, width, height}
+      let rect
+      if (driver.manage().window().getRect) {
+        rect = await driver
+          .manage()
+          .window()
+          .getRect()
+      } else {
+        const {x, y} = await driver
+          .manage()
+          .window()
+          .getPosition()
+        const {width, height} = await driver
+          .manage()
+          .window()
+          .getSize()
+        rect = {x, y, width, height}
+      }
       assert.deepStrictEqual(rect, expected)
     }
   }

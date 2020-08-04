@@ -157,7 +157,7 @@ async function isNative(driver) {
 }
 async function getPlatformName(driver) {
   const capabilities = await driver.getCapabilities()
-  return capabilities.get('platformName')
+  return capabilities.get('platformName') || capabilities.get('platform')
 }
 async function getPlatformVersion(driver) {
   const capabilities = await driver.getCapabilities()
@@ -216,10 +216,12 @@ async function build(env) {
   const {testSetup} = require('@applitools/sdk-shared')
   const {browser, capabilities, headless, url, args = []} = testSetup.Env(env)
   const desiredCapabilities = {browserName: browser, ...capabilities}
-  const browserOptionsName = browserOptionsNames[browser]
-  if (browserOptionsName) {
-    desiredCapabilities[browserOptionsName] = {
-      args: headless ? args.concat('headless') : args,
+  if (!sauce) {
+    const browserOptionsName = browserOptionsNames[browser]
+    if (browserOptionsName) {
+      desiredCapabilities[browserOptionsName] = {
+        args: headless ? args.concat('headless') : args,
+      }
     }
   }
   return new Builder()

@@ -133,7 +133,7 @@ describe('SpecDriver @selenium4', async () => {
         expected: {x: 11, y: 12, width: 551, height: 552},
       }),
     )
-    it('getPlatformName()', getPlatformName({expected: undefined}))
+    it('getPlatformName()', getPlatformName({expected: 'WINDOWS'}))
   })
 
   describe('mobile driver (@mobile)', async () => {
