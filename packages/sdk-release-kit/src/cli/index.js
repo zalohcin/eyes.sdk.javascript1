@@ -83,7 +83,10 @@ const {gitAdd, gitCommit, gitPullWithRebase, gitPushWithTags, isStagedForCommit}
         return await verifyChangelog(cwd)
       case 'verify-commits':
       case 'vco':
-        return await verifyCommits({pkgPath: cwd, isForce: process.env.BONGO_VERIFY_COMMITS_FORCE})
+        if (!process.env.BONGO_SKIP_VERIFY_COMMITS) {
+          return await verifyCommits({pkgPath: cwd})
+        }
+        return
       case 'verify-installed-versions':
       case 'viv':
         createDotFolder(cwd)

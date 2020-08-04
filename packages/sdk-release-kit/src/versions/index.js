@@ -28,7 +28,7 @@ async function verifyCommits({pkgPath}) {
     throw new Error(
       'There are unreleased commits in dependencies of this package:\n' +
         results.map(({name, output}) => `${chalk.yellow(name)}\n${chalk.cyan(output)}`).join('\n') +
-        `\nTo ignore these, re-run with BONGO_VERIFY_COMMITS_FORCE=1`,
+        `\nTo ignore these, re-run with BONGO_SKIP_VERIFY_COMMITS=1`,
     )
   }
 }
