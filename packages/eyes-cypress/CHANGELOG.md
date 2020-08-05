@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- add `useDom` and `enablePatterns` to readme
+- support `matchLevel` in `cy.eyesCheckWindow`
+
 ## 3.12.5 - 2020/7/26
 
 - updated to @applitools/dom-snapshot@4.0.0 (from 3.7.2)

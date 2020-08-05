@@ -147,6 +147,7 @@ describe('handlers', () => {
     const enablePatterns = 'enablePatterns';
     const ignoreDisplacements = 'ignoreDisplacements';
     const accessibility = 'accessibility';
+    const matchLevel = 'matchLevel';
     const resourceContents = {};
 
     const result = await handlers.checkWindow({
@@ -170,6 +171,7 @@ describe('handlers', () => {
       enablePatterns,
       ignoreDisplacements,
       accessibility,
+      matchLevel,
     });
 
     expect(result).to.eql({
@@ -196,6 +198,7 @@ describe('handlers', () => {
       ignoreDisplacements,
       frames: [],
       accessibility,
+      matchLevel,
       __openArgs: {
         __test: 123,
         accessibilitySettings: undefined,
@@ -321,6 +324,7 @@ describe('handlers', () => {
       enablePatterns: undefined,
       ignoreDisplacements: undefined,
       accessibility: undefined,
+      matchLevel: undefined,
     });
   });
 

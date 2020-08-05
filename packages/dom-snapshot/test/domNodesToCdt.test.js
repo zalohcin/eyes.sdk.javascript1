@@ -5,7 +5,7 @@ const domNodesToCdt = require('../src/browser/domNodesToCdt');
 const {loadFixture, loadJsonFixture} = require('./util/loadFixture');
 const fs = require('fs');
 const {resolve} = require('path');
-const {testServer} = require('@applitools/sdk-shared');
+const testServer = require('@applitools/sdk-shared/src/run-test-server');
 const getDocNode = require('./util/getDocNode');
 
 const Node = {

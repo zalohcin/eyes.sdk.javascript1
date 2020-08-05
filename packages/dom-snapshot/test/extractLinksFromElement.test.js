@@ -3,7 +3,7 @@
 const {describe, it, before, after} = require('mocha');
 const {expect} = require('chai');
 const extractLinksFromElement = require('../src/browser/extractLinksFromElement');
-const {testServer} = require('@applitools/sdk-shared');
+const testServer = require('@applitools/sdk-shared/src/run-test-server');
 const getDocNode = require('./util/getDocNode');
 
 describe('extractLinksFromElement', () => {
