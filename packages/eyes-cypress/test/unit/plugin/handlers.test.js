@@ -148,6 +148,7 @@ describe('handlers', () => {
     const ignoreDisplacements = 'ignoreDisplacements';
     const accessibility = 'accessibility';
     const matchLevel = 'matchLevel';
+    const visualGridOptions = 'visualGridOptions';
     const resourceContents = {};
 
     const result = await handlers.checkWindow({
@@ -172,6 +173,7 @@ describe('handlers', () => {
       ignoreDisplacements,
       accessibility,
       matchLevel,
+      visualGridOptions,
     });
 
     expect(result).to.eql({
@@ -199,6 +201,7 @@ describe('handlers', () => {
       frames: [],
       accessibility,
       matchLevel,
+      visualGridOptions,
       __openArgs: {
         __test: 123,
         accessibilitySettings: undefined,
@@ -325,6 +328,7 @@ describe('handlers', () => {
       ignoreDisplacements: undefined,
       accessibility: undefined,
       matchLevel: undefined,
+      visualGridOptions: undefined,
     });
   });
 

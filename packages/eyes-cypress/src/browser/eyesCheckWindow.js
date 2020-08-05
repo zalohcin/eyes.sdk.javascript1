@@ -20,7 +20,8 @@ function makeEyesCheckWindow({sendRequest, processPage}) {
       enablePatterns,
       ignoreDisplacements,
       accessibility,
-      matchLevel;
+      matchLevel,
+      visualGridOptions;
     if (typeof args === 'string') {
       tag = args;
     } else if (typeof args === 'object') {
@@ -42,6 +43,7 @@ function makeEyesCheckWindow({sendRequest, processPage}) {
       ignoreDisplacements = args.ignoreDisplacements;
       accessibility = args.accessibility;
       matchLevel = args.matchLevel;
+      visualGridOptions = args.visualGridOptions;
     }
 
     return processPage(doc).then(mainFrame => {
@@ -76,6 +78,7 @@ function makeEyesCheckWindow({sendRequest, processPage}) {
             ignoreDisplacements,
             accessibility,
             matchLevel,
+            visualGridOptions,
           },
         }),
       );

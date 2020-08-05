@@ -186,6 +186,8 @@ class CheckSettings {
     this._renderId = undefined
     /** @private @type {Object<string, string>} */
     this._scriptHooks = {}
+    /** @private @type {Object} */
+    this._visualGridOptions = undefined
   }
   /**
    * Create check settings from an object
@@ -280,6 +282,11 @@ class CheckSettings {
     }
     if (object.isFully) {
       settings.fully(object.isFully)
+    }
+    if (object.visualGridOptions) {
+      Object.entries(object.visualGridOptions).forEach(([key, value]) => {
+        settings.visualGridOption(key, value)
+      })
     }
     return settings
   }
@@ -932,6 +939,14 @@ class CheckSettings {
   getScriptHooks() {
     return this._scriptHooks
   }
+  visualGridOption(key, value) {
+    if (!this._visualGridOptions) {
+      this._visualGridOptions = {}
+    }
+    this._visualGridOptions[key] = value
+    return this
+  }
+
   /**
    * @override
    */
@@ -955,6 +970,7 @@ class CheckSettings {
       scriptHooks: this.getScriptHooks(),
       sendDom: this.getSendDom(),
       matchLevel: this.getMatchLevel(),
+      visualGridOptions: this._visualGridOptions,
     }
     if (config.target === 'region') {
       const type = this._targetRegion ? 'region' : 'selector'
