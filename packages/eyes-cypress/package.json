@@ -48,7 +48,7 @@
     "lodash.flatten": "^4.4.0"
   },
   "devDependencies": {
-    "@applitools/sdk-release-kit": "0.1.0",
+    "@applitools/sdk-release-kit": "0.2.2",
     "@applitools/sdk-shared": "0.1.0",
     "chai": "^4.2.0",
     "chai-spies": "^1.0.0",
