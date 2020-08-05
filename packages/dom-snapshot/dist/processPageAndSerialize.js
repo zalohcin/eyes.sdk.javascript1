@@ -13162,6 +13162,9 @@ function __processPageAndSerialize() {
     let linkUrls = [];
 
     cdt[0].childNodeIndexes = childrenFactory(cdt, docNode.childNodes);
+    if (docNode.adoptedStyleSheets) {
+      cdt[0].adoptedStyleSheets = getAdoptedStyleSheets(docNode);
+    }
     return {cdt, docRoots, canvasElements, inlineFrames, linkUrls};
 
     function childrenFactory(cdt, elementNodes) {
@@ -13231,6 +13234,10 @@ function __processPageAndSerialize() {
             dummyUrl = absolutizeUrl_1(`?applitools-iframe=${uuid_1()}`, baseUrl);
             node.attributes.push({name: 'data-applitools-src', value: dummyUrl});
             inlineFrames.push({element: elementNode, url: dummyUrl});
+          }
+
+          if (elementNode.adoptedStyleSheets) {
+            node.adoptedStyleSheets = getAdoptedStyleSheets(elementNode);
           }
         } else {
           node = getScriptNode(elementNode);
@@ -13382,6 +13389,14 @@ function __processPageAndSerialize() {
         nodeName: elementNode.nodeName,
       };
     }
+  }
+
+  function getAdoptedStyleSheets(node) {
+    return Array.from(node.adoptedStyleSheets).map(sheet => {
+      const cssomAst = createAstFromCssom_1(sheet.cssRules);
+      const mergedRules = mergeRules_1(cssomAst, cssomAst);
+      return lib.generate(lib.fromPlainObject({type: 'StyleSheet', children: mergedRules}));
+    });
   }
 
   var domNodesToCdt_1 = domNodesToCdt;

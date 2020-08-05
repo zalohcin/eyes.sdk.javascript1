@@ -23646,6 +23646,11 @@ function __processPageAndSerializeForIE() {
     var inlineFrames = [];
     var linkUrls = [];
     cdt[0].childNodeIndexes = childrenFactory(cdt, docNode.childNodes);
+
+    if (docNode.adoptedStyleSheets) {
+      cdt[0].adoptedStyleSheets = getAdoptedStyleSheets(docNode);
+    }
+
     return {
       cdt: cdt,
       docRoots: docRoots,
@@ -23717,6 +23722,10 @@ function __processPageAndSerializeForIE() {
               element: elementNode,
               url: dummyUrl
             });
+          }
+
+          if (elementNode.adoptedStyleSheets) {
+            node.adoptedStyleSheets = getAdoptedStyleSheets(elementNode);
           }
         } else {
           node = getScriptNode(elementNode);
@@ -23871,6 +23880,17 @@ function __processPageAndSerializeForIE() {
         nodeName: elementNode.nodeName
       };
     }
+  }
+
+  function getAdoptedStyleSheets(node) {
+    return Array.from(node.adoptedStyleSheets).map(function (sheet) {
+      var cssomAst = createAstFromCssom_1(sheet.cssRules);
+      var mergedRules = mergeRules_1(cssomAst, cssomAst);
+      return lib.generate(lib.fromPlainObject({
+        type: 'StyleSheet',
+        children: mergedRules
+      }));
+    });
   }
 
   var domNodesToCdt_1 = domNodesToCdt;

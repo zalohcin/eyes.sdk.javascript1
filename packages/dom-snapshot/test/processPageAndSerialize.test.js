@@ -5,7 +5,7 @@ const puppeteer = require('puppeteer');
 const {delay} = require('@applitools/functional-commons');
 const {getProcessPageAndSerialize} = require('../index');
 const arrayBufferToBase64 = require('../src/browser/arrayBufferToBase64');
-const {testServer} = require('@applitools/sdk-shared');
+const testServer = require('@applitools/sdk-shared/src/run-test-server');
 const {loadFixtureBuffer, loadJsonFixture} = require('./util/loadFixture');
 const fs = require('fs');
 const util = require('util');
@@ -1080,5 +1080,18 @@ describe('processPage', () => {
       'http://localhost:7373/somePath/gargamel.jpg',
       'http://localhost:7373/somePath/gargamel2.jpg',
     ]);
+  });
+
+  it('handles adopted stylesheets', async () => {
+    await page.goto('http://localhost:7373/adopted-stylesheets.html');
+    const {cdt} = await processPage();
+
+    if (process.env.APPLITOOLS_UPDATE_FIXTURES) {
+      const cdtStr = JSON.stringify(cdt, null, 2);
+      fs.writeFileSync(resolve(__dirname, 'fixtures/adopted-stylesheets.cdt.json'), cdtStr);
+    }
+
+    const expectedCdt = loadJsonFixture('adopted-stylesheets.cdt.json');
+    expect(cdt).to.eql(expectedCdt);
   });
 });

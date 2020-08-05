@@ -7,6 +7,9 @@ const absolutizeUrl = require('./absolutizeUrl');
 const processInlineCss = require('./cssom/processInlineCss');
 const extractLinksFromElement = require('./extractLinksFromElement');
 const noop = require('./noop');
+const csstree = require('css-tree');
+const createAstFromCssom = require('./cssom/createAstFromCssom');
+const mergeRules = require('./cssom/mergeRules');
 const NEED_MAP_INPUT_TYPES = new Set([
   'date',
   'datetime-local',
@@ -31,6 +34,9 @@ function domNodesToCdt(docNode, baseUrl, log = noop) {
   let linkUrls = [];
 
   cdt[0].childNodeIndexes = childrenFactory(cdt, docNode.childNodes);
+  if (docNode.adoptedStyleSheets) {
+    cdt[0].adoptedStyleSheets = getAdoptedStyleSheets(docNode);
+  }
   return {cdt, docRoots, canvasElements, inlineFrames, linkUrls};
 
   function childrenFactory(cdt, elementNodes) {
@@ -100,6 +106,10 @@ function domNodesToCdt(docNode, baseUrl, log = noop) {
           dummyUrl = absolutizeUrl(`?applitools-iframe=${uuid()}`, baseUrl);
           node.attributes.push({name: 'data-applitools-src', value: dummyUrl});
           inlineFrames.push({element: elementNode, url: dummyUrl});
+        }
+
+        if (elementNode.adoptedStyleSheets) {
+          node.adoptedStyleSheets = getAdoptedStyleSheets(elementNode);
         }
       } else {
         node = getScriptNode(elementNode);
@@ -251,6 +261,14 @@ function domNodesToCdt(docNode, baseUrl, log = noop) {
       nodeName: elementNode.nodeName,
     };
   }
+}
+
+function getAdoptedStyleSheets(node) {
+  return Array.from(node.adoptedStyleSheets).map(sheet => {
+    const cssomAst = createAstFromCssom(sheet.cssRules);
+    const mergedRules = mergeRules(cssomAst, cssomAst);
+    return csstree.generate(csstree.fromPlainObject({type: 'StyleSheet', children: mergedRules}));
+  });
 }
 
 module.exports = domNodesToCdt;
