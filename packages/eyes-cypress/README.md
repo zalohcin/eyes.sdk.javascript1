@@ -391,7 +391,7 @@ An object with the following properties:
 cy.eyesCheckWindow({sendDom: false})
 ```
 
-##### useDom
+##### `useDom`
 
 <!-- TODO add explanation -->
 
@@ -399,13 +399,23 @@ cy.eyesCheckWindow({sendDom: false})
 cy.eyesCheckWindow({useDom: true})
 ```
 
-##### enablePatterns
+##### `enablePatterns`
 
 <!-- TODO add explanation -->
 
 ```js
 cy.eyesCheckWindow({enablePatterns: true})
 ```
+
+##### `matchLevel`
+
+<!-- TODO add explanation -->
+
+```js
+cy.eyesCheckWindow({matchLevel: 'Layout'})
+```
+
+The different matchLevels are specified here:  https://github.com/applitools/eyes.sdk.javascript1/blob/master/packages/eyes-sdk-core/lib/config/MatchLevel.js
 
 #### Close
 
