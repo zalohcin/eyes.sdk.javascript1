@@ -147,7 +147,8 @@ function Env(
   return env
 }
 
-const batch = new BatchInfo(process.env.APPLITOOLS_BATCH_NAME || 'JS Coverage Tests')
+const batchName = process.env.APPLITOOLS_BATCH_NAME || 'JS Coverage Tests'
+const batch = typeof BatchInfo === 'undefined' ? batchName : new BatchInfo(batchName)
 
 function getEyes({isVisualGrid, isCssStitching, configuration, branchName = 'master'} = {}) {
   const eyes = new Eyes(isVisualGrid ? new VisualGridRunner(10) : undefined)
