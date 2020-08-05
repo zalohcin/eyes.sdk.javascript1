@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 12.0.1 - 2020/8/5
+
 - Fix bug in runner.getAllTestResults(false)
 
 ## 12.0.0 - 2020/8/4
