@@ -1081,4 +1081,17 @@ describe('processPage', () => {
       'http://localhost:7373/somePath/gargamel2.jpg',
     ]);
   });
+
+  it('handles adopted stylesheets', async () => {
+    await page.goto('http://localhost:7373/adopted-stylesheets.html');
+    const {cdt} = await processPage();
+
+    if (process.env.APPLITOOLS_UPDATE_FIXTURES) {
+      const cdtStr = JSON.stringify(cdt, null, 2);
+      fs.writeFileSync(resolve(__dirname, 'fixtures/adopted-stylesheets.cdt.json'), cdtStr);
+    }
+
+    const expectedCdt = loadJsonFixture('adopted-stylesheets.cdt.json');
+    expect(cdt).to.eql(expectedCdt);
+  });
 });

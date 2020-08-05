@@ -13083,6 +13083,13 @@ function extractLinksFromElement(el) {
 
 var extractLinksFromElement_1 = extractLinksFromElement;
 
+function styleSheetToCssText(sheet) {
+  const cssomAst = createAstFromCssom_1(sheet.cssRules);
+  return lib.generate(lib.fromPlainObject({type: 'StyleSheet', children: cssomAst}));
+}
+
+var styleSheetToCssText_1 = styleSheetToCssText;
+
 const NEED_MAP_INPUT_TYPES = new Set([
   'date',
   'datetime-local',
@@ -13107,6 +13114,9 @@ function domNodesToCdt(docNode, baseUrl, log = noop$4) {
   let linkUrls = [];
 
   cdt[0].childNodeIndexes = childrenFactory(cdt, docNode.childNodes);
+  if (docNode.adoptedStyleSheets && docNode.adoptedStyleSheets.length > 0) {
+    cdt[0].adoptedStyleSheets = getAdoptedStyleSheets(docNode);
+  }
   return {cdt, docRoots, canvasElements, inlineFrames, linkUrls};
 
   function childrenFactory(cdt, elementNodes) {
@@ -13133,7 +13143,7 @@ function domNodesToCdt(docNode, baseUrl, log = noop$4) {
           elementNode.sheet &&
           elementNode.sheet.cssRules.length
         ) {
-          cdt.push(getCssRulesNode(elementNode));
+          cdt.push(getCssRulesNode(elementNode, log));
           manualChildNodeIndexes = [cdt.length - 1];
         }
 
@@ -13177,6 +13187,10 @@ function domNodesToCdt(docNode, baseUrl, log = noop$4) {
           node.attributes.push({name: 'data-applitools-src', value: dummyUrl});
           inlineFrames.push({element: elementNode, url: dummyUrl});
         }
+
+        if (elementNode.adoptedStyleSheets && elementNode.adoptedStyleSheets.length > 0) {
+          node.adoptedStyleSheets = getAdoptedStyleSheets(elementNode);
+        }
       } else {
         node = getScriptNode(elementNode);
       }
@@ -13199,134 +13213,138 @@ function domNodesToCdt(docNode, baseUrl, log = noop$4) {
       return null;
     }
   }
+}
 
-  function nodeAttributes({attributes = {}}) {
-    return Object.keys(attributes).filter(k => attributes[k] && attributes[k].name);
+function nodeAttributes({attributes = {}}) {
+  return Object.keys(attributes).filter(k => attributes[k] && attributes[k].name);
+}
+
+function getCssRulesNode(elementNode, log) {
+  return {
+    nodeType: Node.TEXT_NODE,
+    nodeValue: processInlineCss_1(elementNode, log),
+  };
+}
+
+function getTextContentNode(elementNode) {
+  return {
+    nodeType: Node.TEXT_NODE,
+    nodeValue: elementNode.value,
+  };
+}
+
+function getBasicNode(elementNode) {
+  const node = {
+    nodeType: elementNode.nodeType,
+    nodeName: elementNode.nodeName,
+    attributes: nodeAttributes(elementNode).map(key => {
+      let value = elementNode.attributes[key].value;
+      const name = elementNode.attributes[key].name;
+      if (/^blob:/.test(value)) {
+        value = value.replace(/^blob:/, '');
+      } else if (ON_EVENT_REGEX.test(name)) {
+        value = '';
+      } else if (
+        elementNode.nodeName === 'IFRAME' &&
+        isAccessibleFrame_1(elementNode) &&
+        name === 'src' &&
+        elementNode.contentDocument.location.href !== 'about:blank' &&
+        elementNode.contentDocument.location.href !==
+          absolutizeUrl_1(value, elementNode.ownerDocument.location.href)
+      ) {
+        value = elementNode.contentDocument.location.href;
+      }
+      return {
+        name,
+        value,
+      };
+    }),
+  };
+
+  if (elementNode.tagName === 'INPUT' && ['checkbox', 'radio'].includes(elementNode.type)) {
+    if (elementNode.attributes.checked && !elementNode.checked) {
+      const idx = node.attributes.findIndex(a => a.name === 'checked');
+      node.attributes.splice(idx, 1);
+    }
+    if (!elementNode.attributes.checked && elementNode.checked) {
+      node.attributes.push({name: 'checked'});
+    }
   }
 
-  function getCssRulesNode(elementNode) {
-    return {
-      nodeType: Node.TEXT_NODE,
-      nodeValue: processInlineCss_1(elementNode, log),
-    };
+  if (
+    elementNode.tagName === 'INPUT' &&
+    NEED_MAP_INPUT_TYPES.has(elementNode.type) &&
+    (elementNode.attributes.value && elementNode.attributes.value.value) !== elementNode.value
+  ) {
+    addOrUpdateAttribute(node.attributes, 'value', elementNode.value);
   }
 
-  function getTextContentNode(elementNode) {
-    return {
-      nodeType: Node.TEXT_NODE,
-      nodeValue: elementNode.value,
-    };
+  if (
+    elementNode.tagName === 'OPTION' &&
+    elementNode.parentElement.selectedOptions &&
+    Array.from(elementNode.parentElement.selectedOptions).indexOf(elementNode) > -1
+  ) {
+    addOrUpdateAttribute(node.attributes, 'selected', '');
   }
 
-  function getBasicNode(elementNode) {
-    const node = {
-      nodeType: elementNode.nodeType,
-      nodeName: elementNode.nodeName,
-      attributes: nodeAttributes(elementNode).map(key => {
-        let value = elementNode.attributes[key].value;
+  if (elementNode.tagName === 'STYLE' && elementNode.sheet && elementNode.sheet.disabled) {
+    node.attributes.push({name: 'data-applitools-disabled', value: ''});
+  }
+  if (
+    elementNode.tagName === 'LINK' &&
+    elementNode.type === 'text/css' &&
+    elementNode.sheet &&
+    elementNode.sheet.disabled
+  ) {
+    addOrUpdateAttribute(node.attributes, 'disabled', '');
+  }
+
+  return node;
+}
+
+function addOrUpdateAttribute(attributes, name, value) {
+  const nodeAttr = attributes.find(a => a.name === name);
+  if (nodeAttr) {
+    nodeAttr.value = value;
+  } else {
+    attributes.push({name, value});
+  }
+}
+
+function getScriptNode(elementNode) {
+  return {
+    nodeType: Node.ELEMENT_NODE,
+    nodeName: 'SCRIPT',
+    attributes: nodeAttributes(elementNode)
+      .map(key => {
         const name = elementNode.attributes[key].name;
-        if (/^blob:/.test(value)) {
-          value = value.replace(/^blob:/, '');
-        } else if (ON_EVENT_REGEX.test(name)) {
-          value = '';
-        } else if (
-          elementNode.nodeName === 'IFRAME' &&
-          isAccessibleFrame_1(elementNode) &&
-          name === 'src' &&
-          elementNode.contentDocument.location.href !== 'about:blank' &&
-          elementNode.contentDocument.location.href !==
-            absolutizeUrl_1(value, elementNode.ownerDocument.location.href)
-        ) {
-          value = elementNode.contentDocument.location.href;
-        }
+        const value = ON_EVENT_REGEX.test(name) ? '' : elementNode.attributes[key].value;
         return {
           name,
           value,
         };
-      }),
-    };
+      })
+      .filter(attr => attr.name !== 'src'),
+    childNodeIndexes: [],
+  };
+}
 
-    if (elementNode.tagName === 'INPUT' && ['checkbox', 'radio'].includes(elementNode.type)) {
-      if (elementNode.attributes.checked && !elementNode.checked) {
-        const idx = node.attributes.findIndex(a => a.name === 'checked');
-        node.attributes.splice(idx, 1);
-      }
-      if (!elementNode.attributes.checked && elementNode.checked) {
-        node.attributes.push({name: 'checked'});
-      }
-    }
+function getTextNode(elementNode) {
+  return {
+    nodeType: Node.TEXT_NODE,
+    nodeValue: elementNode.nodeValue,
+  };
+}
 
-    if (
-      elementNode.tagName === 'INPUT' &&
-      NEED_MAP_INPUT_TYPES.has(elementNode.type) &&
-      (elementNode.attributes.value && elementNode.attributes.value.value) !== elementNode.value
-    ) {
-      addOrUpdateAttribute(node.attributes, 'value', elementNode.value);
-    }
+function getDocNode(elementNode) {
+  return {
+    nodeType: Node.DOCUMENT_TYPE_NODE,
+    nodeName: elementNode.nodeName,
+  };
+}
 
-    if (
-      elementNode.tagName === 'OPTION' &&
-      elementNode.parentElement.selectedOptions &&
-      Array.from(elementNode.parentElement.selectedOptions).indexOf(elementNode) > -1
-    ) {
-      addOrUpdateAttribute(node.attributes, 'selected', '');
-    }
-
-    if (elementNode.tagName === 'STYLE' && elementNode.sheet && elementNode.sheet.disabled) {
-      node.attributes.push({name: 'data-applitools-disabled', value: ''});
-    }
-    if (
-      elementNode.tagName === 'LINK' &&
-      elementNode.type === 'text/css' &&
-      elementNode.sheet &&
-      elementNode.sheet.disabled
-    ) {
-      addOrUpdateAttribute(node.attributes, 'disabled', '');
-    }
-
-    return node;
-  }
-
-  function addOrUpdateAttribute(attributes, name, value) {
-    const nodeAttr = attributes.find(a => a.name === name);
-    if (nodeAttr) {
-      nodeAttr.value = value;
-    } else {
-      attributes.push({name, value});
-    }
-  }
-
-  function getScriptNode(elementNode) {
-    return {
-      nodeType: Node.ELEMENT_NODE,
-      nodeName: 'SCRIPT',
-      attributes: nodeAttributes(elementNode)
-        .map(key => {
-          const name = elementNode.attributes[key].name;
-          const value = ON_EVENT_REGEX.test(name) ? '' : elementNode.attributes[key].value;
-          return {
-            name,
-            value,
-          };
-        })
-        .filter(attr => attr.name !== 'src'),
-      childNodeIndexes: [],
-    };
-  }
-
-  function getTextNode(elementNode) {
-    return {
-      nodeType: Node.TEXT_NODE,
-      nodeValue: elementNode.nodeValue,
-    };
-  }
-
-  function getDocNode(elementNode) {
-    return {
-      nodeType: Node.DOCUMENT_TYPE_NODE,
-      nodeName: elementNode.nodeName,
-    };
-  }
+function getAdoptedStyleSheets(node) {
+  return Array.from(node.adoptedStyleSheets).map(styleSheetToCssText_1);
 }
 
 var domNodesToCdt_1 = domNodesToCdt;
