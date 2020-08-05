@@ -13169,7 +13169,7 @@ function __processPageAndSerialize() {
     let linkUrls = [];
 
     cdt[0].childNodeIndexes = childrenFactory(cdt, docNode.childNodes);
-    if (docNode.adoptedStyleSheets) {
+    if (docNode.adoptedStyleSheets && docNode.adoptedStyleSheets.length > 0) {
       cdt[0].adoptedStyleSheets = getAdoptedStyleSheets(docNode);
     }
     return {cdt, docRoots, canvasElements, inlineFrames, linkUrls};
@@ -13243,7 +13243,7 @@ function __processPageAndSerialize() {
             inlineFrames.push({element: elementNode, url: dummyUrl});
           }
 
-          if (elementNode.adoptedStyleSheets) {
+          if (elementNode.adoptedStyleSheets && elementNode.adoptedStyleSheets.length > 0) {
             node.adoptedStyleSheets = getAdoptedStyleSheets(elementNode);
           }
         } else {
