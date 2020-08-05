@@ -114,6 +114,11 @@ function makeSpecEmitter(options) {
         addCommand(js`await eyes.constructor.setViewportSize(driver, ${viewportSize})`)
       },
     },
+    runner: {
+      getAllTestResults(throwEx) {
+        return addCommand(js`await eyes.getRunner().getAllTestResults(${throwEx})`)
+      },
+    },
     open({appName, viewportSize}) {
       return addCommand(
         js`await eyes.open(
@@ -183,10 +188,10 @@ function makeSpecEmitter(options) {
       )`)
     },
     close(throwEx) {
-      addCommand(js`await eyes.close(${throwEx})`)
+      return addCommand(js`await eyes.close(${throwEx})`)
     },
     abort() {
-      addCommand(js`await eyes.abort()`)
+      return addCommand(js`await eyes.abort()`)
     },
     getViewportSize() {
       return addCommand(js`await eyes.getViewportSize()`).type('RectangleSize')
@@ -213,13 +218,21 @@ function makeSpecEmitter(options) {
       addCommand(js`assert.ok(${value}, ${message})`)
     },
     throws(func, check, message) {
-      addCommand(
-        js`await assert.rejects(
+      let command
+      if (check) {
+        command = js`await assert.rejects(
           async () => {${func}},
           error => {${withScope(check, ['error'])}},
           ${message},
-        )`,
-      )
+        )`
+      } else {
+        command = js`await assert.rejects(
+            async () => {${func}},
+            undefined,
+            ${message},
+          )`
+      }
+      addCommand(command)
     },
   }
 
