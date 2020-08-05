@@ -216,16 +216,6 @@
     xml-js "^1.6.11"
     yargs "^15.0.2"
 
-"@applitools/sdk-release-kit@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@applitools/sdk-release-kit/-/sdk-release-kit-0.1.0.tgz#fadb852ab68a7a326320224b04a58ef5985e7e32"
-  integrity sha512-qRV2Oq6vhAbeBD4nvVRjxdqBv8TzDv739jh3+32I1OKqOQPz04xOotm4f/Uy9wHd8hM3KmrkqX+YkOM7g1Kvog==
-  dependencies:
-    chalk "3.0.0"
-    micromatch "^4.0.2"
-    node-fetch "^2.6.0"
-    yargs "^15.0.2"
-
 "@applitools/visual-grid-client@14.0.1":
   version "14.0.1"
   resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-14.0.1.tgz#479f37c54fc9f05eeccc28de561ad6280d458ccf"
