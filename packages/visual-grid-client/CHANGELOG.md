@@ -1,8 +1,11 @@
 # Change Log
 
 ## Unreleased
-- updated to @applitools/dom-snapshot@4.0.3 (from 4.0.2)
 
+
+## 14.7.1 - 2020/8/6
+
+- updated to @applitools/dom-snapshot@4.0.3 (from 4.0.2)
 
 ## 14.7.0 - 2020/8/6
 
