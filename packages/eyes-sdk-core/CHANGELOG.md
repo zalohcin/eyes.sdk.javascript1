@@ -3,6 +3,7 @@
 ## Unreleased
 
 - add utility function to verify that the object is an instance of a class by class name
+- add JSON output to TestResultsFormatter [PR 224](https://github.com/applitools/eyes.sdk.javascript1/pull/224)
 
 ## 12.1.0 - 2020/8/6
 
