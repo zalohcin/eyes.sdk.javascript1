@@ -4,6 +4,10 @@
 ## Unreleased
 
 
+## 4.0.2 - 2020/8/6
+
+- support adoptedStyleSheets ([Trello](https://trello.com/c/cX4q0DzH) [Trello](https://trello.com/c/a22B3tUB))
+
 ## 4.0.1 - 2020/7/30
 
 - fix faux shadow DOM
