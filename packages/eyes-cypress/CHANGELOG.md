@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 3.13.0 - 2020/8/6
+
 - add `useDom` and `enablePatterns` to readme
 - support `matchLevel` in `cy.eyesCheckWindow`
 - support adoptedStyleSheets ([Trello](https://trello.com/c/cX4q0DzH) [Trello](https://trello.com/c/a22B3tUB))
