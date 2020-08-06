@@ -104,7 +104,7 @@ function makeOpenEyes({
     ignoreBaseline = _ignoreBaseline,
     notifyOnCompletion,
     getUserAgents = _getUserAgents,
-    visualGridOptions = _visualGridOptions
+    visualGridOptions = _visualGridOptions,
   }) {
     logger.verbose(`openEyes: testName=${testName}, browser=`, browser)
 
