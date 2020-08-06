@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- add support for RenderRequst `visualGridOptions` in Configuration and CheckSettings
 
 ## 12.0.1 - 2020/8/5
 
