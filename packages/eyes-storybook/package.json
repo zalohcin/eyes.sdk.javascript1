@@ -53,7 +53,7 @@
   },
   "dependencies": {
     "@applitools/dom-snapshot": "4.0.1",
-    "@applitools/eyes-sdk-core": "11.5.1",
+    "@applitools/eyes-sdk-core": "12.1.0",
     "@applitools/functional-commons": "1.5.4",
     "@applitools/monitoring-commons": "1.0.19",
     "@applitools/visual-grid-client": "14.6.2",
