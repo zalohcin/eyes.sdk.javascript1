@@ -33,6 +33,14 @@
     "@applitools/functional-commons" "1.5.4"
     css-tree "^1.0.0-alpha.39"
 
+"@applitools/dom-snapshot@4.0.2":
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-4.0.2.tgz#06744efe93d257b50f777b4905ebb823a8e63ba7"
+  integrity sha512-fEp8R2Q13NfM6JOKLFWm8/6NS7nUM6izvq7WCkDsLuEXa2/BESav2FE2c/jgHTcYKYdLkmBUqPu8wzTqtGuGfw==
+  dependencies:
+    "@applitools/functional-commons" "1.5.4"
+    css-tree "^1.0.0-alpha.39"
+
 "@applitools/eslint-plugin-compat@^0.7.0":
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@applitools/eslint-plugin-compat/-/eslint-plugin-compat-0.7.0.tgz#61785cfb4156ddbb06141116b7fd381ecf11afea"
