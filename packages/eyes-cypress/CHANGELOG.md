@@ -4,6 +4,11 @@
 
 - add `useDom` and `enablePatterns` to readme
 - support `matchLevel` in `cy.eyesCheckWindow`
+- support adoptedStyleSheets ([Trello](https://trello.com/c/cX4q0DzH) [Trello](https://trello.com/c/a22B3tUB))
+- add support for `visualGridOptions` in `cy.eyesOpen` and`cy.eyesCheckWindow`
+- updated to @applitools/dom-snapshot@4.0.2 (from 4.0.0)
+- updated to @applitools/eyes-sdk-core@12.1.0 (from 11.5.0)
+- updated to @applitools/visual-grid-client@14.7.0 (from 14.6.0)
 
 ## 3.12.5 - 2020/7/26
 
