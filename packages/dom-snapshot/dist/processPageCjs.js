@@ -1,4 +1,4 @@
-/* @applitools/dom-snapshot@4.0.2 */
+/* @applitools/dom-snapshot@4.0.3 */
 'use strict';
 
 function uuid() {
@@ -13962,7 +13962,7 @@ function processPage(
 
   return doProcessPage(doc).then(result => {
     log$$1('processPage end');
-    result.scriptVersion = '4.0.2';
+    result.scriptVersion = '4.0.3';
     return result;
   });
 
