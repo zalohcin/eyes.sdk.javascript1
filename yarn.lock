@@ -25,6 +25,14 @@
     "@applitools/functional-commons" "1.5.4"
     css-tree "^1.0.0-alpha.39"
 
+"@applitools/dom-snapshot@4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-4.0.1.tgz#9988fcc3bc449eb63705a0a87955d5041291572d"
+  integrity sha512-hmawCI3FXGYTCKzvA9HH+bfAi1+1r65DCkOec+4/JrIL4gF29CtfMaIBOGDMp9uf077VWSBi56nXVvTqHsxtSw==
+  dependencies:
+    "@applitools/functional-commons" "1.5.4"
+    css-tree "^1.0.0-alpha.39"
+
 "@applitools/eslint-plugin-compat@^0.7.0":
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@applitools/eslint-plugin-compat/-/eslint-plugin-compat-0.7.0.tgz#61785cfb4156ddbb06141116b7fd381ecf11afea"
@@ -96,6 +104,24 @@
   dependencies:
     "@applitools/dom-capture" "7.2.6"
     "@applitools/isomorphic-fetch" "3.0.0"
+    axios "0.19.2"
+    chalk "3.0.0"
+    cosmiconfig "^6.0.0"
+    dateformat "^3.0.3"
+    debug "^4.1.1"
+    deepmerge "^4.2.2"
+    png-async "^0.9.4"
+    stack-trace "^0.0.10"
+    tunnel "0.0.6"
+
+"@applitools/eyes-sdk-core@12.0.1":
+  version "12.0.1"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-12.0.1.tgz#0efbdbe8e2a2313dd70c0da58beb7b09dcd91f80"
+  integrity sha512-uVpO99zUUogGxdUqgmislnf1bTmeSDNsSLB81SC3Y5jdFSOsbiw3QkAKLwhJadkdIRNORfP26M1wzCp5Nw/0rg==
+  dependencies:
+    "@applitools/dom-capture" "7.2.6"
+    "@applitools/isomorphic-fetch" "3.0.0"
+    "@applitools/snippets" "1.0.2"
     axios "0.19.2"
     chalk "3.0.0"
     cosmiconfig "^6.0.0"
@@ -303,6 +329,25 @@
   dependencies:
     "@applitools/dom-snapshot" "4.0.1"
     "@applitools/eyes-sdk-core" "11.5.1"
+    "@applitools/functional-commons" "1.5.4"
+    "@applitools/http-commons" "2.3.12"
+    "@applitools/isomorphic-fetch" "3.0.0"
+    "@applitools/jsdom" "1.0.2"
+    chalk "3.0.0"
+    he "1.2.0"
+    lodash.mapvalues "^4.6.0"
+    mime-types "^2.1.24"
+    mkdirp "^0.5.1"
+    postcss-value-parser "^4.0.2"
+    throat "^5.0.0"
+
+"@applitools/visual-grid-client@14.6.4":
+  version "14.6.4"
+  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-14.6.4.tgz#bdb6dc8c6580ef77963496976ff387d0a558a388"
+  integrity sha512-g0XRtJWPGdMNUw9WSU5BDxHQeBvmXmLbpWv4y+yFcxEi6oUzC27Bp50esG5Ma7JVvG5xwumd/EUgNamMy5uFcw==
+  dependencies:
+    "@applitools/dom-snapshot" "4.0.1"
+    "@applitools/eyes-sdk-core" "12.0.1"
     "@applitools/functional-commons" "1.5.4"
     "@applitools/http-commons" "2.3.12"
     "@applitools/isomorphic-fetch" "3.0.0"
