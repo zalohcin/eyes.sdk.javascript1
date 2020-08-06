@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- support adoptedStyleSheets ([Trello](https://trello.com/c/cX4q0DzH) [Trello](https://trello.com/c/a22B3tUB))
+- add support for `visualGridOptions` in render requests
+- updated to @applitools/dom-snapshot@4.0.2 (from 4.0.1)
+- updated to @applitools/eyes-sdk-core@12.1.0 (from 12.0.1)
 
 ## 14.6.4 - 2020/8/5
 
