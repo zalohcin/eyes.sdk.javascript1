@@ -31,7 +31,7 @@
     "index.d.ts"
   ],
   "dependencies": {
-    "@applitools/dom-snapshot": "4.0.2",
+    "@applitools/dom-snapshot": "4.0.3",
     "@applitools/eyes-sdk-core": "12.1.0",
     "@applitools/functional-commons": "1.5.4",
     "@applitools/http-commons": "2.3.12",
