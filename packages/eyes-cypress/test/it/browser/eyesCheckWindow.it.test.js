@@ -53,6 +53,7 @@ describe('eyesCheckWindow', () => {
         ignoreDisplacements: undefined,
         accessibility: undefined,
         matchLevel: undefined,
+        visualGridOptions: undefined,
       },
     });
     expect(resourcesPutted).to.eql([
@@ -120,6 +121,7 @@ describe('eyesCheckWindow', () => {
     const ignoreDisplacements = 'ignoreDisplacements';
     const accessibility = 'accessibility';
     const matchLevel = 'matchLevel';
+    const visualGridOptions = 'visualGridOptions';
 
     await eyesCheckWindow('bla doc', {
       tag,
@@ -140,6 +142,7 @@ describe('eyesCheckWindow', () => {
       ignoreDisplacements,
       accessibility,
       matchLevel,
+      visualGridOptions,
     });
 
     expect(sendRequestInput).to.eql({
@@ -171,6 +174,7 @@ describe('eyesCheckWindow', () => {
         ignoreDisplacements,
         accessibility,
         matchLevel,
+        visualGridOptions,
       },
     });
     expect(resourcesPutted).to.eql([
@@ -280,6 +284,7 @@ describe('eyesCheckWindow', () => {
         ignoreDisplacements: undefined,
         accessibility: undefined,
         matchLevel: undefined,
+        visualGridOptions: undefined,
       },
     });
     expect(resourcesPutted).to.eql([
@@ -363,6 +368,7 @@ describe('eyesCheckWindow', () => {
         ignoreDisplacements: undefined,
         accessibility: undefined,
         matchLevel: undefined,
+        visualGridOptions: undefined,
       },
     });
     expect(resourcesPutted).to.eql([
@@ -435,6 +441,7 @@ describe('eyesCheckWindow', () => {
         ignoreDisplacements: undefined,
         accessibility: undefined,
         matchLevel: undefined,
+        visualGridOptions: undefined,
       },
     });
     expect(resourcesPutted).to.eql([
@@ -507,6 +514,7 @@ describe('eyesCheckWindow', () => {
         ignoreDisplacements: undefined,
         accessibility: undefined,
         matchLevel: undefined,
+        visualGridOptions: undefined,
       },
     });
     expect(resourcesPutted).to.eql([]);

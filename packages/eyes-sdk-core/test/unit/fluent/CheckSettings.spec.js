@@ -30,6 +30,7 @@ describe('CheckSettings', () => {
       ],
       accessibilityRegions: ['accessibility-region-selector'],
       isFully: true,
+      visualGridOptions: {polyfillAdoptedStyleSheets: true},
     }
     const checkSettings = CheckSettings.from(object)
 
@@ -52,6 +53,7 @@ describe('CheckSettings', () => {
         object.floatingRegions[0].maxRightOffset,
       )
       .fully(object.isFully)
+      .visualGridOption('polyfillAdoptedStyleSheets', true)
 
     assert.deepStrictEqual(checkSettings, checkSettings2)
   })
@@ -70,11 +72,15 @@ describe('CheckSettings', () => {
     const checkSettings = new CheckSettings()
     checkSettings.accessibility({id: 'id0'}, 'bla')
     checkSettings.accessibility({id: 'id-not-mocked', selector: 'not-mocked'}, 'bla')
+    checkSettings.visualGridOption('polyfillAdoptedStyleSheets', true)
     const checkWindowConfiguration = await checkSettings.toCheckWindowConfiguration(driver)
     assert.deepStrictEqual(checkWindowConfiguration.accessibility, [
       {accessibilityType: 'bla', selector: '/HTML[1]/BODY[1]/DIV[2]', type: 'xpath'},
       {accessibilityType: 'bla', selector: '//[data-fake-selector="not-mocked"]', type: 'xpath'},
     ])
+    assert.deepStrictEqual(checkWindowConfiguration.visualGridOptions, {
+      polyfillAdoptedStyleSheets: true,
+    })
   })
 
   // TODO this test makes more sense to run inside docker
