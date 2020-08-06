@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- add utility function to verify that the object is an instance of a class by class name
 
 ## 12.1.0 - 2020/8/6
 

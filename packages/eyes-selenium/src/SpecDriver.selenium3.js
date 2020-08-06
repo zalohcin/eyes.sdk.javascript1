@@ -22,17 +22,15 @@ function transformSelector(selector) {
 // #region UTILITY
 
 function isDriver(driver) {
-  const ctorName = driver && driver.constructor && driver.constructor.name
-  return ['WebDriver', 'mixin'].includes(ctorName)
+  return TypeUtils.instanceOf(driver, 'WebDriver')
 }
 function isElement(element) {
-  const ctorName = element && element.constructor && element.constructor.name
-  return ctorName === 'WebElement' || ctorName === 'WebElementPromise'
+  return TypeUtils.instanceOf(element, 'WebElement')
 }
 function isSelector(selector) {
   if (!selector) return false
   return (
-    selector.constructor.name === 'By' ||
+    TypeUtils.instanceOf(selector, 'By') ||
     TypeUtils.has(selector, ['type', 'selector']) ||
     TypeUtils.has(selector, ['using', 'value']) ||
     Object.keys(selector).some(key => key in By) ||
