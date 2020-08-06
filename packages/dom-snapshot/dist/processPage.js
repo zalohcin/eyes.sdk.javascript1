@@ -13118,7 +13118,7 @@ function __processPage() {
 
     cdt[0].childNodeIndexes = childrenFactory(cdt, docNode.childNodes);
     if (docNode.adoptedStyleSheets && docNode.adoptedStyleSheets.length > 0) {
-      cdt[0].adoptedStyleSheets = getAdoptedStyleSheets(docNode);
+      cdt[0].exp_adoptedStyleSheets = getAdoptedStyleSheets(docNode);
     }
     return {cdt, docRoots, canvasElements, inlineFrames, linkUrls};
 
@@ -13192,7 +13192,7 @@ function __processPage() {
           }
 
           if (elementNode.adoptedStyleSheets && elementNode.adoptedStyleSheets.length > 0) {
-            node.adoptedStyleSheets = getAdoptedStyleSheets(elementNode);
+            node.exp_adoptedStyleSheets = getAdoptedStyleSheets(elementNode);
           }
         } else {
           node = getScriptNode(elementNode);

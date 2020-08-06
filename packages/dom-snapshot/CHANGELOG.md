@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- change to exp_adoptedStyleSheets
 
 ## 4.0.2 - 2020/8/6
 
