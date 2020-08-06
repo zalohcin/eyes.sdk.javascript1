@@ -417,6 +417,21 @@ cy.eyesCheckWindow({matchLevel: 'Layout'})
 
 The different matchLevels are specified here:  https://github.com/applitools/eyes.sdk.javascript1/blob/master/packages/eyes-sdk-core/lib/config/MatchLevel.js
 
+##### `visualGridOptions`
+
+An object that specifies options to configure renderings on the Ultrafast grid.
+Available options:
+
+* `polyfillAdoptedStyleSheets`: Creates a polyfill when the DOM contains `adoptedStyleSheets` ([reference](https://developers.google.com/web/updates/2019/02/constructable-stylesheets)) for browsers that don't support it (It is currently supported only in Chrome). When `true`, those browsers will successfully include the css as inline style tags. When `false`, the css will not be included. When `undefined`, an error will be thrown with a message stating that this feature is not supported in the desired browser. 
+
+```js
+cy.eyesCheckWindow({
+  visualGridOptions: {
+    polyfillAdoptedStyleSheets: true
+  }
+})
+```
+
 #### Close
 
 Close the applitools test and check that all screenshots are valid.
@@ -469,6 +484,7 @@ The list above is also the order of precedence, which means that if you pass a p
 | `ignoreBaseline`          | false                       |  |
 | `notifyOnCompletion`  | false | If `true` batch completion notifications are sent. |
 | `accessibilityValidation` | undefined | An object that specifies the accessibility level and guidelines version to use for the screenshots. Possible values for **level** are `None`, `AA` and `AAA`, and possible values for **guidelinesVersion** are `WCAG_2_0` and `WCAG_2_1`. For example: `{level: 'AA', guidelinesVersion: 'WCAG_2_0'}`|
+| `visualGridOptions` | undefined | An object that specifies options to configure renderings on the Ultrafast grid. See more information [here](#visualgridoptions) |
 
 ### Global configuration properties:
 
