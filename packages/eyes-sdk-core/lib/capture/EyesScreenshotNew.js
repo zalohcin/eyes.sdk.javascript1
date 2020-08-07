@@ -292,31 +292,31 @@ class EyesScreenshot {
 
     // If we're not inside a frame, and the screenshot is the entire page, then the context as-is/relative are the same (notice
     // screenshot as-is might be different, e.g., if it is actually a sub-screenshot of a region).
-    if (this._context.isMain && this._screenshotType === ScreenshotTypes.ENTIRE_FRAME) {
-      if (
-        (from === CoordinatesType.CONTEXT_RELATIVE || from === CoordinatesType.CONTEXT_AS_IS) &&
-        to === CoordinatesType.SCREENSHOT_AS_IS
-      ) {
-        // If this is not a sub-screenshot, this will have no effect.
-        result = result.offset(
-          this._frameLocationInScreenshot.getX(),
-          this._frameLocationInScreenshot.getY(),
-        )
+    // if (this._context.isMain && this._screenshotType === ScreenshotTypes.ENTIRE_FRAME) {
+    //   if (
+    //     (from === CoordinatesType.CONTEXT_RELATIVE || from === CoordinatesType.CONTEXT_AS_IS) &&
+    //     to === CoordinatesType.SCREENSHOT_AS_IS
+    //   ) {
+    //     // If this is not a sub-screenshot, this will have no effect.
+    //     result = result.offset(
+    //       this._frameLocationInScreenshot.getX(),
+    //       this._frameLocationInScreenshot.getY(),
+    //     )
 
-        // FIXME: 18/03/2018 Region workaround
-        // If this is not a region subscreenshot, this will have no effect.
-        // result = result.offset(-this._regionWindow.getLeft(), -this._regionWindow.getTop());
-      } else if (
-        from === CoordinatesType.SCREENSHOT_AS_IS &&
-        (to === CoordinatesType.CONTEXT_RELATIVE || to === CoordinatesType.CONTEXT_AS_IS)
-      ) {
-        result = result.offset(
-          -this._frameLocationInScreenshot.getX(),
-          -this._frameLocationInScreenshot.getY(),
-        )
-      }
-      return result
-    }
+    //     // FIXME: 18/03/2018 Region workaround
+    //     // If this is not a region subscreenshot, this will have no effect.
+    //     // result = result.offset(-this._regionWindow.getLeft(), -this._regionWindow.getTop());
+    //   } else if (
+    //     from === CoordinatesType.SCREENSHOT_AS_IS &&
+    //     (to === CoordinatesType.CONTEXT_RELATIVE || to === CoordinatesType.CONTEXT_AS_IS)
+    //   ) {
+    //     result = result.offset(
+    //       -this._frameLocationInScreenshot.getX(),
+    //       -this._frameLocationInScreenshot.getY(),
+    //     )
+    //   }
+    //   return result
+    // }
 
     switch (from) {
       case CoordinatesType.CONTEXT_AS_IS:

@@ -84,15 +84,12 @@ async function executeScript(browser, script, ...args) {
 }
 async function mainContext(browser) {
   await browser.frame(null)
-  return browser
 }
 async function parentContext(browser) {
   await browser.frameParent()
-  return browser
 }
 async function childContext(browser, element) {
   await browser.frame(element)
-  return browser
 }
 async function findElement(browser, selector) {
   const {value} = await browser.element(

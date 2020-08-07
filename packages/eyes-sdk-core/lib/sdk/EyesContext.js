@@ -204,7 +204,8 @@ class EyesContext {
     await this._parent.cacheInnerOffset()
     await this.cacheMetrics()
 
-    this._context = await this.spec.childContext(this._parent.unwrapped, this._element.unwrapped)
+    const context = await this.spec.childContext(this._parent.unwrapped, this._element.unwrapped)
+    this._context = context || this._parent.unwrapped
 
     // TODO replace
     await this._driver.updateCurrentContext(this)

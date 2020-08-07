@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- handle case when SpecDrive.childContext doesn't return a new context
+- remove workaround in EyesScreenshot
+- add typedef for SpecDriver
 
 ## 12.1.1 - 2020/8/6
 

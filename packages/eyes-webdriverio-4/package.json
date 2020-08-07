@@ -26,7 +26,7 @@
   "license": "SEE LICENSE IN LICENSE",
   "repository": "https://github.com/applitools/eyes.sdk.javascript1",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "12.1.0",
+    "@applitools/eyes-sdk-core": "12.1.1",
     "@applitools/visual-grid-client": "14.7.0"
   },
   "peerDependencies": {
@@ -37,7 +37,6 @@
     "@applitools/sdk-fake-eyes-server": "^2.0.0",
     "@applitools/sdk-release-kit": "0.2.2",
     "@applitools/sdk-shared": "0.1.0",
-    "@types/webdriverio": "^4.13.3",
     "axios": "^0.19.2",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",

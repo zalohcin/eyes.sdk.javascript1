@@ -140,6 +140,24 @@
     stack-trace "^0.0.10"
     tunnel "0.0.6"
 
+"@applitools/eyes-sdk-core@12.1.0":
+  version "12.1.0"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-12.1.0.tgz#b2e8c3ac54eb55a33eadc786eeeda1c70aa35599"
+  integrity sha512-vkXBHn2c8fjvtBrQocRYz155nnP0BgbuOD+hHl0uuQA3DhxsELMVN08XZik8DQQZWEKwXYS0rbZMLpXZkqbrOw==
+  dependencies:
+    "@applitools/dom-capture" "7.2.6"
+    "@applitools/isomorphic-fetch" "3.0.0"
+    "@applitools/snippets" "1.0.2"
+    axios "0.19.2"
+    chalk "3.0.0"
+    cosmiconfig "^6.0.0"
+    dateformat "^3.0.3"
+    debug "^4.1.1"
+    deepmerge "^4.2.2"
+    png-async "^0.9.4"
+    stack-trace "^0.0.10"
+    tunnel "0.0.6"
+
 "@applitools/eyes-webdriverio@5.19.2":
   version "5.19.2"
   resolved "https://registry.yarnpkg.com/@applitools/eyes-webdriverio/-/eyes-webdriverio-5.19.2.tgz#c29a6368bac45d06b83aacb386857ca374b9fb3b"
@@ -355,6 +373,25 @@
   integrity sha512-ShBJYTxalAEAcCRmz0fh0pvgPUvxfl1Xpv19+jHGcIih7MHdJmcEeR5Hy338mMzVQLw3LBlL91nAbsgj608aFA==
   dependencies:
     "@applitools/dom-snapshot" "4.0.2"
+    "@applitools/eyes-sdk-core" "12.1.0"
+    "@applitools/functional-commons" "1.5.4"
+    "@applitools/http-commons" "2.3.12"
+    "@applitools/isomorphic-fetch" "3.0.0"
+    "@applitools/jsdom" "1.0.2"
+    chalk "3.0.0"
+    he "1.2.0"
+    lodash.mapvalues "^4.6.0"
+    mime-types "^2.1.24"
+    mkdirp "^0.5.1"
+    postcss-value-parser "^4.0.2"
+    throat "^5.0.0"
+
+"@applitools/visual-grid-client@14.7.1":
+  version "14.7.1"
+  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-14.7.1.tgz#05a69576f415a185b32590a745fd83749449a0e0"
+  integrity sha512-MdqFznLKlbTlYKIUKoDwF9bD2vzEJr+YF89V2TQBeTdgio+83uB8Uc6/H8r/WFdFQouFxS33vUdpAZQIvC+Lug==
+  dependencies:
+    "@applitools/dom-snapshot" "4.0.3"
     "@applitools/eyes-sdk-core" "12.1.0"
     "@applitools/functional-commons" "1.5.4"
     "@applitools/http-commons" "2.3.12"
@@ -3226,13 +3263,6 @@
   integrity sha512-KswB5C7Kwduwjj04Ykz+AjvPcfgv/37Za24O2EDzYNbwyzOo8+ydtvzUfZ5UMguiVu29Gx44l1A6VsPPcmYu9w==
   dependencies:
     source-map "^0.6.1"
-
-"@types/webdriverio@^4.13.3":
-  version "4.13.3"
-  resolved "https://registry.yarnpkg.com/@types/webdriverio/-/webdriverio-4.13.3.tgz#c1571c4e62724135c0b11e7d7e36b07af5168856"
-  integrity sha512-AfSQM1xTO9Ax+u9uSQPDuw69DQ0qA2RMoKHn86jCgWNcwKVUjGMSP4sfSl3JOfcZN8X/gWvn7znVPp2/g9zcJA==
-  dependencies:
-    "@types/node" "*"
 
 "@types/webpack-env@^1.15.0":
   version "1.15.2"
@@ -18668,7 +18698,6 @@ select@^1.1.2:
   integrity sha1-DnNQrN7ICxEIUoeG7B1EGNEbOW0=
 
 "selenium-webdriver-3@npm:selenium-webdriver@^3.6.0", selenium-webdriver@3.6.0, selenium-webdriver@^3.0.1, selenium-webdriver@^3.6.0:
-  name selenium-webdriver-3
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/selenium-webdriver/-/selenium-webdriver-3.6.0.tgz#2ba87a1662c020b8988c981ae62cb2a01298eafc"
   integrity sha512-WH7Aldse+2P5bbFBO4Gle/nuQOdVwpHMTL6raL3uuBj/vPG07k6uzt3aiahu352ONBr5xXh0hDlM3LhtXPOC4Q==
