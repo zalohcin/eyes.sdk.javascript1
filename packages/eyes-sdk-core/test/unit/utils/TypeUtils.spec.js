@@ -411,5 +411,15 @@ describe('TypeUtils', () => {
       class C extends B {}
       assert.ok(TypeUtils.instanceOf(new C(), 'A'))
     })
+
+    it('should detect base class by constructor', () => {
+      class A {
+        static get __A() {
+          return true
+        }
+      }
+      const B = (() => class extends A {})()
+      assert.ok(TypeUtils.instanceOf(new B(), A))
+    })
   })
 })
