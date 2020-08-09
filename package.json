@@ -6,8 +6,6 @@
   "private": true,
   "workspaces": {
     "packages": [
-      "packages/dom-capture",
-      "packages/dom-snapshot",
       "packages/eyes-images",
       "packages/eyes-sdk-core",
       "packages/eyes-selenium",
