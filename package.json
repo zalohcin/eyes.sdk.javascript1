@@ -28,7 +28,9 @@
       "packages/eyes-storybook",
       "packages/eyes-leanft",
       "packages/side-eyes",
-      "packages/sdk-shared"
+      "packages/sdk-shared",
+      "packages/snippets",
+      "packages/eyes-playwright"
     ],
     "nohoist": [
       "**/@wdio/*",
@@ -41,7 +43,8 @@
       "**/protractor/**",
       "**/selenium-webdriver",
       "**/selenium-webdriver-3",
-      "**/selenium-webdriver-4"
+      "**/selenium-webdriver-4",
+      "**/playwright"
     ]
   },
   "scripts": {

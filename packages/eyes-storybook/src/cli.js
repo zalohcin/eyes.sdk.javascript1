@@ -11,6 +11,7 @@ const generateConfig = require('./generateConfig');
 const defaultConfig = require('./defaultConfig');
 const configDigest = require('./configDigest');
 const {makeTiming} = require('@applitools/monitoring-commons');
+const handleJsonFile = require('./handleJsonFile');
 const handleTapFile = require('./handleTapFile');
 const handleXmlFile = require('./handleXmlFile');
 const {presult} = require('@applitools/functional-commons');
@@ -49,6 +50,9 @@ const {performance, timeItAsync} = makeTiming();
         concurrency: config.concurrency,
       });
       console.log(outputStr);
+      if (config.jsonFilePath) {
+        handleJsonFile(config.jsonFilePath, formatter);
+      }
       if (config.tapFilePath) {
         handleTapFile(config.tapFilePath, formatter);
       }

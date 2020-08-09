@@ -4,7 +4,7 @@ const path = require('path')
 const chromedriver = require('chromedriver')
 const {URL} = require('url')
 const cwd = process.cwd()
-const spec = require(path.resolve(cwd, 'src/SpecWrappedDriver'))
+const spec = require(path.resolve(cwd, 'src/SpecDriver'))
 const {
   Eyes,
   ClassicRunner,
