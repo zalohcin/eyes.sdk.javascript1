@@ -417,6 +417,8 @@ cy.eyesCheckWindow({matchLevel: 'Layout'})
 
 The different matchLevels are specified here:  https://github.com/applitools/eyes.sdk.javascript1/blob/master/packages/eyes-sdk-core/lib/config/MatchLevel.js
 
+<!-- TODO uncomment when polyfillAdoptedStyleSheets feature is released
+
 ##### `visualGridOptions`
 
 An object that specifies options to configure renderings on the Ultrafast grid.
@@ -431,6 +433,7 @@ cy.eyesCheckWindow({
   }
 })
 ```
+-->
 
 #### Close
 
