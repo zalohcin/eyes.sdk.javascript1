@@ -1,3 +1,4 @@
+'use strict'
 const ArgumentGuard = require('../utils/ArgumentGuard')
 const Region = require('../geometry/Region')
 const Location = require('../geometry/Location')
@@ -45,6 +46,10 @@ const DEFAULT_DEVICE_PIXEL_RATIO = 1
  * @template TSelector
  */
 class EyesCore extends EyesBase {
+  /**
+   * @param {string} serverUrl
+   * @param {boolean} isDisabled
+   */
   constructor(serverUrl, isDisabled) {
     super(serverUrl, isDisabled)
 
@@ -202,8 +207,8 @@ class EyesCore extends EyesBase {
   }
   /**
    * Adds a mouse trigger.
-   * @param {MouseTrigger.MouseAction} action  Mouse action.
-   * @param {EyesWrappedElement<TDriver, TElement, TSelector>} element The element on which the click was called.
+   * @param {MouseTrigger.MouseAction} action - Mouse action.
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>} element - The element on which the click was called.
    * @return {Promise}
    */
   async addMouseTriggerForElement(action, element) {
@@ -293,6 +298,7 @@ class EyesCore extends EyesBase {
   /**
    * Use this method only if you made a previous call to {@link #open(WebDriver, String, String)} or one of its variants.
    * @override
+   * @return {Promise<RectangleSize}} The viewport size of the AUT.
    */
   async getViewportSize() {
     const viewportSize = this._viewportSizeHandler.get()
@@ -518,7 +524,7 @@ class EyesCore extends EyesBase {
     return this._stitchContent
   }
   /**
-   * @param {EyesWrappedElement<TDriver, TElement, TSelector>|TElement|TSelector} element
+   * @param {EyesWrappedElement<TDriver, TElement, TSelector>|TElement|TSelector} scrollRootElement
    */
   setScrollRootElement(scrollRootElement) {
     if (scrollRootElement === null) {
