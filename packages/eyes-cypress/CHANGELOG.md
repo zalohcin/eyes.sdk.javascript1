@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- remove `visualGridOptions` from readme
 
 ## 3.13.1 - 2020/8/6
 
