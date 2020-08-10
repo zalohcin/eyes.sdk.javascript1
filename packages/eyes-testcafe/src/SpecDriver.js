@@ -18,8 +18,7 @@ async function toEyesSelector(_selector) {
   // TODO:
   // - parse out selector string value
   // - convert to object structure:
-  //  selector -> {type: 'css' | 'xpath', selector: string}
-  // - return {selector}
+  // - return {type: 'css' | 'xpath', selector: string}
 }
 async function isEqualElements(_driver, _element1, _element2) {
   // TODO
@@ -114,9 +113,11 @@ async function waitUntilDisplayed(_driver, element, timeout) {
 }
 async function build(_env) {
   // TODO
+  // https://github.com/applitools/eyes.sdk.javascript1/blob/master/packages/eyes-testcafe/test/util/start-testcafe-in-mocha.js
 }
 async function cleanup(_driver) {
   // TODO
+  // https://github.com/applitools/eyes.sdk.javascript1/blob/master/packages/eyes-testcafe/test/util/start-testcafe-in-mocha.js
 }
 
 exports.isDriver = isDriver
