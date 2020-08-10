@@ -7,14 +7,8 @@ fixture`SpecDriver`.page`https://applitools.github.io/demo/TestPages/FramesTestP
 test('isDriver(driver)', driver => {
   return isDriver({driver, expected: true})
 })
-test('isDriver(wrong)', async driver => {
-  isDriver({driver, input: {}, expected: false})
-})
-test.skip('isElement(element)', async driver => {
-  isElement({driver, input: async () => await Selector('div'), expected: true})
-})
-test.skip('isElement(wrong)', async driver => {
-  isElement({driver, input: () => ({}), expected: false})
+test('isDriver(wrong)', driver => {
+  return isDriver({driver, input: {}, expected: false})
 })
 test.skip('isSelector(string)', async driver => {
   isSelector({driver, input: 'div', expected: true})
@@ -30,6 +24,16 @@ test.skip('toEyesSelector(selector)', async driver => {
 })
 test.skip('executeScript(strings, ...args)', async driver => {
   executeScript({driver})
+})
+test.skip('isElement(Selector)', async driver => {
+  isElement({driver, input: () => Selector('div'), expected: true})
+})
+// HERE
+test.skip('isElement(DOMNodeState)', driver => {
+  return isElement({driver, input: Selector('div'), expected: true})
+})
+test.skip('isElement(wrong)', async driver => {
+  isElement({driver, input: () => ({}), expected: false})
 })
 test.skip('findElement(string)', async driver => {
   findElement({driver, input: '#overflowing-div'})
@@ -68,18 +72,14 @@ test.skip('visit()', async driver => {
   visit({driver})
 })
 
-function isDriver({driver, input, expected}) {
-  return async () => {
-    const isDriver = await spec.isDriver(input || driver)
-    assert.strictEqual(isDriver, expected)
-  }
+async function isDriver({driver, input, expected}) {
+  const isDriver = await spec.isDriver(input || driver)
+  assert.strictEqual(isDriver, expected)
 }
-function isElement({_driver, input, expected}) {
-  return async () => {
-    const element = await input()
-    const isElement = await spec.isElement(element)
-    assert.strictEqual(isElement, expected)
-  }
+async function isElement({_driver, input, expected}) {
+  const element = await input()
+  const isElement = await spec.isElement(element)
+  assert.strictEqual(isElement, expected)
 }
 function isSelector({_driver, input, expected}) {
   return async () => {
