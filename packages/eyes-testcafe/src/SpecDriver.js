@@ -5,14 +5,14 @@ async function isDriver(driver) {
   // TODO: confirm
   return TypeUtils.instanceOf(driver, 'TestCafe')
 }
+async function isSelector(selector) {
+  // TODO: confirm
+  return TypeUtils.isString(selector) || TypeUtils.instanceOf(selector, 'Selector')
+}
 async function isElement(element) {
   // TODO: confirm
   // - DOMNodeState? https://devexpress.github.io/testcafe/documentation/reference/test-api/domnodestate.html
   return TypeUtils.instanceOf(element, 'DOMNodeState')
-}
-async function isSelector(selector) {
-  // TODO: confirm
-  return TypeUtils.isString(selector) || TypeUtils.instanceOf(selector, 'Selector')
 }
 async function toEyesSelector(_selector) {
   // TODO:
@@ -121,9 +121,9 @@ async function cleanup(_driver) {
 }
 
 exports.isDriver = isDriver
-exports.isElement = isElement
 exports.isSelector = isSelector
 exports.toEyesSelector = toEyesSelector
+exports.isElement = isElement
 exports.isEqualElements = isEqualElements
 exports.isStaleElementError = isStaleElementError
 exports.executeScript = executeScript
