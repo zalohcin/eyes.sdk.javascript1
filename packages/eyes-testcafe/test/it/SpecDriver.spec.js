@@ -4,67 +4,67 @@ const {Selector} = require('testcafe')
 
 fixture`SpecDriver`.page`https://applitools.github.io/demo/TestPages/FramesTestPage/`
 
-test.only('isDriver(driver)', driver => {
+test('isDriver(driver)', driver => {
   return isDriver({driver, expected: true})
 })
 test('isDriver(wrong)', async driver => {
   isDriver({driver, input: {}, expected: false})
 })
-test('isElement(element)', async driver => {
+test.skip('isElement(element)', async driver => {
   isElement({driver, input: async () => await Selector('div'), expected: true})
 })
-test('isElement(wrong)', async driver => {
+test.skip('isElement(wrong)', async driver => {
   isElement({driver, input: () => ({}), expected: false})
 })
-test('isSelector(string)', async driver => {
+test.skip('isSelector(string)', async driver => {
   isSelector({driver, input: 'div', expected: true})
 })
-test('isSelector(Selector)', async driver => {
+test.skip('isSelector(Selector)', async driver => {
   isSelector({driver, input: Selector('//div'), expected: true})
 })
-test('isSelector(wrong)', async driver => {
+test.skip('isSelector(wrong)', async driver => {
   isSelector({driver, input: {}, expected: false})
 })
-test('toEyesSelector(selector)', async driver => {
+test.skip('toEyesSelector(selector)', async driver => {
   toEyesSelector({driver})
 })
-test('executeScript(strings, ...args)', async driver => {
+test.skip('executeScript(strings, ...args)', async driver => {
   executeScript({driver})
 })
-test('findElement(string)', async driver => {
+test.skip('findElement(string)', async driver => {
   findElement({driver, input: '#overflowing-div'})
 })
-test('findElement(Selector)', async driver => {
+test.skip('findElement(Selector)', async driver => {
   findElement({driver, input: Selector('#overflowing-div')})
 })
-test('findElements(string)', async driver => {
+test.skip('findElements(string)', async driver => {
   findElements({driver, input: 'div'})
 })
-test('findElements(Selector)', async driver => {
+test.skip('findElements(Selector)', async driver => {
   findElements({driver, input: Selector('div')})
 })
-test('findElement(non-existent)', async driver => {
+test.skip('findElement(non-existent)', async driver => {
   findElement({driver, input: Selector('non-existent'), expected: null})
 })
-test('findElements(non-existent)', async driver => {
+test.skip('findElements(non-existent)', async driver => {
   findElements({driver, input: Selector('non-existent'), expected: []})
 })
-test('mainContext()', async driver => {
+test.skip('mainContext()', async driver => {
   mainContext({driver})
 })
-test('parentContext()', async driver => {
+test.skip('parentContext()', async driver => {
   parentContext({driver})
 })
-test('childContext(element)', async driver => {
+test.skip('childContext(element)', async driver => {
   childContext({driver})
 })
-test('getTitle()', async driver => {
+test.skip('getTitle()', async driver => {
   getTitle({driver})
 })
-test('getUrl()', async driver => {
+test.skip('getUrl()', async driver => {
   getUrl({driver})
 })
-test('visit()', async driver => {
+test.skip('visit()', async driver => {
   visit({driver})
 })
 
