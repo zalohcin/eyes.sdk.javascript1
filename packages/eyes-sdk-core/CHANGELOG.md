@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+
+## 12.1.2 - 2020/8/10
+
+- handle case when SpecDrive.childContext doesn't return a new context
+- remove workaround in EyesScreenshot
+- add typedef for SpecDriver
+- updated to @applitools/snippets@1.0.3 (from 1.0.2)
+
+## 12.1.1 - 2020/8/6
+
 - add utility function to verify that the object is an instance of a class by class name
 - add JSON output to TestResultsFormatter [PR 224](https://github.com/applitools/eyes.sdk.javascript1/pull/224)
 

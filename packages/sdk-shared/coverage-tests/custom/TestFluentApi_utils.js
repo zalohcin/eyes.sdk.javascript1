@@ -52,7 +52,7 @@ async function TestCheckLongIFrameModal({testName, eyes, driver}) {
   })
   await spec.click(driver, '#stretched')
   const frameElement = await spec.findElement(driver, '#modal2 iframe')
-  const frameDriver = await spec.childContext(driver, frameElement)
+  const frameDriver = (await spec.childContext(driver, frameElement)) || driver
   const element = await spec.findElement(frameDriver, 'html')
   const regions = await getElementSplittedRegions(frameDriver, element)
   await spec.mainContext(driver)
@@ -75,7 +75,7 @@ async function TestCheckLongOutOfBoundsIFrameModal({testName, eyes, driver}) {
   })
   await spec.click(driver, '#hidden_click')
   const frameElement = await spec.findElement(driver, '#modal3 iframe')
-  const frameDriver = await spec.childContext(driver, frameElement)
+  const frameDriver = (await spec.childContext(driver, frameElement)) || driver
   const element = await spec.findElement(frameDriver, 'html')
   const regions = await getElementSplittedRegions(frameDriver, element)
   await spec.mainContext(driver)

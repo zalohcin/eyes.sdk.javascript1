@@ -32,11 +32,12 @@ function transformSelector(selector) {
 // #region UTILITY
 
 function isDriver(driver) {
-  return driver.constructor.name === 'ProtractorBrowser'
+  return TypeUtils.instanceOf(driver, 'ProtractorBrowser')
 }
 function isElement(element) {
-  const ctorName = element && element.constructor && element.constructor.name
-  return ['WebElement', 'ElementFinder'].includes(ctorName)
+  return (
+    TypeUtils.instanceOf(element, 'WebElement') || TypeUtils.instanceOf(element, 'ElementFinder')
+  )
 }
 function isSelector(selector) {
   if (!selector) return false
@@ -53,6 +54,12 @@ function transformDriver(driver) {
     .getExecutor()
     .defineCommand(CommandName.SWITCH_TO_PARENT_FRAME, 'POST', '/session/:sessionId/frame/parent')
   return driver
+}
+function transformElement(element) {
+  if (TypeUtils.instanceOf(element, 'ElementFinder')) {
+    return element.getWebElement()
+  }
+  return element
 }
 function toEyesSelector(selector) {
   if (!TypeUtils.has(selector, ['using', 'value'])) {
@@ -106,8 +113,8 @@ async function childContext(driver, element) {
 async function findElement(driver, selector) {
   try {
     if (TypeUtils.isString(selector)) selector = {css: selector}
-    const element = await driver.element(transformSelector(selector))
-    return await element.getWebElement()
+    const element = await driver.findElement(transformSelector(selector))
+    return element
   } catch (err) {
     if (err.name === 'NoSuchElementError') return null
     else throw err
@@ -115,8 +122,8 @@ async function findElement(driver, selector) {
 }
 async function findElements(driver, selector) {
   if (TypeUtils.isString(selector)) selector = {css: selector}
-  const elements = await driver.element.all(transformSelector(selector))
-  return elements.getWebElements ? elements.getWebElements() : elements
+  const elements = await driver.findElements(transformSelector(selector))
+  return elements
 }
 async function getElementRect(_driver, element) {
   const {x, y} = await element.getLocation()
@@ -261,6 +268,7 @@ exports.isDriver = isDriver
 exports.isElement = isElement
 exports.isSelector = isSelector
 exports.transformDriver = transformDriver
+exports.transformElement = transformElement
 exports.toEyesSelector = toEyesSelector
 exports.isEqualElements = isEqualElements
 exports.isStaleElementError = isStaleElementError

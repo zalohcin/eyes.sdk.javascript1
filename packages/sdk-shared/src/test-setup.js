@@ -48,7 +48,7 @@ const DEVICES = {
       name: 'Android Demo',
       platformName: 'Android',
       platformVersion: '7.0',
-      appiumVersion: '1.17.1',
+      appiumVersion: '1.9.1',
       deviceName: 'Samsung Galaxy S8 FHD GoogleAPI Emulator',
       automationName: 'uiautomator2',
       ...SAUCE_CREDENTIALS,

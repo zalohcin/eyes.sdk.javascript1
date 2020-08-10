@@ -22,6 +22,10 @@ describe('SpecDriver', async () => {
       'isElement(element)',
       isElement({input: () => driver.findElement({css: 'div'}), expected: true}),
     )
+    it(
+      'isElement(element-finder)',
+      isElement({input: () => driver.element({css: 'div'}), expected: true}),
+    )
     it('isElement(wrong)', isElement({input: () => ({}), expected: false}))
     it('isSelector(string)', isSelector({input: 'div', expected: true}))
     it('isSelector(by)', isSelector({input: {xpath: '//div'}, expected: true}))
