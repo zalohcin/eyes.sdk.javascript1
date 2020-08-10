@@ -1,11 +1,21 @@
 'use strict'
 const {BlobServiceClient} = require('@azure/storage-blob')
 
-async function uploadToStorage({sdkName, sdkVersion, isSandbox, payload}) {
+async function uploadToStorage({
+  sdkName,
+  sdkVersion,
+  isSandbox,
+  payload,
+  connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING,
+}) {
+  if (!connectionString) {
+    throw new Error(
+      'In order to upload test results to Azure, connection string needs to be provided. Usually this is done by defining the env var AZURE_STORAGE_CONNECTION_STRING. For more details: https://docs.microsoft.com/en-us/azure/storage/blobs/storage-quickstart-blobs-nodejs?toc=/azure/developer/javascript/toc.json&bc=/azure/developer/breadcrumb/toc.json#copy-your-credentials-from-the-azure-portal',
+    )
+  }
   const folderName = `${sdkName}/${isSandbox ? 'sandbox' : 'prod'}`
   const blobName = `${formatDate(new Date())}-${isSandbox ? 'sandbox' : sdkVersion}.json`
   const blobPath = `${folderName}/${blobName}`
-  const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING
   const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString)
   const containerClient = blobServiceClient.getContainerClient('coverage-test-results')
   const blockBlobClient = containerClient.getBlockBlobClient(blobPath)
