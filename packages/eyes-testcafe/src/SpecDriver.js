@@ -2,8 +2,7 @@ const {TypeUtils} = require('@applitools/eyes-sdk-core')
 const {ClientFunction, _Selector} = require('testcafe')
 
 async function isDriver(driver) {
-  // TODO: confirm
-  return TypeUtils.instanceOf(driver, 'TestCafe')
+  return driver.constructor.name === 'TestController'
 }
 async function isSelector(selector) {
   // TODO: confirm
@@ -12,7 +11,8 @@ async function isSelector(selector) {
 async function isElement(element) {
   // TODO: confirm
   // - DOMNodeState? https://devexpress.github.io/testcafe/documentation/reference/test-api/domnodestate.html
-  return TypeUtils.instanceOf(element, 'DOMNodeState')
+  debugger
+  return element.class.name === 'DOMNodeState'
 }
 async function toEyesSelector(_selector) {
   // TODO:
