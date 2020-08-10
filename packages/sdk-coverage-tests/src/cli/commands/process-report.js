@@ -2,7 +2,9 @@ const path = require('path')
 const {readFileSync} = require('fs')
 const {createReport} = require('../../report')
 const {sendReport} = require('../../send-report')
+const uploadToStorage = require('../../report/upload')
 const {logDebug} = require('../../log')
+const sdkVersion = require(path.resolve(process.cwd(), 'package.json')).version
 
 async function processReport(args) {
   const {name: sdkName, metaPath} = require(path.join(process.cwd(), args.path))
@@ -26,6 +28,14 @@ async function processReport(args) {
   logDebug(report)
   const result = await sendReport(report)
   process.stdout.write(result.isSuccessful ? 'Done!\n' : 'Failed!\n')
+  if (!result.isSuccessful) {
+    console.log(result.message)
+  }
+  await uploadToStorage({sdkName, sdkVersion, isSandbox, payload: JSON.stringify(report)}).catch(
+    err => {
+      console.log('Error uploading results to Azure:', err.message)
+    },
+  )
 }
 
 module.exports = {
