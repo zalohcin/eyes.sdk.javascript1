@@ -2,10 +2,10 @@ const assert = require('assert')
 const spec = require('../../src/SpecDriver')
 const {Selector} = require('testcafe')
 
-fixture`SpecDriver`.path('https://applitools.github.io/demo/TestPages/FramesTestPage/')
+fixture`SpecDriver`.page`https://applitools.github.io/demo/TestPages/FramesTestPage/`
 
-test('isDriver(driver)', async driver => {
-  isDriver({driver, expected: true})
+test.only('isDriver(driver)', driver => {
+  return isDriver({driver, expected: true})
 })
 test('isDriver(wrong)', async driver => {
   isDriver({driver, input: {}, expected: false})
