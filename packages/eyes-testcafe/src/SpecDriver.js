@@ -35,21 +35,20 @@ async function findElement(_driver, selector) {
   return await selector
 }
 async function findElements(_driver, _selector) {
-  // not sure how to do this atm
   // TODO: research
+  // could do a ClientFunction w/ document.querySelectorAll
+  // need to sort out the return type needed
 }
 async function getElementRect(_driver, _element) {}
-async function getViewportSize(_driver) {
-  // this is involved, if we're using the previous approach
-  // TODO: review previous approaches further
-}
-async function setViewportSize(_driver, _size) {
-  // this is involved, if we're using the previous approach
-  // TODO: review previous approaches further
+//NOTE: omitting this since it can be addressed elsewhere
+//async function getWindowRect(_driver) {
+//}
+async function setWindowRect(driver, rect = {}) {
+  const {width, height} = rect
+  await driver.resizeWindow(width, height)
 }
 async function getTitle(_driver) {
-  // accessible through a Selector
-  // https://testcafe-discuss.devexpress.com/t/how-to-check-a-page-title/1233/5
+  // accessible through a ClientFunction
 }
 async function getUrl(_driver) {
   // accessible through a ClientFunction
@@ -97,8 +96,8 @@ exports.childContext = childContext
 exports.findElement = findElement
 exports.findElements = findElements
 exports.getElementRect = getElementRect
-exports.getViewportSize = getViewportSize
-exports.setViewportSize = setViewportSize
+//exports.getWindowRect = getWindowRect
+exports.setWindowRect = setWindowRect
 exports.getTitle = getTitle
 exports.getUrl = getUrl
 exports.visit = visit
