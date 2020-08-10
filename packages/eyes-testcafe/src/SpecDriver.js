@@ -1,18 +1,18 @@
 const {TypeUtils} = require('@applitools/eyes-sdk-core')
+const {ClientFunction, _Selector} = require('testcafe')
 
 async function isDriver(driver) {
-  // TODO: confirm this
+  // TODO: confirm
   return TypeUtils.instanceOf(driver, 'TestCafe')
 }
-async function isElement(_element) {
-  // TODO: determine way to identify a resolved Selector
+async function isElement(element) {
+  // TODO: confirm
   // - DOMNodeState? https://devexpress.github.io/testcafe/documentation/reference/test-api/domnodestate.html
+  return TypeUtils.instanceOf(element, 'DOMNodeState')
 }
-async function isSelector(_selector) {
-  // TODO:
-  // - if string, true
-  // - else if Selector object, true
-  // - else false
+async function isSelector(selector) {
+  // TODO: confirm
+  return TypeUtils.isString(selector) || TypeUtils.instanceOf(selector, 'Selector')
 }
 async function toEyesSelector(_selector) {
   // TODO:
@@ -31,8 +31,17 @@ async function isStaleElementError(_error) {
   // haven't found anything about it in the TestCafe docs/KB
   return false
 }
-async function executeScript(_driver, _script, ..._args) {
-  // TODO: ClientFunction
+async function executeScript(driver, script, args) {
+  // TODO:
+  // - confirm blind passing of args to script works
+  // - add transform function that will ensure Selector objects passed as args get resolved to state objects
+  const executor = ClientFunction(
+    () => {
+      return script(args)
+    },
+    {dependencies: args},
+  )
+  return executor.with({boundTestRun: driver})
 }
 async function mainContext(driver) {
   await driver.switchToMainWindow()
@@ -44,10 +53,18 @@ async function childContext(_driver, element) {
   return element.child()
 }
 async function findElement(_driver, selector) {
-  return await selector
+  return await selector()
 }
-async function findElements(_driver, _selector) {
-  // TODO: ClientFunction w/ document.querySelectorAll, return array of what's resolved
+async function findElements(driver, selector) {
+  const executor = ClientFunction(
+    () => {
+      // eslint-disable-next-line no-undef
+      return document.querySelectorAll(selector)
+    },
+    {dependencies: selector},
+  )
+  executor.with({boundTestRun: driver})
+  return await executor()
 }
 async function getElementRect(_driver, _element) {}
 async function setWindowRect(driver, rect = {}) {
@@ -69,7 +86,9 @@ async function visit(driver, url) {
 async function takeScreenshot(driver) {
   // TODO: sort out what this function give us
   // and what's needed to consume/use it (e.g., read file from disk? etc.)
-  // https://devexpress.github.io/testcafe/documentation/guides/advanced-guides/screenshots-and-videos.html#screenshots
+  // https://devexpress.github.io/testcafe/documentation/guides/advanced-guides/screenshots-and-videos.html#screenshot-options
+  // https://devexpress.github.io/testcafe/documentation/reference/test-api/testcontroller/takescreenshot.html
+  // https://github.com/applitools/eyes.sdk.javascript1/blob/master/packages/eyes-testcafe/lib/wrappers/EyesWebDriver.js#L264-L281
   await driver.takeScreenshot()
 }
 async function click(driver, element) {
