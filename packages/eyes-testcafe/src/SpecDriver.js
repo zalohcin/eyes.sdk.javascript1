@@ -107,13 +107,16 @@ async function waitUntilDisplayed(_driver, element, timeout) {
   // https://devexpress.github.io/testcafe/documentation/guides/concepts/built-in-wait-mechanisms.html#wait-mechanism-for-selectors
   await element.with({visibilityCheck: true, timeout})
 }
+// TODO
+// Determine if we need build & cleanup
 async function build(_env) {
-  // TODO
   // https://github.com/applitools/eyes.sdk.javascript1/blob/master/packages/eyes-testcafe/test/util/start-testcafe-in-mocha.js
+  // we might want something short of this implementation ^
+  // something that prepares the runner with the provided env
+  // and delegates the rest to the caller
 }
 async function cleanup(_driver) {
-  // TODO
-  // https://github.com/applitools/eyes.sdk.javascript1/blob/master/packages/eyes-testcafe/test/util/start-testcafe-in-mocha.js
+  // see comments above
 }
 
 exports.isDriver = isDriver
