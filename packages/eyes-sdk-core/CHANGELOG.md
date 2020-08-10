@@ -5,6 +5,7 @@
 - handle case when SpecDrive.childContext doesn't return a new context
 - remove workaround in EyesScreenshot
 - add typedef for SpecDriver
+- updated to @applitools/snippets@1.0.3 (from 1.0.2)
 
 ## 12.1.1 - 2020/8/6
 
