@@ -25,14 +25,10 @@ test.skip('toEyesSelector(selector)', async driver => {
 test.skip('executeScript(strings, ...args)', async driver => {
   executeScript({driver})
 })
-test.skip('isElement(Selector)', async driver => {
-  isElement({driver, input: () => Selector('div'), expected: true})
-})
-// HERE
-test.skip('isElement(DOMNodeState)', driver => {
+test('isElement(Selector)', driver => {
   return isElement({driver, input: Selector('div'), expected: true})
 })
-test.skip('isElement(wrong)', async driver => {
+test('isElement(wrong)', async driver => {
   isElement({driver, input: () => ({}), expected: false})
 })
 test.skip('findElement(string)', async driver => {

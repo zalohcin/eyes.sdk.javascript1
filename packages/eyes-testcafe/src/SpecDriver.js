@@ -5,14 +5,10 @@ async function isDriver(driver) {
   return driver.constructor.name === 'TestController'
 }
 async function isSelector(selector) {
-  // TODO: confirm
   return TypeUtils.isString(selector) || TypeUtils.instanceOf(selector, 'Selector')
 }
 async function isElement(element) {
-  // TODO: confirm
-  // - DOMNodeState? https://devexpress.github.io/testcafe/documentation/reference/test-api/domnodestate.html
-  debugger
-  return element.class.name === 'DOMNodeState'
+  return typeof element === 'object' && !!element.boundingClientRect
 }
 async function toEyesSelector(_selector) {
   // TODO:
