@@ -444,7 +444,7 @@ class EyesCore extends EyesBase {
           entireSize,
           this._viewportSizeHandler.get(),
           this._devicePixelRatio,
-          false,
+          this._driver.isMobile,
           this._scaleProviderHandler,
         )
       } catch (err) {

@@ -185,6 +185,7 @@ class EyesDriver {
     if (!this._isNative) {
       this._userAgentString = await EyesUtils.getUserAgent(this._logger, this)
       this._userAgent = UserAgent.parseUserAgentString(this._userAgentString, true)
+      this._isMobile = this._isMobile || ['iOS', 'Android'].includes(this._userAgent.getOS())
     }
     this._wrapper = this.spec.wrapDriver ? this.spec.wrapDriver(this._driver, this) : this._driver
     return this

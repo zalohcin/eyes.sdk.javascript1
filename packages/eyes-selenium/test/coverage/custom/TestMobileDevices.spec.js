@@ -150,9 +150,6 @@ describe.skip('TestMobileDevices', () => {
   let page = ['mobile', 'desktop', 'scrolled_mobile']
   page.forEach(page => {
     describe(`${page}`, () => {
-      before(function() {
-        if (page === 'desktop') this.skip()
-      })
       data.forEach(device => {
         it(`${device.name}`, async () => {
           let webDriver, eyes
@@ -161,6 +158,7 @@ describe.skip('TestMobileDevices', () => {
               .withCapabilities(getDeviceEmulationCaps(device.mobileEmulation))
               .build()
             eyes = new Eyes()
+            eyes.setMatchTimeout(0)
             eyes.setBatch(batch)
             eyes.setSaveNewTests(false)
             eyes.StitchMode = StitchMode.SCROLL

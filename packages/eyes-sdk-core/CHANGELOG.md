@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- populate isMobile from ua in case of chrome emulation
 
 ## 12.1.2 - 2020/8/10
 
