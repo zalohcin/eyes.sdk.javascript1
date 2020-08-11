@@ -19,6 +19,7 @@ const {
   // FileDebugScreenshotsProvider,
 } = require(cwd)
 const {BROWSERS} = require('./test-setup')
+const scrollPage = require('./scroll-page')
 
 const yargs = require('yargs')
 const args = yargs
@@ -105,10 +106,10 @@ const args = yargs
     type: 'string',
     default: '1024x768',
   })
-  // .option('scroll-page', {
-  //   describe: 'before taking the screenshot, scroll page to the bottom and up',
-  //   type: 'boolean',
-  // })
+  .option('scroll-page', {
+    describe: 'before taking the screenshot, scroll page to the bottom and up',
+    type: 'boolean',
+  })
   .option('match-timeout', {
     describe: 'match timeout',
     type: 'number',
@@ -356,9 +357,9 @@ if (!url && !args.attach) {
 
     // debugger
 
-    // if (args.scrollPage) {
-    //   await EyesJsBrowserUtils.scrollPage(driver)
-    // }
+    if (args.scrollPage) {
+      await spec.executeScript(driver, scrollPage)
+    }
 
     await eyes.check(args.tag, target)
     await eyes.close(false)
