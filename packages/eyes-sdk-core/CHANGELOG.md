@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- populate device name from capabilities ([Trello](https://trello.com/c/qyf1baqT/464-wdio5-mobile-web-device-name-not-reported-on-dashboard))
 - populate isMobile from ua in case of chrome emulation
 
 ## 12.1.2 - 2020/8/10

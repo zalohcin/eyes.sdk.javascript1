@@ -49,6 +49,7 @@ const EyesUtils = require('./EyesUtils')
  * @prop {(driver: TDriver) => Promise<boolean>} [isNative]
  * @prop {(driver: TDriver) => Promise<boolean>} [isMobile]
  * @prop {(driver: TDriver) => Promise<string>} [getSessionId]
+ * @prop {(driver: TDriver) => Promise<string>} [getDeviceName]
  * @prop {(driver: TDriver) => Promise<string>} [getPlatformName]
  * @prop {(driver: TDriver) => Promise<string>} [getPlatformVersion]
  * @prop {(driver: TDriver) => Promise<string>} [getBrowserName]
@@ -137,6 +138,10 @@ class EyesDriver {
       : this._isMobile
   }
   /** @type {string} */
+  get deviceName() {
+    return this._deviceName
+  }
+  /** @type {string} */
   get platformName() {
     return this._platformName || this._userAgent.getOS()
   }
@@ -170,6 +175,9 @@ class EyesDriver {
     this._isStateless = this.spec.isStateless ? await this.spec.isStateless(this._driver) : false
     this._isNative = this.spec.isNative ? await this.spec.isNative(this._driver) : false
     this._isMobile = this.spec.isMobile ? await this.spec.isMobile(this._driver) : undefined
+    this._deviceName = this.spec.getDeviceName
+      ? await this.spec.getDeviceName(this._driver)
+      : undefined
     this._platformName = this.spec.getPlatformName
       ? await this.spec.getPlatformName(this._driver)
       : undefined
