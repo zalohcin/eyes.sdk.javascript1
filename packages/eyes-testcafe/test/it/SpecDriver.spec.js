@@ -10,13 +10,16 @@ test('isDriver(driver)', driver => {
 test('isDriver(wrong)', driver => {
   return isDriver({driver, input: {}, expected: false})
 })
+test('isSelector(string)', driver => {
+  return isSelector({driver, input: '//div', expected: true})
+})
 test('isSelector(Selector)', driver => {
   return isSelector({driver, input: Selector('//div'), expected: true})
 })
 test('isSelector(wrong)', driver => {
   return isSelector({driver, input: {}, expected: false})
 })
-test.skip('executeScript(strings, ...args)', driver => {
+test.only('executeScript(strings, ...args)', driver => {
   return executeScript({driver})
 })
 test('isElement(Selector)', driver => {
@@ -75,35 +78,25 @@ async function isSelector({_driver, input, expected}) {
   const isSelector = await spec.isSelector(input)
   assert.strictEqual(isSelector, expected)
 }
-function toEyesSelector({_driver}) {
-  const xpathSelector = Selector('/html[1]/body[1]/div[1]')
-  const xpathResult = spec.toEyesSelector(xpathSelector)
-  assert.deepStrictEqual(xpathResult, {type: 'xpath', selector: '/html[1]/body[1]/div[1]'})
-
-  const cssSelector = Selector('html > body > div')
-  const cssResult = spec.toEyesSelector(cssSelector)
-  assert.deepStrictEqual(cssResult, {type: 'css', selector: 'html > body > div'})
-
-  const tagSelector = Selector('text')
-  const tagResult = spec.toEyesSelector(tagSelector)
-  assert.deepStrictEqual(tagResult, {type: 'css', selector: 'text'})
-
-  const wrongSelector = {isWrong: true}
-  const wrongResult = spec.toEyesSelector(wrongSelector)
-  assert.deepStrictEqual(wrongResult, {selector: {isWrong: true}})
-}
 async function executeScript({driver}) {
-  const args = [0, 'string', {key: 'value'}, [0, 1, 2, 3]]
-  const expected = JSON.stringify(args)
-  const result = await spec.executeScript(
-    driver,
-    args => {
-      return args
-    },
-    ...args,
-  )
-  debugger
-  assert.deepStrictEqual(result, expected)
+  let actual
+  let expected
+  expected = 4
+  actual = await spec.executeScript(driver, 'return 4')
+  assert.deepStrictEqual(actual, expected)
+  expected = 4 + 5
+  actual = await spec.executeScript(driver, 'return arguments[0] + arguments[1]', 4, 5)
+  assert.deepStrictEqual(actual, expected)
+  //expected = 4 + 5
+  //actual = await spec.executeScript(
+  //  driver,
+  //  () => {
+  //    return arguments[0] + arguments[1]
+  //  },
+  //  4,
+  //  5,
+  //)
+  //assert.deepStrictEqual(actual, expected)
 }
 function mainContext({_driver}) {
   return async () => {

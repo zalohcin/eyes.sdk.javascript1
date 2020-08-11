@@ -1,5 +1,5 @@
 const {TypeUtils} = require('@applitools/eyes-sdk-core')
-const {ClientFunction, Selector} = require('testcafe')
+const {ClientFunction, _Selector} = require('testcafe')
 
 // helpers
 function _extractSelectorString(selector) {
@@ -17,7 +17,10 @@ async function isDriver(driver) {
 }
 function isSelector(selector) {
   if (!selector || typeof selector === 'object') return false
-  return typeof selector === 'function' && selector.name && selector.name.includes('clientFunction')
+  return (
+    TypeUtils.isString(selector) ||
+    (typeof selector === 'function' && selector.name && selector.name.includes('clientFunction'))
+  )
 }
 async function isElement(element) {
   return typeof element === 'object' && !!element.boundingClientRect
@@ -32,12 +35,16 @@ async function isStaleElementError(_error) {
   // haven't found anything about it in the TestCafe docs/KB
   return false
 }
-async function executeScript(_driver, _script, ..._args) {
-  //const executor = ClientFunction(script)
-  //executor.with(dependencies: {args})
-  //executor.with({boundTestRun: driver})
-  //const result = await executor()
-  //return result
+async function executeScript(driver, script, ...args) {
+  const dependencies = {}
+  args.forEach((arg, index) => {
+    dependencies[`arg${index}`] = arg
+  })
+  const snippet = `return (function() {${script}})(${Object.keys(dependencies).join(',')})`
+  script = TypeUtils.isString(script) ? new Function(snippet) : script
+  const executor = ClientFunction(script, {dependencies})
+  executor.with({boundTestRun: driver})
+  return executor()
 }
 async function mainContext(driver) {
   await driver.switchToMainWindow()
@@ -122,7 +129,6 @@ async function cleanup(_driver) {
 
 exports.isDriver = isDriver
 exports.isSelector = isSelector
-exports.toEyesSelector = toEyesSelector
 exports.isElement = isElement
 exports.isEqualElements = isEqualElements
 exports.isStaleElementError = isStaleElementError
