@@ -3,7 +3,7 @@ const {BlobServiceClient} = require('@azure/storage-blob')
 
 async function uploadToStorage({
   sdkName,
-  sdkVersion,
+  reportId,
   isSandbox,
   payload,
   connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING,
@@ -14,7 +14,10 @@ async function uploadToStorage({
     )
   }
   const folderName = `${sdkName}/${isSandbox ? 'sandbox' : 'prod'}`
-  const blobName = `${formatDate(new Date())}-${isSandbox ? 'sandbox' : sdkVersion}.json`
+  const dateStr = formatDate(new Date())
+  const sandboxStr = isSandbox ? '-sandbox' : ''
+  const reportIdStr = reportId ? `-${reportId}` : ''
+  const blobName = `${dateStr}${sandboxStr}${reportIdStr}.json`
   const blobPath = `${folderName}/${blobName}`
   const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString)
   const containerClient = blobServiceClient.getContainerClient('coverage-test-results')

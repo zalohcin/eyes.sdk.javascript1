@@ -4,7 +4,6 @@ const {createReport} = require('../../report')
 const {sendReport} = require('../../send-report')
 const uploadToStorage = require('../../report/upload')
 const {logDebug} = require('../../log')
-const sdkVersion = require(path.resolve(process.cwd(), 'package.json')).version
 const chalk = require('chalk')
 
 async function processReport(args) {
@@ -32,11 +31,14 @@ async function processReport(args) {
   if (!result.isSuccessful) {
     console.log(result.message)
   }
-  await uploadToStorage({sdkName, sdkVersion, isSandbox, payload: JSON.stringify(report)}).catch(
-    err => {
-      console.log(chalk.gray('Error uploading results to Azure:', err.message))
-    },
-  )
+  await uploadToStorage({
+    sdkName,
+    reportId: args.reportId,
+    isSandbox,
+    payload: JSON.stringify(report),
+  }).catch(err => {
+    console.log(chalk.gray('Error uploading results to Azure:', err.message))
+  })
 }
 
 module.exports = {
