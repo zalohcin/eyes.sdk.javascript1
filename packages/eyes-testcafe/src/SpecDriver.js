@@ -36,13 +36,13 @@ async function isStaleElementError(_error) {
   return false
 }
 async function executeScript(driver, script, ...args) {
-  const dependencies = {}
-  args.forEach((arg, index) => {
-    dependencies[`arg${index}`] = arg
-  })
-  const snippet = `return (function() {${script}})(${Object.keys(dependencies).join(',')})`
-  script = TypeUtils.isString(script) ? new Function(snippet) : script
-  const executor = ClientFunction(script, {dependencies})
+  script = TypeUtils.isString(script) ? new Function(script) : script
+  const executor = ClientFunction(
+    () => {
+      return script(...args)
+    },
+    {dependencies: {script, args}},
+  )
   executor.with({boundTestRun: driver})
   return executor()
 }

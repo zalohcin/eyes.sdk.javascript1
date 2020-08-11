@@ -87,16 +87,16 @@ async function executeScript({driver}) {
   expected = 4 + 5
   actual = await spec.executeScript(driver, 'return arguments[0] + arguments[1]', 4, 5)
   assert.deepStrictEqual(actual, expected)
-  //expected = 4 + 5
-  //actual = await spec.executeScript(
-  //  driver,
-  //  () => {
-  //    return arguments[0] + arguments[1]
-  //  },
-  //  4,
-  //  5,
-  //)
-  //assert.deepStrictEqual(actual, expected)
+  expected = 4 + 5
+  actual = await spec.executeScript(
+    driver,
+    function() {
+      return arguments[0] + arguments[1]
+    },
+    4,
+    5,
+  )
+  assert.deepStrictEqual(actual, expected)
 }
 function mainContext({_driver}) {
   return async () => {
