@@ -1,20 +1,60 @@
 const {TypeUtils} = require('@applitools/eyes-sdk-core')
-const {ClientFunction, _Selector} = require('testcafe')
+const {ClientFunction, Selector} = require('testcafe')
+
+// helpers
+/* eslint-disable no-undef */
+const _getElementsByXPath = Selector(xpath => {
+  const iterator = document.evaluate(
+    xpath,
+    document,
+    null,
+    XPathResult.UNORDERED_NODE_ITERATOR_TYPE,
+    null,
+  )
+  const items = []
+
+  let item = iterator.iterateNext()
+
+  while (item) {
+    items.push(item)
+    item = iterator.iterateNext()
+  }
+
+  return items
+})
+function extractSelectorString(selector) {
+  const util = require('util')
+  const internals = util.inspect(selector, true, 2).split(',')
+  const filteredInternals = internals.filter(line => line.includes('apiFn:'))
+  const match = filteredInternals[0].match(/\(['"](.*)['"]\)/)
+  if (match && match.length) return match[1]
+  else throw new Error('Unable to determine selector')
+}
+/* eslint-enable no-undef */
+// end helpers
 
 async function isDriver(driver) {
   return driver.constructor.name === 'TestController'
 }
-async function isSelector(selector) {
-  return TypeUtils.isString(selector) || TypeUtils.instanceOf(selector, 'Selector')
+function isSelector(selector) {
+  if (!selector || typeof selector === 'object') return false
+  return typeof selector === 'function' && selector.name && selector.name.includes('clientFunction')
 }
 async function isElement(element) {
   return typeof element === 'object' && !!element.boundingClientRect
 }
-async function toEyesSelector(_selector) {
-  // TODO:
-  // - parse out selector string value
-  // - convert to object structure:
-  // - return {type: 'css' | 'xpath', selector: string}
+function toEyesSelector(selector) {
+  let selectorString
+  if (TypeUtils.isString(selector)) {
+    selectorString = selector
+  } else if (isSelector(selector)) {
+    selectorString = extractSelectorString(selector)
+  } else {
+    return {selector}
+  }
+  return selectorString.startsWith('/')
+    ? {type: 'xpath', selector: selectorString}
+    : {type: 'css', selector: selectorString}
 }
 async function isEqualElements(_driver, _element1, _element2) {
   // TODO

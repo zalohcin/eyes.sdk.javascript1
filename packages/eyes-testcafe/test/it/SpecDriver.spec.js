@@ -10,17 +10,14 @@ test('isDriver(driver)', driver => {
 test('isDriver(wrong)', driver => {
   return isDriver({driver, input: {}, expected: false})
 })
-test.skip('isSelector(string)', async driver => {
-  isSelector({driver, input: 'div', expected: true})
+test('isSelector(Selector)', driver => {
+  return isSelector({driver, input: Selector('//div'), expected: true})
 })
-test.skip('isSelector(Selector)', async driver => {
-  isSelector({driver, input: Selector('//div'), expected: true})
+test('isSelector(wrong)', driver => {
+  return isSelector({driver, input: {}, expected: false})
 })
-test.skip('isSelector(wrong)', async driver => {
-  isSelector({driver, input: {}, expected: false})
-})
-test.skip('toEyesSelector(selector)', async driver => {
-  toEyesSelector({driver})
+test('toEyesSelector(selector)', async driver => {
+  return toEyesSelector({driver})
 })
 test.skip('executeScript(strings, ...args)', async driver => {
   executeScript({driver})
@@ -77,30 +74,26 @@ async function isElement({_driver, input, expected}) {
   const isElement = await spec.isElement(element)
   assert.strictEqual(isElement, expected)
 }
-function isSelector({_driver, input, expected}) {
-  return async () => {
-    const isSelector = await spec.isSelector(input)
-    assert.strictEqual(isSelector, expected)
-  }
+async function isSelector({_driver, input, expected}) {
+  const isSelector = await spec.isSelector(input)
+  assert.strictEqual(isSelector, expected)
 }
 function toEyesSelector({_driver}) {
-  return async () => {
-    //const xpathSelector = By.xpath('/html[1]/body[1]/div[1]')
-    //const xpathResult = spec.toEyesSelector(xpathSelector)
-    //assert.deepStrictEqual(xpathResult, {selector: xpathSelector})
-    //
-    //const cssSelector = By.css('html > body > div')
-    //const cssResult = spec.toEyesSelector(cssSelector)
-    //assert.deepStrictEqual(cssResult, {selector: cssSelector})
-    //
-    //const tagSelector = By.linkText('text')
-    //const tagResult = spec.toEyesSelector(tagSelector)
-    //assert.deepStrictEqual(tagResult, {selector: tagSelector})
-    //
-    //const wrongSelector = {isWrong: true}
-    //const wrongResult = spec.toEyesSelector(wrongSelector)
-    //assert.deepStrictEqual(wrongResult, {selector: wrongSelector})
-  }
+  const xpathSelector = Selector('/html[1]/body[1]/div[1]')
+  const xpathResult = spec.toEyesSelector(xpathSelector)
+  assert.deepStrictEqual(xpathResult, {type: 'xpath', selector: '/html[1]/body[1]/div[1]'})
+
+  const cssSelector = Selector('html > body > div')
+  const cssResult = spec.toEyesSelector(cssSelector)
+  assert.deepStrictEqual(cssResult, {type: 'css', selector: 'html > body > div'})
+
+  const tagSelector = Selector('text')
+  const tagResult = spec.toEyesSelector(tagSelector)
+  assert.deepStrictEqual(tagResult, {type: 'css', selector: 'text'})
+
+  const wrongSelector = {isWrong: true}
+  const wrongResult = spec.toEyesSelector(wrongSelector)
+  assert.deepStrictEqual(wrongResult, {selector: {isWrong: true}})
 }
 function executeScript({_driver}) {
   return async () => {
