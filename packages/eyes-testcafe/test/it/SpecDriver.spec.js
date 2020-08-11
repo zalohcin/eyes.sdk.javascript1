@@ -16,11 +16,8 @@ test('isSelector(Selector)', driver => {
 test('isSelector(wrong)', driver => {
   return isSelector({driver, input: {}, expected: false})
 })
-test('toEyesSelector(selector)', async driver => {
-  return toEyesSelector({driver})
-})
-test.skip('executeScript(strings, ...args)', async driver => {
-  executeScript({driver})
+test.skip('executeScript(strings, ...args)', driver => {
+  return executeScript({driver})
 })
 test('isElement(Selector)', driver => {
   return isElement({driver, input: Selector('div'), expected: true})
@@ -95,13 +92,18 @@ function toEyesSelector({_driver}) {
   const wrongResult = spec.toEyesSelector(wrongSelector)
   assert.deepStrictEqual(wrongResult, {selector: {isWrong: true}})
 }
-function executeScript({_driver}) {
-  return async () => {
-    //const args = [0, 'string', {key: 'value'}, [0, 1, 2, 3]]
-    //const expected = await driver.executeScript('return arguments', ...args)
-    //const result = await spec.executeScript(driver, 'return arguments', ...args)
-    //assert.deepStrictEqual(result, expected)
-  }
+async function executeScript({driver}) {
+  const args = [0, 'string', {key: 'value'}, [0, 1, 2, 3]]
+  const expected = JSON.stringify(args)
+  const result = await spec.executeScript(
+    driver,
+    args => {
+      return args
+    },
+    ...args,
+  )
+  debugger
+  assert.deepStrictEqual(result, expected)
 }
 function mainContext({_driver}) {
   return async () => {

@@ -2,27 +2,7 @@ const {TypeUtils} = require('@applitools/eyes-sdk-core')
 const {ClientFunction, Selector} = require('testcafe')
 
 // helpers
-/* eslint-disable no-undef */
-const _getElementsByXPath = Selector(xpath => {
-  const iterator = document.evaluate(
-    xpath,
-    document,
-    null,
-    XPathResult.UNORDERED_NODE_ITERATOR_TYPE,
-    null,
-  )
-  const items = []
-
-  let item = iterator.iterateNext()
-
-  while (item) {
-    items.push(item)
-    item = iterator.iterateNext()
-  }
-
-  return items
-})
-function extractSelectorString(selector) {
+function _extractSelectorString(selector) {
   const util = require('util')
   const internals = util.inspect(selector, true, 2).split(',') // inspect(object, showHidden, depth)
   const filteredInternals = internals.filter(line => line.includes('Selector('))
@@ -30,7 +10,6 @@ function extractSelectorString(selector) {
   if (match && match.length) return match[1]
   else throw new Error('Unable to determine selector')
 }
-/* eslint-enable no-undef */
 // end helpers
 
 async function isDriver(driver) {
@@ -43,19 +22,6 @@ function isSelector(selector) {
 async function isElement(element) {
   return typeof element === 'object' && !!element.boundingClientRect
 }
-function toEyesSelector(selector) {
-  let selectorString
-  if (TypeUtils.isString(selector)) {
-    selectorString = selector
-  } else if (isSelector(selector)) {
-    selectorString = extractSelectorString(selector)
-  } else {
-    return {selector}
-  }
-  return selectorString.startsWith('/')
-    ? {type: 'xpath', selector: selectorString}
-    : {type: 'css', selector: selectorString}
-}
 async function isEqualElements(_driver, _element1, _element2) {
   // TODO
 }
@@ -66,17 +32,12 @@ async function isStaleElementError(_error) {
   // haven't found anything about it in the TestCafe docs/KB
   return false
 }
-async function executeScript(driver, script, args) {
-  // TODO:
-  // - confirm blind passing of args to script works
-  // - add transform function that will ensure Selector objects passed as args get resolved to state objects
-  const executor = ClientFunction(
-    () => {
-      return script(args)
-    },
-    {dependencies: args},
-  )
-  return executor.with({boundTestRun: driver})
+async function executeScript(_driver, _script, ..._args) {
+  //const executor = ClientFunction(script)
+  //executor.with(dependencies: {args})
+  //executor.with({boundTestRun: driver})
+  //const result = await executor()
+  //return result
 }
 async function mainContext(driver) {
   await driver.switchToMainWindow()
