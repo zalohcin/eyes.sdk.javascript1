@@ -167,6 +167,11 @@ async function isMobile(browser) {
 async function isNative(browser) {
   return browser.isMobile && !browser.capabilities.browserName
 }
+async function getDeviceName(browser) {
+  return browser.capabilities.desired
+    ? browser.capabilities.desired.deviceName
+    : browser.capabilities.deviceName
+}
 async function getPlatformName(browser) {
   return browser.capabilities.platformName || browser.capabilities.platform
 }
@@ -286,6 +291,7 @@ exports.setWindowRect = setWindowRect
 exports.getOrientation = getOrientation
 exports.isMobile = isMobile
 exports.isNative = isNative
+exports.getDeviceName = getDeviceName
 exports.getPlatformName = getPlatformName
 exports.getPlatformVersion = getPlatformVersion
 exports.getBrowserName = getBrowserName

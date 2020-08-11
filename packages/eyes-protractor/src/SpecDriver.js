@@ -174,6 +174,12 @@ async function isNative(driver) {
     ? ['android', 'ios'].includes(platformName.toLowerCase()) && !browserName
     : false
 }
+async function getDeviceName(driver) {
+  const capabilities = await driver.getCapabilities()
+  return capabilities.has('desired')
+    ? capabilities.get('desired').deviceName
+    : capabilities.get('deviceName')
+}
 async function getPlatformName(driver) {
   const capabilities = await driver.getCapabilities()
   return capabilities.get('platformName')
@@ -285,6 +291,7 @@ exports.setWindowRect = setWindowRect
 exports.getOrientation = getOrientation
 exports.isMobile = isMobile
 exports.isNative = isNative
+exports.getDeviceName = getDeviceName
 exports.getPlatformName = getPlatformName
 exports.getPlatformVersion = getPlatformVersion
 exports.getBrowserName = getBrowserName

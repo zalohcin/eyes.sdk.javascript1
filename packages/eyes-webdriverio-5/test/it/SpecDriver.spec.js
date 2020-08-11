@@ -269,6 +269,7 @@ describe('SpecDriver', async () => {
     })
 
     it('isMobile()', isMobile({expected: true}))
+    it('getDeviceName()', getDeviceName({expected: 'Google Pixel 3a XL GoogleAPI Emulator'}))
     it('getPlatformName()', getPlatformName({expected: 'Android'}))
     it('isNative()', isNative({expected: false}))
     it('getOrientation()', getOrientation({expected: 'portrait'}))
@@ -289,6 +290,7 @@ describe('SpecDriver', async () => {
 
     it('isMobile()', isMobile({expected: true}))
     it('isNative()', isNative({expected: true}))
+    it('getDeviceName()', getDeviceName({expected: 'Android Emulator'}))
     it('getPlatformName()', getPlatformName({expected: 'Android'}))
     it('getPlatformVersion()', getPlatformVersion({expected: '6.0'}))
     it('getOrientation()', getOrientation({expected: 'landscape'}))
@@ -503,6 +505,12 @@ describe('SpecDriver', async () => {
   function isNative({expected} = {}) {
     return async () => {
       const result = await spec.isNative(browser)
+      assert.strictEqual(result, expected)
+    }
+  }
+  function getDeviceName({expected} = {}) {
+    return async () => {
+      const result = await spec.getDeviceName(browser)
       assert.strictEqual(result, expected)
     }
   }

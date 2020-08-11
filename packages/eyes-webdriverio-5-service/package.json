@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-webdriverio5-service",
-  "version": "1.6.8",
+  "version": "1.6.9",
   "description": "",
   "keywords": [
     "wdio-plugin",
@@ -20,7 +20,7 @@
   },
   "main": "index.js",
   "dependencies": {
-    "@applitools/eyes-webdriverio": "5.19.2"
+    "@applitools/eyes-webdriverio": "5.21.0"
   },
   "devDependencies": {
     "@applitools/sdk-release-kit": "0.2.2",
