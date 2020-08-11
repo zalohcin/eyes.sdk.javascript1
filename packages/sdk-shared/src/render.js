@@ -18,7 +18,8 @@ const {
   MatchLevel,
   // FileDebugScreenshotsProvider,
 } = require(cwd)
-const {EyesJsBrowserUtils} = require('../../eyes-sdk-core')
+const {BROWSERS} = require('./test-setup')
+
 const yargs = require('yargs')
 const args = yargs
   .usage('yarn render <url> [options]')
@@ -104,10 +105,10 @@ const args = yargs
     type: 'string',
     default: '1024x768',
   })
-  .option('scroll-page', {
-    describe: 'before taking the screenshot, scroll page to the bottom and up',
-    type: 'boolean',
-  })
+  // .option('scroll-page', {
+  //   describe: 'before taking the screenshot, scroll page to the bottom and up',
+  //   type: 'boolean',
+  // })
   .option('match-timeout', {
     describe: 'match timeout',
     type: 'number',
@@ -197,6 +198,11 @@ const args = yargs
   .option('save-debug-screenshots', {
     describe: 'saveDebugScreenshots',
     type: 'boolean',
+  })
+  .option('env-browser', {
+    describe: 'preset name of browser. For example "edge-18", "ie-11", "safari-11", "firefox"',
+    type: 'string',
+    choices: Object.keys(BROWSERS),
   })
   .help().argv
 
@@ -350,9 +356,9 @@ if (!url && !args.attach) {
 
     // debugger
 
-    if (args.scrollPage) {
-      await EyesJsBrowserUtils.scrollPage(driver)
-    }
+    // if (args.scrollPage) {
+    //   await EyesJsBrowserUtils.scrollPage(driver)
+    // }
 
     await eyes.check(args.tag, target)
     await eyes.close(false)
@@ -388,34 +394,42 @@ function buildDriver({
   isMobileEmulation,
   deviceName,
   attach,
+  envBrowser,
 } = {}) {
-  const capabilities = {
-    browserName: 'chrome',
-    'goog:chromeOptions': {
-      // w3c: false,
-      args: headless ? ['--headless'] : [],
-      mobileEmulation: isMobileEmulation ? {deviceName} : undefined,
-      debuggerAddress: attach ? '127.0.01:9222' : undefined,
-    },
-    ...driverCapabilities,
-  }
-
-  if (process.env.SAUCE_USERNAME && process.env.SAUCE_ACCESS_KEY) {
-    capabilities['sauce:options'] = {
-      username: process.env.SAUCE_USERNAME,
-      accesskey: process.env.SAUCE_ACCESS_KEY,
+  let env
+  if (!envBrowser) {
+    const capabilities = {
+      browserName: 'chrome',
+      'goog:chromeOptions': {
+        // w3c: false,
+        args: headless ? ['--headless'] : [],
+        mobileEmulation: isMobileEmulation ? {deviceName} : undefined,
+        debuggerAddress: attach ? '127.0.01:9222' : undefined,
+      },
+      ...driverCapabilities,
     }
+
+    if (process.env.SAUCE_USERNAME && process.env.SAUCE_ACCESS_KEY) {
+      capabilities['sauce:options'] = {
+        username: process.env.SAUCE_USERNAME,
+        accesskey: process.env.SAUCE_ACCESS_KEY,
+      }
+    }
+
+    console.log(
+      'Running with capabilities:\n',
+      Object.entries(capabilities)
+        .map(argToString)
+        .join('\n '),
+      '\n',
+    )
+
+    env = {capabilities, serverUrl: driverServer, webdriverProxy}
+  } else {
+    env = {browser: envBrowser}
   }
 
-  console.log(
-    'Running with capabilities:\n',
-    Object.entries(capabilities)
-      .map(argToString)
-      .join('\n '),
-    '\n',
-  )
-
-  return spec.build({capabilities, serverUrl: driverServer, webdriverProxy})
+  return spec.build(env)
 }
 
 function initLog(eyes, filename) {
