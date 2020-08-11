@@ -24,8 +24,8 @@ const _getElementsByXPath = Selector(xpath => {
 })
 function extractSelectorString(selector) {
   const util = require('util')
-  const internals = util.inspect(selector, true, 2).split(',')
-  const filteredInternals = internals.filter(line => line.includes('apiFn:'))
+  const internals = util.inspect(selector, true, 2).split(',') // inspect(object, showHidden, depth)
+  const filteredInternals = internals.filter(line => line.includes('Selector('))
   const match = filteredInternals[0].match(/\(['"](.*)['"]\)/)
   if (match && match.length) return match[1]
   else throw new Error('Unable to determine selector')
