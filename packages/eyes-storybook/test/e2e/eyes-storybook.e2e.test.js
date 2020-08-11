@@ -1,11 +1,9 @@
 const {describe, it, before, after} = require('mocha');
 const {expect} = require('chai');
 const path = require('path');
-const {testServer} = require('@applitools/sdk-shared');
+const testServer = require('@applitools/sdk-shared/src/run-test-server');
+const {sh} = require('@applitools/sdk-shared/src/process-commons');
 const {delay: psetTimeout, presult} = require('@applitools/functional-commons');
-const {
-  processCommons: {sh},
-} = require('@applitools/sdk-shared');
 const {version} = require('../../package.json');
 
 describe('eyes-storybook', () => {

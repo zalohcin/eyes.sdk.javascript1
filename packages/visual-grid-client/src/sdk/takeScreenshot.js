@@ -19,9 +19,9 @@ async function takeScreenshot({
   frames,
   browsers = [{width: 1024, height: 768}],
   sizeMode = 'full-page',
-  // selector,
-  // region,
-  // scriptHooks,
+  selector,
+  region,
+  scriptHooks,
 }) {
   const {resourceContents, frames: framesWithResources} = deserializeDomSnapshotResult({
     blobs,
@@ -56,9 +56,9 @@ async function takeScreenshot({
     browsers,
     renderInfo: renderingInfo,
     sizeMode,
-    // selector,
-    // region,
-    // scriptHooks,
+    selector,
+    region,
+    scriptHooks,
     sendDom: true,
   })
 

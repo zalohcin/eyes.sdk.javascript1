@@ -239,6 +239,9 @@ class Configuration {
     /** @type {boolean} */
     this._dontCloseBatches = undefined
 
+    /** @type {Object} */
+    this._visualGridOptions = undefined
+
     if (configuration) {
       this.mergeConfig(configuration)
     }
@@ -1280,6 +1283,23 @@ class Configuration {
     return this
   }
 
+  getVisualGridOptions() {
+    return this._visualGridOptions
+  }
+
+  setVisualGridOptions(value) {
+    this._visualGridOptions = value
+    return this
+  }
+
+  setVisualGridOption(key, value) {
+    if (!this._visualGridOptions) {
+      this._visualGridOptions = {}
+    }
+    this._visualGridOptions[key] = value
+    return this
+  }
+
   /**
    * @param {Configuration|object} other
    */
@@ -1334,6 +1354,7 @@ class Configuration {
       ignoreDisplacements: this.getIgnoreDisplacements(),
       saveDebugData: this.getSaveDebugData(),
       accessibilitySettings: this.getAccessibilityValidation(),
+      visualGridOptions: this.getVisualGridOptions(),
     }
   }
 
