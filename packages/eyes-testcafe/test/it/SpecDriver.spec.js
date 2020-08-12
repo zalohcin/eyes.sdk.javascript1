@@ -81,15 +81,15 @@ function isSelector({_driver, input, expected}) {
 async function executeScript({driver}) {
   let actual
   let expected
-  // simple (string)
+  // 1. simple (string)
   expected = 4
   actual = await spec.executeScript(driver, 'return 4')
   assert.deepStrictEqual(actual, expected)
-  // simple w/ arguments (string)
+  // 2. simple w/ arguments (string)
   expected = 4 + 5
   actual = await spec.executeScript(driver, 'return arguments[0] + arguments[1]', 4, 5)
   assert.deepStrictEqual(actual, expected)
-  // simple w/ arguments (function)
+  // 3. simple w/ arguments (function)
   expected = 4 + 5
   actual = await spec.executeScript(
     driver,
@@ -100,7 +100,7 @@ async function executeScript({driver}) {
     5,
   )
   assert.deepStrictEqual(actual, expected)
-  // pass Selector, resolve and use
+  // 4. pass Selector and use
   expected = 'visible'
   actual = await spec.executeScript(
     driver,
@@ -108,7 +108,7 @@ async function executeScript({driver}) {
     Selector('html'),
   )
   assert.deepStrictEqual(actual, expected)
-  // return and re-use "element"
+  // 5. return and re-use "element"
   expected = await Selector('h1')()
   const result = await spec.executeScript(driver, 'return arguments[0]', Selector('h1'))
   actual = await spec.executeScript(driver, 'return arguments[0]', Selector(result))
