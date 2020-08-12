@@ -2,7 +2,6 @@ const {TypeUtils} = require('@applitools/eyes-sdk-core')
 const {ClientFunction, Selector} = require('testcafe')
 
 // helpers
-// TODO: sort out how to make this work in a ClientFunction
 function isTestCafeSelector(selector) {
   // return !!(typeof selector === 'function' && selector.name && selector.name.includes('clientFunction'))
   return !!(selector && selector.addCustomMethods && selector.find && selector.parent)
@@ -12,6 +11,8 @@ function prepareClientFunction({clientFunction, dependencies, driver}) {
     () => {
       /* eslint-disable no-undef */
       const manipulatedArgs = args.map(arg => {
+        // TODO: fix this so it's specific to calling Selector functions
+        // e.g., isTestCafeSelector
         return typeof arg === 'function' ? arg() : arg
       })
       return script(...manipulatedArgs)
@@ -23,6 +24,8 @@ function prepareClientFunction({clientFunction, dependencies, driver}) {
   return executor
 }
 // end helpers
+
+// TODO: add element comparison function (important)
 
 async function isDriver(driver) {
   return driver.constructor.name === 'TestController'
@@ -44,6 +47,7 @@ async function executeScript(driver, script, ...args) {
     executor = prepareClientFunction({clientFunction: ClientFunction, dependencies, driver})
     return await executor()
   } catch (error) {
+    // TODO: scope to return type error to avoid masking issues
     executor = prepareClientFunction({clientFunction: Selector, dependencies, driver})
     return await executor()
   }
