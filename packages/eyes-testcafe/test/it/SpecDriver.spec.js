@@ -22,10 +22,10 @@ test('isSelector(wrong)', driver => {
 test.only('executeScript(strings, ...args)', driver => {
   return executeScript({driver})
 })
-test('isElement(Selector)', driver => {
+test.skip('isElement(Selector)', driver => {
   return isElement({driver, input: Selector('div'), expected: true})
 })
-test('isElement(wrong)', async driver => {
+test.skip('isElement(wrong)', async driver => {
   isElement({driver, input: () => ({}), expected: false})
 })
 test.skip('findElement(string)', async driver => {
@@ -74,19 +74,22 @@ async function isElement({_driver, input, expected}) {
   const isElement = await spec.isElement(element)
   assert.strictEqual(isElement, expected)
 }
-async function isSelector({_driver, input, expected}) {
-  const isSelector = await spec.isSelector(input)
+function isSelector({_driver, input, expected}) {
+  const isSelector = spec.isSelector(input)
   assert.strictEqual(isSelector, expected)
 }
 async function executeScript({driver}) {
   let actual
   let expected
+  // simple (string)
   expected = 4
   actual = await spec.executeScript(driver, 'return 4')
   assert.deepStrictEqual(actual, expected)
+  // simple w/ arguments (string)
   expected = 4 + 5
   actual = await spec.executeScript(driver, 'return arguments[0] + arguments[1]', 4, 5)
   assert.deepStrictEqual(actual, expected)
+  // simple w/ arguments (function)
   expected = 4 + 5
   actual = await spec.executeScript(
     driver,
@@ -97,6 +100,20 @@ async function executeScript({driver}) {
     5,
   )
   assert.deepStrictEqual(actual, expected)
+  // pass Selector, resolve and use
+  expected = 'visible'
+  actual = await spec.executeScript(
+    driver,
+    "return getComputedStyle(arguments[0]).getPropertyValue('overflow')",
+    Selector('html'),
+  )
+  assert.deepStrictEqual(actual, expected)
+  // TODO:
+  // w/ resolved Selector returned
+  //expected = 'TBD'
+  //actual = await spec.executeScript(driver, 'return arguments[0]', Selector('html'))
+  //assert.deepStrictEqual(actual, expected)
+  // w/ resolved Selected passed
 }
 function mainContext({_driver}) {
   return async () => {

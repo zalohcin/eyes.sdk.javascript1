@@ -11,7 +11,9 @@ function _extractSelectorString(selector) {
   else throw new Error('Unable to determine selector')
 }
 
+// doesn't work inside of a clientFunction
 function isTestCafeSelector(selector) {
+  // return !!(typeof selector === 'function' && selector.name && selector.name.includes('clientFunction'))
   return !!(selector && selector.addCustomMethods && selector.find && selector.parent)
 }
 // end helpers
@@ -39,6 +41,9 @@ async function executeScript(driver, script, ...args) {
   script = TypeUtils.isString(script) ? new Function(script) : script
   const executor = ClientFunction(
     () => {
+      args.forEach((arg, argIndex) => {
+        if (typeof arg === 'function') args[argIndex] = arg()
+      })
       return script(...args)
     },
     {dependencies: {script, args}},
