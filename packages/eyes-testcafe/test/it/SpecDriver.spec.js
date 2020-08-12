@@ -19,8 +19,9 @@ test('isSelector(Selector)', driver => {
 test('isSelector(wrong)', driver => {
   return isSelector({driver, input: {}, expected: false})
 })
-test.only('executeScript(strings, ...args)', driver => {
-  return executeScript({driver})
+test.only('executeScript(string|function, ...args)', async driver => {
+  await executeScriptBasics({driver})
+  await executeScriptAdvanced({driver})
 })
 test.skip('isElement(Selector)', driver => {
   return isElement({driver, input: Selector('div'), expected: true})
@@ -78,7 +79,7 @@ function isSelector({_driver, input, expected}) {
   const isSelector = spec.isSelector(input)
   assert.strictEqual(isSelector, expected)
 }
-async function executeScript({driver}) {
+async function executeScriptBasics({driver}) {
   let actual
   let expected
   // simple (string)
@@ -108,12 +109,16 @@ async function executeScript({driver}) {
     Selector('html'),
   )
   assert.deepStrictEqual(actual, expected)
-  // TODO:
-  // w/ resolved Selector returned
-  //expected = 'TBD'
-  //actual = await spec.executeScript(driver, 'return arguments[0]', Selector('html'))
-  //assert.deepStrictEqual(actual, expected)
-  // w/ resolved Selected passed
+}
+async function executeScriptAdvanced({driver}) {
+  let actual
+  let expected
+  let result
+  // return and re-use "element"
+  expected = await Selector('h1')()
+  result = await spec.executeScript(driver, 'return arguments[0]', Selector('h1'))
+  actual = await spec.executeScript(driver, 'return arguments[0]', Selector(result))
+  assert.deepStrictEqual(actual.innerText, expected.innerText)
 }
 function mainContext({_driver}) {
   return async () => {

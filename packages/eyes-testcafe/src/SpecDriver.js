@@ -1,5 +1,5 @@
 const {TypeUtils} = require('@applitools/eyes-sdk-core')
-const {ClientFunction, _Selector} = require('testcafe')
+const {ClientFunction, Selector} = require('testcafe')
 
 // helpers
 function _extractSelectorString(selector) {
@@ -10,7 +10,6 @@ function _extractSelectorString(selector) {
   if (match && match.length) return match[1]
   else throw new Error('Unable to determine selector')
 }
-
 // doesn't work inside of a clientFunction
 function isTestCafeSelector(selector) {
   // return !!(typeof selector === 'function' && selector.name && selector.name.includes('clientFunction'))
@@ -37,19 +36,32 @@ async function isStaleElementError(_error) {
   // haven't found anything about it in the TestCafe docs/KB
   return false
 }
-async function executeScript(driver, script, ...args) {
-  script = TypeUtils.isString(script) ? new Function(script) : script
-  const executor = ClientFunction(
+function prepareClientFunction({clientFunction, dependencies, driver}) {
+  const executor = clientFunction(
     () => {
+      /* eslint-disable no-undef */
       args.forEach((arg, argIndex) => {
         if (typeof arg === 'function') args[argIndex] = arg()
       })
       return script(...args)
+      /* eslint-enable */
     },
-    {dependencies: {script, args}},
+    {dependencies},
   )
   executor.with({boundTestRun: driver})
-  return executor()
+  return executor
+}
+async function executeScript(driver, script, ...args) {
+  script = TypeUtils.isString(script) ? new Function(script) : script
+  const dependencies = {script, args}
+  let executor
+  try {
+    executor = prepareClientFunction({clientFunction: ClientFunction, dependencies, driver})
+    return await executor()
+  } catch (error) {
+    executor = prepareClientFunction({clientFunction: Selector, dependencies, driver})
+    return await executor()
+  }
 }
 async function mainContext(driver) {
   await driver.switchToMainWindow()
