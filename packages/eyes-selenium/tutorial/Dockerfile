@@ -1,18 +1,17 @@
 FROM tutorial_nodejs:latest
-ARG repo=tutorial-selenium-javascript-basic
-ENV REPOSITORY_NAME=$repo
+
 RUN cd home/project \
-    && git clone https://github.com/applitools/${REPOSITORY_NAME}.git \
-    && cd ${REPOSITORY_NAME} \
+    && git clone https://github.com/applitools/tutorial-selenium-javascript-basic.git \
+    && cd tutorial-selenium-javascript-basic \
     && find ./test -type f -exec sed -i "s/'APPLITOOLS_API_KEY'/process.env.APPLITOOLS_API_KEY/g" {} \;
 
-COPY start.sh /
+COPY basic/start.sh /
 COPY package/ /
 
 RUN filename=$(find applitools*.tgz) \
-    && mv $filename home/project/${REPOSITORY_NAME}/$filename \
-    && cd home/project/${REPOSITORY_NAME} \
+    && mv $filename home/project/tutorial-selenium-javascript-basic/$filename \
+    && cd home/project/tutorial-selenium-javascript-basic \
     && npm install ./$filename \
     && npm install
 
-CMD ./start.sh ${REPOSITORY_NAME}
+CMD '/start.sh'
