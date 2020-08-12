@@ -2,6 +2,7 @@ const {TypeUtils} = require('@applitools/eyes-sdk-core')
 const {ClientFunction, Selector} = require('testcafe')
 
 // helpers
+// TODO: sort out how to make this work in a ClientFunction
 function isTestCafeSelector(selector) {
   // return !!(typeof selector === 'function' && selector.name && selector.name.includes('clientFunction'))
   return !!(selector && selector.addCustomMethods && selector.find && selector.parent)
@@ -60,7 +61,7 @@ async function findElement(_driver, selector) {
   return await selector()
 }
 async function findElements(driver, selector) {
-  const executor = ClientFunction(
+  const executor = Selector(
     () => {
       // eslint-disable-next-line no-undef
       return document.querySelectorAll(selector)
