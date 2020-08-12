@@ -311,10 +311,10 @@ function cropImage(image, region) {
 
     // process the pixels - crop
     const croppedArray = []
-    const yStart = region.getTop()
-    const yEnd = Math.min(region.getTop() + region.getHeight(), image.height)
-    const xStart = region.getLeft()
-    const xEnd = Math.min(region.getLeft() + region.getWidth(), image.width)
+    const yStart = Math.round(region.getTop())
+    const yEnd = Math.min(Math.round(region.getTop() + region.getHeight()), image.height)
+    const xStart = Math.round(region.getLeft())
+    const xEnd = Math.min(Math.round(region.getLeft() + region.getWidth()), image.width)
 
     let y, x, idx, i
     for (y = yStart; y < yEnd; y += 1) {

@@ -166,10 +166,10 @@ async function getElementEntireSize(_logger, context, element) {
 async function getElementClientRect(_logger, context, element) {
   const rect = await context.execute(snippets.getElementRect, {element, isClient: true})
   return new Region({
-    left: Math.ceil(rect.x),
-    top: Math.ceil(rect.y),
-    width: Math.ceil(rect.width),
-    height: Math.ceil(rect.height),
+    left: rect.x,
+    top: rect.y,
+    width: rect.width,
+    height: rect.height,
     coordinatesType: CoordinatesTypes.CONTEXT_RELATIVE,
   })
 }
@@ -183,10 +183,10 @@ async function getElementClientRect(_logger, context, element) {
 async function getElementRect(_logger, context, element) {
   const rect = await context.execute(snippets.getElementRect, {element, isClient: false})
   return new Region({
-    left: Math.ceil(rect.x),
-    top: Math.ceil(rect.y),
-    width: Math.ceil(rect.width),
-    height: Math.ceil(rect.height),
+    left: rect.x,
+    top: rect.y,
+    width: rect.width,
+    height: rect.height,
     coordinatesType: CoordinatesTypes.CONTEXT_RELATIVE,
   })
 }
@@ -229,7 +229,7 @@ async function getScrollOffset(_logger, context, element) {
  */
 async function scrollTo(_logger, context, location, element) {
   const {x = 0, y = 0} = await context.execute(snippets.scrollTo, {
-    offset: {x: location.getX(), y: location.getY()},
+    offset: {x: Math.round(location.getX()), y: Math.round(location.getY())},
     element,
   })
   return new Location(x, y)
@@ -254,8 +254,8 @@ async function getTranslateOffset(_logger, context, element) {
  */
 async function translateTo(_logger, context, location, element) {
   const offset = await context.execute(snippets.translateTo, {
+    offset: {x: Math.round(location.getX()), y: Math.round(location.getY())},
     element,
-    offset: {x: location.getX(), y: location.getY()},
   })
   return new Location(offset)
 }

@@ -19,7 +19,17 @@ class FluentRegion {
   }
 
   async getRegion(context, screenshot) {
-    if (this._region) return [{...this._region.toJSON(), ...this._options}]
+    if (this._region) {
+      return [
+        {
+          left: Math.round(this._region.getLeft()),
+          top: Math.round(this._region.getTop()),
+          width: Math.round(this._region.getWidth()),
+          height: Math.round(this._region.getHeight()),
+          ...this._options,
+        },
+      ]
+    }
 
     let elements = []
     if (this._selector) {
@@ -37,10 +47,10 @@ class FluentRegion {
         CoordinatesTypes.SCREENSHOT_AS_IS,
       )
       regions.push({
-        left: location.getX(),
-        top: location.getY(),
-        width: rect.getWidth(),
-        height: rect.getHeight(),
+        left: Math.round(location.getX()),
+        top: Math.round(location.getY()),
+        width: Math.round(rect.getWidth()),
+        height: Math.round(rect.getHeight()),
         ...this._options,
       })
     }
@@ -53,7 +63,15 @@ class FluentRegion {
    */
   async toPersistedRegions(context) {
     if (this._region) {
-      return [{...this._region.toJSON(), ...this._options}]
+      return [
+        {
+          left: Math.round(this._region.getLeft()),
+          top: Math.round(this._region.getTop()),
+          width: Math.round(this._region.getWidth()),
+          height: Math.round(this._region.getHeight()),
+          ...this._options,
+        },
+      ]
     } else if (this._element) {
       const xpath = await EyesUtils.getElementXpath(context._logger, context, this._element)
       return [{...this._options, type: 'xpath', selector: xpath}]

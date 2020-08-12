@@ -94,10 +94,10 @@ class EyesElement {
       if (this._context.driver.isNative) {
         const rect = await this.spec.getElementRect(this._context.unwrapped, this._element)
         return new Region({
-          left: Math.ceil(rect.x),
-          top: Math.ceil(rect.y),
-          width: Math.ceil(rect.width),
-          height: Math.ceil(rect.height),
+          left: rect.x,
+          top: rect.y,
+          width: rect.width,
+          height: rect.height,
           coordinatesType: CoordinatesTypes.CONTEXT_RELATIVE,
         })
       } else {

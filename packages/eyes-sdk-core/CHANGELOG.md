@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- improve handling of fractional metrics ([Trello](https://trello.com/c/TuXUZUNO/441-sonatype-wdio-5-targetregion-appears-off-by-one-pixel))
 - fix priority of the default match level value ([Trello](https://trello.com/c/XxBQFIWQ/438-wdio-5-fluent-api-inconsistent-behavior-between-classicrunner-and-visualgrid-runner-with-matchlevel-specified-on-per-step-basis))
 - populate device name from capabilities ([Trello](https://trello.com/c/qyf1baqT/464-wdio5-mobile-web-device-name-not-reported-on-dashboard))
 - populate isMobile from ua in case of chrome emulation

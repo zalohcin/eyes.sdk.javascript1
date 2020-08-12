@@ -27,8 +27,8 @@ class RectangleSize {
     }
 
     const {width, height} = varArg1
-    ArgumentGuard.greaterThanOrEqualToZero(width, 'width', true)
-    ArgumentGuard.greaterThanOrEqualToZero(height, 'height', true)
+    ArgumentGuard.isNumber(width, 'width')
+    ArgumentGuard.isNumber(height, 'height')
 
     this._width = width
     this._height = height
@@ -93,8 +93,8 @@ class RectangleSize {
    */
   scale(scaleRatio) {
     return new RectangleSize({
-      width: Math.ceil(this._width * scaleRatio),
-      height: Math.ceil(this._height * scaleRatio),
+      width: this._width * scaleRatio,
+      height: this._height * scaleRatio,
     })
   }
 
