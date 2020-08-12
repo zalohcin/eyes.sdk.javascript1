@@ -10,17 +10,17 @@ function _extractSelectorString(selector) {
   if (match && match.length) return match[1]
   else throw new Error('Unable to determine selector')
 }
+
+function isTestCafeSelector(selector) {
+  return !!(selector && selector.addCustomMethods && selector.find && selector.parent)
+}
 // end helpers
 
 async function isDriver(driver) {
   return driver.constructor.name === 'TestController'
 }
 function isSelector(selector) {
-  if (!selector || typeof selector === 'object') return false
-  return (
-    TypeUtils.isString(selector) ||
-    (typeof selector === 'function' && selector.name && selector.name.includes('clientFunction'))
-  )
+  return TypeUtils.isString(selector) || isTestCafeSelector(selector)
 }
 async function isElement(element) {
   return typeof element === 'object' && !!element.boundingClientRect
