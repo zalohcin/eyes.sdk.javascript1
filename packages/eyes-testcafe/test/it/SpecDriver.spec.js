@@ -19,7 +19,7 @@ test('isSelector(Selector)', driver => {
 test('isSelector(wrong)', driver => {
   return isSelector({driver, input: {}, expected: false})
 })
-test.only('executeScript(string|function, ...args)', async driver => {
+test('executeScript(string|function, ...args)', async driver => {
   await executeScript({driver})
 })
 test.skip('isElement(Selector)', driver => {
