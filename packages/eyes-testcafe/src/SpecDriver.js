@@ -15,6 +15,21 @@ function isTestCafeSelector(selector) {
   // return !!(typeof selector === 'function' && selector.name && selector.name.includes('clientFunction'))
   return !!(selector && selector.addCustomMethods && selector.find && selector.parent)
 }
+function prepareClientFunction({clientFunction, dependencies, driver}) {
+  const executor = clientFunction(
+    () => {
+      /* eslint-disable no-undef */
+      args.forEach((arg, argIndex) => {
+        if (typeof arg === 'function') args[argIndex] = arg()
+      })
+      return script(...args)
+      /* eslint-enable */
+    },
+    {dependencies},
+  )
+  executor.with({boundTestRun: driver})
+  return executor
+}
 // end helpers
 
 async function isDriver(driver) {
@@ -35,21 +50,6 @@ async function isStaleElementError(_error) {
   // https://codecept.io/testcafe/
   // haven't found anything about it in the TestCafe docs/KB
   return false
-}
-function prepareClientFunction({clientFunction, dependencies, driver}) {
-  const executor = clientFunction(
-    () => {
-      /* eslint-disable no-undef */
-      args.forEach((arg, argIndex) => {
-        if (typeof arg === 'function') args[argIndex] = arg()
-      })
-      return script(...args)
-      /* eslint-enable */
-    },
-    {dependencies},
-  )
-  executor.with({boundTestRun: driver})
-  return executor
 }
 async function executeScript(driver, script, ...args) {
   script = TypeUtils.isString(script) ? new Function(script) : script
