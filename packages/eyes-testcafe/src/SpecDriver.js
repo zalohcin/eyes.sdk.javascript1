@@ -10,10 +10,10 @@ function prepareClientFunction({clientFunction, dependencies, driver}) {
   const executor = clientFunction(
     () => {
       /* eslint-disable no-undef */
-      args.forEach((arg, argIndex) => {
-        if (typeof arg === 'function') args[argIndex] = arg()
+      const manipulatedArgs = args.map(arg => {
+        return typeof arg === 'function' ? arg() : arg
       })
-      return script(...args)
+      return script(...manipulatedArgs)
       /* eslint-enable */
     },
     {dependencies},
