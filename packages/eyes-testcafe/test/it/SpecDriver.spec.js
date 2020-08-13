@@ -19,8 +19,8 @@ test('isSelector(Selector)', driver => {
 test('isSelector(wrong)', driver => {
   return isSelector({driver, input: {}, expected: false})
 })
-test('executeScript(string|function, ...args)', async driver => {
-  await executeScript({driver})
+test.only('executeScript(string|function, ...args)', driver => {
+  return executeScript({driver})
 })
 test.skip('isElement(Selector)', driver => {
   return isElement({driver, input: Selector('div'), expected: true})
@@ -107,12 +107,21 @@ async function executeScript({driver}) {
     "return getComputedStyle(arguments[0]).getPropertyValue('overflow')",
     Selector('html'),
   )
+  // 5. pass Selector snapshot and use
+  expected = 'visible'
+  let elSnapshot = await Selector('html')()
+  actual = await spec.executeScript(driver, "return arguments[0].style['overflow-y']", elSnapshot)
   assert.deepStrictEqual(actual, expected)
-  // 5. return and re-use "element"
+  // 6. return and re-use "element"
   expected = await Selector('h1')()
   const result = await spec.executeScript(driver, 'return arguments[0]', Selector('h1'))
   actual = await spec.executeScript(driver, 'return arguments[0]', Selector(result))
   assert.deepStrictEqual(actual.innerText, expected.innerText)
+  // 7. return mixed data-types
+  elSnapshot = await Selector('h1')()
+  expected = [0, elSnapshot]
+  actual = await spec.executeScript(driver, 'return [0, arguments[0]]', Selector('h1'))
+  assert.deepStrictEqual(actual, expected)
 }
 function mainContext({_driver}) {
   return async () => {
