@@ -77,6 +77,8 @@ async function executeScript(driver, script, ...args) {
   script = TypeUtils.isString(script) ? new Function(script) : script
   const dependencies = {script, args}
   let executor
+
+  // first pass (covers most cases)
   executor = prepareClientFunction({
     clientFunction: ClientFunction,
     dependencies: {retrieveDomNodes: false, ...dependencies},
@@ -85,6 +87,7 @@ async function executeScript(driver, script, ...args) {
   const firstResult = await executor()
   if (!firstResult || !firstResult.hasDomNodes) return firstResult
 
+  // second pass (if a DOM Node element was found, need to retrieve it with a different executor)
   executor = prepareClientFunction({
     clientFunction: Selector,
     dependencies: {retrieveDomNodes: true, ...dependencies},
@@ -92,6 +95,7 @@ async function executeScript(driver, script, ...args) {
   })
   const secondResult = await executor()
 
+  // stitch the two results together, preserving the indended result from the provided script
   if (!firstResult.filteredResult.length) return secondResult
   if (firstResult.metadata.isArray) {
     return secondResult && !secondResult.length
