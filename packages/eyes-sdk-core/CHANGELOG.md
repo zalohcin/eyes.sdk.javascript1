@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 12.1.4 - 2020/8/13
+
 - avoid starting session with missing displaySize ([Trello 1](https://trello.com/c/jppq7ILy) [Trello 2](https://trello.com/c/5zDFhiMG))
 
 ## 12.1.3 - 2020/8/12
