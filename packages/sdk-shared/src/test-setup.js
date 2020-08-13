@@ -110,11 +110,11 @@ const BROWSERS = {
   firefox: {
     capabilities: {
       browserName: 'firefox',
-      seleniumVersion: '3.141.59',
-      ...SAUCE_CREDENTIALS,
+      // seleniumVersion: '3.141.59',
+      // ...SAUCE_CREDENTIALS,
     },
-    url: SAUCE_SERVER_URL,
-    sauce: true,
+    url: 'http://localhost:4445/wd/hub',
+    // sauce: true,
   },
   chrome: {
     capabilities: {

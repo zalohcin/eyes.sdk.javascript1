@@ -87,6 +87,9 @@ It's also possible to set the API key programmatically like so:
 ```js
 eyes.setApiKey('<your API key>')
 ```
+<!--@test
+eyes.setApiKey('sdlkfjslksdlfkj')
+-->
 
 ## Usage
 
@@ -108,6 +111,9 @@ describe('My first visual test', function() {
   });
 });
 ```
+<!--@test
+
+-->
 
 ## Getting started with the API
 

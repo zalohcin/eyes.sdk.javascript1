@@ -81,7 +81,7 @@ const args = yargs
   .option('device-name', {
     describe: 'the chrome-emulation device name to render to when in vg mode',
     type: 'string',
-    choices: Object.values(DeviceName),
+    // choices: Object.values(DeviceName),
   })
   .option('screen-orientation', {
     describe: 'the device screen oriantation to render to when in chrome emulation',
