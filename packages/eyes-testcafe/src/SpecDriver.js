@@ -10,12 +10,46 @@ function prepareClientFunction({clientFunction, dependencies, driver}) {
   const executor = clientFunction(
     () => {
       /* eslint-disable no-undef */
+      const EYES_NAME_SPACE = '__EYES__APPLITOOLS__'
+      if (retrieveDomNodes) return window[EYES_NAME_SPACE].nodes
       const manipulatedArgs = args.map(arg => {
-        // TODO: fix this so it's specific to calling Selector functions
-        // e.g., isTestCafeSelector
         return typeof arg === 'function' ? arg() : arg
       })
-      return script(...manipulatedArgs)
+      const result = script(...manipulatedArgs)
+      const nodes = []
+      const filteredResult = []
+      const isDOMNode = obj => {
+        return obj instanceof window.Node
+      }
+      if (isDOMNode(result)) nodes.push(result)
+      else if (Array.isArray(result)) {
+        result.forEach(entry => {
+          if (isDOMNode(entry)) nodes.push(entry)
+          else filteredResult.push(entry)
+        })
+      } else if (typeof result === 'object') {
+        for (const [key, value] of window.Object.entries(result)) {
+          if (isDOMNode(value)) {
+            nodes.push(value)
+            filteredResult.push({[key]: {isDomNode: true}})
+          } else filteredResult.push({[key]: value})
+        }
+      }
+      if (nodes && nodes.length) {
+        if (!window[EYES_NAME_SPACE]) {
+          window[EYES_NAME_SPACE] = {}
+        }
+        window[EYES_NAME_SPACE].nodes = nodes
+        return {
+          hasDomNodes: true,
+          filteredResult,
+          metadata: {
+            isArray: Array.isArray(result),
+            type: typeof result,
+          },
+        }
+      }
+      return result
       /* eslint-enable */
     },
     {dependencies},
@@ -43,13 +77,36 @@ async function executeScript(driver, script, ...args) {
   script = TypeUtils.isString(script) ? new Function(script) : script
   const dependencies = {script, args}
   let executor
-  try {
-    executor = prepareClientFunction({clientFunction: ClientFunction, dependencies, driver})
-    return await executor()
-  } catch (error) {
-    // TODO: scope to return type error to avoid masking issues
-    executor = prepareClientFunction({clientFunction: Selector, dependencies, driver})
-    return await executor()
+  executor = prepareClientFunction({
+    clientFunction: ClientFunction,
+    dependencies: {retrieveDomNodes: false, ...dependencies},
+    driver,
+  })
+  const firstResult = await executor()
+  if (!firstResult || !firstResult.hasDomNodes) return firstResult
+
+  executor = prepareClientFunction({
+    clientFunction: Selector,
+    dependencies: {retrieveDomNodes: true, ...dependencies},
+    driver,
+  })
+  const secondResult = await executor()
+
+  if (!firstResult.filteredResult.length) return secondResult
+  if (firstResult.metadata.isArray) {
+    return secondResult && !secondResult.length
+      ? [...firstResult.filteredResult, secondResult]
+      : [...firstResult.filteredResult, ...secondResult]
+  }
+  if (firstResult.metadata.type === 'object') {
+    const result = {}
+    firstResult.filteredResult.forEach((entry, index) => {
+      for (const [key, value] of Object.entries(entry)) {
+        if (value.isDomNode) result[key] = secondResult.length ? secondResult[index] : secondResult
+        else result[key] = value
+      }
+    })
+    return result
   }
 }
 async function mainContext(driver) {
