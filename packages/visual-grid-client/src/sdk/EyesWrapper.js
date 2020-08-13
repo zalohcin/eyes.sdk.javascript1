@@ -27,7 +27,7 @@ class EyesWrapper extends EyesBase {
   }
 
   async ensureAborted() {
-    if (!this.getRunningSession()) {
+    if (!this.getRunningSession() && this._viewportSizeHandler.get()) {
       const [err] = await presult(this._ensureRunningSession())
       if (err) {
         this._logger.log(

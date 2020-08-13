@@ -3,6 +3,13 @@
 ## Unreleased
 
 
+## 3.13.3 - 2020/8/12
+
+- updated to @applitools/eyes-sdk-core@12.1.2 (from 12.1.0)
+- updated to @applitools/visual-grid-client@14.7.3 (from 14.7.1)
+- updated to @applitools/eyes-sdk-core@12.1.3 (from 12.1.2)
+- updated to @applitools/visual-grid-client@14.7.4 (from 14.7.3)
+
 ## 3.13.2 - 2020/8/9
 
 - remove `visualGridOptions` from readme
