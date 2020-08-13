@@ -171,8 +171,8 @@ class Region {
     } else {
       ArgumentGuard.isNumber(left, 'left')
       ArgumentGuard.isNumber(top, 'top')
-      ArgumentGuard.isNumber(width, 'width')
-      ArgumentGuard.isNumber(height, 'height')
+      ArgumentGuard.greaterThanOrEqualToZero(width, 'width')
+      ArgumentGuard.greaterThanOrEqualToZero(height, 'height')
 
       this._left = left
       this._top = top

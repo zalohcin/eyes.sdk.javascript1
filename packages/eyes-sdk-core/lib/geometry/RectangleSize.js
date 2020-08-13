@@ -27,8 +27,8 @@ class RectangleSize {
     }
 
     const {width, height} = varArg1
-    ArgumentGuard.isNumber(width, 'width')
-    ArgumentGuard.isNumber(height, 'height')
+    ArgumentGuard.greaterThanOrEqualToZero(width, 'width')
+    ArgumentGuard.greaterThanOrEqualToZero(height, 'height')
 
     this._width = width
     this._height = height
