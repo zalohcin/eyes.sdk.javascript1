@@ -125,13 +125,20 @@ async function executeScript({driver}) {
   actual = await spec.executeScript(driver, 'return arguments[0]', Selector(result))
   assert.deepStrictEqual(actual.innerText, expected.innerText)
 
-  // 7. return mixed data-types (Array)
+  // 7. return and re-use "element" (when the element changes)
+  expected = 'blah'
+  result = await spec.executeScript(driver, 'return arguments[0]', Selector('h1'))
+  await spec.executeScript(driver, "document.querySelector('h1').textContent = 'blah'")
+  actual = await spec.executeScript(driver, 'return arguments[0]', Selector(result))
+  assert.deepStrictEqual(actual.innerText, expected)
+
+  // 8. return mixed data-types (Array)
   expected = 2
   result = await spec.executeScript(driver, 'return [0, arguments[0]]', Selector('h1'))
   actual = result.length
   assert.deepStrictEqual(actual, expected)
 
-  // 8. return mixed data-types (Object)
+  // 9. return mixed data-types (Object)
   expected = 2
   result = await spec.executeScript(
     driver,
