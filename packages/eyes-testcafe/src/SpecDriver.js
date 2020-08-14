@@ -17,22 +17,26 @@ function prepareClientFunction({clientFunction, dependencies, driver}) {
       })
       const result = script(...manipulatedArgs)
       const nodes = []
-      const filteredResult = []
+      let filteredResult
       const isDOMNode = obj => {
         return obj instanceof window.Node
       }
-      if (isDOMNode(result)) nodes.push(result)
-      else if (Array.isArray(result)) {
-        result.forEach(entry => {
-          if (isDOMNode(entry)) nodes.push(entry)
-          else filteredResult.push(entry)
+      if (isDOMNode(result)) {
+        nodes.push(result)
+      } else if (Array.isArray(result)) {
+        filteredResult = result.map(entry => {
+          if (isDOMNode(entry)) {
+            nodes.push(entry)
+            return {isDomNode: true}
+          } else return entry
         })
       } else if (typeof result === 'object') {
+        filteredResult = {}
         for (const [key, value] of window.Object.entries(result)) {
           if (isDOMNode(value)) {
             nodes.push(value)
-            filteredResult.push({[key]: {isDomNode: true}})
-          } else filteredResult.push({[key]: value})
+            filteredResult[key] = {isDomNode: true}
+          } else filteredResult[key] = value
         }
       }
       if (nodes && nodes.length) {
@@ -41,15 +45,11 @@ function prepareClientFunction({clientFunction, dependencies, driver}) {
         }
         window[EYES_NAME_SPACE].nodes = nodes
         return {
+          result: filteredResult,
           hasDomNodes: true,
-          filteredResult,
-          metadata: {
-            isArray: Array.isArray(result),
-            type: typeof result,
-          },
         }
       }
-      return result
+      return {result, hasDomNodes: false}
       /* eslint-enable */
     },
     {dependencies},
@@ -84,8 +84,8 @@ async function executeScript(driver, script, ...args) {
     dependencies: {retrieveDomNodes: false, ...dependencies},
     driver,
   })
-  const firstResult = await executor()
-  if (!firstResult || !firstResult.hasDomNodes) return firstResult
+  const {result, hasDomNodes} = await executor()
+  if (!hasDomNodes) return result
 
   // second pass (if a DOM Node element was found, need to retrieve it with a different executor)
   executor = prepareClientFunction({
@@ -93,24 +93,26 @@ async function executeScript(driver, script, ...args) {
     dependencies: {retrieveDomNodes: true, ...dependencies},
     driver,
   })
-  const secondResult = await executor()
+  const domNodes = await executor()
 
   // stitch the two results together, preserving the indended result from the provided script
-  if (!firstResult.filteredResult.length) return secondResult
-  if (firstResult.metadata.isArray) {
-    return secondResult && !secondResult.length
-      ? [...firstResult.filteredResult, secondResult]
-      : [...firstResult.filteredResult, ...secondResult]
-  }
-  if (firstResult.metadata.type === 'object') {
-    const result = {}
-    firstResult.filteredResult.forEach((entry, index) => {
-      for (const [key, value] of Object.entries(entry)) {
-        if (value.isDomNode) result[key] = secondResult.length ? secondResult[index] : secondResult
-        else result[key] = value
-      }
+  if (!result || !Object.keys(result).length) return domNodes
+  if (Array.isArray(result)) {
+    return result.map((entry, index) => {
+      if (entry.isDomNode) {
+        return domNodes.length ? domNodes[index] : domNodes
+      } else return entry
     })
-    return result
+  }
+  if (typeof result === 'object') {
+    const r = {}
+    Object.entries(result).forEach((entry, index) => {
+      const key = entry[0]
+      const value = entry[1]
+      if (value.isDomNode) r[key] = domNodes.length ? domNodes[index] : domNodes
+      else r[key] = value
+    })
+    return r
   }
 }
 async function mainContext(driver) {
