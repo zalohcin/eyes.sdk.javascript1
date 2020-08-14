@@ -85,11 +85,21 @@ function isSelector(selector) {
   return TypeUtils.isString(selector) || isTestCafeSelector(selector)
 }
 async function isElement(element) {
-  debugger
   return typeof element === 'object' && !!element.nodeType
 }
-async function isEqualElements(_driver, _element1, _element2) {
-  // TODO
+function isEqualElements(_driver, element1, element2) {
+  if (!element1 || !element2) return false
+  // NOTE:
+  // It's unclear of a better way to determine element identity.
+  // Also, when looking up the same element twice, the second lookup does not
+  // contain the `propType` property -- presumably a caching optimization.
+  // To compensate we create normalized copies of the elements and do a
+  // stringified comparison.
+  const elements = [{...element1}, {...element2}].map(el => {
+    delete el.propType
+    return el
+  })
+  return JSON.stringify(elements[0]) === JSON.stringify(elements[1])
 }
 async function executeScript(driver, script, ...args) {
   script = TypeUtils.isString(script) ? new Function(script) : script

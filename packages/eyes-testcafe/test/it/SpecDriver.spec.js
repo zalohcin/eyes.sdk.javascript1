@@ -52,16 +52,24 @@ test('findElements(DOM Node snapshot)', async driver => {
 test('findElements(non-existent)', async driver => {
   findElements({driver, input: Selector('non-existent'), expected: false})
 })
-//test.skip(
-//  'isEqualElements(element1, element2)',
-//  isEqualElements({
-//    input: async () => ({
-//      //element1: await driver.findElement(By.css('div')),
-//      //element2: await driver.findElement(By.css('h1')),
-//    }),
-//    expected: false,
-//  }),
-//)
+test('isEqualElements(element, element)', () => {
+  return isEqualElements({
+    input: async () => ({
+      element1: await Selector('h1')(),
+      element2: await Selector('h1')(),
+    }),
+    expected: true,
+  })
+})
+test('isEqualElements(element1, element2)', () => {
+  return isEqualElements({
+    input: async () => ({
+      element1: await Selector('div')(),
+      element2: await Selector('h1')(),
+    }),
+    expected: false,
+  })
+})
 test.skip('mainContext()', async driver => {
   mainContext({driver})
 })
@@ -94,11 +102,11 @@ function isSelector({_driver, input, expected}) {
   const isSelector = spec.isSelector(input)
   assert.strictEqual(isSelector, expected)
 }
-//async function isEqualElements({driver, input, expected}) {
-//  const {element1, element2} = await input()
-//  const result = await spec.isEqualElements(driver, element1, element2)
-//  assert.deepStrictEqual(result, expected)
-//}
+async function isEqualElements({driver, input, expected}) {
+  const {element1, element2} = await input()
+  const result = spec.isEqualElements(driver, element1, element2)
+  assert.deepStrictEqual(result, expected)
+}
 async function executeScript({driver}) {
   let actual
   let expected
