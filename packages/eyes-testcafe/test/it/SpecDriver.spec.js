@@ -88,6 +88,7 @@ test.skip('getUrl()', async driver => {
 test.skip('visit()', async driver => {
   visit({driver})
 })
+test.skip('takeScreenshot()', async _driver => {})
 
 async function isDriver({driver, input, expected}) {
   const isDriver = await spec.isDriver(input || driver)
