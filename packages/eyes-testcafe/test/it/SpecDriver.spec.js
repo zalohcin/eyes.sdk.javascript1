@@ -19,33 +19,49 @@ test('isSelector(Selector)', driver => {
 test('isSelector(wrong)', driver => {
   return isSelector({driver, input: {}, expected: false})
 })
-test.only('executeScript(string|function, ...args)', driver => {
+test('executeScript(string|function, ...args)', driver => {
   return executeScript({driver})
 })
-test.skip('isElement(Selector)', driver => {
+test('isElement(Selector)', driver => {
   return isElement({driver, input: Selector('div'), expected: true})
 })
-test.skip('isElement(wrong)', async driver => {
-  isElement({driver, input: () => ({}), expected: false})
+test('isElement(wrong)', driver => {
+  return isElement({driver, input: () => ({}), expected: false})
 })
-test.skip('findElement(string)', async driver => {
-  findElement({driver, input: '#overflowing-div'})
+test('findElement(string)', driver => {
+  return findElement({driver, input: '#overflowing-div'})
 })
-test.skip('findElement(Selector)', async driver => {
-  findElement({driver, input: Selector('#overflowing-div')})
+test('findElement(Selector)', driver => {
+  return findElement({driver, input: Selector('#overflowing-div')})
 })
-test.skip('findElements(string)', async driver => {
-  findElements({driver, input: 'div'})
+test('findElement(DOM Node snapshot)', async driver => {
+  const elSnapshot = await Selector('#overflowing-div')
+  findElement({driver, input: elSnapshot})
 })
-test.skip('findElements(Selector)', async driver => {
-  findElements({driver, input: Selector('div')})
+test.skip('findElement(non-existent)', _driver => {})
+test('findElements(string)', driver => {
+  return findElements({driver, input: 'div'})
 })
-test.skip('findElement(non-existent)', async driver => {
-  findElement({driver, input: Selector('non-existent'), expected: null})
+test('findElements(Selector)', driver => {
+  return findElements({driver, input: Selector('div')})
 })
-test.skip('findElements(non-existent)', async driver => {
-  findElements({driver, input: Selector('non-existent'), expected: []})
+test('findElements(DOM Node snapshot)', async driver => {
+  const elSnapshot = await Selector('div')()
+  findElements({driver, input: elSnapshot})
 })
+test('findElements(non-existent)', async driver => {
+  findElements({driver, input: Selector('non-existent'), expected: false})
+})
+//test.skip(
+//  'isEqualElements(element1, element2)',
+//  isEqualElements({
+//    input: async () => ({
+//      //element1: await driver.findElement(By.css('div')),
+//      //element2: await driver.findElement(By.css('h1')),
+//    }),
+//    expected: false,
+//  }),
+//)
 test.skip('mainContext()', async driver => {
   mainContext({driver})
 })
@@ -78,6 +94,11 @@ function isSelector({_driver, input, expected}) {
   const isSelector = spec.isSelector(input)
   assert.strictEqual(isSelector, expected)
 }
+//async function isEqualElements({driver, input, expected}) {
+//  const {element1, element2} = await input()
+//  const result = await spec.isEqualElements(driver, element1, element2)
+//  assert.deepStrictEqual(result, expected)
+//}
 async function executeScript({driver}) {
   let actual
   let expected
@@ -148,6 +169,15 @@ async function executeScript({driver}) {
   actual = Object.entries(result).length
   assert.deepStrictEqual(actual, expected)
 }
+function findElement({driver, input} = {}) {
+  const el = spec.findElement(driver, input)
+  isSelector({input: el, expected: true})
+}
+// HERE
+async function findElements({driver, input, expected = true} = {}) {
+  const elements = await spec.findElements(driver, input)
+  assert.deepStrictEqual(!!elements.length, expected)
+}
 function mainContext({_driver}) {
   return async () => {
     //try {
@@ -202,25 +232,6 @@ function childContext({_driver}) {
     //      .frame(null)
     //      .catch(() => null)
     //  }
-  }
-}
-function findElement({_driver, _input, _expected} = {}) {
-  return async () => {
-    //const result = expected !== undefined ? expected : await driver.findElement(input)
-    //const element = await spec.findElement(driver, input)
-    //if (element !== result) {
-    //  assert.ok(await spec.isEqualElements(driver, element, result))
-    //}
-  }
-}
-function findElements({_driver, _input, _expected} = {}) {
-  return async () => {
-    //const result = expected !== undefined ? expected : await driver.findElements(input)
-    //const elements = await spec.findElements(driver, input)
-    //assert.strictEqual(elements.length, result.length)
-    //for (const [index, element] of elements.entries()) {
-    //  assert.ok(await spec.isEqualElements(driver, element, result[index]))
-    //}
   }
 }
 function getTitle({_driver}) {

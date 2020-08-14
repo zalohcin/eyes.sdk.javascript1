@@ -2,6 +2,19 @@ const {TypeUtils} = require('@applitools/eyes-sdk-core')
 const {ClientFunction, Selector} = require('testcafe')
 
 // helpers
+function extractSelectorString(selector) {
+  // NOTE:
+  // We inspect the internals of the function and find/return the selector string used to create it.
+  // It's possible that a DOM Node snapshot was passed in, if so, we wrap it in a Selector so we can
+  // use this approach.
+  selector = isTestCafeSelector(selector) ? selector : Selector(selector)
+  const util = require('util')
+  const internals = util.inspect(selector, true, 2).split(',') // inspect(object, showHidden, depth)
+  const filteredInternals = internals.filter(line => line.includes('Selector('))
+  const match = !!filteredInternals.length && filteredInternals[0].match(/\(['"](.*)['"]\)/)
+  if (match && match.length) return match[1]
+  else throw new Error('Unable to determine selector')
+}
 function isTestCafeSelector(selector) {
   return !!(selector && selector.addCustomMethods && selector.find && selector.parent)
 }
@@ -72,7 +85,8 @@ function isSelector(selector) {
   return TypeUtils.isString(selector) || isTestCafeSelector(selector)
 }
 async function isElement(element) {
-  return typeof element === 'object' && !!element.boundingClientRect
+  debugger
+  return typeof element === 'object' && !!element.nodeType
 }
 async function isEqualElements(_driver, _element1, _element2) {
   // TODO
@@ -128,19 +142,20 @@ async function parentContext(driver) {
 async function childContext(_driver, element) {
   return element.child()
 }
-async function findElement(_driver, selector) {
-  return await selector()
+function findElement(_driver, selector) {
+  return Selector(selector)
 }
 async function findElements(driver, selector) {
-  const executor = Selector(
-    () => {
+  selector = TypeUtils.isString(selector) ? selector : extractSelectorString(selector)
+  const result = await executeScript(
+    driver,
+    function() {
       // eslint-disable-next-line no-undef
-      return document.querySelectorAll(selector)
+      return document.querySelectorAll(arguments[0])
     },
-    {dependencies: selector},
+    selector,
   )
-  executor.with({boundTestRun: driver})
-  return await executor()
+  return result
 }
 async function getElementRect(_driver, _element) {}
 async function setWindowRect(driver, rect = {}) {
