@@ -13,7 +13,9 @@ function prepareClientFunction({clientFunction, dependencies, driver}) {
       const EYES_NAME_SPACE = '__EYES__APPLITOOLS__'
       if (retrieveDomNodes) return window[EYES_NAME_SPACE].nodes
       const manipulatedArgs = args.map(arg => {
-        return typeof arg === 'function' ? arg() : arg
+        return typeof arg === 'function' && arg.toString().includes('testCafeSelectorFilter')
+          ? arg()
+          : arg
       })
       const result = script(...manipulatedArgs)
       const nodes = []
