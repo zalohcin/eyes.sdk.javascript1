@@ -3,21 +3,26 @@ const {ClientFunction, Selector} = require('testcafe')
 
 // helpers
 function isTestCafeSelector(selector) {
-  // return !!(typeof selector === 'function' && selector.name && selector.name.includes('clientFunction'))
   return !!(selector && selector.addCustomMethods && selector.find && selector.parent)
 }
+function prepareArgsFunctionString(args) {
+  return `return [
+    ${args
+      .map((arg, index) => {
+        return isTestCafeSelector(arg) ? 'arguments[' + index + ']()' : 'arguments[' + index + ']'
+      })
+      .join(',\n    ')}
+  ]`
+}
 function prepareClientFunction({clientFunction, dependencies, driver}) {
+  const prepareArgs = new Function(prepareArgsFunctionString(dependencies.args))
   const executor = clientFunction(
     () => {
       /* eslint-disable no-undef */
       const EYES_NAME_SPACE = '__EYES__APPLITOOLS__'
       if (retrieveDomNodes) return window[EYES_NAME_SPACE].nodes
-      const manipulatedArgs = args.map(arg => {
-        return typeof arg === 'function' && arg.toString().includes('testCafeSelectorFilter')
-          ? arg()
-          : arg
-      })
-      const result = script(...manipulatedArgs)
+      const modifiedArgs = prepareArgs(...args)
+      const result = script(...modifiedArgs)
       const nodes = []
       let filteredResult
       const isDOMNode = obj => {
@@ -54,14 +59,12 @@ function prepareClientFunction({clientFunction, dependencies, driver}) {
       return {result, hasDomNodes: false}
       /* eslint-enable */
     },
-    {dependencies},
+    {dependencies: {prepareArgs, ...dependencies}},
   )
   executor.with({boundTestRun: driver})
   return executor
 }
 // end helpers
-
-// TODO: add element comparison function (important)
 
 async function isDriver(driver) {
   return driver.constructor.name === 'TestController'
