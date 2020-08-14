@@ -21,8 +21,7 @@ function prepareClientFunction({clientFunction, dependencies, driver}) {
       /* eslint-disable no-undef */
       const EYES_NAME_SPACE = '__EYES__APPLITOOLS__'
       if (retrieveDomNodes) return window[EYES_NAME_SPACE].nodes
-      const modifiedArgs = prepareArgs(...args)
-      const result = script(...modifiedArgs)
+      const result = script(...prepareArgs(...args))
       const nodes = []
       let filteredResult
       const isDOMNode = obj => {
