@@ -146,8 +146,16 @@ async function executeScript(driver, script, ...args) {
 async function mainContext(driver) {
   await driver.switchToMainWindow()
 }
-async function parentContext(driver) {
-  await driver.switchToParentWindow()
+async function parentContext(_driver) {
+  // TBD
+  // https://stackoverflow.com/questions/63453228/how-to-traverse-a-nested-frame-tree-by-its-hierarchy-in-testcafe
+  // https://github.com/DevExpress/testcafe/issues/5429
+  //
+  // scratch:
+  //  const currentContext = await executeScript(driver, 'return document')
+  //  if (!currentContext.selector) throw new Error('Unable to switch to parent context')
+  //  const parentContext = await currentContext.selector.parent(0)()
+  //  await driver.switchToIframe(parentContext)
 }
 async function childContext(_driver, element) {
   return element.child()
@@ -175,13 +183,10 @@ async function setWindowRect(driver, rect = {}) {
   await driver.resizeWindow(width, height)
 }
 async function getTitle(_driver) {
-  // TODO:
-  // accessible through a ClientFunction
+  return await Selector('title').innerText
 }
-async function getUrl(_driver) {
-  // TODO:
-  // accessible through a ClientFunction
-  // https://testcafe-discuss.devexpress.com/t/how-do-you-validate-url-in-testcafe/640
+async function getUrl(driver) {
+  return await executeScript(driver, 'return document.location.href')
 }
 async function visit(driver, url) {
   await driver.navigateTo(url)
