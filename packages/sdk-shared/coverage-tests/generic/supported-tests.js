@@ -1,7 +1,26 @@
+module.exports = {
+  // #region CHECK WINDOW
+
+  TestCheckWindow: [
+    {config: {vg: true}, disabled: true},
+    {config: {stitchMode: 'CSS'}},
+    {config: {stitchMode: 'Scroll'}},
+  ],
+
+  // #endregion
+
+  // #region CUSTOM
+
+  TestAcmeLogin: [
+    {config: {vg: true}},
+    {config: {stitchMode: 'CSS'}},
+    {config: {stitchMode: 'Scroll'}},
+  ],
+
+  // #endregion
+}
+
 module.exports = [
-  {name: 'TestAcmeLogin', executionMode: {isVisualGrid: true}},
-  {name: 'TestAcmeLogin', executionMode: {isCssStitching: true}},
-  {name: 'TestAcmeLogin', executionMode: {isScrollStitching: true}},
   {name: 'TestCheckElementFully_Fluent', executionMode: {isVisualGrid: true}},
   {name: 'TestCheckElementFully_Fluent', executionMode: {isCssStitching: true}},
   {name: 'TestCheckElementFully_Fluent', executionMode: {isScrollStitching: true}},
@@ -201,9 +220,7 @@ module.exports = [
   {name: 'TestCheckScrollableModal', executionMode: {isVisualGrid: true}, disabled: true},
   {name: 'TestCheckScrollableModal', executionMode: {isCssStitching: true}, disabled: true},
   {name: 'TestCheckScrollableModal', executionMode: {isScrollStitching: true}, disabled: true},
-  {name: 'TestCheckWindow', executionMode: {isVisualGrid: true}, disabled: true},
-  {name: 'TestCheckWindow', executionMode: {isCssStitching: true}},
-  {name: 'TestCheckWindow', executionMode: {isScrollStitching: true}},
+
   {name: 'TestCheckWindowAfterScroll', executionMode: {isVisualGrid: true}},
   {name: 'TestCheckWindowAfterScroll', executionMode: {isCssStitching: true}},
   {name: 'TestCheckWindowAfterScroll', executionMode: {isScrollStitching: true}},

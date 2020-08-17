@@ -73,7 +73,7 @@ const TypeUtils = require('../utils/TypeUtils')
  * @prop {({frame: FrameReference<TElement, TSelector>, scrollRootElement?: ElementReference<TElement, TSelector>}|FrameReference<TElement, TSelector>)[]} [frames]
  * @prop {ElementReference<TElement, TSelector>} [scrollRootElement]
  * @prop {RegionReference<TElement, TSelector>[]} [ignoreRegions]
- * @prop {RegionReference<TElement, TSelector>[]} [layoutRegion]
+ * @prop {RegionReference<TElement, TSelector>[]} [layoutRegions]
  * @prop {RegionReference<TElement, TSelector>[]} [strictRegions]
  * @prop {RegionReference<TElement, TSelector>[]} [contentRegions]
  * @prop {(FloatingRegionReference<TElement, TSelector>|RegionReference<TElement, TSelector>)[]} [floatingRegions]

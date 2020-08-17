@@ -33,7 +33,7 @@ function serialize(data) {
 }
 
 function makeSpecEmitter(options) {
-  const {addSyntax, addCommand, addHook, withScope, getOutput} = makeEmitTracker()
+  const {addSyntax, addCommand, addHook, withScope, withHistory, getOutput} = makeEmitTracker()
 
   addSyntax('var', ({name, value}) => `const ${name} = ${value}`)
   addSyntax('getter', ({target, key}) => `${target}['${key}']`)
@@ -63,7 +63,7 @@ function makeSpecEmitter(options) {
 
   addHook('afterEach', js`await spec.cleanup(driver)`)
 
-  const driver = {
+  const driver = withHistory('driver', {
     constructor: {
       isStaleElementError(error) {
         return addCommand(js`spec.isStaleElementError(${error})`)
@@ -106,9 +106,9 @@ function makeSpecEmitter(options) {
     type(element, keys) {
       addCommand(js`await spec.type(driver, ${element}, ${keys})`)
     },
-  }
+  })
 
-  const eyes = {
+  const eyes = withHistory('eyes', {
     constructor: {
       setViewportSize(viewportSize) {
         addCommand(js`await eyes.constructor.setViewportSize(driver, ${viewportSize})`)
@@ -129,63 +129,40 @@ function makeSpecEmitter(options) {
           )`,
       )
     },
-    check(checkSettings) {
-      return addCommand(js`await eyes.check(${checkSettings})`)
-    },
-    checkWindow(tag, matchTimeout, stitchContent) {
-      return addCommand(js`await eyes.checkWindow(${tag}, ${matchTimeout}, ${stitchContent})`)
-    },
-    checkFrame(element, matchTimeout, tag) {
-      return addCommand(js`await eyes.checkFrame(
-        ${element},
-        ${matchTimeout},
-        ${tag},
-      )`)
-    },
-    checkElement(element, matchTimeout, tag) {
-      return addCommand(js`await eyes.checkElement(
-        ${element},
-        ${matchTimeout},
-        ${tag},
-      )`)
-    },
-    checkElementBy(selector, matchTimeout, tag) {
-      return addCommand(js`await eyes.checkElementBy(
-        ${selector},
-        ${matchTimeout},
-        ${tag},
-      )`)
-    },
-    checkRegion(region, matchTimeout, tag) {
-      return addCommand(js`await eyes.checkRegion(
-        ${region},
-        ${tag},
-        ${matchTimeout},
-      )`)
-    },
-    checkRegionByElement(element, matchTimeout, tag) {
-      return addCommand(js`await eyes.checkRegionByElement(
-        ${element},
-        ${tag},
-        ${matchTimeout},
-      )`)
-    },
-    checkRegionBy(selector, tag, matchTimeout, stitchContent) {
-      return addCommand(js`await eyes.checkRegionByElement(
-        ${selector},
-        ${tag},
-        ${matchTimeout},
-        ${stitchContent},
-      )`)
-    },
-    checkRegionInFrame(frameReference, selector, matchTimeout, tag, stitchContent) {
-      return addCommand(js`await eyes.checkRegionInFrame(
-        ${frameReference},
-        ${selector},
-        ${matchTimeout},
-        ${tag},
-        ${stitchContent},
-      )`)
+    check({isClassic, ...checkSettings} = {}) {
+      if (!isClassic) {
+        return addCommand(js`await eyes.check(${checkSettings})`)
+      } else if (checkSettings.region) {
+        if (checkSettings.frames && checkSettings.frames.length > 0) {
+          const [frameReference] = checkSettings.frames
+          return addCommand(js`await eyes.checkRegionInFrame(
+            ${'frame' in frameReference ? frameReference.frame : frameReference},
+            ${checkSettings.region},
+            ${checkSettings.timeout},
+            ${checkSettings.name},
+            ${checkSettings.isFully},
+          )`)
+        }
+        return addCommand(js`await eyes.checkRegionBy(
+          ${checkSettings.region},
+          ${checkSettings.name},
+          ${checkSettings.timeout},
+          ${checkSettings.isFully},
+        )`)
+      } else if (checkSettings.frames && checkSettings.frames.length > 0) {
+        const [frameReference] = checkSettings.frames
+        return addCommand(js`await eyes.checkFrame(
+          ${'frame' in frameReference ? frameReference.frame : frameReference},
+          ${checkSettings.timeout},
+          ${checkSettings.name},
+        )`)
+      } else {
+        return addCommand(js`await eyes.checkWindow(
+          ${checkSettings.name},
+          ${checkSettings.timeout},
+          ${checkSettings.isFully}
+        )`)
+      }
     },
     close(throwEx) {
       return addCommand(js`await eyes.close(${throwEx})`)
@@ -199,9 +176,9 @@ function makeSpecEmitter(options) {
     locate(visualLocatorSettings) {
       return addCommand(js`await eyes.locate(${visualLocatorSettings})`)
     },
-  }
+  })
 
-  const assert = {
+  const assert = withHistory('assert', {
     strictEqual(actual, expected, message) {
       addCommand(js`assert.strictEqual(${actual}, ${expected}, ${message})`)
     },
@@ -234,7 +211,7 @@ function makeSpecEmitter(options) {
       }
       addCommand(command)
     },
-  }
+  })
 
   return {driver, eyes, assert, tracker: {getOutput}}
 }

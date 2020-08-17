@@ -1,4 +1,5 @@
 const {getNameFromObject} = require('../common-util')
+const {parseTest} = require('./parser')
 
 function convertExecutionModeToSuffix(executionMode) {
   if (executionMode.useStrictName) return ''
@@ -46,12 +47,16 @@ function makeEmitTests(initializeSdkImplementation, coverageTests) {
       // test
       coverageTestFunc(sdkImplementation)
       // store
-      output.push({
+      const test = {
         name: baselineTestName,
         meta,
         disabled: !all && supportedTest.disabled,
         ...sdkImplementation.tracker.getOutput(),
-      })
+      }
+      output.push(test)
+      console.log(baselineTestName)
+      parseTest(test)
+      console.log('\n')
     })
     return output
   }

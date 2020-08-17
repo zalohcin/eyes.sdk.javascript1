@@ -23,15 +23,29 @@ module.exports = function() {
   })
   const hooks = {deps: [], vars: [], beforeEach: [], afterEach: []}
   const commands = []
+  const history = []
 
   return {
     addSyntax,
+    withHistory,
     withScope,
     addCommand,
     storeCommand: addCommand,
     addHook,
     storeHook: addHook,
     getOutput,
+  }
+
+  function withHistory(name, commands) {
+    return new Proxy(commands, {
+      get(target, key) {
+        return withHistory(`${name}.${key}`, Reflect.get(target, key))
+      },
+      apply(target, thisArg, args) {
+        history.push({name, args})
+        return Reflect.apply(target, thisArg, args)
+      },
+    })
   }
 
   function withScope(logic, scope = []) {
@@ -113,6 +127,6 @@ module.exports = function() {
   }
 
   function getOutput() {
-    return {hooks, commands}
+    return {hooks, commands, history}
   }
 }
