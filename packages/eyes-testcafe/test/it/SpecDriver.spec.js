@@ -98,7 +98,9 @@ test('findElement(DOM Node snapshot)', async driver => {
   const elSnapshot = await Selector('#overflowing-div')
   findElement({driver, input: elSnapshot})
 })
-test.skip('findElement(non-existent)', _driver => {})
+test('findElement(non-existent)', driver => {
+  return findElement({driver, input: Selector('non-existent'), expected: false})
+})
 test('findElements(string)', driver => {
   return findElements({driver, input: 'div'})
 })
@@ -130,8 +132,8 @@ test('isEqualElements(element1, element2)', () => {
     expected: false,
   })
 })
-test.skip('mainContext()', async driver => {
-  mainContext({driver})
+test.only('mainContext()', driver => {
+  return mainContext({driver})
 })
 test.skip('parentContext()', async driver => {
   parentContext({driver})
@@ -175,32 +177,26 @@ async function executeScript({driver, script, args = [], expected}) {
       : await spec.executeScript(driver, script, args)
   assert.deepStrictEqual(actual, expected)
 }
-function findElement({driver, input} = {}) {
-  const el = spec.findElement(driver, input)
-  isSelector({input: el, expected: true})
+async function findElement({driver, input, expected = true} = {}) {
+  const el = await spec.findElement(driver, input)
+  isSelector({input: el, expected})
 }
-// HERE
 async function findElements({driver, input, expected = true} = {}) {
   const elements = await spec.findElements(driver, input)
   assert.deepStrictEqual(!!elements.length, expected)
 }
-function mainContext({_driver}) {
-  return async () => {
-    //try {
-    //  const mainDocument = await driver.findElement(By.css('html'))
-    //  await driver.switchTo().frame(await driver.findElement(By.css('[name="frame1"]')))
-    //  await driver.switchTo().frame(await driver.findElement(By.css('[name="frame1-1"]')))
-    //  const frameDocument = await driver.findElement(By.css('html'))
-    //  assert.ok(!(await spec.isEqualElements(driver, mainDocument, frameDocument)))
-    //  await spec.mainContext(driver)
-    //  const resultDocument = await driver.findElement(By.css('html'))
-    //  assert.ok(await spec.isEqualElements(driver, resultDocument, mainDocument))
-    //} finally {
-    //  await driver
-    //    .switchTo()
-    //    .defaultContent()
-    //    .catch(() => null)
-    //}
+async function mainContext({driver}) {
+  try {
+    const mainDocument = await Selector('html')()
+    await driver.switchToIframe('[name="frame1"]')
+    await driver.switchToIframe('[name="frame1-1"]')
+    const frameDocument = await Selector('html')()
+    assert.ok(!spec.isEqualElements(driver, mainDocument, frameDocument))
+    await spec.mainContext(driver)
+    const resultDocument = await Selector('html')()
+    assert.ok(spec.isEqualElements(driver, resultDocument, mainDocument))
+  } finally {
+    driver.switchToMainWindow().catch(() => null)
   }
 }
 function parentContext({_driver}) {

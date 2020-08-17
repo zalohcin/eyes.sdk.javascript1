@@ -152,8 +152,10 @@ async function parentContext(driver) {
 async function childContext(_driver, element) {
   return element.child()
 }
-function findElement(_driver, selector) {
-  return Selector(selector)
+async function findElement(_driver, selector) {
+  if (TypeUtils.isString(selector)) return Selector(selector)
+  const elSnapshot = await selector()
+  return elSnapshot ? elSnapshot.selector : undefined
 }
 async function findElements(driver, selector) {
   selector = TypeUtils.isString(selector) ? selector : extractSelectorString(selector)
