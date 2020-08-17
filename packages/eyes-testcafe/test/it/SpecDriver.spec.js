@@ -19,8 +19,68 @@ test('isSelector(Selector)', driver => {
 test('isSelector(wrong)', driver => {
   return isSelector({driver, input: {}, expected: false})
 })
-test('executeScript(string|function, ...args)', driver => {
-  return executeScript({driver})
+test('executeScript(string)', driver => {
+  return executeScript({driver, script: 'return 4', expected: 4})
+})
+test('executeScript(string, ...args)', driver => {
+  return executeScript({
+    driver,
+    script: 'return arguments[0] + arguments[1]',
+    args: [4, 5],
+    expected: 9,
+  })
+})
+test('executeScript(function, ...args)', driver => {
+  const script = function() {
+    return arguments[0] + arguments[1]
+  }
+  return executeScript({driver, script, args: [4, 5], expected: 9})
+})
+test('executeScript w/ Selector', driver => {
+  return executeScript({
+    driver,
+    script: "return getComputedStyle(arguments[0]).getPropertyValue('overflow')",
+    args: Selector('html'),
+    expected: 'visible',
+  })
+})
+test('executeScript w/ DOM Node Snapshot', async driver => {
+  const elSnapshot = await Selector('html')()
+  return executeScript({
+    driver,
+    script: "return arguments[0].style['overflow-y']",
+    args: elSnapshot,
+    expected: 'visible',
+  })
+})
+test('executeScript re-use returned element', async driver => {
+  const expected = await Selector('h1')()
+  const result = await spec.executeScript(driver, 'return arguments[0]', Selector('h1'))
+  const actual = await spec.executeScript(driver, 'return arguments[0]', Selector(result))
+  assert.deepStrictEqual(actual.innerText, expected.innerText)
+})
+test('executeScript re-use returned element (when the element changes)', async driver => {
+  const expected = 'blah'
+  const result = await spec.executeScript(driver, 'return arguments[0]', Selector('h1'))
+  await spec.executeScript(driver, "document.querySelector('h1').textContent = 'blah'")
+  const actual = await spec.executeScript(driver, 'return arguments[0]', Selector(result))
+  assert.deepStrictEqual(actual.innerText, expected)
+})
+test('executeScript return mixed data-types (Array)', async driver => {
+  const expected = 2
+  const result = await spec.executeScript(driver, 'return [0, arguments[0]]', Selector('h1'))
+  const actual = result.length
+  assert.deepStrictEqual(actual, expected)
+})
+test('executeScript return mixed data-types (Object)', async driver => {
+  const expected = 2
+  const result = await spec.executeScript(
+    driver,
+    "return {element: arguments[0], blah: 'blah'}",
+    Selector('h1'),
+  )
+  const actual = Object.entries(result).length
+  assert.deepStrictEqual(actual, expected)
 })
 test('isElement(Selector)', driver => {
   return isElement({driver, input: Selector('div'), expected: true})
@@ -108,74 +168,11 @@ async function isEqualElements({driver, input, expected}) {
   const result = spec.isEqualElements(driver, element1, element2)
   assert.deepStrictEqual(result, expected)
 }
-async function executeScript({driver}) {
-  let actual
-  let expected
-  let elSnapshot
-  let result
-  // 1. simple (string)
-  expected = 4
-  actual = await spec.executeScript(driver, 'return 4')
-  assert.deepStrictEqual(actual, expected)
-
-  // 2. simple w/ arguments (string)
-  expected = 4 + 5
-  actual = await spec.executeScript(driver, 'return arguments[0] + arguments[1]', 4, 5)
-  assert.deepStrictEqual(actual, expected)
-
-  // 3. simple w/ arguments (function)
-  expected = 4 + 5
-  actual = await spec.executeScript(
-    driver,
-    function() {
-      return arguments[0] + arguments[1]
-    },
-    4,
-    5,
-  )
-  assert.deepStrictEqual(actual, expected)
-
-  // 4. pass Selector and use
-  expected = 'visible'
-  actual = await spec.executeScript(
-    driver,
-    "return getComputedStyle(arguments[0]).getPropertyValue('overflow')",
-    Selector('html'),
-  )
-
-  // 5. pass Selector snapshot and use
-  expected = 'visible'
-  elSnapshot = await Selector('html')()
-  actual = await spec.executeScript(driver, "return arguments[0].style['overflow-y']", elSnapshot)
-  assert.deepStrictEqual(actual, expected)
-
-  // 6. return and re-use "element"
-  expected = await Selector('h1')()
-  result = await spec.executeScript(driver, 'return arguments[0]', Selector('h1'))
-  actual = await spec.executeScript(driver, 'return arguments[0]', Selector(result))
-  assert.deepStrictEqual(actual.innerText, expected.innerText)
-
-  // 7. return and re-use "element" (when the element changes)
-  expected = 'blah'
-  result = await spec.executeScript(driver, 'return arguments[0]', Selector('h1'))
-  await spec.executeScript(driver, "document.querySelector('h1').textContent = 'blah'")
-  actual = await spec.executeScript(driver, 'return arguments[0]', Selector(result))
-  assert.deepStrictEqual(actual.innerText, expected)
-
-  // 8. return mixed data-types (Array)
-  expected = 2
-  result = await spec.executeScript(driver, 'return [0, arguments[0]]', Selector('h1'))
-  actual = result.length
-  assert.deepStrictEqual(actual, expected)
-
-  // 9. return mixed data-types (Object)
-  expected = 2
-  result = await spec.executeScript(
-    driver,
-    "return {element: arguments[0], blah: 'blah'}",
-    Selector('h1'),
-  )
-  actual = Object.entries(result).length
+async function executeScript({driver, script, args = [], expected}) {
+  const actual =
+    args && args.length
+      ? await spec.executeScript(driver, script, ...args)
+      : await spec.executeScript(driver, script, args)
   assert.deepStrictEqual(actual, expected)
 }
 function findElement({driver, input} = {}) {
