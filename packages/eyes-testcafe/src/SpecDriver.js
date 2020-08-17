@@ -157,8 +157,9 @@ async function parentContext(_driver) {
   //  const parentContext = await currentContext.selector.parent(0)()
   //  await driver.switchToIframe(parentContext)
 }
-async function childContext(_driver, element) {
-  return element.child()
+async function childContext(_driver, _element) {
+  // TBD
+  //return element.child()
 }
 async function findElement(_driver, selector) {
   if (TypeUtils.isString(selector)) return Selector(selector)
@@ -191,13 +192,13 @@ async function getUrl(driver) {
 async function visit(driver, url) {
   await driver.navigateTo(url)
 }
-async function takeScreenshot(driver) {
+async function takeScreenshot(_driver) {
   // TODO: sort out what this function give us
   // and what's needed to consume/use it (e.g., read file from disk? etc.)
   // https://devexpress.github.io/testcafe/documentation/guides/advanced-guides/screenshots-and-videos.html#screenshot-options
   // https://devexpress.github.io/testcafe/documentation/reference/test-api/testcontroller/takescreenshot.html
   // https://github.com/applitools/eyes.sdk.javascript1/blob/master/packages/eyes-testcafe/lib/wrappers/EyesWebDriver.js#L264-L281
-  await driver.takeScreenshot()
+  //await driver.takeScreenshot()
 }
 async function click(driver, element) {
   // NOTE:
@@ -205,9 +206,7 @@ async function click(driver, element) {
   // 1. selector string
   // 2. Selector object
   // 3. resolved Selector object (e.g., DOM Node snapshot/state)
-  // 4. return from a ClientFunction that uses document.querySelector*
   // https://devexpress.github.io/testcafe/documentation/reference/test-api/testcontroller/click.html#select-target-elements
-  // My hunch is `element` most closely resembles #3, but we should be able to pass it and ¯\_(ツ)_/¯
   await driver.click(element)
 }
 async function type(driver, element, keys) {
