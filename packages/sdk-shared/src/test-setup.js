@@ -178,4 +178,6 @@ module.exports = {
   Env,
   getEyes,
   batch,
+  BROWSERS,
+  DEVICES,
 }

@@ -710,6 +710,10 @@ class EyesClassic extends EyesCore {
   async getAppEnvironment() {
     const appEnv = await super.getAppEnvironment()
 
+    if (!appEnv._deviceInfo && this._driver.deviceName) {
+      appEnv.setDeviceInfo(this._driver.deviceName)
+    }
+
     if (!appEnv._os && this._driver.isNative) {
       let os = this._driver.platformName
       if (this._driver.platformVersion) {

@@ -3,6 +3,12 @@
 ## Unreleased
 
 
+## 5.21.1 - 2020/8/12
+
+- added spec for extracting device name ([Trello](https://trello.com/c/qyf1baqT/464-wdio5-mobile-web-device-name-not-reported-on-dashboard))
+- updated to @applitools/eyes-sdk-core@12.1.3 (from 12.1.2)
+- updated to @applitools/visual-grid-client@14.7.4 (from 14.7.3)
+
 ## 5.21.0 - 2020/8/10
 
 - added support of devtools protocol
