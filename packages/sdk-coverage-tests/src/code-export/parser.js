@@ -1,27 +1,76 @@
-function parseTest({history, meta}) {
-  const name = []
-  console.log(history, meta)
+const {capitalize} = require('../common-util')
+
+function parseTest({name, history, page, env = {}, config = {}}) {
+  const description = {
+    name,
+    page,
+    steps: [],
+    browser: env.browser,
+    vg: config.vg,
+    stitchMode: config.stitchMode,
+    classic: config.check === 'classic',
+  }
+  let step = {manual: []}
+
   history.forEach(action => {
     if (action.name === 'driver.switchToFrame') {
-      name.push('ManualSwitchToFrame')
+      step.manual.push('ManualSwitchToFrame')
     } else if (action.name === 'driver.executeScript') {
       const [script] = action.args
       if (script.search(/\bscroll(To|By)\b/) !== -1) {
-        name.push('ManualScroll')
+        step.manual.push('ManualScroll')
       }
-    } else if (action.name === 'eyes.open') {
-      // name.push('Open')
     } else if (action.name === 'eyes.check') {
-      const [checkSettings = {}] = action.args
-      name.push(checkSettingsToName(checkSettings))
-    } else if (action.name === 'eyes.close') {
-      name.push('Close')
+      const [checkSettings] = action.args
+      step.check = checkSettingsToName(checkSettings)
+      description.steps.push(step)
+      step = {manual: []}
     }
-  }, '')
-  console.log(name)
+  })
+
+  description.steps.push(step)
+
+  return description
 }
 
-function checkSettingsToName(checkSettings) {
+function testToNames({name, history, page, env = {}, config = {}}) {
+  const testName = []
+  if (name) {
+    testName.push(name)
+  } else {
+    history.forEach(action => {
+      if (action.name === 'driver.switchToFrame') {
+        testName.push('ManualSwitchToFrame')
+      } else if (action.name === 'driver.executeScript') {
+        const [script] = action.args
+        if (script.search(/\bscroll(To|By)\b/) !== -1) {
+          testName.push('ManualScroll')
+        }
+      } else if (action.name === 'eyes.check') {
+        const [checkSettings] = action.args
+        testName.push(checkSettingsToName(checkSettings))
+      }
+    }, '')
+    if (page) testName.push(`On${page}Page`)
+  }
+  const baselineName = []
+  if (config.baselineName) {
+    baselineName.push(config.baselineName)
+  } else {
+    baselineName.push(...testName)
+  }
+  const flags = []
+  if (config.check === 'classic') flags.push('Classic')
+  if (config.vg) flags.push('VG')
+  if (config.stitchMode === 'Scroll') flags.push('Scroll')
+  baselineName.push(...flags)
+  testName.push(...flags)
+  if (env.browser) testName.push(`On${capitalize(env.browser)}Browser`)
+
+  return {testName: testName.join('_'), baselineName: baselineName.join('_')}
+}
+
+function checkSettingsToName(checkSettings = {}) {
   let name = 'Check'
   if (checkSettings.region) {
     const regionType = getRegionType(checkSettings.region)
@@ -40,15 +89,9 @@ function checkSettingsToName(checkSettings) {
     name += 'Window'
   }
 
-  if (checkSettings.isFully) {
-    name += 'Fully'
-  }
-  if (checkSettings.scrollRootElement) {
-    name += 'WithCustomScrollRoot'
-  }
-  if (checkSettings.matchLevel) {
-    name += `With${checkSettings.matchLevel}MatchLevel`
-  }
+  if (checkSettings.isFully) name += 'Fully'
+  if (checkSettings.scrollRootElement) name += 'WithCustomScrollRoot'
+  if (checkSettings.matchLevel) name += `With${checkSettings.matchLevel}MatchLevel`
   if (checkSettings.ignoreRegions && checkSettings.ignoreRegions.length > 0) {
     name += regionsToName('Ignore', checkSettings.ignoreRegions)
   }
@@ -96,8 +139,9 @@ function getRegionType(region) {
   ) {
     return 'Selector'
   } else if (region.isRef) {
-    return region.type()
+    const type = region.type()
+    return type && type.name
   }
 }
 
-exports.parseTest = parseTest
+exports.testToNames = testToNames

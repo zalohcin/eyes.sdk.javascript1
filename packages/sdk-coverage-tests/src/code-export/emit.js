@@ -1,17 +1,4 @@
-function parseType(type) {
-  const match = type.match(/(?<name>[A-Za-z][A-Za-z0-9_]*)(<(?<generic>.*?)>)?/)
-  if (!match) {
-    throw new Error(
-      'Type format is incorrect. Please follow the convention (e.g. TypeName or Type1<Type2, Type3>)',
-    )
-  }
-  return {
-    name: match.groups.name,
-    generic: match.groups.generic ? match.groups.generic.split(/, ?/).map(parseType) : null,
-  }
-}
-
-module.exports = function() {
+function useEmitter() {
   const o = {}
   const syntax = new Proxy(o, {
     get(target, key) {
@@ -23,30 +10,11 @@ module.exports = function() {
   })
   const hooks = {deps: [], vars: [], beforeEach: [], afterEach: []}
   const commands = []
-  const history = []
 
-  return {
-    addSyntax,
-    withHistory,
-    withScope,
-    addCommand,
-    storeCommand: addCommand,
-    addHook,
-    storeHook: addHook,
-    getOutput,
-  }
-
-  function withHistory(name, commands) {
-    return new Proxy(commands, {
-      get(target, key) {
-        return withHistory(`${name}.${key}`, Reflect.get(target, key))
-      },
-      apply(target, thisArg, args) {
-        history.push({name, args})
-        return Reflect.apply(target, thisArg, args)
-      },
-    })
-  }
+  return [
+    {hooks, commands},
+    {useRef, useSyntax, withScope, addSyntax, addHook, addCommand},
+  ]
 
   function withScope(logic, scope = []) {
     return () => logic(...scope.map(name => useRef(name)))
@@ -90,6 +58,10 @@ module.exports = function() {
     syntax[name] = callback
   }
 
+  function useSyntax(name, data) {
+    return syntax[name](data)
+  }
+
   function addCommand(command) {
     if (Array.isArray(command)) {
       const [result] = command.map(command => {
@@ -107,7 +79,7 @@ module.exports = function() {
     const id = commands.push(typeof command === 'function' ? command() : command)
     return useRef(({name = `var_${id}`, type} = {}) => {
       const value = commands[id - 1]
-      commands[id - 1] = syntax.var({name, value, type})
+      commands[id - 1] = syntax.var({constant: true, name, value, type})
       return name
     })
   }
@@ -126,7 +98,39 @@ module.exports = function() {
     }
   }
 
-  function getOutput() {
-    return {hooks, commands, history}
+  function parseType(type) {
+    const match = type.match(/(?<name>[A-Za-z][A-Za-z0-9_]*)(<(?<generic>.*?)>)?/)
+    if (!match) {
+      throw new Error(
+        'Type format is incorrect. Please follow the convention (e.g. TypeName or Type1<Type2, Type3>)',
+      )
+    }
+    return {
+      name: match.groups.name,
+      generic: match.groups.generic ? match.groups.generic.split(/, ?/).map(parseType) : null,
+    }
   }
 }
+
+function withHistory(groups) {
+  const history = []
+  const emitters = Object.entries(groups).reduce((emitters, [name, commands]) => {
+    return Object.assign(emitters, {[name]: wrapCommand(name, commands)})
+  }, {})
+  return [history, emitters]
+
+  function wrapCommand(name, commands) {
+    return new Proxy(commands, {
+      get(target, key) {
+        return wrapCommand(`${name}.${key}`, Reflect.get(target, key))
+      },
+      apply(target, thisArg, args) {
+        history.push({name, args})
+        return Reflect.apply(target, thisArg, args)
+      },
+    })
+  }
+}
+
+exports.useEmitter = useEmitter
+exports.withHistory = withHistory

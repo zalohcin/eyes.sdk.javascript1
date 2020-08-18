@@ -2,7 +2,7 @@ const {
   makeEmitter,
   makeTemplate,
   supportedTests,
-} = require('@applitools/sdk-shared/coverage-tests/generic')
+} = require('../../../sdk-shared/coverage-tests/generic')
 
 module.exports = {
   name: 'eyes.playwright',
@@ -11,5 +11,6 @@ module.exports = {
   initialize: makeEmitter,
   testFrameworkTemplate: makeTemplate,
   supportedTests,
-  testsUrl: 'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/env-and-meta/tests.js',
+  // testsUrl: 'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/env-and-meta/tests.js',
+  testsPath: '../sdk-shared/coverage-tests/generic/tests.js',
 }

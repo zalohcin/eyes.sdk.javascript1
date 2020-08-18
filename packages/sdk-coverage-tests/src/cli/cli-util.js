@@ -4,11 +4,14 @@ const {findDifferencesBetweenCollections} = require('../common-util')
 const {isMatch} = require('micromatch')
 const vm = require('vm')
 
-async function fetchCoverageTests({url = 'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/master/tests.js', localPath}) {
-  const testsFileScript = localPath
-    ? fs.readFileSync(localPath).toString()
-    : (await axios(url)).data
-  return vm.runInContext(testsFileScript, vm.createContext({module: {}, process}))
+async function fetchCoverageTests({
+  url = 'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/master/tests.js',
+  path,
+}) {
+  const testsFileScript = path ? fs.readFileSync(path).toString() : (await axios(url)).data
+  const context = vm.createContext({process})
+  vm.runInContext(testsFileScript, context)
+  return {tests: context.tests, pages: context.pages}
 }
 
 function findUnsupportedTests(sdkImplementation, coverageTests) {
@@ -50,16 +53,18 @@ function filterTests({tests, args}) {
 }
 
 function numberOfUniqueTests({tests, args}) {
-  return tests.reduce((set, t) => {
-    if (args.all || !t.disabled) {
-      set.add(t.name)
+  return Object.values(tests).reduce((num, tests) => {
+    if (args.all || tests.some(test => !test.disabled)) {
+      num += 1
     }
-    return set
-  }, new Set()).size
+    return num
+  }, 0)
 }
 
 function numberOfTestVariations({tests, args}) {
-  return tests.filter(t => args.all || !t.disabled).length
+  return Object.values(tests)
+    .flat()
+    .filter(t => args.all || !t.disabled).length
 }
 
 function sortErrorsByType(errors) {

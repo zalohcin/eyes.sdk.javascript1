@@ -1,5 +1,3 @@
-const {makeEmitTracker} = require('@applitools/sdk-coverage-tests')
-
 function js(chunks, ...values) {
   const commands = []
   let code = ''
@@ -32,10 +30,10 @@ function serialize(data) {
   }
 }
 
-function makeSpecEmitter(options) {
-  const {addSyntax, addCommand, addHook, withScope, withHistory, getOutput} = makeEmitTracker()
+module.exports = function(tracker, test) {
+  const {addSyntax, addCommand, addHook, withScope} = tracker
 
-  addSyntax('var', ({name, value}) => `const ${name} = ${value}`)
+  addSyntax('var', ({constant, name, value}) => `${constant ? 'const' : 'let'} ${name} = ${value}`)
   addSyntax('getter', ({target, key}) => `${target}['${key}']`)
   addSyntax('call', ({target, args}) => `${target}(${js`...${args}`})`)
   addSyntax('return', ({value}) => `return ${value}`)
@@ -46,31 +44,24 @@ function makeSpecEmitter(options) {
   addHook('deps', `const spec = require(path.resolve(cwd, 'src/SpecDriver'))`)
   addHook('deps', `const {testSetup} = require('@applitools/sdk-shared')`)
 
-  addHook('vars', `let driver`)
-  addHook('vars', `let eyes`)
-  addHook('vars', 'let baselineTestName')
+  addHook('vars', `let driver, eyes`)
 
-  addHook('beforeEach', js`driver = await spec.build(${options.env} || {browser: 'chrome'})`)
-
-  addHook(
-    'beforeEach',
-    js`eyes = testSetup.getEyes({
-      isVisualGrid: ${options.executionMode.isVisualGrid},
-      isCssStitching: ${options.executionMode.isCssStitching},
-      branchName: ${options.branchName},
-    })`,
-  )
+  addHook('beforeEach', js`driver = await spec.build(${test.env} || {browser: 'chrome'})`)
+  addHook('beforeEach', js`eyes = testSetup.getEyes(${test.config})`)
+  if (test.visit) {
+    addHook('beforeEach', js`spec.visit(driver, ${test.visit})`)
+  }
 
   addHook('afterEach', js`await spec.cleanup(driver)`)
 
-  const driver = withHistory('driver', {
+  const driver = {
     constructor: {
       isStaleElementError(error) {
         return addCommand(js`spec.isStaleElementError(${error})`)
       },
     },
-    build(options) {
-      addCommand(js`await spec.build(${options})`)
+    build(env) {
+      addCommand(js`await spec.build(${env})`)
     },
     cleanup() {
       addCommand(js`await spec.cleanup(driver)`)
@@ -106,9 +97,9 @@ function makeSpecEmitter(options) {
     type(element, keys) {
       addCommand(js`await spec.type(driver, ${element}, ${keys})`)
     },
-  })
+  }
 
-  const eyes = withHistory('eyes', {
+  const eyes = {
     constructor: {
       setViewportSize(viewportSize) {
         addCommand(js`await eyes.constructor.setViewportSize(driver, ${viewportSize})`)
@@ -124,19 +115,19 @@ function makeSpecEmitter(options) {
         js`await eyes.open(
             driver,
             ${appName},
-            ${options.baselineTestName},
+            ${test.name},
             ${viewportSize},
           )`,
       )
     },
-    check({isClassic, ...checkSettings} = {}) {
-      if (!isClassic) {
+    check(checkSettings = {}) {
+      if (!test.config || test.config.check !== 'classic') {
         return addCommand(js`await eyes.check(${checkSettings})`)
       } else if (checkSettings.region) {
         if (checkSettings.frames && checkSettings.frames.length > 0) {
           const [frameReference] = checkSettings.frames
           return addCommand(js`await eyes.checkRegionInFrame(
-            ${'frame' in frameReference ? frameReference.frame : frameReference},
+            ${frameReference.frame || frameReference},
             ${checkSettings.region},
             ${checkSettings.timeout},
             ${checkSettings.name},
@@ -152,7 +143,7 @@ function makeSpecEmitter(options) {
       } else if (checkSettings.frames && checkSettings.frames.length > 0) {
         const [frameReference] = checkSettings.frames
         return addCommand(js`await eyes.checkFrame(
-          ${'frame' in frameReference ? frameReference.frame : frameReference},
+          ${frameReference.frame || frameReference},
           ${checkSettings.timeout},
           ${checkSettings.name},
         )`)
@@ -176,9 +167,9 @@ function makeSpecEmitter(options) {
     locate(visualLocatorSettings) {
       return addCommand(js`await eyes.locate(${visualLocatorSettings})`)
     },
-  })
+  }
 
-  const assert = withHistory('assert', {
+  const assert = {
     strictEqual(actual, expected, message) {
       addCommand(js`assert.strictEqual(${actual}, ${expected}, ${message})`)
     },
@@ -211,9 +202,7 @@ function makeSpecEmitter(options) {
       }
       addCommand(command)
     },
-  })
+  }
 
-  return {driver, eyes, assert, tracker: {getOutput}}
+  return {driver, eyes, assert}
 }
-
-module.exports = makeSpecEmitter

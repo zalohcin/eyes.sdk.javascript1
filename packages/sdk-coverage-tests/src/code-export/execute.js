@@ -1,66 +1,61 @@
-const {getNameFromObject} = require('../common-util')
-const {parseTest} = require('./parser')
+const {mergeObjects, isFunction} = require('../common-util')
+const {useEmitter, withHistory} = require('./emit')
+const {testToNames} = require('./parser')
 
-function convertExecutionModeToSuffix(executionMode) {
-  if (executionMode.useStrictName) return ''
-  switch (getNameFromObject(executionMode)) {
-    case 'isVisualGrid':
-      return '_VG'
-    case 'isScrollStitching':
-      return '_Scroll'
-    default:
-      return ''
-  }
-}
-
-function makeEmitTests(initializeSdkImplementation, coverageTests) {
-  let output = []
-  function emitTests(supportedTests, {host, all = false} = {}) {
-    supportedTests.forEach(supportedTest => {
-      const coverageTest = coverageTests[supportedTest.name]
-      if (
-        !coverageTest ||
-        !(typeof coverageTest === 'function' || typeof coverageTest.test === 'function')
-      ) {
-        throw new Error('missing implementation for test ' + supportedTest.name)
+function makeEmitTests(initializeSdkImplementation, {tests, pages}) {
+  const output = []
+  function emitTests(supportedTests) {
+    for (const [name, variants] of Object.entries(supportedTests)) {
+      for (const testVariant of variants) {
+        const test = makeTest(tests[name], testVariant)
+        if (!isFunction(test.test)) {
+          throw new Error(`Missing implementation for test ${name}`)
+        }
+        test.key = name
+        if (test.page) test.visit = pages[test.page]
+        output.push(executeTest(test, initializeSdkImplementation))
       }
-      const coverageTestFunc = coverageTest.test || coverageTest
-      const baselineTestName = `${supportedTest.name}${convertExecutionModeToSuffix(
-        supportedTest.executionMode,
-      )}`
-      const branchName = supportedTest.baselineVersion
-        ? `v${supportedTest.baselineVersion}`
-        : 'master'
-      const sdkImplementation = initializeSdkImplementation({
-        baselineTestName,
-        branchName,
-        host,
-        ...supportedTest,
-        ...coverageTest,
-      })
-      const meta = {features: coverageTest.features}
-      if (coverageTest.env) {
-        meta.browser = coverageTest.env.browser
-        meta.mobile = Boolean(coverageTest.env.device)
-        meta.native = Boolean(coverageTest.env.device) && !coverageTest.env.browser
-      }
-      // test
-      coverageTestFunc(sdkImplementation)
-      // store
-      const test = {
-        name: baselineTestName,
-        meta,
-        disabled: !all && supportedTest.disabled,
-        ...sdkImplementation.tracker.getOutput(),
-      }
-      output.push(test)
-      console.log(baselineTestName)
-      parseTest(test)
-      console.log('\n')
-    })
+    }
     return output
   }
   return {emitTests}
+}
+
+function makeTest(base, custom) {
+  if (isFunction(base)) base = {test: base}
+  if (isFunction(custom)) custom = {test: custom}
+  if (!base) return custom
+  if (!custom) return base
+  return mergeObjects(custom, base)
+}
+
+function executeTest(test, initializeSdk) {
+  const [output, emitter] = useEmitter()
+  test.output = output
+  test.meta = {features: test.features}
+  if (test.env) {
+    test.meta.browser = test.env.browser
+    test.meta.mobile = Boolean(test.env.device)
+    test.meta.native = Boolean(test.env.device && !test.env.browser)
+  }
+  const [history, sdk] = withHistory(
+    initializeSdk(emitter, {...test, name: emitter.useRef('testName')}),
+  )
+  test.history = history
+  test.test(sdk)
+  const {testName, baselineName} = testToNames(test)
+  emitter.addHook(
+    'vars',
+    emitter.useSyntax('var', {
+      constant: true,
+      name: 'testName',
+      type: 'String',
+      value: `"${baselineName}"`,
+    }),
+  )
+  test.name = testName
+  console.log(test.name, '-', test.key, '\n')
+  return test
 }
 
 exports.makeEmitTests = makeEmitTests
