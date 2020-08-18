@@ -1,6 +1,7 @@
 const assert = require('assert')
 const spec = require('../../src/SpecDriver')
 const {Selector} = require('testcafe')
+const fs = require('fs')
 
 fixture`SpecDriver`.page`https://applitools.github.io/demo/TestPages/FramesTestPage/`
 
@@ -161,7 +162,16 @@ test('visit()', async driver => {
     await spec.visit(driver, startUrl)
   }
 })
-test.skip('takeScreenshot', _driver => {})
+test('takeScreenshot', async driver => {
+  const screenshot = await spec.takeScreenshot(driver)
+  assert.ok(Buffer.isBuffer(screenshot))
+})
+test('takeScreenshot clean-up', async driver => {
+  const {screenshotPath} = await spec.takeScreenshot(driver, {withMetadata: true})
+  assert.throws(() => {
+    fs.readFileSync(screenshotPath)
+  })
+})
 test.skip('getElementRect', _driver => {})
 test.skip('getWindowRect', _driver => {})
 test.skip('setWindowRect', _driver => {})

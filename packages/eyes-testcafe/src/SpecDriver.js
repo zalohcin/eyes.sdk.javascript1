@@ -1,5 +1,8 @@
-const {TypeUtils} = require('@applitools/eyes-sdk-core')
+const {GeneralUtils, TypeUtils} = require('@applitools/eyes-sdk-core')
 const {ClientFunction, Selector} = require('testcafe')
+const path = require('path')
+const fs = require('fs')
+const rmrf = require('rimraf')
 
 // helpers
 function extractSelectorString(selector) {
@@ -191,13 +194,26 @@ async function getUrl(driver) {
 async function visit(driver, url) {
   await driver.navigateTo(url)
 }
-async function takeScreenshot(_driver) {
-  // TODO: sort out what this function give us
-  // and what's needed to consume/use it (e.g., read file from disk? etc.)
-  // https://devexpress.github.io/testcafe/documentation/guides/advanced-guides/screenshots-and-videos.html#screenshot-options
-  // https://devexpress.github.io/testcafe/documentation/reference/test-api/testcontroller/takescreenshot.html
-  // https://github.com/applitools/eyes.sdk.javascript1/blob/master/packages/eyes-testcafe/lib/wrappers/EyesWebDriver.js#L264-L281
-  //await driver.takeScreenshot()
+async function takeScreenshot(driver, opts = {}) {
+  // NOTE:
+  // Since we are constrained to saving screenshots to disk, we place each screenshot in its own
+  // dot-folder which has a GUID prefix (e.g., .applitools-guide/screenshot.png).
+  // We then read the file from disk, return the buffer, and delete the folder.
+  const SCREENSHOTS_PREFIX = '/.applitools'
+  const SCREENSHOTS_FILENAME = 'screenshot.png'
+  const filepath = path.resolve(
+    `${SCREENSHOTS_PREFIX}-${GeneralUtils.guid()}`,
+    SCREENSHOTS_FILENAME,
+  )
+  const screenshotPath = await driver.takeScreenshot(filepath)
+  if (!screenshotPath) throw new Error('Unable to take screenshot')
+  try {
+    const screenshot = fs.readFileSync(screenshotPath)
+    return opts.withMetadata ? {screenshot, screenshotPath} : screenshot
+  } finally {
+    const screenshotFolder = path.dirname(screenshotPath)
+    rmrf.sync(screenshotFolder)
+  }
 }
 async function click(driver, element) {
   // NOTE:
