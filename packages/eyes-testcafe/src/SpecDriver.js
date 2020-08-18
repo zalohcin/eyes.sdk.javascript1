@@ -78,13 +78,13 @@ function prepareClientFunction({clientFunction, dependencies, driver}) {
 }
 // end helpers
 
-async function isDriver(driver) {
+function isDriver(driver) {
   return driver.constructor.name === 'TestController'
 }
 function isSelector(selector) {
   return TypeUtils.isString(selector) || isTestCafeSelector(selector)
 }
-async function isElement(element) {
+function isElement(element) {
   return typeof element === 'object' && !!element.nodeType
 }
 function isEqualElements(_driver, element1, element2) {
@@ -162,7 +162,7 @@ async function childContext(_driver, _element) {
   //return element.child()
 }
 async function findElement(_driver, selector) {
-  if (TypeUtils.isString(selector)) return Selector(selector)
+  selector = TypeUtils.isString(selector) ? Selector(selector) : selector
   const elSnapshot = await selector()
   return elSnapshot ? elSnapshot.selector : undefined
 }
