@@ -172,10 +172,22 @@ test('takeScreenshot clean-up', async driver => {
     fs.readFileSync(screenshotPath)
   })
 })
+test('childContext(element)', async driver => {
+  try {
+    const targetFrame = await Selector('[name="frame1"]')
+    await driver.switchToIframe(targetFrame)
+    const expectedDocument = await Selector('html')()
+    await driver.switchToMainWindow()
+    await spec.childContext(driver, targetFrame)
+    const resultDocument = await Selector('html')()
+    assert.ok(spec.isEqualElements(driver, resultDocument, expectedDocument))
+  } finally {
+    await driver.switchToMainWindow()
+  }
+})
 test.skip('getElementRect', _driver => {})
 test.skip('getWindowRect', _driver => {})
 test.skip('setWindowRect', _driver => {})
 test.skip('parentContext()', _driver => {})
-test.skip('childContext(element)', _driver => {})
 test.skip('build', _driver => {})
 test.skip('cleanup', _driver => {})

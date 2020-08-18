@@ -160,8 +160,14 @@ async function parentContext(_driver) {
   // https://stackoverflow.com/questions/63453228/how-to-traverse-a-nested-frame-tree-by-its-hierarchy-in-testcafe
   // https://github.com/DevExpress/testcafe/issues/5429
 }
-async function childContext(_driver, _element) {
-  // TBD
+async function childContext(driver, element) {
+  // NOTE:
+  // The name implies the intent but can be confusing as to what it actually does.
+  // To clarify - it is intended to be used for switch to the "child context" when processing a frame tree in the core
+  // What it actually does, is switch the browser context to the provided element -- which is intended to be an iframe.
+  // It is not responbile for determining the child of the provided element (which is one possible interpretation based
+  // on the name without an understanding of how it's used in the core).
+  return await driver.switchToIframe(element)
 }
 async function findElement(_driver, selector) {
   selector = TypeUtils.isString(selector) ? Selector(selector) : selector
