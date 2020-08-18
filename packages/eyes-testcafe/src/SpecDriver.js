@@ -19,6 +19,12 @@ function isTestCafeSelector(selector) {
   return !!(selector && selector.addCustomMethods && selector.find && selector.parent)
 }
 function prepareArgsFunctionString(args) {
+  // NOTE:
+  // Objects/functions passed into a ClientFunction get transpiled into something that is difficult to understand.
+  // We have significantly more knowledge of object/function contents/type before sending it into the ClientFunction.
+  // We use this information to create a static function that will return a modified set of arguments
+  // (to be run inside of the ClientFunction). It detects if a provided argument is a Selector function
+  // and calls, otherwise, it will return the argument unchanged.
   return `return [
     ${args
       .map((arg, index) => {
@@ -150,16 +156,9 @@ async function parentContext(_driver) {
   // TBD
   // https://stackoverflow.com/questions/63453228/how-to-traverse-a-nested-frame-tree-by-its-hierarchy-in-testcafe
   // https://github.com/DevExpress/testcafe/issues/5429
-  //
-  // scratch:
-  //  const currentContext = await executeScript(driver, 'return document')
-  //  if (!currentContext.selector) throw new Error('Unable to switch to parent context')
-  //  const parentContext = await currentContext.selector.parent(0)()
-  //  await driver.switchToIframe(parentContext)
 }
 async function childContext(_driver, _element) {
   // TBD
-  //return element.child()
 }
 async function findElement(_driver, selector) {
   selector = TypeUtils.isString(selector) ? Selector(selector) : selector
