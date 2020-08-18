@@ -137,12 +137,6 @@ test('mainContext()', async driver => {
     await driver.switchToMainWindow().catch(() => null)
   }
 })
-test.skip('parentContext()', _driver => {
-  //return parentContext({driver})
-})
-test.skip('childContext(element)', _driver => {
-  //return childContext({driver})
-})
 test('getTitle()', async driver => {
   //const expected = 'Hello World'
   //await spec.visit(driver, 'data:text/html,<title>Hello%20World</title><body>blah</body>')
@@ -167,3 +161,11 @@ test('visit()', async driver => {
     await spec.visit(driver, startUrl)
   }
 })
+test.skip('getElementRect', _driver => {})
+test.skip('takeScreenshot', _driver => {})
+test.skip('parentContext()', _driver => {})
+test.skip('childContext(element)', _driver => {})
+test.skip('getWindowRect', _driver => {})
+test.skip('setWindowRect', _driver => {})
+test.skip('build', _driver => {})
+test.skip('cleanup', _driver => {})
