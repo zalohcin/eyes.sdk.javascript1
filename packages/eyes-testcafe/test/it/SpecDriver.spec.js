@@ -224,5 +224,3 @@ test('getWindowRect', async driver => {
   assert.ok(Number.isInteger(size.height))
 })
 test.skip('setWindowRect', _driver => {})
-test.skip('build', _driver => {})
-test.skip('cleanup', _driver => {})
