@@ -23,13 +23,11 @@ const EyesDriverOperationError = require('../errors/EyesDriverOperationError')
  * @return {RectangleSize} viewport size
  */
 async function getViewportSize(logger, context) {
-  logger.verbose('EyesUtils.getTopContextViewportSize()')
+  logger.verbose('EyesUtils.getViewportSize()')
   let size
-  try {
+  if (!context.driver.isNative) {
     size = await context.execute(snippets.getViewportSize)
-  } catch (err) {
-    logger.verbose('Failed to extract viewport size using Javascript:', err)
-    // If we failed to extract the viewport size using JS, will use the window size instead.
+  } else {
     const rect = await context.driver.getWindowRect()
     size = {width: rect.getWidth(), height: rect.getHeight()}
     if (size.height > size.width) {

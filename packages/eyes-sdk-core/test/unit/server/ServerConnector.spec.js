@@ -26,7 +26,7 @@ describe('ServerConnector', () => {
       const runningSession = await serverConnector.startSession({
         appIdOrName,
         scenarioIdOrName,
-        environment: {},
+        environment: {displaySize: {width: 1, height: 2}},
         batchInfo: {
           id: batchId,
         },

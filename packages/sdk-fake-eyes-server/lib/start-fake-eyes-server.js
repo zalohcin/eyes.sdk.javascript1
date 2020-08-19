@@ -53,6 +53,12 @@ function startFakeEyesServer({
         const screenshotEntry = Object.entries(renderRequest.resources).find(
           ([_url, {contentType}]) => contentType === 'application/x-applitools-screenshot',
         )
+        if (
+          renderRequest.renderInfo.emulationInfo &&
+          renderRequest.renderInfo.emulationInfo.deviceName === 'non-existent'
+        ) {
+          renderings[renderId].error = 'non existent device'
+        }
         return {
           renderId,
           renderStatus: renderRequest.renderId ? 'rendering' : 'need-more-resources',
@@ -71,6 +77,9 @@ function startFakeEyesServer({
         req.body.map(async renderId => {
           const rendering = renderings[renderId]
           if (rendering) {
+            if (rendering.error) {
+              return {status: 'error', error: rendering.error}
+            }
             const regions = rendering.selectorsToFindRegionsFor || []
             const imageResource = Object.values(rendering.resources).find(
               ({contentType}) => contentType === 'application/x-applitools-screenshot',
@@ -168,7 +177,7 @@ function startFakeEyesServer({
 
   function createRunningSessionFromStartInfo(startInfo) {
     const {appIdOrName, scenarioIdOrName, batchInfo, environment} = startInfo
-    const {displaySize: _displaySize, inferred} = environment
+    const {displaySize, inferred} = environment
     const {id: batchId, name: _batchName} = batchInfo
     const {browser, os} = UAParser(inferred)
 
@@ -176,6 +185,10 @@ function startFakeEyesServer({
     const runningSessionId = `${sessionId}__running`
     const baselineId = `${sessionId}__baseline`
     const url = `${sessionId}__url`
+
+    if (!displaySize) {
+      throw new Error('missing displaySize')
+    }
 
     return {
       id: runningSessionId,
