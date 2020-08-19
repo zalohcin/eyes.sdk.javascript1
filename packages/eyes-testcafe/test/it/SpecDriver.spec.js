@@ -69,7 +69,7 @@ test('findElements(Eyes Selector - css)', async driver => {
   const elements = await spec.findElements(driver, {type: 'css', selector: 'div'})
   assert.deepStrictEqual(!!elements.length, true)
 })
-// XPathSelector is not returning an array - need to research further (if we care about this use case)
+// XPathSelector does not return an array even though it's supposed to
 test.skip('findElements(Eyes Selector - xpath)', async driver => {
   const elements = await spec.findElements(driver, {type: 'xpath', selector: '//div'})
   debugger
