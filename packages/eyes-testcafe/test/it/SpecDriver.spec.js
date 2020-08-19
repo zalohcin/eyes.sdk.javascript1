@@ -218,9 +218,3 @@ test.skip('parentContext()', async driver => {
   }
 })
 test.skip('getElementRect', _driver => {})
-test('getWindowRect', async driver => {
-  const size = await spec.getWindowRect(driver)
-  assert.ok(Number.isInteger(size.width))
-  assert.ok(Number.isInteger(size.height))
-})
-test.skip('setWindowRect', _driver => {})

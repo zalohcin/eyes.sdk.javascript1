@@ -229,18 +229,6 @@ async function findElements(driver, selector) {
   )
 }
 async function getElementRect(_driver, _element) {}
-// TODO: rollup getWindowRect & setWindowRect into snippets in core
-async function getWindowRect(driver) {
-  // NOTE: outerWidth & outerHeight return 0,0 when run headless (confirmed in Chrome)
-  return await executeScript(
-    driver,
-    'return {width: window.outerWidth, height: window.outerHeight}',
-  )
-}
-async function setWindowRect(driver, rect = {}) {
-  const {width, height} = rect
-  await driver.resizeWindow(width, height)
-}
 async function getTitle(_driver) {
   return await Selector('title').innerText
 }
@@ -302,8 +290,6 @@ exports.childContext = childContext
 exports.findElement = findElement
 exports.findElements = findElements
 exports.getElementRect = getElementRect
-exports.getWindowRect = getWindowRect
-exports.setWindowRect = setWindowRect
 exports.getTitle = getTitle
 exports.getUrl = getUrl
 exports.visit = visit
