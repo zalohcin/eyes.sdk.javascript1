@@ -228,7 +228,11 @@ async function findElements(driver, selector) {
     extractSelectorString(transformedSelector),
   )
 }
-async function getElementRect(_driver, _element) {}
+async function getElementRect(_driver, element) {
+  const elSnapshot = isSelector(element) ? await transformSelector(element) : element
+  debugger
+  return elSnapshot.boundingClientRect
+}
 async function getTitle(_driver) {
   return await Selector('title').innerText
 }

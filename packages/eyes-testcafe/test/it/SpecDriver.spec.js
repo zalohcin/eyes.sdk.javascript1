@@ -217,4 +217,22 @@ test.skip('parentContext()', async driver => {
     await driver.switchToMainWindow().catch(() => null)
   }
 })
-test.skip('getElementRect', _driver => {})
+test('getElementRect (Selector)', async driver => {
+  const rect = await spec.getElementRect(driver, Selector('html'))
+  assert.ok(Number.isInteger(Math.floor(rect.left)))
+  assert.ok(Number.isInteger(Math.floor(rect.right)))
+  assert.ok(Number.isInteger(Math.floor(rect.top)))
+  assert.ok(Number.isInteger(Math.floor(rect.bottom)))
+  assert.ok(Number.isInteger(Math.floor(rect.width)))
+  assert.ok(Number.isInteger(Math.floor(rect.height)))
+})
+test('getElementRect (DOM Node snapshot)', async driver => {
+  const elSnapshot = await Selector('html')()
+  const rect = await spec.getElementRect(driver, elSnapshot)
+  assert.ok(Number.isInteger(Math.floor(rect.left)))
+  assert.ok(Number.isInteger(Math.floor(rect.right)))
+  assert.ok(Number.isInteger(Math.floor(rect.top)))
+  assert.ok(Number.isInteger(Math.floor(rect.bottom)))
+  assert.ok(Number.isInteger(Math.floor(rect.width)))
+  assert.ok(Number.isInteger(Math.floor(rect.height)))
+})
