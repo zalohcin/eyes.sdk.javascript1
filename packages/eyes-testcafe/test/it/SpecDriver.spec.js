@@ -40,6 +40,14 @@ test('findElement(DOM Node snapshot)', async driver => {
   const selector = await spec.findElement(driver, elSnapshot)
   assert.strictEqual(spec.isSelector(selector), true)
 })
+test('findElement(Eyes Selector - css)', async driver => {
+  const selector = await spec.findElement(driver, {type: 'css', selector: 'div'})
+  assert.strictEqual(spec.isSelector(selector), true)
+})
+test('findElement(Eyes Selector - xpath)', async driver => {
+  const selector = await spec.findElement(driver, {type: 'xpath', selector: '//html'})
+  assert.strictEqual(spec.isSelector(selector), true)
+})
 test('findElement(non-existent)', async driver => {
   const selector = await spec.findElement(driver, 'non-existent')
   assert.strictEqual(spec.isSelector(selector), false)
@@ -55,6 +63,16 @@ test('findElements(Selector)', async driver => {
 test('findElements(DOM Node snapshot)', async driver => {
   const elSnapshot = await Selector('div')()
   const elements = await spec.findElements(driver, elSnapshot)
+  assert.deepStrictEqual(!!elements.length, true)
+})
+test('findElements(Eyes Selector - css)', async driver => {
+  const elements = await spec.findElements(driver, {type: 'css', selector: 'div'})
+  assert.deepStrictEqual(!!elements.length, true)
+})
+// XPathSelector is not returning an array - need to research further (if we care about this use case)
+test.skip('findElements(Eyes Selector - xpath)', async driver => {
+  const elements = await spec.findElements(driver, {type: 'xpath', selector: '//div'})
+  debugger
   assert.deepStrictEqual(!!elements.length, true)
 })
 test('findElements(non-existent)', async driver => {
@@ -182,12 +200,29 @@ test('childContext(element)', async driver => {
     const resultDocument = await Selector('html')()
     assert.ok(spec.isEqualElements(driver, resultDocument, expectedDocument))
   } finally {
-    await driver.switchToMainWindow()
+    await driver.switchToMainWindow().catch(() => null)
+  }
+})
+test.skip('parentContext()', async driver => {
+  try {
+    await driver.switchToIframe(Selector('[name="frame1"]'))
+    const parentDocument = await Selector('html')()
+    await driver.switchToIframe('[name="frame1-1"]')
+    const frameDocument = await Selector('html')()
+    assert.ok(!spec.isEqualElements(driver, parentDocument, frameDocument))
+    await spec.parentContext(driver)
+    const resultDocument = await Selector('html')()
+    assert.ok(spec.isEqualElements(driver, resultDocument, parentDocument))
+  } finally {
+    await driver.switchToMainWindow().catch(() => null)
   }
 })
 test.skip('getElementRect', _driver => {})
-test.skip('getWindowRect', _driver => {})
+test('getWindowRect', async driver => {
+  const size = await spec.getWindowRect(driver)
+  assert.ok(Number.isInteger(size.width))
+  assert.ok(Number.isInteger(size.height))
+})
 test.skip('setWindowRect', _driver => {})
-test.skip('parentContext()', _driver => {})
 test.skip('build', _driver => {})
 test.skip('cleanup', _driver => {})

@@ -18,6 +18,35 @@ function extractSelectorString(selector) {
   if (match && match.length) return match[1]
   else throw new Error('Unable to determine selector')
 }
+async function XPathSelector(selector, opts = {}) {
+  const getElementsByXPath = Selector(xpath => {
+    /* eslint-disable no-undef */
+    const iterator = document.evaluate(
+      xpath,
+      document,
+      null,
+      XPathResult.UNORDERED_NODE_ITERATOR_TYPE,
+      null,
+    )
+    /* eslint-enable */
+    const items = []
+
+    let item = iterator.iterateNext()
+
+    while (item) {
+      items.push(item)
+      item = iterator.iterateNext()
+    }
+
+    return items
+  })
+  const result = await getElementsByXPath(selector)
+  return Array.isArray(result) && opts.findAll ? result : Selector(result)
+}
+
+function isEyesSelector(selector) {
+  return TypeUtils.has(selector, ['type', 'selector'])
+}
 function isTestCafeSelector(selector) {
   return !!(selector && selector.addCustomMethods && selector.find && selector.parent)
 }
@@ -84,6 +113,14 @@ function prepareClientFunction({clientFunction, dependencies, driver}) {
   )
   executor.with({boundTestRun: driver})
   return executor
+}
+async function transformSelector(selector, opts = {}) {
+  if (TypeUtils.isString(selector)) return Selector(selector)
+  if (isEyesSelector(selector)) {
+    if (selector.type === 'css') return Selector(selector.selector)
+    else if (selector.type === 'xpath') return XPathSelector(selector.selector, opts)
+  }
+  return selector
 }
 // end helpers
 
@@ -155,38 +192,51 @@ async function executeScript(driver, script, ...args) {
 async function mainContext(driver) {
   await driver.switchToMainWindow()
 }
-async function parentContext(_driver) {
-  // TBD
-  // https://stackoverflow.com/questions/63453228/how-to-traverse-a-nested-frame-tree-by-its-hierarchy-in-testcafe
-  // https://github.com/DevExpress/testcafe/issues/5429
-}
+//async function parentContext(driver) {
+// NOTE:
+// Switching from the current browsing context up one-level is not built into TestCafe (yet).
+// See the following for reference:
+// - https://github.com/DevExpress/testcafe/issues/5429
+// - https://stackoverflow.com/questions/63453228/how-to-traverse-a-nested-frame-tree-by-its-hierarchy-in-testcafe
+// A workaround for this will be implemented in the core in order to minimize on the
+// performance overhead needed to construct and walk through the frame tree in TestCafe.
+//}
 async function childContext(driver, element) {
   // NOTE:
-  // The name implies the intent but can be confusing as to what it actually does.
-  // To clarify - it is intended to be used for switch to the "child context" when processing a frame tree in the core
-  // What it actually does, is switch the browser context to the provided element -- which is intended to be an iframe.
-  // It is not responbile for determining the child of the provided element (which is one possible interpretation based
-  // on the name without an understanding of how it's used in the core).
+  // The name of this function can be confusing out of context. This function is
+  // just a wrapper for switchToIframe. It's used in concert with parentContext
+  // in the core. parentContext is used to (implicitly) switch to the parent
+  // frame. childContext is used to (explicitly) switch to the element provided
+  // (it's assumed to be a child frame that is accessible from the current context).
   return await driver.switchToIframe(element)
 }
 async function findElement(_driver, selector) {
-  selector = TypeUtils.isString(selector) ? Selector(selector) : selector
+  selector = await transformSelector(selector)
   const elSnapshot = await selector()
   return elSnapshot ? elSnapshot.selector : undefined
 }
 async function findElements(driver, selector) {
-  selector = TypeUtils.isString(selector) ? selector : extractSelectorString(selector)
-  const result = await executeScript(
+  const transformedSelector = await transformSelector(selector, {findAll: true})
+  debugger
+  if (selector.type === 'xpath') return await transformedSelector()
+  return await executeScript(
     driver,
     function() {
       // eslint-disable-next-line no-undef
       return document.querySelectorAll(arguments[0])
     },
-    selector,
+    extractSelectorString(transformedSelector),
   )
-  return result
 }
 async function getElementRect(_driver, _element) {}
+// TODO: rollup getWindowRect & setWindowRect into snippets in core
+async function getWindowRect(driver) {
+  // NOTE: outerWidth & outerHeight return 0,0 when run headless (confirmed in Chrome)
+  return await executeScript(
+    driver,
+    'return {width: window.outerWidth, height: window.outerHeight}',
+  )
+}
 async function setWindowRect(driver, rect = {}) {
   const {width, height} = rect
   await driver.resizeWindow(width, height)
@@ -258,11 +308,12 @@ exports.isElement = isElement
 exports.isEqualElements = isEqualElements
 exports.executeScript = executeScript
 exports.mainContext = mainContext
-exports.parentContext = parentContext
+//exports.parentContext = parentContext
 exports.childContext = childContext
 exports.findElement = findElement
 exports.findElements = findElements
 exports.getElementRect = getElementRect
+exports.getWindowRect = getWindowRect
 exports.setWindowRect = setWindowRect
 exports.getTitle = getTitle
 exports.getUrl = getUrl
