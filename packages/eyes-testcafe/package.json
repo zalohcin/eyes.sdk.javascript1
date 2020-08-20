@@ -39,8 +39,8 @@
   },
   "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "12.1.4",
-    "@applitools/visual-grid-client": "14.7.5",
+    "@applitools/eyes-sdk-core": "12.1.2",
+    "@applitools/visual-grid-client": "14.7.3",
     "rimraf": "^3.0.2"
   },
   "peerDependencies": {
