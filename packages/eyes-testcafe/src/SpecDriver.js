@@ -282,6 +282,26 @@ async function waitUntilDisplayed(_driver, element, timeout) {
   // https://devexpress.github.io/testcafe/documentation/guides/concepts/built-in-wait-mechanisms.html#wait-mechanism-for-selectors
   await element.with({visibilityCheck: true, timeout})
 }
+// placeholder until implemented in core
+async function getWindowRect(driver) {
+  // NOTE: returns 0, 0 when running headless on Chrome...
+  return await executeScript(
+    driver,
+    'return {width: window.outerWidth, height: window.outerHeight}',
+  )
+}
+// placeholder until implemented in core
+async function setWindowRect(driver, {width = 0, height = 0} = {}) {
+  await driver.resizeWindow(width, height)
+  // dirty hack: overriding outerWidth & outerHeight when it is set to 0, 0
+  await executeScript(
+    driver,
+    `if (!window.outerWidth && !window.outerHeight) {
+    window.outerWidth = ${width}
+    window.outerHeight = ${height}
+  }`,
+  )
+}
 
 exports.isDriver = isDriver
 exports.isSelector = isSelector
@@ -301,3 +321,5 @@ exports.takeScreenshot = takeScreenshot
 exports.click = click
 exports.type = type
 exports.waitUntilDisplayed = waitUntilDisplayed
+exports.getWindowRect = getWindowRect
+exports.setWindowRect = setWindowRect

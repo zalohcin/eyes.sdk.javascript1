@@ -236,3 +236,15 @@ test('getElementRect (DOM Node snapshot)', async driver => {
   assert.ok(Number.isInteger(Math.floor(rect.width)))
   assert.ok(Number.isInteger(Math.floor(rect.height)))
 })
+test('getWindowSize', async driver => {
+  const rect = await spec.getWindowRect(driver)
+  console.log(rect)
+  assert.ok(Number.isInteger(rect.width))
+  assert.ok(Number.isInteger(rect.height))
+})
+test('setWindowSize', async driver => {
+  const expectedRect = {width: 500, height: 500}
+  await spec.setWindowRect(driver, expectedRect)
+  const actualRect = await spec.getWindowRect(driver)
+  assert.deepStrictEqual(actualRect, expectedRect)
+})
