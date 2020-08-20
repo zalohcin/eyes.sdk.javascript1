@@ -323,3 +323,6 @@ exports.type = type
 exports.waitUntilDisplayed = waitUntilDisplayed
 exports.getWindowRect = getWindowRect
 exports.setWindowRect = setWindowRect
+// no-ops for coverage-tests
+exports.build = () => {}
+exports.cleanup = () => {}
