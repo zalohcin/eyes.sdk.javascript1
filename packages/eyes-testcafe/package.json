@@ -4,6 +4,7 @@
   "description": "Applitools Eyes SDK for TestCafe",
   "main": "index.js",
   "scripts": {
+    "update": "bongo vv --fix && yarn",
     "lint": "eslint '**/*.js'",
     "render": "node ../sdk-shared/src/render.js",
     "test": "yarn test:it",
@@ -15,7 +16,9 @@
     "coverage:generate": "coverage-tests create-tests",
     "coverage:sandbox": "coverage-tests create-tests && yarn test:coverage && coverage-tests process-report",
     "coverage:prod": "coverage-tests create-tests && yarn test:coverage && coverage-tests process-report --send-report prod",
-    "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-testcafe' APPLITOOLS_BATCH_ID=$(uuidgen) XUNIT_FILE=coverage-test-report.xml mocha --config .mocharc.cvg.js"
+    "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-testcafe' APPLITOOLS_BATCH_ID=$(uuidgen) testcafe chrome:headless test/coverage/generic --concurrency 15 --reporter spec,xunit:coverage-test-report.xml",
+    "test:coverage:1": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-testcafe' APPLITOOLS_BATCH_ID=$(uuidgen) testcafe chrome:headless test/coverage/generic --reporter spec,xunit:coverage-test-report.xml",
+    "test:coverage:1:debug": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-testcafe' APPLITOOLS_BATCH_ID=$(uuidgen) testcafe chrome:headless test/coverage/generic --reporter spec,xunit:coverage-test-report.xml --inspect-brk"
   },
   "keywords": [
     "eyes-testcafe",
@@ -36,8 +39,8 @@
   },
   "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "12.1.2",
-    "@applitools/visual-grid-client": "14.7.3",
+    "@applitools/eyes-sdk-core": "12.1.4",
+    "@applitools/visual-grid-client": "14.7.5",
     "rimraf": "^3.0.2"
   },
   "peerDependencies": {
@@ -49,8 +52,6 @@
     "@applitools/sdk-release-kit": "0.2.2",
     "@applitools/sdk-shared": "0.1.0",
     "eslint": "^7.2.0",
-    "mocha": "^8.0.1",
-    "spec-xunit-file": "0.0.1-3",
     "testcafe": "^1.9.0"
   },
   "engines": {
