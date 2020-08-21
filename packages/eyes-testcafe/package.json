@@ -16,9 +16,8 @@
     "coverage:generate": "coverage-tests create-tests",
     "coverage:sandbox": "coverage-tests create-tests && yarn test:coverage && coverage-tests process-report",
     "coverage:prod": "coverage-tests create-tests && yarn test:coverage && coverage-tests process-report --send-report prod",
-    "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-testcafe' APPLITOOLS_BATCH_ID=$(uuidgen) testcafe chrome:headless test/coverage/generic --concurrency 15 --reporter spec,xunit:coverage-test-report.xml",
-    "test:coverage:1": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-testcafe' APPLITOOLS_BATCH_ID=$(uuidgen) testcafe chrome:headless test/coverage/generic --reporter spec,xunit:coverage-test-report.xml",
-    "test:coverage:1:debug": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-testcafe' APPLITOOLS_BATCH_ID=$(uuidgen) testcafe chrome:headless test/coverage/generic --reporter spec,xunit:coverage-test-report.xml --inspect-brk"
+    "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-testcafe' APPLITOOLS_BATCH_ID=$(uuidgen) testcafe chrome:headless test/coverage/generic --reporter spec,xunit:coverage-test-report.xml",
+    "test:coverage:debug": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-testcafe' APPLITOOLS_BATCH_ID=$(uuidgen) testcafe chrome:headless test/coverage/generic --reporter spec,xunit:coverage-test-report.xml --inspect-brk"
   },
   "keywords": [
     "eyes-testcafe",
