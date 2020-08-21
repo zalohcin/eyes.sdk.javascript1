@@ -2,6 +2,7 @@ const assert = require('assert')
 const spec = require('../../src/SpecDriver')
 const {Selector} = require('testcafe')
 const fs = require('fs')
+const {EyesFactory} = require('../../src/TestCafeSDK')
 
 fixture`SpecDriver`.page`https://applitools.github.io/demo/TestPages/FramesTestPage/`
 
@@ -247,4 +248,12 @@ test('setWindowSize', async driver => {
   await spec.setWindowRect(driver, expectedRect)
   const actualRect = await spec.getWindowRect(driver)
   assert.deepStrictEqual(actualRect, expectedRect)
+})
+// TODO: use fakeEyesServer
+test('Eyes integration', async driver => {
+  const eyes = new EyesFactory()
+  assert.doesNotThrow(async () => {
+    await eyes.open(driver)
+  })
+  if (eyes.getIsOpen()) await eyes.close(false)
 })
