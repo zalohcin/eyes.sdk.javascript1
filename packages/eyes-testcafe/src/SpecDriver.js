@@ -109,9 +109,8 @@ function prepareClientFunction({clientFunction, dependencies, driver}) {
       return {result, hasDomNodes: false}
       /* eslint-enable */
     },
-    {dependencies: {prepareArgs, ...dependencies}},
+    {dependencies: {prepareArgs, ...dependencies}, boundTestRun: driver},
   )
-  executor.with({boundTestRun: driver})
   return executor
 }
 async function transformSelector(selector, opts = {}) {
@@ -217,7 +216,6 @@ async function findElement(_driver, selector) {
 }
 async function findElements(driver, selector) {
   const transformedSelector = await transformSelector(selector, {findAll: true})
-  debugger
   if (selector.type === 'xpath') return await transformedSelector()
   return await executeScript(
     driver,
@@ -230,7 +228,6 @@ async function findElements(driver, selector) {
 }
 async function getElementRect(_driver, element) {
   const elSnapshot = isSelector(element) ? await transformSelector(element) : element
-  debugger
   return elSnapshot.boundingClientRect
 }
 async function getTitle(_driver) {
