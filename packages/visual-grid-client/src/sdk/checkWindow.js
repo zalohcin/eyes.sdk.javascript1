@@ -32,11 +32,12 @@ function makeCheckWindow({
   visualGridOptions: _visualGridOptions,
 }) {
   return function checkWindow({
-    resourceUrls = [],
-    resourceContents = {},
-    frames = [],
+    // resourceUrls = [],
+    // resourceContents = {},
+    // frames = [],
+    // cdt,
+    snapshots,
     url,
-    cdt,
     tag,
     target = 'window',
     fully = true,
@@ -80,22 +81,28 @@ function makeCheckWindow({
 
     if (typeof window === 'undefined') {
       const handleBrowserDebugData = require('../troubleshoot/handleBrowserDebugData')
-      handleBrowserDebugData({
-        frame: {resourceUrls, resourceContents, frames, cdt, url},
-        metaData: {agentId: wrappers[0].getBaseAgentId()},
-        logger,
+      snapshots.forEach(snapshot => {
+        handleBrowserDebugData({
+          frame: snapshot,
+          metaData: {agentId: wrappers[0].getBaseAgentId()},
+          logger,
+        })
       })
     }
 
-    const getResourcesPromise = createRGridDOMAndGetResourceMapping({
-      resourceUrls,
-      resourceContents,
-      cdt,
-      frames,
-      userAgent,
-      referer: url,
-      proxySettings: wrappers[0].getProxy(),
-    })
+    const getResourcesPromise = Promise.all(
+      snapshots.map(snapshot =>
+        createRGridDOMAndGetResourceMapping({
+          resourceUrls: snapshot.resourceUrls,
+          resourceContents: snapshot.resourceContents,
+          cdt: snapshot.cdt,
+          frames: snapshot.frames,
+          userAgent,
+          referer: url,
+          proxySettings: wrappers[0].getProxy(),
+        }),
+      ),
+    )
 
     const noOffsetSelectors = {
       all: [ignore, layout, strict, content, accessibility],
@@ -274,7 +281,15 @@ function makeCheckWindow({
         return
       }
 
-      const {rGridDom: dom, allResources: resources} = await getResourcesPromise
+      const results = await getResourcesPromise
+      const {dom, resources} = results.reduce(
+        (results, {rGridDom, allResources}) => {
+          results.dom.push(rGridDom)
+          results.resources.push(Object.values(allResources))
+          return results
+        },
+        {dom: [], resources: []},
+      )
 
       if (testController.shouldStopAllTests()) {
         logger.log(`aborting startRender because there was an error in getAllResources`)
@@ -284,7 +299,7 @@ function makeCheckWindow({
       const renderRequests = createRenderRequests({
         url,
         dom,
-        resources: Object.values(resources),
+        resources,
         browsers,
         renderInfo,
         sizeMode,
@@ -307,8 +322,8 @@ function makeCheckWindow({
       globalState.setQueuedRendersCount(globalState.getQueuedRendersCount() - 1)
 
       if (saveDebugData) {
-        for (const renderId of renderIds) {
-          await saveData({renderId, cdt, resources, url, logger})
+        for (const [index, renderId] of renderIds.entries()) {
+          await saveData({renderId, cdt: snapshots[index].cdt, resources, url, logger})
         }
       }
 

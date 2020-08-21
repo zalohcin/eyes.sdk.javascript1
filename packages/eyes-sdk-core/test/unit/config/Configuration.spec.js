@@ -625,4 +625,16 @@ describe('Configuration', () => {
     const config = new Configuration({defaultMatchSettings: {matchLevel: 'Layout'}})
     assert.strictEqual(config.getMatchLevel(), MatchLevel.Layout)
   })
+
+  it('setLayoutBreakpoints()', async () => {
+    const config = new Configuration()
+    config.setLayoutBreakpoints(true)
+    assert.deepStrictEqual(config.getLayoutBreakpoints(), true)
+    config.setLayoutBreakpoints([25, 50, 100, 200])
+    assert.deepStrictEqual(config.getLayoutBreakpoints(), [25, 50, 100, 200])
+    config.setLayoutBreakpoints([100, 200, 200, 100, 50, 25])
+    assert.deepStrictEqual(config.getLayoutBreakpoints(), [25, 50, 100, 200])
+    config.setLayoutBreakpoints([])
+    assert.deepStrictEqual(config.getLayoutBreakpoints(), false)
+  })
 })

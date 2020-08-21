@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- move `takeDomSnapshot` to `eyes-sdk-core`
 
 ## 14.7.5 - 2020/8/13
 
