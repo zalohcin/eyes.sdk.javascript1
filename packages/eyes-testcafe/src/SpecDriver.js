@@ -281,16 +281,19 @@ async function waitUntilDisplayed(_driver, element, timeout) {
 }
 // placeholder until implemented in core
 async function getWindowRect(driver) {
-  // NOTE: returns 0, 0 when running headless on Chrome...
-  return await executeScript(
-    driver,
-    'return {width: window.outerWidth, height: window.outerHeight}',
-  )
+  const snippet = 'return {width: window.outerWidth, height: window.outerHeight}'
+  const rect = await executeScript(driver, snippet)
+  // NOTE: Chrome headless returns 0, 0 when running headless. To compensate,
+  // we set the window to a known size (which ensures that outerWidth and outerHeight
+  // are set). We then lookup the rect again and return it
+  if (rect.width && rect.height) return rect
+  await setWindowRect(driver, {width: 1024, height: 768})
+  return await executeScript(driver, snippet)
 }
 // placeholder until implemented in core
 async function setWindowRect(driver, {width = 0, height = 0} = {}) {
   await driver.resizeWindow(width, height)
-  // dirty hack: overriding outerWidth & outerHeight when it is set to 0, 0
+  // NOTE: overriding outerWidth & outerHeight when it is set to 0, 0 (e.g., Chrome headless)
   await executeScript(
     driver,
     `if (!window.outerWidth && !window.outerHeight) {
