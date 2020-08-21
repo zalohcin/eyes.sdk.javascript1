@@ -182,7 +182,7 @@ async function executeScript(driver, script, ...args) {
     Object.entries(result).forEach((entry, index) => {
       const key = entry[0]
       const value = entry[1]
-      if (value.isDomNode) r[key] = domNodes.length ? domNodes[index] : domNodes
+      if (value && value.isDomNode) r[key] = domNodes.length ? domNodes[index] : domNodes
       else r[key] = value
     })
     return r
