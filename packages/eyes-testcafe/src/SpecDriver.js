@@ -49,6 +49,9 @@ function isEyesSelector(selector) {
 function isTestCafeSelector(selector) {
   return !!(selector && selector.addCustomMethods && selector.find && selector.parent)
 }
+function isDomNodeSnapshot(snapshot) {
+  return typeof snapshot === 'object' && !!snapshot.nodeType
+}
 function prepareArgsFunctionString(args) {
   // NOTE:
   // Objects/functions passed into a ClientFunction get transpiled into something that is difficult to understand.
@@ -131,7 +134,7 @@ function isSelector(selector) {
   return TypeUtils.isString(selector) || isTestCafeSelector(selector)
 }
 function isElement(element) {
-  return typeof element === 'object' && !!element.nodeType
+  return isDomNodeSnapshot(element) || isTestCafeSelector(element)
 }
 function isEqualElements(_driver, element1, element2) {
   if (!element1 || !element2) return false
@@ -212,7 +215,6 @@ async function childContext(driver, element) {
 }
 async function findElement(driver, selector) {
   selector = await transformSelector({driver, selector})
-  debugger
   const elSnapshot = await selector()
   return elSnapshot ? elSnapshot.selector : undefined
 }

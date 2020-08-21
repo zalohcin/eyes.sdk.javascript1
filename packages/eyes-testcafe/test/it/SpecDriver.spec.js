@@ -12,7 +12,11 @@ test('isDriver(driver)', driver => {
 test('isDriver(wrong)', _driver => {
   assert.strictEqual(spec.isDriver({}), false)
 })
-test('isElement(Selector)', async _driver => {
+test('isElement(Selector)', async () => {
+  const selector = Selector('div')
+  assert.strictEqual(spec.isElement(selector), true)
+})
+test('isElement(DOM Node snapshot)', async () => {
   const element = await Selector('div')()
   assert.strictEqual(spec.isElement(element), true)
 })
