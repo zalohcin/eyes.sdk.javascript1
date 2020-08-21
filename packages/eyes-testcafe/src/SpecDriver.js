@@ -39,9 +39,8 @@ async function XPathSelector(selector, opts = {}) {
     }
 
     return items
-  })
-  const result = await getElementsByXPath(selector)
-  return Array.isArray(result) && opts.findAll ? result : Selector(result)
+  }, opts)
+  return Selector(getElementsByXPath(selector), opts)
 }
 
 function isEyesSelector(selector) {
@@ -114,11 +113,12 @@ function prepareClientFunction({clientFunction, dependencies, driver}) {
   )
   return executor
 }
-async function transformSelector(selector, opts = {}) {
-  if (TypeUtils.isString(selector)) return Selector(selector)
+async function transformSelector({driver, selector}) {
+  if (TypeUtils.isString(selector)) return Selector(selector, {boundTestRun: driver})
   if (isEyesSelector(selector)) {
-    if (selector.type === 'css') return Selector(selector.selector)
-    else if (selector.type === 'xpath') return XPathSelector(selector.selector, opts)
+    if (selector.type === 'css') return Selector(selector.selector, {boundTestRun: driver})
+    else if (selector.type === 'xpath')
+      return XPathSelector(selector.selector, {boundTestRun: driver})
   }
   return selector
 }
@@ -210,13 +210,14 @@ async function childContext(driver, element) {
   // (it's assumed to be a child frame that is accessible from the current context).
   return await driver.switchToIframe(element)
 }
-async function findElement(_driver, selector) {
-  selector = await transformSelector(selector)
+async function findElement(driver, selector) {
+  selector = await transformSelector({driver, selector})
+  debugger
   const elSnapshot = await selector()
   return elSnapshot ? elSnapshot.selector : undefined
 }
 async function findElements(driver, selector) {
-  const transformedSelector = await transformSelector(selector, {findAll: true})
+  const transformedSelector = await transformSelector({driver, selector})
   if (selector.type === 'xpath') return await transformedSelector()
   return await executeScript(
     driver,
@@ -227,8 +228,10 @@ async function findElements(driver, selector) {
     extractSelectorString(transformedSelector),
   )
 }
-async function getElementRect(_driver, element) {
-  const elSnapshot = isSelector(element) ? await transformSelector(element) : element
+async function getElementRect(driver, element) {
+  const elSnapshot = isSelector(element)
+    ? await transformSelector({driver, selector: element})
+    : element
   return elSnapshot.boundingClientRect
 }
 async function getTitle(_driver) {
