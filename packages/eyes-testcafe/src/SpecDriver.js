@@ -326,3 +326,7 @@ exports.setWindowRect = setWindowRect
 // no-ops for coverage-tests
 exports.build = () => {}
 exports.cleanup = () => {}
+// no-op for core
+exports.toEyesSelector = () => {
+  return {type: false}
+}
