@@ -80,8 +80,9 @@ function prepareClientFunction({clientFunction, dependencies, driver}) {
       }
       if (isDOMNode(result)) {
         nodes.push(result)
-      } else if (Array.isArray(result)) {
-        filteredResult = result.map(entry => {
+      } else if (window.Array.isArray(result) || result instanceof window.NodeList) {
+        const _result = result instanceof window.NodeList ? window.Array.from(result) : result
+        filteredResult = _result.map(entry => {
           if (isDOMNode(entry)) {
             nodes.push(entry)
             return {isDomNode: true}
@@ -287,11 +288,11 @@ async function getWindowRect(driver) {
   // we set the window to a known size (which ensures that outerWidth and outerHeight
   // are set). We then lookup the rect again and return it
   if (rect.width && rect.height) return rect
-  await setWindowRect(driver, {width: 1024, height: 768})
+  await setWindowRect(driver)
   return await executeScript(driver, snippet)
 }
 // placeholder until implemented in core
-async function setWindowRect(driver, {width = 0, height = 0} = {}) {
+async function setWindowRect(driver, {width = 1024, height = 768} = {}) {
   await driver.resizeWindow(width, height)
   // NOTE: overriding outerWidth & outerHeight when it is set to 0, 0 (e.g., Chrome headless)
   await executeScript(
