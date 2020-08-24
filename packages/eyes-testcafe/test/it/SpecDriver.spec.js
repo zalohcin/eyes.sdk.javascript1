@@ -16,10 +16,6 @@ test('isElement(Selector)', async () => {
   const selector = Selector('div')
   assert.strictEqual(spec.isElement(selector), true)
 })
-test.skip('isElement(DOM Node snapshot)', async () => {
-  const element = await Selector('div')()
-  assert.strictEqual(spec.isElement(element), true)
-})
 test('isElement(wrong)', _driver => {
   assert.strictEqual(spec.isElement({}), false)
 })
