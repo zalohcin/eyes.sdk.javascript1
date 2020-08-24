@@ -134,7 +134,7 @@ function isSelector(selector) {
   return TypeUtils.isString(selector) || isTestCafeSelector(selector)
 }
 function isElement(element) {
-  return isDomNodeSnapshot(element) || isTestCafeSelector(element)
+  return isTestCafeSelector(element)
 }
 function isEqualElements(_driver, element1, element2) {
   if (!element1 || !element2) return false
@@ -173,11 +173,11 @@ async function executeScript(driver, script, ...args) {
   const domNodes = await executor()
 
   // stitch the two results together, preserving the indended result from the provided script
-  if (!result || !Object.keys(result).length) return domNodes
+  if (!result || !Object.keys(result).length) return domNodes.selector
   if (Array.isArray(result)) {
     return result.map((entry, index) => {
       if (entry.isDomNode) {
-        return domNodes.length ? domNodes[index] : domNodes
+        return domNodes.length ? domNodes[index].selector : domNodes.selector
       } else return entry
     })
   }
@@ -186,7 +186,8 @@ async function executeScript(driver, script, ...args) {
     Object.entries(result).forEach((entry, index) => {
       const key = entry[0]
       const value = entry[1]
-      if (value && value.isDomNode) r[key] = domNodes.length ? domNodes[index] : domNodes
+      if (value && value.isDomNode)
+        r[key] = domNodes.length ? domNodes[index].selector : domNodes.selector
       else r[key] = value
     })
     return r
