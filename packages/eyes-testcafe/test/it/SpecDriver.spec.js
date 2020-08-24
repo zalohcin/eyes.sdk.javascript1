@@ -154,6 +154,13 @@ test('executeScript return mixed data-types (Object)', async driver => {
   const actual = Object.entries(result).length
   assert.deepStrictEqual(actual, expected)
 })
+test('executeScript with serialized arguments', async driver => {
+  const serializedArgs = [{element: Selector('html')}]
+  const fn = function({element}) {
+    return element.style.overflow
+  }
+  await spec.executeScript(driver, fn, ...serializedArgs)
+})
 test('mainContext()', async driver => {
   try {
     const mainDocument = await Selector('html')()

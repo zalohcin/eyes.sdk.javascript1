@@ -8,6 +8,7 @@
     "lint": "eslint '**/*.js'",
     "render": "node ../sdk-shared/src/render.js",
     "test": "yarn test:it",
+    "test:unit": "mocha --no-timeouts ./test/unit/*.spec.js",
     "test:debug": "yarn test:it:debug",
     "test:full": "yarn test:it:full",
     "test:it": "testcafe chrome:headless ./test/it/*.spec.js",
@@ -52,7 +53,8 @@
     "@applitools/sdk-release-kit": "0.2.2",
     "@applitools/sdk-shared": "0.1.0",
     "eslint": "^7.2.0",
-    "testcafe": "^1.9.0"
+    "testcafe": "^1.9.0",
+    "mocha": "^8.0.1"
   },
   "engines": {
     "node": ">=8.9.0"

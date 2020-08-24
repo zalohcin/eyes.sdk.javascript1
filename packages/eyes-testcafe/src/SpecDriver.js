@@ -49,7 +49,7 @@ function isEyesSelector(selector) {
 function isTestCafeSelector(selector) {
   return !!(selector && selector.addCustomMethods && selector.find && selector.parent)
 }
-function isDomNodeSnapshot(snapshot) {
+function _isDomNodeSnapshot(snapshot) {
   return typeof snapshot === 'object' && !!snapshot.nodeType
 }
 function prepareArgsFunctionString(args) {
@@ -59,13 +59,20 @@ function prepareArgsFunctionString(args) {
   // We use this information to create a static function that will return a modified set of arguments
   // (to be run inside of the ClientFunction). It detects if a provided argument is a Selector function
   // and calls, otherwise, it will return the argument unchanged.
-  return `return [
-    ${args
-      .map((arg, index) => {
-        return isTestCafeSelector(arg) ? 'arguments[' + index + ']()' : 'arguments[' + index + ']'
-      })
-      .join(',\n    ')}
-  ]`
+
+  let entry = ''
+  entry += 'let args = [...arguments]\n'
+  args.forEach((arg, index) => {
+    if (typeof arg === 'object') {
+      for (const [key, value] of Object.entries(args[0])) {
+        if (isTestCafeSelector(value)) entry += `args[0].${key} = args[0].${key}()\n`
+      }
+    } else {
+      if (isTestCafeSelector(arg)) entry += `args[${index}] = args[${index}]()\n`
+    }
+  })
+  entry += `return args`
+  return entry
 }
 function prepareClientFunction({clientFunction, dependencies, driver}) {
   const prepareArgs = new Function(prepareArgsFunctionString(dependencies.args))
@@ -337,3 +344,4 @@ exports.cleanup = () => {}
 exports.toEyesSelector = () => {
   return {type: false}
 }
+exports.prepareArgsFunctionString = prepareArgsFunctionString
