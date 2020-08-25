@@ -301,8 +301,8 @@ class EyesVisualGrid extends EyesCore {
         } else if (TypeUtils.has(browser, 'chromeEmulationInfo')) {
           const {width} = await this._getEmulatedDeviceSize(browser.chromeEmulationInfo)
           return width
-        } else if (TypeUtils.has(browser, 'iosEmulationInfo')) {
-          const {width} = await this._getIosDeviceSize(browser.iosEmulationInfo)
+        } else if (TypeUtils.has(browser, 'iosDeviceInfo')) {
+          const {width} = await this._getIosDeviceSize(browser.iosDeviceInfo)
           return width
         }
       }),
