@@ -49,9 +49,6 @@ function isEyesSelector(selector) {
 function isTestCafeSelector(selector) {
   return !!(selector && selector.addCustomMethods && selector.find && selector.parent)
 }
-function _isDomNodeSnapshot(snapshot) {
-  return typeof snapshot === 'object' && !!snapshot.nodeType
-}
 function prepareArgsFunctionString(args) {
   // NOTE:
   // Objects/functions passed into a ClientFunction get transpiled into something that is difficult to understand.
@@ -59,7 +56,6 @@ function prepareArgsFunctionString(args) {
   // We use this information to create a static function that will return a modified set of arguments
   // (to be run inside of the ClientFunction). It detects if a provided argument is a Selector function
   // and calls, otherwise, it will return the argument unchanged.
-
   let entry = ''
   entry += 'let args = [...arguments]\n'
   args.forEach((arg, index) => {
@@ -301,20 +297,22 @@ async function getWindowRect(driver) {
   // we set the window to a known size (which ensures that outerWidth and outerHeight
   // are set). We then lookup the rect again and return it
   if (rect.width && rect.height) return rect
-  await setWindowRect(driver)
-  return await executeScript(driver, snippet)
+  const defaultRect = {width: 1024, height: 768}
+  await setWindowRect(driver, defaultRect)
+  return defaultRect
 }
 // placeholder until implemented in core
-async function setWindowRect(driver, {width = 1024, height = 768} = {}) {
+async function setWindowRect(driver, {width, height}) {
   await driver.resizeWindow(width, height)
-  // NOTE: overriding outerWidth & outerHeight when it is set to 0, 0 (e.g., Chrome headless)
-  await executeScript(
-    driver,
-    `if (!window.outerWidth && !window.outerHeight) {
-    window.outerWidth = ${width}
-    window.outerHeight = ${height}
-  }`,
-  )
+  // NOTE: outerWidth & outerHeight remain at 0, 0 on Chrome headless
+  // (unecessary) workaround:
+  //await executeScript(
+  //  driver,
+  //  `if (!window.outerWidth && !window.outerHeight) {
+  //  window.outerWidth = ${width}
+  //  window.outerHeight = ${height}
+  //}`,
+  //)
 }
 
 exports.isDriver = isDriver

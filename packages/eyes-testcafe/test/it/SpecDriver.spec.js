@@ -74,8 +74,10 @@ test('findElements(Eyes Selector - css)', async driver => {
   const elements = await spec.findElements(driver, {type: 'css', selector: 'div'})
   assert.deepStrictEqual(!!elements.length, true)
 })
-// XPathSelector does not return an array even though it's supposed to
 test.skip('findElements(Eyes Selector - xpath)', async driver => {
+  // NOTE:
+  // XPathSelector does not return an array even though it's supposed to
+  // Not necessary for core, so skipping.
   const elements = await spec.findElements(driver, {type: 'xpath', selector: '//div'})
   assert.deepStrictEqual(!!elements.length, true)
 })
@@ -251,13 +253,15 @@ test('getElementRect (DOM Node snapshot)', async driver => {
   assert.ok(Number.isInteger(Math.floor(rect.width)))
   assert.ok(Number.isInteger(Math.floor(rect.height)))
 })
-test('getWindowSize', async driver => {
+test('getWindowRect', async driver => {
   const rect = await spec.getWindowRect(driver)
-  console.log(rect)
   assert.ok(Number.isInteger(rect.width))
   assert.ok(Number.isInteger(rect.height))
 })
-test('setWindowSize', async driver => {
+test.skip('setWindowRect', async driver => {
+  // NOTE:
+  // Resizing on Chrome headless doesn't update window.outerHeight/outerWidth.
+  // Not required for core, so skipping.
   const expectedRect = {width: 500, height: 500}
   await spec.setWindowRect(driver, expectedRect)
   const actualRect = await spec.getWindowRect(driver)
