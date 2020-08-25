@@ -49,7 +49,7 @@
   "devDependencies": {
     "@applitools/sdk-fake-eyes-server": "^2.0.0",
     "@applitools/sdk-release-kit": "0.2.2",
-    "@applitools/visual-grid-client": "14.7.3",
+    "@applitools/visual-grid-client": "14.7.5",
     "assert-rejects": "1.0.0",
     "chai": "4.2.0",
     "chai-uuid": "1.0.6",
