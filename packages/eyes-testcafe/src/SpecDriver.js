@@ -305,14 +305,6 @@ async function getWindowRect(driver) {
 async function setWindowRect(driver, {width, height}) {
   await driver.resizeWindow(width, height)
   // NOTE: outerWidth & outerHeight remain at 0, 0 on Chrome headless
-  // (unecessary) workaround:
-  //await executeScript(
-  //  driver,
-  //  `if (!window.outerWidth && !window.outerHeight) {
-  //  window.outerWidth = ${width}
-  //  window.outerHeight = ${height}
-  //}`,
-  //)
 }
 
 exports.isDriver = isDriver
@@ -342,4 +334,5 @@ exports.cleanup = () => {}
 exports.toEyesSelector = () => {
   return {type: false}
 }
+// for unit testing
 exports.prepareArgsFunctionString = prepareArgsFunctionString
