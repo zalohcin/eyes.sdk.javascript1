@@ -36,7 +36,7 @@ function makeCheckWindow({
     // resourceContents = {},
     // frames = [],
     // cdt,
-    snapshots,
+    snapshot,
     url,
     tag,
     target = 'window',
@@ -58,6 +58,8 @@ function makeCheckWindow({
     ignoreDisplacements,
     visualGridOptions = _visualGridOptions,
   }) {
+    const snapshots = Array.isArray(snapshot) ? snapshot : Array(browsers.length).fill(snapshot)
+
     if (target === 'window' && !fully) {
       sizeMode = 'viewport'
     } else if (target === 'region' && selector) {

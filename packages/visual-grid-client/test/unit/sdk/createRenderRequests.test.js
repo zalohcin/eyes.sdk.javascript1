@@ -6,7 +6,7 @@ const createRenderRequests = require('../../../src/sdk/createRenderRequests')
 const createRGridDom = require('../../../src/sdk/createRGridDom')
 
 describe('createRenderRequests', () => {
-  let url, renderInfo, dom, rGridDom
+  let url, renderInfo, dom, domObj, resources, resourcesObj
 
   beforeEach(() => {
     url = 'url'
@@ -15,12 +15,14 @@ describe('createRenderRequests', () => {
       getStitchingServiceUrl: () => 'stitchingServiceUrl',
     }
     const cdt = 'cdt'
-    dom = {
+    domObj = {
       contentType: 'x-applitools-html/cdt',
       hash: getSha256Hash(JSON.stringify({resources: {}, domNodes: cdt})),
       hashFormat: 'sha256',
     }
-    rGridDom = createRGridDom({resources: {}, cdt})
+    dom = createRGridDom({resources: {}, cdt})
+    resources = []
+    resourcesObj = {}
   })
 
   it('works', () => {
@@ -29,6 +31,7 @@ describe('createRenderRequests', () => {
     const url = 'url'
     const cdt = 'cdt'
     const resources = [r1, r2]
+    const dom = createRGridDom({resources: {['url1']: r1, ['url2']: r2}, cdt})
     const browsers = [
       {width: 1, height: 2, name: 'b1'},
       {width: 3, height: 4, name: 'b2'},
@@ -41,8 +44,8 @@ describe('createRenderRequests', () => {
 
     const renderRequests = createRenderRequests({
       url,
-      resources,
-      dom: createRGridDom({resources: {['url1']: r1, ['url2']: r2}, cdt}),
+      resources: Array(browsers.length).fill(resources),
+      dom: Array(browsers.length).fill(dom),
       browsers,
       renderInfo,
       sizeMode,
@@ -55,7 +58,7 @@ describe('createRenderRequests', () => {
     })
 
     const resourcesObj = {url1: 'hash1', url2: 'hash2'}
-    const dom = {
+    const domObj = {
       contentType: 'x-applitools-html/cdt',
       hash: getSha256Hash(JSON.stringify({resources: resourcesObj, domNodes: 'cdt'})),
       hashFormat: 'sha256',
@@ -66,7 +69,7 @@ describe('createRenderRequests', () => {
         webhook: 'resultsUrl',
         stitchingService: 'stitchingServiceUrl',
         url,
-        dom,
+        dom: domObj,
         resources: resourcesObj,
         browser: {name: 'b1'},
         scriptHooks,
@@ -83,7 +86,7 @@ describe('createRenderRequests', () => {
         webhook: 'resultsUrl',
         stitchingService: 'stitchingServiceUrl',
         url,
-        dom,
+        dom: domObj,
         resources: resourcesObj,
         browser: {name: 'b2'},
         scriptHooks,
@@ -105,8 +108,8 @@ describe('createRenderRequests', () => {
     const browsers = [{deviceName, screenOrientation}]
     const renderRequests = createRenderRequests({
       url,
-      resources: [],
-      dom: rGridDom,
+      resources: [resources],
+      dom: [dom],
       browsers,
       renderInfo,
       noOffsetSelectors: [],
@@ -118,8 +121,8 @@ describe('createRenderRequests', () => {
         webhook: 'resultsUrl',
         stitchingService: 'stitchingServiceUrl',
         url,
-        dom,
-        resources: {},
+        dom: domObj,
+        resources: resourcesObj,
         renderInfo: {
           emulationInfo: {deviceName, screenOrientation},
           height: undefined,
@@ -140,8 +143,8 @@ describe('createRenderRequests', () => {
     }
     const renderRequests = createRenderRequests({
       url,
-      resources: [],
-      dom: rGridDom,
+      resources: [resources],
+      dom: [dom],
       browsers,
       renderInfo,
       noOffsetSelectors: [],
@@ -153,8 +156,8 @@ describe('createRenderRequests', () => {
         webhook: 'resultsUrl',
         stitchingService: 'stitchingServiceUrl',
         url,
-        dom,
-        resources: {},
+        dom: domObj,
+        resources: resourcesObj,
         renderInfo: {
           emulationInfo: {
             width: 1,
@@ -187,8 +190,8 @@ describe('createRenderRequests', () => {
     const floating = [{some: 'thing'}, {type: 'css', selector: 'sel'}]
     const renderRequests = createRenderRequests({
       url,
-      resources: [],
-      dom: rGridDom,
+      resources: [resources],
+      dom: [dom],
       browsers,
       renderInfo,
       noOffsetSelectors: [ignore, layout, strict, content, accessibility],
@@ -200,8 +203,8 @@ describe('createRenderRequests', () => {
         webhook: 'resultsUrl',
         stitchingService: 'stitchingServiceUrl',
         url,
-        dom,
-        resources: {},
+        dom: domObj,
+        resources: resourcesObj,
         renderInfo: {
           height: 2,
           width: 1,
@@ -233,8 +236,8 @@ describe('createRenderRequests', () => {
     const browsers = [{iosDeviceInfo}]
     const renderRequests = createRenderRequests({
       url,
-      resources: [],
-      dom: rGridDom,
+      resources: [resources],
+      dom: [dom],
       browsers,
       renderInfo,
     })
@@ -244,8 +247,8 @@ describe('createRenderRequests', () => {
         webhook: 'resultsUrl',
         stitchingService: 'stitchingServiceUrl',
         url,
-        dom,
-        resources: {},
+        dom: domObj,
+        resources: resourcesObj,
         browser: {name: 'safari'},
         platform: {name: 'ios'},
         renderInfo: {

@@ -257,7 +257,7 @@ class EyesVisualGrid extends EyesCore {
         fully: this.getForceFullPageScreenshot() || config.fully,
         sendDom: this.getSendDom() || config.sendDom,
         matchLevel: TypeUtils.getOrDefault(config.matchLevel, this.getMatchLevel()),
-        snapshots,
+        snapshot: snapshots,
         url,
       })
     })
