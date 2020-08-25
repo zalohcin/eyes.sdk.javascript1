@@ -262,4 +262,43 @@ describe('createRenderRequests', () => {
       },
     ])
   })
+
+  it('handles multiple dom snapshots', () => {
+    const browsers = [
+      {width: 1, height: 1, name: '1'},
+      {width: 2, height: 2, name: '2'},
+      {width: 3, height: 3, name: '1'},
+    ]
+    const dom1 = createRGridDom({resources: {}, cdt: 'cdt1'})
+    const dom2 = createRGridDom({resources: {}, cdt: 'cdt2'})
+    const renderRequests = createRenderRequests({
+      url,
+      resources: [resources, resources, resources],
+      dom: [dom1, dom2, dom1],
+      browsers,
+      renderInfo,
+    })
+
+    expect(renderRequests.map(r => r.toJSON())).to.eql(
+      browsers.map(browser => ({
+        webhook: 'resultsUrl',
+        stitchingService: 'stitchingServiceUrl',
+        url,
+        dom: {
+          contentType: 'x-applitools-html/cdt',
+          hash: getSha256Hash(JSON.stringify({resources: {}, domNodes: `cdt${browser.name}`})),
+          hashFormat: 'sha256',
+        },
+        resources: resourcesObj,
+        browser: {name: browser.name},
+        renderInfo: {
+          width: browser.width,
+          height: browser.height,
+          region: undefined,
+          selector: undefined,
+          sizeMode: undefined,
+        },
+      })),
+    )
+  })
 })
