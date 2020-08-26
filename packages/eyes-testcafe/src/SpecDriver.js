@@ -293,17 +293,17 @@ async function waitUntilDisplayed(_driver, element, timeout) {
 async function getWindowRect(driver) {
   const rect = await executeScript(
     driver,
-    'return {width: window.outerWidth, height: window.outerHeight}',
+    'return {x: window.scrollX, y: scrollY, width: window.outerWidth, height: window.outerHeight}',
   )
+  // ensure there is a width and height
   if (rect && rect.width && rect.height) return rect
-  const defaultRect = {width: 2048, height: 1536}
-  await setWindowRect(defaultRect)
-  return defaultRect
+  const defaultRect = {width: 1024, height: 768}
+  await setWindowRect(driver, defaultRect)
+  return await getWindowRect(driver)
 }
 // placeholder until implemented in core
-async function setWindowRect(driver, {width, height} = {}) {
+async function setWindowRect(driver, {x, y, width, height} = {}) {
   if (width && height) {
-    //await driver.resizeWindow(width, height)
     await executeScript(driver, `window.resizeTo(${width}, ${height})`)
     await executeScript(
       driver,
@@ -313,6 +313,8 @@ async function setWindowRect(driver, {width, height} = {}) {
   }`,
     )
   }
+  if (Number.isInteger(x) && Number.isInteger(y))
+    await executeScript(driver, `window.scroll(${x}, ${y})`)
 }
 
 exports.isDriver = isDriver

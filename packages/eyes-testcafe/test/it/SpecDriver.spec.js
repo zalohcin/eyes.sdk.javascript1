@@ -258,11 +258,18 @@ test('getWindowRect', async driver => {
   assert.ok(Number.isInteger(rect.width))
   assert.ok(Number.isInteger(rect.height))
 })
-test('setWindowRect', async driver => {
-  const expectedRect = {width: 500, height: 500}
+test('setWindowRect (width, height)', async driver => {
+  const expectedRect = {x: 0, y: 0, width: 500, height: 500}
   await spec.setWindowRect(driver, expectedRect)
   const actualRect = await spec.getWindowRect(driver)
   assert.deepStrictEqual(actualRect, expectedRect)
+})
+test('setWindowRect (x, y)', async driver => {
+  const expectedPosition = {x: 0, y: 10}
+  await spec.setWindowRect(driver, expectedPosition)
+  const actualPosition = await spec.getWindowRect(driver)
+  assert.deepStrictEqual(actualPosition.x, expectedPosition.x)
+  assert.deepStrictEqual(actualPosition.y, expectedPosition.y)
 })
 // TODO: use fakeEyesServer
 test('Eyes integration', async driver => {
