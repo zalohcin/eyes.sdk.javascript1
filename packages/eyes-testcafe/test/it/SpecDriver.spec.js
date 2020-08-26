@@ -258,10 +258,7 @@ test('getWindowRect', async driver => {
   assert.ok(Number.isInteger(rect.width))
   assert.ok(Number.isInteger(rect.height))
 })
-test.skip('setWindowRect', async driver => {
-  // NOTE:
-  // Resizing on Chrome headless doesn't update window.outerHeight/outerWidth.
-  // Not required for core, so skipping.
+test('setWindowRect', async driver => {
   const expectedRect = {width: 500, height: 500}
   await spec.setWindowRect(driver, expectedRect)
   const actualRect = await spec.getWindowRect(driver)
