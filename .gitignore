@@ -33,5 +33,6 @@ coverage-tests-metadata.json
 
 # other
 tags
+tags.*
 support
 eyes-testcafe-bak
