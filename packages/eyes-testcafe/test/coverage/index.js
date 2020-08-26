@@ -27,8 +27,8 @@ test${test.disabled ? '.skip' : ''}('${test.name}${
 }
 
 const supportedTests = [
-  //{name: 'TestAcmeLogin', executionMode: {isVisualGrid: true}},
-  {name: 'TestAcmeLogin', executionMode: {isCssStitching: true}},
+  {name: 'TestAcmeLogin', executionMode: {isVisualGrid: true}},
+  //{name: 'TestAcmeLogin', executionMode: {isCssStitching: true}},
   //{name: 'TestAcmeLogin', executionMode: {isScrollStitching: true}},
   //{name: 'TestCheckElementFully_Fluent', executionMode: {isVisualGrid: true}},
   //{name: 'TestCheckElementFully_Fluent', executionMode: {isCssStitching: true}},
@@ -71,6 +71,7 @@ const supportedTests = [
   //{name: 'TestCheckFrameFully_Fluent', executionMode: {isVisualGrid: true}, disabled: true},
   //{name: 'TestCheckFrameFully_Fluent', executionMode: {isCssStitching: true}, disabled: true},
   //{name: 'TestCheckFrameFully_Fluent', executionMode: {isScrollStitching: true}},
+  // HERE
   //{
   //  name: 'TestCheckFrameInFrame_Fully_Fluent',
   //  executionMode: {isVisualGrid: true},
