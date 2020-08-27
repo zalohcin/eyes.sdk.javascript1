@@ -375,29 +375,23 @@ async function getElementXpath(logger, context, element) {
     return null
   })
 }
-/**
- * Translate element selector to the persisted regions
- * @template TSelector
- * @param {Logger} logger
- * @param {EyesContext} context
- * @param {TSelector} selector - element selector
- * @return {Promise<{type: string, selector: string}[]>} persisted regions for selector
- */
-async function toPersistedRegions(logger, context, selector) {
-  const eyesSelector = context.constructor.toEyesSelector(selector)
-  if (eyesSelector.type === 'css' || eyesSelector.type === 'xpath') {
-    return [eyesSelector]
+
+async function markElements(_logger, context, elements) {
+  const ids = Array(elements.length)
+    .fill()
+    .map(GeneralUtils.guid)
+  await context.execute(snippets.markElements, {elements, ids})
+  const elementIdsMap = new WeakMap()
+  for (const [index, el] of elements.entries()) {
+    elementIdsMap.set(el, ids[index])
   }
-  const elements = await context.elements(selector)
-  const persistedRegions = []
-  for (const element of elements) {
-    persistedRegions.push({
-      type: 'xpath',
-      selector: await getElementXpath(logger, context, element),
-    })
-  }
-  return persistedRegions
+  return elementIdsMap
 }
+
+async function cleanupElementIds(_logger, context, elements) {
+  await context.execute(snippets.cleanupElementIds, {elements})
+}
+
 /**
  * @template TElement
  * @typedef ContextInfo
@@ -492,7 +486,8 @@ module.exports = {
   blurElement,
   focusElement,
   getElementXpath,
-  toPersistedRegions,
+  markElements,
+  cleanupElementIds,
   getContextInfo,
   getChildFramesInfo,
   ensureRegionVisible,

@@ -953,40 +953,6 @@ class CheckSettings {
   toString() {
     return `${this.constructor.name} ${GeneralUtils.toString(this)}`
   }
-  /**
-   * @private
-   */
-  async toCheckWindowConfiguration(context) {
-    const config = {
-      ignore: await persistRegions(this.getIgnoreRegions()),
-      floating: await persistRegions(this.getFloatingRegions()),
-      strict: await persistRegions(this.getStrictRegions()),
-      layout: await persistRegions(this.getLayoutRegions()),
-      content: await persistRegions(this.getContentRegions()),
-      accessibility: await persistRegions(this.getAccessibilityRegions()),
-      target: !this._targetRegion && !this._targetElement ? 'window' : 'region',
-      fully: this.getStitchContent(),
-      tag: this.getName(),
-      scriptHooks: this.getScriptHooks(),
-      sendDom: this.getSendDom(),
-      matchLevel: this.getMatchLevel(),
-      visualGridOptions: this._visualGridOptions,
-    }
-    if (config.target === 'region') {
-      const type = this._targetRegion ? 'region' : 'selector'
-      const [region] = type ? await this.getTargetProvider().toPersistedRegions(context) : []
-      config[type] = region
-    }
-    return config
-    async function persistRegions(regions = []) {
-      const persisted = []
-      for (const region of regions) {
-        const persistedRegions = await region.toPersistedRegions(context)
-        persisted.push(...persistedRegions)
-      }
-      return persisted
-    }
-  }
 }
 
 module.exports = CheckSettings

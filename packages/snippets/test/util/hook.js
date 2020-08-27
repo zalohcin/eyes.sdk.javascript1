@@ -18,6 +18,7 @@ exports.mochaHooks = {
           accessKey: process.env.SAUCE_ACCESS_KEY,
         },
       },
+      connectionRetryCount: 0,
     })
   },
 

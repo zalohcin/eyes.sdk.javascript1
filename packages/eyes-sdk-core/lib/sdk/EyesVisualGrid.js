@@ -10,6 +10,8 @@ const CorsIframeHandler = require('../capture/CorsIframeHandler')
 const CorsIframeHandles = require('../capture/CorsIframeHandles')
 const VisualGridRunner = require('../runner/VisualGridRunner')
 const EyesCore = require('./EyesCore')
+const EyesUtils = require('./EyesUtils')
+const {getAllRegionElements, toCheckWindowConfiguration} = require('../fluent/CheckSettingsUtils')
 
 /**
  * @typedef {import('../capture/CorsIframeHandles').CorsIframeHandle} CorsIframeHandle
@@ -238,28 +240,37 @@ class EyesVisualGrid extends EyesCore {
     }
 
     return this._checkPrepare(checkSettings, async () => {
-      // this._logger.verbose(`Dom extraction starting   (${checkSettings.toString()})   $$$$$$$$$$$$`)
-      const pageDomResults = await this.constructor.VisualGridClient.takeDomSnapshot({
-        executeScript: this._context.execute.bind(this._context),
-      })
-      const {cdt, url, resourceContents, resourceUrls, frames} = pageDomResults
-      if (this.getCorsIframeHandle() === CorsIframeHandles.BLANK) {
-        CorsIframeHandler.blankCorsIframeSrcOfCdt({url, cdt, frames})
-      }
-      // this._logger.verbose(`Dom extracted  (${checkSettings.toString()})   $$$$$$$$$$$$`)
+      const regionElements = await getAllRegionElements({checkSettings, context: this._driver})
+      debugger
+      const elementIdsMap = await EyesUtils.markElements(this._logger, this._driver, regionElements)
 
-      const config = await checkSettings.toCheckWindowConfiguration(this._driver)
-      await this._checkWindowCommand({
-        ...config,
-        fully: this.getForceFullPageScreenshot() || config.fully,
-        sendDom: this.getSendDom() || config.sendDom,
-        matchLevel: TypeUtils.getOrDefault(config.matchLevel, this.getMatchLevel()),
-        resourceUrls,
-        resourceContents,
-        frames,
-        url,
-        cdt,
-      })
+      try {
+        const pageDomResults = await this.constructor.VisualGridClient.takeDomSnapshot({
+          executeScript: this._context.execute.bind(this._context),
+        })
+
+        const {cdt, url, resourceContents, resourceUrls, frames} = pageDomResults
+        if (this.getCorsIframeHandle() === CorsIframeHandles.BLANK) {
+          CorsIframeHandler.blankCorsIframeSrcOfCdt({url, cdt, frames})
+        }
+
+        const config = toCheckWindowConfiguration({
+          checkSettings,
+          configuration: this._configuration,
+          elementIdsMap,
+        })
+
+        await this._checkWindowCommand({
+          ...config,
+          resourceUrls,
+          resourceContents,
+          frames,
+          url,
+          cdt,
+        })
+      } finally {
+        await EyesUtils.cleanupElementIds(this._logger, this._driver, regionElements)
+      }
     })
   }
   /**

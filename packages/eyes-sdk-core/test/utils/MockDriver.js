@@ -120,6 +120,20 @@ class MockDriver {
     this.mockScript(/^\/\* @applitools\/dom-snapshot@[\d.]+ \*\//, () =>
       FakeDomSnapshot.generateDomSnapshot(this),
     )
+    this.mockScript(snippets.markElements, ({elements, ids}) => {
+      for (const [index, el] of elements.entries()) {
+        el.attributes = el.attributes || []
+        el.attributes.push({name: 'data-eyes-selector', value: ids[index]})
+      }
+    })
+    this.mockScript(snippets.cleanupElementIds, ({elements}) => {
+      for (const el of elements) {
+        el.attributes.splice(
+          el.attributes.findIndex(({name}) => name === 'data-eyes-selector'),
+          1,
+        )
+      }
+    })
   }
   mockScript(scriptMatcher, resultGenerator) {
     this._scripts.set(scriptMatcher, resultGenerator)
