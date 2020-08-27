@@ -104,6 +104,7 @@ const args = yargs
   .option('layout-breakpoints', {
     describe: 'comma-separated list of breakpoints (widths) for js layouts',
     type: 'string',
+    coerce: parseLayoutBreakpoints,
   })
   .option('viewport-size', {
     describe: 'the viewport size to open the browser (widthxheight)',
@@ -352,11 +353,7 @@ if (!url && !args.attach) {
     }
 
     if (args.hasOwnProperty('layoutBreakpoints')) {
-      let layoutBreakpoints
-      if (['', 'true', '1'].includes(args.layoutBreakpoints)) layoutBreakpoints = true
-      else if (['false', '0'].includes(args.layoutBreakpoints)) layoutBreakpoints = false
-      else layoutBreakpoints = args.layoutBreakpoints.split(',').map(s => Number.parseInt(s.trim()))
-      target.layoutBreakpoints(layoutBreakpoints)
+      target.layoutBreakpoints(args.layoutBreakpoints)
     }
 
     if (args.scrollRootElement) {
@@ -504,6 +501,12 @@ function parseBrowser(arg) {
     )
 
   return {name: match[1], width: parseInt(match[3], 10), height: parseInt(match[5], 10)}
+}
+
+function parseLayoutBreakpoints(arg) {
+  if (['', 'true'].includes(arg)) return true
+  else if (['false'].includes(arg)) return false
+  else return arg.split(',').map(s => Number.parseInt(s.trim()))
 }
 
 /**

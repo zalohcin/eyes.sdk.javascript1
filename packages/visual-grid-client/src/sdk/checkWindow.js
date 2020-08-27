@@ -32,10 +32,6 @@ function makeCheckWindow({
   visualGridOptions: _visualGridOptions,
 }) {
   return function checkWindow({
-    // resourceUrls = [],
-    // resourceContents = {},
-    // frames = [],
-    // cdt,
     snapshot,
     url,
     tag,
@@ -283,15 +279,7 @@ function makeCheckWindow({
         return
       }
 
-      const results = await getResourcesPromise
-      const {dom, resources} = results.reduce(
-        (results, {rGridDom, allResources}) => {
-          results.dom.push(rGridDom)
-          results.resources.push(Object.values(allResources))
-          return results
-        },
-        {dom: [], resources: []},
-      )
+      const pages = await getResourcesPromise
 
       if (testController.shouldStopAllTests()) {
         logger.log(`aborting startRender because there was an error in getAllResources`)
@@ -300,8 +288,7 @@ function makeCheckWindow({
 
       const renderRequests = createRenderRequests({
         url,
-        dom,
-        resources,
+        pages,
         browsers,
         renderInfo,
         sizeMode,

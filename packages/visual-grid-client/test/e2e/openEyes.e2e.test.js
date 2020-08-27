@@ -95,7 +95,7 @@ describe('openEyes', () => {
     }
 
     checkWindow({
-      snapshot: Array(3).fill({resourceUrls, resourceContents, cdt}),
+      snapshot: {resourceUrls, resourceContents, cdt},
       tag: 'first',
       url,
       scriptHooks,
@@ -133,7 +133,7 @@ describe('openEyes', () => {
     cdt.find(node => node.nodeValue === "hi, I'm red").nodeValue = 'WRONG TEXT'
 
     checkWindow({
-      snapshot: Array(3).fill({resourceUrls, resourceContents, cdt}),
+      snapshot: {resourceUrls, resourceContents, cdt},
       tag: 'first',
       url,
       scriptHooks,

@@ -44,8 +44,7 @@ describe('createRenderRequests', () => {
 
     const renderRequests = createRenderRequests({
       url,
-      resources: Array(browsers.length).fill(resources),
-      dom: Array(browsers.length).fill(dom),
+      pages: Array(browsers.length).fill({rGridDom: dom, allResources: resources}),
       browsers,
       renderInfo,
       sizeMode,
@@ -108,8 +107,7 @@ describe('createRenderRequests', () => {
     const browsers = [{deviceName, screenOrientation}]
     const renderRequests = createRenderRequests({
       url,
-      resources: [resources],
-      dom: [dom],
+      pages: [{rGridDom: dom, allResources: resources}],
       browsers,
       renderInfo,
       noOffsetSelectors: [],
@@ -143,8 +141,7 @@ describe('createRenderRequests', () => {
     }
     const renderRequests = createRenderRequests({
       url,
-      resources: [resources],
-      dom: [dom],
+      pages: [{rGridDom: dom, allResources: resources}],
       browsers,
       renderInfo,
       noOffsetSelectors: [],
@@ -190,8 +187,7 @@ describe('createRenderRequests', () => {
     const floating = [{some: 'thing'}, {type: 'css', selector: 'sel'}]
     const renderRequests = createRenderRequests({
       url,
-      resources: [resources],
-      dom: [dom],
+      pages: [{rGridDom: dom, allResources: resources}],
       browsers,
       renderInfo,
       noOffsetSelectors: [ignore, layout, strict, content, accessibility],
@@ -236,8 +232,7 @@ describe('createRenderRequests', () => {
     const browsers = [{iosDeviceInfo}]
     const renderRequests = createRenderRequests({
       url,
-      resources: [resources],
-      dom: [dom],
+      pages: [{rGridDom: dom, allResources: resources}],
       browsers,
       renderInfo,
     })
@@ -273,8 +268,11 @@ describe('createRenderRequests', () => {
     const dom2 = createRGridDom({resources: {}, cdt: 'cdt2'})
     const renderRequests = createRenderRequests({
       url,
-      resources: [resources, resources, resources],
-      dom: [dom1, dom2, dom1],
+      pages: [
+        {rGridDom: dom1, allResources: resources},
+        {rGridDom: dom2, allResources: resources},
+        {rGridDom: dom1, allResources: resources},
+      ],
       browsers,
       renderInfo,
     })

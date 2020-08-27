@@ -87,7 +87,7 @@ describe('closeEyes', () => {
       appName,
     })
     checkWindow({
-      snapshot: Array(2).fill({cdt: [], resourceUrls: []}),
+      snapshot: {cdt: [], resourceUrls: []},
       tag: 'ok-in-1-test',
       url: `${baseUrl}/basic.html`,
     })
@@ -110,7 +110,7 @@ describe('closeEyes', () => {
       appName,
     })
     checkWindow({
-      snapshot: Array(2).fill({cdt: [], resourceUrls: []}),
+      snapshot: {cdt: [], resourceUrls: []},
       tag: 'good1',
       url: `${baseUrl}/basic.html`,
     })
@@ -132,7 +132,7 @@ describe('closeEyes', () => {
       appName,
     })
     checkWindow({
-      snapshot: Array(2).fill({cdt: [], resourceUrls: []}),
+      snapshot: {cdt: [], resourceUrls: []},
       tag: 'good1',
       url: `${baseUrl}/basic.html`,
     })
@@ -154,7 +154,7 @@ describe('closeEyes', () => {
       appName,
     })
     checkWindow({
-      snapshot: Array(2).fill({cdt: [], resourceUrls: []}),
+      snapshot: {cdt: [], resourceUrls: []},
       tag: 'good1',
       url: `${baseUrl}/basic.html`,
     })
@@ -182,7 +182,7 @@ describe('closeEyes', () => {
       appName,
     })
     checkWindow({
-      snapshot: Array(2).fill({cdt: [], resourceUrls: []}),
+      snapshot: {cdt: [], resourceUrls: []},
       tag: 'good1',
       url: `${baseUrl}/basic.html`,
     })
@@ -210,7 +210,7 @@ describe('closeEyes', () => {
       appName,
     })
     checkWindow({
-      snapshot: Array(2).fill({cdt: [], resourceUrls: []}),
+      snapshot: {cdt: [], resourceUrls: []},
       tag: 'good1',
       url: `${baseUrl}/basic.html`,
     })
@@ -230,7 +230,7 @@ describe('closeEyes', () => {
       appName,
     })
     checkWindow({
-      snapshot: Array(2).fill({cdt: [], resourceUrls: []}),
+      snapshot: {cdt: [], resourceUrls: []},
       tag: 'good1',
       url: `${baseUrl}/basic.html`,
     })
@@ -259,7 +259,7 @@ describe('closeEyes', () => {
       appName,
     })
     checkWindow({
-      snapshot: Array(2).fill({cdt: [], resourceUrls: []}),
+      snapshot: {cdt: [], resourceUrls: []},
       tag: 'good1',
       url: `${baseUrl}/basic.html`,
     })
@@ -292,7 +292,7 @@ describe('closeEyes', () => {
       appName,
     })
     checkWindow({
-      snapshot: Array(2).fill({cdt: [], resourceUrls: []}),
+      snapshot: {cdt: [], resourceUrls: []},
       tag: 'good1',
       url: `${baseUrl}/basic.html`,
     })
@@ -316,7 +316,7 @@ describe('closeEyes', () => {
       appName,
     })
     checkWindow({
-      snapshot: Array(3).fill({cdt: [], resourceUrls: []}),
+      snapshot: {cdt: [], resourceUrls: []},
       tag: 'ok-in-1-test',
       url: `${baseUrl}/basic.html`,
     })
@@ -343,7 +343,7 @@ describe('closeEyes', () => {
       appName,
     })
     checkWindow({
-      snapshot: Array(2).fill({cdt: [], resourceUrls: []}),
+      snapshot: {cdt: [], resourceUrls: []},
       tag: 'ok',
       url: `${baseUrl}/basic.html`,
     })
@@ -367,7 +367,7 @@ describe('closeEyes', () => {
       appName,
     })
     checkWindow({
-      snapshot: Array(2).fill({cdt: [], resourceUrls: []}),
+      snapshot: {cdt: [], resourceUrls: []},
       tag: 'ok',
       url: `${baseUrl}/basic.html`,
     })
@@ -391,7 +391,7 @@ describe('closeEyes', () => {
       appName,
     })
     checkWindow({
-      snapshot: Array(3).fill({cdt: [], resourceUrls: []}),
+      snapshot: {cdt: [], resourceUrls: []},
       tag: 'ok-in-1-test',
       url: `${baseUrl}/basic.html`,
     })

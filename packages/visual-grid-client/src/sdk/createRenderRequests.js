@@ -6,8 +6,7 @@ const calculateSelectorsToFindRegionsFor = require('./calculateSelectorsToFindRe
 
 function createRenderRequests({
   url,
-  resources,
-  dom,
+  pages,
   browsers,
   renderInfo,
   sizeMode,
@@ -53,8 +52,8 @@ function createRenderRequests({
       webhook: renderInfo.getResultsUrl(),
       stitchingService: renderInfo.getStitchingServiceUrl(),
       url,
-      resources: resources[index],
-      dom: dom[index],
+      resources: Object.values(pages[index].allResources),
+      dom: pages[index].rGridDom,
       renderInfo: new RenderInfo({
         width,
         height,

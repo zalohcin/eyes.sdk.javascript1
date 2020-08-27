@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- added support for multiple dom snapshots for `checkWindow`, `testWindow` and `takeScreenshot`
+- Breaking change: added support for multiple dom snapshots for `checkWindow`, `testWindow` and `takeScreenshot`
 - removed @applitools/dom-snapshot from dependencies
 - move `takeDomSnapshot` to `eyes-sdk-core`
 

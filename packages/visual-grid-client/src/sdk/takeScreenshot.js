@@ -36,26 +36,16 @@ async function takeScreenshot({
     renderingInfo,
   })
 
-  const results = await Promise.all(
+  const pages = await Promise.all(
     snapshots.map(snapshot => {
       const {resourceUrls, resourceContents, frames, cdt} = deserializeDomSnapshotResult(snapshot)
       return createRGridDOMAndGetResourceMapping({resourceUrls, resourceContents, frames, cdt})
     }),
   )
 
-  const {dom, resources} = results.reduce(
-    (results, {rGridDom, allResources}) => {
-      results.dom.push(rGridDom)
-      results.resources.push(Object.values(allResources))
-      return results
-    },
-    {dom: [], resources: []},
-  )
-
   const renderRequests = createRenderRequests({
     url,
-    dom,
-    resources,
+    pages,
     browsers,
     renderInfo: renderingInfo,
     sizeMode,
