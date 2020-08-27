@@ -4,7 +4,8 @@ const {
   getProcessPageAndSerializePoll,
   getProcessPageAndSerializePollForIE,
 } = require('@applitools/dom-snapshot')
-const {GeneralUtils, deserializeDomSnapshotResult} = require('@applitools/eyes-sdk-core')
+const GeneralUtils = require('./GeneralUtils')
+const deserializeDomSnapshotResult = require('./deserializeDomSnapshotResult')
 
 const PULL_TIMEOUT = 200 // ms
 const CAPTURE_DOM_TIMEOUT_MS = 5 * 60 * 1000 // 5 min
@@ -29,9 +30,9 @@ async function getScriptForIE() {
   return captureScriptIE
 }
 
-async function takeDomSnapshot({executeScript, startTime = Date.now(), browser}) {
+async function takeDomSnapshot({driver, startTime = Date.now(), browser}) {
   const processPageAndPollScript = browser === 'IE' ? await getScriptForIE() : await getScript()
-  const resultAsString = await executeScript(processPageAndPollScript)
+  const resultAsString = await driver.execute(processPageAndPollScript)
 
   const scriptResponse = JSON.parse(resultAsString)
 
@@ -44,7 +45,7 @@ async function takeDomSnapshot({executeScript, startTime = Date.now(), browser})
   }
 
   await GeneralUtils.sleep(PULL_TIMEOUT)
-  return takeDomSnapshot({executeScript, startTime})
+  return takeDomSnapshot({driver, startTime})
 }
 
 module.exports = takeDomSnapshot

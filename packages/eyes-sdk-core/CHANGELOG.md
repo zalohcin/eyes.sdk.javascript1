@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- add support for `layoutBreakpoints`
 - avoid javascript execution on native devices during viewport size extraction
 
 ## 12.1.4 - 2020/8/13
