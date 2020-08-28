@@ -241,7 +241,6 @@ class EyesVisualGrid extends EyesCore {
 
     return this._checkPrepare(checkSettings, async () => {
       const regionElements = await getAllRegionElements({checkSettings, context: this._driver})
-      debugger
       const elementIdsMap = await EyesUtils.markElements(this._logger, this._driver, regionElements)
 
       try {
