@@ -1,9 +1,7 @@
 'use strict'
 
 const assert = require('assert')
-const {Driver, CheckSettings} = require('../../utils/FakeSDK')
-const MockDriver = require('../../utils/MockDriver')
-const {Logger} = require('../../../index')
+const {CheckSettings} = require('../../utils/FakeSDK')
 const vm = require('vm')
 const fs = require('fs')
 const path = require('path')
@@ -56,31 +54,6 @@ describe('CheckSettings', () => {
       .visualGridOption('polyfillAdoptedStyleSheets', true)
 
     assert.deepStrictEqual(checkSettings, checkSettings2)
-  })
-
-  // TODO complete rest of properties
-  it('toCheckWindowConfiguration', async () => {
-    const mockDriver = new MockDriver()
-    mockDriver.mockElements([
-      {id: 'id0', selector: 'element0', rect: {x: 1, y: 2, width: 500, height: 501}},
-      {id: 'id1', selector: 'element1', rect: {x: 10, y: 11, width: 101, height: 102}},
-      {id: 'id2', selector: 'element2', rect: {x: 20, y: 21, width: 201, height: 202}},
-      {id: 'id3', selector: 'element3', rect: {x: 30, y: 31, width: 301, height: 302}},
-      {id: 'id4', selector: 'element4', rect: {x: 40, y: 41, width: 401, height: 402}},
-    ])
-    const driver = new Driver(new Logger(process.env.APPLITOOLS_SHOW_LOGS), mockDriver)
-    const checkSettings = new CheckSettings()
-    checkSettings.accessibility({id: 'id0'}, 'bla')
-    checkSettings.accessibility({id: 'id-not-mocked', selector: 'not-mocked'}, 'bla')
-    checkSettings.visualGridOption('polyfillAdoptedStyleSheets', true)
-    const checkWindowConfiguration = await checkSettings.toCheckWindowConfiguration(driver)
-    assert.deepStrictEqual(checkWindowConfiguration.accessibility, [
-      {accessibilityType: 'bla', selector: '/HTML[1]/BODY[1]/DIV[2]', type: 'xpath'},
-      {accessibilityType: 'bla', selector: '//[data-fake-selector="not-mocked"]', type: 'xpath'},
-    ])
-    assert.deepStrictEqual(checkWindowConfiguration.visualGridOptions, {
-      polyfillAdoptedStyleSheets: true,
-    })
   })
 
   it('layoutBreakpoints', async () => {

@@ -12,6 +12,11 @@ const CorsIframeHandles = require('../capture/CorsIframeHandles')
 const VisualGridRunner = require('../runner/VisualGridRunner')
 const takeDomSnapshot = require('../utils/takeDomSnapshot')
 const EyesCore = require('./EyesCore')
+const EyesUtils = require('./EyesUtils')
+const {
+  resolveAllRegionElements,
+  toCheckWindowConfiguration,
+} = require('../fluent/CheckSettingsUtils')
 
 /**
  * @typedef {import('../capture/CorsIframeHandles').CorsIframeHandle} CorsIframeHandle
@@ -240,27 +245,36 @@ class EyesVisualGrid extends EyesCore {
     }
 
     return this._checkPrepare(checkSettings, async () => {
-      // this._logger.verbose(`Dom extraction starting   (${checkSettings.toString()})   $$$$$$$$$$$$`)
-      const breakpoints = TypeUtils.getOrDefault(
-        checkSettings.getLayoutBreakpoints(),
-        this._configuration.getLayoutBreakpoints(),
-      )
-      const snapshots = await this._takeDomSnapshots({breakpoints})
-      const [{url}] = snapshots
-      if (this.getCorsIframeHandle() === CorsIframeHandles.BLANK) {
-        snapshots.forEach(CorsIframeHandler.blankCorsIframeSrcOfCdt)
-      }
-      // this._logger.verbose(`Dom extracted  (${checkSettings.toString()})   $$$$$$$$$$$$`)
-
-      const config = await checkSettings.toCheckWindowConfiguration(this._driver)
-      await this._checkWindowCommand({
-        ...config,
-        fully: this.getForceFullPageScreenshot() || config.fully,
-        sendDom: this.getSendDom() || config.sendDom,
-        matchLevel: TypeUtils.getOrDefault(config.matchLevel, this.getMatchLevel()),
-        snapshot: snapshots,
-        url,
+      const elementsById = await resolveAllRegionElements({
+        checkSettings,
+        context: this._driver,
       })
+      await EyesUtils.markElements(this._logger, this._driver, elementsById)
+
+      try {
+        const breakpoints = TypeUtils.getOrDefault(
+          checkSettings.getLayoutBreakpoints(),
+          this._configuration.getLayoutBreakpoints(),
+        )
+        const snapshots = await this._takeDomSnapshots({breakpoints})
+        const [{url}] = snapshots
+        if (this.getCorsIframeHandle() === CorsIframeHandles.BLANK) {
+          snapshots.forEach(CorsIframeHandler.blankCorsIframeSrcOfCdt)
+        }
+
+        const config = toCheckWindowConfiguration({
+          checkSettings,
+          configuration: this._configuration,
+        })
+
+        await this._checkWindowCommand({
+          ...config,
+          snapshot: snapshots,
+          url,
+        })
+      } finally {
+        await EyesUtils.cleanupElementIds(this._logger, this._driver, Object.values(elementsById))
+      }
     })
   }
   /**
