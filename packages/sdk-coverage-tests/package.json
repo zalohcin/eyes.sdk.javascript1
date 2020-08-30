@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "@applitools/sdk-shared": "0.1.0",
+    "@azure/storage-blob": "^12.2.0-preview.1",
     "@typescript-eslint/parser": "^2.14.0",
     "mocha": "^6.2.2",
     "ncp": "^2.0.0",
