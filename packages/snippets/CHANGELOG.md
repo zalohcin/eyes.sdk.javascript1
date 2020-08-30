@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+
+## 1.1.0 - 2020/8/30
+
 - add `markElements` and `cleanupElementIds`
 
 ## 1.0.3 - 2020/8/10
