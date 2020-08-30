@@ -101,7 +101,6 @@ describe('DOM Capture', () => {
     }) // this width causes horizontal scroll on the page
 
     await driver.executeScript('window.scrollTo(30,30)')
-    debugger
     await eyes.check('', Target.window().fully())
     const testResults = await eyes.close()
     const session = await getSession(testResults, serverUrl)
