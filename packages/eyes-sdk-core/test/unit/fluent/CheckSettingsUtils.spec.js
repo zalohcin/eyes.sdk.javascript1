@@ -46,7 +46,7 @@ describe('CheckSettingsUtils', () => {
       {selector: `[data-eyes-selector="${ids[0]}"]`, type: 'css'},
       {selector: `[data-eyes-selector="${ids[1]}"]`, type: 'css'},
       {selector: `[data-eyes-selector="${ids[2]}"]`, type: 'css'},
-      {left: 1, top: 2, width: 3, height: 5, coordinatesType: 'SCREENSHOT_AS_IS'},
+      {left: 1, top: 2, width: 3, height: 5},
     ])
     assert.deepStrictEqual(checkWindowConfiguration.floating, [
       {
@@ -70,7 +70,6 @@ describe('CheckSettingsUtils', () => {
         top: 2,
         width: 3,
         height: 5,
-        coordinatesType: 'SCREENSHOT_AS_IS',
         maxUpOffset: 9,
         maxDownOffset: 10,
         maxLeftOffset: 11,
