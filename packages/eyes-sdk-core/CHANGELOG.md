@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 12.2.0 - 2020/8/30
+
 - add support for `layoutBreakpoints`
 - avoid javascript execution on native devices during viewport size extraction
 - mark coded regions and target elements with unique selectors for the visual grid
