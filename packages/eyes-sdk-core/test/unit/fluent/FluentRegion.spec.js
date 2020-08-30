@@ -30,13 +30,28 @@ describe('FluentRegion', () => {
   it('getRegion for coordinates', async () => {
     const region = new Region({left: 15, top: 16, width: 17, height: 18})
     const fluentRegion = new FluentRegion({region})
-    assert.deepStrictEqual(await fluentRegion.getRegion(), [region.toJSON()])
+    assert.deepStrictEqual(await fluentRegion.getRegion(), [
+      {
+        left: region.getLeft(),
+        top: region.getTop(),
+        width: region.getWidth(),
+        height: region.getHeight(),
+      },
+    ])
   })
 
   it('getRegion for coordinates with options', async () => {
     const region = new Region({left: 15, top: 16, width: 17, height: 18})
     const fluentRegion = new FluentRegion({region, options: {key: 'a'}})
-    assert.deepStrictEqual(await fluentRegion.getRegion(), [{...region.toJSON(), key: 'a'}])
+    assert.deepStrictEqual(await fluentRegion.getRegion(), [
+      {
+        left: region.getLeft(),
+        top: region.getTop(),
+        width: region.getWidth(),
+        height: region.getHeight(),
+        key: 'a',
+      },
+    ])
   })
 
   it('getRegion for selector', async () => {
@@ -68,7 +83,14 @@ describe('FluentRegion', () => {
     const elementsById = await fluentRegion.resolveElements()
     assert.deepStrictEqual(elementsById, {})
     const persistedRegions = fluentRegion.toPersistedRegions()
-    assert.deepStrictEqual(persistedRegions, [region.toJSON()])
+    assert.deepStrictEqual(persistedRegions, [
+      {
+        left: region.getLeft(),
+        top: region.getTop(),
+        width: region.getWidth(),
+        height: region.getHeight(),
+      },
+    ])
   })
 
   it('element', async () => {
@@ -98,7 +120,15 @@ describe('FluentRegion', () => {
     const fluentRegionRegion = new FluentRegion({region, options: {key: 'a'}})
     await fluentRegionRegion.resolveElements()
     const persistedRegionsRegion = await fluentRegionRegion.toPersistedRegions()
-    assert.deepStrictEqual(persistedRegionsRegion, [{...region.toJSON(), key: 'a'}])
+    assert.deepStrictEqual(persistedRegionsRegion, [
+      {
+        left: region.getLeft(),
+        top: region.getTop(),
+        width: region.getWidth(),
+        height: region.getHeight(),
+        key: 'a',
+      },
+    ])
 
     const fluentRegionElement = new FluentRegion({element, options: {key: 'b'}})
     const elementsByIdElement = await fluentRegionElement.resolveElements(driver)

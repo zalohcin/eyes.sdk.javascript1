@@ -5,6 +5,7 @@
 - add support for `layoutBreakpoints`
 - avoid javascript execution on native devices during viewport size extraction
 - mark coded regions and target elements with unique selectors for the visual grid
+- improve handling of fractional metrics ([Trello](https://trello.com/c/TuXUZUNO/441-sonatype-wdio-5-targetregion-appears-off-by-one-pixel))
 
 ## 12.1.4 - 2020/8/13
 

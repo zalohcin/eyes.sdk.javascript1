@@ -749,7 +749,10 @@ class EyesClassic extends EyesCore {
    */
   getImageLocation() {
     if (this._regionToCheck) {
-      return this._regionToCheck.getLocation()
+      return new Location(
+        Math.round(this._regionToCheck.getLeft()),
+        Math.round(this._regionToCheck.getTop()),
+      )
     }
     return Location.ZERO
   }

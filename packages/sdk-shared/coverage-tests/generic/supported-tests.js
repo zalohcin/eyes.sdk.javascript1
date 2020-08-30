@@ -329,4 +329,5 @@ module.exports = [
   {name: 'TestHorizonalScroll', executionMode: {isScrollStitching: true}},
   {name: 'TestGetAllTestResults', executionMode: {isCssStitching: true}},
   {name: 'CheckWindowOnJsLayoutPage', executionMode: {isVisualGrid: true}},
+  {name: 'CheckRegionWithFractionalMetrics', executionMode: {isCssStitching: true}},
 ]
