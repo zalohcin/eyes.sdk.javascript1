@@ -66,9 +66,7 @@ describe('testWindow', () => {
     }
 
     const checkParams = {
-      resourceUrls,
-      resourceContents,
-      cdt,
+      snapshot: {resourceUrls, resourceContents, cdt},
       tag: 'first',
       url,
       scriptHooks: {
@@ -100,9 +98,7 @@ describe('testWindow', () => {
 
     cdt.find(node => node.nodeValue === "hi, I'm red").nodeValue = 'WRONG TEXT'
     const checkParams = {
-      resourceUrls,
-      resourceContents,
-      cdt,
+      snapshot: {resourceUrls, resourceContents, cdt},
       tag: 'first',
       url,
       scriptHooks: {

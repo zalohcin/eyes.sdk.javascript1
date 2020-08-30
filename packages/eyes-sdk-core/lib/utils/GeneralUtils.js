@@ -459,6 +459,14 @@ function cachify(getterFunction, cacheRegardlessOfArgs = false) {
   return cachedGetter
 }
 
+function getBreakpointWidth(breakpoints, width) {
+  if (!TypeUtils.isArray(breakpoints) || breakpoints.length === 0) {
+    return width
+  }
+  const breakpoint = breakpoints.find(breakpoint => breakpoint > width)
+  return breakpoint ? breakpoint - 1 : breakpoints[breakpoints.length - 1]
+}
+
 module.exports = {
   urlConcat,
   stripTrailingSlash,
@@ -486,4 +494,5 @@ module.exports = {
   presult,
   pexec,
   cachify,
+  getBreakpointWidth,
 }

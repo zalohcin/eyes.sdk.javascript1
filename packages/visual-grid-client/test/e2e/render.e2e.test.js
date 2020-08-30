@@ -41,7 +41,7 @@ describe('render e2e', () => {
       renderingInfo,
     })
 
-    const {rGridDom: dom, allResources: _} = await createRGridDOMAndGetResourceMapping({
+    const page = await createRGridDOMAndGetResourceMapping({
       resourceUrls: [],
       resourceContents: [],
       cdt: [{nodeType: 3, nodeValue: 'renders older browser versions - works!'}],
@@ -50,8 +50,7 @@ describe('render e2e', () => {
 
     const renderRequests = createRenderRequests({
       url: 'http://something',
-      dom,
-      resources: [],
+      pages: Array(browsers.length).fill(page),
       browsers,
       renderInfo: renderingInfo,
       sizeMode: 'full-page',

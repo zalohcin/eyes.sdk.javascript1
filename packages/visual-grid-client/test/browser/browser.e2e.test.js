@@ -64,9 +64,7 @@ describe('browser visual grid', () => {
         );
 
         checkWindow({
-          resourceUrls,
-          resourceContents,
-          cdt,
+          snapshot: {resourceUrls, resourceContents, cdt},
           tag: 'first',
           url,
         });

@@ -1,6 +1,6 @@
 'use strict'
 const CoordinatesTypes = require('../geometry/CoordinatesType')
-const EyesUtils = require('../sdk/EyesUtils')
+const GeneralUtils = require('../utils/GeneralUtils')
 
 /**
  * @internal
@@ -31,12 +31,8 @@ class FluentRegion {
       ]
     }
 
-    let elements = []
-    if (this._selector) {
-      elements = await context.elements(this._selector)
-    } else if (this._element) {
-      elements = [await context.element(this._element)]
-    }
+    const elementsById = await this.resolveElements(context)
+    const elements = Object.values(elementsById)
 
     const regions = []
     for (const element of elements) {
@@ -56,12 +52,23 @@ class FluentRegion {
     }
     return regions
   }
-  /**
-   * @template TDriver, TElement
-   * @param {EyesWrappedDriver<TDriver, TElement, TSelector>} driver
-   * @return {Promise<PersistedRegions[]>}
-   */
-  async toPersistedRegions(context) {
+
+  async resolveElements(context) {
+    let elements = []
+    if (this._selector) {
+      elements = await context.elements(this._selector)
+    } else if (this._element) {
+      elements = [await context.element(this._element)]
+    }
+
+    this._elementsById = elements.reduce(
+      (elementsById, el) => Object.assign(elementsById, {[GeneralUtils.guid()]: el}),
+      {},
+    )
+    return this._elementsById
+  }
+
+  toPersistedRegions() {
     if (this._region) {
       return [
         {
@@ -72,12 +79,12 @@ class FluentRegion {
           ...this._options,
         },
       ]
-    } else if (this._element) {
-      const xpath = await EyesUtils.getElementXpath(context._logger, context, this._element)
-      return [{...this._options, type: 'xpath', selector: xpath}]
-    } else if (this._selector) {
-      const regions = await EyesUtils.toPersistedRegions(context._logger, context, this._selector)
-      return regions.map(region => ({...this._options, ...region}))
+    } else {
+      return Object.keys(this._elementsById).map(elementId => ({
+        ...this._options,
+        type: 'css',
+        selector: `[data-eyes-selector="${elementId}"]`,
+      }))
     }
   }
 }

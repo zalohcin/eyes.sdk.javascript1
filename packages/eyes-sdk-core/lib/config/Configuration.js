@@ -36,7 +36,7 @@ const GeneralUtils = require('../utils/GeneralUtils')
  * @typedef {{chromeEmulationInfo: EmulationInfo}} ChromeEmulationInfo
  */
 /**
- * @typedef {{iosDeviceInfo: {deviceName: IosDevieName, screenOrientation: (ScreenOrientation|undefined)}}} IosDeviceInfo
+ * @typedef {{iosDeviceInfo: {deviceName: IosDeviceName, screenOrientation: (ScreenOrientation|undefined)}}} IosDeviceInfo
  */
 /**
  * @typedef {(DesktopBrowserInfo|EmulationInfo|ChromeEmulationInfo|IosDeviceInfo)} RenderInfo
@@ -1297,6 +1297,22 @@ class Configuration {
       this._visualGridOptions = {}
     }
     this._visualGridOptions[key] = value
+    return this
+  }
+
+  getLayoutBreakpoints() {
+    return this._layoutBreakpoints
+  }
+
+  setLayoutBreakpoints(breakpoints) {
+    ArgumentGuard.notNull(breakpoints, 'breakpoints')
+    if (!TypeUtils.isArray(breakpoints)) {
+      this._layoutBreakpoints = breakpoints
+    } else if (breakpoints.length === 0) {
+      this._layoutBreakpoints = false
+    } else {
+      this._layoutBreakpoints = Array.from(new Set(breakpoints)).sort((a, b) => (a > b ? 1 : -1))
+    }
     return this
   }
 

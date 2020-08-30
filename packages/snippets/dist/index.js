@@ -2,6 +2,10 @@ exports.blurElement=function(arg){
 var s=function(){"use strict";return function(e){var t=(void 0===e?{}:e).element,n=void 0===t?document.activeElement:t;return n&&n.blur(),n}}();
 return s(arg)
 }
+exports.cleanupElementIds=function(arg){
+var s=function(){"use strict";return function(e){e.elements.forEach((function(e){e.removeAttribute("data-eyes-selector")}))}}();
+return s(arg)
+}
 exports.focusElement=function(arg){
 var s=function(){"use strict";return function(n){var t=(void 0===n?{}:n).element;t&&t.focus()}}();
 return s(arg)
@@ -72,6 +76,10 @@ return s(arg)
 }
 exports.isElementScrollable=function(arg){
 var s=function(){"use strict";return function(t){var e=(void 0===t?{}:t).element;return e.scrollWidth>e.clientWidth||e.scrollHeight>e.clientHeight}}();
+return s(arg)
+}
+exports.markElements=function(arg){
+var s=function(){"use strict";return function(t){var e=t.elements,n=t.ids;e.forEach((function(t,e){t.setAttribute("data-eyes-selector",n[e])}))}}();
 return s(arg)
 }
 exports.scrollTo=function(arg){
