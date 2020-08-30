@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+
+## 1.1.1 - 2020/8/30
+
 - nothing added, technical issue with unreleased commits
 
 ## 1.1.0 - 2020/8/30
