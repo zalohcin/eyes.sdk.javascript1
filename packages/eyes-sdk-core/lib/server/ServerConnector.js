@@ -785,6 +785,45 @@ class ServerConnector {
 
     throw new Error(`ServerConnector.postLocators - unexpected status (${response.statusText})`)
   }
+
+  async getEmulatedDevicesSizes() {
+    this._logger.verbose(`ServerConnector.getEmulatedDevicesSizes`)
+
+    const config = {
+      name: 'getEmulatedDevicesSizes',
+      method: 'GET',
+      withApiKey: false,
+      url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/emulated-devices-sizes'),
+    }
+
+    const response = await this._axios.request(config)
+    if (response.status === HTTP_STATUS_CODES.OK) {
+      return response.data
+    } else {
+      throw new Error(
+        `ServerConnector.getEmulatedDevicesSizes - unexpected status (${response.statusText})`,
+      )
+    }
+  }
+
+  async getIosDevicesSizes() {
+    this._logger.verbose(`ServerConnector.getIosDevicesSizes`)
+
+    const config = {
+      name: 'getIosDevicesSizes',
+      method: 'GET',
+      url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/ios-devices-sizes'),
+    }
+
+    const response = await this._axios.request(config)
+    if (response.status === HTTP_STATUS_CODES.OK) {
+      return response.data
+    } else {
+      throw new Error(
+        `ServerConnector.getIosDevicesSizes - unexpected status (${response.statusText})`,
+      )
+    }
+  }
 }
 
 module.exports = ServerConnector

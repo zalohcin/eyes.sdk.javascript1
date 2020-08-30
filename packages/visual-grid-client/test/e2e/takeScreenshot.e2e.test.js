@@ -39,11 +39,8 @@ describe('takeScreenshot e2e', () => {
         apiKey,
         showLogs: process.env.APPLITOOLS_SHOW_LOGS,
         renderInfo,
-        cdt,
+        snapshot: {cdt, resourceUrls, blobs, frames},
         url,
-        resourceUrls,
-        blobs,
-        frames,
         browsers: [{width: 1920, height: 1440}],
       }),
     )

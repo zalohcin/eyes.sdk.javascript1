@@ -44,6 +44,7 @@ function makeSpecEmitter(options) {
   addHook('deps', `const path = require('path')`)
   addHook('deps', `const assert = require('assert')`)
   addHook('deps', `const spec = require(path.resolve(cwd, 'src/SpecDriver'))`)
+  addHook('deps', `const {Configuration} = require(cwd)`)
   addHook('deps', `const {testSetup} = require('@applitools/sdk-shared')`)
 
   addHook('vars', `let driver`)
@@ -113,6 +114,9 @@ function makeSpecEmitter(options) {
       setViewportSize(viewportSize) {
         addCommand(js`await eyes.constructor.setViewportSize(driver, ${viewportSize})`)
       },
+    },
+    setConfiguration(config) {
+      addCommand(js`await eyes.setConfiguration(new Configuration(${config}))`)
     },
     runner: {
       getAllTestResults(throwEx) {

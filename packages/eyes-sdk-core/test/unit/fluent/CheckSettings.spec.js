@@ -1,9 +1,7 @@
 'use strict'
 
 const assert = require('assert')
-const {Driver, CheckSettings} = require('../../utils/FakeSDK')
-const MockDriver = require('../../utils/MockDriver')
-const {Logger} = require('../../../index')
+const {CheckSettings} = require('../../utils/FakeSDK')
 const vm = require('vm')
 const fs = require('fs')
 const path = require('path')
@@ -56,6 +54,20 @@ describe('CheckSettings', () => {
       .visualGridOption('polyfillAdoptedStyleSheets', true)
 
     assert.deepStrictEqual(checkSettings, checkSettings2)
+  })
+
+  it('layoutBreakpoints', async () => {
+    const checkSettings = new CheckSettings()
+    checkSettings.layoutBreakpoints()
+    assert.deepStrictEqual(checkSettings.getLayoutBreakpoints(), true)
+    checkSettings.layoutBreakpoints(false)
+    assert.deepStrictEqual(checkSettings.getLayoutBreakpoints(), false)
+    checkSettings.layoutBreakpoints([25, 50, 100, 200])
+    assert.deepStrictEqual(checkSettings.getLayoutBreakpoints(), [25, 50, 100, 200])
+    checkSettings.layoutBreakpoints([100, 200, 200, 100, 50, 25])
+    assert.deepStrictEqual(checkSettings.getLayoutBreakpoints(), [25, 50, 100, 200])
+    checkSettings.layoutBreakpoints([])
+    assert.deepStrictEqual(checkSettings.getLayoutBreakpoints(), false)
   })
 
   // TODO this test makes more sense to run inside docker

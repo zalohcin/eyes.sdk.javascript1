@@ -66,6 +66,8 @@ const TypeUtils = require('../utils/TypeUtils')
  * @prop {boolean} [enablePatterns=true]
  * @prop {boolean} [ignoreDisplacements=true]
  * @prop {boolean} [ignoreCaret=true]
+ * @prop {Object<string, any>} [visualGridOptions]
+ * @prop {number[]|boolean} [layoutBreakpoints]
  * @prop {boolean} [isFully=false]
  * @prop {string} [renderId]
  * @prop {{[key: string]: string}} [hooks]
@@ -188,6 +190,8 @@ class CheckSettings {
     this._scriptHooks = {}
     /** @private @type {Object} */
     this._visualGridOptions = undefined
+    /** @private @type {number[]|boolean} */
+    this._layoutBreakpoints = null
   }
   /**
    * Create check settings from an object
@@ -287,6 +291,9 @@ class CheckSettings {
       Object.entries(object.visualGridOptions).forEach(([key, value]) => {
         settings.visualGridOption(key, value)
       })
+    }
+    if (object.layoutBreakpoints) {
+      settings.layoutBreakpoints(object.layoutBreakpoints)
     }
     return settings
   }
@@ -952,6 +959,19 @@ class CheckSettings {
   }
   getVisualGridOptions() {
     return this._visualGridOptions
+  }
+  layoutBreakpoints(breakpoints = true) {
+    if (!TypeUtils.isArray(breakpoints)) {
+      this._layoutBreakpoints = breakpoints
+    } else if (breakpoints.length === 0) {
+      this._layoutBreakpoints = false
+    } else {
+      this._layoutBreakpoints = Array.from(new Set(breakpoints)).sort((a, b) => (a > b ? 1 : -1))
+    }
+    return this
+  }
+  getLayoutBreakpoints() {
+    return this._layoutBreakpoints
   }
 
   /**

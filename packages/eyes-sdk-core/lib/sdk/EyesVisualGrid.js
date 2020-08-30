@@ -2,6 +2,7 @@
 
 const BrowserType = require('../config/BrowserType')
 const Configuration = require('../config/Configuration')
+const GeneralUtils = require('../utils/GeneralUtils')
 const TypeUtils = require('../utils/TypeUtils')
 const ArgumentGuard = require('../utils/ArgumentGuard')
 const TestResultsFormatter = require('../TestResultsFormatter')
@@ -9,6 +10,7 @@ const MatchResult = require('../match/MatchResult')
 const CorsIframeHandler = require('../capture/CorsIframeHandler')
 const CorsIframeHandles = require('../capture/CorsIframeHandles')
 const VisualGridRunner = require('../runner/VisualGridRunner')
+const takeDomSnapshot = require('../utils/takeDomSnapshot')
 const EyesCore = require('./EyesCore')
 const EyesUtils = require('./EyesUtils')
 const {
@@ -250,13 +252,14 @@ class EyesVisualGrid extends EyesCore {
       await EyesUtils.markElements(this._logger, this._driver, elementsById)
 
       try {
-        const pageDomResults = await this.constructor.VisualGridClient.takeDomSnapshot({
-          executeScript: this._context.execute.bind(this._context),
-        })
-
-        const {cdt, url, resourceContents, resourceUrls, frames} = pageDomResults
+        const breakpoints = TypeUtils.getOrDefault(
+          checkSettings.getLayoutBreakpoints(),
+          this._configuration.getLayoutBreakpoints(),
+        )
+        const snapshots = await this._takeDomSnapshots({breakpoints})
+        const [{url}] = snapshots
         if (this.getCorsIframeHandle() === CorsIframeHandles.BLANK) {
-          CorsIframeHandler.blankCorsIframeSrcOfCdt({url, cdt, frames})
+          snapshots.forEach(CorsIframeHandler.blankCorsIframeSrcOfCdt)
         }
 
         const config = toCheckWindowConfiguration({
@@ -266,11 +269,8 @@ class EyesVisualGrid extends EyesCore {
 
         await this._checkWindowCommand({
           ...config,
-          resourceUrls,
-          resourceContents,
-          frames,
+          snapshot: snapshots,
           url,
-          cdt,
         })
       } finally {
         await EyesUtils.cleanupElementIds(this._logger, this._driver, Object.values(elementsById))
@@ -296,6 +296,41 @@ class EyesVisualGrid extends EyesCore {
     } finally {
       this._context = await originalContext.focus()
     }
+  }
+  /**
+   * @param {CheckSettings<TElement, TSelector>} checkSettings
+   */
+  async _takeDomSnapshots({breakpoints}) {
+    const browsers = this._configuration.getBrowsersInfo()
+    if (!breakpoints) {
+      const snapshot = await takeDomSnapshot({driver: this._driver})
+      return Array(browsers.length).fill(snapshot)
+    }
+    const widths = await Promise.all(
+      browsers.map(async browser => {
+        const {width} = await this.getBrowserSize(browser)
+        return GeneralUtils.getBreakpointWidth(breakpoints, width)
+      }),
+    )
+    this._logger.log(
+      `taking multiple dom snapshots for widths: ${widths} (breakpoints=${breakpoints}`,
+    )
+    const viewportSize = await this.getViewportSize()
+    const snapshots = {}
+    if (widths.includes(viewportSize.getWidth())) {
+      this._logger.log(`taking dom snapshot for existing width ${viewportSize.getWidth()}`)
+      const snapshot = await takeDomSnapshot({driver: this._driver})
+      snapshots[viewportSize.getWidth()] = snapshot
+    }
+    for (const width of widths) {
+      if (snapshots[width]) continue
+      this._logger.log(`taking dom snapshot for width ${width}`)
+      await this._driver.setViewportSize({width, height: viewportSize.getHeight()})
+      const snapshot = await takeDomSnapshot({driver: this._driver})
+      snapshots[width] = snapshot
+    }
+    await this._driver.setViewportSize(viewportSize)
+    return widths.map(width => snapshots[width])
   }
   /**
    * @inheritDoc
@@ -352,6 +387,31 @@ class EyesVisualGrid extends EyesCore {
    */
   async getInferredEnvironment() {
     return undefined
+  }
+
+  async getBrowserSize(browser) {
+    if (TypeUtils.has(browser, 'width')) {
+      return {width: browser.width, height: browser.height}
+    } else if (
+      TypeUtils.has(browser, 'chromeEmulationInfo') ||
+      TypeUtils.has(browser, 'deviceName')
+    ) {
+      const {deviceName, screenOrientation = 'portrait'} = browser.chromeEmulationInfo || browser
+      if (!this._emulatedDevicesSizesPromise) {
+        await this.getAndSaveRenderingInfo()
+        this._emulatedDevicesSizesPromise = this._serverConnector.getEmulatedDevicesSizes()
+      }
+      const devicesSizes = await this._emulatedDevicesSizesPromise
+      return devicesSizes[deviceName][screenOrientation]
+    } else if (TypeUtils.has(browser, 'iosDeviceInfo')) {
+      const {deviceName, screenOrientation = 'portrait'} = browser.iosDeviceInfo
+      if (!this._iosDevicesSizesPromise) {
+        await this.getAndSaveRenderingInfo()
+        this._iosDevicesSizesPromise = this._serverConnector.getIosDevicesSizes()
+      }
+      const devicesSizes = await this._iosDevicesSizesPromise
+      return devicesSizes[deviceName][screenOrientation]
+    }
   }
 }
 module.exports = EyesVisualGrid
