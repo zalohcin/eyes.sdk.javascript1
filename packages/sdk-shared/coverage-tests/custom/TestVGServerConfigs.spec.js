@@ -15,6 +15,7 @@ const {
 const {assertDefaultMatchSettings, assertImageMatchSettings} = require('../util/ApiAssertions')
 const util = require('util')
 const chai = require('chai')
+const chalk = require('chalk')
 const chaiAsPromised = require('chai-as-promised')
 chai.use(chaiAsPromised)
 const expect = chai.expect
@@ -201,10 +202,8 @@ describe('Miscellaneous VG tests', () => {
     const origConsoleLog = console.log
     const logOutput = []
     console.log = (...args) => logOutput.push(util.format(...args))
-    const yellowStart = '\u001b[33m'
-    const yellowEnd = '\u001b[39m'
     const edgeWarningText = `The 'edge' option that is being used in your browsers' configuration will soon be deprecated. Please change it to either 'edgelegacy' for the legacy version or to 'edgechromium' for the new Chromium-based version. Please note, when using the built-in BrowserType enum, then the values are BrowserType.EDGE_LEGACY and BrowserType.EDGE_CHROMIUM, respectively.`
-    const edgeWarning = `${yellowStart}${edgeWarningText}${yellowEnd}`
+    const edgeWarning = chalk.yellow(edgeWarningText)
 
     try {
       const eyes = getEyes({isVisualGrid: true})
