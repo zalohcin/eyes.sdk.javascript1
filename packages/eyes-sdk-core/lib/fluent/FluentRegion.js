@@ -1,5 +1,6 @@
 'use strict'
 const CoordinatesTypes = require('../geometry/CoordinatesType')
+const GeneralUtils = require('../utils/GeneralUtils')
 
 /**
  * @internal
@@ -20,7 +21,8 @@ class FluentRegion {
   async getRegion(context, screenshot) {
     if (this._region) return [{...this._region.toJSON(), ...this._options}]
 
-    const elements = await this.resolveElements(context)
+    const elementsById = await this.resolveElements(context)
+    const elements = Object.values(elementsById)
 
     const regions = []
     for (const element of elements) {
@@ -49,18 +51,21 @@ class FluentRegion {
       elements = [await context.element(this._element)]
     }
 
-    this._resolvedElements = elements
-    return elements
+    this._elementsById = elements.reduce(
+      (elementsById, el) => Object.assign(elementsById, {[GeneralUtils.guid()]: el}),
+      {},
+    )
+    return this._elementsById
   }
 
-  toPersistedRegions(elementIdsMap) {
+  toPersistedRegions() {
     if (this._region) {
       return [{...this._region.toJSON(), ...this._options}]
     } else {
-      return this._resolvedElements.map(el => ({
+      return Object.keys(this._elementsById).map(elementId => ({
         ...this._options,
         type: 'css',
-        selector: `[data-eyes-selector="${elementIdsMap.get(el)}"]`,
+        selector: `[data-eyes-selector="${elementId}"]`,
       }))
     }
   }

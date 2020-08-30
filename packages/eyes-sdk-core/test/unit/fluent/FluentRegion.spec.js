@@ -1,58 +1,95 @@
 'use strict'
 
 const assert = require('assert')
-const {Region, Logger, FluentRegion} = require('../../../index')
+const {Region, Logger, FluentRegion, CoordinatesType, Location} = require('../../../index')
 const MockDriver = require('../../utils/MockDriver')
 const {Driver} = require('../../utils/FakeSDK')
 
 describe('FluentRegion', () => {
-  let driver, element
+  let driver,
+    element,
+    screenshot,
+    rect1 = {x: 1, y: 2, width: 3, height: 4},
+    rect2 = {x: 5, y: 6, width: 7, height: 8}
 
   before(async () => {
     const mock = new MockDriver()
-    mock.mockElement('custom selector', {
-      dataEyesId: 'some guid 1',
-    })
-    mock.mockElement('custom selector', {
-      dataEyesId: 'some guid 2',
-    })
+    mock.mockElement('custom selector', {rect: rect1})
+    mock.mockElement('custom selector', {rect: rect2})
     driver = new Driver(new Logger(false), mock)
     element = await driver.element('custom selector')
+    screenshot = {
+      convertLocation: (loc, from, to) => {
+        assert.strictEqual(from, CoordinatesType.CONTEXT_RELATIVE)
+        assert.strictEqual(to, CoordinatesType.SCREENSHOT_AS_IS)
+        return new Location({x: loc.getX() + 1, y: loc.getY() + 1})
+      },
+    }
+  })
+
+  it('getRegion for coordinates', async () => {
+    const region = new Region({left: 15, top: 16, width: 17, height: 18})
+    const fluentRegion = new FluentRegion({region})
+    assert.deepStrictEqual(await fluentRegion.getRegion(), [region.toJSON()])
+  })
+
+  it('getRegion for coordinates with options', async () => {
+    const region = new Region({left: 15, top: 16, width: 17, height: 18})
+    const fluentRegion = new FluentRegion({region, options: {key: 'a'}})
+    assert.deepStrictEqual(await fluentRegion.getRegion(), [{...region.toJSON(), key: 'a'}])
+  })
+
+  it('getRegion for selector', async () => {
+    const fluentRegion = new FluentRegion({selector: 'custom selector'})
+    assert.deepStrictEqual(await fluentRegion.getRegion(driver, screenshot), [
+      {left: rect1.x + 1, top: rect1.y + 1, width: rect1.width, height: rect1.height},
+      {left: rect2.x + 1, top: rect2.y + 1, width: rect2.width, height: rect2.height},
+    ])
+  })
+
+  it('getRegion for element', async () => {
+    const fluentRegion = new FluentRegion({element: await driver.element('custom selector')})
+    assert.deepStrictEqual(await fluentRegion.getRegion(driver, screenshot), [
+      {left: rect1.x + 1, top: rect1.y + 1, width: rect1.width, height: rect1.height},
+    ])
+  })
+
+  it('getRegion for selector with options', async () => {
+    const fluentRegion = new FluentRegion({selector: 'custom selector', options: {key: 'a'}})
+    assert.deepStrictEqual(await fluentRegion.getRegion(driver, screenshot), [
+      {left: rect1.x + 1, top: rect1.y + 1, width: rect1.width, height: rect1.height, key: 'a'},
+      {left: rect2.x + 1, top: rect2.y + 1, width: rect2.width, height: rect2.height, key: 'a'},
+    ])
   })
 
   it('region', async () => {
     const region = new Region({left: 15, top: 16, width: 17, height: 18})
     const fluentRegion = new FluentRegion({region})
-    const elements = await fluentRegion.resolveElements()
-    assert.deepStrictEqual(elements, [])
+    const elementsById = await fluentRegion.resolveElements()
+    assert.deepStrictEqual(elementsById, {})
     const persistedRegions = fluentRegion.toPersistedRegions()
     assert.deepStrictEqual(persistedRegions, [region.toJSON()])
   })
 
   it('element', async () => {
     const fluentRegion = new FluentRegion({element})
-    const elements = await fluentRegion.resolveElements(driver)
-    assert.deepStrictEqual(elements, [element])
-    const elementIds = new WeakMap()
-    elementIds.set(element, element.unwrapped.dataEyesId)
-    const persistedRegions = fluentRegion.toPersistedRegions(elementIds)
+    const elementsById = await fluentRegion.resolveElements(driver)
+    assert.deepStrictEqual(Object.values(elementsById), [element])
+    const persistedRegions = fluentRegion.toPersistedRegions()
     assert.deepStrictEqual(persistedRegions, [
-      {type: 'css', selector: `[data-eyes-selector="some guid 1"]`},
+      {type: 'css', selector: `[data-eyes-selector="${Object.keys(elementsById)[0]}"]`},
     ])
   })
 
   it('selector', async () => {
     const fluentRegion = new FluentRegion({selector: 'custom selector'})
-    const elements = await fluentRegion.resolveElements(driver)
-    assert.deepStrictEqual(elements, await driver.elements('custom selector'))
-    const elementIds = new WeakMap()
-    for (const el of elements) {
-      elementIds.set(el, el.unwrapped.dataEyesId)
-    }
-    const persistedRegions = fluentRegion.toPersistedRegions(elementIds)
+    const elementsById = await fluentRegion.resolveElements(driver)
+    assert.deepStrictEqual(Object.values(elementsById), await driver.elements('custom selector'))
+    const persistedRegions = fluentRegion.toPersistedRegions()
+    const ids = Object.keys(elementsById)
     assert.deepStrictEqual(persistedRegions, [
-      {type: 'css', selector: `[data-eyes-selector="some guid 1"]`},
-      {type: 'css', selector: `[data-eyes-selector="some guid 2"]`},
+      {type: 'css', selector: `[data-eyes-selector="${ids[0]}"]`},
+      {type: 'css', selector: `[data-eyes-selector="${ids[1]}"]`},
     ])
   })
 
@@ -64,28 +101,27 @@ describe('FluentRegion', () => {
     assert.deepStrictEqual(persistedRegionsRegion, [{...region.toJSON(), key: 'a'}])
 
     const fluentRegionElement = new FluentRegion({element, options: {key: 'b'}})
-    const elements = await fluentRegionElement.resolveElements(driver)
-    assert.deepStrictEqual(elements, [element])
-    const elementIds = new WeakMap()
-    elementIds.set(element, element.unwrapped.dataEyesId)
-    const persistedRegionsElement = fluentRegionElement.toPersistedRegions(elementIds)
+    const elementsByIdElement = await fluentRegionElement.resolveElements(driver)
+    assert.deepStrictEqual(Object.values(elementsByIdElement), [element])
+    const persistedRegionsElement = fluentRegionElement.toPersistedRegions()
     assert.deepStrictEqual(persistedRegionsElement, [
-      {type: 'css', selector: `[data-eyes-selector="some guid 1"]`, key: 'b'},
+      {
+        type: 'css',
+        selector: `[data-eyes-selector="${Object.keys(elementsByIdElement)[0]}"]`,
+        key: 'b',
+      },
     ])
 
     const fluentRegionSelector = new FluentRegion({
       selector: 'custom selector',
       options: {key: 'c'},
     })
-    const elementsSelector = await fluentRegionSelector.resolveElements(driver)
-    const elementIdsSelector = new WeakMap()
-    for (const el of elementsSelector) {
-      elementIdsSelector.set(el, el.unwrapped.dataEyesId)
-    }
-    const persistedRegionsSelector = fluentRegionSelector.toPersistedRegions(elementIdsSelector)
+    const elementsByIdSelector = await fluentRegionSelector.resolveElements(driver)
+    const persistedRegionsSelector = fluentRegionSelector.toPersistedRegions()
+    const idsSelector = Object.keys(elementsByIdSelector)
     assert.deepStrictEqual(persistedRegionsSelector, [
-      {type: 'css', selector: `[data-eyes-selector="some guid 1"]`, key: 'c'},
-      {type: 'css', selector: `[data-eyes-selector="some guid 2"]`, key: 'c'},
+      {type: 'css', selector: `[data-eyes-selector="${idsSelector[0]}"]`, key: 'c'},
+      {type: 'css', selector: `[data-eyes-selector="${idsSelector[1]}"]`, key: 'c'},
     ])
   })
 })

@@ -6,11 +6,11 @@ const MockDriver = require('../../utils/MockDriver')
 const {Logger, Configuration} = require('../../../index')
 const {
   toCheckWindowConfiguration,
-  getAllRegionElements,
+  resolveAllRegionElements,
 } = require('../../../lib/fluent/CheckSettingsUtils')
 
 describe('CheckSettingsUtils', () => {
-  it('toCheckWindowConfiguration', async () => {
+  it('toCheckWindowConfiguration handles regions', async () => {
     const mockDriver = new MockDriver()
     mockDriver.mockElements([
       {selector: 'element0', rect: {x: 1, y: 2, width: 500, height: 501}},
@@ -34,34 +34,23 @@ describe('CheckSettingsUtils', () => {
 
     checkSettings.accessibility('element4', 'bla')
 
-    checkSettings.visualGridOption('polyfillAdoptedStyleSheets', true)
-
-    const elements = await getAllRegionElements({checkSettings, context: driver})
-
-    const elementIdsMap = new WeakMap()
-    for (const [index, el] of elements.entries()) {
-      elementIdsMap.set(el, `guid ${index}`)
-    }
-
-    const configuration = new Configuration()
+    const elementsById = await resolveAllRegionElements({checkSettings, context: driver})
+    const ids = Object.keys(elementsById)
 
     const checkWindowConfiguration = toCheckWindowConfiguration({
       checkSettings,
-      configuration,
-      elementIdsMap,
+      configuration: new Configuration(),
     })
 
-    // console.log(checkWindowConfiguration.floating)
-
     assert.deepStrictEqual(checkWindowConfiguration.ignore, [
-      {selector: '[data-eyes-selector="guid 0"]', type: 'css'},
-      {selector: '[data-eyes-selector="guid 1"]', type: 'css'},
-      {selector: '[data-eyes-selector="guid 2"]', type: 'css'},
+      {selector: `[data-eyes-selector="${ids[0]}"]`, type: 'css'},
+      {selector: `[data-eyes-selector="${ids[1]}"]`, type: 'css'},
+      {selector: `[data-eyes-selector="${ids[2]}"]`, type: 'css'},
       {left: 1, top: 2, width: 3, height: 5, coordinatesType: 'SCREENSHOT_AS_IS'},
     ])
     assert.deepStrictEqual(checkWindowConfiguration.floating, [
       {
-        selector: '[data-eyes-selector="guid 3"]',
+        selector: `[data-eyes-selector="${ids[3]}"]`,
         type: 'css',
         maxUpOffset: 1,
         maxDownOffset: 2,
@@ -69,7 +58,7 @@ describe('CheckSettingsUtils', () => {
         maxRightOffset: 4,
       },
       {
-        selector: '[data-eyes-selector="guid 4"]',
+        selector: `[data-eyes-selector="${ids[4]}"]`,
         type: 'css',
         maxUpOffset: 5,
         maxDownOffset: 6,
@@ -89,9 +78,232 @@ describe('CheckSettingsUtils', () => {
       },
     ])
     assert.deepStrictEqual(checkWindowConfiguration.accessibility, [
-      {accessibilityType: 'bla', selector: '[data-eyes-selector="guid 5"]', type: 'css'},
-      {accessibilityType: 'bla', selector: '[data-eyes-selector="guid 6"]', type: 'css'},
+      {accessibilityType: 'bla', selector: `[data-eyes-selector="${ids[5]}"]`, type: 'css'},
+      {accessibilityType: 'bla', selector: `[data-eyes-selector="${ids[6]}"]`, type: 'css'},
     ])
+  })
+
+  it('toCheckWindowConfiguration handles window target', async () => {
+    const windowCheckSettings = CheckSettings.window()
+
+    const windowCheckWindowConfiguration = toCheckWindowConfiguration({
+      checkSettings: windowCheckSettings,
+      configuration: new Configuration(),
+    })
+
+    assert.strictEqual(windowCheckWindowConfiguration.target, 'window')
+  })
+
+  it('toCheckWindowConfiguration handles region target with selector', async () => {
+    const mockDriver = new MockDriver()
+    mockDriver.mockElements([
+      {selector: 'some selector', rect: {x: 1, y: 2, width: 500, height: 501}},
+    ])
+    const driver = new Driver(new Logger(process.env.APPLITOOLS_SHOW_LOGS), mockDriver)
+
+    const regionCheckSettings = CheckSettings.region('some selector')
+    await resolveAllRegionElements({checkSettings: regionCheckSettings, context: driver})
+
+    const regionCheckWindowConfiguration = toCheckWindowConfiguration({
+      checkSettings: regionCheckSettings,
+      configuration: new Configuration(),
+    })
+
+    assert.strictEqual(regionCheckWindowConfiguration.target, 'region')
+  })
+
+  it('toCheckWindowConfiguration handles region target with element', async () => {
+    const mockDriver = new MockDriver()
+    mockDriver.mockElements([
+      {selector: 'some selector', rect: {x: 1, y: 2, width: 500, height: 501}},
+    ])
+    const driver = new Driver(new Logger(process.env.APPLITOOLS_SHOW_LOGS), mockDriver)
+
+    const regionCheckSettings = CheckSettings.region(await driver.element('some selector'))
+    await resolveAllRegionElements({checkSettings: regionCheckSettings, context: driver})
+
+    const regionCheckWindowConfiguration = toCheckWindowConfiguration({
+      checkSettings: regionCheckSettings,
+      configuration: new Configuration(),
+    })
+
+    assert.strictEqual(regionCheckWindowConfiguration.target, 'region')
+  })
+
+  it('toCheckWindowConfiguration handles region target with coordinates', async () => {
+    const regionCheckSettings = CheckSettings.region({left: 1, top: 2, width: 500, height: 501})
+
+    const regionCheckWindowConfiguration = toCheckWindowConfiguration({
+      checkSettings: regionCheckSettings,
+      configuration: new Configuration(),
+    })
+
+    assert.strictEqual(regionCheckWindowConfiguration.target, 'region')
+  })
+
+  it('toCheckWindowConfiguration handles fully false with no default', async () => {
+    const checkSettings = new CheckSettings()
+
+    const checkWindowConfiguration = toCheckWindowConfiguration({
+      checkSettings: checkSettings,
+      configuration: new Configuration(),
+    })
+
+    assert.strictEqual(checkWindowConfiguration.fully, false)
+  })
+
+  it('toCheckWindowConfiguration handles fully true with no default', async () => {
+    const checkSettings = new CheckSettings().fully()
+
+    const checkWindowConfiguration = toCheckWindowConfiguration({
+      checkSettings: checkSettings,
+      configuration: new Configuration(),
+    })
+
+    assert.strictEqual(checkWindowConfiguration.fully, true)
+  })
+
+  it('toCheckWindowConfiguration handles fully false with default', async () => {
+    const checkSettings = new CheckSettings()
+
+    const checkWindowConfiguration = toCheckWindowConfiguration({
+      checkSettings: checkSettings,
+      configuration: new Configuration({forceFullPageScreenshot: true}),
+    })
+
+    assert.strictEqual(checkWindowConfiguration.fully, true)
+  })
+
+  it('toCheckWindowConfiguration handles fully true with default', async () => {
+    const checkSettings = new CheckSettings().fully()
+
+    const checkWindowConfiguration = toCheckWindowConfiguration({
+      checkSettings: checkSettings,
+      configuration: new Configuration({forceFullPageScreenshot: false}),
+    })
+
+    assert.strictEqual(checkWindowConfiguration.fully, true)
+  })
+
+  it('toCheckWindowConfiguration handles tag', async () => {
+    const checkSettings = new CheckSettings().withName('some tag')
+
+    const checkWindowConfiguration = toCheckWindowConfiguration({
+      checkSettings: checkSettings,
+      configuration: new Configuration(),
+    })
+
+    assert.strictEqual(checkWindowConfiguration.tag, 'some tag')
+  })
+
+  it('toCheckWindowConfiguration handles scriptHooks', async () => {
+    const checkSettings = new CheckSettings().beforeRenderScreenshotHook('some hook')
+
+    const checkWindowConfiguration = toCheckWindowConfiguration({
+      checkSettings: checkSettings,
+      configuration: new Configuration(),
+    })
+
+    assert.deepStrictEqual(checkWindowConfiguration.scriptHooks, {
+      beforeCaptureScreenshot: 'some hook',
+    })
+  })
+
+  it('toCheckWindowConfiguration handles sendDom', async () => {
+    const checkSettings = new CheckSettings().sendDom(true)
+
+    const checkWindowConfiguration = toCheckWindowConfiguration({
+      checkSettings: checkSettings,
+      configuration: new Configuration(),
+    })
+
+    assert.strictEqual(checkWindowConfiguration.sendDom, true)
+  })
+
+  it('toCheckWindowConfiguration handles matchLevel with no default', async () => {
+    const checkSettings = new CheckSettings().matchLevel('some match level')
+
+    const checkWindowConfiguration = toCheckWindowConfiguration({
+      checkSettings: checkSettings,
+      configuration: new Configuration(),
+    })
+
+    assert.strictEqual(checkWindowConfiguration.matchLevel, 'some match level')
+  })
+
+  it('toCheckWindowConfiguration handles matchLevel with default', async () => {
+    const checkSettings = new CheckSettings()
+
+    const checkWindowConfiguration = toCheckWindowConfiguration({
+      checkSettings: checkSettings,
+      configuration: new Configuration({
+        defaultMatchSettings: {matchLevel: 'Layout'},
+      }),
+    })
+
+    assert.strictEqual(checkWindowConfiguration.matchLevel, 'Layout')
+  })
+
+  it('toCheckWindowConfiguration handles matchLevel with default overriden', async () => {
+    const checkSettings = new CheckSettings().matchLevel('some match level')
+
+    const checkWindowConfiguration = toCheckWindowConfiguration({
+      checkSettings: checkSettings,
+      configuration: new Configuration({
+        defaultMatchSettings: {matchLevel: 'Layout'},
+      }),
+    })
+
+    assert.strictEqual(checkWindowConfiguration.matchLevel, 'some match level')
+  })
+
+  it('toCheckWindowConfiguration handles visualGridOptions with no default', async () => {
+    const checkSettings = new CheckSettings().visualGridOption('polyfillAdoptedStyleSheets', true)
+
+    const checkWindowConfiguration = toCheckWindowConfiguration({
+      checkSettings: checkSettings,
+      configuration: new Configuration(),
+    })
+
+    assert.deepStrictEqual(checkWindowConfiguration.visualGridOptions, {
+      polyfillAdoptedStyleSheets: true,
+    })
+  })
+
+  it('toCheckWindowConfiguration handles visualGridOptions with default', async () => {
+    const checkSettings = new CheckSettings()
+
+    const checkWindowConfiguration = toCheckWindowConfiguration({
+      checkSettings: checkSettings,
+      configuration: new Configuration({visualGridOptions: {polyfillAdoptedStyleSheets: true}}),
+    })
+
+    assert.deepStrictEqual(checkWindowConfiguration.visualGridOptions, {
+      polyfillAdoptedStyleSheets: true,
+    })
+  })
+
+  it('toCheckWindowConfiguration handles visualGridOptions with default overriden', async () => {
+    const checkSettings = new CheckSettings().visualGridOption('polyfillAdoptedStyleSheets', true)
+
+    const checkWindowConfiguration = toCheckWindowConfiguration({
+      checkSettings: checkSettings,
+      configuration: new Configuration({visualGridOptions: {polyfillAdoptedStyleSheets: false}}),
+    })
+
+    assert.deepStrictEqual(checkWindowConfiguration.visualGridOptions, {
+      polyfillAdoptedStyleSheets: true,
+    })
+  })
+
+  it('toCheckWindowConfiguration handles visualGridOptions with plural API', async () => {
+    const checkSettings = new CheckSettings().visualGridOptions({polyfillAdoptedStyleSheets: true})
+
+    const checkWindowConfiguration = toCheckWindowConfiguration({
+      checkSettings: checkSettings,
+      configuration: new Configuration(),
+    })
+
     assert.deepStrictEqual(checkWindowConfiguration.visualGridOptions, {
       polyfillAdoptedStyleSheets: true,
     })

@@ -11,7 +11,10 @@ const CorsIframeHandles = require('../capture/CorsIframeHandles')
 const VisualGridRunner = require('../runner/VisualGridRunner')
 const EyesCore = require('./EyesCore')
 const EyesUtils = require('./EyesUtils')
-const {getAllRegionElements, toCheckWindowConfiguration} = require('../fluent/CheckSettingsUtils')
+const {
+  resolveAllRegionElements,
+  toCheckWindowConfiguration,
+} = require('../fluent/CheckSettingsUtils')
 
 /**
  * @typedef {import('../capture/CorsIframeHandles').CorsIframeHandle} CorsIframeHandle
@@ -240,8 +243,11 @@ class EyesVisualGrid extends EyesCore {
     }
 
     return this._checkPrepare(checkSettings, async () => {
-      const regionElements = await getAllRegionElements({checkSettings, context: this._driver})
-      const elementIdsMap = await EyesUtils.markElements(this._logger, this._driver, regionElements)
+      const elementsById = await resolveAllRegionElements({
+        checkSettings,
+        context: this._driver,
+      })
+      await EyesUtils.markElements(this._logger, this._driver, elementsById)
 
       try {
         const pageDomResults = await this.constructor.VisualGridClient.takeDomSnapshot({
@@ -256,7 +262,6 @@ class EyesVisualGrid extends EyesCore {
         const config = toCheckWindowConfiguration({
           checkSettings,
           configuration: this._configuration,
-          elementIdsMap,
         })
 
         await this._checkWindowCommand({
@@ -268,7 +273,7 @@ class EyesVisualGrid extends EyesCore {
           cdt,
         })
       } finally {
-        await EyesUtils.cleanupElementIds(this._logger, this._driver, regionElements)
+        await EyesUtils.cleanupElementIds(this._logger, this._driver, Object.values(elementsById))
       }
     })
   }

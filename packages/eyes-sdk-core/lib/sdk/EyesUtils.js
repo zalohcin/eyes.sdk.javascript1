@@ -376,16 +376,10 @@ async function getElementXpath(logger, context, element) {
   })
 }
 
-async function markElements(_logger, context, elements) {
-  const ids = Array(elements.length)
-    .fill()
-    .map(GeneralUtils.guid)
+async function markElements(_logger, context, elementsById) {
+  const elements = Object.values(elementsById)
+  const ids = Object.keys(elementsById)
   await context.execute(snippets.markElements, {elements, ids})
-  const elementIdsMap = new WeakMap()
-  for (const [index, el] of elements.entries()) {
-    elementIdsMap.set(el, ids[index])
-  }
-  return elementIdsMap
 }
 
 async function cleanupElementIds(_logger, context, elements) {

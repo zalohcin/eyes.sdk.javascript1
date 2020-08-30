@@ -946,6 +946,13 @@ class CheckSettings {
     this._visualGridOptions[key] = value
     return this
   }
+  visualGridOptions(options) {
+    this._visualGridOptions = options
+    return this
+  }
+  getVisualGridOptions() {
+    return this._visualGridOptions
+  }
 
   /**
    * @override
