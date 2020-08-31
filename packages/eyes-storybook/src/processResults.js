@@ -14,7 +14,11 @@ function processResults({results = [], totalTime, concurrency}) {
   const unresolved = testResults.filter(r => r.getIsDifferent());
   const passedOrNew = testResults.filter(r => !r.getIsDifferent());
 
-  let errors = results.map(({title, resultsOrErr}) => resultsOrErr.map(err => ({err, title})));
+  let errors = results.map(({title, resultsOrErr}) =>
+    Array.isArray(resultsOrErr)
+      ? resultsOrErr.map(err => ({err, title}))
+      : [{err: resultsOrErr, title}],
+  );
   errors = flatten(errors).filter(({err}) => err.constructor.name === 'Error');
 
   outputStr += '[EYES: TEST RESULTS]:\n\n';

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix exception when getStoryData throws an error ([Trello](https://trello.com/c/FLDMYl2O))
 
 ## 3.8.8 - 2020/8/13
 
