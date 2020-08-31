@@ -25,9 +25,7 @@ describe('renderStory', () => {
     const title = getStoryTitle(story);
     const results = await renderStory({
       story,
-      resourceUrls: 'resourceUrls',
-      resourceContents: 'resourceContents',
-      cdt: 'cdt',
+      snapshot: 'snapshot',
       url: 'url',
     });
 
@@ -35,9 +33,7 @@ describe('renderStory', () => {
 
     expect(results).to.eql({
       checkParams: {
-        resourceUrls: 'resourceUrls',
-        resourceContents: 'resourceContents',
-        cdt: 'cdt',
+        snapshot: 'snapshot',
         url: 'url',
       },
       openParams: {

@@ -43,12 +43,7 @@ describe('renderStories', () => {
     await Promise.resolve();
     const getStoryData = async ({story, storyUrl, page}) => {
       await delay(10);
-      return {
-        cdt: `cdt_${story.name}_${story.kind}_${storyUrl}_${await page.evaluate()}`,
-        resourceUrls: `resourceUrls_${story.name}_${story.kind}_${storyUrl}_${await page.evaluate()}`, // eslint-disable-line prettier/prettier
-        resourceContents: `resourceContents_${story.name}_${story.kind}_${storyUrl}_${await page.evaluate()}`, // eslint-disable-line prettier/prettier
-        frames: `frames_${story.name}_${story.kind}_${storyUrl}_${await page.evaluate()}`,
-      };
+      return `snapshot_${story.name}_${story.kind}_${storyUrl}_${await page.evaluate()}`;
     };
 
     const renderStory = async arg => [{arg, getStatus: () => 'Passed'}];
@@ -83,10 +78,7 @@ describe('renderStories', () => {
         const storyUrl = `http://something/iframe.html?eyes-storybook=true&selectedKind=${story.kind}&selectedStory=${story.name}`;
         const page = i % 3 === 0 ? 1 : i % 3 === 1 ? 2 : 3;
         return {
-          cdt: `cdt_${story.name}_${story.kind}_${storyUrl}_${page}`,
-          resourceUrls: `resourceUrls_${story.name}_${story.kind}_${storyUrl}_${page}`,
-          resourceContents: `resourceContents_${story.name}_${story.kind}_${storyUrl}_${page}`, // eslint-disable-line prettier/prettier
-          frames: `frames_${story.name}_${story.kind}_${storyUrl}_${page}`,
+          snapshot: `snapshot_${story.name}_${story.kind}_${storyUrl}_${page}`,
           story,
           url: storyUrl,
         };
@@ -98,7 +90,7 @@ describe('renderStories', () => {
     expect(
       results
         .map(({resultsOrErr}) => resultsOrErr[0].arg)
-        .sort((a, b) => a.cdt.localeCompare(b.cdt)),
+        .sort((a, b) => a.snapshot.localeCompare(b.snapshot)),
     ).to.eql(expectedResults);
 
     expect(getEvents()).to.eql(['- Done 0 stories out of 7\n', '✔ Done 7 stories out of 7\n']);
@@ -235,12 +227,7 @@ describe('renderStories', () => {
         const getStoryData = async ({story, storyUrl, page}) => {
           await delay(10);
           const location = await page.evaluate(() => window.location.href); // eslint-disable-line no-undef
-          return {
-            cdt: `cdt_${story.name}_${story.kind}_${storyUrl}_${location}`,
-            resourceUrls: `resourceUrls`,
-            resourceContents: `resourceContents`,
-            frames: `frames`,
-          };
+          return `snapshot_${story.name}_${story.kind}_${storyUrl}_${location}`;
         };
 
         const renderStory = async arg => [{arg, getStatus: () => 'Passed'}];
@@ -268,11 +255,8 @@ describe('renderStories', () => {
           {
             story,
             url: storyUrl,
-            cdt:
-              'cdt_s1_k1_http://something/iframe.html?eyes-storybook=true&selectedKind=k1&selectedStory=s1_about:blank',
-            resourceUrls: 'resourceUrls',
-            resourceContents: 'resourceContents',
-            frames: 'frames',
+            snapshot:
+              'snapshot_s1_k1_http://something/iframe.html?eyes-storybook=true&selectedKind=k1&selectedStory=s1_about:blank',
           },
         ]);
 
@@ -314,12 +298,7 @@ describe('renderStories', () => {
           } else {
             await delay(100);
             const location = await page.evaluate(() => window.location.href); // eslint-disable-line no-undef
-            return {
-              cdt: `cdt_${story.name}_${story.kind}_${storyUrl}_${location}`,
-              resourceUrls: `resourceUrls`,
-              resourceContents: `resourceContents`,
-              frames: `frames`,
-            };
+            return `snapshot_${story.name}_${story.kind}_${storyUrl}_${location}`;
           }
         };
 
@@ -347,11 +326,8 @@ describe('renderStories', () => {
         const expectedStory = {
           story,
           url: storyUrl,
-          cdt:
-            'cdt_s1_k1_http://something/iframe.html?eyes-storybook=true&selectedKind=k1&selectedStory=s1_about:blank',
-          resourceUrls: 'resourceUrls',
-          resourceContents: 'resourceContents',
-          frames: 'frames',
+          snapshot:
+            'snapshot_s1_k1_http://something/iframe.html?eyes-storybook=true&selectedKind=k1&selectedStory=s1_about:blank',
         };
 
         const resultsOrErr0 = results[0].resultsOrErr;
@@ -386,11 +362,11 @@ describe('renderStories', () => {
     const heavySnapshot = allocObjectBuffer(1024 * 1024 * 1); // 1 MB
     const getStoryData = async () => JSON.parse(heavySnapshot);
 
-    const renderStory = async ({cdt}) => {
+    const renderStory = async ({snapshot}) => {
       await new Promise(r => setTimeout(r, 0));
       return [
         {
-          arg: JSON.stringify(cdt).length,
+          arg: JSON.stringify(snapshot).length,
           getStatus: () => 'Passed',
         },
       ];

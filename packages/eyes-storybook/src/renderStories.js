@@ -103,12 +103,8 @@ function makeRenderStories({
             throw new Error(errMsg);
           }
 
-          const {cdt, resourceUrls, resourceContents, frames} = storyData;
           const testResults = await renderStory({
-            cdt,
-            resourceUrls,
-            resourceContents,
-            frames,
+            snapshot: storyData,
             url: storyUrl,
             story,
           });
