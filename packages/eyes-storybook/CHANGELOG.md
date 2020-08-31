@@ -3,6 +3,8 @@
 ## Unreleased
 
 - fix exception when getStoryData throws an error ([Trello](https://trello.com/c/FLDMYl2O))
+- updated to @applitools/eyes-sdk-core@12.2.0 (from 12.1.4)
+- updated to @applitools/visual-grid-client@15.0.0 (from 14.7.5)
 
 ## 3.8.8 - 2020/8/13
 
