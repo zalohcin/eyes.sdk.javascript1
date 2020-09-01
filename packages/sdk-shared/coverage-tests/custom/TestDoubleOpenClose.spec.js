@@ -262,6 +262,7 @@ describe(appName, () => {
 async function makeCheck(runner, batch, driver, appName, testName, checkName) {
   let eyes = new Eyes(runner)
   eyes.setBatch(batch)
+  eyes.setDontCloseBatches(true)
   eyes.setHostOS('Linux')
   if (process.env['APPLITOOLS_API_KEY_SDK']) {
     eyes.setApiKey(process.env['APPLITOOLS_API_KEY_SDK'])

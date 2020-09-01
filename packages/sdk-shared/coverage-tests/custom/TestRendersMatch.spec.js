@@ -70,6 +70,7 @@ async function initEyes(runner, driver, viewport, name) {
   const eyes = new Eyes(runner)
   const conf = new Configuration()
   conf.setBatch(batch)
+  conf.setDontCloseBatches(true)
   conf.setViewportSize(viewport)
   conf.setTestName(name)
   conf.setAppName(appName)

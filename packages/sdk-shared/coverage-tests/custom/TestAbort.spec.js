@@ -129,6 +129,7 @@ function getConfig() {
   let config = new Configuration()
   config.setAppName(appName)
   config.setBatch(batch)
+  config.setDontCloseBatches(true)
   if (process.env['APPLITOOLS_API_KEY_SDK']) {
     config.setApiKey(process.env['APPLITOOLS_API_KEY_SDK'])
   }
