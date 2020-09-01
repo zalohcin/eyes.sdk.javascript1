@@ -1314,7 +1314,7 @@ class Configuration {
     } else if (breakpoints.length === 0) {
       this._layoutBreakpoints = false
     } else {
-      this._layoutBreakpoints = Array.from(new Set(breakpoints)).sort((a, b) => (a > b ? 1 : -1))
+      this._layoutBreakpoints = Array.from(new Set(breakpoints)).sort((a, b) => (a < b ? 1 : -1))
     }
     return this
   }
