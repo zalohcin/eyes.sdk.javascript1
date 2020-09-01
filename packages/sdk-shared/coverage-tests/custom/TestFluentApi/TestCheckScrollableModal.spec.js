@@ -20,6 +20,6 @@ describe('Coverage tests', () => {
     eyes.setMatchTimeout(0)
   })
 
-  it('TestCheckScrollableModal', () =>
+  it.skip('TestCheckScrollableModal', () =>
     TestCheckScrollableModal({testName: 'TestCheckScrollableModal', eyes, driver}))
 })

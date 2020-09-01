@@ -63,7 +63,7 @@ describe(appName, () => {
       }
     })
 
-    it('TestWebAppScrolling2', async () => {
+    it.skip('TestWebAppScrolling2', async () => {
       args.push('--window-size=386,512')
       driver = await spec.build({
         capabilities: {
