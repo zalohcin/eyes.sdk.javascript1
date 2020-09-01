@@ -242,6 +242,9 @@ class Configuration {
     /** @type {Object} */
     this._visualGridOptions = undefined
 
+    /** @type {number[]|boolean} */
+    this._layoutBreakpoints = undefined
+
     if (configuration) {
       this.mergeConfig(configuration)
     }

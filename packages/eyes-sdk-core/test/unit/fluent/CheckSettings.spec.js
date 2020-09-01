@@ -2,6 +2,7 @@
 
 const assert = require('assert')
 const {CheckSettings} = require('../../utils/FakeSDK')
+const TypeUtils = require('../../../lib/utils/TypeUtils')
 const vm = require('vm')
 const fs = require('fs')
 const path = require('path')
@@ -68,6 +69,12 @@ describe('CheckSettings', () => {
     assert.deepStrictEqual(checkSettings.getLayoutBreakpoints(), [25, 50, 100, 200])
     checkSettings.layoutBreakpoints([])
     assert.deepStrictEqual(checkSettings.getLayoutBreakpoints(), false)
+
+    const checkSettingsDefault = new CheckSettings()
+    assert.deepStrictEqual(
+      TypeUtils.getOrDefault(checkSettingsDefault.getLayoutBreakpoints(), true),
+      true,
+    )
   })
 
   // TODO this test makes more sense to run inside docker

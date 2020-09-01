@@ -51,6 +51,7 @@ const BOOLEAN_CONFIGS = [
   '_hideCaret',
   '_isThrowExceptionOn',
   '_dontCloseBatches',
+  '_layoutBreakpoints',
 ]
 
 const NUMBER_CONFIGS = [
@@ -175,12 +176,17 @@ describe('Configuration', () => {
       configuration.setApiKey('apiKey')
       configuration.setIgnoreDisplacements(true)
       configuration.setMatchLevel(MatchLevel.Layout)
+      configuration.setLayoutBreakpoints(true)
 
       const configurationCopy = new Configuration(configuration)
 
       assert.strictEqual(configuration.getAppName(), configurationCopy.getAppName())
       assert.strictEqual(configuration.getApiKey(), configurationCopy.getApiKey())
       assert.strictEqual(configuration.getMatchLevel(), configurationCopy.getMatchLevel())
+      assert.strictEqual(
+        configuration.getLayoutBreakpoints(),
+        configurationCopy.getLayoutBreakpoints(),
+      )
       assert.strictEqual(
         configuration.getIgnoreDisplacements(),
         configurationCopy.getIgnoreDisplacements(),

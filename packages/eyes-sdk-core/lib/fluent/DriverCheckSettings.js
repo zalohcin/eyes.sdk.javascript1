@@ -191,7 +191,7 @@ class CheckSettings {
     /** @private @type {Object} */
     this._visualGridOptions = undefined
     /** @private @type {number[]|boolean} */
-    this._layoutBreakpoints = null
+    this._layoutBreakpoints = undefined
   }
   /**
    * Create check settings from an object
