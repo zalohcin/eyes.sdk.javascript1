@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix layout breakpoints configuration
 
 ## 12.2.1 - 2020/9/1
 
