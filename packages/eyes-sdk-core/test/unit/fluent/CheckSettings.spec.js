@@ -64,9 +64,9 @@ describe('CheckSettings', () => {
     checkSettings.layoutBreakpoints(false)
     assert.deepStrictEqual(checkSettings.getLayoutBreakpoints(), false)
     checkSettings.layoutBreakpoints([25, 50, 100, 200])
-    assert.deepStrictEqual(checkSettings.getLayoutBreakpoints(), [25, 50, 100, 200])
+    assert.deepStrictEqual(checkSettings.getLayoutBreakpoints(), [200, 100, 50, 25])
     checkSettings.layoutBreakpoints([100, 200, 200, 100, 50, 25])
-    assert.deepStrictEqual(checkSettings.getLayoutBreakpoints(), [25, 50, 100, 200])
+    assert.deepStrictEqual(checkSettings.getLayoutBreakpoints(), [200, 100, 50, 25])
     checkSettings.layoutBreakpoints([])
     assert.deepStrictEqual(checkSettings.getLayoutBreakpoints(), false)
 
