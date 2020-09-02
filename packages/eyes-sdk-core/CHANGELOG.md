@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- add `disableBrowserFetching` configuration parameter ([Trello](https://trello.com/c/ixJJZdiA))
 
 ## 12.2.2 - 2020/9/1
 
