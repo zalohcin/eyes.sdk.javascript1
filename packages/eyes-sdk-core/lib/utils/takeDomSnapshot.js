@@ -12,26 +12,29 @@ const CAPTURE_DOM_TIMEOUT_MS = 5 * 60 * 1000 // 5 min
 
 let captureScript, captureScriptIE
 
-async function getScript() {
+async function getScript({disableBrowserFetching}) {
   if (!captureScript) {
     const scriptBody = await getProcessPageAndSerializePoll()
-    captureScript = `${scriptBody} return __processPageAndSerializePoll();`
+    captureScript = `${scriptBody} return __processPageAndSerializePoll(document, {dontFetchResources: ${disableBrowserFetching}});`
   }
 
   return captureScript
 }
 
-async function getScriptForIE() {
+async function getScriptForIE({disableBrowserFetching}) {
   if (!captureScriptIE) {
     const scriptBody = await getProcessPageAndSerializePollForIE()
-    captureScriptIE = `${scriptBody} return __processPageAndSerializePollForIE();`
+    captureScriptIE = `${scriptBody} return __processPageAndSerializePollForIE(document, {dontFetchResources: ${disableBrowserFetching}});`
   }
 
   return captureScriptIE
 }
 
-async function takeDomSnapshot({driver, startTime = Date.now(), browser}) {
-  const processPageAndPollScript = browser === 'IE' ? await getScriptForIE() : await getScript()
+async function takeDomSnapshot({driver, startTime = Date.now(), browser, disableBrowserFetching}) {
+  const processPageAndPollScript =
+    browser === 'IE'
+      ? await getScriptForIE({disableBrowserFetching})
+      : await getScript({disableBrowserFetching})
   const resultAsString = await driver.execute(processPageAndPollScript)
 
   const scriptResponse = JSON.parse(resultAsString)

@@ -295,6 +295,9 @@ class CheckSettings {
     if (object.layoutBreakpoints) {
       settings.layoutBreakpoints(object.layoutBreakpoints)
     }
+    if (object.disableBrowserFetching) {
+      settings.disableBrowserFetching()
+    }
     return settings
   }
   /**
@@ -972,6 +975,13 @@ class CheckSettings {
   }
   getLayoutBreakpoints() {
     return this._layoutBreakpoints
+  }
+  disableBrowserFetching(value = true) {
+    this._disableBrowserFetching = value
+    return this
+  }
+  getDisableBrowserFetching() {
+    return this._disableBrowserFetching
   }
 
   /**

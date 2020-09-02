@@ -30,6 +30,8 @@ describe('CheckSettings', () => {
       accessibilityRegions: ['accessibility-region-selector'],
       isFully: true,
       visualGridOptions: {polyfillAdoptedStyleSheets: true},
+      layoutBreakpoints: true,
+      disableBrowserFetching: true,
     }
     const checkSettings = CheckSettings.from(object)
 
@@ -53,6 +55,8 @@ describe('CheckSettings', () => {
       )
       .fully(object.isFully)
       .visualGridOption('polyfillAdoptedStyleSheets', true)
+      .layoutBreakpoints()
+      .disableBrowserFetching()
 
     assert.deepStrictEqual(checkSettings, checkSettings2)
   })

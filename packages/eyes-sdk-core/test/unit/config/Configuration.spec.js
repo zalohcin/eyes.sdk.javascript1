@@ -52,6 +52,7 @@ const BOOLEAN_CONFIGS = [
   '_isThrowExceptionOn',
   '_dontCloseBatches',
   '_layoutBreakpoints',
+  '_disableBrowserFetching',
 ]
 
 const NUMBER_CONFIGS = [
@@ -177,6 +178,7 @@ describe('Configuration', () => {
       configuration.setIgnoreDisplacements(true)
       configuration.setMatchLevel(MatchLevel.Layout)
       configuration.setLayoutBreakpoints(true)
+      configuration.setDisableBrowserFetching(true)
 
       const configurationCopy = new Configuration(configuration)
 
@@ -186,6 +188,10 @@ describe('Configuration', () => {
       assert.strictEqual(
         configuration.getLayoutBreakpoints(),
         configurationCopy.getLayoutBreakpoints(),
+      )
+      assert.strictEqual(
+        configuration.getDisableBrowserFetching(),
+        configurationCopy.getDisableBrowserFetching(),
       )
       assert.strictEqual(
         configuration.getIgnoreDisplacements(),
