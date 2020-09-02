@@ -245,6 +245,9 @@ class Configuration {
     /** @type {number[]|boolean} */
     this._layoutBreakpoints = undefined
 
+    /** @type {boolean} */
+    this._disableBrowserFetching = undefined
+
     if (configuration) {
       this.mergeConfig(configuration)
     }
@@ -1316,6 +1319,15 @@ class Configuration {
     } else {
       this._layoutBreakpoints = Array.from(new Set(breakpoints)).sort((a, b) => (a < b ? 1 : -1))
     }
+    return this
+  }
+
+  getDisableBrowserFetching() {
+    return this._disableBrowserFetching
+  }
+
+  setDisableBrowserFetching(value) {
+    this._disableBrowserFetching = value
     return this
   }
 
