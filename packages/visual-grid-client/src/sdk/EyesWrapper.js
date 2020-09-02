@@ -26,7 +26,7 @@ class EyesWrapper extends EyesBase {
     }
   }
 
-  async ensureAborted() {
+  async ensureRunningSession() {
     if (!this.getRunningSession() && this._viewportSizeHandler.get()) {
       const [err] = await presult(this._ensureRunningSession())
       if (err) {
@@ -36,6 +36,10 @@ class EyesWrapper extends EyesBase {
         )
       }
     }
+  }
+
+  async ensureAborted() {
+    await this.ensureRunningSession()
     await this.abort()
   }
 

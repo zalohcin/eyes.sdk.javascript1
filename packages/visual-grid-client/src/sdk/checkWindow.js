@@ -114,8 +114,8 @@ function makeCheckWindow({
       all: [floating],
       floating: 0,
     }
-    const renderPromise = presult(startRender())
 
+    let renderPromises
     let renderJobs // This will be an array of `resolve` functions to rendering jobs. See `createRenderJob` below.
 
     setCheckWindowPromises(
@@ -135,7 +135,15 @@ function makeCheckWindow({
         return
       }
 
-      const [renderErr, renderIds] = await renderPromise
+      await openEyesPromises[index]
+
+      await wrapper.ensureRunningSession()
+
+      if (!renderPromises) {
+        renderPromises = await presult(startRender())
+      }
+
+      const [renderErr, renderIds] = await renderPromises
 
       if (testController.shouldStopTest(index)) {
         logger.log(
@@ -180,7 +188,6 @@ function makeCheckWindow({
         wrapper.setInferredEnvironment(`useragent:${userAgents[browsers[index].name]}`)
         testController.setFatalError(renderStatusErr)
         renderJobs && renderJobs[index]()
-        await openEyesPromises[index]
         return
       }
 
@@ -252,8 +259,6 @@ function makeCheckWindow({
         `checkWindow waiting for openEyes. test=${testName}, stepCount #${currStepCount}`,
       )
 
-      await openEyesPromises[index]
-
       if (testController.shouldStopTest(index)) {
         logger.log(`aborting checkWindow after waiting for openEyes promise`)
         return
@@ -312,7 +317,13 @@ function makeCheckWindow({
 
       if (saveDebugData) {
         for (const [index, renderId] of renderIds.entries()) {
-          await saveData({renderId, cdt: snapshots[index].cdt, resources, url, logger})
+          await saveData({
+            renderId,
+            cdt: snapshots[index].cdt,
+            resources: Object.values(pages[index].allResources),
+            url,
+            logger,
+          })
         }
       }
 

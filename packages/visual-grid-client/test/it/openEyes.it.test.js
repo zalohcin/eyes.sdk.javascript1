@@ -19,6 +19,7 @@ const {
   IgnoreRegionByRectangle,
   FloatingRegionByRectangle,
   AccessibilityRegionByRectangle,
+  TestResults,
 } = require('@applitools/eyes-sdk-core')
 const {
   apiKeyFailMsg,
@@ -748,6 +749,92 @@ Received: 'firefox-1'.`,
         err => err,
       )
       expect(result2).not.to.be.an.instanceOf(Error)
+    })
+
+    it.only('waits for session to start in order to perform renderings', async () => {
+      const wrapper = createFakeWrapper(baseUrl)
+
+      const counters = {
+        open: 0,
+        session: 0,
+        checkWindow: 0,
+        render: 0,
+        close: 0,
+      }
+
+      wrapper.open = async () => {
+        await psetTimeout(50)
+        counters.open++
+      }
+
+      wrapper.renderBatch = async () => {
+        await psetTimeout(50)
+        counters.render++
+        return [new FakeRunningRender(`renderId${counters.render}`, RenderStatus.RENDERED)]
+      }
+
+      wrapper.getRenderStatus = async () => {
+        await psetTimeout(0)
+        return [new RenderStatusResults({status: RenderStatus.RENDERED})]
+      }
+
+      wrapper.ensureRunningSession = async () => {
+        await psetTimeout(50)
+        counters.session++
+      }
+
+      wrapper.checkWindow = async () => {
+        await psetTimeout(50)
+        counters.checkWindow++
+      }
+
+      wrapper.close = async () => {
+        await psetTimeout(0)
+        return new TestResults({stepsInfo: [{}]})
+      }
+
+      openEyes = makeRenderingGridClient({
+        concurrency: 1,
+        apiKey,
+        showLogs: APPLITOOLS_SHOW_LOGS,
+        renderWrapper: wrapper,
+      }).openEyes
+
+      const {checkWindow, close} = await openEyes({
+        wrappers: [wrapper],
+        appName,
+      })
+
+      // t0
+      await psetTimeout(0)
+      expect(counters.open).to.equal(0)
+      await checkWindow({snapshot: {cdt: []}, url: 'url'})
+      //t1
+      await psetTimeout(50)
+      expect(counters.open).to.equal(1)
+      expect(counters.session).to.equal(0)
+      expect(counters.render).to.equal(0)
+      expect(counters.checkWindow).to.equal(0)
+      //t2
+      await psetTimeout(50)
+      expect(counters.open).to.equal(1)
+      expect(counters.session).to.equal(1)
+      expect(counters.render).to.equal(0)
+      expect(counters.checkWindow).to.equal(0)
+      //t3
+      await psetTimeout(50)
+      expect(counters.open).to.equal(1)
+      expect(counters.session).to.equal(1)
+      expect(counters.render).to.equal(1)
+      expect(counters.checkWindow).to.equal(0)
+      //t4
+      await psetTimeout(200)
+      expect(counters.open).to.equal(1)
+      expect(counters.session).to.equal(1)
+      expect(counters.render).to.equal(1)
+      expect(counters.checkWindow).to.equal(1)
+
+      await close()
     })
 
     // TODO statuser makes this test impossible to fix. need to check concurrency
