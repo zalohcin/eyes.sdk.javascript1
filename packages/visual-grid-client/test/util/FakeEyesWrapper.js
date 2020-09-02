@@ -281,6 +281,8 @@ class FakeEyesWrapper extends EventEmitter {
 
   async ensureAborted() {}
 
+  async ensureRunningSession() {}
+
   resultsToTestResults(results) {
     const steps = Array.from(new Array(results.length).map(() => ({})))
     const tr = new TestResults({stepsInfo: steps})

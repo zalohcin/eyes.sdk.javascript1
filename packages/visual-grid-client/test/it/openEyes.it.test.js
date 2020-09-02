@@ -751,7 +751,7 @@ Received: 'firefox-1'.`,
       expect(result2).not.to.be.an.instanceOf(Error)
     })
 
-    it.only('waits for session to start in order to perform renderings', async () => {
+    it('waits for session to start in order to perform renderings', async () => {
       const wrapper = createFakeWrapper(baseUrl)
 
       const counters = {
