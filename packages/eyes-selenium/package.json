@@ -74,7 +74,7 @@
     "test:coverage": "yarn docker:setup && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-selenium' APPLITOOLS_BATCH_ID=$(uuidgen) XUNIT_FILE=coverage-test-report.xml mocha --config .mocharc.cvg.js; yarn docker:teardown",
     "preversion": "bongo preversion && yarn test && yarn coverage:prod",
     "version": "bongo version",
-    "postversion": "bongo postversion",
+    "postversion": "bongo postversion"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
