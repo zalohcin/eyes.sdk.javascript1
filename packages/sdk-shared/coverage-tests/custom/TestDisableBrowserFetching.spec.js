@@ -33,7 +33,7 @@ describe('TestDisableBrowserFetching', () => {
   })
 
   it('sends dontFetchResources to dom snapshot', async () => {
-    const url = 'http://localhost:5555/ua.html'
+    const url = 'http://localhost:5557/ua.html'
     await spec.visit(driver, url)
     const eyes = getEyes({isVisualGrid: true, configuration: {disableBrowserFetching: true}})
     await eyes.open(driver, 'VgFetch', 'TestDisableBrowserFetching', {width: 800, height: 600})
