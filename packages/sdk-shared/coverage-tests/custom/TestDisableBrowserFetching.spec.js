@@ -14,7 +14,7 @@ describe('TestDisableBrowserFetching', () => {
   before(async () => {
     const staticPath = path.join(__dirname, '../fixtures')
     testServer = await startTestServer({
-      port: 5555,
+      port: 5557,
       staticPath,
       middlewareFile: path.resolve(__dirname, '../util/ua-middleware'),
     })
