@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Fix a bug for Selenium 3 in the fallback for `getWindowRect` which was calling the wrong function [Trello 502](https://trello.com/c/3Dgvye5M)
 
 ## 4.45.2 - 2020/9/1
 
