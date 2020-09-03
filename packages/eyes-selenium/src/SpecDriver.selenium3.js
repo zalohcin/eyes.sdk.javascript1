@@ -126,7 +126,7 @@ async function getWindowRect(driver) {
         const {x, y} = await driver
           .manage()
           .window()
-          .setPosition()
+          .getPosition()
         rect.x = x
         rect.y = y
       }
@@ -134,7 +134,7 @@ async function getWindowRect(driver) {
         const {width, height} = await driver
           .manage()
           .window()
-          .setSize()
+          .getSize()
         rect.width = width
         rect.height = height
       }
