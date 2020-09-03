@@ -40,7 +40,7 @@
     "@applitools/visual-grid-client": "15.0.0"
   },
   "devDependencies": {
-    "@applitools/sdk-coverage-tests": "1.0.12",
+    "@applitools/sdk-coverage-tests": "1.0.14",
     "@applitools/sdk-fake-eyes-server": "^2.0.0",
     "@applitools/sdk-release-kit": "0.2.2",
     "@applitools/sdk-shared": "0.1.0",
@@ -69,7 +69,9 @@
     "coverage:generate": "coverage-tests create-tests",
     "coverage:sandbox": "yarn coverage:generate && yarn test:coverage && coverage-tests process-report",
     "coverage:prod": "yarn coverage:generate && yarn test:coverage && coverage-tests process-report --send-report prod",
-    "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-protractor' APPLITOOLS_BATCH_ID=$(uuidgen) XUNIT_FILE=coverage-test-report.xml mocha --config .mocharc.cvg.js",
+    "docker:setup": "docker-compose -f ../../docker-compose.yml up -d",
+    "docker:teardown": "docker-compose down",
+    "test:coverage": "yarn docker:setup && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-protractor' APPLITOOLS_BATCH_ID=$(uuidgen) XUNIT_FILE=coverage-test-report.xml mocha --config .mocharc.cvg.js && yarn docker:teardown",
     "types:generate": "rm -rf ./typings && tsc --declaration --declarationDir ./typings --allowJs --emitDeclarationOnly ./index.js",
     "preversion": "bongo preversion && yarn test && yarn coverage:prod",
     "version": "bongo version",
