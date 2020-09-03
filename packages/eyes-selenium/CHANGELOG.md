@@ -3,6 +3,8 @@
 ## Unreleased
 
 - Fix a bug for Selenium 3 in the fallback for `getWindowRect` which was calling the wrong function [Trello 502](https://trello.com/c/3Dgvye5M)
+- updated to @applitools/eyes-sdk-core@12.2.3 (from 12.2.2)
+- updated to @applitools/visual-grid-client@15.0.3 (from 15.0.2)
 
 ## 4.45.2 - 2020/9/1
 

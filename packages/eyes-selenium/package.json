@@ -36,11 +36,11 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "12.2.2",
-    "@applitools/visual-grid-client": "15.0.2"
+    "@applitools/eyes-sdk-core": "12.2.3",
+    "@applitools/visual-grid-client": "15.0.3"
   },
   "devDependencies": {
-    "@applitools/sdk-coverage-tests": "1.0.12",
+    "@applitools/sdk-coverage-tests": "1.0.14",
     "@applitools/sdk-fake-eyes-server": "^2.0.0",
     "@applitools/sdk-release-kit": "0.2.2",
     "@applitools/sdk-shared": "0.1.0",
