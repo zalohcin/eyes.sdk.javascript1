@@ -146,9 +146,7 @@ async function getDocumentSize(_logger, context) {
  */
 async function getElementEntireSize(_logger, context, element) {
   try {
-    const {width = 0, height = 0} = await context.execute(snippets.getElementContentSize, {
-      element,
-    })
+    const {width = 0, height = 0} = await context.execute(snippets.getElementContentSize, [element])
     return new RectangleSize(width, height)
   } catch (err) {
     throw new EyesDriverOperationError('Failed to extract element size!', err)
@@ -162,7 +160,7 @@ async function getElementEntireSize(_logger, context, element) {
  * @return {Promise<Region>} element client rect
  */
 async function getElementClientRect(_logger, context, element) {
-  const rect = await context.execute(snippets.getElementRect, {element, isClient: true})
+  const rect = await context.execute(snippets.getElementRect, [element, true])
   return new Region({
     left: rect.x,
     top: rect.y,
@@ -179,7 +177,7 @@ async function getElementClientRect(_logger, context, element) {
  * @return {Promise<Region>} element rect
  */
 async function getElementRect(_logger, context, element) {
-  const rect = await context.execute(snippets.getElementRect, {element, isClient: false})
+  const rect = await context.execute(snippets.getElementRect, [element, false])
   return new Region({
     left: rect.x,
     top: rect.y,
@@ -203,7 +201,7 @@ async function getUserAgent(_logger, context) {
   return userAgent
 }
 async function getInnerOffset(_logger, context, element) {
-  const {x = 0, y = 0} = await context.execute(snippets.getElementInnerOffset, {element})
+  const {x = 0, y = 0} = await context.execute(snippets.getElementInnerOffset, [element])
   return new Location(x, y)
 }
 /**
@@ -214,7 +212,7 @@ async function getInnerOffset(_logger, context, element) {
  * @return {Promise<Location>} scroll position
  */
 async function getScrollOffset(_logger, context, element) {
-  const {x = 0, y = 0} = await context.execute(snippets.getElementScrollOffset, {element})
+  const {x = 0, y = 0} = await context.execute(snippets.getElementScrollOffset, [element])
   return new Location(x, y)
 }
 /**
@@ -226,10 +224,10 @@ async function getScrollOffset(_logger, context, element) {
  * @return {Promise<Location>} actual scroll position after set
  */
 async function scrollTo(_logger, context, location, element) {
-  const {x = 0, y = 0} = await context.execute(snippets.scrollTo, {
-    offset: {x: Math.round(location.getX()), y: Math.round(location.getY())},
+  const {x = 0, y = 0} = await context.execute(snippets.scrollTo, [
     element,
-  })
+    {x: Math.round(location.getX()), y: Math.round(location.getY())},
+  ])
   return new Location(x, y)
 }
 /**
@@ -240,7 +238,7 @@ async function scrollTo(_logger, context, location, element) {
  * @return {Promise<Location>} translate position
  */
 async function getTranslateOffset(_logger, context, element) {
-  return context.execute(snippets.getElementTranslateOffset, {element})
+  return context.execute(snippets.getElementTranslateOffset, [element])
 }
 /**
  * Set translate position of the specified element or default scrolling element
@@ -251,10 +249,10 @@ async function getTranslateOffset(_logger, context, element) {
  * @return {Promise<Location>} actual translate position after set
  */
 async function translateTo(_logger, context, location, element) {
-  const offset = await context.execute(snippets.translateTo, {
-    offset: {x: Math.round(location.getX()), y: Math.round(location.getY())},
+  const offset = await context.execute(snippets.translateTo, [
     element,
-  })
+    {x: Math.round(location.getX()), y: Math.round(location.getY())},
+  ])
   return new Location(offset)
 }
 /**
@@ -265,7 +263,7 @@ async function translateTo(_logger, context, location, element) {
  * @return {Promise<boolean>} true if element is scrollable, false otherwise
  */
 async function isScrollable(_logger, context, element) {
-  return context.execute(snippets.isElementScrollable, {element})
+  return context.execute(snippets.isElementScrollable, [element])
 }
 /**
  * Mark the specified element or default scrolling element with `data-applitools-scroll`
@@ -274,11 +272,7 @@ async function isScrollable(_logger, context, element) {
  * @param {EyesElement} [element] - element to mark
  */
 async function markScrollRootElement(_logger, context, element) {
-  return context.execute(snippets.setElementAttribute, {
-    element,
-    attr: 'data-applitools-scroll',
-    value: true,
-  })
+  return context.execute(snippets.setElementAttributes, [element, {'data-applitools-scroll': true}])
 }
 /**
  * Get transforms of the specified element or default scrolling element
@@ -288,10 +282,10 @@ async function markScrollRootElement(_logger, context, element) {
  * @return {Promise<Object>} element transforms
  */
 async function getTransforms(_logger, context, element) {
-  return context.execute(snippets.getElementStyleProperties, {
+  return context.execute(snippets.getElementStyleProperties, [
     element,
-    properties: ['transform', '-webkit-transform'],
-  })
+    ['transform', '-webkit-transform'],
+  ])
 }
 /**
  * Set transforms for the specified element or default scrolling element
@@ -301,7 +295,7 @@ async function getTransforms(_logger, context, element) {
  * @param {EyesElement} [element] - element to set transforms
  */
 async function setTransforms(_logger, context, transforms, element) {
-  return context.execute(snippets.setElementStyleProperties, {element, properties: transforms})
+  return context.execute(snippets.setElementStyleProperties, [element, transforms])
 }
 /**
  * Get overflow style property of the specified element
@@ -311,10 +305,10 @@ async function setTransforms(_logger, context, transforms, element) {
  * @return {Promise<string?>} overflow value
  */
 async function getOverflow(_logger, context, element) {
-  const {overflow} = await context.execute(snippets.getElementStyleProperties, {
+  const {overflow} = await context.execute(snippets.getElementStyleProperties, [
     element,
-    properties: ['overflow'],
-  })
+    ['overflow'],
+  ])
   return overflow
 }
 /**
@@ -326,10 +320,10 @@ async function getOverflow(_logger, context, element) {
  */
 async function setOverflow(_logger, context, overflow, element) {
   try {
-    const original = await context.execute(snippets.setElementStyleProperties, {
+    const original = await context.execute(snippets.setElementStyleProperties, [
       element,
-      properties: {overflow},
-    })
+      {overflow},
+    ])
     await GeneralUtils.sleep(200)
     return original.overflow
   } catch (err) {
@@ -345,7 +339,7 @@ async function setOverflow(_logger, context, overflow, element) {
  * @return {Promise<TElement>} actually blurred element if there is any
  */
 async function blurElement(logger, context, element) {
-  return context.execute(snippets.blurElement, {element}).catch(err => {
+  return context.execute(snippets.blurElement, [element]).catch(err => {
     logger.verbose('WARNING: Cannot hide caret!', err)
     return null
   })
@@ -357,7 +351,7 @@ async function blurElement(logger, context, element) {
  * @param {EyesElement} element - element to focus
  */
 async function focusElement(logger, context, element) {
-  return context.execute(snippets.focusElement, {element}).catch(err => {
+  return context.execute(snippets.focusElement, [element]).catch(err => {
     logger.verbose('WARNING: Cannot restore caret!', err)
     return null
   })
@@ -370,7 +364,7 @@ async function focusElement(logger, context, element) {
  * @return {Promise<string>} xpath selector
  */
 async function getElementXpath(logger, context, element) {
-  return context.execute(snippets.getElementXpath, {element}).catch(err => {
+  return context.execute(snippets.getElementXpath, [element]).catch(err => {
     logger.verbose('Warning: Failed to get element selector (xpath)', err)
     return null
   })
@@ -401,7 +395,8 @@ async function cleanupElementIds(_logger, context, elements) {
  * @return {Promise<ContextInfo<TElement>>} frame info
  */
 async function getContextInfo(_logger, context) {
-  return context.execute(snippets.getContextInfo)
+  const [documentElement, selector, isRoot, isCORS] = await context.execute(snippets.getContextInfo)
+  return {documentElement, selector, isRoot, isCORS}
 }
 /**
  * Find by context information
@@ -411,7 +406,8 @@ async function getContextInfo(_logger, context) {
  * @return {Promise<Frame>} frame
  */
 async function getChildFramesInfo(_logger, context) {
-  return context.execute(snippets.getChildFramesInfo)
+  const [element, isCORS, src] = await context.execute(snippets.getChildFramesInfo)
+  return {element, isCORS, src}
 }
 /**
  * Ensure provided region is visible as much as possible

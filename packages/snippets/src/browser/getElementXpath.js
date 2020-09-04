@@ -1,4 +1,4 @@
-function generateElementXpath({element} = {}) {
+function generateElementXpath([element] = []) {
   let xpath = ''
   const ownerDocument = element.ownerDocument
   if (!ownerDocument) return xpath // this is the document node

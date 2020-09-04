@@ -1,7 +1,7 @@
 const assert = require('assert')
-const {getElementProperties} = require('../dist/index')
+const {setElementAttributes} = require('../dist/index')
 
-describe('getElementProperties', () => {
+describe('setElementAttributes', () => {
   const url = 'https://applitools.github.io/demo/TestPages/SnippetsTestPage/'
 
   describe('chrome', () => {
@@ -14,11 +14,12 @@ describe('getElementProperties', () => {
       }
     })
 
-    it('return element properties', async () => {
+    it('set element attribute', async () => {
       await page.goto(url)
       const element = await page.$('#static')
-      const {tagName} = await page.evaluate(getElementProperties, [element, ['tagName']])
-      assert.deepStrictEqual(tagName, 'DIV')
+      await page.evaluate(setElementAttributes, [element, {'data-attr': 'some value'}])
+      const actualAttr = await page.evaluate(element => element.getAttribute('data-attr'), element)
+      assert.deepStrictEqual(actualAttr, 'some value')
     })
   })
 
@@ -33,11 +34,14 @@ describe('getElementProperties', () => {
         }
       })
 
-      it('return element properties', async () => {
+      it('set element attribute', async () => {
         await driver.url(url)
         const element = await driver.$('#static')
-        const {tagName} = await driver.execute(getElementProperties, [element, ['tagName']])
-        assert.deepStrictEqual(tagName, 'DIV')
+        await driver.execute(setElementAttributes, [element, {'data-attr': 'some value'}])
+        const actualAttr = await driver.execute(function(element) {
+          return element.getAttribute('data-attr')
+        }, element)
+        assert.deepStrictEqual(actualAttr, 'some value')
       })
     })
   }

@@ -38,35 +38,39 @@ class MockDriver {
       const isCORS = !isRoot && context.isCORS
       const contentDocument = await this.findElement('html')
       const selector = !isCORS && !isRoot ? context.element.selector : null
-      return {isRoot, isCORS, contentDocument, selector}
+      return [contentDocument, selector, isRoot, isCORS]
     })
     this.mockScript(snippets.getChildFramesInfo, () => {
       return Array.from(this._contexts.values())
         .filter(frame => frame.parentId === this._contextId)
-        .map(frame => ({isCORS: frame.isCORS, element: frame.element}))
+        .map(frame => [frame.element, frame.isCORS])
     })
-    this.mockScript(snippets.getElementRect, ({element}) => {
+    this.mockScript(snippets.getElementRect, ([element]) => {
       return element.rect || {x: 0, y: 0, width: 100, height: 100}
     })
-    this.mockScript(snippets.getElementComputedStyleProperties, ({element, properties}) => {
+    this.mockScript(snippets.getElementComputedStyleProperties, ([element, properties]) => {
       return properties.map(
         property => (element.styles || {})[property] || DEFAULT_STYLES[property],
       )
     })
-    this.mockScript(snippets.getElementProperties, ({element, properties}) => {
+    this.mockScript(snippets.getElementProperties, ([element, properties]) => {
       return properties.map(property => (element.props || {})[property] || DEFAULT_PROPS[property])
     })
-    this.mockScript(snippets.setElementStyleProperties, ({element, properties}) => {
+    this.mockScript(snippets.setElementStyleProperties, ([element, properties]) => {
       return Object.entries(properties).reduce((original, [name, value]) => {
         original[name] = element.style[name]
         element.style[name] = value
         return original
       }, {})
     })
-    this.mockScript(snippets.setElementAttribute, ({element, attr, value}) => {
-      element.attrs[attr] = value
+    this.mockScript(snippets.setElementAttributes, ([element, attributes]) => {
+      return Object.entries(attributes).reduce((original, [name, value]) => {
+        original[name] = element.attrs[name]
+        element.attrs[name] = value
+        return original
+      }, {})
     })
-    this.mockScript(snippets.scrollTo, ({element, offset}) => {
+    this.mockScript(snippets.scrollTo, ([element, offset]) => {
       let scrollingElement = element
       if (!element) {
         scrollingElement = this.findElement('html')
@@ -74,7 +78,7 @@ class MockDriver {
       scrollingElement.scrollPosition = offset
       return [scrollingElement.scrollPosition.x, scrollingElement.scrollPosition.y]
     })
-    this.mockScript(snippets.getElementScrollOffset, ({element}) => {
+    this.mockScript(snippets.getElementScrollOffset, ([element]) => {
       let scrollingElement = element
       if (!element) {
         scrollingElement = this.findElement('html')
@@ -84,7 +88,7 @@ class MockDriver {
       }
       return {x: scrollingElement.scrollPosition.x, y: scrollingElement.scrollPosition.y}
     })
-    this.mockScript(snippets.getElementInnerOffset, ({element}) => {
+    this.mockScript(snippets.getElementInnerOffset, ([element]) => {
       let scrollingElement = element
       if (!element) {
         scrollingElement = this.findElement('html')
@@ -103,7 +107,7 @@ class MockDriver {
     this.mockScript(snippets.getViewportSize, () => {
       return {width: this._window.rect.width, height: this._window.rect.height}
     })
-    this.mockScript(snippets.getElementXpath, ({element}) => {
+    this.mockScript(snippets.getElementXpath, ([element]) => {
       if (element.xpath) return element.xpath
       const elements = Array.from(this._elements.values()).reduce(
         (elements, array) => elements.concat(array),

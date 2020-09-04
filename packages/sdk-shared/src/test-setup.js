@@ -56,6 +56,16 @@ const DEVICES = {
     url: SAUCE_SERVER_URL,
     sauce: true,
   },
+  'iPhone XS': {
+    capabilities: {
+      platformName: 'iOS',
+      platformVersion: '13.0',
+      deviceName: 'iPhone XS Simulator',
+      ...SAUCE_CREDENTIALS,
+    },
+    url: SAUCE_SERVER_URL,
+    sauce: true,
+  },
 }
 
 const BROWSERS = {

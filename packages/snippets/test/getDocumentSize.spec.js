@@ -1,4 +1,3 @@
-const playwright = require('playwright')
 const assert = require('assert')
 const {getDocumentSize} = require('../dist/index')
 
@@ -6,16 +5,13 @@ describe('getDocumentSize', () => {
   const url = 'https://applitools.github.io/demo/TestPages/SnippetsTestPage/'
 
   describe('chrome', () => {
-    let browser, page
+    let page
 
-    before(async () => {
-      browser = await playwright.chromium.launch()
-      const context = await browser.newContext()
-      page = await context.newPage()
-    })
-
-    after(async () => {
-      await browser.close()
+    before(async function() {
+      page = await global.getDriver('chrome')
+      if (!page) {
+        this.skip()
+      }
     })
 
     it('return document size', async () => {
@@ -25,20 +21,22 @@ describe('getDocumentSize', () => {
     })
   })
 
-  describe('ie', () => {
-    let driver
+  for (const name of ['internet explorer', 'ios safari']) {
+    describe(name, () => {
+      let driver
 
-    before(async function() {
-      driver = global.ieDriver
-      if (!driver) {
-        this.skip()
-      }
-    })
+      before(async function() {
+        driver = await global.getDriver(name)
+        if (!driver) {
+          this.skip()
+        }
+      })
 
-    it('return document size', async () => {
-      await driver.url(url)
-      const size = await driver.execute(getDocumentSize)
-      assert.deepStrictEqual(size, {width: 3000, height: 3000})
+      it('return document size', async () => {
+        await driver.url(url)
+        const size = await driver.execute(getDocumentSize)
+        assert.deepStrictEqual(size, {width: 3000, height: 3000})
+      })
     })
-  })
+  }
 })
