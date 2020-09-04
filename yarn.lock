@@ -187,20 +187,6 @@
   dependencies:
     debug "^4.1.0"
 
-"@applitools/sdk-coverage-tests@1.0.12":
-  version "1.0.12"
-  resolved "https://registry.yarnpkg.com/@applitools/sdk-coverage-tests/-/sdk-coverage-tests-1.0.12.tgz#c81c9d6636fef858b652ec1cdee6c501470c3fcb"
-  integrity sha512-CCyW7FTXT2SHBf99EwZBiqwqMwGtShH796mqJaAo/knfuRPfO9QjDgSlv8sGnVPJfYlWwVnAwwjVSyDftMQs3g==
-  dependencies:
-    axios "^0.19.2"
-    chai "^4.2.0"
-    chai-as-promised "^7.1.1"
-    chalk "3.0.0"
-    micromatch "^4.0.2"
-    node-fetch "^2.6.0"
-    xml-js "^1.6.11"
-    yargs "^15.0.2"
-
 "@applitools/snippets@1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@applitools/snippets/-/snippets-1.0.3.tgz#8aa39b51494f4d04c8854c41a28db5832fc96084"
