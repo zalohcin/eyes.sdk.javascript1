@@ -6,6 +6,7 @@ const startTestServer = require('../../src/test-server')
 const {Target} = require(cwd)
 const spec = require(path.resolve(cwd, 'src/SpecDriver'))
 const {getEyes} = require('../../src/test-setup')
+const preprocessUrl = require('../util/url-preprocessor')
 
 describe('TestDisableBrowserFetching', () => {
   let testServer
@@ -33,7 +34,7 @@ describe('TestDisableBrowserFetching', () => {
   })
 
   it('sends dontFetchResources to dom snapshot', async () => {
-    const url = 'http://localhost:5557/ua.html'
+    const url = preprocessUrl('http://localhost:5557/ua.html')
     await spec.visit(driver, url)
     const eyes = getEyes({isVisualGrid: true, configuration: {disableBrowserFetching: true}})
     await eyes.open(driver, 'VgFetch', 'TestDisableBrowserFetching', {width: 800, height: 600})
