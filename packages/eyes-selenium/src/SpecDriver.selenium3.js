@@ -257,9 +257,15 @@ async function build(env) {
   if (!sauce) {
     const browserOptionsName = browserOptionsNames[browser]
     if (browserOptionsName) {
-      desiredCapabilities[browserOptionsName] = {
-        args: headless ? args.concat('headless') : args,
-        w3c: false,
+      if (browser === 'firefox') {
+        desiredCapabilities[browserOptionsName] = {
+          args: headless ? args.concat('headless') : args,
+        }
+      } else {
+        desiredCapabilities[browserOptionsName] = {
+          args: headless ? args.concat('headless') : args,
+          w3c: false,
+        }
       }
     }
   }
