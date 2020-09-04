@@ -123,6 +123,7 @@ function makeCheckWindow({
         checkWindowJob(getCheckWindowPromises()[i], i).catch(testController.setError.bind(null, i)),
       ),
     )
+
     async function checkWindowJob(prevJobPromise = presult(Promise.resolve()), index) {
       logger.verbose(
         `starting checkWindowJob. test=${testName} stepCount #${currStepCount} index=${index}`,
@@ -140,7 +141,7 @@ function makeCheckWindow({
       await wrapper.ensureRunningSession()
 
       if (!renderPromises) {
-        renderPromises = await presult(startRender())
+        renderPromises = presult(startRender())
       }
 
       const [renderErr, renderIds] = await renderPromises
