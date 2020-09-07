@@ -2,7 +2,7 @@
 
 const fs = require('fs')
 const path = require('path')
-const {By} = require('selenium-webdriver')
+const {Builder, By} = require('selenium-webdriver')
 const {DomCapture, PerformanceUtils} = require('../../..')
 
 /**
@@ -12,10 +12,8 @@ const {DomCapture, PerformanceUtils} = require('../../..')
  * @param {string} testName
  * @return {Promise<string>}
  */
-async function captureDom(logger, driver, url, testName) {
+async function captureDom(logger, driver, testName) {
   try {
-    await driver.get(url)
-
     const timeStart = PerformanceUtils.start()
     const capabilities = await driver.getCapabilities()
     const actualDomJsonString = await DomCapture.getFullWindowDom(logger, {
@@ -59,7 +57,22 @@ async function getExpectedDom(testName) {
   return JSON.parse(expectedDomBuffer)
 }
 
+async function buildDriver() {
+  const driver = await new Builder()
+    .withCapabilities({browserName: 'chrome', 'goog:chromeOptions': {args: ['headless']}})
+    .usingServer(process.env.CVG_TESTS_REMOTE)
+    .build()
+
+  await driver
+    .manage()
+    .window()
+    .setRect({x: 0, y: 0, width: 800, height: 600})
+
+  return driver
+}
+
 module.exports = {
   captureDom,
   getExpectedDom,
+  buildDriver,
 }

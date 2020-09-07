@@ -463,8 +463,8 @@ function getBreakpointWidth(breakpoints, width) {
   if (!TypeUtils.isArray(breakpoints) || breakpoints.length === 0) {
     return width
   }
-  const breakpoint = breakpoints.find(breakpoint => breakpoint > width)
-  return breakpoint ? breakpoint - 1 : breakpoints[breakpoints.length - 1]
+  const breakpoint = breakpoints.find(breakpoint => width >= breakpoint)
+  return breakpoint || breakpoints[breakpoints.length - 1] - 1
 }
 
 module.exports = {

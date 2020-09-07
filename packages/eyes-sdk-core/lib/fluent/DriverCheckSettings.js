@@ -191,7 +191,7 @@ class CheckSettings {
     /** @private @type {Object} */
     this._visualGridOptions = undefined
     /** @private @type {number[]|boolean} */
-    this._layoutBreakpoints = null
+    this._layoutBreakpoints = undefined
   }
   /**
    * Create check settings from an object
@@ -294,6 +294,9 @@ class CheckSettings {
     }
     if (object.layoutBreakpoints) {
       settings.layoutBreakpoints(object.layoutBreakpoints)
+    }
+    if (object.disableBrowserFetching) {
+      settings.disableBrowserFetching()
     }
     return settings
   }
@@ -966,12 +969,19 @@ class CheckSettings {
     } else if (breakpoints.length === 0) {
       this._layoutBreakpoints = false
     } else {
-      this._layoutBreakpoints = Array.from(new Set(breakpoints)).sort((a, b) => (a > b ? 1 : -1))
+      this._layoutBreakpoints = Array.from(new Set(breakpoints)).sort((a, b) => (a < b ? 1 : -1))
     }
     return this
   }
   getLayoutBreakpoints() {
     return this._layoutBreakpoints
+  }
+  disableBrowserFetching(value = true) {
+    this._disableBrowserFetching = value
+    return this
+  }
+  getDisableBrowserFetching() {
+    return this._disableBrowserFetching
   }
 
   /**

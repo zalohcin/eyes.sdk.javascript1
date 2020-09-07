@@ -9,6 +9,11 @@ const {
   VisualGridRunner,
   ConsoleLogHandler,
 } = require(cwd)
+const {checkLocalhost} = require('./preflight-check')
+
+;(async () => {
+  await checkLocalhost()
+})()
 
 const SAUCE_SERVER_URL = 'https://ondemand.saucelabs.com:443/wd/hub'
 
@@ -110,11 +115,8 @@ const BROWSERS = {
   firefox: {
     capabilities: {
       browserName: 'firefox',
-      seleniumVersion: '3.141.59',
-      ...SAUCE_CREDENTIALS,
     },
-    url: SAUCE_SERVER_URL,
-    sauce: true,
+    url: 'http://localhost:4445/wd/hub',
   },
   chrome: {
     capabilities: {

@@ -2,6 +2,7 @@
 
 const assert = require('assert')
 const {CheckSettings} = require('../../utils/FakeSDK')
+const TypeUtils = require('../../../lib/utils/TypeUtils')
 const vm = require('vm')
 const fs = require('fs')
 const path = require('path')
@@ -29,6 +30,8 @@ describe('CheckSettings', () => {
       accessibilityRegions: ['accessibility-region-selector'],
       isFully: true,
       visualGridOptions: {polyfillAdoptedStyleSheets: true},
+      layoutBreakpoints: true,
+      disableBrowserFetching: true,
     }
     const checkSettings = CheckSettings.from(object)
 
@@ -52,6 +55,8 @@ describe('CheckSettings', () => {
       )
       .fully(object.isFully)
       .visualGridOption('polyfillAdoptedStyleSheets', true)
+      .layoutBreakpoints()
+      .disableBrowserFetching()
 
     assert.deepStrictEqual(checkSettings, checkSettings2)
   })
@@ -63,11 +68,17 @@ describe('CheckSettings', () => {
     checkSettings.layoutBreakpoints(false)
     assert.deepStrictEqual(checkSettings.getLayoutBreakpoints(), false)
     checkSettings.layoutBreakpoints([25, 50, 100, 200])
-    assert.deepStrictEqual(checkSettings.getLayoutBreakpoints(), [25, 50, 100, 200])
+    assert.deepStrictEqual(checkSettings.getLayoutBreakpoints(), [200, 100, 50, 25])
     checkSettings.layoutBreakpoints([100, 200, 200, 100, 50, 25])
-    assert.deepStrictEqual(checkSettings.getLayoutBreakpoints(), [25, 50, 100, 200])
+    assert.deepStrictEqual(checkSettings.getLayoutBreakpoints(), [200, 100, 50, 25])
     checkSettings.layoutBreakpoints([])
     assert.deepStrictEqual(checkSettings.getLayoutBreakpoints(), false)
+
+    const checkSettingsDefault = new CheckSettings()
+    assert.deepStrictEqual(
+      TypeUtils.getOrDefault(checkSettingsDefault.getLayoutBreakpoints(), true),
+      true,
+    )
   })
 
   // TODO this test makes more sense to run inside docker

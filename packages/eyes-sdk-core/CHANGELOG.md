@@ -3,6 +3,18 @@
 ## Unreleased
 
 
+## 12.2.3 - 2020/9/2
+
+- add `disableBrowserFetching` configuration parameter ([Trello](https://trello.com/c/ixJJZdiA))
+
+## 12.2.2 - 2020/9/1
+
+- fix layout breakpoints configuration
+
+## 12.2.1 - 2020/9/1
+
+- fix layout breakpoints configuration
+
 ## 12.2.0 - 2020/8/30
 
 - add support for `layoutBreakpoints`

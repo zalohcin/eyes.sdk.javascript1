@@ -396,10 +396,11 @@ describe('GeneralUtils', () => {
     it('works', () => {
       assert.strictEqual(GeneralUtils.getBreakpointWidth([100], 50), 99)
       assert.strictEqual(GeneralUtils.getBreakpointWidth([100], 150), 100)
-      assert.strictEqual(GeneralUtils.getBreakpointWidth([100, 300], 150), 299)
-      assert.strictEqual(GeneralUtils.getBreakpointWidth([100, 300], 500), 300)
+      assert.strictEqual(GeneralUtils.getBreakpointWidth([300, 100], 150), 100)
+      assert.strictEqual(GeneralUtils.getBreakpointWidth([300, 100], 500), 300)
       assert.strictEqual(GeneralUtils.getBreakpointWidth([], 33), 33)
       assert.strictEqual(GeneralUtils.getBreakpointWidth(null, 33), 33)
+      assert.strictEqual(GeneralUtils.getBreakpointWidth(undefined, 33), 33)
     })
   })
 })
