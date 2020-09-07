@@ -13,7 +13,7 @@ function makeCheckWindow({
   testController,
   saveDebugData,
   createRGridDOMAndGetResourceMapping,
-  renderBatch,
+  render,
   waitForRenderedStatus,
   renderInfo,
   logger,
@@ -294,9 +294,9 @@ function makeCheckWindow({
       }
 
       globalState.setQueuedRendersCount(globalState.getQueuedRendersCount() + 1)
-      const [renderId] = await renderThroat(() => {
+      const renderId = await renderThroat(() => {
         logger.log(`starting to render test ${testName}`)
-        return renderBatch([renderRequest])
+        return render(renderRequest)
       })
       globalState.setQueuedRendersCount(globalState.getQueuedRendersCount() - 1)
 

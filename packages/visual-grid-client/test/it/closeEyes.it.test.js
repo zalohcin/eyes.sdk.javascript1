@@ -56,7 +56,6 @@ describe('closeEyes', () => {
       url: `${baseUrl}/basic.html`,
     })
     const [err, result] = await presult(close())
-    console.log('err', err)
     expect(err).to.be.undefined
     expect(result[0].getStepsInfo().map(r => r.result.getAsExpected())).to.eql([true])
   })

@@ -8,7 +8,7 @@ const createResourceCache = require('./createResourceCache')
 const makeWaitForRenderedStatus = require('./waitForRenderedStatus')
 const makeGetRenderStatus = require('./getRenderStatus')
 const makePutResources = require('./putResources')
-const makeRenderBatch = require('./renderBatch')
+const makeRender = require('./render')
 const makeCreateRGridDOMAndGetResourceMapping = require('./createRGridDOMAndGetResourceMapping')
 const getRenderMethods = require('./getRenderMethods')
 const {createRenderWrapper} = require('./wrapperUtils')
@@ -36,7 +36,7 @@ function makeRenderer({apiKey, showLogs, serverUrl, proxy, renderingInfo}) {
     ptimeoutWithError(fetch(url), fetchResourceTimeout, 'fetch timed out')
   const fetchResource = makeFetchResource({logger, fetchCache, fetch: fetchWithTimeout})
   const putResources = makePutResources({doPutResource})
-  const renderBatch = makeRenderBatch({
+  const render = makeRender({
     putResources,
     resourceCache,
     fetchCache,
@@ -55,7 +55,7 @@ function makeRenderer({apiKey, showLogs, serverUrl, proxy, renderingInfo}) {
     getAllResources,
   })
 
-  return {createRGridDOMAndGetResourceMapping, renderBatch, waitForRenderedStatus}
+  return {createRGridDOMAndGetResourceMapping, render, waitForRenderedStatus}
 }
 
 module.exports = makeRenderer

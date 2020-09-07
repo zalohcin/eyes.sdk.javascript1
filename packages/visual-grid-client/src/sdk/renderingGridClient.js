@@ -15,7 +15,7 @@ const createResourceCache = require('./createResourceCache')
 const makeWaitForRenderedStatus = require('./waitForRenderedStatus')
 const makeGetRenderStatus = require('./getRenderStatus')
 const makePutResources = require('./putResources')
-const makeRenderBatch = require('./renderBatch')
+const makeRender = require('./render')
 const makeGetUserAgents = require('./getUserAgents')
 const makeOpenEyes = require('./openEyes')
 const makeCreateRGridDOMAndGetResourceMapping = require('./createRGridDOMAndGetResourceMapping')
@@ -125,7 +125,7 @@ function makeRenderingGridClient({
     ptimeoutWithError(fetch(url, opt), fetchResourceTimeout, 'fetch timed out')
   const fetchResource = makeFetchResource({logger, fetchCache, fetch: fetchWithTimeout})
   const putResources = makePutResources({doPutResource})
-  const renderBatch = makeRenderBatch({
+  const render = makeRender({
     putResources,
     resourceCache,
     fetchCache,
@@ -189,7 +189,7 @@ function makeRenderingGridClient({
     ignoreBaseline,
     serverUrl,
     logger,
-    renderBatch,
+    render,
     waitForRenderedStatus,
     renderThroat,
     getRenderInfoPromise,

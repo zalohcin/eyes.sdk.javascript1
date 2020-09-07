@@ -28,7 +28,7 @@ async function takeScreenshot({
     resultsUrl: renderInfo.resultsUrl,
   })
 
-  const {createRGridDOMAndGetResourceMapping, renderBatch, waitForRenderedStatus} = makeRenderer({
+  const {createRGridDOMAndGetResourceMapping, render, waitForRenderedStatus} = makeRenderer({
     apiKey,
     showLogs,
     serverUrl,
@@ -60,7 +60,7 @@ async function takeScreenshot({
     }),
   )
 
-  const renderIds = await renderBatch(renderRequests)
+  const renderIds = await Promise.all(renderRequests.map(render))
 
   const renderStatusResults = await Promise.all(
     renderIds.map(renderId =>

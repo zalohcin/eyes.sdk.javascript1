@@ -1,7 +1,7 @@
 'use strict'
 const {describe, it, beforeEach} = require('mocha')
 const {expect} = require('chai')
-const makeRenderBatch = require('../../../src/sdk/renderBatch')
+const makeRender = require('../../../src/sdk/render')
 const {RenderStatus} = require('@applitools/eyes-sdk-core')
 const FakeRunningRender = require('../../util/FakeRunningRender')
 const FakeRenderRequest = require('../../util/FakeRenderRequest')
@@ -44,14 +44,14 @@ function FakeRGridResource({url, contentType, content, sha256Hash, errorStatusCo
   }
 }
 
-describe('renderBatch', () => {
-  let resourceCache, renderBatch, fetchCache, resourcesPutted
+describe('render', () => {
+  let resourceCache, render, fetchCache, resourcesPutted
 
   beforeEach(() => {
     resourcesPutted = []
     resourceCache = createResourceCache()
     fetchCache = createResourceCache()
-    renderBatch = makeRenderBatch({
+    render = makeRender({
       putResources: makePutResources(resourcesPutted),
       resourceCache,
       fetchCache,
@@ -80,7 +80,7 @@ describe('renderBatch', () => {
       ]),
     ]
 
-    const renderIds = await renderBatch(renderRequests)
+    const renderIds = await Promise.all(renderRequests.map(render))
     expect(renderIds).to.eql(['id1', 'id2', 'id3'])
 
     expect(renderRequests.map(renderRequest => renderRequest.getRenderId())).to.eql([
@@ -111,7 +111,7 @@ describe('renderBatch', () => {
   })
 
   it('throws an error if need-more-resources is received on second render request', async () => {
-    renderBatch = makeRenderBatch({
+    render = makeRender({
       putResources: makePutResources(resourcesPutted),
       resourceCache,
       fetchCache,
@@ -120,7 +120,7 @@ describe('renderBatch', () => {
         new FakeRunningRender('some id', RenderStatus.NEED_MORE_RESOURCES),
       ], // always returns need-more-resources
     })
-    const error = await renderBatch([new FakeRenderRequest('some dom')]).then(
+    const error = await render(new FakeRenderRequest('some dom')).then(
       x => x,
       err => err,
     )
@@ -136,8 +136,8 @@ describe('renderBatch', () => {
       }),
     ])
 
-    const renderIds = await renderBatch([renderRequest])
-    expect(renderIds).to.eql(['id1'])
+    const renderId = await render(renderRequest)
+    expect(renderId).to.eql('id1')
 
     expect(renderRequest.getRenderId()).to.equal('id1')
 
