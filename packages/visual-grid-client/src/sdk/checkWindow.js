@@ -3,7 +3,7 @@
 const {Region} = require('@applitools/eyes-sdk-core')
 const {presult} = require('@applitools/functional-commons')
 const saveData = require('../troubleshoot/saveData')
-const createRenderRequests = require('./createRenderRequests')
+const createRenderRequest = require('./createRenderRequest')
 const createCheckSettings = require('./createCheckSettings')
 const calculateMatchRegions = require('./calculateMatchRegions')
 const isInvalidAccessibility = require('./isInvalidAccessibility')
@@ -88,19 +88,32 @@ function makeCheckWindow({
       })
     }
 
-    const getResourcesPromise = Promise.all(
-      snapshots.map(snapshot =>
-        createRGridDOMAndGetResourceMapping({
-          resourceUrls: snapshot.resourceUrls,
-          resourceContents: snapshot.resourceContents,
-          cdt: snapshot.cdt,
-          frames: snapshot.frames,
-          userAgent,
-          referer: url,
-          proxySettings: wrappers[0].getProxy(),
-        }),
-      ),
-    )
+    const renderRequestPromises = snapshots.map(async (snapshot, index) => {
+      const {allResources, rGridDom} = await createRGridDOMAndGetResourceMapping({
+        resourceUrls: snapshot.resourceUrls,
+        resourceContents: snapshot.resourceContents,
+        cdt: snapshot.cdt,
+        frames: snapshot.frames,
+        userAgent,
+        referer: url,
+        proxySettings: wrappers[0].getProxy(),
+      })
+      return createRenderRequest({
+        url,
+        dom: rGridDom,
+        resources: Object.values(allResources),
+        browser: browsers[index],
+        renderInfo,
+        sizeMode,
+        selector,
+        region,
+        scriptHooks,
+        noOffsetSelectors: noOffsetSelectors.all,
+        offsetSelectors: offsetSelectors.all,
+        sendDom,
+        visualGridOptions,
+      })
+    })
 
     const noOffsetSelectors = {
       all: [ignore, layout, strict, content, accessibility],
@@ -114,9 +127,6 @@ function makeCheckWindow({
       all: [floating],
       floating: 0,
     }
-
-    let renderPromises
-    let renderJobs // This will be an array of `resolve` functions to rendering jobs. See `createRenderJob` below.
 
     setCheckWindowPromises(
       browsers.map((_browser, i) =>
@@ -140,17 +150,14 @@ function makeCheckWindow({
 
       await wrapper.ensureRunningSession()
 
-      if (!renderPromises) {
-        renderPromises = presult(startRender())
-      }
-
-      const [renderErr, renderIds] = await renderPromises
+      const [renderErr, renderId] = await presult(renderJob(index))
 
       if (testController.shouldStopTest(index)) {
         logger.log(
           `aborting checkWindow after render request complete but before waiting for rendered status`,
         )
-        renderJobs && renderJobs[index]()
+        const userAgents = await getUserAgents()
+        wrapper.setInferredEnvironment(`useragent:${userAgents[browsers[index].name]}`)
         return
       }
 
@@ -160,11 +167,9 @@ function makeCheckWindow({
         const userAgents = await getUserAgents()
         wrapper.setInferredEnvironment(`useragent:${userAgents[browsers[index].name]}`)
         testController.setFatalError(renderErr)
-        renderJobs && renderJobs[index]()
         return
       }
 
-      const renderId = renderIds[index]
       testController.addRenderId(index, renderId)
 
       logger.verbose(
@@ -179,7 +184,6 @@ function makeCheckWindow({
 
       if (testController.shouldStopTest(index)) {
         logger.log('aborting checkWindow after render status finished')
-        renderJobs && renderJobs[index]()
         return
       }
 
@@ -188,7 +192,6 @@ function makeCheckWindow({
         const userAgents = await getUserAgents()
         wrapper.setInferredEnvironment(`useragent:${userAgents[browsers[index].name]}`)
         testController.setFatalError(renderStatusErr)
-        renderJobs && renderJobs[index]()
         return
       }
 
@@ -205,8 +208,6 @@ function makeCheckWindow({
       } else {
         logger.log(`screenshot NOT available for ${renderId}`)
       }
-
-      renderJobs && renderJobs[index]()
 
       wrapper.setInferredEnvironment(`useragent:${userAgent}`)
       if (deviceSize) {
@@ -279,67 +280,38 @@ function makeCheckWindow({
       return !isSingleWindow ? wrapper.checkWindow(checkArgs) : wrapper.testWindow(checkArgs)
     }
 
-    async function startRender() {
+    async function renderJob(index) {
       if (testController.shouldStopAllTests()) {
         logger.log(`aborting startRender because there was an error in getRenderInfo`)
         return
       }
 
-      const pages = await getResourcesPromise
+      const renderRequest = await renderRequestPromises[index]
 
       if (testController.shouldStopAllTests()) {
         logger.log(`aborting startRender because there was an error in getAllResources`)
         return
       }
 
-      const renderRequests = createRenderRequests({
-        url,
-        pages,
-        browsers,
-        renderInfo,
-        sizeMode,
-        selector,
-        region,
-        scriptHooks,
-        noOffsetSelectors: noOffsetSelectors.all,
-        offsetSelectors: offsetSelectors.all,
-        sendDom,
-        visualGridOptions,
-      })
-
       globalState.setQueuedRendersCount(globalState.getQueuedRendersCount() + 1)
-      const renderBatchPromise = renderThroat(() => {
+      const [renderId] = await renderThroat(() => {
         logger.log(`starting to render test ${testName}`)
-        return renderBatch(renderRequests)
+        return renderBatch([renderRequest])
       })
-      renderJobs = renderRequests.map(createRenderJob)
-      const renderIds = await renderBatchPromise
       globalState.setQueuedRendersCount(globalState.getQueuedRendersCount() - 1)
 
       if (saveDebugData) {
-        for (const [index, renderId] of renderIds.entries()) {
-          await saveData({
-            renderId,
-            cdt: snapshots[index].cdt,
-            resources: Object.values(pages[index].allResources),
-            url,
-            logger,
-          })
-        }
+        await saveData({
+          renderId,
+          cdt: snapshots[index].cdt,
+          resources: renderRequest.resources,
+          url,
+          logger,
+        })
       }
 
-      return renderIds
+      return renderId
     }
-  }
-
-  /**
-   * Run a function down the renderThroat and return a way to resolve it. Once resolved (in another place) it makes room in the throat for the next renders that
-   */
-  function createRenderJob() {
-    let resolve
-    const p = new Promise(res => (resolve = res))
-    renderThroat(() => p)
-    return resolve
   }
 }
 

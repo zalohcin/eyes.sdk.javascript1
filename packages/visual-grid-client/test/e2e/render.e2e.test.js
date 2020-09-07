@@ -5,7 +5,7 @@ const fetch = require('node-fetch')
 const {describe, it, before} = require('mocha')
 const {expect} = require('chai')
 const makeRenderer = require('../../src/sdk/renderer')
-const createRenderRequests = require('../../src/sdk/createRenderRequests')
+const createRenderRequest = require('../../src/sdk/createRenderRequest')
 const {RenderingInfo} = require('@applitools/eyes-sdk-core')
 
 describe('render e2e', () => {
@@ -41,20 +41,23 @@ describe('render e2e', () => {
       renderingInfo,
     })
 
-    const page = await createRGridDOMAndGetResourceMapping({
+    const {rGridDom, allResources} = await createRGridDOMAndGetResourceMapping({
       resourceUrls: [],
       resourceContents: [],
       cdt: [{nodeType: 3, nodeValue: 'renders older browser versions - works!'}],
       frames: [],
     })
 
-    const renderRequests = createRenderRequests({
-      url: 'http://something',
-      pages: Array(browsers.length).fill(page),
-      browsers,
-      renderInfo: renderingInfo,
-      sizeMode: 'full-page',
-    })
+    const renderRequests = browsers.map(browser =>
+      createRenderRequest({
+        url: 'http://something',
+        dom: rGridDom,
+        resources: Object.values(allResources),
+        browser,
+        renderInfo: renderingInfo,
+        sizeMode: 'full-page',
+      }),
+    )
 
     const renderIds = await renderBatch(renderRequests)
 
@@ -88,6 +91,6 @@ describe('render e2e', () => {
     expect(safari1).to.equal(safari - 1)
     expect(safari2).to.equal(safari - 2)
     expect(edgechromium1).to.equal(edgechromium - 1)
-    expect(edgechromium2).to.equal(edgechromium - 1)
+    expect(edgechromium2).to.equal(edgechromium - 2)
   })
 })

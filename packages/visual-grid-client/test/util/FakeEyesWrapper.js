@@ -240,7 +240,7 @@ class FakeEyesWrapper extends EventEmitter {
     this.results.push(result)
     return new Promise(res =>
       setTimeout(() => {
-        this.emit('checkWindowEnd')
+        this.emit('checkWindowEnd', Array.from(arguments))
         res(result)
       }, 100),
     )

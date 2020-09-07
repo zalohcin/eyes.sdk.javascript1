@@ -1030,7 +1030,7 @@ Received: 'firefox-1'.`,
     })
   })
 
-  describe('max concurrency for render', () => {
+  describe.skip('max concurrency for render', () => {
     let renderCount
     let renderStatusCount
     let runningStatuses
