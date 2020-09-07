@@ -38,6 +38,7 @@ function makeRenderingGridClient({
   renderWrapper, // for tests
   logger,
   showLogs,
+  renderTimeout,
   renderStatusTimeout,
   renderStatusInterval,
   concurrency = Infinity,
@@ -131,6 +132,7 @@ function makeRenderingGridClient({
     fetchCache,
     logger,
     doRenderBatch,
+    renderTimeout,
   })
   const getRenderStatus = makeGetRenderStatus({
     logger,

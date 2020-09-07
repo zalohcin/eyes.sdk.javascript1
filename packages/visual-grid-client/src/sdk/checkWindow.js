@@ -27,7 +27,6 @@ function makeCheckWindow({
   openEyesPromises,
   userAgent,
   matchLevel: _matchLevel,
-  isSingleWindow,
   getUserAgents,
   visualGridOptions: _visualGridOptions,
 }) {
@@ -134,6 +133,36 @@ function makeCheckWindow({
       ),
     )
 
+    const renderJobs = new WeakMap()
+
+    async function renderJob(renderRequest) {
+      if (testController.shouldStopAllTests()) {
+        logger.log(`aborting renderJob because there was an error in getAllResources`)
+        return
+      }
+
+      globalState.setQueuedRendersCount(globalState.getQueuedRendersCount() + 1)
+      const renderId = await renderThroat(() => {
+        logger.log(`starting to render test ${testName}`)
+        return render(renderRequest)
+      })
+      const holder = new Promise(resolve => renderJobs.set(renderRequest, resolve))
+      renderThroat(() => holder)
+      globalState.setQueuedRendersCount(globalState.getQueuedRendersCount() - 1)
+
+      if (saveDebugData) {
+        await saveData({
+          renderId,
+          cdt: snapshots[index].cdt,
+          resources: renderRequest.resources,
+          url,
+          logger,
+        })
+      }
+
+      return renderId
+    }
+
     async function checkWindowJob(prevJobPromise = presult(Promise.resolve()), index) {
       logger.verbose(
         `starting checkWindowJob. test=${testName} stepCount #${currStepCount} index=${index}`,
@@ -150,7 +179,14 @@ function makeCheckWindow({
 
       await wrapper.ensureRunningSession()
 
-      const [renderErr, renderId] = await presult(renderJob(index))
+      if (testController.shouldStopAllTests()) {
+        logger.log(`aborting checkWindow because there was an error in getRenderInfo`)
+        return
+      }
+
+      const renderRequest = await renderRequestPromises[index]
+
+      const [renderErr, renderId] = await presult(renderJob(renderRequest))
 
       if (testController.shouldStopTest(index)) {
         logger.log(
@@ -158,6 +194,7 @@ function makeCheckWindow({
         )
         const userAgents = await getUserAgents()
         wrapper.setInferredEnvironment(`useragent:${userAgents[browsers[index].name]}`)
+        if (renderJobs.has(renderRequest)) renderJobs.get(renderRequest)()
         return
       }
 
@@ -167,6 +204,7 @@ function makeCheckWindow({
         const userAgents = await getUserAgents()
         wrapper.setInferredEnvironment(`useragent:${userAgents[browsers[index].name]}`)
         testController.setFatalError(renderErr)
+        if (renderJobs.has(renderRequest)) renderJobs.get(renderRequest)()
         return
       }
 
@@ -184,6 +222,7 @@ function makeCheckWindow({
 
       if (testController.shouldStopTest(index)) {
         logger.log('aborting checkWindow after render status finished')
+        if (renderJobs.has(renderRequest)) renderJobs.get(renderRequest)()
         return
       }
 
@@ -192,6 +231,7 @@ function makeCheckWindow({
         const userAgents = await getUserAgents()
         wrapper.setInferredEnvironment(`useragent:${userAgents[browsers[index].name]}`)
         testController.setFatalError(renderStatusErr)
+        if (renderJobs.has(renderRequest)) renderJobs.get(renderRequest)()
         return
       }
 
@@ -208,6 +248,8 @@ function makeCheckWindow({
       } else {
         logger.log(`screenshot NOT available for ${renderId}`)
       }
+
+      renderJobs.get(renderRequest)()
 
       wrapper.setInferredEnvironment(`useragent:${userAgent}`)
       if (deviceSize) {
@@ -277,40 +319,7 @@ function makeCheckWindow({
         url,
       }
 
-      return !isSingleWindow ? wrapper.checkWindow(checkArgs) : wrapper.testWindow(checkArgs)
-    }
-
-    async function renderJob(index) {
-      if (testController.shouldStopAllTests()) {
-        logger.log(`aborting startRender because there was an error in getRenderInfo`)
-        return
-      }
-
-      const renderRequest = await renderRequestPromises[index]
-
-      if (testController.shouldStopAllTests()) {
-        logger.log(`aborting startRender because there was an error in getAllResources`)
-        return
-      }
-
-      globalState.setQueuedRendersCount(globalState.getQueuedRendersCount() + 1)
-      const renderId = await renderThroat(() => {
-        logger.log(`starting to render test ${testName}`)
-        return render(renderRequest)
-      })
-      globalState.setQueuedRendersCount(globalState.getQueuedRendersCount() - 1)
-
-      if (saveDebugData) {
-        await saveData({
-          renderId,
-          cdt: snapshots[index].cdt,
-          resources: renderRequest.resources,
-          url,
-          logger,
-        })
-      }
-
-      return renderId
+      return wrapper.checkWindow(checkArgs)
     }
   }
 }

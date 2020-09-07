@@ -759,7 +759,6 @@ Received: 'firefox-1'.`,
         session: 0,
         checkWindow: 0,
         render: 0,
-        close: 0,
       }
 
       wrapper.open = async () => {
@@ -770,7 +769,7 @@ Received: 'firefox-1'.`,
       wrapper.renderBatch = async () => {
         await psetTimeout(50)
         counters.render++
-        return [new FakeRunningRender(`renderId${counters.render}`, RenderStatus.RENDERED)]
+        return [new FakeRunningRender(`renderId${counters.render}`, RenderStatus.RENDERING)]
       }
 
       wrapper.getRenderStatus = async () => {
@@ -794,6 +793,7 @@ Received: 'firefox-1'.`,
       }
 
       openEyes = makeRenderingGridClient({
+        renderTimeout: 0,
         concurrency: 1,
         apiKey,
         showLogs: APPLITOOLS_SHOW_LOGS,
@@ -810,25 +810,25 @@ Received: 'firefox-1'.`,
       expect(counters.open).to.equal(0)
       await checkWindow({snapshot: {cdt: []}, url: 'url'})
       //t1
-      await psetTimeout(50)
+      await psetTimeout(55)
       expect(counters.open).to.equal(1)
       expect(counters.session).to.equal(0)
       expect(counters.render).to.equal(0)
       expect(counters.checkWindow).to.equal(0)
       //t2
-      await psetTimeout(50)
+      await psetTimeout(55)
       expect(counters.open).to.equal(1)
       expect(counters.session).to.equal(1)
       expect(counters.render).to.equal(0)
       expect(counters.checkWindow).to.equal(0)
       //t3
-      await psetTimeout(50)
+      await psetTimeout(55)
       expect(counters.open).to.equal(1)
       expect(counters.session).to.equal(1)
       expect(counters.render).to.equal(1)
       expect(counters.checkWindow).to.equal(0)
       //t4
-      await psetTimeout(200)
+      await psetTimeout(155)
       expect(counters.open).to.equal(1)
       expect(counters.session).to.equal(1)
       expect(counters.render).to.equal(1)
@@ -836,201 +836,9 @@ Received: 'firefox-1'.`,
 
       await close()
     })
-
-    // TODO statuser makes this test impossible to fix. need to check concurrency
-    it.skip("doesn't wait for eyes test to open in order to perform renderings", async () => {
-      openEyes = makeRenderingGridClient({
-        concurrency: 1,
-        apiKey,
-        showLogs: APPLITOOLS_SHOW_LOGS,
-        renderWrapper: wrapper,
-      }).openEyes
-
-      const wrapper1Counters = {
-        open: 0,
-        checkWindow: 0,
-        render: 0,
-        renderStatus: 0,
-        close: 0,
-      }
-      const wrapper2Counters = {
-        open: 0,
-        checkWindow: 0,
-        render: 0,
-        renderStatus: 0,
-        close: 0,
-      }
-
-      const wrapper1 = createFakeWrapper(baseUrl)
-      const wrapper2 = createFakeWrapper(baseUrl)
-
-      wrapper1.open = async () => {
-        await psetTimeout(50)
-        wrapper1Counters.open++
-      }
-
-      wrapper2.open = async () => {
-        await psetTimeout(50)
-        wrapper2Counters.open++
-      }
-
-      wrapper1.checkWindow = async () => {
-        await psetTimeout(100)
-        wrapper1Counters.checkWindow++
-      }
-
-      wrapper2.checkWindow = async () => {
-        await psetTimeout(100)
-        wrapper2Counters.checkWindow++
-      }
-
-      wrapper1.renderBatch = async () => {
-        await psetTimeout(wrapper1Counters.render === 0 ? 150 : 50)
-        wrapper1Counters.render++
-        return [new FakeRunningRender(`renderId${wrapper1Counters.render}`, RenderStatus.RENDERED)]
-      }
-
-      wrapper2.renderBatch = async () => {
-        await psetTimeout(50)
-        wrapper2Counters.render++
-        return [new FakeRunningRender(`renderId${wrapper2Counters.render}`, RenderStatus.RENDERED)]
-      }
-
-      wrapper1.getRenderStatus = async () => {
-        await psetTimeout(wrapper1Counters.renderStatus === 0 ? 50 : 0)
-        wrapper1Counters.renderStatus++
-        return [
-          new RenderStatusResults({
-            status: RenderStatus.RENDERED,
-          }),
-        ]
-      }
-
-      wrapper2.getRenderStatus = async () => {
-        await psetTimeout(wrapper1Counters.renderStatus === 0 ? 0 : 50)
-        wrapper2Counters.renderStatus++
-        return [
-          new RenderStatusResults({
-            status: RenderStatus.RENDERED,
-          }),
-        ]
-      }
-
-      wrapper1.close = async () => {
-        await psetTimeout(50)
-        wrapper1Counters.close++
-        return 'close1'
-      }
-
-      wrapper2.close = async () => {
-        await psetTimeout(50)
-        wrapper2Counters.close++
-        return 'close2'
-      }
-
-      const {checkWindow: checkWindow1, close: close1} = await openEyes({
-        wrappers: [wrapper1],
-        appName,
-      })
-
-      await psetTimeout(0)
-
-      // t0
-      expect(wrapper1Counters.open).to.equal(0)
-      await psetTimeout(50)
-
-      // t1
-      expect(wrapper1Counters.open).to.equal(1)
-      checkWindow1({snapshot: {cdt: []}, url: 'url'})
-      await psetTimeout(0)
-      expect(wrapper1Counters.render).to.equal(0)
-      await psetTimeout(50)
-
-      // t2
-      expect(wrapper1Counters.render).to.equal(0)
-      checkWindow1({snapshot: {cdt: []}, url: 'url'})
-      await psetTimeout(0)
-      expect(wrapper1Counters.render).to.equal(0)
-      expect(wrapper1Counters.renderStatus).to.equal(0)
-      await psetTimeout(50)
-
-      // t3
-      expect(wrapper1Counters.render).to.equal(0)
-      expect(wrapper1Counters.renderStatus).to.equal(0)
-      await psetTimeout(0)
-      expect(wrapper1Counters.render).to.equal(0)
-      expect(wrapper1Counters.renderStatus).to.equal(0)
-      close1()
-      await psetTimeout(50)
-
-      // t4
-      const {checkWindow: checkWindow2, close: close2} = await openEyes({
-        wrappers: [wrapper2],
-        appName,
-      })
-      expect(wrapper1Counters.render).to.equal(1)
-      expect(wrapper1Counters.renderStatus).to.equal(0)
-      await psetTimeout(50)
-
-      // t5
-      expect(wrapper1Counters.render).to.equal(2)
-      checkWindow2({snapshot: {cdt: []}, url: 'url'})
-      await psetTimeout(50)
-
-      // t6
-      expect(wrapper1Counters.render).to.equal(2)
-      expect(wrapper1Counters.renderStatus).to.equal(2)
-      expect(wrapper2Counters.open).to.equal(0)
-      checkWindow2({snapshot: {cdt: []}, url: 'url'})
-      await psetTimeout(50)
-
-      // t7
-      close2()
-      expect(wrapper1Counters.checkWindow).to.equal(1)
-      expect(wrapper2Counters.open).to.equal(0)
-      await psetTimeout(50)
-
-      // t8
-      expect(wrapper1Counters.checkWindow).to.equal(1)
-      expect(wrapper2Counters.open).to.equal(0)
-      await psetTimeout(50)
-
-      // t9
-      expect(wrapper1Counters.checkWindow).to.equal(2)
-      expect(wrapper2Counters.render).to.equal(2)
-      expect(wrapper2Counters.renderStatus).to.equal(2)
-      expect(wrapper2Counters.open).to.equal(0)
-      await psetTimeout(50)
-
-      // t10
-      expect(wrapper1Counters.close).to.equal(1)
-      expect(wrapper2Counters.open).to.equal(0)
-      expect(wrapper2Counters.checkWindow).to.equal(0)
-      await psetTimeout(50)
-
-      // t11
-      await psetTimeout(50)
-
-      // t12
-      expect(wrapper2Counters.open).to.equal(1)
-      await psetTimeout(50)
-
-      // t13
-      await psetTimeout(50)
-
-      // t14
-      await psetTimeout(50)
-
-      // t15
-      await psetTimeout(50)
-
-      // t16
-      expect(wrapper2Counters.checkWindow).to.equal(2)
-      expect(wrapper2Counters.close).to.equal(1)
-    })
   })
 
-  describe.skip('max concurrency for render', () => {
+  describe('max concurrency for render', () => {
     let renderCount
     let renderStatusCount
     let runningStatuses
@@ -1038,6 +846,9 @@ Received: 'firefox-1'.`,
       renderCount = 0
       renderStatusCount = 0
       runningStatuses = []
+      wrapper.open = async function() {}
+      wrapper.checkWindow = async function() {}
+      wrapper.ensureRunningSession = async function() {}
       const renderBatch = wrapper.renderBatch
       wrapper.renderBatch = function(renderRequests) {
         renderCount += renderRequests.length
@@ -1064,10 +875,14 @@ Received: 'firefox-1'.`,
 
         return statuses
       }
+      wrapper.close = async () => {
+        return new TestResults({stepsInfo: Array(runningStatuses.length).fill({})})
+      }
     })
 
     beforeEach(() => {
       openEyes = makeRenderingGridClient({
+        renderTimeout: 0,
         concurrency: 2,
         renderConcurrencyFactor: 1,
         apiKey,
@@ -1082,17 +897,17 @@ Received: 'firefox-1'.`,
         appName,
       })
       checkWindow({url: '', snapshot: {cdt: []}, target: null, sizeMode: null})
-      await psetTimeout(0)
+      await psetTimeout(10)
       expect(renderCount).to.equal(1)
       expect(renderStatusCount).to.equal(0) // still batching initial renderIds for /render-status request
 
       checkWindow({url: '', snapshot: {cdt: []}, target: null, sizeMode: null})
-      await psetTimeout(0)
+      await psetTimeout(10)
       expect(renderCount).to.equal(2)
       expect(renderStatusCount).to.equal(0) // still batching initial renderIds for /render-status request
 
       checkWindow({url: '', snapshot: {cdt: []}, target: null, sizeMode: null})
-      await psetTimeout(0)
+      await psetTimeout(10)
       expect(renderCount).to.equal(2) // concurrency is blocking this render
       expect(renderStatusCount).to.equal(0) // still batching initial renderIds for /render-status request
 
@@ -1126,9 +941,9 @@ Received: 'firefox-1'.`,
       })
 
       checkWindow({url: '', snapshot: {cdt: []}, sizeMode: null, target: null})
-      await psetTimeout(0)
+      await psetTimeout(10)
       checkWindow({url: '', snapshot: {cdt: []}, sizeMode: null, target: null})
-      await psetTimeout(0)
+      await psetTimeout(10)
       const expected1 = renderCount
       runningStatuses[0] = RenderStatus.RENDERED
       await psetTimeout(600)
@@ -1186,6 +1001,7 @@ Received: 'firefox-1'.`,
 
     it('resolves render job when error in getRenderStatus happens', async () => {
       openEyes = makeRenderingGridClient({
+        renderTimeout: 0,
         concurrency: 1,
         renderConcurrencyFactor: 1,
         apiKey,
@@ -1199,7 +1015,7 @@ Received: 'firefox-1'.`,
       })
 
       checkWindow({url: '', snapshot: {cdt: []}, selector: '111'})
-      await psetTimeout(0)
+      await psetTimeout(10)
       expect(renderCount).to.equal(1)
       expect(renderStatusCount).to.equal(0)
 
@@ -1207,7 +1023,7 @@ Received: 'firefox-1'.`,
       expect(renderStatusCount).to.equal(1)
 
       checkWindow({url: '', snapshot: {cdt: []}, selector: '222'})
-      await psetTimeout(0)
+      await psetTimeout(10)
       expect(renderCount).to.equal(1)
       expect(renderStatusCount).to.equal(1)
 

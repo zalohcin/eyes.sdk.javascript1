@@ -246,25 +246,6 @@ class FakeEyesWrapper extends EventEmitter {
     )
   }
 
-  async testWindow(...args) {
-    return new Promise(res =>
-      setTimeout(() => {
-        this.emit('testWindowEnd', args)
-        const results = new TestResults({stepsInfo: [{}]})
-        res(results)
-      }, 100),
-    )
-  }
-
-  async closeTestWindow(results, throwEx) {
-    return new Promise(res =>
-      setTimeout(() => {
-        this.emit('closeTestWindowEnd', [results, throwEx])
-        res(results)
-      }, 100),
-    )
-  }
-
   createRGridDom({cdt: _cdt, resources: _resources}) {}
 
   async close() {

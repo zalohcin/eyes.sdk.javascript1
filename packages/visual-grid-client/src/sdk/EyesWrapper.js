@@ -138,48 +138,6 @@ class EyesWrapper extends EyesBase {
     return this.checkWindowBase(regionProvider, tag, false, checkSettings, url)
   }
 
-  testWindow({screenshotUrl, tag, domUrl, checkSettings, imageLocation}) {
-    this._logger.verbose(`EyesWrapper.testWindow() called`)
-    this.screenshotUrl = screenshotUrl
-    this.domUrl = domUrl
-    this.imageLocation = imageLocation
-    const regionProvider = new NullRegionProvider()
-    return this.checkSingleWindowBase(regionProvider, tag, false, checkSettings)
-  }
-
-  closeTestWindow(results, throwEx) {
-    this._logger.verbose(`EyesWrapper.closeTestWindow() called`)
-    const status = results.getStatus()
-    if (status === TestResultsStatus.Unresolved) {
-      if (results.getIsNew()) {
-        if (throwEx) {
-          return Promise.reject(new NewTestError(results, this._sessionStartInfo))
-        }
-      } else {
-        if (throwEx) {
-          return Promise.reject(new DiffsFoundError(results, this._sessionStartInfo))
-        }
-      }
-    } else if (status === TestResultsStatus.Failed) {
-      if (throwEx) {
-        return Promise.reject(new TestFailedError(results, this._sessionStartInfo))
-      }
-    }
-
-    const sessionResultsUrl = results.getAppUrls().getSession()
-    results.setUrl(sessionResultsUrl)
-
-    this._isOpen = false
-    this._lastScreenshot = null
-    this.clearUserInputs()
-    this._initProviders(true)
-    this._logger.getLogHandler().close()
-    this._matchWindowTask = null
-    this._autSessionId = undefined
-    this._currentAppName = undefined
-    return Promise.resolve(results)
-  }
-
   setProxy(proxy) {
     if (proxy.uri !== undefined) {
       proxy.url = proxy.uri // backward compatible

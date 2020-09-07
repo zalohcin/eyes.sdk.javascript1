@@ -10,16 +10,15 @@ function makeRenderBatch({
   fetchCache,
   logger,
   doRenderBatch,
-  renderTimeout = 500,
+  renderTimeout = 300,
 }) {
   let pendingRequests = new Map()
 
   let timeout
-  return function(renderRequests) {
+  return function(renderRequest) {
     return new Promise(async (resolve, reject) => {
       clearTimeout(timeout)
-      renderRequests = Array.isArray(renderRequests) ? renderRequests : [renderRequests]
-      renderRequests.forEach(renderRequest => pendingRequests.set(renderRequest, {resolve, reject}))
+      pendingRequests.set(renderRequest, {resolve, reject})
       timeout = setTimeout(() => {
         renderBatchJob(pendingRequests)
         pendingRequests = new Map()

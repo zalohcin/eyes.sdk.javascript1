@@ -64,7 +64,6 @@ function makeOpenEyes({
   getUserAgents: _getUserAgents,
   globalState,
   wrappers: _wrappers,
-  isSingleWindow = false,
   visualGridOptions: _visualGridOptions,
 }) {
   return async function openEyes({
@@ -233,7 +232,7 @@ function makeOpenEyes({
       appName,
       testName,
       eyesTransactionThroat,
-      skipStartingSession: isSingleWindow,
+      skipStartingSession: false,
     })
 
     let stepCounter = 0
@@ -264,7 +263,6 @@ function makeOpenEyes({
       openEyesPromises,
       matchLevel,
       userAgent,
-      isSingleWindow,
       getUserAgents,
       visualGridOptions,
     })
@@ -277,7 +275,6 @@ function makeOpenEyes({
       globalState,
       testController,
       logger,
-      isSingleWindow,
     })
     const abort = makeAbort({
       getCheckWindowPromises,
