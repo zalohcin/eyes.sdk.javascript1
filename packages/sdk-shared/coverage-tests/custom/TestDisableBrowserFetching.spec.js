@@ -9,7 +9,7 @@ const {getEyes} = require('../../src/test-setup')
 const preprocessUrl = require('../util/url-preprocessor')
 
 // NOTE: works when run by itself but fails when running concurrently with all tests
-describe.skip('TestDisableBrowserFetching', () => {
+describe('TestDisableBrowserFetching', () => {
   let testServer
   let driver
 
@@ -39,6 +39,7 @@ describe.skip('TestDisableBrowserFetching', () => {
     await spec.visit(driver, url)
     const eyes = getEyes({isVisualGrid: true, configuration: {disableBrowserFetching: true}})
     await eyes.open(driver, 'VgFetch', 'TestDisableBrowserFetching', {width: 800, height: 600})
+    console.dir(eyes.getConfiguration(), {depth: null})
     await eyes.check(Target.window())
     await eyes.close()
   })
