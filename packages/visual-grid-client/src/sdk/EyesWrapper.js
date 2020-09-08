@@ -28,7 +28,11 @@ class EyesWrapper extends EyesBase {
 
   async ensureRunningSession() {
     if (!this.getRunningSession() && this._viewportSizeHandler.get()) {
-      const [err] = await presult(this._ensureRunningSession())
+      if (!this._ensureRunningSessionPromise) {
+        this._ensureRunningSessionPromise = this._ensureRunningSession()
+      }
+      const [err] = await presult(this._ensureRunningSessionPromise)
+      this._ensureRunningSessionPromise = null
       if (err) {
         this._logger.log(
           'failed to ensure a running session (probably due to a previous fatal error)',

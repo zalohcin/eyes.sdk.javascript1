@@ -154,7 +154,6 @@ function makeCheckWindow({
       if (saveDebugData) {
         await saveData({
           renderId,
-          cdt: snapshots[index].cdt,
           resources: renderRequest.resources,
           url,
           logger,
