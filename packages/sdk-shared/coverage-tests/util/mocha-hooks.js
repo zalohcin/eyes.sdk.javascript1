@@ -1,9 +1,9 @@
 const waitForDockerBrowsers = require('../../src/wait-for-docker-browsers')
-const {checkLocalhost} = require('../../src/preflight-check')
+const checkForDockerHostname = require('../../src/check-for-docker-hostname')
 
 exports.mochaHooks = {
   async beforeAll() {
-    await checkLocalhost()
+    await checkForDockerHostname()
     await waitForDockerBrowsers()
   },
 }
