@@ -29,6 +29,7 @@ function makeCheckWindow({
   matchLevel: _matchLevel,
   getUserAgents,
   visualGridOptions: _visualGridOptions,
+  startSessionBeforeRender,
 }) {
   return function checkWindow({
     snapshot,
@@ -169,19 +170,22 @@ function makeCheckWindow({
       )
 
       const wrapper = wrappers[index]
+      const openEyesPromise = openEyesPromises[index]
 
       if (testController.shouldStopTest(index)) {
         logger.log(`aborting checkWindow - not waiting for render to complete (so no renderId yet)`)
         return
       }
 
-      await openEyesPromises[index]
+      if (startSessionBeforeRender) {
+        await openEyesPromise
 
-      await wrapper.ensureRunningSession()
+        if (testController.shouldStopTest(index)) {
+          logger.log(`aborting checkWindow after waiting for openEyes promise`)
+          return
+        }
 
-      if (testController.shouldStopAllTests()) {
-        logger.log(`aborting checkWindow because there was an error in getRenderInfo`)
-        return
+        await wrapper.ensureRunningSession()
       }
 
       const renderRequest = await renderRequestPromises[index]
@@ -232,6 +236,7 @@ function makeCheckWindow({
         wrapper.setInferredEnvironment(`useragent:${userAgents[browsers[index].name]}`)
         testController.setFatalError(renderStatusErr)
         if (renderJobs.has(renderRequest)) renderJobs.get(renderRequest)()
+        await openEyesPromise
         return
       }
 
@@ -302,6 +307,8 @@ function makeCheckWindow({
       logger.verbose(
         `checkWindow waiting for openEyes. test=${testName}, stepCount #${currStepCount}`,
       )
+
+      await openEyesPromise
 
       if (testController.shouldStopTest(index)) {
         logger.log(`aborting checkWindow after waiting for openEyes promise`)
