@@ -1,12 +1,14 @@
 'use strict'
 const {describe, it, beforeEach} = require('mocha')
 const {expect} = require('chai')
+const {promisify: p} = require('util')
 const makeRender = require('../../../src/sdk/render')
 const {RenderStatus} = require('@applitools/eyes-sdk-core')
 const FakeRunningRender = require('../../util/FakeRunningRender')
 const FakeRenderRequest = require('../../util/FakeRenderRequest')
 const createResourceCache = require('../../../src/sdk/createResourceCache')
 const testLogger = require('../../util/testLogger')
+const psetTimeout = p(setTimeout)
 
 async function fakeDoRenderBatch(renderRequests) {
   return renderRequests.map((renderRequest, i) => {
@@ -147,5 +149,41 @@ describe('render', () => {
       url: 'url-1',
       errorStatusCode: 500,
     })
+  })
+
+  it('sends one request for sequence of render calls', async () => {
+    const renderCalls = []
+    render = makeRender({
+      renderTimeout: 10,
+      putResources: makePutResources(resourcesPutted),
+      resourceCache,
+      fetchCache,
+      logger: testLogger,
+      doRenderBatch: async renderRequests => {
+        renderCalls.push(renderRequests)
+        return renderRequests.map(
+          (_, index) => new FakeRunningRender(`id${index + 1}`, RenderStatus.RENDERED),
+        )
+      },
+    })
+
+    const renders = []
+
+    renders.push(render(new FakeRenderRequest('dom1', [])))
+    renders.push(render(new FakeRenderRequest('dom2', [])))
+    renders.push(render(new FakeRenderRequest('dom3', [])))
+    await psetTimeout(10)
+    renders.push(render(new FakeRenderRequest('dom4', [])))
+    await psetTimeout(5)
+    renders.push(render(new FakeRenderRequest('dom5', [])))
+    await psetTimeout(10)
+    renders.push(render(new FakeRenderRequest('dom6', [])))
+
+    await Promise.all(renders)
+
+    expect(renderCalls.length).to.be.eql(3)
+    expect(renderCalls[0].length).to.be.eql(3)
+    expect(renderCalls[1].length).to.be.eql(2)
+    expect(renderCalls[2].length).to.be.eql(1)
   })
 })
