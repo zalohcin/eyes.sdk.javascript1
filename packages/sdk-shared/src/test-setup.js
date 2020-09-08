@@ -9,11 +9,6 @@ const {
   VisualGridRunner,
   ConsoleLogHandler,
 } = require(cwd)
-const {checkLocalhost} = require('./preflight-check')
-
-;(async () => {
-  await checkLocalhost()
-})()
 
 const SAUCE_SERVER_URL = 'https://ondemand.saucelabs.com:443/wd/hub'
 
