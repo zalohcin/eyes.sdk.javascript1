@@ -10,24 +10,20 @@ const deserializeDomSnapshotResult = require('./deserializeDomSnapshotResult')
 const PULL_TIMEOUT = 200 // ms
 const CAPTURE_DOM_TIMEOUT_MS = 5 * 60 * 1000 // 5 min
 
-let captureScript, captureScriptIE
+let scriptBody
 
 async function getScript({disableBrowserFetching}) {
-  if (!captureScript) {
-    const scriptBody = await getProcessPageAndSerializePoll()
-    captureScript = `${scriptBody} return __processPageAndSerializePoll(document, {dontFetchResources: ${disableBrowserFetching}});`
+  if (!scriptBody) {
+    scriptBody = await getProcessPageAndSerializePoll()
   }
-
-  return captureScript
+  return `${scriptBody} return __processPageAndSerializePoll(document, {dontFetchResources: ${disableBrowserFetching}});`
 }
 
 async function getScriptForIE({disableBrowserFetching}) {
-  if (!captureScriptIE) {
-    const scriptBody = await getProcessPageAndSerializePollForIE()
-    captureScriptIE = `${scriptBody} return __processPageAndSerializePollForIE(document, {dontFetchResources: ${disableBrowserFetching}});`
+  if (!scriptBody) {
+    scriptBody = await getProcessPageAndSerializePollForIE()
   }
-
-  return captureScriptIE
+  return `${scriptBody} return __processPageAndSerializePollForIE(document, {dontFetchResources: ${disableBrowserFetching}});`
 }
 
 async function takeDomSnapshot({driver, startTime = Date.now(), browser, disableBrowserFetching}) {
