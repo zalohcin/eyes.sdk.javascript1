@@ -6,7 +6,7 @@ const testServer = require('../../src/test-server')
 const {Target} = require(cwd)
 const spec = require(path.resolve(cwd, 'src/SpecDriver'))
 const {getEyes} = require('../../src/test-setup')
-const preprocessUrl = require('../util/url-preprocessor')
+const adjustUrlToDocker = require('../util/adjust-url-to-docker')
 
 describe('TestVisualGridRefererHeader', () => {
   let testServer1, testServer2
@@ -37,7 +37,7 @@ describe('TestVisualGridRefererHeader', () => {
   })
 
   it('send referer header', async () => {
-    const url = preprocessUrl('http://localhost:5555/cors.html')
+    const url = adjustUrlToDocker('http://localhost:5555/cors.html')
     await spec.visit(driver, url)
     const eyes = getEyes({isVisualGrid: true})
     await eyes.open(driver, 'VgFetch', ' VgFetch referer', {width: 800, height: 600})
