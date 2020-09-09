@@ -5,7 +5,7 @@ const {
 } = require('@applitools/sdk-shared/coverage-tests/generic')
 
 module.exports = {
-  name: 'eyes.playwright',
+  name: 'playwright',
   out: './test/coverage/generic',
   ext: '.spec.js',
   initialize: makeEmitter,

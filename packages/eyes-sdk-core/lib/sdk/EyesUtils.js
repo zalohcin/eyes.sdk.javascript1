@@ -164,10 +164,10 @@ async function getElementEntireSize(_logger, context, element) {
 async function getElementClientRect(_logger, context, element) {
   const rect = await context.execute(snippets.getElementRect, {element, isClient: true})
   return new Region({
-    left: Math.ceil(rect.x),
-    top: Math.ceil(rect.y),
-    width: Math.ceil(rect.width),
-    height: Math.ceil(rect.height),
+    left: rect.x,
+    top: rect.y,
+    width: rect.width,
+    height: rect.height,
     coordinatesType: CoordinatesTypes.CONTEXT_RELATIVE,
   })
 }
@@ -181,10 +181,10 @@ async function getElementClientRect(_logger, context, element) {
 async function getElementRect(_logger, context, element) {
   const rect = await context.execute(snippets.getElementRect, {element, isClient: false})
   return new Region({
-    left: Math.ceil(rect.x),
-    top: Math.ceil(rect.y),
-    width: Math.ceil(rect.width),
-    height: Math.ceil(rect.height),
+    left: rect.x,
+    top: rect.y,
+    width: rect.width,
+    height: rect.height,
     coordinatesType: CoordinatesTypes.CONTEXT_RELATIVE,
   })
 }
@@ -227,7 +227,7 @@ async function getScrollOffset(_logger, context, element) {
  */
 async function scrollTo(_logger, context, location, element) {
   const {x = 0, y = 0} = await context.execute(snippets.scrollTo, {
-    offset: {x: location.getX(), y: location.getY()},
+    offset: {x: Math.round(location.getX()), y: Math.round(location.getY())},
     element,
   })
   return new Location(x, y)
@@ -252,8 +252,8 @@ async function getTranslateOffset(_logger, context, element) {
  */
 async function translateTo(_logger, context, location, element) {
   const offset = await context.execute(snippets.translateTo, {
+    offset: {x: Math.round(location.getX()), y: Math.round(location.getY())},
     element,
-    offset: {x: location.getX(), y: location.getY()},
   })
   return new Location(offset)
 }
@@ -375,29 +375,17 @@ async function getElementXpath(logger, context, element) {
     return null
   })
 }
-/**
- * Translate element selector to the persisted regions
- * @template TSelector
- * @param {Logger} logger
- * @param {EyesContext} context
- * @param {TSelector} selector - element selector
- * @return {Promise<{type: string, selector: string}[]>} persisted regions for selector
- */
-async function toPersistedRegions(logger, context, selector) {
-  const eyesSelector = context.constructor.toEyesSelector(selector)
-  if (eyesSelector.type === 'css' || eyesSelector.type === 'xpath') {
-    return [eyesSelector]
-  }
-  const elements = await context.elements(selector)
-  const persistedRegions = []
-  for (const element of elements) {
-    persistedRegions.push({
-      type: 'xpath',
-      selector: await getElementXpath(logger, context, element),
-    })
-  }
-  return persistedRegions
+
+async function markElements(_logger, context, elementsById) {
+  const elements = Object.values(elementsById)
+  const ids = Object.keys(elementsById)
+  await context.execute(snippets.markElements, {elements, ids})
 }
+
+async function cleanupElementIds(_logger, context, elements) {
+  await context.execute(snippets.cleanupElementIds, {elements})
+}
+
 /**
  * @template TElement
  * @typedef ContextInfo
@@ -492,7 +480,8 @@ module.exports = {
   blurElement,
   focusElement,
   getElementXpath,
-  toPersistedRegions,
+  markElements,
+  cleanupElementIds,
   getContextInfo,
   getChildFramesInfo,
   ensureRegionVisible,

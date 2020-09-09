@@ -2,7 +2,27 @@
 
 ## Unreleased
 
+
+## 12.2.3 - 2020/9/2
+
+- add `disableBrowserFetching` configuration parameter ([Trello](https://trello.com/c/ixJJZdiA))
+
+## 12.2.2 - 2020/9/1
+
+- fix layout breakpoints configuration
+
+## 12.2.1 - 2020/9/1
+
+- fix layout breakpoints configuration
+
+## 12.2.0 - 2020/8/30
+
+- add support for `layoutBreakpoints`
 - avoid javascript execution on native devices during viewport size extraction
+- mark coded regions and target elements with unique selectors for the visual grid
+- improve handling of fractional metrics ([Trello](https://trello.com/c/TuXUZUNO/441-sonatype-wdio-5-targetregion-appears-off-by-one-pixel))
+- updated to @applitools/snippets@1.1.0 (from 1.0.3)
+- updated to @applitools/snippets@1.1.1 (from 1.1.0)
 
 ## 12.1.4 - 2020/8/13
 

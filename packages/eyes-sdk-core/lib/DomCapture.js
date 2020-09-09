@@ -125,7 +125,7 @@ class DomCapture {
       }, DOM_EXTRACTION_TIMEOUT)
 
       do {
-        this._logger.verbose('executing dom capture')
+        this._logger.verbose('executing dom capture', url)
         const resultAsString = await this._driver.execute(script)
         result = JSON.parse(resultAsString)
         await GeneralUtils.sleep(DOM_CAPTURE_PULL_TIMEOUT)
@@ -150,6 +150,10 @@ class DomCapture {
     if (domSnapshotRawArr.length === 0) {
       return {}
     }
+
+    this._logger.verbose(
+      `raw dom captured successfully for frame ${url} size=${result.value.length}`,
+    )
 
     const separatorJson = JSON.parse(domSnapshotRawArr[0])
     const cssEndIndex = domSnapshotRawArr.indexOf(separatorJson.separator)

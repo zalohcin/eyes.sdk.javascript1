@@ -66,6 +66,8 @@ const TypeUtils = require('../utils/TypeUtils')
  * @prop {boolean} [enablePatterns=true]
  * @prop {boolean} [ignoreDisplacements=true]
  * @prop {boolean} [ignoreCaret=true]
+ * @prop {Object<string, any>} [visualGridOptions]
+ * @prop {number[]|boolean} [layoutBreakpoints]
  * @prop {boolean} [isFully=false]
  * @prop {string} [renderId]
  * @prop {{[key: string]: string}} [hooks]
@@ -188,6 +190,8 @@ class CheckSettings {
     this._scriptHooks = {}
     /** @private @type {Object} */
     this._visualGridOptions = undefined
+    /** @private @type {number[]|boolean} */
+    this._layoutBreakpoints = undefined
   }
   /**
    * Create check settings from an object
@@ -287,6 +291,12 @@ class CheckSettings {
       Object.entries(object.visualGridOptions).forEach(([key, value]) => {
         settings.visualGridOption(key, value)
       })
+    }
+    if (object.layoutBreakpoints) {
+      settings.layoutBreakpoints(object.layoutBreakpoints)
+    }
+    if (object.disableBrowserFetching) {
+      settings.disableBrowserFetching()
     }
     return settings
   }
@@ -946,46 +956,39 @@ class CheckSettings {
     this._visualGridOptions[key] = value
     return this
   }
+  visualGridOptions(options) {
+    this._visualGridOptions = options
+    return this
+  }
+  getVisualGridOptions() {
+    return this._visualGridOptions
+  }
+  layoutBreakpoints(breakpoints = true) {
+    if (!TypeUtils.isArray(breakpoints)) {
+      this._layoutBreakpoints = breakpoints
+    } else if (breakpoints.length === 0) {
+      this._layoutBreakpoints = false
+    } else {
+      this._layoutBreakpoints = Array.from(new Set(breakpoints)).sort((a, b) => (a < b ? 1 : -1))
+    }
+    return this
+  }
+  getLayoutBreakpoints() {
+    return this._layoutBreakpoints
+  }
+  disableBrowserFetching(value = true) {
+    this._disableBrowserFetching = value
+    return this
+  }
+  getDisableBrowserFetching() {
+    return this._disableBrowserFetching
+  }
 
   /**
    * @override
    */
   toString() {
     return `${this.constructor.name} ${GeneralUtils.toString(this)}`
-  }
-  /**
-   * @private
-   */
-  async toCheckWindowConfiguration(context) {
-    const config = {
-      ignore: await persistRegions(this.getIgnoreRegions()),
-      floating: await persistRegions(this.getFloatingRegions()),
-      strict: await persistRegions(this.getStrictRegions()),
-      layout: await persistRegions(this.getLayoutRegions()),
-      content: await persistRegions(this.getContentRegions()),
-      accessibility: await persistRegions(this.getAccessibilityRegions()),
-      target: !this._targetRegion && !this._targetElement ? 'window' : 'region',
-      fully: this.getStitchContent(),
-      tag: this.getName(),
-      scriptHooks: this.getScriptHooks(),
-      sendDom: this.getSendDom(),
-      matchLevel: this.getMatchLevel(),
-      visualGridOptions: this._visualGridOptions,
-    }
-    if (config.target === 'region') {
-      const type = this._targetRegion ? 'region' : 'selector'
-      const [region] = type ? await this.getTargetProvider().toPersistedRegions(context) : []
-      config[type] = region
-    }
-    return config
-    async function persistRegions(regions = []) {
-      const persisted = []
-      for (const region of regions) {
-        const persistedRegions = await region.toPersistedRegions(context)
-        persisted.push(...persistedRegions)
-      }
-      return persisted
-    }
   }
 }
 

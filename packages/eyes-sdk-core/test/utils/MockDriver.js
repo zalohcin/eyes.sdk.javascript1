@@ -15,6 +15,8 @@ const DEFAULT_PROPS = {
   overflow: null,
 }
 
+const DOM_SNAPSHOT_REGEX = /^\/\* @applitools\/dom-snapshot@[\d.]+ \*\//
+
 class MockDriver {
   constructor({isNative = false, isMobile = false} = {}) {
     this._isNative = isNative
@@ -117,9 +119,24 @@ class MockDriver {
     this.mockScript(snippets.blurElement, () => {
       return null
     })
-    this.mockScript(/^\/\* @applitools\/dom-snapshot@[\d.]+ \*\//, () =>
-      FakeDomSnapshot.generateDomSnapshot(this),
-    )
+    this.mockScript(DOM_SNAPSHOT_REGEX, () => FakeDomSnapshot.generateDomSnapshot(this))
+    this.mockScript(snippets.markElements, ({elements, ids}) => {
+      for (const [index, el] of elements.entries()) {
+        el.attributes = el.attributes || []
+        el.attributes.push({name: 'data-eyes-selector', value: ids[index]})
+      }
+    })
+    this.mockScript(snippets.cleanupElementIds, ({elements}) => {
+      for (const el of elements) {
+        el.attributes.splice(
+          el.attributes.findIndex(({name}) => name === 'data-eyes-selector'),
+          1,
+        )
+      }
+    })
+  }
+  static get DOM_SNAPSHOT_REGEX() {
+    return DOM_SNAPSHOT_REGEX
   }
   mockScript(scriptMatcher, resultGenerator) {
     this._scripts.set(scriptMatcher, resultGenerator)

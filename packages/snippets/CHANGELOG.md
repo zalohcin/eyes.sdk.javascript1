@@ -4,6 +4,14 @@
 ## Unreleased
 
 
+## 1.1.1 - 2020/8/30
+
+- nothing added, technical issue with unreleased commits
+
+## 1.1.0 - 2020/8/30
+
+- add `markElements` and `cleanupElementIds`
+
 ## 1.0.3 - 2020/8/10
 
 - bumped sdk-release-kit version to latest

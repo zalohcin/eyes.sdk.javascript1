@@ -16,7 +16,7 @@ describe('eyes-storybook', () => {
         '\nThis test disables APPLITOOLS_SHOW_LOGS so dont be surprised son !!! See: test/e2e/eyes-storybook.e2e.test.js:15\n',
       );
     }
-    process.env.APPLITOOLS_SHOW_LOGS = false;
+    delete process.env.APPLITOOLS_SHOW_LOGS;
   });
 
   after(async () => {

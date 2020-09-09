@@ -41,7 +41,7 @@ describe('render e2e', () => {
       renderingInfo,
     })
 
-    const {rGridDom: dom, allResources: _} = await createRGridDOMAndGetResourceMapping({
+    const page = await createRGridDOMAndGetResourceMapping({
       resourceUrls: [],
       resourceContents: [],
       cdt: [{nodeType: 3, nodeValue: 'renders older browser versions - works!'}],
@@ -50,8 +50,7 @@ describe('render e2e', () => {
 
     const renderRequests = createRenderRequests({
       url: 'http://something',
-      dom,
-      resources: [],
+      pages: Array(browsers.length).fill(page),
       browsers,
       renderInfo: renderingInfo,
       sizeMode: 'full-page',
@@ -83,12 +82,12 @@ describe('render e2e', () => {
     ] = majorVersions
 
     expect(chrome1).to.equal(chrome - 1)
-    expect(chrome2).to.equal(chrome - 3) // temporary, because Chrome skipped version 82
+    expect(chrome2).to.equal(chrome - 2)
     expect(firefox1).to.equal(firefox - 1)
     expect(firefox2).to.equal(firefox - 2)
     expect(safari1).to.equal(safari - 1)
     expect(safari2).to.equal(safari - 2)
     expect(edgechromium1).to.equal(edgechromium - 1)
-    expect(edgechromium2).to.equal(edgechromium - 3) // temporary, because Chrome skipped version 82
+    expect(edgechromium2).to.equal(edgechromium - 1)
   })
 })

@@ -51,6 +51,8 @@ const BOOLEAN_CONFIGS = [
   '_hideCaret',
   '_isThrowExceptionOn',
   '_dontCloseBatches',
+  '_layoutBreakpoints',
+  '_disableBrowserFetching',
 ]
 
 const NUMBER_CONFIGS = [
@@ -175,12 +177,22 @@ describe('Configuration', () => {
       configuration.setApiKey('apiKey')
       configuration.setIgnoreDisplacements(true)
       configuration.setMatchLevel(MatchLevel.Layout)
+      configuration.setLayoutBreakpoints(true)
+      configuration.setDisableBrowserFetching(true)
 
       const configurationCopy = new Configuration(configuration)
 
       assert.strictEqual(configuration.getAppName(), configurationCopy.getAppName())
       assert.strictEqual(configuration.getApiKey(), configurationCopy.getApiKey())
       assert.strictEqual(configuration.getMatchLevel(), configurationCopy.getMatchLevel())
+      assert.strictEqual(
+        configuration.getLayoutBreakpoints(),
+        configurationCopy.getLayoutBreakpoints(),
+      )
+      assert.strictEqual(
+        configuration.getDisableBrowserFetching(),
+        configurationCopy.getDisableBrowserFetching(),
+      )
       assert.strictEqual(
         configuration.getIgnoreDisplacements(),
         configurationCopy.getIgnoreDisplacements(),
@@ -624,5 +636,17 @@ describe('Configuration', () => {
   it('setMatchLevel("Layout")', () => {
     const config = new Configuration({defaultMatchSettings: {matchLevel: 'Layout'}})
     assert.strictEqual(config.getMatchLevel(), MatchLevel.Layout)
+  })
+
+  it('setLayoutBreakpoints()', async () => {
+    const config = new Configuration()
+    config.setLayoutBreakpoints(true)
+    assert.deepStrictEqual(config.getLayoutBreakpoints(), true)
+    config.setLayoutBreakpoints([25, 50, 100, 200])
+    assert.deepStrictEqual(config.getLayoutBreakpoints(), [200, 100, 50, 25])
+    config.setLayoutBreakpoints([100, 200, 200, 100, 50, 25])
+    assert.deepStrictEqual(config.getLayoutBreakpoints(), [200, 100, 50, 25])
+    config.setLayoutBreakpoints([])
+    assert.deepStrictEqual(config.getLayoutBreakpoints(), false)
   })
 })

@@ -3,7 +3,7 @@ const getStoryTitle = require('./getStoryTitle');
 const deprecationWarning = require('./deprecationWarning');
 
 function makeRenderStory({config, logger, testWindow, performance, timeItAsync}) {
-  return function renderStory({story, resourceUrls, resourceContents, frames, cdt, url}) {
+  return function renderStory({story, snapshot, url}) {
     const {name, kind, parameters} = story;
     const title = getStoryTitle({name, kind, parameters});
     const eyesOptions = (parameters && parameters.eyes) || {};
@@ -54,11 +54,8 @@ function makeRenderStory({config, logger, testWindow, performance, timeItAsync})
     };
 
     const checkParams = {
-      cdt,
-      resourceUrls,
-      resourceContents,
       url,
-      frames,
+      snapshot,
       ignore:
         ignoreRegionsBackCompat !== undefined ? ignoreRegionsBackCompat : config.ignoreRegions,
       floating: floatingRegions !== undefined ? floatingRegions : config.floatingRegions,

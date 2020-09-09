@@ -126,7 +126,7 @@ async function getWindowRect(driver) {
         const {x, y} = await driver
           .manage()
           .window()
-          .setPosition()
+          .getPosition()
         rect.x = x
         rect.y = y
       }
@@ -134,7 +134,7 @@ async function getWindowRect(driver) {
         const {width, height} = await driver
           .manage()
           .window()
-          .setSize()
+          .getSize()
         rect.width = width
         rect.height = height
       }
@@ -257,9 +257,15 @@ async function build(env) {
   if (!sauce) {
     const browserOptionsName = browserOptionsNames[browser]
     if (browserOptionsName) {
-      desiredCapabilities[browserOptionsName] = {
-        args: headless ? args.concat('headless') : args,
-        w3c: false,
+      if (browser === 'firefox') {
+        desiredCapabilities[browserOptionsName] = {
+          args: headless ? args.concat('headless') : args,
+        }
+      } else {
+        desiredCapabilities[browserOptionsName] = {
+          args: headless ? args.concat('headless') : args,
+          w3c: false,
+        }
       }
     }
   }
