@@ -61,6 +61,27 @@ describe('EyesVisualGrid', async () => {
     expect(err.message).to.contain('failed to render screenshot')
   })
 
+  it('should throw an error when dom snapshot returns an error', async () => {
+    driver.mockScript(MockDriver.DOM_SNAPSHOT_REGEX, () =>
+      JSON.stringify({status: 'ERROR', error: 'bla'}),
+    )
+    await eyes.open(driver, 'FakeApp', 'FakeTest')
+    const err = await eyes.check().catch(err => err)
+    expect(err.message).to.equal('Unable to process dom snapshot: bla')
+  })
+
+  it('should throw an error on invalid dom snapshot JSON', async () => {
+    const response = Array.from({length: 200}, (_x, i) => i).join('')
+    driver.mockScript(MockDriver.DOM_SNAPSHOT_REGEX, () => response)
+    await eyes.open(driver, 'FakeApp', 'FakeTest')
+    const err = await eyes.check().catch(err => err)
+    expect(err.message).to.contain(
+      `dom snapshot is not a valid JSON string. response length: ${
+        response.length
+      }, first 100 chars: "${response.substr(0, 100)}", last 100 chars: "${response.substr(-100)}"`,
+    )
+  })
+
   async function extractMatchSettings(results) {
     const session = await getSession(results, serverUrl)
     const imageMatchSettings = session.steps[0].matchWindowData.options.imageMatchSettings
