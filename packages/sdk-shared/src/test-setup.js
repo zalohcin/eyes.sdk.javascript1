@@ -63,7 +63,7 @@ const BROWSERS = {
     capabilities: {
       name: 'Edge 18',
       browserName: 'MicrosoftEdge',
-      browserVersion: '18',
+      version: '18.17763',
       platformName: 'Windows 10',
       screenResolution: '1920x1080',
       ...SAUCE_CREDENTIALS,
