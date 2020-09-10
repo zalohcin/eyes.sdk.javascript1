@@ -183,6 +183,8 @@ function makeCheckWindow({
         return
       }
 
+      await wrapper.ensureRunningSession()
+
       const renderRequest = await renderRequestPromises[index]
 
       const [renderErr, renderId] = await presult(renderJob(renderRequest))

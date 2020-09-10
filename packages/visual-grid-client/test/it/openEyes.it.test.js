@@ -794,6 +794,7 @@ Received: 'firefox-1'.`,
 
       openEyes = makeRenderingGridClient({
         renderTimeout: 0,
+        putResourcesTimeout: 0,
         concurrency: 1,
         apiKey,
         showLogs: APPLITOOLS_SHOW_LOGS,
@@ -828,7 +829,7 @@ Received: 'firefox-1'.`,
       expect(counters.render).to.equal(1)
       expect(counters.checkWindow).to.equal(0)
       //t4
-      await psetTimeout(155)
+      await psetTimeout(200)
       expect(counters.open).to.equal(1)
       expect(counters.session).to.equal(1)
       expect(counters.render).to.equal(1)
@@ -1002,6 +1003,7 @@ Received: 'firefox-1'.`,
 
     it('resolves render job when error in getRenderStatus happens', async () => {
       openEyes = makeRenderingGridClient({
+        putResourcesTimeout: 0,
         renderTimeout: 0,
         concurrency: 1,
         renderConcurrencyFactor: 1,
