@@ -26,14 +26,32 @@ async function getScriptForIE({disableBrowserFetching}) {
   return `${scriptBody} return __processPageAndSerializePollForIE(document, {dontFetchResources: ${disableBrowserFetching}});`
 }
 
+async function getFrame(driver, xpath) {
+  const element = await driver.element({type: 'xpath', selector: xpath})
+  await driver.switchToChildContext(element)
+  return await takeDomSnapshot({driver})
+}
+
+async function getCrossOriginFrames(driver, snapshot) {
+  const {crossFramesXPaths} = snapshot
+  if (crossFramesXPaths.length > 0) {
+    for (const xpath of crossFramesXPaths) {
+      const crossFrameSnapshot = getFrame(driver, xpath)
+      snapshot.frames.push(crossFrameSnapshot)
+      await driver.switchToParentContext()
+    }
+  }
+}
+
 async function takeDomSnapshot({driver, startTime = Date.now(), browser, disableBrowserFetching}) {
   const processPageAndPollScript =
     browser === 'IE'
       ? await getScriptForIE({disableBrowserFetching})
       : await getScript({disableBrowserFetching})
-  const resultAsString = await driver.execute(processPageAndPollScript)
 
+  const resultAsString = await driver.execute(processPageAndPollScript)
   let scriptResponse
+
   try {
     scriptResponse = JSON.parse(resultAsString)
   } catch (ex) {
@@ -45,6 +63,10 @@ async function takeDomSnapshot({driver, startTime = Date.now(), browser, disable
   }
 
   if (scriptResponse.status === 'SUCCESS') {
+    await getCrossOriginFrames(driver, scriptResponse.value)
+
+    console.log(scriptResponse.value)
+
     return deserializeDomSnapshotResult(scriptResponse.value)
   } else if (scriptResponse.status === 'ERROR') {
     throw new Error(`Unable to process dom snapshot: ${scriptResponse.error}`)
