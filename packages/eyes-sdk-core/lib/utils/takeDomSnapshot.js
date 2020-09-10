@@ -26,24 +26,24 @@ async function getScriptForIE({disableBrowserFetching}) {
   return `${scriptBody} return __processPageAndSerializePollForIE(document, {dontFetchResources: ${disableBrowserFetching}});`
 }
 
-async function getFrame(driver, xpath) {
-  const element = await driver.element({type: 'xpath', selector: xpath})
-  await driver.switchToChildContext(element)
-  return await takeDomSnapshot({driver})
-}
-
 async function getCrossOriginFrames(driver, snapshot) {
   const {crossFramesXPaths} = snapshot
   if (crossFramesXPaths.length > 0) {
     for (const xpath of crossFramesXPaths) {
-      const crossFrameSnapshot = getFrame(driver, xpath)
+      const crossFrameSnapshot = await getFrame(driver, xpath)
       snapshot.frames.push(crossFrameSnapshot)
       await driver.switchToParentContext()
     }
   }
 }
 
-async function takeDomSnapshot({driver, startTime = Date.now(), browser, disableBrowserFetching}) {
+async function getFrame(driver, xpath) {
+  const element = await driver.element({type: 'xpath', selector: xpath})
+  await driver.switchToChildContext(element)
+  return await _takeDomSnapshot({driver})
+}
+
+async function _takeDomSnapshot({driver, startTime = Date.now(), browser, disableBrowserFetching}) {
   const processPageAndPollScript =
     browser === 'IE'
       ? await getScriptForIE({disableBrowserFetching})
@@ -64,10 +64,7 @@ async function takeDomSnapshot({driver, startTime = Date.now(), browser, disable
 
   if (scriptResponse.status === 'SUCCESS') {
     await getCrossOriginFrames(driver, scriptResponse.value)
-
-    console.log(scriptResponse.value)
-
-    return deserializeDomSnapshotResult(scriptResponse.value)
+    return scriptResponse.value
   } else if (scriptResponse.status === 'ERROR') {
     throw new Error(`Unable to process dom snapshot: ${scriptResponse.error}`)
   } else if (Date.now() - startTime >= CAPTURE_DOM_TIMEOUT_MS) {
@@ -75,7 +72,12 @@ async function takeDomSnapshot({driver, startTime = Date.now(), browser, disable
   }
 
   await GeneralUtils.sleep(PULL_TIMEOUT)
-  return takeDomSnapshot({driver, startTime})
+  return _takeDomSnapshot({driver, startTime})
+}
+
+async function takeDomSnapshot(opts) {
+  const result = await _takeDomSnapshot(opts)
+  return deserializeDomSnapshotResult(result)
 }
 
 module.exports = takeDomSnapshot
