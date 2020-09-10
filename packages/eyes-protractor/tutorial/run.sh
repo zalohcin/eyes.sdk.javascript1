@@ -1,4 +1,5 @@
 #!/bin/bash
+cd $( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 source ../../sdk-shared/tutorial/report.sh
 source ../../sdk-shared/tutorial/parse.sh
 parse "$@"

@@ -1,7 +1,6 @@
 #!/bin/bash
 
 function parse() {
-  echo 'From parse'
   while [ $# -gt 0 ]; do
 
    if [[ $1 == *"--"* ]]; then
