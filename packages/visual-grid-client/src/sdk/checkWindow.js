@@ -13,6 +13,7 @@ function makeCheckWindow({
   testController,
   saveDebugData,
   createRGridDOMAndGetResourceMapping,
+  putResources,
   render,
   waitForRenderedStatus,
   renderInfo,
@@ -98,6 +99,7 @@ function makeCheckWindow({
         referer: url,
         proxySettings: wrappers[0].getProxy(),
       })
+      await putResources([rGridDom, ...Object.values(allResources)])
       return createRenderRequest({
         url,
         dom: rGridDom,

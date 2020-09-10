@@ -39,6 +39,7 @@ function makeRenderingGridClient({
   logger,
   showLogs,
   renderTimeout,
+  putResourcesTimeout,
   renderStatusTimeout,
   renderStatusInterval,
   concurrency = Infinity,
@@ -115,6 +116,7 @@ function makeRenderingGridClient({
   const {
     doGetRenderInfo,
     doRenderBatch,
+    doCheckResources,
     doPutResource,
     doGetRenderStatus,
     setRenderingInfo,
@@ -126,15 +128,15 @@ function makeRenderingGridClient({
   const fetchWithTimeout = (url, opt) =>
     ptimeoutWithError(fetch(url, opt), fetchResourceTimeout, 'fetch timed out')
   const fetchResource = makeFetchResource({logger, fetchCache, fetch: fetchWithTimeout})
-  const putResources = makePutResources({doPutResource})
-  const render = makeRender({
-    putResources,
-    resourceCache,
-    fetchCache,
+  const putResources = makePutResources({
     logger,
-    doRenderBatch,
-    renderTimeout,
+    doPutResource,
+    doCheckResources,
+    fetchCache,
+    resourceCache,
+    timeout: putResourcesTimeout,
   })
+  const render = makeRender({logger, doRenderBatch, timeout: renderTimeout})
   const getRenderStatus = makeGetRenderStatus({
     logger,
     doGetRenderStatus,
@@ -192,6 +194,7 @@ function makeRenderingGridClient({
     ignoreBaseline,
     serverUrl,
     logger,
+    putResources,
     render,
     waitForRenderedStatus,
     renderThroat,

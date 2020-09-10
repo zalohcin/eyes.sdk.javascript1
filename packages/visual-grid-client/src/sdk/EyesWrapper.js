@@ -1,12 +1,5 @@
 'use strict'
-const {
-  EyesBase,
-  NullRegionProvider,
-  TestResultsStatus,
-  DiffsFoundError,
-  NewTestError,
-  TestFailedError,
-} = require('@applitools/eyes-sdk-core')
+const {EyesBase, NullRegionProvider} = require('@applitools/eyes-sdk-core')
 const {presult} = require('@applitools/functional-commons')
 const VERSION = require('../../package.json').version
 
@@ -122,8 +115,12 @@ class EyesWrapper extends EyesBase {
     return this._serverConnector.render(renderRequests)
   }
 
-  putResource(runningRender, resource) {
-    return this._serverConnector.renderPutResource(runningRender, resource)
+  checkResources(resources) {
+    return this._serverConnector.renderCheckResources(resources)
+  }
+
+  putResource(resource) {
+    return this._serverConnector.renderPutResource(resource)
   }
 
   getRenderStatus(renderId) {

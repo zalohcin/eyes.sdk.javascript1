@@ -883,6 +883,7 @@ Received: 'firefox-1'.`,
     beforeEach(() => {
       openEyes = makeRenderingGridClient({
         renderTimeout: 0,
+        putResourcesTimeout: 0,
         concurrency: 2,
         renderConcurrencyFactor: 1,
         apiKey,

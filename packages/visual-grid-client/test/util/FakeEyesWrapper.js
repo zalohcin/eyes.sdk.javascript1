@@ -176,6 +176,10 @@ class FakeEyesWrapper extends EventEmitter {
     this.renderingInfo = val
   }
 
+  async checkResources(resources = []) {
+    return Array(resources.length).fill(true)
+  }
+
   async putResource() {}
 
   async getUserAgents() {

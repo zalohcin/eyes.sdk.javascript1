@@ -210,7 +210,7 @@ class ServerConnector {
         this._configuration.getServerUrl(),
         EYES_API_PATH,
         '/running',
-        runningSession.getId(),
+        encodeURIComponent(runningSession.getId()),
       ),
       params: {
         aborted: isAborted,
@@ -345,7 +345,7 @@ class ServerConnector {
         this._configuration.getServerUrl(),
         EYES_API_PATH,
         '/running',
-        runningSession.getId(),
+        encodeURIComponent(runningSession.getId()),
       ),
       headers: {},
       data: matchWindowData,
@@ -549,62 +549,59 @@ class ServerConnector {
   }
 
   /**
-   * Check if resource exists on the server
+   * Checks if resources already exist on the server
    *
-   * @param {RunningRender} runningRender - The running render (for second request only)
-   * @param {RGridResource} resource - The resource to use
-   * @return {Promise<boolean>} - Whether resource exists on the server or not
+   * @param {RGridResource[]} resources - The resource to use
+   * @return {Promise<boolean[]>} - Whether resource exists on the server or not
    */
-  async renderCheckResource(runningRender, resource) {
-    ArgumentGuard.notNull(runningRender, 'runningRender')
-    ArgumentGuard.notNull(resource, 'resource')
-    // eslint-disable-next-line max-len
-    this._logger.verbose(
-      `ServerConnector.checkResourceExists called with resource#${resource.getSha256Hash()} for render: ${runningRender}`,
-    )
+  async renderCheckResources(resources) {
+    ArgumentGuard.notNull(resources, 'resources')
+    const hashes = resources.map(resource => ({
+      hashFormat: 'sha256',
+      hash: resource.getSha256Hash(),
+    }))
+    this._logger.verbose(`ServerConnector.renderCheckResources called with resources - ${hashes}`)
 
     const config = {
-      name: 'renderCheckResource',
+      name: 'renderCheckResources',
       withApiKey: false,
-      method: 'HEAD',
+      method: 'POST',
       url: GeneralUtils.urlConcat(
         this._renderingInfo.getServiceUrl(),
-        '/resources/sha256/',
-        resource.getSha256Hash(),
+        '/resources/query/resources-exist/',
       ),
       headers: {
         'X-Auth-Token': this._renderingInfo.getAccessToken(),
       },
       params: {
-        'render-id': runningRender.getRenderId(),
+        'render-id': GeneralUtils.guid(),
       },
+      data: hashes,
     }
 
     const response = await this._axios.request(config)
-    const validStatusCodes = [HTTP_STATUS_CODES.OK, HTTP_STATUS_CODES.NOT_FOUND]
+    const validStatusCodes = [HTTP_STATUS_CODES.OK]
     if (validStatusCodes.includes(response.status)) {
-      this._logger.verbose('ServerConnector.checkResourceExists - request succeeded')
-      return response.status === HTTP_STATUS_CODES.OK
+      this._logger.verbose('ServerConnector.renderCheckResources - request succeeded')
+      return response.data
     }
 
     throw new Error(
-      `ServerConnector.checkResourceExists - unexpected status (${response.statusText})`,
+      `ServerConnector.renderCheckResources - unexpected status (${response.statusText})`,
     )
   }
 
   /**
    * Upload resource to the server
    *
-   * @param {RunningRender} runningRender - The running render (for second request only)
    * @param {RGridResource} resource - The resource to upload
    * @return {Promise<boolean>} - True if resource was uploaded
    */
-  async renderPutResource(runningRender, resource) {
-    ArgumentGuard.notNull(runningRender, 'runningRender')
+  async renderPutResource(resource) {
     ArgumentGuard.notNull(resource, 'resource')
     ArgumentGuard.notNull(resource.getContent(), 'resource.getContent()')
     this._logger.verbose(
-      `ServerConnector.putResource called with resource#${resource.getSha256Hash()} for render: ${runningRender}`,
+      `ServerConnector.putResource called with resource#${resource.getSha256Hash()}`,
     )
 
     const config = {
@@ -622,7 +619,7 @@ class ServerConnector {
       },
       maxContentLength: 15.5 * 1024 * 1024, // 15.5 MB  (VG limit is 16MB)
       params: {
-        'render-id': runningRender.getRenderId(),
+        'render-id': GeneralUtils.guid(),
       },
       data: resource.getContent(),
     }

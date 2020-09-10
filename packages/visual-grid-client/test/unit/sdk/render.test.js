@@ -11,12 +11,8 @@ const testLogger = require('../../util/testLogger')
 const psetTimeout = p(setTimeout)
 
 async function fakeDoRenderBatch(renderRequests) {
-  return renderRequests.map((renderRequest, i) => {
-    const renderId = renderRequest.getRenderId()
-    return new FakeRunningRender(
-      renderId || `id${i + 1}`,
-      renderId ? `status${i + 1}` : RenderStatus.NEED_MORE_RESOURCES,
-    )
+  return renderRequests.map((_, i) => {
+    return new FakeRunningRender(`id${i + 1}`, `status${i + 1}`)
   })
 }
 
@@ -54,7 +50,6 @@ describe('render', () => {
     resourceCache = createResourceCache()
     fetchCache = createResourceCache()
     render = makeRender({
-      putResources: makePutResources(resourcesPutted),
       resourceCache,
       fetchCache,
       logger: testLogger,
@@ -84,35 +79,9 @@ describe('render', () => {
 
     const renderIds = await Promise.all(renderRequests.map(render))
     expect(renderIds).to.eql(['id1', 'id2', 'id3'])
-
-    expect(renderRequests.map(renderRequest => renderRequest.getRenderId())).to.eql([
-      'id1',
-      'id2',
-      'id3',
-    ])
-
-    expect(resourcesPutted).to.eql([
-      {dom: 'dom1', renderId: 'id1'},
-      {dom: 'dom2', renderId: 'id2'},
-      {dom: 'dom3', renderId: 'id3'},
-    ])
-
-    expect(resourceCache.getValue('url-1')).to.eql({
-      url: 'url-1',
-      type: 'contentType',
-      hash: 'sha256hash',
-      content: undefined,
-    })
-
-    expect(resourceCache.getValue('url-2')).to.eql({
-      url: 'url-2',
-      type: 'text/css',
-      hash: 'sha256hash-2',
-      content: 'content-2',
-    })
   })
 
-  it('throws an error if need-more-resources is received on second render request', async () => {
+  it('throws an error if need-more-resources is received', async () => {
     render = makeRender({
       putResources: makePutResources(resourcesPutted),
       resourceCache,
@@ -120,7 +89,7 @@ describe('render', () => {
       logger: testLogger,
       doRenderBatch: async () => [
         new FakeRunningRender('some id', RenderStatus.NEED_MORE_RESOURCES),
-      ], // always returns need-more-resources
+      ],
     })
     const error = await render(new FakeRenderRequest('some dom')).then(
       x => x,
@@ -130,34 +99,10 @@ describe('render', () => {
     expect(error).to.be.an.instanceof(Error)
   })
 
-  it('caches resources with errorStatusCode', async () => {
-    const renderRequest = new FakeRenderRequest('dom', [
-      FakeRGridResource({
-        url: 'url-1',
-        errorStatusCode: 500,
-      }),
-    ])
-
-    const renderId = await render(renderRequest)
-    expect(renderId).to.eql('id1')
-
-    expect(renderRequest.getRenderId()).to.equal('id1')
-
-    expect(resourcesPutted).to.eql([{dom: 'dom', renderId: 'id1'}])
-
-    expect(resourceCache.getValue('url-1')).to.eql({
-      url: 'url-1',
-      errorStatusCode: 500,
-    })
-  })
-
   it('sends one request for sequence of render calls', async () => {
     const renderCalls = []
     render = makeRender({
-      renderTimeout: 10,
-      putResources: makePutResources(resourcesPutted),
-      resourceCache,
-      fetchCache,
+      timeout: 10,
       logger: testLogger,
       doRenderBatch: async renderRequests => {
         renderCalls.push(renderRequests)
