@@ -3,7 +3,7 @@ const testServer = require('../../../sdk-shared/src/run-test-server')
 const {join} = require('path')
 const {Builder, Capabilities, By} = require('selenium-webdriver')
 const {expect} = require('chai')
-const preProcessUrl = require('../../../sdk-shared/coverage-tests/util/url-preprocessor')
+const preProcessUrl = require('../../../sdk-shared/coverage-tests/util/adjust-url-to-docker')
 
 describe('takeDomSnapshot', () => {
   let driver, eyesDriver, server1, server2
