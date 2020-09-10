@@ -83,7 +83,6 @@ function makeRenderingGridClient({
   globalState: _globalState,
   dontCloseBatches,
   visualGridOptions,
-  startSessionBeforeRender = true,
 }) {
   const openEyesConcurrency = Number(concurrency)
 
@@ -208,7 +207,6 @@ function makeRenderingGridClient({
     globalState,
     getUserAgents,
     visualGridOptions,
-    startSessionBeforeRender,
   }
 
   const openEyes = makeOpenEyes(openConfig)

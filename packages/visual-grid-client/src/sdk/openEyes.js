@@ -66,7 +66,6 @@ function makeOpenEyes({
   globalState,
   wrappers: _wrappers,
   visualGridOptions: _visualGridOptions,
-  startSessionBeforeRender,
 }) {
   return async function openEyes({
     testName,
@@ -268,7 +267,6 @@ function makeOpenEyes({
       userAgent,
       getUserAgents,
       visualGridOptions,
-      startSessionBeforeRender,
     })
 
     const close = makeClose({
