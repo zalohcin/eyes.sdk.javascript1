@@ -76,6 +76,7 @@ const BROWSERS = {
       version: '18.17763',
       platformName: 'Windows 10',
       screenResolution: '1920x1080',
+      avoidProxy: true,
       ...SAUCE_CREDENTIALS,
     },
     url: SAUCE_SERVER_URL,
