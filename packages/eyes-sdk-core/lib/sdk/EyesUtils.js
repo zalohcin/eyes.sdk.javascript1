@@ -373,11 +373,11 @@ async function getElementXpath(logger, context, element) {
 async function markElements(_logger, context, elementsById) {
   const elements = Object.values(elementsById)
   const ids = Object.keys(elementsById)
-  await context.execute(snippets.markElements, {elements, ids})
+  await context.execute(snippets.markElements, [elements, ids])
 }
 
 async function cleanupElementIds(_logger, context, elements) {
-  await context.execute(snippets.cleanupElementIds, {elements})
+  await context.execute(snippets.cleanupElementIds, [elements])
 }
 
 /**

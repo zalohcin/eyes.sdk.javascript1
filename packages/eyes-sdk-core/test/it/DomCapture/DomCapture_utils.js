@@ -3,7 +3,8 @@
 const fs = require('fs')
 const path = require('path')
 const {By} = require('selenium-webdriver')
-const {DomCapture, PerformanceUtils} = require('../../..')
+const takeDomCapture = require('../../../lib/takeDomCapture')
+const {PerformanceUtils} = require('../../..')
 
 /**
  * @param {Logger} logger
@@ -18,7 +19,7 @@ async function captureDom(logger, driver, url, testName) {
 
     const timeStart = PerformanceUtils.start()
     const capabilities = await driver.getCapabilities()
-    const actualDomJsonString = await DomCapture.getFullWindowDom(logger, {
+    const actualDomJsonString = await takeDomCapture(logger, {
       browserName: capabilities.get('browserName'),
       browserVersion: capabilities.get('browserVersion'),
       execute: driver.executeScript.bind(driver),
