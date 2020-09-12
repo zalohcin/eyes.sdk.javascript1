@@ -62,9 +62,7 @@ describe('EyesVisualGrid', async () => {
   })
 
   it('should throw an error when dom snapshot returns an error', async () => {
-    driver.mockScript(MockDriver.DOM_SNAPSHOT_REGEX, () =>
-      JSON.stringify({status: 'ERROR', error: 'bla'}),
-    )
+    driver.mockScript('dom-snapshot', () => JSON.stringify({status: 'ERROR', error: 'bla'}))
     await eyes.open(driver, 'FakeApp', 'FakeTest')
     const err = await eyes.check().catch(err => err)
     expect(err.message).to.equal('Unable to process dom snapshot: bla')
@@ -72,7 +70,7 @@ describe('EyesVisualGrid', async () => {
 
   it('should throw an error on invalid dom snapshot JSON', async () => {
     const response = Array.from({length: 200}, (_x, i) => i).join('')
-    driver.mockScript(MockDriver.DOM_SNAPSHOT_REGEX, () => response)
+    driver.mockScript('dom-snapshot', () => response)
     await eyes.open(driver, 'FakeApp', 'FakeTest')
     const err = await eyes.check().catch(err => err)
     expect(err.message).to.contain(
