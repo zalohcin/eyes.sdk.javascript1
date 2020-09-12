@@ -46,6 +46,47 @@ describe('ServerConnector', () => {
     }
   })
 
+  it('retry startSession if it blocked by concurrency', async () => {
+    const serverConnector = getServerConnector()
+    let retries = 0
+    serverConnector._axios.defaults.adapter = async config => {
+      if (retries >= 3) {
+        return {
+          status: 200,
+          config,
+          data: {
+            id: 'id',
+            sessionId: 'sessionId',
+            batchId: 'batchId',
+            baselineId: 'baselineId',
+            isNew: true,
+            url: 'url',
+          },
+          headers: {},
+          request: {},
+        }
+      }
+      retries += 1
+      return {status: 503, config, data: {}, headers: {}, request: {}}
+    }
+    const runningSession = await serverConnector.startSession({
+      appIdOrName: 'appIdOrName',
+      scenarioIdOrName: 'scenarioIdOrName',
+      environment: {displaySize: {width: 1, height: 2}},
+      batchInfo: {id: 'batchId'},
+    })
+    assert.strictEqual(retries, 3)
+    assert.deepStrictEqual(runningSession.toJSON(), {
+      id: 'id',
+      sessionId: 'sessionId',
+      batchId: 'batchId',
+      baselineId: 'baselineId',
+      isNew: true,
+      renderingInfo: undefined,
+      url: 'url',
+    })
+  })
+
   // [trello] https://trello.com/c/qjmAw1Sc/160-storybook-receiving-an-inconsistent-typeerror
   it("doesn't throw exception on server failure", async () => {
     const {port, close} = await startFakeEyesServer({logger, hangUp: true})

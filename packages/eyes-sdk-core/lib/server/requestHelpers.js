@@ -104,6 +104,14 @@ async function handleRequestResponse({response, axios, logger}) {
     return startPollingRequest({url: response.headers.location, config, axios})
   }
 
+  if (isConcurrencyBlockedRequest(response)) {
+    config.repeat += 1
+    config.delay = TypeUtils.isArray(config.delayBeforePolling)
+      ? config.delayBeforePolling[Math.min(config.repeat, config.delayBeforePolling.length - 1)]
+      : config.delayBeforePolling
+    return axios.request(config)
+  }
+
   if (config.isPollingRequest) {
     if (response.status === HTTP_STATUS_CODES.OK) {
       config.repeat += 1
@@ -118,6 +126,9 @@ async function handleRequestResponse({response, axios, logger}) {
 }
 function isLongRequest(response) {
   return response.status === HTTP_STATUS_CODES.ACCEPTED && Boolean(response.headers.location)
+}
+function isConcurrencyBlockedRequest(response) {
+  return response.status === HTTP_STATUS_CODES.SERVICE_UNAVAILABLE
 }
 async function startPollingRequest({url, config, axios}) {
   const pollingConfig = {
