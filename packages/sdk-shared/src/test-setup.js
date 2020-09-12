@@ -73,7 +73,7 @@ const BROWSERS = {
     capabilities: {
       name: 'Edge 18',
       browserName: 'MicrosoftEdge',
-      browserVersion: '18',
+      version: '18.17763',
       platformName: 'Windows 10',
       screenResolution: '1920x1080',
       ...SAUCE_CREDENTIALS,
@@ -157,7 +157,13 @@ function Env(
 const batchName = process.env.APPLITOOLS_BATCH_NAME || 'JS Coverage Tests'
 const batch = typeof BatchInfo === 'undefined' ? batchName : new BatchInfo(batchName)
 
-function getEyes({isVisualGrid, isCssStitching, configuration, branchName = 'master'} = {}) {
+function getEyes({
+  isVisualGrid,
+  isCssStitching,
+  configuration,
+  branchName = 'master',
+  showLogs,
+} = {}) {
   const eyes = new Eyes(isVisualGrid ? new VisualGridRunner(10) : undefined)
   const conf = Object.assign(
     {
@@ -174,7 +180,7 @@ function getEyes({isVisualGrid, isCssStitching, configuration, branchName = 'mas
   )
   eyes.setConfiguration(new Configuration(conf))
 
-  if (process.env.APPLITOOLS_SHOW_LOGS) {
+  if (process.env.APPLITOOLS_SHOW_LOGS || showLogs) {
     eyes.setLogHandler(new ConsoleLogHandler(true))
   }
 

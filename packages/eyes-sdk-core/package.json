@@ -54,6 +54,7 @@
     "chai": "4.2.0",
     "chai-uuid": "1.0.6",
     "chromedriver": "^83.0.0",
+    "filenamify": "^4.1.0",
     "jsdoc": "3.6.4",
     "mocha": "^8.0.1",
     "ncp": "^2.0.0",
