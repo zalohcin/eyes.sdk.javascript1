@@ -1,7 +1,13 @@
 const png = require('png-async')
+const {inspect} = require('util')
+const snippets = require('@applitools/snippets')
 const {TypeUtils} = require('../../index')
 const FakeDomSnapshot = require('./FakeDomSnapshot')
-const snippets = require('@applitools/snippets')
+
+const WELL_KNOWN_SCRIPTS = {
+  'dom-snapshot': () => /^\/\* @applitools\/dom-snapshot@[\d.]+ \*\//,
+  'dom-capture': () => /^\/\* @applitools\/dom-capture@[\d.]+ \*\//,
+}
 
 const DEFAULT_STYLES = {
   'border-left-width': '0px',
@@ -29,6 +35,11 @@ class MockDriver {
     this._contexts = new Map()
     this._contexts.set(null, {
       document: {id: Symbol('documentId')},
+      state: {
+        get name() {
+          return null
+        },
+      },
     })
     this._contextId = null
     this.mockElement('html', {scrollPosition: {x: 0, y: 0}})
@@ -121,16 +132,13 @@ class MockDriver {
     this.mockScript(snippets.blurElement, () => {
       return null
     })
-    this.mockScript(/^\/\* @applitools\/dom-snapshot@[\d.]+ \*\//, () =>
-      FakeDomSnapshot.generateDomSnapshot(this),
-    )
-    this.mockScript(snippets.markElements, ({elements, ids}) => {
+    this.mockScript(snippets.markElements, ([elements, ids]) => {
       for (const [index, el] of elements.entries()) {
         el.attributes = el.attributes || []
         el.attributes.push({name: 'data-eyes-selector', value: ids[index]})
       }
     })
-    this.mockScript(snippets.cleanupElementIds, ({elements}) => {
+    this.mockScript(snippets.cleanupElementIds, ([elements]) => {
       for (const el of elements) {
         el.attributes.splice(
           el.attributes.findIndex(({name}) => name === 'data-eyes-selector'),
@@ -138,6 +146,7 @@ class MockDriver {
         )
       }
     })
+    this.mockScript('dom-snapshot', () => FakeDomSnapshot.generateDomSnapshot(this))
   }
   mockScript(scriptMatcher, resultGenerator) {
     this._scripts.set(scriptMatcher, resultGenerator)
@@ -166,6 +175,11 @@ class MockDriver {
         isCORS: state.isCORS,
         element,
         document: {id: Symbol('documentId' + Math.floor(Math.random() * 100))},
+        state: {
+          get name() {
+            return element.selector
+          },
+        },
       })
       element.contextId = contextId
       this.mockElement('html', {
@@ -190,16 +204,14 @@ class MockDriver {
   }
   async executeScript(script, args = []) {
     args = serialize(args)
-    let resultGenerator = this._scripts.get(script)
-    if (!resultGenerator) {
-      for (const [tester, result] of this._scripts.entries()) {
-        if (TypeUtils.isFunction(tester.test) && tester.test(script)) {
-          resultGenerator = result
-          break
-        }
-      }
+    let result = this._scripts.get(script)
+    if (!result) {
+      const name = Object.keys(WELL_KNOWN_SCRIPTS).find(name => WELL_KNOWN_SCRIPTS[name](script))
+      if (!name) return null
+      result = this._scripts.get(name)
     }
-    return TypeUtils.isFunction(resultGenerator) ? resultGenerator(...args) : resultGenerator
+    const {state} = this._contexts.get(this._contextId)
+    return TypeUtils.isFunction(result) ? result.call(state, ...args) : result
   }
   async findElement(selector) {
     const elements = this._elements.get(selector)
@@ -269,13 +281,13 @@ class MockDriver {
     })
   }
   toString() {
-    return 'MockDriver'
+    return '<MockDriver>'
   }
   toJSON() {
-    return 'MockDriver'
+    return '<MockDriver>'
   }
-  [require('util').inspect.custom]() {
-    return 'MockDriver'
+  [inspect.custom]() {
+    return '<MockDriver>'
   }
 }
 

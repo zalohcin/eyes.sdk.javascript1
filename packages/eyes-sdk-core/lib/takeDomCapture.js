@@ -1,6 +1,6 @@
 'use strict'
 
-const axios = require('axios')
+const Axios = require('axios')
 const {URL} = require('url')
 const {
   getCaptureDomAndPollScript,
@@ -20,13 +20,14 @@ const SCRIPT_RESPONSE_STATUS = {
   SUCCESS_CHUNKED: 'SUCCESS_CHUNKED',
 }
 
-const DOM_EXTRACTION_TIMEOUT = 5 * 60 * 1000
+const EXECUTION_TIMEOUT = 5 * 60 * 1000
 const DOM_CAPTURE_PULL_TIMEOUT = 200 // ms
 const IOS_MAX_CHUNK_SIZE = 100000 // chars in string
 
-async function takeDomCapture(logger, driver) {
+async function takeDomCapture(logger, driver, options = {}) {
   ArgumentGuard.notNull(logger, 'logger')
   ArgumentGuard.notNull(driver, 'driver')
+  const {executionTimeout = EXECUTION_TIMEOUT, axios = Axios.create()} = options
 
   const {browserName = '', browserVersion = 0, platformName = ''} = driver
   const isIE = browserName === 'internet explorer'
@@ -63,42 +64,38 @@ async function takeDomCapture(logger, driver) {
     )
 
     for (const {href, css} of cssResources) {
-      dom = dom.replace(`"${tokens.cssStartToken}${href}${tokens.cssEndToken}"`, css)
+      dom = dom.replace(`${tokens.cssStartToken}${href}${tokens.cssEndToken}`, css)
     }
 
     const framePaths = raws.slice(cssEndIndex + 1, frameEndIndex)
 
     for (const xpaths of framePaths) {
-      if (xpaths) {
-        const references = xpaths.split(',').reduce((parent, reference) => {
-          return {reference, parent}
-        }, null)
-        let contextDom
-        try {
-          const frame = await context.context(references)
-          contextDom = await captureContextDom(frame)
-        } catch (ignored) {
-          logger.log('Switching to frame failed')
-          contextDom = {}
-        }
-        dom = dom.replace(
-          `"${tokens.iframeStartToken}${xpaths}${tokens.iframeEndToken}"`,
-          contextDom,
-        )
+      if (!xpaths) continue
+      const references = xpaths.split(',').reduce((parent, reference) => {
+        return {reference, parent}
+      }, null)
+      let contextDom
+      try {
+        const frame = await context.context(references)
+        contextDom = await captureContextDom(frame)
+      } catch (ignored) {
+        logger.log('Switching to frame failed')
+        contextDom = {}
       }
+      dom = dom.replace(`${tokens.iframeStartToken}${xpaths}${tokens.iframeEndToken}`, contextDom)
     }
 
     return dom
   }
 
   async function captureDom(context) {
-    let isDomScriptTimedOut = false
-    const domScriptTimer = setTimeout(() => (isDomScriptTimedOut = true), DOM_EXTRACTION_TIMEOUT)
+    let isExecutionTimedOut = false
+    const executionTimer = setTimeout(() => (isExecutionTimedOut = true), executionTimeout)
     const result = {value: null, error: null}
     try {
       logger.verbose('executing dom capture')
       let response = JSON.parse(await context.execute(scripts.capture))
-      while (!isDomScriptTimedOut) {
+      while (!isExecutionTimedOut) {
         if (response.status === SCRIPT_RESPONSE_STATUS.SUCCESS_CHUNKED) {
           if (!result.value) result.value = response.value
           else result.value += response.value
@@ -119,7 +116,7 @@ async function takeDomCapture(logger, driver) {
         response = JSON.parse(await context.execute(scripts.poll, [{maxChunkSize}]))
       }
     } finally {
-      clearTimeout(domScriptTimer)
+      clearTimeout(executionTimer)
     }
 
     if (result.error) {
@@ -129,7 +126,7 @@ async function takeDomCapture(logger, driver) {
       )
     }
 
-    if (isDomScriptTimedOut) {
+    if (isExecutionTimedOut) {
       throw new EyesError('dom-capture Timed out')
     }
 
@@ -153,6 +150,7 @@ async function takeDomCapture(logger, driver) {
       const escapedCss = GeneralUtils.cleanStringForJSON(css)
       return {href: absHref, css: escapedCss}
     } catch (err) {
+      console.log(err)
       logger.verbose(err.toString())
       retriesCount -= 1
       if (retriesCount > 0) {

@@ -406,8 +406,8 @@ async function getContextInfo(_logger, context) {
  * @return {Promise<Frame>} frame
  */
 async function getChildFramesInfo(_logger, context) {
-  const [element, isCORS, src] = await context.execute(snippets.getChildFramesInfo)
-  return {element, isCORS, src}
+  const info = await context.execute(snippets.getChildFramesInfo)
+  return info.map(([element, isCORS, src]) => ({element, isCORS, src}))
 }
 /**
  * Ensure provided region is visible as much as possible

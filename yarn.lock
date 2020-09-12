@@ -2,13 +2,6 @@
 # yarn lockfile v1
 
 
-"@applitools/dom-capture@7.2.0":
-  version "7.2.0"
-  resolved "https://registry.yarnpkg.com/@applitools/dom-capture/-/dom-capture-7.2.0.tgz#97c911327e900aaea74a6ab7e9761f74a8f891b5"
-  integrity sha512-9Z7Cbf5+9LdAUE7EdZebgrqO5EJE/h1Z2KHEGu1YWjQXtYjd8QXebNdnULC5yki43pWNrEJl0eqhk94q/l7bgw==
-  dependencies:
-    "@applitools/functional-commons" "^1.5.4"
-
 "@applitools/dom-capture@7.2.6":
   version "7.2.6"
   resolved "https://registry.yarnpkg.com/@applitools/dom-capture/-/dom-capture-7.2.6.tgz#351e65db255cbb7524f98820836c4aae6a44bc82"
@@ -130,7 +123,7 @@
   resolved "https://registry.yarnpkg.com/@applitools/functional-commons/-/functional-commons-1.5.4.tgz#d32f2bbc6a2598872b3a385d054fcf8e40c30a40"
   integrity sha512-R+p4fliS8j6YlZNSLgsx6cBpjlmZaec67v9PpophPW5vXnOJFVcELnoeO21AVG1kbHu0FeAk025xr99EUTppFw==
 
-"@applitools/functional-commons@1.6.0", "@applitools/functional-commons@^1.5.2", "@applitools/functional-commons@^1.5.4":
+"@applitools/functional-commons@1.6.0", "@applitools/functional-commons@^1.5.2":
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/@applitools/functional-commons/-/functional-commons-1.6.0.tgz#ea850c4f7832fcb6396b79b35faccac69f6482a9"
   integrity sha512-fwiF0CbeYHDEOTD/NKaFgaI8LvRcGYG2GaJJiRwcedKko16sQ8F3TK5wXfj2Ytjf+8gjwHwsEEX550z3yvDWxA==
