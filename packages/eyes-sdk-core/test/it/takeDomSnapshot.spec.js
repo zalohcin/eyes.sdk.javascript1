@@ -1,26 +1,31 @@
 const takeDomSnapshot = require('../../lib/utils/takeDomSnapshot')
 const testServer = require('../../../sdk-shared/src/run-test-server')
 const {join} = require('path')
-const {Builder, Capabilities, By} = require('selenium-webdriver')
 const {expect} = require('chai')
 const preProcessUrl = require('../../../sdk-shared/coverage-tests/util/adjust-url-to-docker')
+const EyesDriver = require('../../lib/sdk/EyesDriver')
+const FakeSpecDriver = require('../utils/FakeSpecDriver')
+const MockDriver = require('../utils/MockDriver')
+const Logger = require('../../lib/logging/Logger')
+
+const MockEyesDriver = EyesDriver.specialize(FakeSpecDriver)
+const logger = new Logger(!!process.env.APPLITOOLS_SHOW_LOGS)
 
 describe('takeDomSnapshot', () => {
   let driver, eyesDriver, server1, server2
   before(async () => {
     server1 = await testServer({port: 7373, staticPath: join(__dirname, '../fixtures')})
     server2 = await testServer({port: 7374, staticPath: join(__dirname, '../fixtures')})
-    driver = new Builder()
-      .withCapabilities(Capabilities.chrome())
-      .usingServer(process.env.CVG_TESTS_REMOTE)
-      .build()
 
-    eyesDriver = {
-      execute: driver.executeScript.bind(driver),
-      element: ({type, selector}) => driver.findElement(By[type](selector)),
-      switchToChildContext: element => driver.switchTo().frame(element),
-      switchToParentContext: () => driver.switchTo().parentFrame(),
-    }
+    driver = new MockDriver()
+
+    // mock state
+    // driver.mockElement
+    // driver.mockElements
+    // driver.mockScript
+
+    eyesDriver = new MockEyesDriver(logger, driver)
+
     const url = preProcessUrl('http://localhost:7373/frames/frames_cors.html')
     await driver.get(url)
   })
