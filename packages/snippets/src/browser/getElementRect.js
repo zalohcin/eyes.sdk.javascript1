@@ -2,7 +2,7 @@ const findFixedAncestor = require('./getElementFixedAncestor')
 const isElementScrollable = require('./isElementScrollable')
 const getElementInnerOffset = require('./getElementInnerOffset')
 
-module.exports = function getElementRect({element, isClient = false} = {}) {
+module.exports = function getElementRect([element, isClient = false] = []) {
   const elementBoundingClientRect = element.getBoundingClientRect()
   const rect = {
     x: elementBoundingClientRect.left,
@@ -17,11 +17,11 @@ module.exports = function getElementRect({element, isClient = false} = {}) {
     rect.width = element.clientWidth
     rect.height = element.clientHeight
   }
-  const fixedAncestor = findFixedAncestor({element})
+  const fixedAncestor = findFixedAncestor([element])
   if (fixedAncestor) {
-    const isFixedAncestorScrollable = isElementScrollable({element: fixedAncestor})
+    const isFixedAncestorScrollable = isElementScrollable([fixedAncestor])
     if (fixedAncestor !== element && isFixedAncestorScrollable) {
-      const fixedAncestorInnerOffset = getElementInnerOffset({element: fixedAncestor})
+      const fixedAncestorInnerOffset = getElementInnerOffset([fixedAncestor])
       rect.x += fixedAncestorInnerOffset.x
       rect.y += fixedAncestorInnerOffset.y
     }

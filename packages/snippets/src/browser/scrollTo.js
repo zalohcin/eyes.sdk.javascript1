@@ -1,4 +1,5 @@
-function scrollTo({element = document.documentElement, offset} = {}) {
+function scrollTo([element, offset] = []) {
+  element = element || document.documentElement
   if (element.scrollTo) {
     element.scrollTo(offset.x, offset.y)
   } else {

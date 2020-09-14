@@ -65,7 +65,9 @@ function isStaleElementError(error) {
   return errOrResult instanceof Error && errOrResult.name === 'stale element reference'
 }
 async function isEqualElements(browser, element1, element2) {
-  if (browser.isDevTools) {
+  // NOTE: wdio wraps puppeteer and generate ids by itself just incrementing a counter
+  // NOTE: appium for ios could return different ids for same element
+  if (browser.isDevTools || browser.isIOS) {
     return browser
       .execute((element1, element2) => element1 === element2, element1, element2)
       .catch(() => false)

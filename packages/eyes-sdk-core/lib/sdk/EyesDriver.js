@@ -227,7 +227,7 @@ class EyesDriver {
       })
     }
     const framesInfo = await EyesUtils.getChildFramesInfo(this._logger, this)
-    const contextDocument = contextInfo.contentDocument
+    const contextDocument = contextInfo.documentElement
     for (const frameInfo of framesInfo) {
       if (frameInfo.isCORS !== contextInfo.isCORS) continue
       await this.spec.childContext(this._driver, frameInfo.element)

@@ -6,7 +6,9 @@
   "scripts": {
     "lint": "eslint '**/*.js'",
     "test": "mocha --no-timeouts --require test/util/hook.js ./test/*.spec.js",
-    "test:chrome": "mocha --no-timeouts --parallel --jobs 15 ./test/*.spec.js",
+    "test:chrome": "mocha --no-timeouts --require test/util/hook.js --grep chrome ./test/*.spec.js",
+    "test:ie": "mocha --no-timeouts --require test/util/hook.js --grep 'internet explorer' ./test/*.spec.js",
+    "test:ios": "mocha --no-timeouts --require test/util/hook.js --grep 'ios safari' ./test/*.spec.js",
     "build": "node ./rollup/cli bundle --format json --format snippet",
     "build:watch": "node ./rollup/cli watch --format json --format snippet",
     "preversion": "bongo preversion && yarn build && yarn test",
