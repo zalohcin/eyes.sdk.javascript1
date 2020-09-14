@@ -19,7 +19,13 @@ class EyesWrapper extends EyesBase {
   }
 
   async open({appName, testName, viewportSize, skipStartingSession}) {
-    await super.openBase(appName, testName, undefined, undefined, skipStartingSession)
+    await EyesBase.prototype.openBase.call(
+      appName,
+      testName,
+      undefined,
+      undefined,
+      skipStartingSession,
+    )
 
     if (viewportSize) {
       this.setViewportSize(viewportSize)
@@ -180,7 +186,7 @@ class EyesWrapper extends EyesBase {
     if (proxy.uri !== undefined) {
       proxy.url = proxy.uri // backward compatible
     }
-    super.setProxy(proxy)
+    EyesBase.prototype.setProxy.call(proxy)
   }
 
   setInferredEnvironment(value) {

@@ -308,7 +308,7 @@ class EyesClassic extends EyesCore {
       )
 
       const source = await this._driver.getUrl()
-      return super.checkWindowBase(
+      return EyesCore.prototype.checkWindowBase.call(
         new RegionProvider(this._regionToCheck),
         checkSettings.getName(),
         false,
@@ -351,7 +351,7 @@ class EyesClassic extends EyesCore {
     this._logger.verbose('Region to check: ' + this._regionToCheck)
     try {
       const source = await this._driver.getUrl()
-      return await super.checkWindowBase(
+      return await EyesCore.prototype.checkWindowBase.call(
         new NullRegionProvider(),
         checkSettings.getName(),
         false,
@@ -382,7 +382,7 @@ class EyesClassic extends EyesCore {
       )
 
       const source = await this._driver.getUrl()
-      return super.checkWindowBase(
+      return EyesCore.prototype.checkWindowBase.call(
         new RegionProvider(this._regionToCheck),
         checkSettings.getName(),
         false,
@@ -447,7 +447,7 @@ class EyesClassic extends EyesCore {
 
     try {
       const source = await this._driver.getUrl()
-      return await super.checkWindowBase(
+      return await EyesCore.prototype.checkWindowBase.call(
         new NullRegionProvider(),
         checkSettings.getName(),
         false,
@@ -514,7 +514,7 @@ class EyesClassic extends EyesCore {
 
     try {
       const source = await this._driver.getUrl()
-      return await super.checkWindowBase(
+      return await EyesCore.prototype.checkWindowBase.call(
         new NullRegionProvider(),
         checkSettings.getName(),
         false,
@@ -674,8 +674,8 @@ class EyesClassic extends EyesCore {
    */
   async close(throwEx = true) {
     let isErrorCaught = false
-    this._closePromise = super
-      .close(true)
+    this._closePromise = EyesCore.prototype.close
+      .call(true)
       .catch(err => {
         isErrorCaught = true
         return err
@@ -708,7 +708,7 @@ class EyesClassic extends EyesCore {
    * @override
    */
   async getAppEnvironment() {
-    const appEnv = await super.getAppEnvironment()
+    const appEnv = await EyesCore.prototype.getAppEnvironment.call()
 
     if (!appEnv._deviceInfo && this._driver.deviceName) {
       appEnv.setDeviceInfo(this._driver.deviceName)
@@ -742,7 +742,7 @@ class EyesClassic extends EyesCore {
    * @return {boolean}
    */
   getSendDom() {
-    return !this._driver.isNative && super.getSendDom()
+    return !this._driver.isNative && EyesCore.prototype.getSendDom.call()
   }
   /**
    * @private
