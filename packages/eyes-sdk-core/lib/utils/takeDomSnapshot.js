@@ -77,8 +77,8 @@ async function takeDomSnapshot({driver, startTime = Date.now(), browser, disable
     return _takeDomSnapshot({driver, startTime})
   }
 
-  const result = await _takeDomSnapshot()
-  return deserializeDomSnapshotResult(result)
+  const snapshot = await _takeDomSnapshot()
+  return deserializeDomSnapshotResult(snapshot)
 }
 
 module.exports = takeDomSnapshot
