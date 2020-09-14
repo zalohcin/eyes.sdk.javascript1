@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+
+## 2.0.0 - 2020/9/14
+
 - Breaking change: changed snippets argument format from object to array
 - Breaking change: changed snippets return value format from object to array
 - add ios tests
