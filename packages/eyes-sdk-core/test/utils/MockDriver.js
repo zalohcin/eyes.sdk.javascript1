@@ -5,8 +5,8 @@ const {TypeUtils} = require('../../index')
 const FakeDomSnapshot = require('./FakeDomSnapshot')
 
 const WELL_KNOWN_SCRIPTS = {
-  'dom-snapshot': () => /^\/\* @applitools\/dom-snapshot@[\d.]+ \*\//,
-  'dom-capture': () => /^\/\* @applitools\/dom-capture@[\d.]+ \*\//,
+  'dom-snapshot': script => /^\/\* @applitools\/dom-snapshot@[\d.]+ \*\//.test(script),
+  'dom-capture': script => /^\/\* @applitools\/dom-capture@[\d.]+ \*\//.test(script),
 }
 
 const DEFAULT_STYLES = {
@@ -207,6 +207,7 @@ class MockDriver {
     let result = this._scripts.get(script)
     if (!result) {
       const name = Object.keys(WELL_KNOWN_SCRIPTS).find(name => WELL_KNOWN_SCRIPTS[name](script))
+      console.log
       if (!name) return null
       result = this._scripts.get(name)
     }

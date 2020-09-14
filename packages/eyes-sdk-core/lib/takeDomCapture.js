@@ -7,7 +7,7 @@ const {
   getPollScript,
   getCaptureDomAndPollForIE,
   getPollForIE,
-} = require('/Users/ep/Documents/applitools/dom-scripts/packages/dom-capture/index.js')
+} = require('@applitools/dom-capture')
 const ArgumentGuard = require('./utils/ArgumentGuard')
 const GeneralUtils = require('./utils/GeneralUtils')
 const PerformanceUtils = require('./utils/PerformanceUtils')

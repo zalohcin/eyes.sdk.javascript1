@@ -61,7 +61,7 @@ describe('takeDomCapture', () => {
   })
 
   it('works', async () => {
-    mock.mockScript('dom-snapshot', () => {
+    mock.mockScript('dom-capture', () => {
       return JSON.stringify({status: 'SUCCESS', value: createDomCapture('dom capture')})
     })
 
@@ -71,7 +71,7 @@ describe('takeDomCapture', () => {
   })
 
   it('works with polling', async () => {
-    mock.mockScript('dom-snapshot', function() {
+    mock.mockScript('dom-capture', function() {
       this.poll = this.poll || 0
       if (this.poll === 0) {
         this.domCapture = createDomCapture('dom capture')
@@ -90,7 +90,7 @@ describe('takeDomCapture', () => {
   })
 
   it('handle frames', async () => {
-    mock.mockScript('dom-snapshot', function() {
+    mock.mockScript('dom-capture', function() {
       let value
       if (this.name === null) {
         value = createDomCapture(
@@ -115,7 +115,7 @@ describe('takeDomCapture', () => {
   })
 
   it('handle css', async () => {
-    mock.mockScript('dom-snapshot', () => {
+    mock.mockScript('dom-capture', () => {
       return JSON.stringify({
         status: 'SUCCESS',
         value: createDomCapture('dom capture (#####http://css.com/main.css#####)'),
@@ -132,7 +132,7 @@ describe('takeDomCapture', () => {
   })
 
   it('handles error response', async () => {
-    mock.mockScript('dom-snapshot', () => {
+    mock.mockScript('dom-capture', () => {
       return JSON.stringify({status: 'ERROR', error: 'Oops! Something went wrong!'})
     })
 
@@ -143,7 +143,7 @@ describe('takeDomCapture', () => {
   })
 
   it('stops execution if timeout is reached', async () => {
-    mock.mockScript('dom-snapshot', () => {
+    mock.mockScript('dom-capture', () => {
       return JSON.stringify({status: 'WIP'})
     })
 
