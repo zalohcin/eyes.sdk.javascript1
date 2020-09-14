@@ -35,6 +35,7 @@ async function takeDomSnapshot({driver, startTime = Date.now(), browser, disable
         snapshot.frames.push(crossFrameSnapshot)
       }
     }
+    delete snapshot.crossFramesXPaths
   }
 
   async function takeFrameSnapshot(driver, xpath) {
@@ -77,7 +78,6 @@ async function takeDomSnapshot({driver, startTime = Date.now(), browser, disable
   }
 
   const result = await _takeDomSnapshot()
-  delete result.crossFramesXPaths
   return deserializeDomSnapshotResult(result)
 }
 
