@@ -1,5 +1,5 @@
 {
-  "name": "eyes-testcafe",
+  "name": "@applitools/eyes-testcafe",
   "version": "2.1.0",
   "description": "Applitools Eyes SDK for TestCafe",
   "main": "index.js",
