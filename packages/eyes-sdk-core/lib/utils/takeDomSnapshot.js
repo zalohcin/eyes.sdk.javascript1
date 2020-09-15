@@ -27,6 +27,11 @@ async function getScriptForIE({disableBrowserFetching}) {
 }
 
 async function takeDomSnapshot({driver, startTime = Date.now(), browser, disableBrowserFetching}) {
+  const processPageAndPollScript =
+    browser === 'IE'
+      ? await getScriptForIE({disableBrowserFetching})
+      : await getScript({disableBrowserFetching})
+
   async function getCrossOriginFrames(driver, snapshot) {
     const {crossFramesXPaths} = snapshot
     if (crossFramesXPaths.length > 0) {
@@ -47,11 +52,6 @@ async function takeDomSnapshot({driver, startTime = Date.now(), browser, disable
   }
 
   async function _takeDomSnapshot() {
-    const processPageAndPollScript =
-      browser === 'IE'
-        ? await getScriptForIE({disableBrowserFetching})
-        : await getScript({disableBrowserFetching})
-
     const resultAsString = await driver.execute(processPageAndPollScript)
     let scriptResponse
     try {
