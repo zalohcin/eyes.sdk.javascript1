@@ -239,9 +239,15 @@ const browserOptionsNames = {
 }
 async function build(env) {
   const {testSetup} = require('@applitools/sdk-shared')
-  const {browser = '', capabilities, headless, url, args = [], logLevel = 'silent'} = testSetup.Env(
-    env,
-  )
+  const {
+    browser = '',
+    capabilities,
+    headless,
+    url,
+    args = [],
+    logLevel = 'silent',
+  } = testSetup.Env({...env, legacy: true})
+
   const desiredCapabilities = {browserName: browser, ...capabilities}
   const browserOptionsName = browserOptionsNames[browser]
   if (browserOptionsName) {
