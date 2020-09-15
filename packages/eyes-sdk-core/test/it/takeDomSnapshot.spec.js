@@ -9,7 +9,7 @@ const logger = new Logger(!!process.env.APPLITOOLS_SHOW_LOGS)
 describe('takeDomSnapshot', () => {
   let driver, eyesDriver, topPageSnapshot, innerFrameSnapshot, expectedSnapshot
 
-  const generateSnapshotObject = xpath => {
+  const generateSnapshotObject = (xpath, status = 'SUCCESS', state = {}) => {
     const crossFrameSelector = xpath ? [xpath] : []
     const value = {
       cdt: [],
@@ -21,7 +21,7 @@ describe('takeDomSnapshot', () => {
       crossFramesXPaths: crossFrameSelector,
       scriptVersion: '4.0.6',
     }
-    return JSON.stringify({status: 'SUCCESS', value})
+    return JSON.stringify({status, value, ...state})
   }
 
   beforeEach(async () => {
@@ -42,6 +42,24 @@ describe('takeDomSnapshot', () => {
     delete expectedSnapshot.blobs
     delete expectedSnapshot.frames[0].crossFramesXPaths
     delete expectedSnapshot.frames[0].blobs
+  })
+
+  it('should throw an error if snapshot failed', async () => {
+    try {
+      topPageSnapshot = generateSnapshotObject(null, 'ERROR', {error: 'some error'})
+      await takeDomSnapshot({driver: eyesDriver})
+    } catch (error) {
+      expect(error.message).to.equal('Unable to process dom snapshot: some error')
+    }
+  })
+
+  it('should throw an error if timeout is reached', async () => {
+    try {
+      topPageSnapshot = generateSnapshotObject(null)
+      await takeDomSnapshot({driver: eyesDriver, startTime: 1600150463048})
+    } catch (error) {
+      expect(error.message).to.equal('Timeout is reached.')
+    }
   })
 
   it('should take a dom snapshot', async () => {
