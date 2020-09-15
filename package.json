@@ -27,8 +27,7 @@
       "packages/side-eyes",
       "packages/sdk-shared",
       "packages/snippets",
-      "packages/eyes-playwright",
-      "packages/eyes-testcafe"
+      "packages/eyes-playwright"
     ],
     "nohoist": [
       "**/@wdio/*",
