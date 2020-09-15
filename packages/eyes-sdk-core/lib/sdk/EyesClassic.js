@@ -674,8 +674,8 @@ class EyesClassic extends EyesCore {
    */
   async close(throwEx = true) {
     let isErrorCaught = false
-    this._closePromise = super.close
-      .call(true)
+    this._closePromise = super
+      .close(true)
       .catch(err => {
         isErrorCaught = true
         return err
