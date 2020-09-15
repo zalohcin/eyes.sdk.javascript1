@@ -17,7 +17,7 @@ function generateDockerComposeConfig({saveToDisk, platform = process.platform} =
       },
     },
   }
-  const result = JSON.stringify(config)
+  const result = JSON.stringify(config, null, 2)
   if (saveToDisk) {
     fs.writeFileSync(path.resolve(process.cwd(), 'docker-compose.yaml'), result)
   }

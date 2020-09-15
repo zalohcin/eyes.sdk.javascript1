@@ -56,6 +56,16 @@ const DEVICES = {
     url: SAUCE_SERVER_URL,
     sauce: true,
   },
+  'iPhone XS': {
+    capabilities: {
+      platformName: 'iOS',
+      platformVersion: '13.0',
+      deviceName: 'iPhone XS Simulator',
+      ...SAUCE_CREDENTIALS,
+    },
+    url: SAUCE_SERVER_URL,
+    sauce: true,
+  },
 }
 
 const BROWSERS = {
@@ -66,6 +76,7 @@ const BROWSERS = {
       version: '18.17763',
       platformName: 'Windows 10',
       screenResolution: '1920x1080',
+      avoidProxy: true,
       ...SAUCE_CREDENTIALS,
     },
     url: SAUCE_SERVER_URL,

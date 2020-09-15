@@ -218,19 +218,20 @@ const browserOptionsNames = {
 }
 async function build(env) {
   const {testSetup} = require('@applitools/sdk-shared')
-  const {browser, capabilities, headless, url, sauce, args = []} = testSetup.Env(env)
+  const {browser, capabilities, headless, url, sauce, attach, args = []} = testSetup.Env(env)
   const desiredCapabilities = {browserName: browser, ...capabilities}
   if (!sauce) {
     const browserOptionsName = browserOptionsNames[browser]
     if (browserOptionsName) {
       desiredCapabilities[browserOptionsName] = {
         args: headless ? args.concat('headless') : args,
+        debuggerAddress: attach === true ? '127.0.0.1:9222' : attach,
       }
     }
   }
   return new Builder()
     .withCapabilities(desiredCapabilities)
-    .usingServer(url.href)
+    .usingServer(!attach ? url.href : null)
     .build()
 }
 async function cleanup(browser) {

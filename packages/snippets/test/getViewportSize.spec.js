@@ -1,4 +1,3 @@
-const playwright = require('playwright')
 const assert = require('assert')
 const {getViewportSize} = require('../dist/index')
 
@@ -6,54 +5,43 @@ describe('getViewportSize', () => {
   const url = 'https://applitools.github.io/demo/TestPages/SnippetsTestPage/'
 
   describe('chrome', () => {
-    let browser, page
-
-    before(async () => {
-      browser = await playwright.chromium.launch()
-      const context = await browser.newContext()
-      page = await context.newPage()
-    })
-
-    after(async () => {
-      await browser.close()
-    })
-
-    it('return viewport size', async () => {
-      await page.goto(url)
-      const expectedViewportSize = {width: 500, height: 500}
-      await page.setViewportSize(expectedViewportSize)
-      const viewportSize = await page.evaluate(getViewportSize)
-      assert.deepStrictEqual(viewportSize, expectedViewportSize)
-    })
-  })
-
-  describe('ie', () => {
-    let driver
+    let page
 
     before(async function() {
-      driver = global.ieDriver
-      if (!driver) {
+      page = await global.getDriver('chrome')
+      if (!page) {
         this.skip()
       }
     })
 
     it('return viewport size', async () => {
-      await driver.url(url)
-      const expectedViewportSize = {width: 500, height: 500}
-      await driver.setWindowSize(expectedViewportSize.width, expectedViewportSize.height)
-      const browserWrapperSize = await driver.execute(function() {
-        return {
-          width: window.outerWidth - window.innerWidth,
-          height: window.outerHeight - window.innerHeight,
-        }
-      })
-      await driver.setWindowSize(
-        expectedViewportSize.width + browserWrapperSize.width,
-        expectedViewportSize.height + browserWrapperSize.height,
-      )
-
-      const viewportSize = await driver.execute(getViewportSize)
-      assert.deepStrictEqual(viewportSize, expectedViewportSize)
+      await page.goto(url)
+      const viewportSize = await page.evaluate(getViewportSize)
+      assert.deepStrictEqual(viewportSize, {width: 800, height: 600})
     })
   })
+
+  for (const name of ['internet explorer', 'ios safari']) {
+    const expectedViewportSizes = {
+      'internet explorer': {width: 800, height: 600},
+      'ios safari': {width: 375, height: 635},
+    }
+
+    describe(name, () => {
+      let driver
+
+      before(async function() {
+        driver = await global.getDriver(name)
+        if (!driver) {
+          this.skip()
+        }
+      })
+
+      it('return viewport size', async () => {
+        await driver.url(url)
+        const viewportSize = await driver.execute(getViewportSize)
+        assert.deepStrictEqual(viewportSize, expectedViewportSizes[name])
+      })
+    })
+  }
 })
