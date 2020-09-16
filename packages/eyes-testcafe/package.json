@@ -19,7 +19,10 @@
     "coverage:prod": "coverage-tests create-tests && yarn test:coverage && coverage-tests process-report --send-report prod",
     "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-testcafe' APPLITOOLS_BATCH_ID=$(uuidgen) testcafe chrome:headless test/coverage/generic --reporter spec,xunit:coverage-test-report.xml",
     "test:coverage:full": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-testcafe' APPLITOOLS_BATCH_ID=$(uuidgen) testcafe chrome test/coverage/generic --reporter spec,xunit:coverage-test-report.xml",
-    "test:coverage:debug": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-testcafe' APPLITOOLS_BATCH_ID=$(uuidgen) testcafe chrome:headless test/coverage/generic --reporter spec,xunit:coverage-test-report.xml --inspect-brk"
+    "test:coverage:debug": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-testcafe' APPLITOOLS_BATCH_ID=$(uuidgen) testcafe chrome:headless test/coverage/generic --reporter spec,xunit:coverage-test-report.xml --inspect-brk",
+    "test:coverage:docker": "docker run --env APPLITOOLS_SHOW_LOGS=true --env APPLITOOLS_API_KEY=\"$APPLITOOLS_API_KEY_SDK\" --env APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-testcafe' --env APPLITOOLS_BATCH_ID=$(uuidgen) -v $(pwd):/tests -w /tests -it testcafe/testcafe chromium test/coverage/generic",
+    "test:coverage:firefox": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-testcafe' APPLITOOLS_BATCH_ID=$(uuidgen) testcafe firefox:headless test/coverage/generic --reporter spec,xunit:coverage-test-report.xml",
+    "test:coverage:firefox:full": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-testcafe' APPLITOOLS_BATCH_ID=$(uuidgen) testcafe firefox test/coverage/generic --reporter spec,xunit:coverage-test-report.xml"
   },
   "keywords": [
     "eyes-testcafe",
@@ -40,7 +43,7 @@
   },
   "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "12.2.3",
+    "@applitools/eyes-sdk-core": "file:../eyes-sdk-core",
     "@applitools/visual-grid-client": "15.0.3",
     "rimraf": "^3.0.2"
   },
@@ -51,10 +54,11 @@
     "@applitools/sdk-coverage-tests": "^1.0.7",
     "@applitools/sdk-fake-eyes-server": "^2.0.0",
     "@applitools/sdk-release-kit": "0.2.2",
-    "@applitools/sdk-shared": "0.1.0",
+    "@applitools/sdk-shared": "0.1.1",
     "eslint": "^7.2.0",
     "testcafe": "^1.9.0",
-    "mocha": "^8.0.1"
+    "mocha": "^8.0.1",
+    "testcafe-browser-provider-saucelabs": "^1.8.0"
   },
   "engines": {
     "node": ">=8.9.0"
