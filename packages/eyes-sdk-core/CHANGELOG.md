@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix `takeDomCapture`
 
 ## 12.2.4 - 2020/9/15
 
