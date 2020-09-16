@@ -3,6 +3,29 @@
 ## Unreleased
 
 
+## 1.8.1 - 2020/9/15
+
+- updated to @applitools/eyes-sdk-core@12.2.4 (from 12.2.3)
+- updated to @applitools/visual-grid-client@15.0.4 (from 15.0.3)
+
+## 1.8.0 - 2020/9/3
+
+- updated to @applitools/eyes-sdk-core@12.2.3 (from 12.2.0)
+- updated to @applitools/visual-grid-client@15.0.3 (from 15.0.0)
+
+## 1.7.0 - 2020/8/30
+
+- added spec for extracting device name ([Trello](https://trello.com/c/qyf1baqT/464-wdio5-mobile-web-device-name-not-reported-on-dashboard))
+- updated to @applitools/eyes-sdk-core@12.2.0 (from 12.1.2)
+- updated to @applitools/visual-grid-client@15.0.0 (from 14.7.3)
+
+## 1.6.0 - 2020/8/10
+
+- updated to @applitools/eyes-sdk-core@12.1.1 (from 11.5.0)
+- updated to @applitools/visual-grid-client@14.7.2 (from 14.6.0)
+- updated to @applitools/eyes-sdk-core@12.1.2 (from 12.1.1)
+- updated to @applitools/visual-grid-client@14.7.3 (from 14.7.2)
+
 ## 1.5.1 - 2020/7/26
 
 - updated to @applitools/eyes-sdk-core@11.5.0 (from 11.4.1)

@@ -1,3 +1,4 @@
+'use strict'
 const ArgumentGuard = require('../utils/ArgumentGuard')
 const TypeUtils = require('../utils/TypeUtils')
 
@@ -27,9 +28,8 @@ class Location {
     ArgumentGuard.isNumber(x, 'x')
     ArgumentGuard.isNumber(y, 'y')
 
-    // TODO: remove call to Math.ceil
-    this._x = Math.ceil(x)
-    this._y = Math.ceil(y)
+    this._x = x
+    this._y = y
   }
 
   static get __Location() {
@@ -101,7 +101,7 @@ class Location {
    * @return {Location} - A scaled copy of the current location.
    */
   scale(scaleRatio) {
-    return new Location({x: Math.ceil(this._x * scaleRatio), y: Math.ceil(this._y * scaleRatio)})
+    return new Location({x: this._x * scaleRatio, y: this._y * scaleRatio})
   }
 
   /**

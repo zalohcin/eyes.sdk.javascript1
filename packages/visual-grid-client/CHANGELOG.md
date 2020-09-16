@@ -3,6 +3,64 @@
 ## Unreleased
 
 
+## 15.0.4 - 2020/9/15
+
+- updated to @applitools/eyes-sdk-core@12.2.4 (from 12.2.3)
+
+## 15.0.3 - 2020/9/2
+
+- updated to @applitools/eyes-sdk-core@12.2.3 (from 12.2.2)
+
+## 15.0.2 - 2020/9/1
+
+- updated to @applitools/eyes-sdk-core@12.2.2 (from 12.2.1)
+
+## 15.0.1 - 2020/9/1
+
+- updated to @applitools/eyes-sdk-core@12.2.1 (from 12.2.0)
+
+## 15.0.0 - 2020/8/30
+
+- Breaking change: added support for multiple dom snapshots for `checkWindow`, `testWindow` and `takeScreenshot`
+- removed @applitools/dom-snapshot from dependencies
+- move `takeDomSnapshot` to `eyes-sdk-core`
+- updated to @applitools/eyes-sdk-core@12.2.0 (from 12.1.4)
+
+## 14.7.5 - 2020/8/13
+
+- updated to @applitools/eyes-sdk-core@12.1.4 (from 12.1.3)
+
+## 14.7.4 - 2020/8/12
+
+- updated to @applitools/eyes-sdk-core@12.1.3 (from 12.1.2)
+
+## 14.7.3 - 2020/8/10
+
+- updated to @applitools/eyes-sdk-core@12.1.2 (from 12.1.1)
+
+## 14.7.2 - 2020/8/6
+
+- updated to @applitools/eyes-sdk-core@12.1.1 (from 12.1.0)
+
+## 14.7.1 - 2020/8/6
+
+- updated to @applitools/dom-snapshot@4.0.3 (from 4.0.2)
+
+## 14.7.0 - 2020/8/6
+
+- support adoptedStyleSheets ([Trello](https://trello.com/c/cX4q0DzH) [Trello](https://trello.com/c/a22B3tUB))
+- add support for `visualGridOptions` in render requests
+- updated to @applitools/dom-snapshot@4.0.2 (from 4.0.1)
+- updated to @applitools/eyes-sdk-core@12.1.0 (from 12.0.1)
+
+## 14.6.4 - 2020/8/5
+
+- updated to @applitools/eyes-sdk-core@12.0.1 (from 12.0.0)
+
+## 14.6.3 - 2020/8/5
+
+- updated to @applitools/eyes-sdk-core@12.0.0 (from 11.5.1)
+
 ## 14.6.2 - 2020/7/30
 
 - remove feature-flags package dependency

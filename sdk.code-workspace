@@ -1,12 +1,8 @@
 {
 	"folders": [
 		{
-			"name": "dom-capture",
-			"path": "packages/dom-capture"
-		},
-		{
-			"name": "dom-snapshot",
-			"path": "packages/dom-snapshot"
+			"name": "snippets",
+			"path": "packages/snippets"
 		},
 		{
 			"name": "eyes-cypress",

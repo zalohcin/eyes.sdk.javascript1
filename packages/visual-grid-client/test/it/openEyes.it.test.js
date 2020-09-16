@@ -5,7 +5,7 @@ const makeRenderingGridClient = require('../../src/sdk/renderingGridClient')
 const FakeEyesWrapper = require('../util/FakeEyesWrapper')
 const FakeRunningRender = require('../util/FakeRunningRender')
 const createFakeWrapper = require('../util/createFakeWrapper')
-const {testServer} = require('@applitools/sdk-shared')
+const testServer = require('@applitools/sdk-shared/src/run-test-server')
 const {loadJsonFixture, loadFixtureBuffer} = require('../util/loadFixture')
 const {failMsg} = require('../../src/sdk/waitForRenderedStatus')
 const {promisify: p} = require('util')
@@ -78,7 +78,7 @@ describe('openEyes', () => {
 
     const resourceUrls = wrapper.goodResourceUrls
     const cdt = loadJsonFixture('test.cdt.json')
-    checkWindow({resourceUrls, cdt, tag: 'good1', url: `${baseUrl}/test.html`})
+    checkWindow({snapshot: {resourceUrls, cdt}, tag: 'good1', url: `${baseUrl}/test.html`})
     expect((await close())[0].getStepsInfo().map(r => r.result.getAsExpected())).to.eql([true])
   })
 
@@ -91,7 +91,7 @@ describe('openEyes', () => {
     const cdt = loadJsonFixture('test.cdt.json')
     cdt.find(node => node.nodeValue === "hi, I'm red").nodeValue = "hi, I'm green"
 
-    checkWindow({resourceUrls, cdt, tag: 'good1', url: `${baseUrl}/test.html`})
+    checkWindow({snapshot: {resourceUrls, cdt}, tag: 'good1', url: `${baseUrl}/test.html`})
     const result = (await presult(close()))[0]
     expect(result[0].message).to.equal('mismatch')
   })
@@ -113,7 +113,7 @@ describe('openEyes', () => {
 
     const resourceUrls = wrapper.goodResourceUrls
     const cdt = loadJsonFixture('test.cdt.json')
-    checkWindow({resourceUrls, cdt, tag: 'good1', url: `${baseUrl}/test.html`})
+    checkWindow({snapshot: {resourceUrls, cdt}, tag: 'good1', url: `${baseUrl}/test.html`})
     expect(
       (await close()).map(wrapperResult =>
         wrapperResult.getStepsInfo().map(r2 => r2.result.getAsExpected()),
@@ -200,8 +200,7 @@ describe('openEyes', () => {
     const resourceUrls = wrapper.goodResourceUrls
     const cdt = loadJsonFixture('test.cdt.json')
     checkWindow({
-      resourceUrls,
-      cdt,
+      snapshot: {resourceUrls, cdt},
       tag: 'good1',
       target: 'some target',
       url: `${baseUrl}/test.html`,
@@ -246,9 +245,9 @@ describe('openEyes', () => {
 
     const resourceUrls = wrapper.goodResourceUrls
     const cdt = loadJsonFixture('test.cdt.json')
-    checkWindow({resourceUrls, cdt, tag: 'one', url: `${baseUrl}/test.html`})
-    checkWindow({resourceUrls, cdt, tag: 'two', url: `${baseUrl}/test.html`})
-    checkWindow({resourceUrls, cdt, tag: 'three', url: `${baseUrl}/test.html`})
+    checkWindow({snapshot: {resourceUrls, cdt}, tag: 'one', url: `${baseUrl}/test.html`})
+    checkWindow({snapshot: {resourceUrls, cdt}, tag: 'two', url: `${baseUrl}/test.html`})
+    checkWindow({snapshot: {resourceUrls, cdt}, tag: 'three', url: `${baseUrl}/test.html`})
     expect((await close()).map(r => r.getStepsInfo().map(s => s.result))).to.eql([
       ['one1', 'two1', 'three1'],
       ['one2', 'two2', 'three2'],
@@ -278,7 +277,7 @@ describe('openEyes', () => {
 
     wrapper.goodResourceUrls = [blobUrl, imageUrl]
 
-    checkWindow({cdt: [], resourceContents, tag: 'good1', url: `${baseUrl}/test.html`})
+    checkWindow({snapshot: {cdt: [], resourceContents}, tag: 'good1', url: `${baseUrl}/test.html`})
     expect((await close())[0].getStepsInfo().map(r => r.result.getAsExpected())).to.eql([true])
   })
 
@@ -288,7 +287,7 @@ describe('openEyes', () => {
       appName,
     })
 
-    checkWindow({cdt: [], url: 'some url', selector: '.some selector'})
+    checkWindow({snapshot: {cdt: []}, url: 'some url', selector: '.some selector'})
     expect((await close())[0].getStepsInfo().map(r => r.result.getAsExpected())).to.eql([true])
   })
 
@@ -299,7 +298,7 @@ describe('openEyes', () => {
     })
 
     checkWindow({
-      cdt: [],
+      snapshot: {cdt: []},
       url: 'some url',
       region: {width: 1, height: 2, left: 3, top: 4},
       target: 'region',
@@ -318,8 +317,7 @@ describe('openEyes', () => {
     const resourceUrls = wrapper.goodResourceUrls
     const cdt = loadJsonFixture('test.cdt.json')
     checkWindow({
-      resourceUrls,
-      cdt,
+      snapshot: {resourceUrls, cdt},
       tag: 'good1',
       sizeMode: 'some size mode',
       url: `${baseUrl}/test.html`,
@@ -587,9 +585,9 @@ Received: 'firefox-1'.`,
       appName,
     })
 
-    checkWindow({resourceUrls: [], cdt: [], url: `bla`})
+    checkWindow({snapshot: {resourceUrls: [], cdt: []}, url: `bla`})
     await psetTimeout(0)
-    checkWindow({resourceUrls: [], cdt: [], url: `bla`})
+    checkWindow({snapshot: {resourceUrls: [], cdt: []}, url: `bla`})
     error = await close().then(
       x => x,
       err => err,
@@ -607,9 +605,9 @@ Received: 'firefox-1'.`,
       appName,
     })
 
-    checkWindow({resourceUrls: [], cdt: [], url: `bla`})
+    checkWindow({snapshot: {resourceUrls: [], cdt: []}, url: `bla`})
     await psetTimeout(0)
-    checkWindow({resourceUrls: [], cdt: [], url: `bla`})
+    checkWindow({snapshot: {resourceUrls: [], cdt: []}, url: `bla`})
     error = await close().then(
       x => x,
       err => err,
@@ -730,7 +728,7 @@ Received: 'firefox-1'.`,
         wrappers: [wrapper],
         appName,
       })
-      checkWindow({cdt: [], url: 'url'})
+      checkWindow({snapshot: {cdt: []}, url: 'url'})
       const err1 = await close().then(
         x => x,
         err => err,
@@ -744,7 +742,7 @@ Received: 'firefox-1'.`,
         psetTimeout(100).then(() => ({close: 'not resolved'})),
       ])
       expect(close2).not.to.equal('not resolved')
-      checkWindow2({cdt: [], url: 'url'})
+      checkWindow2({snapshot: {cdt: []}, url: 'url'})
       const result2 = await close2().then(
         x => x,
         err => err,
@@ -856,14 +854,14 @@ Received: 'firefox-1'.`,
 
       // t1
       expect(wrapper1Counters.open).to.equal(1)
-      checkWindow1({cdt: [], url: 'url'})
+      checkWindow1({snapshot: {cdt: []}, url: 'url'})
       await psetTimeout(0)
       expect(wrapper1Counters.render).to.equal(0)
       await psetTimeout(50)
 
       // t2
       expect(wrapper1Counters.render).to.equal(0)
-      checkWindow1({cdt: [], url: 'url'})
+      checkWindow1({snapshot: {cdt: []}, url: 'url'})
       await psetTimeout(0)
       expect(wrapper1Counters.render).to.equal(0)
       expect(wrapper1Counters.renderStatus).to.equal(0)
@@ -889,14 +887,14 @@ Received: 'firefox-1'.`,
 
       // t5
       expect(wrapper1Counters.render).to.equal(2)
-      checkWindow2({cdt: [], url: 'url'})
+      checkWindow2({snapshot: {cdt: []}, url: 'url'})
       await psetTimeout(50)
 
       // t6
       expect(wrapper1Counters.render).to.equal(2)
       expect(wrapper1Counters.renderStatus).to.equal(2)
       expect(wrapper2Counters.open).to.equal(0)
-      checkWindow2({cdt: [], url: 'url'})
+      checkWindow2({snapshot: {cdt: []}, url: 'url'})
       await psetTimeout(50)
 
       // t7
@@ -996,17 +994,17 @@ Received: 'firefox-1'.`,
         wrappers: [wrapper],
         appName,
       })
-      checkWindow({url: '', cdt: [], target: null, sizeMode: null})
+      checkWindow({url: '', snapshot: {cdt: []}, target: null, sizeMode: null})
       await psetTimeout(0)
       expect(renderCount).to.equal(1)
       expect(renderStatusCount).to.equal(0) // still batching initial renderIds for /render-status request
 
-      checkWindow({url: '', cdt: [], target: null, sizeMode: null})
+      checkWindow({url: '', snapshot: {cdt: []}, target: null, sizeMode: null})
       await psetTimeout(0)
       expect(renderCount).to.equal(2)
       expect(renderStatusCount).to.equal(0) // still batching initial renderIds for /render-status request
 
-      checkWindow({url: '', cdt: [], target: null, sizeMode: null})
+      checkWindow({url: '', snapshot: {cdt: []}, target: null, sizeMode: null})
       await psetTimeout(0)
       expect(renderCount).to.equal(2) // concurrency is blocking this render
       expect(renderStatusCount).to.equal(0) // still batching initial renderIds for /render-status request
@@ -1040,9 +1038,9 @@ Received: 'firefox-1'.`,
         appName,
       })
 
-      checkWindow({url: '', cdt: [], sizeMode: null, target: null})
+      checkWindow({url: '', snapshot: {cdt: []}, sizeMode: null, target: null})
       await psetTimeout(0)
-      checkWindow({url: '', cdt: [], sizeMode: null, target: null})
+      checkWindow({url: '', snapshot: {cdt: []}, sizeMode: null, target: null})
       await psetTimeout(0)
       const expected1 = renderCount
       runningStatuses[0] = RenderStatus.RENDERED
@@ -1071,16 +1069,16 @@ Received: 'firefox-1'.`,
         appName,
       })
 
-      checkWindow({url: '', cdt: [], sizeMode: null, target: null})
+      checkWindow({url: '', snapshot: {cdt: []}, sizeMode: null, target: null})
       await psetTimeout(0)
 
-      checkWindow2({url: '', cdt: [], sizeMode: null, target: null})
+      checkWindow2({url: '', snapshot: {cdt: []}, sizeMode: null, target: null})
       await psetTimeout(0)
 
-      checkWindow({url: '', cdt: [], sizeMode: null, target: null})
+      checkWindow({url: '', snapshot: {cdt: []}, sizeMode: null, target: null})
       await psetTimeout(0)
 
-      checkWindow2({url: '', cdt: [], sizeMode: null, target: null})
+      checkWindow2({url: '', snapshot: {cdt: []}, sizeMode: null, target: null})
       await psetTimeout(0)
 
       const expected1 = renderCount
@@ -1113,7 +1111,7 @@ Received: 'firefox-1'.`,
         appName,
       })
 
-      checkWindow({url: '', cdt: [], selector: '111'})
+      checkWindow({url: '', snapshot: {cdt: []}, selector: '111'})
       await psetTimeout(0)
       expect(renderCount).to.equal(1)
       expect(renderStatusCount).to.equal(0)
@@ -1121,7 +1119,7 @@ Received: 'firefox-1'.`,
       await psetTimeout(150)
       expect(renderStatusCount).to.equal(1)
 
-      checkWindow({url: '', cdt: [], selector: '222'})
+      checkWindow({url: '', snapshot: {cdt: []}, selector: '222'})
       await psetTimeout(0)
       expect(renderCount).to.equal(1)
       expect(renderStatusCount).to.equal(1)
@@ -1160,9 +1158,9 @@ Received: 'firefox-1'.`,
       appName,
     })
 
-    checkWindow({resourceUrls: [], cdt: [], url: 'bla', tag: 'good1'})
+    checkWindow({snapshot: {resourceUrls: [], cdt: []}, url: 'bla', tag: 'good1'})
     await psetTimeout(150)
-    checkWindow({resourceUrls: [], cdt: [], url: 'bla', tag: 'good1'})
+    checkWindow({snapshot: {resourceUrls: [], cdt: []}, url: 'bla', tag: 'good1'})
 
     const [err3] = await presult(close())
     expect(err3[0].message).to.have.string(failMsg())
@@ -1187,9 +1185,9 @@ Received: 'firefox-1'.`,
       appName,
     })
 
-    checkWindow({resourceUrls: [], cdt: [], url: 'bla', tag: 'good1'})
+    checkWindow({snapshot: {resourceUrls: [], cdt: []}, url: 'bla', tag: 'good1'})
     await psetTimeout(0)
-    checkWindow({resourceUrls: [], cdt: [], url: 'bla', tag: 'good1'})
+    checkWindow({snapshot: {resourceUrls: [], cdt: []}, url: 'bla', tag: 'good1'})
     await psetTimeout(200)
     const [err3] = await presult(close())
     expect(err3[0].message).have.string(failMsg())
@@ -1388,8 +1386,7 @@ Received: 'firefox-1'.`,
     const region2 = {left: 11, top: 22, width: 33, height: 44, accessibilityType: 'LargeText'}
     checkWindow({
       url: '',
-      // resourceUrls: [],
-      cdt: [],
+      snapshot: {cdt: []},
       ignore: [region],
       accessibility: [region2],
     })
@@ -1415,8 +1412,7 @@ Received: 'firefox-1'.`,
     const regionContent = {left: 11, top: 21, width: 31, height: 41}
     checkWindow({
       url: '',
-      // resourceUrls: [],
-      cdt: [],
+      snapshot: {cdt: []},
       layout: [regionLayout],
       strict: [regionStrict],
       content: [regionContent],
@@ -1533,8 +1529,7 @@ Received: 'firefox-1'.`,
 
     checkWindow({
       url: '',
-      // resourceUrls: [],
-      cdt: [],
+      snapshot: {cdt: []},
       ignore: [ignoreSelector1, ignoreSelector2],
       layout: [layoutSelector1, layoutSelector2],
       strict: [strictSelector1, strictSelector2],
@@ -1597,8 +1592,7 @@ Received: 'firefox-1'.`,
 
     checkWindow({
       url: '',
-      // resourceUrls: [],
-      cdt: [],
+      snapshot: {cdt: []},
       target: 'region',
       selector,
       ignore: [ignoreRegion, ignoreSelector],
@@ -1721,8 +1715,7 @@ Received: 'firefox-1'.`,
 
     checkWindow({
       url: '',
-      // resourceUrls: [],
-      cdt: [],
+      snapshot: {cdt: []},
       target: 'region',
       selector,
       ignore: [ignoreRegion, ignoreSelector],
@@ -1823,15 +1816,12 @@ Received: 'firefox-1'.`,
     })
     checkWindow({
       url: '',
-      cdt: [],
+      snapshot: {cdt: []},
       useDom: true,
       enablePatterns: false,
       ignoreDisplacements: false,
     })
-    checkWindow({
-      url: '',
-      cdt: [],
-    })
+    checkWindow({url: '', snapshot: {cdt: []}})
     const [results] = await close()
     const r = results.getStepsInfo()[0].result
     const r2 = results.getStepsInfo()[1].result
@@ -1884,7 +1874,7 @@ Received: 'firefox-1'.`,
       aborted = true
     })
 
-    await checkWindow({url: '', cdt: []})
+    await checkWindow({url: '', snapshot: {cdt: []}})
     await abort()
     await donePromise
     expect(checkEndedAfterAbort).to.be.false
@@ -1917,7 +1907,7 @@ Received: 'firefox-1'.`,
       aborted = true
     })
 
-    await checkWindow({url: '', cdt: []})
+    await checkWindow({url: '', snapshot: {cdt: []}})
     await abort()
     await donePromise
     expect(openEndedAfterAbort).to.be.false
@@ -1931,7 +1921,7 @@ Received: 'firefox-1'.`,
       appName,
     })
 
-    checkWindow({url: '', cdt: []})
+    checkWindow({url: '', snapshot: {cdt: []}})
     const [results] = await close()
     expect(wrapper.getViewportSize()).to.eql(FakeEyesWrapper.devices['iPhone 4'])
     expect(wrapper.getDeviceInfo()).to.equal(`${deviceName} (Chrome emulation)`)
@@ -1950,7 +1940,7 @@ Received: 'firefox-1'.`,
       appName,
     })
 
-    checkWindow({url: '', cdt: []})
+    checkWindow({url: '', snapshot: {cdt: []}})
     const [results] = await close()
     expect(wrapper.getDeviceInfo()).to.equal(deviceName)
     expect(wrapper.iosDeviceInfo).to.eql(iosDeviceInfo)
@@ -1968,7 +1958,7 @@ Received: 'firefox-1'.`,
       appName,
     })
 
-    checkWindow({url: '', cdt: []})
+    checkWindow({url: '', snapshot: {cdt: []}})
     const [results] = await close()
     expect(wrapper.results[0].__browserName).to.equal('safari')
     expect(wrapper.results[0].__platform).to.equal('ios')
@@ -2011,7 +2001,7 @@ Received: 'firefox-1'.`,
       wrappers: [wrapper],
       appName,
     })
-    checkWindow({cdt: [], frames, url})
+    checkWindow({snapshot: {cdt: [], frames}, url})
     const ttt = await close()
     expect(ttt[0].getStepsInfo().map(r => r.result.getAsExpected())).to.eql([true])
   })
@@ -2060,11 +2050,11 @@ Received: 'firefox-1'.`,
       wrappers: [wrapper],
       appName,
     })
-    checkWindow({tag: 1, cdt: [], url: ''})
+    checkWindow({tag: 1, snapshot: {cdt: []}, url: ''})
     await psetTimeout(0)
-    checkWindow({matchLevel: 'Layout', tag: 2, cdt: [], url: ''})
+    checkWindow({matchLevel: 'Layout', tag: 2, snapshot: {cdt: []}, url: ''})
     await psetTimeout(0)
-    checkWindow({tag: 3, cdt: [], url: ''})
+    checkWindow({tag: 3, snapshot: {cdt: []}, url: ''})
     await close()
   })
 
@@ -2083,11 +2073,11 @@ Received: 'firefox-1'.`,
       appName,
       matchLevel: 'Content',
     })
-    checkWindow({tag: 1, cdt: [], url: ''})
+    checkWindow({tag: 1, snapshot: {cdt: []}, url: ''})
     await psetTimeout(0)
-    checkWindow({matchLevel: 'Layout', tag: 2, cdt: [], url: ''})
+    checkWindow({matchLevel: 'Layout', tag: 2, snapshot: {cdt: []}, url: ''})
     await psetTimeout(0)
-    checkWindow({tag: 3, cdt: [], url: ''})
+    checkWindow({tag: 3, snapshot: {cdt: []}, url: ''})
     await close()
   })
 
@@ -2113,11 +2103,11 @@ Received: 'firefox-1'.`,
       wrappers: [wrapper],
       appName,
     })
-    checkWindow({tag: 1, cdt: [], url: ''})
+    checkWindow({tag: 1, snapshot: {cdt: []}, url: ''})
     await psetTimeout(0)
-    checkWindow({matchLevel: 'Layout', tag: 2, cdt: [], url: ''})
+    checkWindow({matchLevel: 'Layout', tag: 2, snapshot: {cdt: []}, url: ''})
     await psetTimeout(0)
-    checkWindow({tag: 3, cdt: [], url: ''})
+    checkWindow({tag: 3, snapshot: {cdt: []}, url: ''})
     await close()
   })
 
@@ -2220,7 +2210,13 @@ Received: 'firefox-1'.`,
     })
     wrapper.on('checkWindowEnd', done)
 
-    await checkWindow({tag: 'good1', cdt: [], url: '', useDom: true, enablePatterns: true})
+    await checkWindow({
+      snapshot: {cdt: []},
+      url: '',
+      tag: 'good1',
+      useDom: true,
+      enablePatterns: true,
+    })
     await donePromise
     const [results] = await close()
     const r = results.getStepsInfo()[0].result
@@ -2251,12 +2247,78 @@ Received: 'firefox-1'.`,
     })
     wrapper.on('checkWindowEnd', done)
 
-    await checkWindow({tag: 'good1', cdt: [], url: '', useDom: false, enablePatterns: false})
+    await checkWindow({
+      snapshot: {cdt: []},
+      url: '',
+      tag: 'good1',
+      useDom: false,
+      enablePatterns: false,
+    })
     await donePromise
     const [results] = await close()
     const r = results.getStepsInfo()[0].result
     expect(r.__checkSettings.getUseDom()).to.be.false
     expect(r.__checkSettings.getEnablePatterns()).to.be.false
+  })
+
+  it('handles visualGridOptions in renderingGridClient', async () => {
+    openEyes = makeRenderingGridClient({
+      apiKey,
+      renderWrapper: wrapper,
+      visualGridOptions: {aaa: true},
+    }).openEyes
+
+    const {checkWindow, close} = await openEyes({
+      apiKey,
+      wrappers: [wrapper],
+      appName,
+    })
+
+    await checkWindow({snapshot: {cdt: []}, url: ''})
+    const [results] = await close()
+    const r = results.getStepsInfo()[0].getRenderId()
+    expect(JSON.parse(r).visualGridOptions).to.eql({aaa: true})
+  })
+
+  it('handles visualGridOptions in openEyes', async () => {
+    openEyes = makeRenderingGridClient({
+      apiKey,
+      renderWrapper: wrapper,
+    }).openEyes
+
+    const {checkWindow, close} = await openEyes({
+      apiKey,
+      wrappers: [wrapper],
+      appName,
+      visualGridOptions: {aaa: true},
+    })
+
+    await checkWindow({snapshot: {cdt: []}, url: ''})
+    const [results] = await close()
+    const r = results.getStepsInfo()[0].getRenderId()
+    expect(JSON.parse(r).visualGridOptions).to.eql({aaa: true})
+  })
+
+  it('handles visualGridOptions in checkWindow', async () => {
+    openEyes = makeRenderingGridClient({
+      apiKey,
+      renderWrapper: wrapper,
+    }).openEyes
+
+    const {checkWindow, close} = await openEyes({
+      apiKey,
+      wrappers: [wrapper],
+      appName,
+    })
+
+    await checkWindow({
+      snapshot: {cdt: []},
+      url: '',
+      visualGridOptions: {aaa: true},
+    })
+    const [results] = await close()
+    const r = results.getStepsInfo()[0].getRenderId()
+    expect(JSON.parse(r).visualGridOptions).to.eql({aaa: true})
   })
 
   it('doesnt throw error on chrome canary browser name', async () => {
@@ -2284,7 +2346,10 @@ Received: 'firefox-1'.`,
         {width: 1, height: 2, name: 'edgechromium-one-version-back'},
       ],
     })
-    checkWindow({cdt: [], url: ''})
+    checkWindow({
+      snapshot: {cdt: []},
+      url: '',
+    })
     await close()
     expect(wrapper1.results[0].__browserName).to.equal('chrome-1')
     expect(wrapper2.results[0].__browserName).to.equal('chrome-2')
@@ -2307,7 +2372,10 @@ Received: 'firefox-1'.`,
       appName,
     })
 
-    checkWindow({resourceUrls: [], cdt: [], url: `bla`})
+    checkWindow({
+      snapshot: {resourceUrls: [], cdt: []},
+      url: `bla`,
+    })
     const [err] = await presult(close())
     expect(err[0].message).to.equal('renderBatch')
     expect(wrapper.inferredEnvironment).to.equal('useragent:firefox-ua')
@@ -2334,7 +2402,10 @@ Received: 'firefox-1'.`,
       appName,
     })
 
-    checkWindow({resourceUrls: [], cdt: [], url: `bla`})
+    checkWindow({
+      snapshot: {resourceUrls: [], cdt: []},
+      url: `bla`,
+    })
     const [err] = await presult(close())
     expect(err[0].message).to.equal('renderBatch')
     expect(wrapper1.inferredEnvironment).to.equal('useragent:firefox-ua')
@@ -2364,7 +2435,10 @@ Received: 'firefox-1'.`,
       appName,
     })
 
-    checkWindow({resourceUrls: [], cdt: [], url: `bla`})
+    checkWindow({
+      snapshot: {resourceUrls: [], cdt: []},
+      url: `bla`,
+    })
     const [err] = await presult(close())
     expect(err[0].message).to.contain('renderStatusError')
     expect(wrapper.inferredEnvironment).to.equal('some ua')
@@ -2393,7 +2467,10 @@ Received: 'firefox-1'.`,
       appName,
     })
 
-    checkWindow({resourceUrls: [], cdt: [], url: `bla`})
+    checkWindow({
+      snapshot: {resourceUrls: [], cdt: []},
+      url: `bla`,
+    })
     const [err] = await presult(close())
     expect(err[0].message).to.contain('renderStatusError')
     expect(wrapper.inferredEnvironment).to.equal('useragent:firefox-ua')

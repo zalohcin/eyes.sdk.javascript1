@@ -1,7 +1,13 @@
 const png = require('png-async')
-const EyesJsSnippets = require('../../lib/EyesJsSnippets')
+const {inspect} = require('util')
+const snippets = require('@applitools/snippets')
 const {TypeUtils} = require('../../index')
 const FakeDomSnapshot = require('./FakeDomSnapshot')
+
+const WELL_KNOWN_SCRIPTS = {
+  'dom-snapshot': script => /^\/\* @applitools\/dom-snapshot@[\d.]+ \*\//.test(script),
+  'dom-capture': script => /^\/\* @applitools\/dom-capture@[\d.]+ \*\//.test(script),
+}
 
 const DEFAULT_STYLES = {
   'border-left-width': '0px',
@@ -29,44 +35,53 @@ class MockDriver {
     this._contexts = new Map()
     this._contexts.set(null, {
       document: {id: Symbol('documentId')},
+      state: {
+        get name() {
+          return null
+        },
+      },
     })
     this._contextId = null
     this.mockElement('html', {scrollPosition: {x: 0, y: 0}})
-    this.mockScript(EyesJsSnippets.GET_CURRENT_CONTEXT_INFO, () => {
+    this.mockScript(snippets.getContextInfo, async () => {
       const context = this._contexts.get(this._contextId)
       const isRoot = !this._contextId
       const isCORS = !isRoot && context.isCORS
-      const contentDocument = context.document
+      const contentDocument = await this.findElement('html')
       const selector = !isCORS && !isRoot ? context.element.selector : null
-      return {isRoot, isCORS, contentDocument, selector}
+      return [contentDocument, selector, isRoot, isCORS]
     })
-    this.mockScript(EyesJsSnippets.GET_FRAMES, () => {
+    this.mockScript(snippets.getChildFramesInfo, () => {
       return Array.from(this._contexts.values())
         .filter(frame => frame.parentId === this._contextId)
-        .map(frame => ({isCORS: frame.isCORS, element: frame.element}))
+        .map(frame => [frame.element, frame.isCORS])
     })
-    this.mockScript(EyesJsSnippets.GET_DOCUMENT_ELEMENT, () => {
-      const context = this._contexts.get(this._contextId)
-      return context.document
-    })
-    this.mockScript(EyesJsSnippets.GET_SCROLL_POSITION, () => {
-      return [0, 0]
-    })
-    this.mockScript(EyesJsSnippets.GET_ELEMENT_RECT, element => {
+    this.mockScript(snippets.getElementRect, ([element]) => {
       return element.rect || {x: 0, y: 0, width: 100, height: 100}
     })
-    this.mockScript(EyesJsSnippets.GET_ELEMENT_CLIENT_RECT, element => {
-      return element.rect || {x: 2, y: 2, width: 200, height: 200}
-    })
-    this.mockScript(EyesJsSnippets.GET_ELEMENT_CSS_PROPERTIES, (properties, element) => {
+    this.mockScript(snippets.getElementComputedStyleProperties, ([element, properties]) => {
       return properties.map(
         property => (element.styles || {})[property] || DEFAULT_STYLES[property],
       )
     })
-    this.mockScript(EyesJsSnippets.GET_ELEMENT_PROPERTIES, (properties, element) => {
+    this.mockScript(snippets.getElementProperties, ([element, properties]) => {
       return properties.map(property => (element.props || {})[property] || DEFAULT_PROPS[property])
     })
-    this.mockScript(EyesJsSnippets.SCROLL_TO, (offset, element) => {
+    this.mockScript(snippets.setElementStyleProperties, ([element, properties]) => {
+      return Object.entries(properties).reduce((original, [name, value]) => {
+        original[name] = element.style[name]
+        element.style[name] = value
+        return original
+      }, {})
+    })
+    this.mockScript(snippets.setElementAttributes, ([element, attributes]) => {
+      return Object.entries(attributes).reduce((original, [name, value]) => {
+        original[name] = element.attrs[name]
+        element.attrs[name] = value
+        return original
+      }, {})
+    })
+    this.mockScript(snippets.scrollTo, ([element, offset]) => {
       let scrollingElement = element
       if (!element) {
         scrollingElement = this.findElement('html')
@@ -74,7 +89,7 @@ class MockDriver {
       scrollingElement.scrollPosition = offset
       return [scrollingElement.scrollPosition.x, scrollingElement.scrollPosition.y]
     })
-    this.mockScript(EyesJsSnippets.GET_SCROLL_POSITION, element => {
+    this.mockScript(snippets.getElementScrollOffset, ([element]) => {
       let scrollingElement = element
       if (!element) {
         scrollingElement = this.findElement('html')
@@ -82,18 +97,29 @@ class MockDriver {
       if (!scrollingElement.scrollPosition) {
         scrollingElement.scrollPosition = {x: 0, y: 0}
       }
-      return [scrollingElement.scrollPosition.x, scrollingElement.scrollPosition.y]
+      return {x: scrollingElement.scrollPosition.x, y: scrollingElement.scrollPosition.y}
     })
-    this.mockScript('return window.devicePixelRatio', () => {
+    this.mockScript(snippets.getElementInnerOffset, ([element]) => {
+      let scrollingElement = element
+      if (!element) {
+        scrollingElement = this.findElement('html')
+      }
+      if (!scrollingElement.scrollPosition) {
+        scrollingElement.scrollPosition = {x: 0, y: 0}
+      }
+      return {x: scrollingElement.scrollPosition.x, y: scrollingElement.scrollPosition.y}
+    })
+    this.mockScript(snippets.getPixelRatio, () => {
       return 1
     })
-    this.mockScript(EyesJsSnippets.MARK_SCROLL_ROOT_ELEMENT, element => {
-      element.attrs.isApplitoolsScroll = true
+    this.mockScript(snippets.getUserAgent, () => {
+      return 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36'
     })
-    this.mockScript(EyesJsSnippets.GET_VIEWPORT_SIZE, () => {
-      return [this._window.rect.width, this._window.rect.height]
+    this.mockScript(snippets.getViewportSize, () => {
+      return {width: this._window.rect.width, height: this._window.rect.height}
     })
-    this.mockScript(EyesJsSnippets.GET_ELEMENT_XPATH, element => {
+    this.mockScript(snippets.getElementXpath, ([element]) => {
+      if (element.xpath) return element.xpath
       const elements = Array.from(this._elements.values()).reduce(
         (elements, array) => elements.concat(array),
         [],
@@ -103,18 +129,33 @@ class MockDriver {
         ? `/HTML[1]/BODY[1]/DIV[${index + 1}]`
         : `//[data-fake-selector="${element.selector}"]`
     })
-    this.mockScript(
-      script => /^\/\* @applitools\/dom-snapshot@[\d.]+ \*\//.test(script),
-      () => FakeDomSnapshot.generateDomSnapshot(this),
-    )
+    this.mockScript(snippets.blurElement, () => {
+      return null
+    })
+    this.mockScript(snippets.markElements, ([elements, ids]) => {
+      for (const [index, el] of elements.entries()) {
+        el.attributes = el.attributes || []
+        el.attributes.push({name: 'data-eyes-selector', value: ids[index]})
+      }
+    })
+    this.mockScript(snippets.cleanupElementIds, ([elements]) => {
+      for (const el of elements) {
+        el.attributes.splice(
+          el.attributes.findIndex(({name}) => name === 'data-eyes-selector'),
+          1,
+        )
+      }
+    })
+    this.mockScript('dom-snapshot', () => FakeDomSnapshot.generateDomSnapshot(this))
   }
   mockScript(scriptMatcher, resultGenerator) {
     this._scripts.set(scriptMatcher, resultGenerator)
   }
   mockElement(selector, state) {
     const element = {
-      id: Symbol('elementId'),
+      id: Symbol('elementId' + Math.floor(Math.random() * 100)),
       attrs: {},
+      style: {},
       selector,
       parentId: null,
       parentContextId: null,
@@ -127,13 +168,18 @@ class MockDriver {
     }
     elements.push(element)
     if (element.frame) {
-      const contextId = Symbol('contextId')
+      const contextId = Symbol('contextId' + Math.floor(Math.random() * 100))
       this._contexts.set(contextId, {
         id: contextId,
         parentId: state.parentContextId,
         isCORS: state.isCORS,
         element,
-        document: {id: Symbol('documentId')},
+        document: {id: Symbol('documentId' + Math.floor(Math.random() * 100))},
+        state: {
+          get name() {
+            return element.selector
+          },
+        },
       })
       element.contextId = contextId
       this.mockElement('html', {
@@ -141,7 +187,7 @@ class MockDriver {
         scrollPosition: {x: 0, y: 0},
       })
     }
-    return Object.freeze(element)
+    return element
   }
   mockElements(nodes, {parentId = null, parentContextId = null} = {}) {
     for (const node of nodes) {
@@ -157,13 +203,16 @@ class MockDriver {
     }
   }
   async executeScript(script, args = []) {
-    for (const [scriptMatcher, resultGenerator] of this._scripts.entries()) {
-      if (
-        TypeUtils.isFunction(scriptMatcher) ? scriptMatcher(script, args) : scriptMatcher === script
-      ) {
-        return TypeUtils.isFunction(resultGenerator) ? resultGenerator(...args) : resultGenerator
-      }
+    args = serialize(args)
+    let result = this._scripts.get(script)
+    if (!result) {
+      const name = Object.keys(WELL_KNOWN_SCRIPTS).find(name => WELL_KNOWN_SCRIPTS[name](script))
+      console.log
+      if (!name) return null
+      result = this._scripts.get(name)
     }
+    const {state} = this._contexts.get(this._contextId)
+    return TypeUtils.isFunction(result) ? result.call(state, ...args) : result
   }
   async findElement(selector) {
     const elements = this._elements.get(selector)
@@ -175,25 +224,29 @@ class MockDriver {
   }
   async switchToFrame(reference) {
     if (reference === null) {
-      return (this._contextId = null)
+      this._contextId = null
+      return this
     }
     if (TypeUtils.isString(reference)) {
       reference = await this.findElement(reference)
     }
     const frame = this._contexts.get(reference.contextId)
     if (frame && this._contextId === frame.parentId) {
-      return (this._contextId = frame.id)
+      this._contextId = frame.id
+      return this
     } else {
       throw new Error('Frame not found')
     }
   }
   async switchToParentFrame() {
-    if (!this._contextId) return
+    if (!this._contextId) return this
     for (const frame of this._contexts.values()) {
       if (frame.id === this._contextId) {
-        return (this._contextId = frame.parentId)
+        this._contextId = frame.parentId
+        return this
       }
     }
+    return this
   }
   async getWindowRect() {
     return this._window.rect
@@ -227,6 +280,33 @@ class MockDriver {
       stream.on('end', () => resolve(buffer))
       stream.on('error', reject)
     })
+  }
+  toString() {
+    return '<MockDriver>'
+  }
+  toJSON() {
+    return '<MockDriver>'
+  }
+  [inspect.custom]() {
+    return '<MockDriver>'
+  }
+}
+
+function serialize(value) {
+  if (TypeUtils.hasMethod(value, 'toJSON')) {
+    return value.toJSON()
+  } else if (TypeUtils.isArray(value)) {
+    return value.map(serialize)
+  } else if (TypeUtils.isObject(value)) {
+    if (typeof value.id === 'symbol') return value
+    return Object.entries(value).reduce(
+      (json, [key, value]) => Object.assign(json, {[key]: serialize(value)}),
+      {},
+    )
+  } else if (TypeUtils.isFunction(value)) {
+    return value.toString()
+  } else {
+    return value
   }
 }
 

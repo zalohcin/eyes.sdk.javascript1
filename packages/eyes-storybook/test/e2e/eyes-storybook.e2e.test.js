@@ -1,11 +1,9 @@
 const {describe, it, before, after} = require('mocha');
 const {expect} = require('chai');
 const path = require('path');
-const {testServer} = require('@applitools/sdk-shared');
+const testServer = require('@applitools/sdk-shared/src/run-test-server');
+const {sh} = require('@applitools/sdk-shared/src/process-commons');
 const {delay: psetTimeout, presult} = require('@applitools/functional-commons');
-const {
-  processCommons: {sh},
-} = require('@applitools/sdk-shared');
 const {version} = require('../../package.json');
 
 describe('eyes-storybook', () => {
@@ -18,7 +16,7 @@ describe('eyes-storybook', () => {
         '\nThis test disables APPLITOOLS_SHOW_LOGS so dont be surprised son !!! See: test/e2e/eyes-storybook.e2e.test.js:15\n',
       );
     }
-    process.env.APPLITOOLS_SHOW_LOGS = false;
+    delete process.env.APPLITOOLS_SHOW_LOGS;
   });
 
   after(async () => {

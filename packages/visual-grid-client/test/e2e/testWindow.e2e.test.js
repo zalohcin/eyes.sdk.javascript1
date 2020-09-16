@@ -4,7 +4,7 @@ const {describe, it, before, after, beforeEach} = require('mocha')
 const {expect} = require('chai')
 const puppeteer = require('puppeteer')
 const makeRenderingGridClient = require('../../src/sdk/renderingGridClient')
-const {testServer} = require('@applitools/sdk-shared')
+const testServer = require('@applitools/sdk-shared/src/run-test-server')
 const {presult} = require('@applitools/functional-commons')
 const {DiffsFoundError, deserializeDomSnapshotResult} = require('@applitools/eyes-sdk-core')
 const {getProcessPageAndSerialize} = require('@applitools/dom-snapshot')
@@ -66,9 +66,7 @@ describe('testWindow', () => {
     }
 
     const checkParams = {
-      resourceUrls,
-      resourceContents,
-      cdt,
+      snapshot: {resourceUrls, resourceContents, cdt},
       tag: 'first',
       url,
       scriptHooks: {
@@ -100,9 +98,7 @@ describe('testWindow', () => {
 
     cdt.find(node => node.nodeValue === "hi, I'm red").nodeValue = 'WRONG TEXT'
     const checkParams = {
-      resourceUrls,
-      resourceContents,
-      cdt,
+      snapshot: {resourceUrls, resourceContents, cdt},
       tag: 'first',
       url,
       scriptHooks: {

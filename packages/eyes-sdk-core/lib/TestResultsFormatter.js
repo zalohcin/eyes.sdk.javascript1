@@ -269,6 +269,16 @@ class TestResultsFormatter {
     output += `\n</testsuite>`
     return output
   }
+
+  /**
+   * Creates a JSON representation of the tests results list
+   *
+   * @param {string|number} [space=null] - A String or Number object that's used to insert white space into the output JSON string for readability purposes.
+   * @return {string} - A string which is the JSON representation of the results list.
+   */
+  toJsonOutput(space) {
+    return JSON.stringify(this._resultsList, null, space)
+  }
 }
 
 module.exports = TestResultsFormatter

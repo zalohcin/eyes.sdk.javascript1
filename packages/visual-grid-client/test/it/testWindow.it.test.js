@@ -3,7 +3,7 @@ const {describe, it, before, after, beforeEach} = require('mocha')
 const {expect} = require('chai')
 const makeRenderingGridClient = require('../../src/sdk/renderingGridClient')
 const createFakeWrapper = require('../util/createFakeWrapper')
-const {testServer} = require('@applitools/sdk-shared')
+const testServer = require('@applitools/sdk-shared/src/run-test-server')
 const {loadJsonFixture} = require('../util/loadFixture')
 const nock = require('nock')
 const {ptimeoutWithError, presult} = require('@applitools/functional-commons')
@@ -50,7 +50,7 @@ describe('testWindow', () => {
     }
     const resourceUrls = wrapper.goodResourceUrls
     const cdt = loadJsonFixture('test.cdt.json')
-    const checkParams = {resourceUrls, cdt, tag: 'good1', url: `${baseUrl}/test.html`}
+    const checkParams = {snapshot: {resourceUrls, cdt}, tag: 'good1', url: `${baseUrl}/test.html`}
 
     let done
     const p = new Promise(r => (done = r))
@@ -193,7 +193,7 @@ describe('testWindow', () => {
     }
     const resourceUrls = wrapper.goodResourceUrls
     const cdt = loadJsonFixture('test.cdt.json')
-    const checkParams = {resourceUrls, cdt, tag: 'good1', url: `${baseUrl}/test.html`}
+    const checkParams = {snapshot: {resourceUrls, cdt}, tag: 'good1', url: `${baseUrl}/test.html`}
 
     wrapper.closeTestWindow = () => {
       return Promise.reject(new Error('test diff'))

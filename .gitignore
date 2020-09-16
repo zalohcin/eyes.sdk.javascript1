@@ -31,6 +31,10 @@ coverage-tests-metadata.json
 # yarn
 .yarn
 
+# Docker
+docker-compose.yaml
+
 # other
 tags
 support
+eyes-testcafe-bak

@@ -51,6 +51,8 @@ const BOOLEAN_CONFIGS = [
   '_hideCaret',
   '_isThrowExceptionOn',
   '_dontCloseBatches',
+  '_layoutBreakpoints',
+  '_disableBrowserFetching',
 ]
 
 const NUMBER_CONFIGS = [
@@ -139,6 +141,8 @@ describe('Configuration', () => {
           name: 'chrome',
         },
       ]
+    } else if (type === '_visualGridOptions') {
+      modifiedValue = {polyfillAdoptedStyleSheets: true}
     }
     return modifiedValue
   }
@@ -173,12 +177,22 @@ describe('Configuration', () => {
       configuration.setApiKey('apiKey')
       configuration.setIgnoreDisplacements(true)
       configuration.setMatchLevel(MatchLevel.Layout)
+      configuration.setLayoutBreakpoints(true)
+      configuration.setDisableBrowserFetching(true)
 
       const configurationCopy = new Configuration(configuration)
 
       assert.strictEqual(configuration.getAppName(), configurationCopy.getAppName())
       assert.strictEqual(configuration.getApiKey(), configurationCopy.getApiKey())
       assert.strictEqual(configuration.getMatchLevel(), configurationCopy.getMatchLevel())
+      assert.strictEqual(
+        configuration.getLayoutBreakpoints(),
+        configurationCopy.getLayoutBreakpoints(),
+      )
+      assert.strictEqual(
+        configuration.getDisableBrowserFetching(),
+        configurationCopy.getDisableBrowserFetching(),
+      )
       assert.strictEqual(
         configuration.getIgnoreDisplacements(),
         configurationCopy.getIgnoreDisplacements(),
@@ -606,6 +620,7 @@ describe('Configuration', () => {
         name: 'myBatchName',
         notifyOnCompletion: true,
       },
+      visualGridOptions: {polyfillAdoptedStyleSheets: true},
     }
     const config = new Configuration(conf)
     const result = config.toOpenEyesConfiguration()
@@ -615,10 +630,23 @@ describe('Configuration', () => {
     assert.strictEqual(result.batch.getId(), conf.batch.id)
     assert.strictEqual(result.batch.getName(), conf.batch.name)
     assert.strictEqual(result.batch.getNotifyOnCompletion(), conf.batch.notifyOnCompletion)
+    assert.deepStrictEqual(result.visualGridOptions, conf.visualGridOptions)
   })
 
   it('setMatchLevel("Layout")', () => {
     const config = new Configuration({defaultMatchSettings: {matchLevel: 'Layout'}})
     assert.strictEqual(config.getMatchLevel(), MatchLevel.Layout)
+  })
+
+  it('setLayoutBreakpoints()', async () => {
+    const config = new Configuration()
+    config.setLayoutBreakpoints(true)
+    assert.deepStrictEqual(config.getLayoutBreakpoints(), true)
+    config.setLayoutBreakpoints([25, 50, 100, 200])
+    assert.deepStrictEqual(config.getLayoutBreakpoints(), [200, 100, 50, 25])
+    config.setLayoutBreakpoints([100, 200, 200, 100, 50, 25])
+    assert.deepStrictEqual(config.getLayoutBreakpoints(), [200, 100, 50, 25])
+    config.setLayoutBreakpoints([])
+    assert.deepStrictEqual(config.getLayoutBreakpoints(), false)
   })
 })

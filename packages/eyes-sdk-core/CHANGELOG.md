@@ -2,6 +2,67 @@
 
 ## Unreleased
 
+- fix `takeDomCapture`
+
+## 12.2.4 - 2020/9/15
+
+- add new `takeDomSnapshot` implementation
+- remove `selenium-webdriver` dependency
+
+## 12.2.3 - 2020/9/2
+
+- add `disableBrowserFetching` configuration parameter ([Trello](https://trello.com/c/ixJJZdiA))
+
+## 12.2.2 - 2020/9/1
+
+- fix layout breakpoints configuration
+
+## 12.2.1 - 2020/9/1
+
+- fix layout breakpoints configuration
+
+## 12.2.0 - 2020/8/30
+
+- add support for `layoutBreakpoints`
+- avoid javascript execution on native devices during viewport size extraction
+- mark coded regions and target elements with unique selectors for the visual grid
+- improve handling of fractional metrics ([Trello](https://trello.com/c/TuXUZUNO/441-sonatype-wdio-5-targetregion-appears-off-by-one-pixel))
+- updated to @applitools/snippets@1.1.0 (from 1.0.3)
+- updated to @applitools/snippets@1.1.1 (from 1.1.0)
+
+## 12.1.4 - 2020/8/13
+
+- avoid starting session with missing displaySize ([Trello 1](https://trello.com/c/jppq7ILy) [Trello 2](https://trello.com/c/5zDFhiMG))
+
+## 12.1.3 - 2020/8/12
+
+- fix priority of the default match level value ([Trello](https://trello.com/c/XxBQFIWQ/438-wdio-5-fluent-api-inconsistent-behavior-between-classicrunner-and-visualgrid-runner-with-matchlevel-specified-on-per-step-basis))
+- populate device name from capabilities ([Trello](https://trello.com/c/qyf1baqT/464-wdio5-mobile-web-device-name-not-reported-on-dashboard))
+- populate isMobile from ua in case of chrome emulation
+
+## 12.1.2 - 2020/8/10
+
+- handle case when SpecDrive.childContext doesn't return a new context
+- remove workaround in EyesScreenshot
+- add typedef for SpecDriver
+- updated to @applitools/snippets@1.0.3 (from 1.0.2)
+
+## 12.1.1 - 2020/8/6
+
+- add utility function to verify that the object is an instance of a class by class name
+- add JSON output to TestResultsFormatter [PR 224](https://github.com/applitools/eyes.sdk.javascript1/pull/224)
+
+## 12.1.0 - 2020/8/6
+
+- add support for RenderRequst `visualGridOptions` in Configuration and CheckSettings
+
+## 12.0.1 - 2020/8/5
+
+- Fix bug in runner.getAllTestResults(false)
+
+## 12.0.0 - 2020/8/4
+
+- support devtools protocol ([Trello](https://trello.com/c/fNxDJDId))
 
 ## 11.5.1 - 2020/7/28
 

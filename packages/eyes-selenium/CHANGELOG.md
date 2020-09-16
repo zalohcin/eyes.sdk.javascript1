@@ -3,6 +3,35 @@
 ## Unreleased
 
 
+## 4.45.3 - 2020/9/4
+
+- Fix a bug for Selenium 3 in the fallback for `getWindowRect` which was calling the wrong function [Trello 502](https://trello.com/c/3Dgvye5M)
+- updated to @applitools/eyes-sdk-core@12.2.3 (from 12.2.2)
+- updated to @applitools/visual-grid-client@15.0.3 (from 15.0.2)
+
+## 4.45.2 - 2020/9/1
+
+- updated to @applitools/eyes-sdk-core@12.2.2 (from 12.2.1)
+- updated to @applitools/visual-grid-client@15.0.2 (from 15.0.1)
+
+## 4.45.1 - 2020/9/1
+
+- updated to @applitools/eyes-sdk-core@12.2.1 (from 12.2.0)
+- updated to @applitools/visual-grid-client@15.0.1 (from 15.0.0)
+
+## 4.45.0 - 2020/8/30
+
+- added spec for extracting device name ([Trello](https://trello.com/c/qyf1baqT/464-wdio5-mobile-web-device-name-not-reported-on-dashboard))
+- updated to @applitools/eyes-sdk-core@12.2.0 (from 12.1.1)
+- updated to @applitools/visual-grid-client@15.0.0 (from 14.7.2)
+
+## 4.44.0 - 2020/8/6
+
+- updated to @applitools/eyes-sdk-core@12.1.0 (from 12.0.1)
+- updated to @applitools/visual-grid-client@14.7.1 (from 14.6.0)
+- updated to @applitools/eyes-sdk-core@12.1.1 (from 12.1.0)
+- updated to @applitools/visual-grid-client@14.7.2 (from 14.7.1)
+
 ## 4.43.1 - 2020/7/26
 
 - updated to @applitools/eyes-sdk-core@11.5.0 (from 11.4.1)

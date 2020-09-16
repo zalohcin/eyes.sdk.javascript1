@@ -3,6 +3,24 @@
 ## Unreleased
 
 
+## 3.8.9 - 2020/8/31
+
+- fix exception when getStoryData throws an error ([Trello](https://trello.com/c/FLDMYl2O))
+- updated to @applitools/eyes-sdk-core@12.2.0 (from 12.1.4)
+- updated to @applitools/visual-grid-client@15.0.0 (from 14.7.5)
+
+## 3.8.8 - 2020/8/13
+
+- updated to @applitools/eyes-sdk-core@12.1.4 (from 12.1.0)
+- updated to @applitools/visual-grid-client@14.7.5 (from 14.7.1)
+
+## 3.8.7 - 2020/8/9
+
+- updated to @applitools/dom-snapshot@4.0.3 (from 4.0.1)
+- updated to @applitools/eyes-sdk-core@12.1.0 (from 11.5.1)
+- updated to @applitools/visual-grid-client@14.7.1 (from 14.6.2)
+- add JSON file output [PR 224](https://github.com/applitools/eyes.sdk.javascript1/pull/224)
+
 ## 3.8.6 - 2020/7/30
 
 - updated to @applitools/dom-snapshot@4.0.1 (from 4.0.0)

@@ -20,7 +20,7 @@ module.exports = {
   contentRegions: [{selector: '{"x":35,"y":36,"width":37,"height":38}'}],
   accessibilityRegions: [{selector: '{"x":45,"y":46,"width":47,"height":48}'}],
   ignoreDisplacements: true,
-  properties: [{name: 'some prop', value: 'some value'}]
+  properties: [{name: 'some prop', value: 'some value'}],
   // notifyOnCompletion: true,
   // accessibilitySettings: {level: 'AA', version: 'WCAG_2_0'},
   // storybookUrl: 'http://localhost:9001/',

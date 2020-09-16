@@ -4,6 +4,31 @@
 
 - removed yarn workspaces
 
+## 5.22.1 - 2020/9/15
+
+- updated to @applitools/eyes-sdk-core@12.2.3 (from 12.2.0)
+- updated to @applitools/visual-grid-client@15.0.3 (from 15.0.0)
+- updated to @applitools/eyes-sdk-core@12.2.4 (from 12.2.3)
+
+## 5.22.0 - 2020/8/30
+
+- updated to @applitools/eyes-sdk-core@12.2.0 (from 12.1.3)
+- updated to @applitools/visual-grid-client@15.0.0 (from 14.7.4)
+
+## 5.21.1 - 2020/8/12
+
+- added spec for extracting device name ([Trello](https://trello.com/c/qyf1baqT/464-wdio5-mobile-web-device-name-not-reported-on-dashboard))
+- updated to @applitools/eyes-sdk-core@12.1.3 (from 12.1.2)
+- updated to @applitools/visual-grid-client@14.7.4 (from 14.7.3)
+
+## 5.21.0 - 2020/8/10
+
+- added support of devtools protocol
+- updated to @applitools/eyes-sdk-core@12.1.0 (from 11.5.1)
+- updated to @applitools/visual-grid-client@14.7.1 (from 14.6.1)
+- updated to @applitools/eyes-sdk-core@12.1.2 (from 12.1.0)
+- updated to @applitools/visual-grid-client@14.7.3 (from 14.7.1)
+
 ## 5.19.3 - 2020/7/29
 
 - updated to @applitools/eyes-sdk-core@11.5.1 (from 11.5.0)
