@@ -26,33 +26,54 @@ async function getScriptForIE({disableBrowserFetching}) {
   return `${scriptBody} return __processPageAndSerializePollForIE(document, {dontFetchResources: ${disableBrowserFetching}});`
 }
 
+function createSelectorMap(snapshot, path = []) {
+  const type = 'xpath'
+  const map = []
+
+  if (snapshot.crossFramesXPaths.length > 0) {
+    snapshot.crossFramesXPaths.forEach(selector =>
+      map.push({
+        path: path.concat({type, selector}),
+        replace: function(innerSnapshot) {
+          snapshot.frames.push(innerSnapshot)
+        },
+      }),
+    )
+  }
+
+  if (snapshot.frames.length > 0) {
+    snapshot.frames.forEach(frame => {
+      const {selector} = frame
+      selector && map.push(...createSelectorMap(frame, path.concat({type, selector})))
+    })
+  }
+
+  delete snapshot.selector
+  delete snapshot.crossFramesXPaths
+
+  return map
+}
+
 async function takeDomSnapshot({driver, startTime = Date.now(), browser, disableBrowserFetching}) {
   const processPageAndPollScript =
     browser === 'IE'
       ? await getScriptForIE({disableBrowserFetching})
       : await getScript({disableBrowserFetching})
 
-  async function getCrossOriginFrames(driver, snapshot) {
-    const {crossFramesXPaths} = snapshot
-    if (crossFramesXPaths.length > 0) {
-      for (const xpath of crossFramesXPaths) {
-        const crossFrameSnapshot = await takeFrameSnapshot(driver, xpath)
-        snapshot.frames.push(crossFrameSnapshot)
-      }
+  async function getCrossOriginFrames(context, selectorMap) {
+    for (const {path, replace} of selectorMap) {
+      const references = path.reduce((parent, reference) => {
+        return {reference, parent}
+      }, null)
+
+      const frameContext = await context.context(references)
+      const contextSnapshot = await _takeDomSnapshot(frameContext)
+      replace(contextSnapshot)
     }
-    delete snapshot.crossFramesXPaths
   }
 
-  async function takeFrameSnapshot(driver, xpath) {
-    const element = await driver.element({type: 'xpath', selector: xpath})
-    await driver.switchToChildContext(element)
-    const snapshot = await _takeDomSnapshot({driver})
-    await driver.switchToParentContext()
-    return snapshot
-  }
-
-  async function _takeDomSnapshot() {
-    const resultAsString = await driver.execute(processPageAndPollScript)
+  async function _takeDomSnapshot(context) {
+    const resultAsString = await context.execute(processPageAndPollScript)
     let scriptResponse
     try {
       scriptResponse = JSON.parse(resultAsString)
@@ -65,7 +86,9 @@ async function takeDomSnapshot({driver, startTime = Date.now(), browser, disable
     }
 
     if (scriptResponse.status === 'SUCCESS') {
-      await getCrossOriginFrames(driver, scriptResponse.value)
+      // create a map
+      const selectorMap = createSelectorMap(scriptResponse.value)
+      await getCrossOriginFrames(context, selectorMap)
       return scriptResponse.value
     } else if (scriptResponse.status === 'ERROR') {
       throw new Error(`Unable to process dom snapshot: ${scriptResponse.error}`)
@@ -74,10 +97,10 @@ async function takeDomSnapshot({driver, startTime = Date.now(), browser, disable
     }
 
     await GeneralUtils.sleep(PULL_TIMEOUT)
-    return _takeDomSnapshot({driver, startTime})
+    return _takeDomSnapshot(context)
   }
 
-  const snapshot = await _takeDomSnapshot()
+  const snapshot = await _takeDomSnapshot(driver.currentContext)
   return deserializeDomSnapshotResult(snapshot)
 }
 

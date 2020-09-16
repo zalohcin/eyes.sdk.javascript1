@@ -76,7 +76,7 @@ describe('takeDomSnapshot', () => {
     }
   })
 
-  it('should take a dom snapshot with cross origin iframes', async () => {
+  it('should take a dom snapshot with cross origin frames', async () => {
     try {
       driver.mockElements([
         {
@@ -95,7 +95,7 @@ describe('takeDomSnapshot', () => {
     }
   })
 
-  it('should take a dom snapshot with nested cross origin iframes', async () => {
+  it('should take a dom snapshot with nested cross origin frames', async () => {
     try {
       const deeplyNestedFrameSnapshot = generateSnapshotObject('BODY[1]/IFRAME[1]')
       driver.mockElements([
@@ -129,6 +129,88 @@ describe('takeDomSnapshot', () => {
 
       const snapshot = await takeDomSnapshot({driver: eyesDriver})
       expect(snapshot).to.eql(expectedSnapshot)
+    } catch (error) {
+      throw error
+    }
+  })
+
+  it('should take a dom snapshot with nested frames containing cross origin frames', async () => {
+    try {
+      driver.mockElements([
+        {
+          selector: 'DIV[1]/IFRAME[1]',
+          frame: true,
+          attributes: [],
+          children: [
+            {
+              selector: 'DIV[1]/SPAN[1]/DIV[1]/IFRAME[1]',
+              frame: true,
+              isCORS: true,
+              attributes: [],
+              children: [],
+            },
+          ],
+        },
+      ])
+      const wrapperFrame = {
+        cdt: [],
+        srcAttr: null,
+        resourceUrls: [],
+        resourceContents: {},
+        blobs: [],
+        frames: [],
+        selector: 'DIV[1]/IFRAME[1]',
+        crossFramesXPaths: ['DIV[1]/SPAN[1]/DIV[1]/IFRAME[1]'],
+        scriptVersion: '4.0.6',
+      }
+      const topLevelSnapshot = JSON.stringify({
+        status: 'SUCCESS',
+        value: {
+          cdt: [],
+          srcAttr: null,
+          resourceUrls: [],
+          resourceContents: {},
+          selector: '',
+          blobs: [],
+          frames: [
+            {
+              ...wrapperFrame,
+            },
+          ],
+          crossFramesXPaths: [],
+          scriptVersion: '4.0.6',
+        },
+      })
+
+      const deeplyNestedFrameSnapshot = JSON.stringify({
+        status: 'SUCCESS',
+        value: {
+          cdt: [],
+          srcAttr: null,
+          resourceUrls: [],
+          resourceContents: {},
+          blobs: [],
+          frames: [],
+          crossFramesXPaths: [],
+          selector: 'DIV[1]/SPAN[1]/DIV[1]/IFRAME[1]',
+          scriptVersion: '4.0.6',
+        },
+      })
+
+      driver.mockScript('dom-snapshot', function() {
+        switch (this.name) {
+          case 'DIV[1]/SPAN[1]/DIV[1]/IFRAME[1]':
+            return deeplyNestedFrameSnapshot
+          default:
+            return topLevelSnapshot
+        }
+      })
+
+      const snapshot = await takeDomSnapshot({driver: eyesDriver})
+      delete wrapperFrame.selector
+      delete wrapperFrame.crossFramesXPaths
+      delete wrapperFrame.blobs
+      expect(snapshot.frames[0].frames[0]).to.eql(wrapperFrame)
     } catch (error) {
       throw error
     }
