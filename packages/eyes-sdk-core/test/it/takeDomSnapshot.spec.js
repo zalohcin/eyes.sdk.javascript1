@@ -32,7 +32,7 @@ describe('takeDomSnapshot', () => {
       return this.name === 'HTML[1]/BODY[1]/IFRAME[1]' ? innerFrameSnapshot : topPageSnapshot
     })
 
-    eyesDriver = new FakeEyesDriver(logger, driver)
+    eyesDriver = await new FakeEyesDriver(logger, driver).init()
   })
 
   beforeEach(() => {

@@ -12,18 +12,18 @@ const CAPTURE_DOM_TIMEOUT_MS = 5 * 60 * 1000 // 5 min
 
 let scriptBody
 
-async function getScript({disableBrowserFetching}) {
+async function getScript() {
   if (!scriptBody) {
     scriptBody = await getProcessPageAndSerializePoll()
   }
-  return `${scriptBody} return __processPageAndSerializePoll(document, {dontFetchResources: ${disableBrowserFetching}});`
+  return `${scriptBody} return __processPageAndSerializePoll(document, arguments[0]);`
 }
 
-async function getScriptForIE({disableBrowserFetching}) {
+async function getScriptForIE() {
   if (!scriptBody) {
     scriptBody = await getProcessPageAndSerializePollForIE()
   }
-  return `${scriptBody} return __processPageAndSerializePollForIE(document, {dontFetchResources: ${disableBrowserFetching}});`
+  return `${scriptBody} return __processPageAndSerializePollForIE(document, arguments[0]);`
 }
 
 function createSelectorMap(snapshot, path = []) {
@@ -54,11 +54,11 @@ function createSelectorMap(snapshot, path = []) {
   return map
 }
 
-async function takeDomSnapshot({driver, startTime = Date.now(), browser, disableBrowserFetching}) {
-  const processPageAndPollScript =
-    browser === 'IE'
-      ? await getScriptForIE({disableBrowserFetching})
-      : await getScript({disableBrowserFetching})
+async function takeDomSnapshot({driver, startTime = Date.now(), disableBrowserFetching}) {
+  const {browserName, browserVersion} = driver
+  const isIE = browserName === 'internet explorer'
+  const isEdgeLegacy = browserName.toLowerCase().includes('edge') && browserVersion <= 44
+  const processPageAndPollScript = isIE || isEdgeLegacy ? await getScriptForIE() : await getScript()
 
   async function getCrossOriginFrames(context, selectorMap) {
     for (const {path, replace} of selectorMap) {
@@ -73,7 +73,7 @@ async function takeDomSnapshot({driver, startTime = Date.now(), browser, disable
   }
 
   async function _takeDomSnapshot(context) {
-    const resultAsString = await context.execute(processPageAndPollScript)
+    const resultAsString = await context.execute(processPageAndPollScript, {disableBrowserFetching})
     let scriptResponse
     try {
       scriptResponse = JSON.parse(resultAsString)
@@ -86,7 +86,6 @@ async function takeDomSnapshot({driver, startTime = Date.now(), browser, disable
     }
 
     if (scriptResponse.status === 'SUCCESS') {
-      // create a map
       const selectorMap = createSelectorMap(scriptResponse.value)
       await getCrossOriginFrames(context, selectorMap)
       return scriptResponse.value
