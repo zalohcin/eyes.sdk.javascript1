@@ -3,7 +3,7 @@ const {TypeUtils} = require('@applitools/eyes-sdk-core')
 // #region HELPERS
 
 async function handleToObject(handle) {
-  const type = handle._objectType
+  const [_, type] = handle.toString().split('@')
   if (type === 'array') {
     const map = await handle.getProperties()
     return Promise.all(Array.from(map.values(), handleToObject))
@@ -48,17 +48,6 @@ function isSelector(selector) {
 function extractContext(page) {
   return page.constructor.name === 'Page' ? page.mainFrame() : page
 }
-function toEyesSelector(selector) {
-  if (!TypeUtils.isString(selector)) return {selector}
-  if (selector.includes('>>')) return {selector}
-  if (selector.startsWith('//')) return {type: 'xpath', selector}
-
-  const match = selector.match(/(css:light|xpath)=(.+)/)
-  if (!match) return {selector}
-  const [_, type, value] = match
-  if (type === 'css:light') return {type: 'css', selector: value}
-  else if (type === 'xpath') return {type: 'xpath', selector: value}
-}
 function isStaleElementError(err) {
   return err && err.message && err.message.includes('Protocol error (DOM.describeNode)')
 }
@@ -79,7 +68,11 @@ async function executeScript(frame, script, arg) {
 }
 async function mainContext(frame) {
   frame = extractContext(frame)
-  return frame._page.mainFrame()
+  let mainFrame = frame
+  while (mainFrame.parentFrame()) {
+    mainFrame = mainFrame.parentFrame()
+  }
+  return mainFrame
 }
 async function parentContext(frame) {
   frame = extractContext(frame)
@@ -125,6 +118,18 @@ async function type(_frame, element, keys) {
 async function waitUntilDisplayed(frame, selector) {
   return frame.waitForSelector(selector)
 }
+async function scrollIntoView(frame, element, align = false) {
+  if (isSelector(element)) {
+    element = await findElement(frame, element)
+  }
+  await frame.evaluate(([element, align]) => element.scrollIntoView(align), [element, align])
+}
+async function hover(frame, element, {x = 0, y = 0} = {}) {
+  if (isSelector(element)) {
+    element = await findElement(frame, element)
+  }
+  await element.hover({position: {x, y}})
+}
 
 // #endregion
 
@@ -156,10 +161,8 @@ async function build(env) {
     driver = await launcher.launch(options)
   }
   const context = await driver.newContext(device ? playwright.devices[device] : {})
-  return context.newPage()
-}
-async function cleanup(page) {
-  return page && page.context()._browserBase.close()
+  const page = await context.newPage()
+  return [page, () => driver.close()]
 }
 
 // #endregion
@@ -171,7 +174,6 @@ exports.isSelector = isSelector
 exports.extractContext = extractContext
 exports.isStaleElementError = isStaleElementError
 exports.isEqualElements = isEqualElements
-exports.toEyesSelector = toEyesSelector
 
 exports.executeScript = executeScript
 exports.mainContext = mainContext
@@ -189,6 +191,7 @@ exports.takeScreenshot = takeScreenshot
 exports.click = click
 exports.type = type
 exports.waitUntilDisplayed = waitUntilDisplayed
+exports.scrollIntoView = scrollIntoView
+exports.hover = hover
 
 exports.build = build
-exports.cleanup = cleanup
