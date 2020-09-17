@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 12.2.5 - 2020/9/17
+
 - fix viewport position calculations ([Trello](https://trello.com/c/TuXUZUNO))
 - fix `takeDomCapture`
 
