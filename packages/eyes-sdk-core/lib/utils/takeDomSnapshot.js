@@ -28,9 +28,10 @@ async function getScriptForIE() {
 
 function createSelectorMap(snapshot, path = []) {
   const type = 'xpath'
+  const {crossFramesXPaths} = snapshot
   const map = []
 
-  if (snapshot.crossFramesXPaths.length > 0) {
+  if (crossFramesXPaths && crossFramesXPaths.length > 0) {
     snapshot.crossFramesXPaths.forEach(selector =>
       map.push({
         path: path.concat({type, selector}),
