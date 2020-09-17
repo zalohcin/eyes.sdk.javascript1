@@ -17,13 +17,13 @@ class DomInterceptingEyes extends Eyes {
 
 describe(appName, () => {
   describe(`TestSendDom Intercepted`, () => {
-    let driver
+    let driver, destroyDriver
     beforeEach(async () => {
-      driver = await spec.build({browser: 'chrome'})
+      ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
     })
 
     afterEach(async () => {
-      await spec.cleanup(driver)
+      await destroyDriver()
     })
     // There differences between fixture and domJson which cause enormous console output
     it.skip('TestSendDOM_FullWindow', async () => {
@@ -53,15 +53,15 @@ describe(appName, () => {
   })
 
   describe(`TestSendDom`, () => {
-    let webDriver, eyes
+    let webDriver, destroyDriver, eyes
     beforeEach(async () => {
-      webDriver = await spec.build({browser: 'chrome'})
+      ;[webDriver, destroyDriver] = await spec.build({browser: 'chrome'})
       eyes = await getEyes('classic', 'CSS')
     })
 
     afterEach(async () => {
       await eyes.abortIfNotClosed()
-      await spec.cleanup(webDriver)
+      await destroyDriver()
     })
 
     it(`TestSendDOM_Selector`, async () => {

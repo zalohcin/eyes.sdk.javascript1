@@ -9,16 +9,16 @@ const {By, Target} = require(cwd)
 describe.skip('Coverage Tests', async () => {
   describe('full page capture edge classic (@edge)', () => {
     let eyes
-    let driver
+    let driver, destroyDriver
 
     before(async () => {
-      driver = await spec.build({browser: 'edge-18', remote: 'sauce'})
+      ;[driver, destroyDriver] = await spec.build({browser: 'edge-18', remote: 'sauce'})
       eyes = getEyes({isCssStitching: true})
       eyes.setMatchTimeout(0)
     })
 
     after(async () => {
-      await spec.cleanup(driver)
+      await destroyDriver()
       await eyes.abortIfNotClosed()
     })
 

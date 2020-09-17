@@ -6,12 +6,12 @@ const {getEyes} = require('../../src/test-setup')
 const {Target} = require(cwd)
 
 describe('api methods', () => {
-  let driver, eyes
+  let driver, destroyDriver, eyes
   beforeEach(async () => {
-    driver = await spec.build({browser: 'chrome'})
+    ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
   })
   afterEach(async function() {
-    await spec.cleanup(driver)
+    await destroyDriver()
     await eyes.abortIfNotClosed()
   })
   describe('classic', function() {

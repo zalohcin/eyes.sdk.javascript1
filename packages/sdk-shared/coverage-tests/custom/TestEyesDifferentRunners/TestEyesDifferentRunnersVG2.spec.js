@@ -8,12 +8,12 @@ const {testSetup, getCheckSettings} = require('./EyesDifferentRunners')
 
 describe('TestEyesDifferentRunners VG2', () => {
   afterEach(async function() {
-    await spec.cleanup(this.webDriver)
+    await this.destroyDriver()
     await this.eyes.abortIfNotClosed()
   })
 
   beforeEach(async function() {
-    this.webDriver = await spec.build({browser: 'chrome'})
+    ;[this.webDriver, this.destroyDriver] = await spec.build({browser: 'chrome'})
     this.eyes = await getEyes({isVisualGrid: true})
     this.eyes.setSaveNewTests(false)
     await this.eyes.open(this.webDriver, 'Top Sites', `Top Sites - ${this.currentTest.title}`, {

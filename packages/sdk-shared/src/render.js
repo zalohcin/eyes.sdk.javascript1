@@ -235,7 +235,7 @@ if (!url && !args.attach) {
     }
   }
 
-  const driver = await buildDriver({...args, isMobileEmulation})
+  const [driver, destroyDriver] = await buildDriver({...args, isMobileEmulation})
 
   if (args.attach) {
     url = await spec.executeScript(driver, 'return window.location.href')
@@ -385,7 +385,7 @@ if (!url && !args.attach) {
     console.log('\nRender results:\n', resultsStr)
   } finally {
     if (!args.attach) {
-      await spec.cleanup(driver)
+      await destroyDriver()
     }
     if (args.webdriverProxy) {
       await chromedriver.stop()
