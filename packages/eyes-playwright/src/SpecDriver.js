@@ -43,7 +43,7 @@ function isElement(element) {
   return element.constructor.name === 'ElementHandle'
 }
 function isSelector(selector) {
-  return TypeUtils.isString(selector)
+  return TypeUtils.has(selector, ['type', 'selector']) || TypeUtils.isString(selector)
 }
 function extractContext(page) {
   return page.constructor.name === 'Page' ? page.mainFrame() : page

@@ -43,6 +43,7 @@ function isSelector(selector) {
   if (!selector) return false
   return (
     TypeUtils.isString(selector) ||
+    TypeUtils.has(selector, ['type', 'selector']) ||
     TypeUtils.has(selector, ['using', 'value']) ||
     Object.keys(selector).some(key => byHash.includes(key)) ||
     TypeUtils.isFunction(selector.findElementsOverride)
