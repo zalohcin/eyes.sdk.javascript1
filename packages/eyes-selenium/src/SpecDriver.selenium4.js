@@ -49,22 +49,6 @@ function isSelector(selector) {
     TypeUtils.isString(selector)
   )
 }
-function toEyesSelector(selector) {
-  if (TypeUtils.isString(selector)) {
-    selector = {css: selector}
-  } else if (TypeUtils.has(selector, ['using', 'value'])) {
-    selector = new By(selector.using, selector.value)
-  } else if (TypeUtils.isPlainObject(selector)) {
-    const using = Object.keys(selector).find(using => byHash.includes(using))
-    if (using) selector = By[using](selector[using])
-  }
-  if (selector.constructor.name === 'By') {
-    const {using, value} = selector
-    if (using === 'css selector') return {type: 'css', selector: value}
-    else if (using === 'xpath') return {type: 'xpath', selector: value}
-  }
-  return {selector}
-}
 function isStaleElementError(error) {
   if (!error) return false
   error = error.originalError || error
@@ -207,6 +191,21 @@ async function waitUntilDisplayed(driver, selector, timeout) {
   const element = await findElement(driver, selector)
   return driver.wait(until.elementIsVisible(element), timeout)
 }
+async function scrollIntoView(driver, element, align = false) {
+  if (isSelector(element)) {
+    element = await findElement(driver, element)
+  }
+  await driver.executeScript('arguments[0].scrollIntoView(arguments[1])', element, align)
+}
+async function hover(driver, element, {x, y} = {}) {
+  if (isSelector(element)) {
+    element = await findElement(driver, element)
+  }
+  await driver
+    .actions()
+    .move({origin: element, x, y})
+    .perform()
+}
 
 // #endregion
 
@@ -229,13 +228,11 @@ async function build(env) {
       }
     }
   }
-  return new Builder()
+  const driver = await new Builder()
     .withCapabilities(desiredCapabilities)
     .usingServer(!attach ? url.href : null)
     .build()
-}
-async function cleanup(browser) {
-  return browser && browser.quit()
+  return [driver, () => driver.quit()]
 }
 
 // #endregion
@@ -251,7 +248,6 @@ function wrapDriver(browser) {
 exports.isDriver = isDriver
 exports.isElement = isElement
 exports.isSelector = isSelector
-exports.toEyesSelector = toEyesSelector
 exports.isEqualElements = isEqualElements
 exports.isStaleElementError = isStaleElementError
 
@@ -280,8 +276,9 @@ exports.takeScreenshot = takeScreenshot
 exports.click = click
 exports.type = type
 exports.waitUntilDisplayed = waitUntilDisplayed
+exports.scrollIntoView = scrollIntoView
+exports.hover = hover
 
 exports.build = build
-exports.cleanup = cleanup
 
 exports.wrapDriver = wrapDriver

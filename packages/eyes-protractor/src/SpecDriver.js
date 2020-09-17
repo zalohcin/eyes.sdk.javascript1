@@ -1,5 +1,5 @@
 const {TypeUtils} = require('@applitools/eyes-sdk-core')
-const {ProtractorBy, Builder, Runner, Command, CommandName, until} = require('protractor')
+const {Builder, Runner, Command, CommandName, until} = require('protractor')
 
 // #region HELPERS
 
@@ -60,24 +60,6 @@ function transformElement(element) {
     return element.getWebElement()
   }
   return element
-}
-function toEyesSelector(selector) {
-  if (!TypeUtils.has(selector, ['using', 'value'])) {
-    const by = new ProtractorBy()
-    if (TypeUtils.isString(selector)) {
-      selector = by.css(selector)
-    } else if (TypeUtils.isPlainObject(selector)) {
-      const using = Object.keys(selector).find(using => TypeUtils.has(by, using))
-      if (using) selector = by[using](selector[using])
-    } else {
-      return {selector}
-    }
-  }
-
-  const {using, value} = selector
-  if (using === 'css selector') return {type: 'css', selector: value}
-  else if (using === 'xpath') return {type: 'xpath', selector: value}
-  else return {selector}
 }
 function isStaleElementError(error) {
   if (!error) return false
@@ -228,6 +210,21 @@ async function waitUntilDisplayed(driver, selector, timeout) {
   const element = await findElement(driver, selector)
   return driver.wait(until.elementIsVisible(element), timeout)
 }
+async function scrollIntoView(driver, element, align = false) {
+  if (isSelector(element)) {
+    element = await findElement(driver, element)
+  }
+  await driver.executeScript('arguments[0].scrollIntoView(arguments[1])', element, align)
+}
+async function hover(driver, element, {x, y} = {}) {
+  if (isSelector(element)) {
+    element = await findElement(driver, element)
+  }
+  await driver
+    .actions()
+    .mouseMove(element, {x, y})
+    .perform()
+}
 
 // #endregion
 
@@ -268,10 +265,7 @@ async function build(env) {
   const driver = await runner.createBrowser().ready
   driver.by = driver.constructor.By
   driver.waitForAngularEnabled(false)
-  return driver
-}
-async function cleanup(driver) {
-  return driver && driver.quit()
+  return [driver, () => driver.quit()]
 }
 
 // #endregion
@@ -281,7 +275,6 @@ exports.isElement = isElement
 exports.isSelector = isSelector
 exports.transformDriver = transformDriver
 exports.transformElement = transformElement
-exports.toEyesSelector = toEyesSelector
 exports.isEqualElements = isEqualElements
 exports.isStaleElementError = isStaleElementError
 
@@ -310,6 +303,7 @@ exports.takeScreenshot = takeScreenshot
 exports.click = click
 exports.type = type
 exports.waitUntilDisplayed = waitUntilDisplayed
+exports.scrollIntoView = scrollIntoView
+exports.hover = hover
 
 exports.build = build
-exports.cleanup = cleanup

@@ -3,17 +3,17 @@ const spec = require('../../src/SpecDriver')
 const {By} = require('../../index')
 
 describe('SpecDriver', async () => {
-  let browser
+  let browser, destroyBrowser
   const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
 
   describe('headless desktop', async () => {
     before(async () => {
-      browser = await spec.build({browser: 'chrome'})
+      ;[browser, destroyBrowser] = await spec.build({browser: 'chrome'})
       await browser.url(url)
     })
 
     after(async () => {
-      await spec.cleanup(browser)
+      await destroyBrowser()
     })
 
     it('isDriver(driver)', isDriver({expected: true}))
@@ -66,7 +66,6 @@ describe('SpecDriver', async () => {
       'extractSelector(response-element)',
       extractSelector({input: () => browser.element('div'), expected: 'div'}),
     )
-    it('toEyesSelector(selector)', toEyesSelector())
     it('executeScript(strings, ...args)', executeScript())
     it('findElement(string)', findElement({input: '#overflowing-div'}))
     it('findElements(string)', findElements({input: 'div'}))
@@ -85,11 +84,11 @@ describe('SpecDriver', async () => {
 
   describe('onscreen desktop (@webdriver)', async () => {
     before(async () => {
-      browser = await spec.build({browser: 'chrome', headless: false})
+      ;[browser, destroyBrowser] = await spec.build({browser: 'chrome', headless: false})
     })
 
     after(async () => {
-      await spec.cleanup(browser)
+      await destroyBrowser()
     })
 
     it('getWindowRect()', getWindowRect())
@@ -118,11 +117,11 @@ describe('SpecDriver', async () => {
 
   describe('legacy browser (@webdriver)', async () => {
     before(async () => {
-      browser = await spec.build({browser: 'ie-11'})
+      ;[browser, destroyBrowser] = await spec.build({browser: 'ie-11'})
     })
 
     after(async () => {
-      await spec.cleanup(browser)
+      await destroyBrowser()
     })
 
     it('getWindowRect()', getWindowRect())
@@ -152,11 +151,11 @@ describe('SpecDriver', async () => {
 
   describe('mobile browser (@mobile)', async () => {
     before(async () => {
-      browser = await spec.build({browser: 'chrome', device: 'Pixel 3a XL'})
+      ;[browser, destroyBrowser] = await spec.build({browser: 'chrome', device: 'Pixel 3a XL'})
     })
 
     after(async () => {
-      await spec.cleanup(browser)
+      await destroyBrowser()
     })
 
     it('isMobile()', isMobile({expected: true}))
@@ -169,14 +168,14 @@ describe('SpecDriver', async () => {
 
   describe('native app (@mobile @native)', async () => {
     before(async () => {
-      browser = await spec.build({
+      ;[browser, destroyBrowser] = await spec.build({
         app: 'http://saucelabs.com/example_files/ContactManager.apk',
         device: 'Android Emulator',
       })
     })
 
     after(async () => {
-      await spec.cleanup(browser)
+      await destroyBrowser()
     })
 
     it('isMobile()', isMobile({expected: true}))
@@ -230,25 +229,6 @@ describe('SpecDriver', async () => {
     return async () => {
       const selector = spec.extractSelector(await input())
       assert.deepStrictEqual(selector, expected)
-    }
-  }
-  function toEyesSelector() {
-    return async () => {
-      const xpathSelector = 'xpath:/html[1]/body[1]/div[1]'
-      const xpathResult = spec.toEyesSelector(xpathSelector)
-      assert.deepStrictEqual(xpathResult, {type: 'xpath', selector: '/html[1]/body[1]/div[1]'})
-
-      const cssSelector = 'css selector:html > body > div'
-      const cssResult = spec.toEyesSelector(cssSelector)
-      assert.deepStrictEqual(cssResult, {type: 'css', selector: 'html > body > div'})
-
-      const tagSelector = '<tag />'
-      const tagResult = spec.toEyesSelector(tagSelector)
-      assert.deepStrictEqual(tagResult, {selector: tagSelector})
-
-      const wrongSelector = {isWrong: true}
-      const wrongResult = spec.toEyesSelector(wrongSelector)
-      assert.deepStrictEqual(wrongResult, {selector: wrongSelector})
     }
   }
   function executeScript() {

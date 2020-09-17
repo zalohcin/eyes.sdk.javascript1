@@ -9,17 +9,17 @@ before(function() {
 })
 
 describe('SpecDriver @selenium4', async () => {
-  let driver
+  let driver, destroyDriver
   const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
 
   describe('headless desktop', async () => {
     before(async () => {
-      driver = await spec.build({browser: 'chrome'})
+      ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
       await driver.get(url)
     })
 
     after(async () => {
-      await spec.cleanup(driver)
+      await destroyDriver()
     })
 
     it('isDriver(driver)', isDriver({expected: true}))
@@ -52,7 +52,6 @@ describe('SpecDriver @selenium4', async () => {
         expected: false,
       }),
     )
-    it('toEyesSelector(selector)', toEyesSelector())
     it('executeScript(strings, ...args)', executeScript())
     it('findElement(string)', findElement({input: By.id('overflowing-div')}))
     it('findElements(string)', findElements({input: By.css('div')}))
@@ -71,11 +70,11 @@ describe('SpecDriver @selenium4', async () => {
 
   describe('onscreen desktop (@webdriver)', async () => {
     before(async () => {
-      driver = await spec.build({browser: 'chrome', headless: false})
+      ;[driver, destroyDriver] = await spec.build({browser: 'chrome', headless: false})
     })
 
     after(async () => {
-      await spec.cleanup(driver)
+      await destroyDriver()
     })
 
     it('getWindowRect()', getWindowRect())
@@ -104,11 +103,11 @@ describe('SpecDriver @selenium4', async () => {
 
   describe('legacy driver (@webdriver)', async () => {
     before(async () => {
-      driver = await spec.build({browser: 'ie-11'})
+      ;[driver, destroyDriver] = await spec.build({browser: 'ie-11'})
     })
 
     after(async () => {
-      await spec.cleanup(driver)
+      await destroyDriver()
     })
 
     it('getWindowRect()', getWindowRect())
@@ -138,11 +137,11 @@ describe('SpecDriver @selenium4', async () => {
 
   describe('mobile driver (@mobile)', async () => {
     before(async () => {
-      driver = await spec.build({browser: 'chrome', device: 'Pixel 3a XL'})
+      ;[driver, destroyDriver] = await spec.build({browser: 'chrome', device: 'Pixel 3a XL'})
     })
 
     after(async () => {
-      await spec.cleanup(driver)
+      await destroyDriver()
     })
 
     it('isMobile()', isMobile({expected: true}))
@@ -177,25 +176,6 @@ describe('SpecDriver @selenium4', async () => {
       const {element1, element2} = await input()
       const result = await spec.isEqualElements(driver, element1, element2)
       assert.deepStrictEqual(result, expected)
-    }
-  }
-  function toEyesSelector() {
-    return async () => {
-      const xpathSelector = By.xpath('/html[1]/body[1]/div[1]')
-      const xpathResult = spec.toEyesSelector(xpathSelector)
-      assert.deepStrictEqual(xpathResult, {selector: xpathSelector})
-
-      const cssSelector = By.css('html > body > div')
-      const cssResult = spec.toEyesSelector(cssSelector)
-      assert.deepStrictEqual(cssResult, {selector: cssSelector})
-
-      const tagSelector = By.linkText('text')
-      const tagResult = spec.toEyesSelector(tagSelector)
-      assert.deepStrictEqual(tagResult, {selector: tagSelector})
-
-      const wrongSelector = {isWrong: true}
-      const wrongResult = spec.toEyesSelector(wrongSelector)
-      assert.deepStrictEqual(wrongResult, {selector: wrongSelector})
     }
   }
   function executeScript() {

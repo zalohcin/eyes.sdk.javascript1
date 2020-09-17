@@ -1,4 +1,4 @@
-const {By, Builder, until} = require('selenium-webdriver')
+const {By, Builder, ActionSequence, until} = require('selenium-webdriver')
 const cmd = require('selenium-webdriver/lib/command')
 const {TypeUtils} = require('@applitools/eyes-sdk-core')
 const {withLegacyDriverAPI} = require('./LegacyAPI')
@@ -43,22 +43,6 @@ function transformDriver(driver) {
     .getExecutor()
     .defineCommand(cmd.Name.SWITCH_TO_PARENT_FRAME, 'POST', '/session/:sessionId/frame/parent')
   return driver
-}
-function toEyesSelector(selector) {
-  if (TypeUtils.isString(selector)) {
-    selector = By.css(selector)
-  } else if (TypeUtils.has(selector, ['using', 'value'])) {
-    selector = new By(selector.using, selector.value)
-  } else if (TypeUtils.isPlainObject(selector)) {
-    const using = Object.keys(selector).find(using => TypeUtils.has(By, using))
-    if (using) selector = By[using](selector[using])
-  }
-  if (selector instanceof By) {
-    const {using, value} = selector
-    if (using === 'css selector') return {type: 'css', selector: value}
-    else if (using === 'xpath') return {type: 'xpath', selector: value}
-  }
-  return {selector}
 }
 function isStaleElementError(error) {
   if (!error) return false
@@ -241,6 +225,19 @@ async function waitUntilDisplayed(driver, selector, timeout) {
   const element = await findElement(driver, selector)
   return driver.wait(until.elementIsVisible(element), timeout)
 }
+async function scrollIntoView(driver, element, align = false) {
+  if (isSelector(element)) {
+    element = await findElement(driver, element)
+  }
+  await driver.executeScript('arguments[0].scrollIntoView(arguments[1])', element, align)
+}
+async function hover(driver, element, {x, y} = {}) {
+  if (isSelector(element)) {
+    element = await findElement(driver, element)
+  }
+  const action = new ActionSequence(driver)
+  await action.mouseMove(element, {x, y}).perform()
+}
 
 // #endregion
 
@@ -252,7 +249,10 @@ const browserOptionsNames = {
 }
 async function build(env) {
   const {testSetup} = require('@applitools/sdk-shared')
-  const {browser = '', capabilities, headless, url, sauce, args = []} = testSetup.Env(env)
+  const {browser = '', capabilities, headless, url, sauce, args = []} = testSetup.Env({
+    legacy: true,
+    ...env,
+  })
   const desiredCapabilities = {browserName: browser, ...capabilities}
   if (!sauce) {
     const browserOptionsName = browserOptionsNames[browser]
@@ -269,13 +269,11 @@ async function build(env) {
       }
     }
   }
-  return new Builder()
+  const driver = await new Builder()
     .withCapabilities(desiredCapabilities)
     .usingServer(url.href)
     .build()
-}
-async function cleanup(browser) {
-  return browser && browser.quit()
+  return [driver, () => driver.quit()]
 }
 
 // #endregion
@@ -292,7 +290,6 @@ exports.isDriver = isDriver
 exports.isElement = isElement
 exports.isSelector = isSelector
 exports.transformDriver = transformDriver
-exports.toEyesSelector = toEyesSelector
 exports.isEqualElements = isEqualElements
 exports.isStaleElementError = isStaleElementError
 
@@ -321,8 +318,9 @@ exports.takeScreenshot = takeScreenshot
 exports.click = click
 exports.type = type
 exports.waitUntilDisplayed = waitUntilDisplayed
+exports.scrollIntoView = scrollIntoView
+exports.hover = hover
 
 exports.build = build
-exports.cleanup = cleanup
 
 exports.wrapDriver = wrapDriver

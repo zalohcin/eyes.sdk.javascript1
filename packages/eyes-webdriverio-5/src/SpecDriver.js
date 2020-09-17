@@ -44,21 +44,6 @@ function transformElement(element) {
 function extractSelector(element) {
   return element.selector
 }
-function toEyesSelector(selector) {
-  if (selector instanceof LegacySelector) {
-    const {using, value} = selector
-    if (using === 'css selector') return {type: 'css', selector: value}
-    else if (using === 'xpath') return {type: 'xpath', selector: value}
-  } else if (TypeUtils.isString(selector)) {
-    const match = selector.match(/(css selector|xpath):(.+)/)
-    if (match) {
-      const [_, using, value] = match
-      if (using === 'css selector') return {type: 'css', selector: value}
-      else if (using === 'xpath') return {type: 'xpath', selector: value}
-    }
-  }
-  return {selector}
-}
 function isStaleElementError(error) {
   if (!error) return false
   const errOrResult = error.originalError || error
@@ -213,6 +198,23 @@ async function waitUntilDisplayed(browser, selector, timeout) {
   const element = await findElement(browser, selector)
   return element.waitForDisplayed({timeout})
 }
+async function scrollIntoView(browser, element, align = false) {
+  if (isSelector(element)) {
+    const element = await findElement(browser, element)
+  }
+  return element.scrollIntoView(align)
+}
+async function hover(browser, element, {x, y} = {}) {
+  if (isSelector(element)) {
+    const element = await findElement(browser, element)
+  }
+  // NOTE: WDIO6 changed the signature of moveTo method
+  if (process.env.APPLITOOLS_WDIO_MAJOR_VERSION === '5') {
+    await element.moveTo(x, y)
+  } else {
+    await element.moveTo({xOffset: x, yOffset: y})
+  }
+}
 
 // #endregion
 
@@ -226,7 +228,7 @@ async function build(env) {
   const webdriverio = require('webdriverio')
   const {testSetup} = require('@applitools/sdk-shared')
   const {
-    browser,
+    browser = '',
     capabilities,
     headless,
     url,
@@ -256,10 +258,8 @@ async function build(env) {
       }
     }
   }
-  return webdriverio.remote(options)
-}
-async function cleanup(browser) {
-  return browser && browser.deleteSession()
+  const driver = await webdriverio.remote(options)
+  return [driver, () => driver.deleteSession()]
 }
 
 // #endregion
@@ -277,7 +277,6 @@ exports.isElement = isElement
 exports.isSelector = isSelector
 exports.transformElement = transformElement
 exports.extractSelector = extractSelector
-exports.toEyesSelector = toEyesSelector
 exports.isEqualElements = isEqualElements
 exports.isStaleElementError = isStaleElementError
 
@@ -306,8 +305,9 @@ exports.takeScreenshot = takeScreenshot
 exports.click = click
 exports.type = type
 exports.waitUntilDisplayed = waitUntilDisplayed
+exports.scrollIntoView = scrollIntoView
+exports.hover = hover
 
 exports.build = build
-exports.cleanup = cleanup
 
 exports.wrapDriver = wrapDriver
