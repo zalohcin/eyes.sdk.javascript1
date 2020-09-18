@@ -179,7 +179,7 @@ async function executeScript(driver, script, ...args) {
   if (!result || !Object.keys(result).length) return domNodes.selector
   if (Array.isArray(result)) {
     return result.map((entry, index) => {
-      if (entry.isDomNode) {
+      if (entry && entry.isDomNode) {
         return domNodes.length ? domNodes[index].selector : domNodes.selector
       } else return entry
     })
