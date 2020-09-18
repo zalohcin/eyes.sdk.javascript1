@@ -132,7 +132,7 @@ describe('SpecDriver @selenium4', async () => {
         expected: {x: 11, y: 12, width: 551, height: 552},
       }),
     )
-    it('getPlatformName()', getPlatformName({expected: 'WINDOWS'}))
+    it('getPlatformName()', getPlatformName({expected: 'windows'}))
   })
 
   describe('mobile driver (@mobile)', async () => {
@@ -291,8 +291,8 @@ describe('SpecDriver @selenium4', async () => {
     return async () => {
       const session = await driver.getSession()
       const expected = await session.getId()
-      const result = await spec.getSessionId(driver)
-      assert.deepStrictEqual(result, expected)
+      const {sessionId} = await spec.getDriverInfo(driver)
+      assert.deepStrictEqual(sessionId, expected)
     }
   }
   function getTitle() {
@@ -319,32 +319,32 @@ describe('SpecDriver @selenium4', async () => {
   }
   function isMobile({expected} = {}) {
     return async () => {
-      const result = await spec.isMobile(driver)
-      assert.deepStrictEqual(result, expected)
+      const {isMobile} = await spec.getDriverInfo(driver)
+      assert.deepStrictEqual(isMobile, expected)
     }
   }
   function isNative({expected} = {}) {
     return async () => {
-      const result = await spec.isNative(driver)
-      assert.strictEqual(result, expected)
+      const {isNative} = await spec.getDriverInfo(driver)
+      assert.strictEqual(isNative, expected)
     }
   }
   function getDeviceName({expected} = {}) {
     return async () => {
-      const result = await spec.getDeviceName(driver)
-      assert.strictEqual(result, expected)
+      const {deviceName} = await spec.getDriverInfo(driver)
+      assert.strictEqual(deviceName, expected)
     }
   }
   function getPlatformName({expected} = {}) {
     return async () => {
-      const result = await spec.getPlatformName(driver)
-      assert.strictEqual(result, expected)
+      const {platformName} = await spec.getDriverInfo(driver)
+      assert.strictEqual(platformName, expected)
     }
   }
   function getPlatformVersion({expected} = {}) {
     return async () => {
-      const result = await spec.getPlatformVersion(driver)
-      assert.strictEqual(result, expected)
+      const {platformVersion} = await spec.getDriverInfo(driver)
+      assert.strictEqual(platformVersion, expected)
     }
   }
 })

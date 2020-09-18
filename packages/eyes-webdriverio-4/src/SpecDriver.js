@@ -110,31 +110,21 @@ async function getOrientation(browser) {
   const orientation = await browser.getOrientation()
   return orientation.toLowerCase()
 }
-async function isMobile(browser) {
-  return browser.isMobile
-}
-async function isNative(browser) {
-  return browser.isMobile && !browser.desiredCapabilities.browserName
-}
-async function getDeviceName(browser) {
-  return browser.desiredCapabilities.deviceName
-}
-async function getPlatformName(browser) {
-  if (browser.isIOS) return 'iOS'
-  if (browser.isAndroid) return 'Android'
-  else return browser.desiredCapabilities.platformName || browser.desiredCapabilities.platform
-}
-async function getPlatformVersion(browser) {
-  return browser.desiredCapabilities.platformVersion
-}
-async function getBrowserName(browser) {
-  return browser.desiredCapabilities.browserName
-}
-async function getBrowserVersion(browser) {
-  return browser.desiredCapabilities.browserVersion
-}
-async function getSessionId(browser) {
-  return browser.requestHandler.sessionID || browser.sessionId
+async function getDriverInfo(browser) {
+  return {
+    sessionId: browser.requestHandler.sessionID || browser.sessionId,
+    isMobile: browser.isMobile,
+    isNative: browser.isMobile && !browser.desiredCapabilities.browserName,
+    deviceName: browser.desiredCapabilities.deviceName,
+    platformName:
+      (browser.isIOS && 'iOS') ||
+      (browser.isAndroid && 'Android') ||
+      browser.desiredCapabilities.platformName ||
+      browser.desiredCapabilities.platform,
+    platformVersion: browser.desiredCapabilities.platformVersion,
+    browserName: browser.desiredCapabilities.browserName,
+    browserVersion: browser.desiredCapabilities.browserVersion,
+  }
 }
 async function getTitle(browser) {
   return browser.getTitle()
@@ -239,14 +229,7 @@ exports.getElementRect = getElementRect
 exports.getWindowRect = getWindowRect
 exports.setWindowRect = setWindowRect
 exports.getOrientation = getOrientation
-exports.isMobile = isMobile
-exports.isNative = isNative
-exports.getDeviceName = getDeviceName
-exports.getPlatformName = getPlatformName
-exports.getPlatformVersion = getPlatformVersion
-exports.getBrowserName = getBrowserName
-exports.getBrowserVersion = getBrowserVersion
-exports.getSessionId = getSessionId
+exports.getDriverInfo = getDriverInfo
 exports.getTitle = getTitle
 exports.getUrl = getUrl
 exports.visit = visit

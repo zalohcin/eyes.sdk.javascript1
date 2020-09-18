@@ -32,9 +32,6 @@ function transformSelector(selector) {
 
 // #region UTILITY
 
-function isStateless() {
-  return true
-}
 function isDriver(page) {
   return page.constructor.name === 'Page'
 }
@@ -102,6 +99,11 @@ async function getTitle(page) {
 }
 async function getUrl(page) {
   return page.url()
+}
+async function getDriverInfo(_page) {
+  return {
+    // isStateless: true,
+  }
 }
 async function visit(page, url) {
   return page.goto(url)
@@ -186,6 +188,7 @@ exports.getViewportSize = getViewportSize
 exports.setViewportSize = setViewportSize
 exports.getTitle = getTitle
 exports.getUrl = getUrl
+exports.getDriverInfo = getDriverInfo
 exports.visit = visit
 exports.takeScreenshot = takeScreenshot
 exports.click = click

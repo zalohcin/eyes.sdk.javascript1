@@ -334,8 +334,8 @@ describe('SpecDriver', async () => {
   function getSessionId() {
     return async () => {
       const expected = browser.requestHandler.sessionID
-      const result = await spec.getSessionId(browser)
-      assert.deepStrictEqual(result, expected)
+      const {sessionId} = await spec.getDriverInfo(browser)
+      assert.deepStrictEqual(sessionId, expected)
     }
   }
   function getTitle() {
@@ -362,32 +362,32 @@ describe('SpecDriver', async () => {
   }
   function isMobile({expected} = {}) {
     return async () => {
-      const result = await spec.isMobile(browser)
-      assert.deepStrictEqual(result, expected)
+      const {isMobile} = await spec.getDriverInfo(browser)
+      assert.deepStrictEqual(isMobile, expected)
     }
   }
   function isNative({expected} = {}) {
     return async () => {
-      const result = await spec.isNative(browser)
-      assert.strictEqual(result, expected)
+      const {isNative} = await spec.getDriverInfo(browser)
+      assert.strictEqual(isNative, expected)
     }
   }
   function getDeviceName({expected} = {}) {
     return async () => {
-      const result = await spec.getDeviceName(browser)
-      assert.strictEqual(result, expected)
+      const {deviceName} = await spec.getDriverInfo(browser)
+      assert.strictEqual(deviceName, expected)
     }
   }
   function getPlatformName({expected} = {}) {
     return async () => {
-      const result = await spec.getPlatformName(browser)
-      assert.strictEqual(result, expected)
+      const {platformName} = await spec.getDriverInfo(browser)
+      assert.strictEqual(platformName, expected)
     }
   }
   function getPlatformVersion({expected} = {}) {
     return async () => {
-      const result = await spec.getPlatformVersion(browser)
-      assert.strictEqual(result, expected)
+      const {platformVersion} = await spec.getDriverInfo(browser)
+      assert.strictEqual(platformVersion, expected)
     }
   }
 })

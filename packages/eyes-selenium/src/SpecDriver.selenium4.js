@@ -1,5 +1,3 @@
-const {By, Builder, until} = require('selenium-webdriver')
-const cmd = require('selenium-webdriver/lib/command')
 const {TypeUtils} = require('@applitools/eyes-sdk-core')
 const {withLegacyDriverAPI} = require('./LegacyAPI')
 
@@ -108,6 +106,8 @@ async function getWindowRect(driver) {
       .getRect()
   } catch (err) {
     // workaround for Appium
+    const cmd = require('selenium-webdriver/lib/command')
+
     return driver.execute(
       new cmd.Command(cmd.Name.GET_WINDOW_SIZE).setParameter('windowHandle', 'current'),
     )
@@ -124,44 +124,28 @@ async function getOrientation(driver) {
   const orientation = capabilities.get('orientation') || capabilities.get('deviceOrientation')
   return orientation.toLowerCase()
 }
-async function isMobile(driver) {
+async function getDriverInfo(driver) {
   const capabilities = await driver.getCapabilities()
-  const platformName = capabilities.get('platformName')
-  return platformName ? ['android', 'ios'].includes(platformName.toLowerCase()) : false
-}
-async function isNative(driver) {
-  const capabilities = await driver.getCapabilities()
-  const platformName = capabilities.get('platformName')
-  const browserName = capabilities.get('browserName')
-  return platformName
-    ? ['android', 'ios'].includes(platformName.toLowerCase()) && !browserName
-    : false
-}
-async function getDeviceName(driver) {
-  const capabilities = await driver.getCapabilities()
-  return capabilities.has('desired')
+  const session = await driver.getSession()
+  const sessionId = session.getId()
+  const deviceName = capabilities.has('desired')
     ? capabilities.get('desired').deviceName
     : capabilities.get('deviceName')
-}
-async function getPlatformName(driver) {
-  const capabilities = await driver.getCapabilities()
-  return capabilities.get('platformName') || capabilities.get('platform')
-}
-async function getPlatformVersion(driver) {
-  const capabilities = await driver.getCapabilities()
-  return capabilities.get('platformVersion')
-}
-async function getBrowserName(driver) {
-  const capabilities = await driver.getCapabilities()
-  return capabilities.get('browserName')
-}
-async function getBrowserVersion(driver) {
-  const capabilities = await driver.getCapabilities()
-  return capabilities.get('browserVersion')
-}
-async function getSessionId(driver) {
-  const session = await driver.getSession()
-  return session.getId()
+  const platformName = capabilities.get('platformName') || capabilities.get('platform')
+  const platformVersion = capabilities.get('platformVersion')
+  const browserName = capabilities.get('browserName')
+  const browserVersion = capabilities.get('browserVersion')
+  const isMobile = ['android', 'ios'].includes(platformName && platformName.toLowerCase())
+  return {
+    sessionId,
+    isMobile,
+    isNative: isMobile && !browserName,
+    deviceName,
+    platformName,
+    platformVersion,
+    browserName,
+    browserVersion,
+  }
 }
 async function getTitle(driver) {
   return driver.getTitle()
@@ -188,6 +172,8 @@ async function type(driver, element, keys) {
   return element.sendKeys(keys)
 }
 async function waitUntilDisplayed(driver, selector, timeout) {
+  const {until} = require('selenium-webdriver')
+
   const element = await findElement(driver, selector)
   return driver.wait(until.elementIsVisible(element), timeout)
 }
@@ -216,7 +202,9 @@ const browserOptionsNames = {
   firefox: 'moz:firefoxOptions',
 }
 async function build(env) {
+  const {Builder} = require('selenium-webdriver')
   const {testSetup} = require('@applitools/sdk-shared')
+
   const {browser, capabilities, headless, url, sauce, attach, args = []} = testSetup.Env(env)
   const desiredCapabilities = {browserName: browser, ...capabilities}
   if (!sauce) {
@@ -261,14 +249,7 @@ exports.getElementRect = getElementRect
 exports.getWindowRect = getWindowRect
 exports.setWindowRect = setWindowRect
 exports.getOrientation = getOrientation
-exports.isMobile = isMobile
-exports.isNative = isNative
-exports.getDeviceName = getDeviceName
-exports.getPlatformName = getPlatformName
-exports.getPlatformVersion = getPlatformVersion
-exports.getBrowserName = getBrowserName
-exports.getBrowserVersion = getBrowserVersion
-exports.getSessionId = getSessionId
+exports.getDriverInfo = getDriverInfo
 exports.getTitle = getTitle
 exports.getUrl = getUrl
 exports.visit = visit

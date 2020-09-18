@@ -148,31 +148,19 @@ async function getOrientation(browser) {
   const orientation = await browser.getOrientation()
   return orientation.toLowerCase()
 }
-async function isMobile(browser) {
-  return browser.isMobile
-}
-async function isNative(browser) {
-  return browser.isMobile && !browser.capabilities.browserName
-}
-async function getDeviceName(browser) {
-  return browser.capabilities.desired
-    ? browser.capabilities.desired.deviceName
-    : browser.capabilities.deviceName
-}
-async function getPlatformName(browser) {
-  return browser.capabilities.platformName || browser.capabilities.platform
-}
-async function getPlatformVersion(browser) {
-  return browser.capabilities.platformVersion
-}
-async function getBrowserName(browser) {
-  return browser.capabilities.browserName
-}
-async function getBrowserVersion(browser) {
-  return browser.capabilities.browserVersion
-}
-async function getSessionId(browser) {
-  return browser.sessionId
+async function getDriverInfo(browser) {
+  return {
+    sessionId: browser.sessionId,
+    isMobile: browser.isMobile,
+    isNative: browser.isMobile && !browser.capabilities.browserName,
+    deviceName: browser.capabilities.desired
+      ? browser.capabilities.desired.deviceName
+      : browser.capabilities.deviceName,
+    platformName: browser.capabilities.platformName || browser.capabilities.platform,
+    platformVersion: browser.capabilities.platformVersion,
+    browserName: browser.capabilities.browserName,
+    browserVersion: browser.capabilities.browserVersion,
+  }
 }
 async function getTitle(browser) {
   return browser.getTitle()
@@ -290,14 +278,7 @@ exports.getElementRect = getElementRect
 exports.getWindowRect = getWindowRect
 exports.setWindowRect = setWindowRect
 exports.getOrientation = getOrientation
-exports.isMobile = isMobile
-exports.isNative = isNative
-exports.getDeviceName = getDeviceName
-exports.getPlatformName = getPlatformName
-exports.getPlatformVersion = getPlatformVersion
-exports.getBrowserName = getBrowserName
-exports.getBrowserVersion = getBrowserVersion
-exports.getSessionId = getSessionId
+exports.getDriverInfo = getDriverInfo
 exports.getTitle = getTitle
 exports.getUrl = getUrl
 exports.visit = visit
