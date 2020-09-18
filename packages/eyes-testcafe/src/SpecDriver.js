@@ -59,7 +59,12 @@ function prepareArgsFunctionString(args) {
   let entry = ''
   entry += 'let args = [...arguments]\n'
   args.forEach((arg, index) => {
-    if (typeof arg === 'object') {
+    if (Array.isArray(arg)) {
+      arg.forEach((argValue, innerIndex) => {
+        if (isTestCafeSelector(argValue))
+          entry += `args[${index}][${innerIndex}] = args[${index}][${innerIndex}]()\n`
+      })
+    } else if (typeof arg === 'object') {
       for (const [key, value] of Object.entries(args[index])) {
         if (isTestCafeSelector(value)) entry += `args[${index}].${key} = args[${index}].${key}()\n`
       }

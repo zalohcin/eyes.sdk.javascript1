@@ -18,5 +18,15 @@ return args`.trim()
         expected,
       )
     })
+    it('nested args array', () => {
+      const expected = `
+    let args = [...arguments]
+args[0][0] = args[0][0]()
+return args`.trim()
+      assert.deepStrictEqual(
+        spec.prepareArgsFunctionString([[Selector('html'), {overflow: 'hidden'}]]),
+        expected,
+      )
+    })
   })
 })
