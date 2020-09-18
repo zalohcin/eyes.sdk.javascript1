@@ -71,8 +71,8 @@ async function takeDomCapture(logger, driver, options = {}) {
 
     for (const xpaths of framePaths) {
       if (!xpaths) continue
-      const references = xpaths.split(',').reduce((parent, reference) => {
-        return {reference, parent}
+      const references = xpaths.split(',').reduce((parent, selector) => {
+        return {reference: {type: 'xpath', selector}, parent}
       }, null)
       let contextDom
       try {

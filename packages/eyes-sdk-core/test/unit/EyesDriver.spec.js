@@ -323,7 +323,9 @@ describe('EyesDriver native', () => {
   before(async () => {
     driver = new Driver(
       new Logger(Boolean(process.env.APPLITOOLS_SHOW_LOGS)),
-      new MockDriver({isNative: true}),
+      new MockDriver({
+        device: {isNative: true},
+      }),
     )
     await driver.init()
   })
@@ -333,5 +335,141 @@ describe('EyesDriver native', () => {
     const url = await driver.getUrl()
     assert.strictEqual(title, null)
     assert.strictEqual(url, null)
+  })
+
+  describe('from driver info', () => {
+    let driver
+
+    before(async () => {
+      driver = new Driver(
+        new Logger(Boolean(process.env.APPLITOOLS_SHOW_LOGS)),
+        new MockDriver({
+          device: {isNative: true, name: 'MobilePhone'},
+          platform: {name: 'OS', version: 'V'},
+        }),
+      )
+      await driver.init()
+    })
+
+    it('returns device name', () => {
+      assert.strictEqual(driver.deviceName, 'MobilePhone')
+    })
+
+    it('returns platform name', () => {
+      assert.strictEqual(driver.platformName, 'OS')
+    })
+
+    it('returns platform version', () => {
+      assert.strictEqual(driver.platformVersion, 'V')
+    })
+
+    it('returns browser name', () => {
+      assert.strictEqual(driver.browserName, undefined)
+    })
+
+    it('returns browser version', () => {
+      assert.strictEqual(driver.browserVersion, undefined)
+    })
+  })
+
+  describe('from no info', () => {
+    before(async () => {
+      driver = new Driver(
+        new Logger(Boolean(process.env.APPLITOOLS_SHOW_LOGS)),
+        new MockDriver({device: {isNative: true}}),
+      )
+      await driver.init()
+    })
+
+    it('returns device name', () => {
+      assert.strictEqual(driver.deviceName, undefined)
+    })
+
+    it('returns platform name', () => {
+      assert.strictEqual(driver.platformName, undefined)
+    })
+
+    it('returns platform version', () => {
+      assert.strictEqual(driver.platformVersion, undefined)
+    })
+
+    it('returns browser name', () => {
+      assert.strictEqual(driver.browserName, undefined)
+    })
+
+    it('returns browser version', () => {
+      assert.strictEqual(driver.browserVersion, undefined)
+    })
+  })
+})
+
+describe('EyesDriver mobile', () => {
+  let driver
+
+  describe('from driver info', () => {
+    before(async () => {
+      driver = new Driver(
+        new Logger(Boolean(process.env.APPLITOOLS_SHOW_LOGS)),
+        new MockDriver({
+          device: {isMobile: true, name: 'MobilePhone'},
+          platform: {name: 'OS', version: 'V'},
+          browser: {name: 'Browser', version: '3'},
+        }),
+      )
+      await driver.init()
+    })
+
+    it('returns device name', () => {
+      assert.strictEqual(driver.deviceName, 'MobilePhone')
+    })
+
+    it('returns platform name', () => {
+      assert.strictEqual(driver.platformName, 'OS')
+    })
+
+    it('returns platform version', () => {
+      assert.strictEqual(driver.platformVersion, 'V')
+    })
+
+    it('returns browser name', () => {
+      assert.strictEqual(driver.browserName, 'Browser')
+    })
+
+    it('returns browser version', () => {
+      assert.strictEqual(driver.browserVersion, '3')
+    })
+  })
+
+  describe('from ua info', () => {
+    before(async () => {
+      driver = new Driver(
+        new Logger(Boolean(process.env.APPLITOOLS_SHOW_LOGS)),
+        new MockDriver({
+          ua:
+            'Mozilla/5.0 (iPhone; CPU iPhone OS 12_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.1 Mobile/15E148 Safari/604.1',
+        }),
+      )
+      await driver.init()
+    })
+
+    it('returns device name', () => {
+      assert.strictEqual(driver.deviceName, undefined)
+    })
+
+    it('returns platform name', () => {
+      assert.strictEqual(driver.platformName, 'iOS')
+    })
+
+    it('returns platform version', () => {
+      assert.strictEqual(driver.platformVersion, '12')
+    })
+
+    it('returns browser name', () => {
+      assert.strictEqual(driver.browserName, 'Safari')
+    })
+
+    it('returns browser version', () => {
+      assert.strictEqual(driver.browserVersion, '12')
+    })
   })
 })

@@ -19,6 +19,8 @@ const SAUCE_CREDENTIALS = {
 
 const DEVICES = {
   'Android Emulator': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
     capabilities: {
       deviceName: 'Android Emulator',
       platformName: 'Android',
@@ -28,10 +30,10 @@ const DEVICES = {
       noReset: true,
       ...SAUCE_CREDENTIALS,
     },
-    url: SAUCE_SERVER_URL,
-    sauce: true,
   },
   'Pixel 3a XL': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
     capabilities: {
       deviceName: 'Google Pixel 3a XL GoogleAPI Emulator',
       platformName: 'Android',
@@ -39,10 +41,10 @@ const DEVICES = {
       deviceOrientation: 'portrait',
       ...SAUCE_CREDENTIALS,
     },
-    url: SAUCE_SERVER_URL,
-    sauce: true,
   },
   'Samsung Galaxy S8': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
     capabilities: {
       browserName: '',
       name: 'Android Demo',
@@ -53,76 +55,82 @@ const DEVICES = {
       automationName: 'uiautomator2',
       ...SAUCE_CREDENTIALS,
     },
-    url: SAUCE_SERVER_URL,
-    sauce: true,
   },
   'iPhone XS': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
     capabilities: {
       platformName: 'iOS',
       platformVersion: '13.0',
       deviceName: 'iPhone XS Simulator',
       ...SAUCE_CREDENTIALS,
     },
-    url: SAUCE_SERVER_URL,
-    sauce: true,
   },
 }
 
 const BROWSERS = {
   'edge-18': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
     capabilities: {
-      name: 'Edge 18',
       browserName: 'MicrosoftEdge',
-      version: '18.17763',
+      browserVersion: '18.17763',
       platformName: 'Windows 10',
-      screenResolution: '1920x1080',
+    },
+    options: {
+      name: 'Edge 18',
       avoidProxy: true,
+      screenResolution: '1920x1080',
       ...SAUCE_CREDENTIALS,
     },
-    url: SAUCE_SERVER_URL,
-    sauce: true,
   },
   'ie-11': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
     capabilities: {
-      name: 'IE 11',
       browserName: 'internet explorer',
       browserVersion: '11.285',
       platformName: 'Windows 10',
+    },
+    options: {
+      name: 'IE 11',
       screenResolution: '1920x1080',
       ...SAUCE_CREDENTIALS,
     },
-    url: SAUCE_SERVER_URL,
-    sauce: true,
   },
   'safari-11': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
     capabilities: {
-      name: 'Safari 11',
-      seleniumVersion: '3.4.0',
       browserName: 'safari',
       browserVersion: '11.0',
       platformName: 'macOS 10.12',
+    },
+    options: {
+      name: 'Safari 11',
+      seleniumVersion: '3.4.0',
       ...SAUCE_CREDENTIALS,
     },
-    url: SAUCE_SERVER_URL,
-    sauce: true,
   },
   'safari-12': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
     capabilities: {
-      name: 'Safari 12',
-      seleniumVersion: '3.4.0',
       browserName: 'safari',
       browserVersion: '12.1',
       platformName: 'macOS 10.13',
+    },
+    options: {
+      name: 'Safari 12',
+      seleniumVersion: '3.4.0',
       ...SAUCE_CREDENTIALS,
     },
-    url: SAUCE_SERVER_URL,
-    sauce: true,
   },
   firefox: {
+    url: 'http://localhost:4445/wd/hub',
     capabilities: {
       browserName: 'firefox',
     },
-    url: 'http://localhost:4445/wd/hub',
   },
   chrome: {
     capabilities: {
@@ -132,7 +140,7 @@ const BROWSERS = {
 }
 
 function Env(
-  {browser, app, device, url, headless = !process.env.NO_HEADLESS, ...options} = {},
+  {browser, app, device, url, headless = !process.env.NO_HEADLESS, legacy, ...options} = {},
   protocol = 'wd',
 ) {
   const env = {browser, device, headless, protocol, ...options}
@@ -147,6 +155,15 @@ function Env(
     if (preset) {
       env.url = preset.url ? new URL(preset.url) : env.url
       env.capabilities = Object.assign(env.capabilities, preset.capabilities)
+      env.sauce = preset.type === 'sauce'
+      if (preset.options) {
+        if (preset.type === 'sauce') {
+          if (legacy) Object.assign(env.capabilities, preset.options)
+          else env.capabilities['sauce:options'] = {...preset.options}
+        } else {
+          env.options = preset.options
+        }
+      }
     }
   } else if (protocol === 'cdp') {
     url = url || process.env.CVG_TESTS_CDP_REMOTE

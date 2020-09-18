@@ -21,16 +21,16 @@ chai.use(chaiAsPromised)
 const expect = chai.expect
 
 describe('TestVGServerConfigs', () => {
-  let webDriver, eyes, runner
+  let webDriver, destroyDriver, eyes, runner
 
   beforeEach(async () => {
-    webDriver = await spec.build({browser: 'chrome'})
+    ;[webDriver, destroyDriver] = await spec.build({browser: 'chrome'})
     eyes = await getEyes({isVisualGrid: true})
     runner = eyes.getRunner()
   })
 
   afterEach(async () => {
-    await spec.cleanup(webDriver)
+    await destroyDriver()
   })
 
   it(`TestVGDoubleCloseNoCheck`, async () => {
@@ -190,12 +190,12 @@ describe('TestVGServerConfigs', () => {
 })
 
 describe('Miscellaneous VG tests', () => {
-  let driver
+  let driver, destroyDriver
   before(async () => {
-    driver = await spec.build({browser: 'chrome'})
+    ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
   })
   after(async () => {
-    await spec.cleanup(driver)
+    await destroyDriver
   })
 
   it('TestWarningForEDGE', async () => {

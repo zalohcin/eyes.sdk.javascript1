@@ -45,21 +45,6 @@ function transformElement(element) {
 function extractSelector(element) {
   return element.selector
 }
-function toEyesSelector(selector) {
-  if (selector instanceof LegacySelector) {
-    const {using, value} = selector
-    if (using === 'css selector') return {type: 'css', selector: value}
-    else if (using === 'xpath') return {type: 'xpath', selector: value}
-  } else if (TypeUtils.isString(selector)) {
-    const match = selector.match(/(css selector|xpath):(.+)/)
-    if (match) {
-      const [_, using, value] = match
-      if (using === 'css selector') return {type: 'css', selector: value}
-      else if (using === 'xpath') return {type: 'xpath', selector: value}
-    }
-  }
-  return {selector}
-}
 function isStaleElementError(error, selector) {
   if (!error) return false
   const errOrResult = error.originalError || error
@@ -125,31 +110,21 @@ async function getOrientation(browser) {
   const orientation = await browser.getOrientation()
   return orientation.toLowerCase()
 }
-async function isMobile(browser) {
-  return browser.isMobile
-}
-async function isNative(browser) {
-  return browser.isMobile && !browser.desiredCapabilities.browserName
-}
-async function getDeviceName(browser) {
-  return browser.desiredCapabilities.deviceName
-}
-async function getPlatformName(browser) {
-  if (browser.isIOS) return 'iOS'
-  if (browser.isAndroid) return 'Android'
-  else return browser.desiredCapabilities.platformName || browser.desiredCapabilities.platform
-}
-async function getPlatformVersion(browser) {
-  return browser.desiredCapabilities.platformVersion
-}
-async function getBrowserName(browser) {
-  return browser.desiredCapabilities.browserName
-}
-async function getBrowserVersion(browser) {
-  return browser.desiredCapabilities.browserVersion
-}
-async function getSessionId(browser) {
-  return browser.requestHandler.sessionID || browser.sessionId
+async function getDriverInfo(browser) {
+  return {
+    sessionId: browser.requestHandler.sessionID || browser.sessionId,
+    isMobile: browser.isMobile,
+    isNative: browser.isMobile && !browser.desiredCapabilities.browserName,
+    deviceName: browser.desiredCapabilities.deviceName,
+    platformName:
+      (browser.isIOS && 'iOS') ||
+      (browser.isAndroid && 'Android') ||
+      browser.desiredCapabilities.platformName ||
+      browser.desiredCapabilities.platform,
+    platformVersion: browser.desiredCapabilities.platformVersion,
+    browserName: browser.desiredCapabilities.browserName,
+    browserVersion: browser.desiredCapabilities.browserVersion,
+  }
 }
 async function getTitle(browser) {
   return browser.getTitle()
@@ -173,6 +148,18 @@ async function type(browser, element, keys) {
 async function waitUntilDisplayed(browser, selector, timeout) {
   return browser.waitForVisible(selector, timeout)
 }
+async function scrollIntoView(browser, element, align = false) {
+  if (isSelector(element)) {
+    element = await findElement(browser, element)
+  }
+  await browser.execute('arguments[0].scrollIntoView(arguments[1])', element, align)
+}
+async function hover(browser, element, {x, y} = {}) {
+  if (isSelector(element)) {
+    element = await findElement(browser, element)
+  }
+  await browser.moveTo(extractElementId(element), x, y)
+}
 
 // #endregion
 
@@ -185,7 +172,14 @@ const browserOptionsNames = {
 async function build(env) {
   const webdriverio = require('webdriverio')
   const {testSetup} = require('@applitools/sdk-shared')
-  const {browser, capabilities, headless, url, args = [], logLevel = 'silent'} = testSetup.Env(env)
+  const {
+    browser = '',
+    capabilities,
+    headless,
+    url,
+    args = [],
+    logLevel = 'silent',
+  } = testSetup.Env({...env, legacy: true})
 
   const options = {
     desiredCapabilities: {browserName: browser, ...capabilities},
@@ -204,13 +198,7 @@ async function build(env) {
   const driver = webdriverio.remote(options)
   await driver.init()
 
-  // WORKAROUND we couldn't return Promise-like object from the async function function
-  return new Proxy(driver, {
-    get: (target, key) => (key !== 'then' ? Reflect.get(target, key) : undefined),
-  })
-}
-async function cleanup(browser) {
-  return browser && browser.end()
+  return [driver, () => driver.end()]
 }
 
 // #endregion
@@ -228,7 +216,6 @@ exports.isElement = isElement
 exports.isSelector = isSelector
 exports.transformElement = transformElement
 exports.extractSelector = extractSelector
-exports.toEyesSelector = toEyesSelector
 exports.isEqualElements = isEqualElements
 exports.isStaleElementError = isStaleElementError
 
@@ -242,14 +229,7 @@ exports.getElementRect = getElementRect
 exports.getWindowRect = getWindowRect
 exports.setWindowRect = setWindowRect
 exports.getOrientation = getOrientation
-exports.isMobile = isMobile
-exports.isNative = isNative
-exports.getDeviceName = getDeviceName
-exports.getPlatformName = getPlatformName
-exports.getPlatformVersion = getPlatformVersion
-exports.getBrowserName = getBrowserName
-exports.getBrowserVersion = getBrowserVersion
-exports.getSessionId = getSessionId
+exports.getDriverInfo = getDriverInfo
 exports.getTitle = getTitle
 exports.getUrl = getUrl
 exports.visit = visit
@@ -257,8 +237,9 @@ exports.takeScreenshot = takeScreenshot
 exports.click = click
 exports.type = type
 exports.waitUntilDisplayed = waitUntilDisplayed
+exports.scrollIntoView = scrollIntoView
+exports.hover = hover
 
 exports.build = build
-exports.cleanup = cleanup
 
 exports.wrapDriver = wrapDriver

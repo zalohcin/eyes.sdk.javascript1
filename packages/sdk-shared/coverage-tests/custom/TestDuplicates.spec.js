@@ -6,14 +6,14 @@ const {getEyes} = require('../../src/test-setup')
 const appName = 'Eyes Selenium SDK - Duplicates'
 
 describe(appName, async () => {
-  let driver, eyes
+  let driver, destroyDriver, eyes
   afterEach(async () => {
-    await spec.cleanup(driver)
+    await destroyDriver()
     await eyes.abortIfNotClosed()
   })
   describe('CSS', async () => {
     beforeEach(async () => {
-      driver = await spec.build({browser: 'chrome'})
+      ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
       eyes = await getEyes({isCssStitching: true})
     })
     it('TestDuplicatedIFrames', TestDuplicatedIFrames('TestDuplicatedIFrames'))
@@ -21,7 +21,7 @@ describe(appName, async () => {
 
   describe('SCROLL', async () => {
     beforeEach(async () => {
-      driver = await spec.build({browser: 'chrome'})
+      ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
       eyes = await getEyes()
     })
     it('TestDuplicatedIFrames', TestDuplicatedIFrames('TestDuplicatedIFrames_Scroll'))
@@ -29,7 +29,7 @@ describe(appName, async () => {
 
   describe.skip('VG', async () => {
     beforeEach(async () => {
-      driver = await spec.build({browser: 'chrome'})
+      ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
       eyes = await getEyes({isVisualGrid: true})
     })
     it('TestDuplicatedIFrames', TestDuplicatedIFrames('TestDuplicatedIFrames_VG'))

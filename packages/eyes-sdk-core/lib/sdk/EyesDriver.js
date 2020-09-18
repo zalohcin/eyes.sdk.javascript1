@@ -17,6 +17,16 @@ const EyesUtils = require('./EyesUtils')
  * @typedef {import('./EyesContext')} EyesContext
  * @typedef {import('./EyesElement')} EyesElement
  * @typedef {{type: 'css' | 'xpath', selector: string}} EyesSelector
+ * @typedef DriverInfo
+ * @prop {string} [sessionId = null]
+ * @prop {boolean} [isStateless = false]
+ * @prop {boolean} [isMobile = false]
+ * @prop {boolean} [isNative = false]
+ * @prop {string} [deviceName]
+ * @prop {string} [platformName]
+ * @prop {string} [platformVersion]
+ * @prop {string} [browserName]
+ * @prop {string} [browserVersion]
  */
 
 /**
@@ -29,7 +39,6 @@ const EyesUtils = require('./EyesUtils')
  * @prop {(element: TElement) => TElement} [transformElement]
  * @prop {(element: TElement) => TSelector} [extractSelector]
  * @prop {(driver: TDriver) => TContext} [extractContext]
- * @prop {(selector: TSelector) => EysSelector} toEyesSelector
  * @prop {(context: TContext, element1: TElement, element2: TElement) => boolean | Promise<boolean>} isEqualElements
  * @prop {(context: TContext, selector: TSelector) => TElement} findElement
  * @prop {(context: TContext, selector: TSelector) => TElement[]} findElements
@@ -45,15 +54,7 @@ const EyesUtils = require('./EyesUtils')
  * @prop {(driver: TDriver) => Promise<'portrait' | 'landscape'>} getOrientation
  * @prop {(driver: TDriver) => Promise<string>} getTitle
  * @prop {(driver: TDriver) => Promise<string>} getUrl
- * @prop {(driver: TDriver) => Promise<boolean>} [isStateless]
- * @prop {(driver: TDriver) => Promise<boolean>} [isNative]
- * @prop {(driver: TDriver) => Promise<boolean>} [isMobile]
- * @prop {(driver: TDriver) => Promise<string>} [getSessionId]
- * @prop {(driver: TDriver) => Promise<string>} [getDeviceName]
- * @prop {(driver: TDriver) => Promise<string>} [getPlatformName]
- * @prop {(driver: TDriver) => Promise<string>} [getPlatformVersion]
- * @prop {(driver: TDriver) => Promise<string>} [getBrowserName]
- * @prop {(driver: TDriver) => Promise<string>} [getBrowserVersion]
+ * @prop {(driver: TDriver) => Promise<DriverInfo>} getDriverInfo
  */
 
 /**
@@ -101,9 +102,6 @@ class EyesDriver {
     return driver instanceof EyesDriver || this.spec.isDriver(driver)
   }
 
-  static toEyesSelector(selector) {
-    return this.spec.toEyesSelector(selector)
-  }
   /**
    * @template TDriver, TContext, TElement, TSelector
    * @type {SpecDriver<TDriver, TContext, TElement, TSelector>}
@@ -129,33 +127,31 @@ class EyesDriver {
   }
   /** @type {boolean} */
   get isNative() {
-    return this._isNative
+    return this._isNative || false
   }
   /** @type {boolean} */
   get isMobile() {
-    return this._isMobile === undefined
-      ? ['iOS', 'Android'].includes(this._userAgent.getOS())
-      : this._isMobile
+    return this._isMobile || false
   }
   /** @type {string} */
   get deviceName() {
-    return this._deviceName
+    return this._deviceName || undefined
   }
   /** @type {string} */
   get platformName() {
-    return this._platformName || this._userAgent.getOS()
+    return this._platformName || undefined
   }
   /** @type {string} */
   get platformVersion() {
-    return this._platformVersion || this._userAgent.getOSMajorVersion()
+    return this._platformVersion || undefined
   }
   /** @type {string} */
   get browserName() {
-    return this._browserName || this._userAgent.getBrowser()
+    return this._browserName || undefined
   }
   /** @type {string} */
   get browserVersion() {
-    return this._browserVersion || this._userAgent.getBrowserMajorVersion()
+    return this._browserVersion || undefined
   }
   /** @type {UserAgent} */
   get userAgent() {
@@ -171,29 +167,29 @@ class EyesDriver {
   }
 
   async init() {
-    this._sessionId = this.spec.getSessionId ? await this.spec.getSessionId(this._driver) : null
-    this._isStateless = this.spec.isStateless ? await this.spec.isStateless(this._driver) : false
-    this._isNative = this.spec.isNative ? await this.spec.isNative(this._driver) : false
-    this._isMobile = this.spec.isMobile ? await this.spec.isMobile(this._driver) : undefined
-    this._deviceName = this.spec.getDeviceName
-      ? await this.spec.getDeviceName(this._driver)
-      : undefined
-    this._platformName = this.spec.getPlatformName
-      ? await this.spec.getPlatformName(this._driver)
-      : undefined
-    this._platformVersion = this.spec.getPlatformVersion
-      ? await this.spec.getPlatformVersion(this._driver)
-      : undefined
-    this._browserName = this.spec.getBrowserName
-      ? await this.spec.getBrowserName(this._driver)
-      : undefined
-    this._browserVersion = this.spec.getBrowserVersion
-      ? await this.spec.getBrowserVersion(this._driver)
-      : undefined
-    if (!this._isNative) {
-      this._userAgentString = await EyesUtils.getUserAgent(this._logger, this)
-      this._userAgent = UserAgent.parseUserAgentString(this._userAgentString, true)
-      this._isMobile = this._isMobile || ['iOS', 'Android'].includes(this._userAgent.getOS())
+    if (this.spec.getDriverInfo) {
+      const info = await this.spec.getDriverInfo(this._driver)
+      this._sessionId = info.sessionId || null
+      this._isStateless = info.isStateless || false
+      this._isNative = info.isNative || false
+      this._isMobile = info.isMobile || false
+      this._deviceName = info.deviceName
+      this._platformName = info.platformName
+      this._platformVersion = info.platformVersion
+      this._browserName = info.browserName
+      this._browserVersion = info.browserVersion
+
+      if (!this._isNative) {
+        this._userAgentString = await EyesUtils.getUserAgent(this._logger, this)
+        this._userAgent = UserAgent.parseUserAgentString(this._userAgentString, true)
+      }
+    }
+    if (this._userAgent) {
+      if (!this._isMobile) this._isMobile = ['iOS', 'Android'].includes(this._userAgent.getOS())
+      if (!this._platformName) this._platformName = this._userAgent.getOS()
+      if (!this._platformVersion) this._platformVersion = this._userAgent.getOSMajorVersion()
+      if (!this._browserName) this._browserName = this._userAgent.getBrowser()
+      if (!this._browserVersion) this._browserVersion = this._userAgent.getBrowserMajorVersion()
     }
     this._wrapper = this.spec.wrapDriver ? this.spec.wrapDriver(this._driver, this) : this._driver
     return this
