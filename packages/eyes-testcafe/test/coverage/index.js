@@ -27,7 +27,99 @@ test${test.disabled ? '.skip' : ''}('${test.name}${
 }
 
 const supportedTests = [
-  {name: 'TestAcmeLogin', executionMode: {isVisualGrid: true}},
+  // NOT OK
+  {
+    name: 'TestCheckFrameInFrame_Fully_Fluent',
+    executionMode: {isCssStitching: true},
+    baselineVersion: 1,
+  },
+  {
+    name: 'TestCheckFrameInFrame_Fully_Fluent',
+    executionMode: {isScrollStitching: true},
+    baselineVersion: 1,
+  },
+  {
+    name: 'TestCheckFrameInFrame_Fully_Fluent2',
+    executionMode: {isCssStitching: true},
+    baselineVersion: 1,
+  },
+  {
+    name: 'TestCheckFrameInFrame_Fully_Fluent2',
+    executionMode: {isScrollStitching: true},
+    baselineVersion: 1,
+  },
+  {name: 'TestCheckFixedRegion', executionMode: {isCssStitching: true}},
+  {name: 'TestCheckFixedRegion', executionMode: {isScrollStitching: true}},
+  {name: 'TestCheckFixedRegion_Fully', executionMode: {isCssStitching: true}},
+  {name: 'TestCheckFixedRegion_Fully', executionMode: {isScrollStitching: true}},
+  //
+  // OK
+  //
+  //{name: 'TestCheckRegion', executionMode: {isCssStitching: true}},
+  //{name: 'TestCheckRegion', executionMode: {isScrollStitching: true}},
+  //{name: 'TestCheckRegion2', executionMode: {isCssStitching: true}},
+  //{name: 'TestCheckRegion2', executionMode: {isScrollStitching: true}},
+  //{name: 'TestCheckRegionByCoordinates_Fluent', executionMode: {isCssStitching: true}},
+  //{name: 'TestCheckRegionByCoordinates_Fluent', executionMode: {isScrollStitching: true}},
+  //{
+  //  name: 'TestCheckRegionByCoordinateInFrame_Fluent',
+  //  executionMode: {isCssStitching: true},
+  //  disabled: true,
+  //},
+  //{
+  //  name: 'TestCheckRegionByCoordinateInFrame_Fluent',
+  //  executionMode: {isScrollStitching: true},
+  //  disabled: true,
+  //},
+  //{
+  //  name: 'TestCheckRegionByCoordinateInFrameFully_Fluent',
+  //  executionMode: {isCssStitching: true},
+  //  disabled: true,
+  //},
+  //{
+  //  name: 'TestCheckRegionByCoordinateInFrameFully_Fluent',
+  //  executionMode: {isScrollStitching: true},
+  //},
+  //{
+  //  name: 'TestCheckRegionBySelectorAfterManualScroll_Fluent',
+  //  executionMode: {isCssStitching: true},
+  //},
+  //{
+  //  name: 'TestCheckRegionBySelectorAfterManualScroll_Fluent',
+  //  executionMode: {isScrollStitching: true},
+  //  disabled: true,
+  //},
+  //{name: 'TestCheckRegionInFrame', executionMode: {isCssStitching: true}},
+  //{name: 'TestCheckRegionInFrame', executionMode: {isScrollStitching: true}},
+  //{name: 'TestCheckRegionInFrame_Fluent', executionMode: {isCssStitching: true}},
+  //{name: 'TestCheckRegionInFrame_Fluent', executionMode: {isScrollStitching: true}},
+  //{name: 'TestCheckRegionInFrame3_Fluent', executionMode: {isCssStitching: true}, disabled: true},
+  //{name: 'TestCheckRegionInFrame3_Fluent', executionMode: {isScrollStitching: true}},
+  //{name: 'TestCheckRegionInAVeryBigFrame', executionMode: {isCssStitching: true}},
+  //{
+  //  name: 'TestCheckRegionInAVeryBigFrame',
+  //  executionMode: {isScrollStitching: true},
+  //  disabled: true,
+  //},
+  //{
+  //  name: 'TestCheckRegionInAVeryBigFrameAfterManualSwitchToFrame',
+  //  executionMode: {isCssStitching: true},
+  //},
+  //{
+  //  name: 'TestCheckRegionInAVeryBigFrameAfterManualSwitchToFrame',
+  //  executionMode: {isScrollStitching: true},
+  //  disabled: true,
+  //},
+  //{name: 'TestCheckRegionWithIgnoreRegion_Fluent', executionMode: {isCssStitching: true}},
+  //{name: 'TestCheckRegionWithIgnoreRegion_Fluent', executionMode: {isScrollStitching: true}},
+  //{name: 'TestSimpleRegion', executionMode: {isCssStitching: true}},
+  //{name: 'TestSimpleRegion', executionMode: {isScrollStitching: true}},
+  //{name: 'CheckRegionInFrameLargerThenViewport', executionMode: {isCssStitching: true}},
+  //{name: 'CheckRegionInFrameLargerThenViewport', executionMode: {isScrollStitching: true}},
+  //
+  // NOT CHECKED YET
+  //
+  //{name: 'TestAcmeLogin', executionMode: {isVisualGrid: true}},
   //{name: 'TestAcmeLogin', executionMode: {isCssStitching: true}},
   //{name: 'TestAcmeLogin', executionMode: {isScrollStitching: true}},
   //{name: 'TestCheckElementFully_Fluent', executionMode: {isVisualGrid: true}},
@@ -71,35 +163,14 @@ const supportedTests = [
   //{name: 'TestCheckFrameFully_Fluent', executionMode: {isVisualGrid: true}, disabled: true},
   //{name: 'TestCheckFrameFully_Fluent', executionMode: {isCssStitching: true}, disabled: true},
   //{name: 'TestCheckFrameFully_Fluent', executionMode: {isScrollStitching: true}},
-  // HERE
   //{
   //  name: 'TestCheckFrameInFrame_Fully_Fluent',
   //  executionMode: {isVisualGrid: true},
   //  baselineVersion: 1,
   //},
   //{
-  //  name: 'TestCheckFrameInFrame_Fully_Fluent',
-  //  executionMode: {isCssStitching: true},
-  //  baselineVersion: 1,
-  //},
-  //{
-  //  name: 'TestCheckFrameInFrame_Fully_Fluent',
-  //  executionMode: {isScrollStitching: true},
-  //  baselineVersion: 1,
-  //},
-  //{
   //  name: 'TestCheckFrameInFrame_Fully_Fluent2',
   //  executionMode: {isVisualGrid: true},
-  //  baselineVersion: 1,
-  //},
-  //{
-  //  name: 'TestCheckFrameInFrame_Fully_Fluent2',
-  //  executionMode: {isCssStitching: true},
-  //  baselineVersion: 1,
-  //},
-  //{
-  //  name: 'TestCheckFrameInFrame_Fully_Fluent2',
-  //  executionMode: {isScrollStitching: true},
   //  baselineVersion: 1,
   //},
   //{
@@ -150,83 +221,26 @@ const supportedTests = [
   //  disabled: true,
   //},
   //{name: 'TestCheckRegion', executionMode: {isVisualGrid: true}},
-  //{name: 'TestCheckRegion', executionMode: {isCssStitching: true}},
-  //{name: 'TestCheckRegion', executionMode: {isScrollStitching: true}},
   //{name: 'TestCheckRegion2', executionMode: {isVisualGrid: true}},
-  //{name: 'TestCheckRegion2', executionMode: {isCssStitching: true}},
-  //{name: 'TestCheckRegion2', executionMode: {isScrollStitching: true}},
   //{name: 'TestCheckRegionByCoordinates_Fluent', executionMode: {isVisualGrid: true}},
-  //{name: 'TestCheckRegionByCoordinates_Fluent', executionMode: {isCssStitching: true}},
-  //{name: 'TestCheckRegionByCoordinates_Fluent', executionMode: {isScrollStitching: true}},
   //{
   //  name: 'TestCheckRegionByCoordinateInFrame_Fluent',
   //  executionMode: {isVisualGrid: true},
   //},
   //{
-  //  name: 'TestCheckRegionByCoordinateInFrame_Fluent',
-  //  executionMode: {isCssStitching: true},
-  //  disabled: true,
-  //},
-  //{
-  //  name: 'TestCheckRegionByCoordinateInFrame_Fluent',
-  //  executionMode: {isScrollStitching: true},
-  //  disabled: true,
-  //},
-  //{
   //  name: 'TestCheckRegionByCoordinateInFrameFully_Fluent',
   //  executionMode: {isVisualGrid: true},
-  //},
-  //{
-  //  name: 'TestCheckRegionByCoordinateInFrameFully_Fluent',
-  //  executionMode: {isCssStitching: true},
-  //  disabled: true,
-  //},
-  //{
-  //  name: 'TestCheckRegionByCoordinateInFrameFully_Fluent',
-  //  executionMode: {isScrollStitching: true},
   //},
   //{name: 'TestCheckRegionBySelectorAfterManualScroll_Fluent', executionMode: {isVisualGrid: true}},
-  //{
-  //  name: 'TestCheckRegionBySelectorAfterManualScroll_Fluent',
-  //  executionMode: {isCssStitching: true},
-  //},
-  //{
-  //  name: 'TestCheckRegionBySelectorAfterManualScroll_Fluent',
-  //  executionMode: {isScrollStitching: true},
-  //  disabled: true,
-  //},
   //{name: 'TestCheckRegionInFrame', executionMode: {isVisualGrid: true}},
-  //{name: 'TestCheckRegionInFrame', executionMode: {isCssStitching: true}},
-  //{name: 'TestCheckRegionInFrame', executionMode: {isScrollStitching: true}},
   //{name: 'TestCheckRegionInFrame_Fluent', executionMode: {isVisualGrid: true}},
-  //{name: 'TestCheckRegionInFrame_Fluent', executionMode: {isCssStitching: true}},
-  //{name: 'TestCheckRegionInFrame_Fluent', executionMode: {isScrollStitching: true}},
   //{name: 'TestCheckRegionInFrame3_Fluent', executionMode: {isVisualGrid: true}, disabled: true},
-  //{name: 'TestCheckRegionInFrame3_Fluent', executionMode: {isCssStitching: true}, disabled: true},
-  //{name: 'TestCheckRegionInFrame3_Fluent', executionMode: {isScrollStitching: true}},
   //{name: 'TestCheckRegionInAVeryBigFrame', executionMode: {isVisualGrid: true}},
-  //{name: 'TestCheckRegionInAVeryBigFrame', executionMode: {isCssStitching: true}},
-  //{
-  //  name: 'TestCheckRegionInAVeryBigFrame',
-  //  executionMode: {isScrollStitching: true},
-  //  disabled: true,
-  //},
   //{
   //  name: 'TestCheckRegionInAVeryBigFrameAfterManualSwitchToFrame',
   //  executionMode: {isVisualGrid: true},
   //},
-  //{
-  //  name: 'TestCheckRegionInAVeryBigFrameAfterManualSwitchToFrame',
-  //  executionMode: {isCssStitching: true},
-  //},
-  //{
-  //  name: 'TestCheckRegionInAVeryBigFrameAfterManualSwitchToFrame',
-  //  executionMode: {isScrollStitching: true},
-  //  disabled: true,
-  //},
   //{name: 'TestCheckRegionWithIgnoreRegion_Fluent', executionMode: {isVisualGrid: true}},
-  //{name: 'TestCheckRegionWithIgnoreRegion_Fluent', executionMode: {isCssStitching: true}},
-  //{name: 'TestCheckRegionWithIgnoreRegion_Fluent', executionMode: {isScrollStitching: true}},
   //{name: 'TestCheckScrollableModal', executionMode: {isVisualGrid: true}, disabled: true},
   //{name: 'TestCheckScrollableModal', executionMode: {isCssStitching: true}, disabled: true},
   //{name: 'TestCheckScrollableModal', executionMode: {isScrollStitching: true}, disabled: true},
@@ -308,8 +322,6 @@ const supportedTests = [
   //{name: 'TestDoubleCheckWindow', executionMode: {isCssStitching: true}},
   //{name: 'TestDoubleCheckWindow', executionMode: {isScrollStitching: true}},
   //{name: 'TestSimpleRegion', executionMode: {isVisualGrid: true}},
-  //{name: 'TestSimpleRegion', executionMode: {isCssStitching: true}},
-  //{name: 'TestSimpleRegion', executionMode: {isScrollStitching: true}},
   //{
   //  name: 'TestScrollbarsHiddenAndReturned_Fluent',
   //  executionMode: {isVisualGrid: true},
@@ -325,11 +337,7 @@ const supportedTests = [
   //{name: 'TestAbortIfNotClosed', executionMode: {isVisualGrid: true}},
   //{name: 'TestAbortIfNotClosed', executionMode: {isCssStitching: true}},
   //{name: 'TestCheckFixedRegion', executionMode: {isVisualGrid: true}},
-  //{name: 'TestCheckFixedRegion', executionMode: {isCssStitching: true}},
-  //{name: 'TestCheckFixedRegion', executionMode: {isScrollStitching: true}},
   //{name: 'TestCheckFixedRegion_Fully', executionMode: {isVisualGrid: true}},
-  //{name: 'TestCheckFixedRegion_Fully', executionMode: {isCssStitching: true}},
-  //{name: 'TestCheckFixedRegion_Fully', executionMode: {isScrollStitching: true}},
   //{name: 'TestSimpleModal', executionMode: {isVisualGrid: true}},
   //{name: 'TestSimpleModal', executionMode: {isCssStitching: true}},
   //{name: 'TestSimpleModal', executionMode: {isScrollStitching: true}},
@@ -352,8 +360,6 @@ const supportedTests = [
   //  executionMode: {isCssStitching: true},
   //  disabled: true,
   //},
-  //{name: 'CheckRegionInFrameLargerThenViewport', executionMode: {isCssStitching: true}},
-  //{name: 'CheckRegionInFrameLargerThenViewport', executionMode: {isScrollStitching: true}},
   //{name: 'TestHorizonalScroll', executionMode: {isCssStitching: true}},
   //{name: 'TestHorizonalScroll', executionMode: {isScrollStitching: true}},
   //{name: 'TestGetAllTestResults', executionMode: {isCssStitching: true}},
