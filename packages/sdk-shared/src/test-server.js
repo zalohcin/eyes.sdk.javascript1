@@ -3,16 +3,20 @@
 const express = require('express')
 const cookieParser = require('cookie-parser')
 const morgan = require('morgan')
-const {resolve} = require('path')
+const {resolve, join} = require('path')
 const cors = require('cors')
+const exphbs = require('express-handlebars')
+const adjustUrlToDocker = require('../coverage-tests/util/adjust-url-to-docker')
 
-function startTestServer({
-  staticPath = resolve('./test/fixtures'),
-  port = 0,
-  allowCors,
-  showLogs,
-  middlewareFile,
-} = {}) {
+function startTestServer(argv = {}) {
+  const {
+    staticPath = resolve('./test/fixtures'),
+    port = 0,
+    allowCors,
+    showLogs,
+    middlewareFile,
+  } = argv
+
   const app = express()
   app.use(cookieParser())
   if (allowCors) {
@@ -23,6 +27,22 @@ function startTestServer({
   }
   if (showLogs) {
     app.use(morgan('tiny'))
+  }
+
+  if (argv.handleBars) {
+    const handleBarsConfig = JSON.parse(argv.handleBars)
+    const hbConfig = exphbs.create({
+      layoutsDir: join(__dirname, '../coverage-tests/fixtures/layouts/'),
+    })
+    app.engine('handlebars', hbConfig.engine)
+    app.set('view engine', 'handlebars')
+    app.set('views', join(__dirname, '../coverage-tests/fixtures/views/'))
+    app.get('/handles/*', (req, res) => {
+      handleBarsConfig.src = adjustUrlToDocker(handleBarsConfig.src)
+      const staticPath = req.path.split('/').slice(2)
+      const filePath = staticPath.join('/')
+      res.render(filePath, {...handleBarsConfig})
+    })
   }
   app.use('/add-cookie', (req, res) => {
     const {name, value} = req.query

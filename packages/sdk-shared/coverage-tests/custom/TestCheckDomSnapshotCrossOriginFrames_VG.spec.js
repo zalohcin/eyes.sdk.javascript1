@@ -10,9 +10,17 @@ describe('Coverage Tests', () => {
   let driver, eyes, serverA, serverB, url
 
   beforeEach(async () => {
-    url = adjustUrlToDocker('http://localhost:7373/cors_frames/cors.html')
+    url = adjustUrlToDocker('http://localhost:7373/handles/cors/cors')
     const staticPath = path.join(__dirname, '../fixtures')
-    serverA = await testServer({port: 7373, staticPath, allowCors: false})
+    serverA = await testServer({
+      port: 7373,
+      staticPath,
+      allowCors: false,
+      handleBars: JSON.stringify({
+        title: 'Hello, I have a designer cross origin frame',
+        src: 'http://localhost:7374/cors_frames/frame.html',
+      }),
+    })
     serverB = await testServer({port: 7374, staticPath})
 
     driver = await spec.build({browser: 'chrome', headless: false})
