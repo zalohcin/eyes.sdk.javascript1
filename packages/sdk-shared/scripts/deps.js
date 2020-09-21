@@ -10,17 +10,25 @@ const packages = fs.readdirSync(pkgsFolder)
 const duplicates = findDuplicates()
 const devDuplicates = findDuplicates({isDevDependency: true})
 
-console.log('/************ dependencies duplicates ***************/')
+console.log(
+  chalk.magenta(`
+dependencies duplicates
+=======================`),
+)
 console.log(duplicatesToStr(duplicates))
-console.log('\n/************ devDependencies duplicates ***************/')
+console.log(
+  chalk.magenta(`
+devDependencies duplicates
+==========================`),
+)
 console.log(duplicatesToStr(devDuplicates))
 
 function duplicatesToStr(duplicates) {
   return duplicates
     .map(
-      ([dep, versions]) => `${chalk.cyan(dep)}
+      ([dep, versions], i) => `${i + 1}) ${chalk.cyan(dep)}
 ${Object.entries(versions)
-  .map(([version, pkgs]) => `  ${version}: ${pkgs.join(', ')}`)
+  .map(([version, pkgs]) => `    ${version}: ${pkgs.join(', ')}`)
   .join('\n')}`,
     )
     .join('\n')
