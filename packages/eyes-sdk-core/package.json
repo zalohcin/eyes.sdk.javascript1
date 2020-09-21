@@ -38,12 +38,12 @@
     "@applitools/snippets": "2.0.0",
     "axios": "0.19.2",
     "chalk": "3.0.0",
-    "cosmiconfig": "^6.0.0",
-    "dateformat": "^3.0.3",
-    "debug": "^4.1.1",
-    "deepmerge": "^4.2.2",
-    "png-async": "^0.9.4",
-    "stack-trace": "^0.0.10",
+    "cosmiconfig": "6.0.0",
+    "dateformat": "3.0.3",
+    "debug": "4.2.0",
+    "deepmerge": "4.2.2",
+    "png-async": "0.9.4",
+    "stack-trace": "0.0.10",
     "tunnel": "0.0.6"
   },
   "devDependencies": {
@@ -70,7 +70,8 @@
     "types:generate": "node ./scripts/build-typings",
     "preversion": "bongo preversion && yarn test",
     "version": "bongo version",
-    "postversion": "bongo postversion --skip-release-notification"
+    "postversion": "bongo postversion --skip-release-notification",
+    "deps": "bongo deps"
   },
   "bin": {
     "eyes-check-network": "./bin/runCheckNetwork.js"

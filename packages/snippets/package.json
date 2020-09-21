@@ -13,7 +13,8 @@
     "build:watch": "node ./rollup/cli watch --format json --format snippet",
     "preversion": "bongo preversion && yarn build && yarn test",
     "version": "bongo version",
-    "postversion": "bongo postversion --skip-release-notification"
+    "postversion": "bongo postversion --skip-release-notification",
+    "deps": "bongo deps"
   },
   "engines": {
     "node": ">=8.9.0"

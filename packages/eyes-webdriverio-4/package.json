@@ -20,6 +20,7 @@
     "preversion": "bongo preversion && yarn test && yarn coverage:prod",
     "version": "bongo version",
     "postversion": "bongo postversion",
+    "deps": "bongo deps",
     "start-chromedriver": "node scripts/start-chromedriver.js",
     "stop-chromedriver": "ps ax | grep chromedriver | grep port=4444 | awk '{print $1}' | xargs kill -9",
     "blah": "echo $BLAH"
@@ -28,8 +29,8 @@
   "license": "SEE LICENSE IN LICENSE",
   "repository": "https://github.com/applitools/eyes.sdk.javascript1",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "12.2.0",
-    "@applitools/visual-grid-client": "15.0.0"
+    "@applitools/eyes-sdk-core": "12.2.5",
+    "@applitools/visual-grid-client": "15.0.5"
   },
   "peerDependencies": {
     "webdriverio": "~4.14.4"
@@ -37,8 +38,8 @@
   "devDependencies": {
     "@applitools/sdk-coverage-tests": "^1.0.13",
     "@applitools/sdk-fake-eyes-server": "^2.0.0",
-    "@applitools/sdk-release-kit": "0.2.2",
-    "@applitools/sdk-shared": "0.1.0",
+    "@applitools/sdk-release-kit": "^0.2.2",
+    "@applitools/sdk-shared": "^0.1.0",
     "axios": "^0.19.2",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",

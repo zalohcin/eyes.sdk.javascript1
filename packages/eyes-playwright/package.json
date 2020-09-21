@@ -32,8 +32,8 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "12.2.0",
-    "@applitools/visual-grid-client": "15.0.0"
+    "@applitools/eyes-sdk-core": "12.2.5",
+    "@applitools/visual-grid-client": "15.0.5"
   },
   "peerDependencies": {
     "playwright": ">=1.0.0"
@@ -59,7 +59,8 @@
     "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-playwright' APPLITOOLS_BATCH_ID=$(uuidgen) XUNIT_FILE=coverage-test-report.xml mocha --config .mocharc.cvg.js",
     "preversion": "bongo preversion && yarn test && yarn coverage:prod",
     "version": "bongo version",
-    "postversion": "bongo postversion"
+    "postversion": "bongo postversion",
+    "deps": "bongo deps"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

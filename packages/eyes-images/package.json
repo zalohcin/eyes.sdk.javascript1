@@ -34,7 +34,7 @@
     "@applitools/eyes-sdk-core": "11.5.0"
   },
   "devDependencies": {
-    "@applitools/sdk-release-kit": "0.2.2",
+    "@applitools/sdk-release-kit": "^0.2.2",
     "assert-rejects": "^1.0.0",
     "axios": "^0.19.0",
     "mocha": "^8.0.1"
@@ -44,7 +44,8 @@
     "test": "mocha --no-timeouts --parallel --jobs 15 \"test/**/*.spec.js\"",
     "preversion": "bongo preversion && yarn test",
     "version": "bongo version",
-    "postversion": "bongo postversion --skip-release-notification"
+    "postversion": "bongo postversion --skip-release-notification",
+    "deps": "bongo deps"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

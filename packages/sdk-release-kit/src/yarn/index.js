@@ -10,14 +10,17 @@ async function yarnInstall() {
 
 async function yarnUpgrade(folder, upgradeAll) {
   const pkgJson = require(path.resolve(folder, 'package.json'))
-  const {dependencies} = pkgJson
+  const {dependencies, devDependencies} = pkgJson
   const applitoolsDeps = pickby(dependencies, (_, pkg) => pkg.startsWith('@applitools/'))
   const depsToUpgrade = upgradeAll ? dependencies : applitoolsDeps
   const depsStr = Object.keys(depsToUpgrade).join(' ')
   const cmd = `yarn upgrade --exact --latest ${depsStr}`
-  console.log(cmd)
-
+  console.log(chalk.cyan(cmd))
   await sh(cmd)
+
+  const cmdDev = `yarn upgrade ${Object.keys(devDependencies).join(' ')}`
+  console.log('\n' + chalk.cyan(cmdDev))
+  await sh(cmdDev)
 }
 
 function getUnfixedDeps(dependencies) {
