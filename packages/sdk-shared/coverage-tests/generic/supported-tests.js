@@ -331,5 +331,4 @@ module.exports = [
   {name: 'CheckWindowOnJsLayoutPage', executionMode: {isVisualGrid: true}},
   {name: 'CheckWindowOnJsLayoutPageWithConfig', executionMode: {isVisualGrid: true}},
   {name: 'CheckRegionWithFractionalMetrics', executionMode: {isCssStitching: true}},
-  {name: 'TestCheckDomSnapshotCrossOriginFrames', executionMode: {isVisualGrid: true}},
 ]
