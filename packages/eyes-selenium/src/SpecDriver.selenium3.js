@@ -1,9 +1,19 @@
-const {By, Builder, until} = require('selenium-webdriver')
-const cmd = require('selenium-webdriver/lib/command')
 const {TypeUtils} = require('@applitools/eyes-sdk-core')
 const {withLegacyDriverAPI} = require('./LegacyAPI')
 
 // #region HELPERS
+
+const byHash = [
+  'className',
+  'css',
+  'id',
+  'js',
+  'linkText',
+  'name',
+  'partialLinkText',
+  'tagName',
+  'xpath',
+]
 
 function extractElementId(element) {
   return element.getId()
@@ -11,8 +21,8 @@ function extractElementId(element) {
 
 function transformSelector(selector) {
   if (TypeUtils.has(selector, ['type', 'selector'])) {
-    if (selector.type === 'css') return By.css(selector.selector)
-    else if (selector.type === 'xpath') return By.xpath(selector.selector)
+    if (selector.type === 'css') return {css: selector.selector}
+    else if (selector.type === 'xpath') return {xpath: selector.selector}
   }
   return selector
 }
@@ -33,32 +43,18 @@ function isSelector(selector) {
     TypeUtils.instanceOf(selector, 'By') ||
     TypeUtils.has(selector, ['type', 'selector']) ||
     TypeUtils.has(selector, ['using', 'value']) ||
-    Object.keys(selector).some(key => key in By) ||
+    Object.keys(selector).some(key => byHash.includes(key)) ||
     TypeUtils.isString(selector)
   )
 }
 function transformDriver(driver) {
+  const cmd = require('selenium-webdriver/lib/command')
+
   cmd.Name.SWITCH_TO_PARENT_FRAME = 'switchToParentFrame'
   driver
     .getExecutor()
     .defineCommand(cmd.Name.SWITCH_TO_PARENT_FRAME, 'POST', '/session/:sessionId/frame/parent')
   return driver
-}
-function toEyesSelector(selector) {
-  if (TypeUtils.isString(selector)) {
-    selector = By.css(selector)
-  } else if (TypeUtils.has(selector, ['using', 'value'])) {
-    selector = new By(selector.using, selector.value)
-  } else if (TypeUtils.isPlainObject(selector)) {
-    const using = Object.keys(selector).find(using => TypeUtils.has(By, using))
-    if (using) selector = By[using](selector[using])
-  }
-  if (selector instanceof By) {
-    const {using, value} = selector
-    if (using === 'css selector') return {type: 'css', selector: value}
-    else if (using === 'xpath') return {type: 'xpath', selector: value}
-  }
-  return {selector}
 }
 function isStaleElementError(error) {
   if (!error) return false
@@ -84,7 +80,9 @@ async function mainContext(driver) {
   return driver
 }
 async function parentContext(driver) {
-  await driver.execute(new cmd.Command(cmd.Name.SWITCH_TO_PARENT_FRAME))
+  const cmd = require('selenium-webdriver/lib/command')
+
+  await driver.schedule(new cmd.Command(cmd.Name.SWITCH_TO_PARENT_FRAME))
   return driver
 }
 async function childContext(driver, element) {
@@ -94,7 +92,7 @@ async function childContext(driver, element) {
 async function findElement(driver, selector) {
   try {
     if (TypeUtils.isString(selector)) {
-      selector = By.css(selector)
+      selector = {css: selector}
     }
     return await driver.findElement(transformSelector(selector))
   } catch (err) {
@@ -104,7 +102,7 @@ async function findElement(driver, selector) {
 }
 async function findElements(driver, selector) {
   if (TypeUtils.isString(selector)) {
-    selector = By.css(selector)
+    selector = {css: selector}
   }
   return driver.findElements(transformSelector(selector))
 }
@@ -142,6 +140,8 @@ async function getWindowRect(driver) {
     }
   } catch (err) {
     // workaround for Appium
+    const cmd = require('selenium-webdriver/lib/command')
+
     return driver.execute(
       new cmd.Command(cmd.Name.GET_WINDOW_SIZE).setParameter('windowHandle', 'current'),
     )
@@ -174,44 +174,28 @@ async function getOrientation(driver) {
   const orientation = capabilities.get('orientation') || capabilities.get('deviceOrientation')
   return orientation.toLowerCase()
 }
-async function isMobile(driver) {
+async function getDriverInfo(driver) {
   const capabilities = await driver.getCapabilities()
-  const platformName = capabilities.get('platformName')
-  return platformName ? ['android', 'ios'].includes(platformName.toLowerCase()) : false
-}
-async function isNative(driver) {
-  const capabilities = await driver.getCapabilities()
-  const platformName = capabilities.get('platformName')
-  const browserName = capabilities.get('browserName')
-  return platformName
-    ? ['android', 'ios'].includes(platformName.toLowerCase()) && !browserName
-    : false
-}
-async function getDeviceName(driver) {
-  const capabilities = await driver.getCapabilities()
-  return capabilities.has('desired')
+  const session = await driver.getSession()
+  const sessionId = session.getId()
+  const deviceName = capabilities.has('desired')
     ? capabilities.get('desired').deviceName
     : capabilities.get('deviceName')
-}
-async function getPlatformName(driver) {
-  const capabilities = await driver.getCapabilities()
-  return capabilities.get('platformName') || capabilities.get('platform')
-}
-async function getPlatformVersion(driver) {
-  const capabilities = await driver.getCapabilities()
-  return capabilities.get('platformVersion')
-}
-async function getBrowserName(driver) {
-  const capabilities = await driver.getCapabilities()
-  return capabilities.get('browserName')
-}
-async function getBrowserVersion(driver) {
-  const capabilities = await driver.getCapabilities()
-  return capabilities.get('browserVersion')
-}
-async function getSessionId(driver) {
-  const session = await driver.getSession()
-  return session.getId()
+  const platformName = capabilities.get('platformName') || capabilities.get('platform')
+  const platformVersion = capabilities.get('platformVersion')
+  const browserName = capabilities.get('browserName')
+  const browserVersion = capabilities.get('browserVersion')
+  const isMobile = ['android', 'ios'].includes(platformName && platformName.toLowerCase())
+  return {
+    sessionId,
+    isMobile,
+    isNative: isMobile && !browserName,
+    deviceName,
+    platformName,
+    platformVersion,
+    browserName,
+    browserVersion,
+  }
 }
 async function getTitle(driver) {
   return driver.getTitle()
@@ -238,8 +222,25 @@ async function type(driver, element, keys) {
   return element.sendKeys(keys)
 }
 async function waitUntilDisplayed(driver, selector, timeout) {
+  const {until} = require('selenium-webdriver')
+
   const element = await findElement(driver, selector)
   return driver.wait(until.elementIsVisible(element), timeout)
+}
+async function scrollIntoView(driver, element, align = false) {
+  if (isSelector(element)) {
+    element = await findElement(driver, element)
+  }
+  await driver.executeScript('arguments[0].scrollIntoView(arguments[1])', element, align)
+}
+async function hover(driver, element, {x, y} = {}) {
+  const {ActionSequence} = require('selenium-webdriver')
+
+  if (isSelector(element)) {
+    element = await findElement(driver, element)
+  }
+  const action = new ActionSequence(driver)
+  await action.mouseMove(element, {x, y}).perform()
 }
 
 // #endregion
@@ -251,8 +252,13 @@ const browserOptionsNames = {
   firefox: 'moz:firefoxOptions',
 }
 async function build(env) {
+  const {Builder} = require('selenium-webdriver')
   const {testSetup} = require('@applitools/sdk-shared')
-  const {browser = '', capabilities, headless, url, sauce, args = []} = testSetup.Env(env)
+
+  const {browser = '', capabilities, headless, url, sauce, args = []} = testSetup.Env({
+    legacy: true,
+    ...env,
+  })
   const desiredCapabilities = {browserName: browser, ...capabilities}
   if (!sauce) {
     const browserOptionsName = browserOptionsNames[browser]
@@ -269,13 +275,11 @@ async function build(env) {
       }
     }
   }
-  return new Builder()
+  const driver = await new Builder()
     .withCapabilities(desiredCapabilities)
     .usingServer(url.href)
     .build()
-}
-async function cleanup(browser) {
-  return browser && browser.quit()
+  return [driver, () => driver.quit()]
 }
 
 // #endregion
@@ -292,7 +296,6 @@ exports.isDriver = isDriver
 exports.isElement = isElement
 exports.isSelector = isSelector
 exports.transformDriver = transformDriver
-exports.toEyesSelector = toEyesSelector
 exports.isEqualElements = isEqualElements
 exports.isStaleElementError = isStaleElementError
 
@@ -306,14 +309,7 @@ exports.getElementRect = getElementRect
 exports.getWindowRect = getWindowRect
 exports.setWindowRect = setWindowRect
 exports.getOrientation = getOrientation
-exports.isMobile = isMobile
-exports.isNative = isNative
-exports.getDeviceName = getDeviceName
-exports.getPlatformName = getPlatformName
-exports.getPlatformVersion = getPlatformVersion
-exports.getBrowserName = getBrowserName
-exports.getBrowserVersion = getBrowserVersion
-exports.getSessionId = getSessionId
+exports.getDriverInfo = getDriverInfo
 exports.getTitle = getTitle
 exports.getUrl = getUrl
 exports.visit = visit
@@ -321,8 +317,9 @@ exports.takeScreenshot = takeScreenshot
 exports.click = click
 exports.type = type
 exports.waitUntilDisplayed = waitUntilDisplayed
+exports.scrollIntoView = scrollIntoView
+exports.hover = hover
 
 exports.build = build
-exports.cleanup = cleanup
 
 exports.wrapDriver = wrapDriver

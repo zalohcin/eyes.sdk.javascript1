@@ -147,14 +147,10 @@ class EyesScreenshot {
       .getInnerOffset()
       .catch(() => Location.ZERO)
 
-    this._frameLocationInScreenshot = await this._context.getLocationInViewport()
+    this._frameLocationInScreenshot = this._context.isMain
+      ? Location.ZERO
+      : await this._context.getLocationInViewport()
     this._frameSize = await this._context.getClientSize()
-
-    if (this._context.isMain && this._screenshotType === ScreenshotTypes.ENTIRE_FRAME) {
-      this._frameLocationInScreenshot = this._frameLocationInScreenshot.offsetByLocation(
-        await this._context.main.getInnerOffset().catch(() => Location.ZERO),
-      )
-    }
 
     this._logger.verbose('Calculating frame window...')
     this._frameRect = new Region(this._frameLocationInScreenshot, this._frameSize)

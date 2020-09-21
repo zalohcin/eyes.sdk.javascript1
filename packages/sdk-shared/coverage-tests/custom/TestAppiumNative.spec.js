@@ -6,14 +6,14 @@ const spec = require(path.resolve(cwd, 'src/SpecDriver'))
 const {Target, Region} = require(cwd)
 
 describe.skip('TestAppiumNative (@native @mobile)', () => {
-  let driver, eyes
+  let driver, destroyDriver, eyes
   afterEach(async () => {
-    await spec.cleanup(driver)
+    await destroyDriver()
     await eyes.abortIfNotClosed()
   })
 
   it(`AndroidNativeAppTest1`, async () => {
-    driver = await spec.build({
+    ;[driver, destroyDriver] = await spec.build({
       capabilities: {
         browserName: '',
         name: 'AndroidNativeAppTest1',
@@ -24,7 +24,6 @@ describe.skip('TestAppiumNative (@native @mobile)', () => {
         clearSystemFiles: true,
         noReset: true,
       },
-      server: Remotes.sauce({w3c: false}),
     })
 
     eyes = new getEyes()
@@ -34,7 +33,7 @@ describe.skip('TestAppiumNative (@native @mobile)', () => {
   })
 
   it.skip(`AndroidNativeAppTest2`, async () => {
-    driver = await spec.build({
+    ;[driver, destroyDriver] = await spec.build({
       capabilities: {
         browserName: '',
         name: 'AndroidNativeAppTest2',
@@ -63,7 +62,7 @@ describe.skip('TestAppiumNative (@native @mobile)', () => {
   })
 
   it.skip(`Native iOS app on sauce lab`, async () => {
-    driver = await spec.build({
+    ;[driver, destroyDriver] = await spec.build({
       capabilities: {
         browserName: '',
         platformName: 'iOS',

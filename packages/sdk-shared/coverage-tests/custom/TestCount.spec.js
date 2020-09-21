@@ -7,9 +7,9 @@ const spec = require(path.resolve(cwd, 'src/SpecDriver'))
 const {Target} = require(cwd)
 
 describe('TestCounts', () => {
-  let driver, eyes, runner
+  let driver, destroyDriver, eyes, runner
   beforeEach(async () => {
-    driver = await spec.build({browser: 'chrome'})
+    ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
     await spec.visit(driver, 'https://applitools.com/helloworld')
     eyes = await getEyes({isVisualGrid: true})
     runner = eyes.getRunner()
@@ -75,7 +75,7 @@ describe('TestCounts', () => {
   })
 
   afterEach(async () => {
-    await spec.cleanup(driver)
+    await destroyDriver()
     await eyes.abortIfNotClosed()
   })
 })
