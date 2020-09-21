@@ -3,8 +3,19 @@
 const express = require('express')
 const cookieParser = require('cookie-parser')
 const morgan = require('morgan')
-const {resolve} = require('path')
+const {resolve, join} = require('path')
 const cors = require('cors')
+const exphbs = require('express-handlebars')
+const adjustUrlToDocker = require('../coverage-tests/util/adjust-url-to-docker')
+
+function startTestServer(argv = {}) {
+  const {
+    staticPath = resolve('./test/fixtures'),
+    port = 0,
+    allowCors,
+    showLogs,
+    middlewareFile,
+  } = argv
 
 function startTestServer(argv = {}) {
   const {
