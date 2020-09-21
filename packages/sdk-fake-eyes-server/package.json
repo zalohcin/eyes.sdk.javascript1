@@ -29,7 +29,7 @@
   },
   "scripts": {
     "start": "node ./scripts/run-fake-eyes-server.js",
-    "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
+    "lint": "eslint . --ext .js",
     "test": "mocha --no-timeouts \"test/**/*.test.js\"",
     "preversion": "bongo preversion",
     "version": "bongo version",
@@ -52,6 +52,11 @@
   "devDependencies": {
     "@applitools/sdk-release-kit": "0.2.2",
     "chai": "^4.2.0",
-    "mocha": "^7.0.0"
+    "eslint": "^7.9.0",
+    "eslint-plugin-mocha-no-only": "^1.1.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "mocha": "^7.0.0",
+    "prettier": "1.19.0"
   }
 }
