@@ -32,8 +32,8 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "12.2.4",
-    "@applitools/visual-grid-client": "15.0.4"
+    "@applitools/eyes-sdk-core": "12.2.5",
+    "@applitools/visual-grid-client": "15.0.5"
   },
   "peerDependencies": {
     "webdriverio": "5.0.0 - 6.x.x"
@@ -85,7 +85,8 @@
     "test:coverage": "yarn docker:setup && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-webdriverio-5' APPLITOOLS_BATCH_ID=$(uuidgen) XUNIT_FILE=coverage-test-report.xml mocha --config .mocharc.cvg.js; yarn docker:teardown",
     "preversion": "bongo preversion && yarn test && yarn coverage:prod",
     "version": "bongo version",
-    "postversion": "bongo postversion"
+    "postversion": "bongo postversion",
+    "deps": "bongo deps"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

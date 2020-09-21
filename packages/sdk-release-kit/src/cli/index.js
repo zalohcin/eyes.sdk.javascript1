@@ -33,11 +33,12 @@ const sendReleaseNotification = require('../send-report')
 const {createDotFolder} = require('../setup')
 const {verifyCommits, verifyInstalledVersions, verifyVersions} = require('../versions')
 const {gitAdd, gitCommit, gitPullWithRebase, gitPushWithTags, isStagedForCommit} = require('../git')
-const {yarnInstall, yarnUpgrade} = require('../yarn')
+const {yarnInstall, yarnUpgrade, verifyUnfixedDeps} = require('../yarn')
+
+const command = args._[0]
 
 ;(async () => {
   try {
-    const command = args._[0]
     switch (command) {
       case 'lint':
       case 'l':
@@ -121,12 +122,19 @@ const {yarnInstall, yarnUpgrade} = require('../yarn')
       case 'version':
         writeReleaseEntryToChangelog(cwd)
         return await gitAdd('CHANGELOG.md')
+      case 'deps':
+        verifyUnfixedDeps(cwd)
+        return yarnUpgrade(cwd, !!process.env.BONGO_UPGRADE_ALL)
       default:
         throw new Error('Invalid option provided')
     }
   } catch (error) {
-    console.log(chalk.red(error.message))
-    console.log(error)
+    if (args.verbose) {
+      console.log(error)
+    } else {
+      console.log(chalk.red(error.message))
+      console.log(`run "npx bongo ${command} --verbose" to see stack trace`)
+    }
     process.exit(1)
   }
 })()
