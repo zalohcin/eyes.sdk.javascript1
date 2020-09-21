@@ -39,8 +39,7 @@ function startTestServer(argv = {}) {
     app.set('views', join(__dirname, '../coverage-tests/fixtures/views/'))
     app.get('/handles/*', (req, res) => {
       handleBarsConfig.src = adjustUrlToDocker(handleBarsConfig.src)
-      const staticPath = req.path.split('/').slice(2)
-      const filePath = staticPath.join('/')
+      const filePath = req.path.replace('/handles', '')
       res.render(filePath, {...handleBarsConfig})
     })
   }
