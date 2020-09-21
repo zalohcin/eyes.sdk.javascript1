@@ -246,7 +246,11 @@ async function getElementRect(driver, element) {
   return elSnapshot.boundingClientRect
 }
 async function getTitle(driver) {
-  return await Selector('title', {boundTestRun: driver}).innerText
+  try {
+    return await Selector('title', {boundTestRun: driver}).innerText
+  } catch (error) {
+    return ''
+  }
 }
 async function getUrl(driver) {
   return await executeScript(driver, 'return document.location.href')

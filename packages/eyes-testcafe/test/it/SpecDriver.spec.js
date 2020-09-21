@@ -174,9 +174,13 @@ test('mainContext()', async driver => {
   }
 })
 test('getTitle()', async driver => {
-  //const expected = 'Hello World'
-  //await spec.visit(driver, 'data:text/html,<title>Hello%20World</title><body>blah</body>')
   const expected = 'Cross SDK test'
+  const actual = await spec.getTitle(driver)
+  assert.deepStrictEqual(actual, expected)
+})
+test('getTitle() when not present', async driver => {
+  await spec.visit(driver, 'http://applitools.github.io/demo/TestPages/fixed-position')
+  const expected = ''
   const actual = await spec.getTitle(driver)
   assert.deepStrictEqual(actual, expected)
 })
