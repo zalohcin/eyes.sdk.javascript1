@@ -15,6 +15,7 @@ describe('Coverage Tests', () => {
     serverA = await testServer({
       port: 7373,
       staticPath,
+      showLogs: true,
       allowCors: false,
       handleBars: JSON.stringify({
         title: 'Hello, I have a designer cross origin frame',

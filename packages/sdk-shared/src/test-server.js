@@ -15,6 +15,7 @@ function startTestServer(argv = {}) {
     allowCors,
     showLogs,
     middlewareFile,
+    handleBars,
   } = argv
 
   const app = express()
@@ -29,8 +30,8 @@ function startTestServer(argv = {}) {
     app.use(morgan('tiny'))
   }
 
-  if (argv.handleBars) {
-    const handleBarsConfig = JSON.parse(argv.handleBars)
+  if (handleBars) {
+    const handleBarsConfig = JSON.parse(handleBars)
     const hbConfig = exphbs.create({
       layoutsDir: join(__dirname, '../coverage-tests/fixtures/layouts/'),
     })
