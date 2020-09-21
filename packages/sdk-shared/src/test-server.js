@@ -37,10 +37,10 @@ function startTestServer(argv = {}) {
     })
     app.engine('handlebars', hbConfig.engine)
     app.set('view engine', 'handlebars')
-    app.set('views', join(__dirname, '../coverage-tests/fixtures/views/'))
+    app.set('views', join(__dirname, '../coverage-tests/fixtures/views'))
     app.get('/handles/*', (req, res) => {
       handleBarsConfig.src = adjustUrlToDocker(handleBarsConfig.src)
-      const filePath = req.path.replace('/handles', '')
+      const filePath = req.path.replace('/handles/', '')
       res.render(filePath, {...handleBarsConfig})
     })
   }
