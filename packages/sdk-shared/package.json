@@ -36,6 +36,7 @@
     "express": "^4.17.1",
     "handlebars": "^4.7.6",
     "filenamify": "^4.1.0",
+    "handlebars": "^4.7.6",
     "morgan": "^1.10.0",
     "ncp": "2.0.0",
     "yargs": "^15.3.1"
