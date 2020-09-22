@@ -68,9 +68,11 @@ const command = args._[0]
           console.log('verify commits')
           await verifyCommits({pkgPath: cwd, isForce: process.env.BONGO_VERIFY_COMMITS_FORCE})
         }
-        if (!process.env.BONGO_SKIP_VERIFY_VERSIONS) {
+        try {
           console.log('verify versions')
-          await verifyVersions({pkgPath: cwd})
+          verifyVersions({pkgPath: cwd})
+        } catch (err) {
+          console.log(chalk.yellow(err.message))
         }
         console.log('yarn install')
         await yarnInstall()
@@ -112,7 +114,12 @@ const command = args._[0]
         })
       case 'verify-versions':
       case 'vv':
-        return verifyVersions({pkgPath: cwd})
+        try {
+          verifyVersions({pkgPath: cwd})
+        } catch (err) {
+          console.log(chalk.yellow(err.message))
+        }
+        return
       case 'version':
         writeReleaseEntryToChangelog(cwd)
         return await gitAdd('CHANGELOG.md')

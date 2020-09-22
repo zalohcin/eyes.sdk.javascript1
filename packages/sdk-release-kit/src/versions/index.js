@@ -59,14 +59,13 @@ function verifyVersions({pkgPath}) {
   const errors = results.filter(({depVersion, sourceVersion}) => depVersion !== sourceVersion)
 
   if (errors.length) {
-    const message =
-      errors
-        .map(({pkgName, dep, depVersion, sourceVersion}) => {
-          return chalk.red(
-            `[${pkgName}] [MISMATCH] ${dep}: version in registry is ${depVersion}, but source has version ${sourceVersion}`,
-          )
-        })
-        .join('\n') + chalk.yellow('\n\nTo fix these, publish the packages above')
+    const message = errors
+      .map(({pkgName, dep, depVersion, sourceVersion}) => {
+        return chalk.red(
+          `[${pkgName}] [MISMATCH] ${dep}: version specified for dependency in package.json is ${depVersion}, but source has version ${sourceVersion}`,
+        )
+      })
+      .join('\n')
 
     throw new Error(message)
   }
