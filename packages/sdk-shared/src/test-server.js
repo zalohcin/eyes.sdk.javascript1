@@ -23,8 +23,10 @@ function startTestServer(argv = {}) {
   }
 
   if (middlewareFile) {
-    debugger
-    app.use(require(middlewareFile)({hbData, staticPath}))
+    const middleWare = hbData
+      ? require(middlewareFile)({hbData, staticPath})
+      : require(middlewareFile)
+    app.use(middleWare)
   }
 
   if (showLogs) {
