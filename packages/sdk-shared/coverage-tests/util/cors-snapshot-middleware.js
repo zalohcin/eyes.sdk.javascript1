@@ -11,7 +11,7 @@ module.exports = ({hbData, staticPath}) => (req, res, next) => {
     const data = JSON.parse(hbData)
     const filePath = getFilePath(req.url, staticPath)
     const file = readFileSync(filePath).toString()
-    const compiled = Handlebars.compile(file)({...data})
+    const compiled = Handlebars.compile(file)(data)
     res.send(compiled)
   } else {
     next()
