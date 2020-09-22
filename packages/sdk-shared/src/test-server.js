@@ -85,7 +85,7 @@ function startTestServer(argv = {}) {
 }
 
 if (require.main === module) {
-  const {argv} = require('yargs')
+  const {argv} = require('yargs').option('hbData', {corece: JSON.stringify})
   console.log('running test server', argv)
   startTestServer(argv)
     .then(({close, port}) => {

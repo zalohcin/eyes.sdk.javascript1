@@ -17,10 +17,10 @@ describe('Coverage Tests', () => {
       staticPath,
       allowCors: false,
       middlewareFile: path.resolve(__dirname, '../util/cors-snapshot-middleware.js'),
-      hbData: JSON.stringify({
+      hbData: {
         title: 'Hello, I have a designer cross origin frame',
         src: adjustUrlToDocker('http://localhost:7374/cors_frames/frame.html'),
-      }),
+      },
     })
     serverB = await testServer({port: 7374, staticPath})
 
