@@ -65,7 +65,7 @@
   },
   "scripts": {
     "lint": "eslint '**/*.js'",
-    "render": "node ../sdk-shared/src/render.js",
+    "render": "node ../sdk-shared/scripts/render.js",
     "test": "yarn test:unit && yarn test:it && yarn test:e2e && yarn test:service",
     "test:e2e": "mocha --no-timeouts \"test/+(TestClassicApi*.js|TestFluentApi*.js|TestVisualGrid*.js)\"",
     "test:it": "mocha -r ./test/util/version-alias.js --no-timeouts \"test/it/*.js\"",

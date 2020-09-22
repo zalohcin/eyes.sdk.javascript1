@@ -18,8 +18,8 @@ const {
   MatchLevel,
   // FileDebugScreenshotsProvider,
 } = require(cwd)
-const {BROWSERS} = require('./test-setup')
-const scrollPage = require('./scroll-page')
+const {BROWSERS} = require('../src/test-setup')
+const scrollPage = require('../src/scroll-page')
 
 const yargs = require('yargs')
 const args = yargs

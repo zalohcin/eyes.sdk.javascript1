@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint '**/*.js'",
-    "render": "node ../sdk-shared/src/render.js",
+    "render": "node ../sdk-shared/script/render.js",
     "test": "yarn test:unit && yarn test:it && yarn test:e2e",
     "test:e2e": "mocha --no-timeouts \"test/e2e/*.js\"",
     "test:it": "mocha --no-timeouts \"test/it/**/*.js\"",
