@@ -31,7 +31,7 @@ describe('Coverage Tests', () => {
     })
     serverB = await testServer({port: 7374, staticPath})
 
-    driver = await spec.build({browser: 'chrome', headless: false})
+    driver = await spec.build({browser: 'chrome'})
     eyes = getEyes({
       isVisualGrid: true,
       branchName: 'master',
