@@ -23,9 +23,7 @@ function startTestServer(argv = {}) {
   }
 
   if (middlewareFile) {
-    const middleWare = hbData
-      ? require(middlewareFile)({hbData, staticPath})
-      : require(middlewareFile)
+    const middleWare = hbData ? require(middlewareFile)(argv) : require(middlewareFile)
     app.use(middleWare)
   }
 
