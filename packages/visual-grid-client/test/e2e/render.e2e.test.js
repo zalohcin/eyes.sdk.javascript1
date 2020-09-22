@@ -88,6 +88,6 @@ describe('render e2e', () => {
     expect(safari1).to.equal(safari - 1)
     expect(safari2).to.equal(safari - 2)
     expect(edgechromium1).to.equal(edgechromium - 1)
-    expect(edgechromium2).to.equal(edgechromium - 1)
+    expect(edgechromium2).to.equal(edgechromium - 2)
   })
 })

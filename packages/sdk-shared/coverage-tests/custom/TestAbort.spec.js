@@ -23,7 +23,7 @@ const appName = 'Test abort'
 const testedUrl = 'https://applitools.com/docs/topics/overview.html'
 
 describe(appName, () => {
-  let webDriver, eyes, config, runner
+  let webDriver, destroyDriver, eyes, config, runner
   after(async () => {
     await displayRunInfo(runner)
   })
@@ -32,7 +32,7 @@ describe(appName, () => {
     if (eyes.getIsOpen()) {
       await eyes.close(false)
     }
-    await spec.cleanup(webDriver)
+    await destroyDriver()
   }
 
   describe(`TestAbort`, () => {
@@ -45,7 +45,7 @@ describe(appName, () => {
     async function beforeEach() {
       eyes = new Eyes(runner)
       eyes.setConfiguration(config)
-      webDriver = await spec.build({browser: 'chrome'})
+      ;[webDriver, destroyDriver] = await spec.build({browser: 'chrome'})
     }
 
     it(`Test_GetAllResults`, async () => {
@@ -73,7 +73,7 @@ describe(appName, () => {
     async function beforeEach() {
       eyes = new Eyes(runner)
       eyes.setConfiguration(config)
-      webDriver = await spec.build({browser: 'chrome'})
+      ;[webDriver, destroyDriver] = await spec.build({browser: 'chrome'})
     }
 
     it.skip(`Test_GetAllResults_VG`, async () => {

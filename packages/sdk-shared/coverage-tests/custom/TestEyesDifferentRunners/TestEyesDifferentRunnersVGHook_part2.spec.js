@@ -8,12 +8,12 @@ const {testSetup, getCheckSettingsWithHook, validateVG} = require('./EyesDiffere
 
 describe('TestEyesDifferentRunners VG with hooks', () => {
   afterEach(async function() {
-    await spec.cleanup(this.webDriver)
+    await this.destroyDriver()
     await this.eyes.abortIfNotClosed()
   })
 
   beforeEach(async function() {
-    this.webDriver = await spec.build({browser: 'chrome'})
+    ;[this.webDriver, this.destroyDriver] = await spec.build({browser: 'chrome'})
     this.eyes = await getEyes({isVisualGrid: true})
     let conf = this.eyes.getConfiguration()
     conf.setTestName(`Top Sites - ${this.currentTest.title}`)

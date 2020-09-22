@@ -3,6 +3,16 @@
 ## Unreleased
 
 
+## 12.2.5 - 2020/9/17
+
+- fix viewport position calculations ([Trello](https://trello.com/c/TuXUZUNO))
+- fix `takeDomCapture`
+
+## 12.2.4 - 2020/9/15
+
+- add new `takeDomSnapshot` implementation
+- remove `selenium-webdriver` dependency
+
 ## 12.2.3 - 2020/9/2
 
 - add `disableBrowserFetching` configuration parameter ([Trello](https://trello.com/c/ixJJZdiA))

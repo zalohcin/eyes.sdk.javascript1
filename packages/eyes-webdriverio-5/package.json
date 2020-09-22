@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-webdriverio",
-  "version": "5.22.0",
+  "version": "5.22.2",
   "description": "Applitools Eyes SDK for WebdriverIO",
   "keywords": [
     "eyes-webdriverio",
@@ -32,14 +32,14 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "12.2.3",
-    "@applitools/visual-grid-client": "15.0.3"
+    "@applitools/eyes-sdk-core": "12.2.5",
+    "@applitools/visual-grid-client": "15.0.5"
   },
   "peerDependencies": {
     "webdriverio": "5.0.0 - 6.x.x"
   },
   "devDependencies": {
-    "@applitools/sdk-coverage-tests": "1.0.14",
+    "@applitools/sdk-coverage-tests": "^1.0.14",
     "@applitools/sdk-fake-eyes-server": "^2.0.0",
     "@applitools/sdk-release-kit": "0.2.2",
     "@applitools/sdk-shared": "0.1.0",
@@ -65,7 +65,7 @@
   },
   "scripts": {
     "lint": "eslint '**/*.js'",
-    "render": "node ../sdk-shared/src/render.js",
+    "render": "node ../sdk-shared/scripts/render.js",
     "test": "yarn test:unit && yarn test:it && yarn test:e2e && yarn test:service",
     "test:e2e": "mocha --no-timeouts \"test/+(TestClassicApi*.js|TestFluentApi*.js|TestVisualGrid*.js)\"",
     "test:it": "mocha -r ./test/util/version-alias.js --no-timeouts \"test/it/*.js\"",

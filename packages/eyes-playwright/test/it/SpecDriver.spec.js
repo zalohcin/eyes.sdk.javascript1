@@ -3,17 +3,17 @@ const {testSetup} = require('@applitools/sdk-shared')
 const spec = require('../../src/SpecDriver')
 
 describe('SpecDriver', async () => {
-  let page
+  let page, destroyPage
   const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
 
   describe('headless desktop', async () => {
     before(async () => {
-      page = await spec.build(testSetup.Env({browser: 'chrome'}, 'cdp'))
+      ;[page, destroyPage] = await spec.build(testSetup.Env({browser: 'chrome'}, 'cdp'))
       await page.goto(url)
     })
 
     after(async () => {
-      await spec.cleanup(page)
+      await destroyPage()
     })
 
     it('isDriver(driver)', isDriver({expected: true}))
@@ -37,7 +37,6 @@ describe('SpecDriver', async () => {
       }),
     )
     it('isStaleElementError(err)', isStaleElementError())
-    it('toEyesSelector(framework-selector)', toEyesSelector())
     it('executeScript(script, args)', executeScript())
     it('mainContext()', mainContext())
     it('parentContext()', parentContext())
@@ -53,11 +52,13 @@ describe('SpecDriver', async () => {
 
   describe('onscreen desktop', async () => {
     before(async () => {
-      page = await spec.build(testSetup.Env({browser: 'chrome', headless: false}, 'cdp'))
+      ;[page, destroyPage] = await spec.build(
+        testSetup.Env({browser: 'chrome', headless: false}, 'cdp'),
+      )
     })
 
     after(async () => {
-      await spec.cleanup(page)
+      await destroyPage()
     })
 
     it('getViewportSize()', getViewportSize())
@@ -106,41 +107,6 @@ describe('SpecDriver', async () => {
         return assert.ok(spec.isStaleElementError(err))
       }
       assert.fail()
-    }
-  }
-  function toEyesSelector() {
-    return async () => {
-      const xpathSelector1 = 'xpath=/html[1]/body[1]/div[1]'
-      const xpathResult1 = spec.toEyesSelector(xpathSelector1)
-      assert.deepStrictEqual(xpathResult1, {type: 'xpath', selector: '/html[1]/body[1]/div[1]'})
-
-      const xpathSelector2 = '//html[1]/body[1]/div[1]'
-      const xpathResult2 = spec.toEyesSelector(xpathSelector2)
-      assert.deepStrictEqual(xpathResult2, {type: 'xpath', selector: '//html[1]/body[1]/div[1]'})
-
-      const cssSelector1 = 'css:light=html > body > div'
-      const cssResult1 = spec.toEyesSelector(cssSelector1)
-      assert.deepStrictEqual(cssResult1, {type: 'css', selector: 'html > body > div'})
-
-      const cssSelector2 = 'html > body > div'
-      const cssResult2 = spec.toEyesSelector(cssSelector2)
-      assert.deepStrictEqual(cssResult2, {selector: 'html > body > div'})
-
-      const textSelector1 = 'text=blabla'
-      const textResult1 = spec.toEyesSelector(textSelector1)
-      assert.deepStrictEqual(textResult1, {selector: textSelector1})
-
-      const textSelector2 = '"blabla"'
-      const textResult2 = spec.toEyesSelector(textSelector2)
-      assert.deepStrictEqual(textResult2, {selector: textSelector2})
-
-      const combinedSelector = 'css=html > body > div >> text=blabla'
-      const tagResult = spec.toEyesSelector(combinedSelector)
-      assert.deepStrictEqual(tagResult, {selector: combinedSelector})
-
-      const wrongSelector = {isWrong: true}
-      const wrongResult = spec.toEyesSelector(wrongSelector)
-      assert.deepStrictEqual(wrongResult, {selector: wrongSelector})
     }
   }
   function executeScript() {

@@ -9,15 +9,15 @@ const ncp = require('ncp')
 const pncp = promisify(ncp)
 
 describe('Coverage tests', () => {
-  let driver, eyes
-
-  afterEach(async () => {
-    await spec.cleanup(driver)
-  })
+  let driver, destroyDriver, eyes
 
   beforeEach(async () => {
-    driver = await spec.build({browser: 'chrome'})
+    ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
     eyes = await getEyes({isCssStitching: true})
+  })
+
+  afterEach(async () => {
+    await destroyDriver()
   })
 
   it('resilient to duplicate copies of the SDK', async () => {

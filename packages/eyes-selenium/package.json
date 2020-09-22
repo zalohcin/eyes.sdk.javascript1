@@ -36,8 +36,8 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "12.2.3",
-    "@applitools/visual-grid-client": "15.0.3"
+    "@applitools/eyes-sdk-core": "12.2.4",
+    "@applitools/visual-grid-client": "15.0.4"
   },
   "devDependencies": {
     "@applitools/sdk-coverage-tests": "1.0.14",
@@ -63,7 +63,8 @@
   },
   "scripts": {
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
-    "render": "node ../sdk-shared/src/render.js",
+    "render": "node ../sdk-shared/script/render.js",
+    "capture-dom": "node ../sdk-shared/script/capture-dom.js",
     "test": "yarn test:it",
     "test:it": "mocha -r ./test/util/version-alias.js --no-timeouts --parallel --jobs 15 './test/it/**/*.spec.js'",
     "coverage:generate": "coverage-tests create-tests",

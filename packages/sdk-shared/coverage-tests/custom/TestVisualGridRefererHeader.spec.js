@@ -10,7 +10,7 @@ const adjustUrlToDocker = require('../util/adjust-url-to-docker')
 
 describe('TestVisualGridRefererHeader', () => {
   let testServer1, testServer2
-  let driver
+  let driver, destroyDriver
 
   before(async () => {
     const staticPath = path.join(__dirname, '../fixtures')
@@ -29,11 +29,11 @@ describe('TestVisualGridRefererHeader', () => {
   })
 
   beforeEach(async () => {
-    driver = await spec.build({browser: 'chrome'})
+    ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
   })
 
   afterEach(async () => {
-    await spec.cleanup(driver)
+    await destroyDriver()
   })
 
   it('send referer header', async () => {

@@ -3,15 +3,15 @@ const spec = require('../../src/SpecDriver')
 const {LegacySelector, withLegacyDriverAPI} = require('../../src/LegacyAPI')
 
 describe('LegacyAPI', () => {
-  let browser, driver
+  let browser, destroyBrowser, driver
   before(async () => {
-    browser = await spec.build({browser: 'chrome'})
+    ;[browser, destroyBrowser] = await spec.build({browser: 'chrome'})
     driver = withLegacyDriverAPI(browser)
     await driver.url('https://applitools.github.io/demo/TestPages/FramesTestPage/')
   })
 
   after(async () => {
-    await spec.cleanup(driver)
+    await destroyBrowser()
   })
 
   it('remoteWebDriver', async () => {

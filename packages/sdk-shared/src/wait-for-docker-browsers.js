@@ -14,7 +14,7 @@ async function waitForDockerBrowsers(
     await axios(remoteUrl)
   } catch (_ex) {
     await delay(100)
-    return waitForDockerBrowsers(retries - 1)
+    return waitForDockerBrowsers({remoteUrl, retries: retries - 1})
   }
 }
 

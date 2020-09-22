@@ -9,6 +9,13 @@
   dependencies:
     "@applitools/functional-commons" "1.5.4"
 
+"@applitools/dom-capture@7.3.0":
+  version "7.3.0"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-capture/-/dom-capture-7.3.0.tgz#f9d747f3185c643234fb660cef62a150c754d1a9"
+  integrity sha512-jB9Cmmo901i2ogjTMF/iPGuG6R+NAhhXnYA4KMFL8N2WHRDyi9+U6X3E1Duv3KNsLNWSSQyJSHAy3E0T8I2diA==
+  dependencies:
+    "@applitools/functional-commons" "1.5.4"
+
 "@applitools/dom-snapshot@4.0.0":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-4.0.0.tgz#e2828c2f311a0bb6273be387601b6cb9c0c4967d"
@@ -29,6 +36,14 @@
   version "4.0.5"
   resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-4.0.5.tgz#4da7243060ae58dd01377f97e7f0040fcbae7707"
   integrity sha512-t/VrGr33pfs0eCvVd2b6e2mN1xL9lryorr4yaIDtaqCFwXrN22uZEIOSoTk3IQUC17SAEN4tnMitJjkoAOcJ7g==
+  dependencies:
+    "@applitools/functional-commons" "1.6.0"
+    css-tree "^1.0.0-alpha.39"
+
+"@applitools/dom-snapshot@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-4.0.6.tgz#d3baf349c4023a0881d097b3fa151dc9b79b0d8b"
+  integrity sha512-5A9eLz2+1cvCRujwggQGP75iuG5bmN9ZYdJzxjjk4aVNzDbj6BL4p5zy2yWLVvY6svjoLxqiCtMBhqidDwd9fA==
   dependencies:
     "@applitools/functional-commons" "1.6.0"
     css-tree "^1.0.0-alpha.39"
@@ -68,14 +83,15 @@
     stack-trace "^0.0.10"
     tunnel "0.0.6"
 
-"@applitools/eyes-sdk-core@12.1.4":
-  version "12.1.4"
-  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-12.1.4.tgz#aa1f3e67cd9a298da2fec0ec76156d996e698181"
-  integrity sha512-y0akoSTlsAoOrSid7g6PdtT6ajuI6FomNa4mLH1nXwW+obWGI5eUkxHV68ceQWo/4ch9voAv4in6POx1PMH3Cg==
+"@applitools/eyes-sdk-core@12.2.0":
+  version "12.2.0"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-12.2.0.tgz#b4a5d75224af593d1d1c55566c7975d2158e4812"
+  integrity sha512-Rhk+aCtgvIvkXAsHLUE2FYeOw23TavVBzCvC0zwwdyx1a6XnczbyhO6GJK5ANCHGv1X/1MCBDRgXRkiyV/1BcQ==
   dependencies:
     "@applitools/dom-capture" "7.2.6"
+    "@applitools/dom-snapshot" "4.0.5"
     "@applitools/isomorphic-fetch" "3.0.0"
-    "@applitools/snippets" "1.0.3"
+    "@applitools/snippets" "1.1.1"
     axios "0.19.2"
     chalk "3.0.0"
     cosmiconfig "^6.0.0"
@@ -86,15 +102,34 @@
     stack-trace "^0.0.10"
     tunnel "0.0.6"
 
-"@applitools/eyes-sdk-core@12.2.0":
-  version "12.2.0"
-  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-12.2.0.tgz#b4a5d75224af593d1d1c55566c7975d2158e4812"
-  integrity sha512-Rhk+aCtgvIvkXAsHLUE2FYeOw23TavVBzCvC0zwwdyx1a6XnczbyhO6GJK5ANCHGv1X/1MCBDRgXRkiyV/1BcQ==
+"@applitools/eyes-sdk-core@12.2.3":
+  version "12.2.3"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-12.2.3.tgz#b4f6767c46982b4e788a04754bd228660c5f9e07"
+  integrity sha512-JO7U/FA8tjhW3D9AfDzivZuM/4UCKJszoWZeLQ9mMuttP8c6j+O580YbkO1SaMxlKt9wRJzYpSwWnlJwkudatQ==
   dependencies:
     "@applitools/dom-capture" "7.2.6"
     "@applitools/dom-snapshot" "4.0.5"
     "@applitools/isomorphic-fetch" "3.0.0"
     "@applitools/snippets" "1.1.1"
+    axios "0.19.2"
+    chalk "3.0.0"
+    cosmiconfig "^6.0.0"
+    dateformat "^3.0.3"
+    debug "^4.1.1"
+    deepmerge "^4.2.2"
+    png-async "^0.9.4"
+    stack-trace "^0.0.10"
+    tunnel "0.0.6"
+
+"@applitools/eyes-sdk-core@12.2.4":
+  version "12.2.4"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-12.2.4.tgz#b71a5dbb916ebf8b458b73e33fe0b36c9694d1b8"
+  integrity sha512-qw4HRFoRaRyaxut6WNXGrV8zTlmSAZ2L8UsL1OnjINu51+qXleqvZYSP3th2VlowLo7VWNge65q9dw6kxzdqpQ==
+  dependencies:
+    "@applitools/dom-capture" "7.3.0"
+    "@applitools/dom-snapshot" "4.0.6"
+    "@applitools/isomorphic-fetch" "3.0.0"
+    "@applitools/snippets" "2.0.0"
     axios "0.19.2"
     chalk "3.0.0"
     cosmiconfig "^6.0.0"
@@ -187,10 +222,28 @@
   dependencies:
     debug "^4.1.0"
 
+"@applitools/sdk-shared@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@applitools/sdk-shared/-/sdk-shared-0.1.0.tgz#e371141a1d8cc8dc12180639e661fff10cba14ed"
+  integrity sha512-vVSffqOuf72lwxhY884lVWcmNDMkVQTI4pfIBfk7ay9RyGdBw0NMoj//F6LpjGvmhOoh8YQ1w3j5d7qoqffD8Q==
+  dependencies:
+    "@applitools/functional-commons" "1.5.4"
+    chromedriver "^83.0.0"
+    cookie-parser "^1.4.5"
+    cors "^2.8.5"
+    express "^4.17.1"
+    morgan "^1.10.0"
+    yargs "^15.3.1"
+
 "@applitools/snippets@1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@applitools/snippets/-/snippets-1.0.3.tgz#8aa39b51494f4d04c8854c41a28db5832fc96084"
   integrity sha512-VhFTknmcOptA346emHfkko3Ac4Y0H4GFBzOuv98mi3FtECFeTG8YkVbZTQmtERHYppy8ZVaryhbTFBulLwHofw==
+
+"@applitools/snippets@1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@applitools/snippets/-/snippets-1.1.1.tgz#66bd455153966c19f92fca42439af0ec72077854"
+  integrity sha512-4Q6OMuo9ZuY1SKH9grNm86i0InJxC0QtBL0PwnTuBvdPLLTj7bOwwgm72JahJUYeJNs1+pdeTB61JHjoRouKVQ==
 
 "@applitools/visual-grid-client@14.6.0":
   version "14.6.0"
@@ -231,13 +284,12 @@
     postcss-value-parser "^4.0.2"
     throat "^5.0.0"
 
-"@applitools/visual-grid-client@14.7.5":
-  version "14.7.5"
-  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-14.7.5.tgz#a20b53d36d5523c89bb2a2fee40fd38ae263731d"
-  integrity sha512-67G2104n+cRu+CuRcuTrcXZaaAkpsvpOwYy4gdJNeeeMwR7JccnK0OCEilHGQsB1Op8aEG4d7lPH1SdjCYzFow==
+"@applitools/visual-grid-client@15.0.0":
+  version "15.0.0"
+  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-15.0.0.tgz#9ac12e9f987c267d68d85badadcb691ba2da6136"
+  integrity sha512-fRmnfmx9Gx9102LOt2sVzz8/0ZWlZB+pEteICYJJzVRNA63vJxz9lTh/7nPqJaAjWzpFh9wlAj/aHbzELpyIkA==
   dependencies:
-    "@applitools/dom-snapshot" "4.0.3"
-    "@applitools/eyes-sdk-core" "12.1.4"
+    "@applitools/eyes-sdk-core" "12.2.0"
     "@applitools/functional-commons" "1.5.4"
     "@applitools/http-commons" "2.3.12"
     "@applitools/isomorphic-fetch" "3.0.0"
@@ -250,12 +302,30 @@
     postcss-value-parser "^4.0.2"
     throat "^5.0.0"
 
-"@applitools/visual-grid-client@15.0.0":
-  version "15.0.0"
-  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-15.0.0.tgz#9ac12e9f987c267d68d85badadcb691ba2da6136"
-  integrity sha512-fRmnfmx9Gx9102LOt2sVzz8/0ZWlZB+pEteICYJJzVRNA63vJxz9lTh/7nPqJaAjWzpFh9wlAj/aHbzELpyIkA==
+"@applitools/visual-grid-client@15.0.3":
+  version "15.0.3"
+  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-15.0.3.tgz#38478a3710bcb654b03127bcaf5be4932c4dcf23"
+  integrity sha512-dgWFtINlD+zBVKGBMPyK99Ja/iz2egX9bxfMmn2yGivqQXG8e3SgqGrrAeD0qcVMnKYbY4aJoM57fji7RrA2GA==
   dependencies:
-    "@applitools/eyes-sdk-core" "12.2.0"
+    "@applitools/eyes-sdk-core" "12.2.3"
+    "@applitools/functional-commons" "1.5.4"
+    "@applitools/http-commons" "2.3.12"
+    "@applitools/isomorphic-fetch" "3.0.0"
+    "@applitools/jsdom" "1.0.2"
+    chalk "3.0.0"
+    he "1.2.0"
+    lodash.mapvalues "^4.6.0"
+    mime-types "^2.1.24"
+    mkdirp "^0.5.1"
+    postcss-value-parser "^4.0.2"
+    throat "^5.0.0"
+
+"@applitools/visual-grid-client@15.0.4":
+  version "15.0.4"
+  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-15.0.4.tgz#4515f48c3efcef63a1155c40e5f92f2f607714a0"
+  integrity sha512-RGOTajyzRbUTUkYRu1gyUSBwdIJ7iS1K5rOtxQeZqbhGzpmBhl4sQqpDuys8WJmW4iTiv7ijdMoZ8dGXvVVRag==
+  dependencies:
+    "@applitools/eyes-sdk-core" "12.2.4"
     "@applitools/functional-commons" "1.5.4"
     "@applitools/http-commons" "2.3.12"
     "@applitools/isomorphic-fetch" "3.0.0"
@@ -17136,7 +17206,7 @@ select@^1.1.2:
     tmp "0.0.30"
     xml2js "^0.4.17"
 
-"selenium-webdriver-4@npm:selenium-webdriver@^4.0.0-alpha.7", selenium-webdriver@^4.0.0-alpha.5, selenium-webdriver@^4.0.0-alpha.7:
+"selenium-webdriver-4@npm:selenium-webdriver@^4.0.0-alpha.7", selenium-webdriver@^4.0.0-alpha.7:
   version "4.0.0-alpha.7"
   resolved "https://registry.yarnpkg.com/selenium-webdriver/-/selenium-webdriver-4.0.0-alpha.7.tgz#e3879d8457fd7ad8e4424094b7dc0540d99e6797"
   integrity sha512-D4qnTsyTr91jT8f7MfN+OwY0IlU5+5FmlO5xlgRUV6hDEV8JyYx2NerdTEqDDkNq7RZDYc4VoPALk8l578RBHw==
