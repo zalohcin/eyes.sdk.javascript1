@@ -6,6 +6,7 @@ const {
   makePackagesList,
   npmLs,
   verifyDependencies,
+  getNpmDependencies,
 } = require('./versions-utils')
 
 async function verifyCommits({pkgPath}) {
@@ -51,6 +52,15 @@ async function verifyInstalledVersions(
   }
 }
 
+async function verifyNpmVersions({pkgPath}) {
+  const pkgs = makePackagesList()
+  const results = await getNpmDependencies({pkgs, pkgPath})
+  const errors = results.filter(({npmVersion, sourceVersion}) => npmVersion !== sourceVersion)
+  if (errors.length) {
+    const message = errors.map(({pkgName, npmVersion, sourceVersion}) => ``)
+  }
+}
+
 function verifyVersions({pkgPath}) {
   const pkgs = makePackagesList()
   const results = []
@@ -61,7 +71,7 @@ function verifyVersions({pkgPath}) {
   if (errors.length) {
     const message = errors
       .map(({pkgName, dep, depVersion, sourceVersion}) => {
-        return chalk.red(
+        return
           `[${pkgName}] [MISMATCH] ${dep}: version specified for dependency in package.json is ${depVersion}, but source has version ${sourceVersion}`,
         )
       })
@@ -75,4 +85,5 @@ module.exports = {
   verifyCommits,
   verifyInstalledVersions,
   verifyVersions,
+  verifyNpmVersions,
 }

@@ -4,6 +4,7 @@ const chalk = require('chalk')
 const {isMatch} = require('micromatch')
 const {exec} = require('child_process')
 const {promisify} = require('util')
+const {shWithOutput} = require('@applitools/sdk-shared/src/process-commons')
 const pexec = promisify(exec)
 const cwd = process.cwd()
 
@@ -11,7 +12,7 @@ function _isAlreadyChecked({pkgName, dep, results}) {
   return results.find(result => result.pkgName === pkgName && result.dep === dep)
 }
 
-function _isWorkspacePackage({pkgs, pkgName}) {
+function getWorkspacePackage({pkgs, pkgName}) {
   return pkgs.find(({name}) => name === pkgName)
 }
 
@@ -34,7 +35,7 @@ function verifyDependencies({pkgs, pkgPath, results}) {
   const {dependencies} = packageJson
 
   for (const dep in dependencies) {
-    if (!_isAlreadyChecked({pkgName, dep, results}) && _isWorkspacePackage({pkgs, pkgName: dep})) {
+    if (!_isAlreadyChecked({pkgName, dep, results}) && getWorkspacePackage({pkgs, pkgName: dep})) {
       const depVersion = dependencies[dep]
       const pkg = pkgs.find(({name}) => name === dep)
       const depPackageJsonPath = path.join(pkg.path, 'package.json')
@@ -44,6 +45,38 @@ function verifyDependencies({pkgs, pkgPath, results}) {
       verifyDependencies({pkgs, pkgPath: pkg.path, results})
     }
   }
+}
+
+async function getNpmDependencies({pkgs, pkgPath}) {
+  return Promise.all(
+    getAllDependencies({pkgs, pkgPath})
+      .map(dep => getWorkspacePackage({pkgs, pkgName: dep}))
+      .filter(x => x)
+      .map(async ({name, path: pkgPath}) => {
+        const [npmVersion] = await shWithOutput(`npm view ${name} version`)
+        const sourceVersion = JSON.parse(fs.readFileSync(path.resolve(pkgPath, 'package.json')))
+          .version
+        return {pkgName: name, pkgPath, npmVersion, sourceVersion}
+      }),
+  )
+}
+
+function getAllDependencies({pkgs, pkgPath}) {
+  debugger
+  const results = new Set()
+  const packageJsonPath = path.resolve(pkgPath, 'package.json')
+  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath))
+  for (const dep in packageJson.dependencies) {
+    results.add(dep)
+    const pkg = getWorkspacePackage({pkgs, pkgName: dep})
+    if (pkg) {
+      const depDeps = getAllDependencies({pkgs, pkgPath: pkg.path})
+      for (const depDep of depDeps) {
+        results.add(depDep)
+      }
+    }
+  }
+  return [...results]
 }
 
 function checkPackagesForUniqueVersions(input, packageNames, {isNpmLs} = {isNpmLs: true}) {
@@ -149,6 +182,7 @@ function findPackageInPackageLock({packageLock, packageName}) {
 
 module.exports = {
   makePackagesList,
+  getNpmDependencies,
   verifyDependencies,
   checkPackagesForUniqueVersions,
   findEntryByPackageName,
