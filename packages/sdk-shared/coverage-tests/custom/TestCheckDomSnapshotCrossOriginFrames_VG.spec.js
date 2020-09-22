@@ -15,7 +15,6 @@ describe('Coverage Tests', () => {
     serverA = await testServer({
       port: 7373,
       staticPath,
-      showLogs: true,
       allowCors: false,
       middlewareFile: path.resolve(__dirname, '../util/cors-snapshot-middleware.js'),
       hbData: JSON.stringify({
