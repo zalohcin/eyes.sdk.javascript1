@@ -2,9 +2,7 @@ const Handlebars = require('handlebars')
 const {readFileSync} = require('fs')
 
 const getFilePath = (url, staticPath) => {
-  if (!url.includes('.')) {
-    url += `.hbs`
-  }
+  url = !url.includes('.hbs') ? `${url}.hbs` : url
   return `${staticPath}${url.replace('/handles', '')}`
 }
 
