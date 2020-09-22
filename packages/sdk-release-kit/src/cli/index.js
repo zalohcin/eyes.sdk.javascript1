@@ -62,18 +62,24 @@ const command = args._[0]
         await lint(cwd)
         console.log('verify changelog')
         await verifyChangelog(cwd)
-        console.log('yarn install')
-        await yarnInstall()
-        console.log('yarn upgrade')
-        await yarnUpgrade()
-        if (!process.env.BONGO_SKIP_VERIFY_VERSIONS) {
-          console.log('verify versions')
-          await verifyVersions({isFix: args.fix, pkgPath: cwd})
-        }
+        console.log('verify unfixed dependencies')
+        verifyUnfixedDeps(cwd)
         if (!process.env.BONGO_SKIP_VERIFY_COMMITS) {
           console.log('verify commits')
           await verifyCommits({pkgPath: cwd, isForce: process.env.BONGO_VERIFY_COMMITS_FORCE})
         }
+        if (!process.env.BONGO_SKIP_VERIFY_VERSIONS) {
+          console.log('verify versions')
+          await verifyVersions({pkgPath: cwd})
+        }
+        console.log('yarn install')
+        await yarnInstall()
+        console.log('yarn upgrade')
+        await yarnUpgrade({
+          folder: cwd,
+          upgradeAll: process.env.BONGO_UPGRADE_ALL,
+          skipDev: process.env.BONGO_SKIP_DEV,
+        })
         if (!process.env.BONGO_SKIP_VERIFY_INSTALLED_VERSIONS) {
           console.log('verify installed versions')
           createDotFolder(cwd)
@@ -95,10 +101,7 @@ const command = args._[0]
         return await verifyChangelog(cwd)
       case 'verify-commits':
       case 'vco':
-        if (!process.env.BONGO_SKIP_VERIFY_COMMITS) {
-          return await verifyCommits({pkgPath: cwd})
-        }
-        return
+        return await verifyCommits({pkgPath: cwd})
       case 'verify-installed-versions':
       case 'viv':
         createDotFolder(cwd)
@@ -109,22 +112,25 @@ const command = args._[0]
         })
       case 'verify-versions':
       case 'vv':
-        const isFix = args.fix
-        await verifyVersions({isFix, pkgPath: cwd})
-        if (isFix && !args.skipCommit) {
+        return verifyVersions({pkgPath: cwd})
+      case 'version':
+        writeReleaseEntryToChangelog(cwd)
+        return await gitAdd('CHANGELOG.md')
+      case 'deps':
+        verifyUnfixedDeps(cwd)
+        await yarnUpgrade({
+          folder: cwd,
+          upgradeAll: process.env.BONGO_UPGRADE_ALL,
+          skipDev: process.env.BONGO_SKIP_DEV,
+        })
+        if (!args.skipCommit) {
           await gitAdd('package.json')
           await gitAdd('CHANGELOG.md')
           if (await isStagedForCommit('package.json', 'CHANGELOG.md')) {
             await gitCommit()
           }
         }
-        break
-      case 'version':
-        writeReleaseEntryToChangelog(cwd)
-        return await gitAdd('CHANGELOG.md')
-      case 'deps':
-        verifyUnfixedDeps(cwd)
-        return yarnUpgrade(cwd, !!process.env.BONGO_UPGRADE_ALL)
+        return
       default:
         throw new Error('Invalid option provided')
     }

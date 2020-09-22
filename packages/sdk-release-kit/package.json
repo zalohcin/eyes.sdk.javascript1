@@ -21,7 +21,8 @@
   },
   "scripts": {
     "test": "mocha test/**/*.spec.js",
-    "lint": "eslint . --ext .js"
+    "lint": "eslint . --ext .js",
+    "deps": "bongo deps"
   },
   "bugs": {
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"

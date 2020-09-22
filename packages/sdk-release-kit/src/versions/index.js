@@ -1,4 +1,3 @@
-const fs = require('fs')
 const path = require('path')
 const chalk = require('chalk')
 const {
@@ -8,7 +7,6 @@ const {
   npmLs,
   verifyDependencies,
 } = require('./versions-utils')
-const {writeUnreleasedItemToChangelog} = require('../changelog')
 
 async function verifyCommits({pkgPath}) {
   const pkgs = makePackagesList()
@@ -53,7 +51,7 @@ async function verifyInstalledVersions(
   }
 }
 
-function verifyVersions({isFix, pkgPath}) {
+function verifyVersions({pkgPath}) {
   const pkgs = makePackagesList()
   const results = []
   verifyDependencies({pkgs, pkgPath, results})
@@ -61,28 +59,16 @@ function verifyVersions({isFix, pkgPath}) {
   const errors = results.filter(({depVersion, sourceVersion}) => depVersion !== sourceVersion)
 
   if (errors.length) {
-    if (isFix) {
-      for (const error of errors) {
-        const pkg = pkgs.find(({name}) => name === error.pkgName)
-        const packageJsonPath = path.resolve(pkg.path, 'package.json')
-        const packageJson = require(packageJsonPath)
-        packageJson.dependencies[error.dep] = error.sourceVersion
-        fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2))
-        const changelogEntry = `- updated to ${error.dep}@${error.sourceVersion} (from ${error.depVersion})`
-        writeUnreleasedItemToChangelog({targetFolder: pkg.path, entry: changelogEntry})
-      }
-    } else {
-      console.log(
-        errors
-          .map(({pkgName, dep, depVersion, sourceVersion}) => {
-            return chalk.red(
-              `[${pkgName}] [MISMATCH] ${dep}: version ${depVersion} is required, but source has version ${sourceVersion}`,
-            )
-          })
-          .join('\n') + chalk.yellow('\n\nTo fix these, run `npx bongo verify-versions --fix`'),
-      )
-      process.exit(1)
-    }
+    const message =
+      errors
+        .map(({pkgName, dep, depVersion, sourceVersion}) => {
+          return chalk.red(
+            `[${pkgName}] [MISMATCH] ${dep}: version in registry is ${depVersion}, but source has version ${sourceVersion}`,
+          )
+        })
+        .join('\n') + chalk.yellow('\n\nTo fix these, publish the packages above')
+
+    throw new Error(message)
   }
 }
 

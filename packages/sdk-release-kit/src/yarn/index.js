@@ -1,15 +1,17 @@
 'use strict'
+const fs = require('fs')
 const path = require('path')
 const pickby = require('lodash.pickby')
 const {sh} = require('@applitools/sdk-shared/src/process-commons')
 const chalk = require('chalk')
+const {writeUnreleasedItemToChangelog} = require('../changelog')
 
 async function yarnInstall() {
   await sh(`yarn install`)
 }
 
-async function yarnUpgrade(folder, upgradeAll) {
-  const pkgJson = require(path.resolve(folder, 'package.json'))
+async function yarnUpgrade({folder, upgradeAll, skipDev}) {
+  const pkgJson = JSON.parse(fs.readFileSync(path.resolve(folder, 'package.json')))
   const {dependencies, devDependencies} = pkgJson
   const applitoolsDeps = pickby(dependencies, (_, pkg) => pkg.startsWith('@applitools/'))
   const depsToUpgrade = upgradeAll ? dependencies : applitoolsDeps
@@ -17,13 +19,30 @@ async function yarnUpgrade(folder, upgradeAll) {
   const cmd = `yarn upgrade --exact --latest ${depsStr}`
   console.log(chalk.cyan(cmd))
   await sh(cmd)
+  const newPkgJson = JSON.parse(fs.readFileSync(path.resolve(folder, 'package.json')))
+  const upgradedDeps = findUpgradedDeps(dependencies, newPkgJson.dependencies)
+  console.log(upgradedDeps)
+  for (const [dep, oldVersion, newVersion] of upgradedDeps) {
+    const changelogEntry = `- updated to ${dep}@${newVersion} (from ${oldVersion})`
+    writeUnreleasedItemToChangelog({targetFolder: folder, entry: changelogEntry})
+  }
 
-  const cmdDev = `yarn upgrade ${Object.keys(devDependencies).join(' ')}`
-  console.log('\n' + chalk.cyan(cmdDev))
-  await sh(cmdDev)
+  if (!skipDev) {
+    const cmdDev = `yarn upgrade ${Object.keys(devDependencies).join(' ')}`
+    console.log('\n' + chalk.cyan(cmdDev))
+    await sh(cmdDev)
+  }
 }
 
-function getUnfixedDeps(dependencies) {
+function findUpgradedDeps(oldDeps, newDeps) {
+  return Object.keys(oldDeps).reduce((upgradedDeps, dep) => {
+    return !oldDeps[dep] || !newDeps[dep] || oldDeps[dep] === newDeps[dep]
+      ? upgradedDeps
+      : [...upgradedDeps, [dep, oldDeps[dep], newDeps[dep]]]
+  }, [])
+}
+
+function findUnfixedDeps(dependencies) {
   return Object.keys(dependencies).reduce((warnings, pkg) => {
     return isNaN(Number(dependencies[pkg][0])) ? {...warnings, [pkg]: dependencies[pkg]} : warnings
   }, {})
@@ -32,7 +51,7 @@ function getUnfixedDeps(dependencies) {
 function verifyUnfixedDeps(folder) {
   const pkgJson = require(path.resolve(folder, 'package.json'))
   const {dependencies} = pkgJson
-  const unfixedDeps = getUnfixedDeps(dependencies)
+  const unfixedDeps = findUnfixedDeps(dependencies)
   const messages = []
   Object.entries(unfixedDeps).forEach(([key, value]) => {
     messages.push(chalk.red(`depenency is not fixed: ${key}@${value}`))
@@ -45,6 +64,7 @@ function verifyUnfixedDeps(folder) {
 module.exports = {
   yarnInstall,
   yarnUpgrade,
-  getUnfixedDeps,
+  findUnfixedDeps,
+  findUpgradedDeps,
   verifyUnfixedDeps,
 }
