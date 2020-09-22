@@ -1,7 +1,7 @@
 'use strict';
 const getAllBlobs = require('./getAllBlobs');
 
-function makeEyesCheckWindow({sendRequest, processPage}) {
+function makeEyesCheckWindow({sendRequest, processPage, domSnapshotOptions}) {
   return function eyesCheckWindow(doc, args) {
     let tag,
       sizeMode,
@@ -46,7 +46,7 @@ function makeEyesCheckWindow({sendRequest, processPage}) {
       visualGridOptions = args.visualGridOptions;
     }
 
-    return processPage(doc).then(mainFrame => {
+    return processPage(doc, domSnapshotOptions).then(mainFrame => {
       const allBlobs = getAllBlobs(mainFrame)
         .filter(blob => !blob.errorStatusCode)
         .map(mapBlob);
