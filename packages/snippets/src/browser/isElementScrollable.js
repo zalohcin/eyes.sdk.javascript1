@@ -1,4 +1,4 @@
-function isElementScrollable({element} = {}) {
+function isElementScrollable([element] = []) {
   return element.scrollWidth > element.clientWidth || element.scrollHeight > element.clientHeight
 }
 

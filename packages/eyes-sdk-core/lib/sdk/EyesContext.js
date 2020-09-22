@@ -318,6 +318,10 @@ class EyesContext {
 
   async getLocationInViewport() {
     let location = Location.ZERO
+    if (this.isMain) {
+      return location.offsetNegative(await this.getInnerOffset())
+    }
+
     let currentContext = this
     while (currentContext) {
       const contextLocation = await currentContext.getClientLocation()

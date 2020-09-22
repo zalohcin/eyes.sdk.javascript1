@@ -1,7 +1,18 @@
 const png = require('png-async')
+const {inspect} = require('util')
+const snippets = require('@applitools/snippets')
 const {TypeUtils} = require('../../index')
 const FakeDomSnapshot = require('./FakeDomSnapshot')
-const snippets = require('@applitools/snippets')
+
+const WELL_KNOWN_SCRIPTS = {
+  'dom-snapshot': script => /^\/\* @applitools\/dom-snapshot@[\d.]+ \*\//.test(script),
+  'dom-capture': script => /^\/\* @applitools\/dom-capture@[\d.]+ \*\//.test(script),
+}
+
+const DEFAULT_DESKTOP_UA =
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36'
+const DEFAULT_MOBILE_UA =
+  'Mozilla/5.0 (Linux; Android 8.0.0; Pixel 2 XL Build/OPD1.170816.004) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Mobile Safari/537.36'
 
 const DEFAULT_STYLES = {
   'border-left-width': '0px',
@@ -16,9 +27,11 @@ const DEFAULT_PROPS = {
 }
 
 class MockDriver {
-  constructor({isNative = false, isMobile = false} = {}) {
-    this._isNative = isNative
-    this._isMobile = isMobile
+  constructor({device, platform, browser, ua} = {}) {
+    this._device = device
+    this._platform = platform
+    this._browser = browser
+    this._ua = ua
     this._window = {
       title: 'Default Page Title',
       url: 'http://default.url',
@@ -29,6 +42,11 @@ class MockDriver {
     this._contexts = new Map()
     this._contexts.set(null, {
       document: {id: Symbol('documentId')},
+      state: {
+        get name() {
+          return null
+        },
+      },
     })
     this._contextId = null
     this.mockElement('html', {scrollPosition: {x: 0, y: 0}})
@@ -38,35 +56,39 @@ class MockDriver {
       const isCORS = !isRoot && context.isCORS
       const contentDocument = await this.findElement('html')
       const selector = !isCORS && !isRoot ? context.element.selector : null
-      return {isRoot, isCORS, contentDocument, selector}
+      return [contentDocument, selector, isRoot, isCORS]
     })
     this.mockScript(snippets.getChildFramesInfo, () => {
       return Array.from(this._contexts.values())
         .filter(frame => frame.parentId === this._contextId)
-        .map(frame => ({isCORS: frame.isCORS, element: frame.element}))
+        .map(frame => [frame.element, frame.isCORS])
     })
-    this.mockScript(snippets.getElementRect, ({element}) => {
+    this.mockScript(snippets.getElementRect, ([element]) => {
       return element.rect || {x: 0, y: 0, width: 100, height: 100}
     })
-    this.mockScript(snippets.getElementComputedStyleProperties, ({element, properties}) => {
+    this.mockScript(snippets.getElementComputedStyleProperties, ([element, properties]) => {
       return properties.map(
         property => (element.styles || {})[property] || DEFAULT_STYLES[property],
       )
     })
-    this.mockScript(snippets.getElementProperties, ({element, properties}) => {
+    this.mockScript(snippets.getElementProperties, ([element, properties]) => {
       return properties.map(property => (element.props || {})[property] || DEFAULT_PROPS[property])
     })
-    this.mockScript(snippets.setElementStyleProperties, ({element, properties}) => {
+    this.mockScript(snippets.setElementStyleProperties, ([element, properties]) => {
       return Object.entries(properties).reduce((original, [name, value]) => {
         original[name] = element.style[name]
         element.style[name] = value
         return original
       }, {})
     })
-    this.mockScript(snippets.setElementAttribute, ({element, attr, value}) => {
-      element.attrs[attr] = value
+    this.mockScript(snippets.setElementAttributes, ([element, attributes]) => {
+      return Object.entries(attributes).reduce((original, [name, value]) => {
+        original[name] = element.attrs[name]
+        element.attrs[name] = value
+        return original
+      }, {})
     })
-    this.mockScript(snippets.scrollTo, ({element, offset}) => {
+    this.mockScript(snippets.scrollTo, ([element, offset]) => {
       let scrollingElement = element
       if (!element) {
         scrollingElement = this.findElement('html')
@@ -74,7 +96,7 @@ class MockDriver {
       scrollingElement.scrollPosition = offset
       return [scrollingElement.scrollPosition.x, scrollingElement.scrollPosition.y]
     })
-    this.mockScript(snippets.getElementScrollOffset, ({element}) => {
+    this.mockScript(snippets.getElementScrollOffset, ([element]) => {
       let scrollingElement = element
       if (!element) {
         scrollingElement = this.findElement('html')
@@ -84,7 +106,7 @@ class MockDriver {
       }
       return {x: scrollingElement.scrollPosition.x, y: scrollingElement.scrollPosition.y}
     })
-    this.mockScript(snippets.getElementInnerOffset, ({element}) => {
+    this.mockScript(snippets.getElementInnerOffset, ([element]) => {
       let scrollingElement = element
       if (!element) {
         scrollingElement = this.findElement('html')
@@ -98,12 +120,13 @@ class MockDriver {
       return 1
     })
     this.mockScript(snippets.getUserAgent, () => {
-      return 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36'
+      if (this._ua) return this._ua
+      return this.info.isMobile ? DEFAULT_MOBILE_UA : DEFAULT_DESKTOP_UA
     })
     this.mockScript(snippets.getViewportSize, () => {
       return {width: this._window.rect.width, height: this._window.rect.height}
     })
-    this.mockScript(snippets.getElementXpath, ({element}) => {
+    this.mockScript(snippets.getElementXpath, ([element]) => {
       if (element.xpath) return element.xpath
       const elements = Array.from(this._elements.values()).reduce(
         (elements, array) => elements.concat(array),
@@ -117,16 +140,13 @@ class MockDriver {
     this.mockScript(snippets.blurElement, () => {
       return null
     })
-    this.mockScript(/^\/\* @applitools\/dom-snapshot@[\d.]+ \*\//, () =>
-      FakeDomSnapshot.generateDomSnapshot(this),
-    )
-    this.mockScript(snippets.markElements, ({elements, ids}) => {
+    this.mockScript(snippets.markElements, ([elements, ids]) => {
       for (const [index, el] of elements.entries()) {
         el.attributes = el.attributes || []
         el.attributes.push({name: 'data-eyes-selector', value: ids[index]})
       }
     })
-    this.mockScript(snippets.cleanupElementIds, ({elements}) => {
+    this.mockScript(snippets.cleanupElementIds, ([elements]) => {
       for (const el of elements) {
         el.attributes.splice(
           el.attributes.findIndex(({name}) => name === 'data-eyes-selector'),
@@ -134,6 +154,7 @@ class MockDriver {
         )
       }
     })
+    this.mockScript('dom-snapshot', () => FakeDomSnapshot.generateDomSnapshot(this))
   }
   mockScript(scriptMatcher, resultGenerator) {
     this._scripts.set(scriptMatcher, resultGenerator)
@@ -162,6 +183,11 @@ class MockDriver {
         isCORS: state.isCORS,
         element,
         document: {id: Symbol('documentId' + Math.floor(Math.random() * 100))},
+        state: {
+          get name() {
+            return element.selector
+          },
+        },
       })
       element.contextId = contextId
       this.mockElement('html', {
@@ -184,18 +210,29 @@ class MockDriver {
       }
     }
   }
-  async executeScript(script, args = []) {
-    args = serialize(args)
-    let resultGenerator = this._scripts.get(script)
-    if (!resultGenerator) {
-      for (const [tester, result] of this._scripts.entries()) {
-        if (TypeUtils.isFunction(tester.test) && tester.test(script)) {
-          resultGenerator = result
-          break
-        }
-      }
+
+  get info() {
+    return {
+      isMobile: this._device ? Boolean(this._device.isMobile) : false,
+      isNative: this._device ? Boolean(this._device.isNative) : false,
+      deviceName: this._device ? this._device.name : null,
+      platformName: this._platform ? this._platform.name : null,
+      platformVersion: this._platform ? this._platform.version : null,
+      browserName: this._browser ? this._browser.name : null,
+      browserVersion: this._browser ? this._browser.version : null,
     }
-    return TypeUtils.isFunction(resultGenerator) ? resultGenerator(...args) : resultGenerator
+  }
+  async executeScript(script, args = []) {
+    if (this.info.isNative) throw new Error("Native context doesn't support this method")
+    args = serialize(args)
+    let result = this._scripts.get(script)
+    if (!result) {
+      const name = Object.keys(WELL_KNOWN_SCRIPTS).find(name => WELL_KNOWN_SCRIPTS[name](script))
+      if (!name) return null
+      result = this._scripts.get(name)
+    }
+    const {state} = this._contexts.get(this._contextId)
+    return TypeUtils.isFunction(result) ? result.call(state, ...args) : result
   }
   async findElement(selector) {
     const elements = this._elements.get(selector)
@@ -238,15 +275,15 @@ class MockDriver {
     Object.assign(this._window.rect, rect)
   }
   async getUrl() {
-    if (this._isNative) throw new Error("Native context doesn't support this method")
+    if (this.info.isNative) throw new Error("Native context doesn't support this method")
     return this._window.url
   }
   async getTitle() {
-    if (this._isNative) throw new Error("Native context doesn't support this method")
+    if (this.info.isNative) throw new Error("Native context doesn't support this method")
     return this._window.title
   }
   async visit(url) {
-    if (this._isNative) throw new Error("Native context doesn't support this method")
+    if (this.info.isNative) throw new Error("Native context doesn't support this method")
     this._window.url = url
   }
   async takeScreenshot() {
@@ -265,13 +302,13 @@ class MockDriver {
     })
   }
   toString() {
-    return 'MockDriver'
+    return '<MockDriver>'
   }
   toJSON() {
-    return 'MockDriver'
+    return '<MockDriver>'
   }
-  [require('util').inspect.custom]() {
-    return 'MockDriver'
+  [inspect.custom]() {
+    return '<MockDriver>'
   }
 }
 

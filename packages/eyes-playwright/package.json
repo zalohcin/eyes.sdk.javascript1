@@ -32,8 +32,8 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "12.2.0",
-    "@applitools/visual-grid-client": "15.0.0"
+    "@applitools/eyes-sdk-core": "12.2.4",
+    "@applitools/visual-grid-client": "15.0.4"
   },
   "peerDependencies": {
     "playwright": ">=1.0.0"
@@ -50,7 +50,7 @@
   },
   "scripts": {
     "lint": "eslint '**/*.js'",
-    "render": "node ../sdk-shared/src/render.js",
+    "render": "node ../sdk-shared/scripts/render.js",
     "test": "yarn test:it",
     "test:it": "mocha --no-timeouts ./test/it/*.spec.js",
     "coverage:generate": "coverage-tests create-tests",

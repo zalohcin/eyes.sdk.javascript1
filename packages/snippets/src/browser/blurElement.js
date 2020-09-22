@@ -1,4 +1,4 @@
-function blurElement({element = document.activeElement} = {}) {
+function blurElement([element = document.activeElement] = []) {
   if (element) element.blur()
   return element
 }

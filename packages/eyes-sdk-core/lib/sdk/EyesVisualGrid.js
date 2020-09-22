@@ -244,12 +244,18 @@ class EyesVisualGrid extends EyesCore {
       checkSettings.withName(nameOrCheckSettings)
     }
 
+    this._logger.verbose(
+      `check started with tag "${checkSettings.getName()}" for test "${this._configuration.getTestName()}"`,
+    )
+
     return this._checkPrepare(checkSettings, async () => {
       const elementsById = await resolveAllRegionElements({
         checkSettings,
         context: this._driver,
       })
       await EyesUtils.markElements(this._logger, this._driver, elementsById)
+
+      this._logger.verbose(`elements marked: ${Object.keys(elementsById)}`)
 
       try {
         const breakpoints = TypeUtils.getOrDefault(
@@ -307,6 +313,7 @@ class EyesVisualGrid extends EyesCore {
   async _takeDomSnapshots({breakpoints, disableBrowserFetching}) {
     const browsers = this._configuration.getBrowsersInfo()
     if (!breakpoints) {
+      this._logger.verbose(`taking single dom snapshot`)
       const snapshot = await takeDomSnapshot({
         driver: this._driver,
         browser: this._userAgent.getBrowser(),
@@ -320,8 +327,8 @@ class EyesVisualGrid extends EyesCore {
         return GeneralUtils.getBreakpointWidth(breakpoints, width)
       }),
     )
-    this._logger.log(
-      `taking multiple dom snapshots for widths: ${widths} (breakpoints=${breakpoints}`,
+    this._logger.verbose(
+      `taking multiple dom snapshots for widths: ${widths} (breakpoints=${breakpoints})`,
     )
     const viewportSize = await this.getViewportSize()
     const snapshots = {}

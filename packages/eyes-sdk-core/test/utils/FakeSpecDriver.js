@@ -14,16 +14,6 @@ module.exports = {
       TypeUtils.has(selector, ['type', 'selector'])
     )
   },
-  toEyesSelector(selector) {
-    if (TypeUtils.isString(selector)) {
-      const match = selector.match(/(css|xpath):(.+)/)
-      if (match) {
-        const [_, type, selector] = match
-        return {type, selector}
-      }
-    }
-    return {selector}
-  },
   isEqualElements(_driver, element1, element2) {
     return element1.id === element2.id
   },
@@ -48,14 +38,8 @@ module.exports = {
   takeScreenshot(driver) {
     return driver.takeScreenshot()
   },
-  isNative(driver) {
-    return driver._isNative
-  },
-  isMobile(driver) {
-    return driver._isMobile
-  },
-  getSessionId() {
-    return 'session-id'
+  getDriverInfo(driver) {
+    return driver.info
   },
   async getWindowRect(driver) {
     const rect = await driver.getWindowRect()

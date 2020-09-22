@@ -18,7 +18,7 @@ describe(appName, async () => {
   it('TestSuccess', async () => {
     const runner = new VisualGridRunner(10)
 
-    const driver = await spec.build({browser: 'chrome'})
+    const [driver, destroyDriver] = await spec.build({browser: 'chrome'})
     await spec.visit(driver, 'https://applitools.com/helloworld')
     let eyes
     try {
@@ -34,7 +34,7 @@ describe(appName, async () => {
       const results = await runner.getAllTestResults()
       assert.deepStrictEqual(results.getAllResults().length, 4)
     } finally {
-      await spec.cleanup(driver)
+      await destroyDriver()
       await eyes.abortIfNotClosed()
     }
   })
@@ -42,7 +42,7 @@ describe(appName, async () => {
   it.skip('TestFailure', async () => {
     const runner = new VisualGridRunner(10)
 
-    const driver = await spec.build({browser: 'chrome'})
+    const [driver, destroyDriver] = await spec.build({browser: 'chrome'})
     await spec.visit(driver, 'https://applitools.com/helloworld')
     let eyes
     try {
@@ -60,7 +60,7 @@ describe(appName, async () => {
       }
       assert.deepStrictEqual(resultsTotal, 4)
     } finally {
-      await spec.cleanup(driver)
+      await destroyDriver()
       await eyes.abortIfNotClosed()
     }
   })

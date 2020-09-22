@@ -16,12 +16,12 @@ function getContextInfo() {
   let selector
   if (!isCORS) {
     try {
-      selector = getElementXpath({element: window.frameElement})
+      selector = getElementXpath([window.frameElement])
     } catch (err) {
       selector = null
     }
   }
-  return {isRoot, isCORS, selector, documentElement: document.documentElement}
+  return [document.documentElement, selector, isRoot, isCORS]
 }
 
 module.exports = getContextInfo

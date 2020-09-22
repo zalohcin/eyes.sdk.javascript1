@@ -6,12 +6,11 @@ const startTestServer = require('../../src/test-server')
 const {Target} = require(cwd)
 const spec = require(path.resolve(cwd, 'src/SpecDriver'))
 const {getEyes} = require('../../src/test-setup')
-const preprocessUrl = require('../util/url-preprocessor')
+const adjustUrlToDocker = require('../util/adjust-url-to-docker')
 
-// NOTE: works when run by itself but fails when running concurrently with all tests
-describe.skip('TestDisableBrowserFetching', () => {
+describe('TestDisableBrowserFetching', () => {
   let testServer
-  let driver
+  let driver, destroyDriver
 
   before(async () => {
     const staticPath = path.join(__dirname, '../fixtures')
@@ -27,15 +26,15 @@ describe.skip('TestDisableBrowserFetching', () => {
   })
 
   beforeEach(async () => {
-    driver = await spec.build({browser: 'chrome'})
+    ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
   })
 
   afterEach(async () => {
-    await spec.cleanup(driver)
+    await destroyDriver()
   })
 
   it('sends dontFetchResources to dom snapshot', async () => {
-    const url = preprocessUrl('http://localhost:5557/ua.html')
+    const url = adjustUrlToDocker('http://localhost:5557/ua.html')
     await spec.visit(driver, url)
     const eyes = getEyes({isVisualGrid: true, configuration: {disableBrowserFetching: true}})
     await eyes.open(driver, 'VgFetch', 'TestDisableBrowserFetching', {width: 800, height: 600})

@@ -1,4 +1,4 @@
-function cleanupElementIds({elements}) {
+function cleanupElementIds([elements]) {
   elements.forEach(el => {
     el.removeAttribute('data-eyes-selector')
   })

@@ -1,4 +1,4 @@
-function findFixedAncestor({element} = {}) {
+function findFixedAncestor([element] = []) {
   let offsetElement = element
   while (
     offsetElement.offsetParent &&

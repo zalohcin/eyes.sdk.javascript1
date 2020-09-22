@@ -47,11 +47,13 @@ function makeSpecEmitter(options) {
   addHook('deps', `const {Configuration} = require(cwd)`)
   addHook('deps', `const {testSetup} = require('@applitools/sdk-shared')`)
 
-  addHook('vars', `let driver`)
-  addHook('vars', `let eyes`)
+  addHook('vars', `let driver, destroyDriver, eyes`)
   addHook('vars', 'let baselineTestName')
 
-  addHook('beforeEach', js`driver = await spec.build(${options.env} || {browser: 'chrome'})`)
+  addHook(
+    'beforeEach',
+    js`[driver, destroyDriver] = await spec.build(${options.env} || {browser: 'chrome'})`,
+  )
 
   addHook(
     'beforeEach',
@@ -62,19 +64,13 @@ function makeSpecEmitter(options) {
     })`,
   )
 
-  addHook('afterEach', js`await spec.cleanup(driver)`)
+  addHook('afterEach', js`await destroyDriver(driver)`)
 
   const driver = {
     constructor: {
       isStaleElementError(error) {
         return addCommand(js`spec.isStaleElementError(${error})`)
       },
-    },
-    build(options) {
-      addCommand(js`await spec.build(${options})`)
-    },
-    cleanup() {
-      addCommand(js`await spec.cleanup(driver)`)
     },
     visit(url) {
       addCommand(js`await spec.visit(driver, ${url})`)
@@ -106,6 +102,12 @@ function makeSpecEmitter(options) {
     },
     type(element, keys) {
       addCommand(js`await spec.type(driver, ${element}, ${keys})`)
+    },
+    scrollIntoView(element, align) {
+      addCommand(js`await spec.scrollIntoView(driver, ${element}, ${align})`)
+    },
+    hover(element, offset) {
+      addCommand(js`await spec.hover(driver, ${element}, ${offset})`)
     },
   }
 
