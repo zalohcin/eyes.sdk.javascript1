@@ -10,7 +10,9 @@ describe('Check CSS Stitching', () => {
     driver = await getDriver('CHROME')
 
     eyes = new Eyes()
-    eyes.setLogHandler(new ConsoleLogHandler(false))
+    if (process.env.APPLITOOLS_SHOW_LOGS) {
+      eyes.setLogHandler(new ConsoleLogHandler(true))
+    }
     eyes.setStitchMode(StitchMode.CSS)
   })
 
@@ -19,12 +21,6 @@ describe('Check CSS Stitching', () => {
       width: 600,
       height: 500,
     })
-  })
-
-  it('with check window', async () => {
-    await driver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
-    await eyes.check('Window', Target.window().fully())
-    return eyes.close()
   })
 
   it('works for pages with bottom popup', async () => {
