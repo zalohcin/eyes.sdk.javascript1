@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 12.2.6 - 2020/9/23
+
 - support cross origin iframes
 
 ## 12.2.5 - 2020/9/17
