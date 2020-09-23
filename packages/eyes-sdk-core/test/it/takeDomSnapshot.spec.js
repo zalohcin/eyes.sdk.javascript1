@@ -35,14 +35,12 @@ describe('takeDomSnapshot', () => {
 
   it('should take a dom snapshot', async () => {
     driver.mockScript('dom-snapshot', function() {
-      return JSON.stringify(
-        generateSnapshotResponse({
-          cdt: 'cdt',
-          resourceUrls: 'resourceUrls',
-          blobs: [],
-          frames: [],
-        }),
-      )
+      return generateSnapshotResponse({
+        cdt: 'cdt',
+        resourceUrls: 'resourceUrls',
+        blobs: [],
+        frames: [],
+      })
     })
     const actualSnapshot = await takeDomSnapshot({driver: eyesDriver})
     expect(actualSnapshot).to.eql({
@@ -58,11 +56,9 @@ describe('takeDomSnapshot', () => {
 
   it('should take a dom snapshot with cross origin frames', async () => {
     driver.mockScript('dom-snapshot', function() {
-      const snapshot =
-        this.name === 'HTML[1]/BODY[1]/IFRAME[1]'
-          ? generateSnapshotResponse({cdt: 'frame-cdt'})
-          : generateSnapshotResponse({crossFramesXPaths: ['HTML[1]/BODY[1]/IFRAME[1]']})
-      return JSON.stringify(snapshot)
+      return this.name === 'HTML[1]/BODY[1]/IFRAME[1]'
+        ? generateSnapshotResponse({cdt: 'frame-cdt'})
+        : generateSnapshotResponse({crossFramesXPaths: ['HTML[1]/BODY[1]/IFRAME[1]']})
     })
     driver.mockElements([
       {
@@ -116,21 +112,17 @@ describe('takeDomSnapshot', () => {
       driver.mockScript('dom-snapshot', function() {
         switch (this.name) {
           case 'HTML[1]/BODY[1]/IFRAME[1]':
-            return JSON.stringify(
-              generateSnapshotResponse({
-                cdt: 'frame',
-                crossFramesXPaths: ['BODY[1]/IFRAME[1]'],
-              }),
-            )
+            return generateSnapshotResponse({
+              cdt: 'frame',
+              crossFramesXPaths: ['BODY[1]/IFRAME[1]'],
+            })
           case 'BODY[1]/IFRAME[1]':
-            return JSON.stringify(generateSnapshotResponse({cdt: 'nested frame'}))
+            return generateSnapshotResponse({cdt: 'nested frame'})
           default:
-            return JSON.stringify(
-              generateSnapshotResponse({
-                cdt: 'top page',
-                crossFramesXPaths: ['HTML[1]/BODY[1]/IFRAME[1]'],
-              }),
-            )
+            return generateSnapshotResponse({
+              cdt: 'top page',
+              crossFramesXPaths: ['HTML[1]/BODY[1]/IFRAME[1]'],
+            })
         }
       })
 
@@ -187,25 +179,21 @@ describe('takeDomSnapshot', () => {
     driver.mockScript('dom-snapshot', function() {
       switch (this.name) {
         case 'DIV[1]/SPAN[1]/DIV[1]/IFRAME[1]':
-          return JSON.stringify(
-            generateSnapshotResponse({
-              cdt: 'nested frame',
-              selector: 'DIV[1]/SPAN[1]/DIV[1]/IFRAME[1]',
-            }),
-          )
+          return generateSnapshotResponse({
+            cdt: 'nested frame',
+            selector: 'DIV[1]/SPAN[1]/DIV[1]/IFRAME[1]',
+          })
         default:
-          return JSON.stringify(
-            generateSnapshotResponse({
-              cdt: 'top page',
-              frames: [
-                generateSnapshotObject({
-                  cdt: 'frame',
-                  selector: 'DIV[1]/IFRAME[1]',
-                  crossFramesXPaths: ['DIV[1]/SPAN[1]/DIV[1]/IFRAME[1]'],
-                }),
-              ],
-            }),
-          )
+          return generateSnapshotResponse({
+            cdt: 'top page',
+            frames: [
+              generateSnapshotObject({
+                cdt: 'frame',
+                selector: 'DIV[1]/IFRAME[1]',
+                crossFramesXPaths: ['DIV[1]/SPAN[1]/DIV[1]/IFRAME[1]'],
+              }),
+            ],
+          })
       }
     })
 
@@ -240,7 +228,7 @@ describe('takeDomSnapshot', () => {
 })
 
 function generateSnapshotResponse(overrides) {
-  return {status: 'SUCCESS', value: generateSnapshotObject(overrides)}
+  return JSON.stringify({status: 'SUCCESS', value: generateSnapshotObject(overrides)})
 }
 
 function generateSnapshotObject(overrides) {
