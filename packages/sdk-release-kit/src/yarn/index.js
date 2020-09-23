@@ -15,7 +15,7 @@ async function yarnUpgrade({folder, upgradeAll, skipDev}) {
   const {dependencies, devDependencies} = pkgJson
   const applitoolsDeps = pickby(dependencies, (_, pkg) => pkg.startsWith('@applitools/'))
   const depsToUpgrade = upgradeAll ? dependencies : applitoolsDeps
-  if (depsToUpgrade.length) {
+  if (Object.keys(depsToUpgrade).length) {
     const depsStr = Object.keys(depsToUpgrade).join(' ')
     const cmd = `yarn upgrade --exact --latest ${depsStr}`
     console.log(chalk.cyan(cmd))
