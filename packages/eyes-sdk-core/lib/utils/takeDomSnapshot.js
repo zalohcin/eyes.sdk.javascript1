@@ -6,6 +6,7 @@ const {
 } = require('@applitools/dom-snapshot')
 const GeneralUtils = require('./GeneralUtils')
 const deserializeDomSnapshotResult = require('./deserializeDomSnapshotResult')
+const createFramesPaths = require('./createFramesPaths')
 
 const PULL_TIMEOUT = 200 // ms
 const CAPTURE_DOM_TIMEOUT_MS = 5 * 60 * 1000 // 5 min
@@ -24,26 +25,6 @@ async function getScriptForIE() {
     scriptBody = await getProcessPageAndSerializePollForIE()
   }
   return `${scriptBody} return __processPageAndSerializePollForIE(document, arguments[0]);`
-}
-
-function createSelectorMap(snapshot, path = []) {
-  const map = snapshot.crossFramesXPaths
-    ? snapshot.crossFramesXPaths.map(selector => ({
-        path: path.concat(selector),
-        parentSnapshot: snapshot,
-      }))
-    : []
-
-  for (const frame of snapshot.frames) {
-    if (frame.selector) {
-      map.push(...createSelectorMap(frame, path.concat(frame.selector)))
-    }
-  }
-
-  delete snapshot.selector
-  delete snapshot.crossFramesXPaths
-
-  return map
 }
 
 async function takeDomSnapshot({driver, startTime = Date.now(), disableBrowserFetching}) {
@@ -78,7 +59,7 @@ async function takeDomSnapshot({driver, startTime = Date.now(), disableBrowserFe
     }
 
     if (scriptResponse.status === 'SUCCESS') {
-      const selectorMap = createSelectorMap(scriptResponse.value)
+      const selectorMap = createFramesPaths(scriptResponse.value)
       await getCrossOriginFrames(context, selectorMap)
       return scriptResponse.value
     } else if (scriptResponse.status === 'ERROR') {
