@@ -4,6 +4,12 @@
 
 - remove yarn workspaces
 
+## 3.14.0 - 2020/9/22
+
+- updated to @applitools/eyes-sdk-core@12.2.5 (from 12.1.4)
+- updated to @applitools/visual-grid-client@15.0.5 (from 14.7.5)
+- add support for disableBrowserFetching ([Trello 473](https://trello.com/c/bkPUZorU))
+
 ## 3.13.4 - 2020/8/13
 
 - updated to @applitools/eyes-sdk-core@12.1.4 (from 12.1.3)
