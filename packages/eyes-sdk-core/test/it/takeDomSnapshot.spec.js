@@ -3,101 +3,98 @@ const {expect} = require('chai')
 const {Driver: FakeEyesDriver} = require('../utils/FakeSDK')
 const MockDriver = require('../utils/MockDriver')
 const Logger = require('../../lib/logging/Logger')
+const {presult} = require('../../lib/utils/GeneralUtils')
 
 const logger = new Logger(!!process.env.APPLITOOLS_SHOW_LOGS)
 
 describe('takeDomSnapshot', () => {
-  let driver, eyesDriver, topPageSnapshot, innerFrameSnapshot, expectedSnapshot
-
-  const generateSnapshotObject = (xpath, status = 'SUCCESS', state = {}) => {
-    const crossFrameSelector = xpath ? [xpath] : []
-    const value = {
-      cdt: [],
-      srcAttr: null,
-      resourceUrls: [],
-      resourceContents: {},
-      blobs: [],
-      frames: [],
-      crossFramesXPaths: crossFrameSelector,
-      scriptVersion: '4.0.6',
-    }
-    return JSON.stringify({status, value, ...state})
-  }
+  let driver, eyesDriver
 
   beforeEach(async () => {
     driver = new MockDriver()
-    topPageSnapshot = generateSnapshotObject('HTML[1]/BODY[1]/IFRAME[1]')
-    innerFrameSnapshot = generateSnapshotObject()
-    driver.mockScript('dom-snapshot', function() {
-      return this.name === 'HTML[1]/BODY[1]/IFRAME[1]' ? innerFrameSnapshot : topPageSnapshot
-    })
-
     eyesDriver = await new FakeEyesDriver(logger, driver).init()
   })
 
-  beforeEach(() => {
-    expectedSnapshot = {...JSON.parse(topPageSnapshot).value}
-    expectedSnapshot.frames.push({...JSON.parse(innerFrameSnapshot).value})
-    delete expectedSnapshot.crossFramesXPaths
-    delete expectedSnapshot.blobs
-    delete expectedSnapshot.frames[0].crossFramesXPaths
-    delete expectedSnapshot.frames[0].blobs
-  })
-
   it('should throw an error if snapshot failed', async () => {
-    try {
-      topPageSnapshot = generateSnapshotObject(null, 'ERROR', {error: 'some error'})
-      await takeDomSnapshot({driver: eyesDriver})
-    } catch (error) {
-      expect(error.message).to.equal('Unable to process dom snapshot: some error')
-    }
+    driver.mockScript('dom-snapshot', function() {
+      return JSON.stringify({status: 'ERROR', error: 'some error'})
+    })
+    const [error] = await presult(takeDomSnapshot({driver: eyesDriver}))
+    expect(error).not.to.be.undefined
+    expect(error.message).to.equal('Unable to process dom snapshot: some error')
   })
 
   it('should throw an error if timeout is reached', async () => {
-    try {
-      topPageSnapshot = generateSnapshotObject(null)
-      await takeDomSnapshot({driver: eyesDriver, startTime: 1600150463048})
-    } catch (error) {
-      expect(error.message).to.equal('Timeout is reached.')
-    }
+    driver.mockScript('dom-snapshot', function() {
+      return JSON.stringify({status: 'WIP'})
+    })
+    const [error] = await presult(takeDomSnapshot({driver: eyesDriver, startTime: 0})) // failing because startTime is the beginning of time
+    expect(error).not.to.be.undefined
+    expect(error.message).to.equal('Timeout is reached.')
   })
 
   it('should take a dom snapshot', async () => {
-    try {
-      driver.mockScript('dom-snapshot', function() {
-        const snap = JSON.parse(topPageSnapshot)
-        snap.value.crossFramesXPaths.pop()
-        return JSON.stringify(snap)
-      })
-      const snapshot = await takeDomSnapshot({driver: eyesDriver})
-      expect(snapshot.frames.length).to.eql(0)
-    } catch (error) {
-      throw error
-    }
+    driver.mockScript('dom-snapshot', function() {
+      return JSON.stringify(
+        generateSnapshotResponse({
+          cdt: 'cdt',
+          resourceUrls: 'resourceUrls',
+          blobs: [],
+          frames: [],
+        }),
+      )
+    })
+    const actualSnapshot = await takeDomSnapshot({driver: eyesDriver})
+    expect(actualSnapshot).to.eql({
+      cdt: 'cdt',
+      frames: [],
+      resourceContents: {},
+      resourceUrls: 'resourceUrls',
+      frames: [],
+      srcAttr: null,
+      scriptVersion: 'mock value',
+    })
   })
 
   it('should take a dom snapshot with cross origin frames', async () => {
-    try {
-      driver.mockElements([
+    driver.mockScript('dom-snapshot', function() {
+      const snapshot =
+        this.name === 'HTML[1]/BODY[1]/IFRAME[1]'
+          ? generateSnapshotResponse({cdt: 'frame-cdt'})
+          : generateSnapshotResponse({crossFramesXPaths: ['HTML[1]/BODY[1]/IFRAME[1]']})
+      return JSON.stringify(snapshot)
+    })
+    driver.mockElements([
+      {
+        selector: 'HTML[1]/BODY[1]/IFRAME[1]',
+        frame: true,
+        isCORS: true,
+        attributes: [],
+        children: [],
+      },
+    ])
+    const snapshot = await takeDomSnapshot({driver: eyesDriver})
+    expect(snapshot).to.eql({
+      cdt: [],
+      resourceContents: {},
+      resourceUrls: [],
+      scriptVersion: 'mock value',
+      srcAttr: null,
+      frames: [
         {
-          selector: 'HTML[1]/BODY[1]/IFRAME[1]',
-          frame: true,
-          isCORS: true,
-          attributes: [],
-          children: [],
+          cdt: 'frame-cdt',
+          frames: [],
+          resourceContents: {},
+          resourceUrls: [],
+          scriptVersion: 'mock value',
+          srcAttr: null,
         },
-      ])
-      const snapshot = await takeDomSnapshot({driver: eyesDriver})
-      expect(snapshot.frames.length).to.eql(1)
-      expect(snapshot).to.eql(expectedSnapshot)
-    } catch (error) {
-      throw error
-    }
+      ],
+    })
   })
 
   it('should take a dom snapshot with nested cross origin frames', async () => {
     try {
-      const deeplyNestedFrameSnapshot = generateSnapshotObject('BODY[1]/IFRAME[1]')
       driver.mockElements([
         {
           selector: 'HTML[1]/BODY[1]/IFRAME[1]',
@@ -119,100 +116,142 @@ describe('takeDomSnapshot', () => {
       driver.mockScript('dom-snapshot', function() {
         switch (this.name) {
           case 'HTML[1]/BODY[1]/IFRAME[1]':
-            return innerFrameSnapshot
+            return JSON.stringify(
+              generateSnapshotResponse({
+                cdt: 'frame',
+                crossFramesXPaths: ['BODY[1]/IFRAME[1]'],
+              }),
+            )
           case 'BODY[1]/IFRAME[1]':
-            return deeplyNestedFrameSnapshot
+            return JSON.stringify(generateSnapshotResponse({cdt: 'nested frame'}))
           default:
-            return topPageSnapshot
+            return JSON.stringify(
+              generateSnapshotResponse({
+                cdt: 'top page',
+                crossFramesXPaths: ['HTML[1]/BODY[1]/IFRAME[1]'],
+              }),
+            )
         }
       })
 
       const snapshot = await takeDomSnapshot({driver: eyesDriver})
-      expect(snapshot).to.eql(expectedSnapshot)
+      expect(snapshot).to.eql({
+        cdt: 'top page',
+        frames: [
+          {
+            cdt: 'frame',
+            frames: [
+              {
+                cdt: 'nested frame',
+                frames: [],
+                resourceContents: {},
+                resourceUrls: [],
+                scriptVersion: 'mock value',
+                srcAttr: null,
+              },
+            ],
+            resourceContents: {},
+            resourceUrls: [],
+            scriptVersion: 'mock value',
+            srcAttr: null,
+          },
+        ],
+        resourceContents: {},
+        resourceUrls: [],
+        scriptVersion: 'mock value',
+        srcAttr: null,
+      })
     } catch (error) {
       throw error
     }
   })
 
   it('should take a dom snapshot with nested frames containing cross origin frames', async () => {
-    try {
-      driver.mockElements([
-        {
-          selector: 'DIV[1]/IFRAME[1]',
-          frame: true,
-          attributes: [],
-          children: [
-            {
-              selector: 'DIV[1]/SPAN[1]/DIV[1]/IFRAME[1]',
-              frame: true,
-              isCORS: true,
-              attributes: [],
-              children: [],
-            },
-          ],
-        },
-      ])
-      const wrapperFrame = {
-        cdt: [],
-        srcAttr: null,
-        resourceUrls: [],
-        resourceContents: {},
-        blobs: [],
-        frames: [],
+    driver.mockElements([
+      {
         selector: 'DIV[1]/IFRAME[1]',
-        crossFramesXPaths: ['DIV[1]/SPAN[1]/DIV[1]/IFRAME[1]'],
-        scriptVersion: '4.0.6',
+        frame: true,
+        attributes: [],
+        children: [
+          {
+            selector: 'DIV[1]/SPAN[1]/DIV[1]/IFRAME[1]',
+            frame: true,
+            isCORS: true,
+            attributes: [],
+            children: [],
+          },
+        ],
+      },
+    ])
+
+    driver.mockScript('dom-snapshot', function() {
+      switch (this.name) {
+        case 'DIV[1]/SPAN[1]/DIV[1]/IFRAME[1]':
+          return JSON.stringify(
+            generateSnapshotResponse({
+              cdt: 'nested frame',
+              selector: 'DIV[1]/SPAN[1]/DIV[1]/IFRAME[1]',
+            }),
+          )
+        default:
+          return JSON.stringify(
+            generateSnapshotResponse({
+              cdt: 'top page',
+              frames: [
+                generateSnapshotObject({
+                  cdt: 'frame',
+                  selector: 'DIV[1]/IFRAME[1]',
+                  crossFramesXPaths: ['DIV[1]/SPAN[1]/DIV[1]/IFRAME[1]'],
+                }),
+              ],
+            }),
+          )
       }
-      const topLevelSnapshot = JSON.stringify({
-        status: 'SUCCESS',
-        value: {
-          cdt: [],
-          srcAttr: null,
-          resourceUrls: [],
-          resourceContents: {},
-          selector: '',
-          blobs: [],
+    })
+
+    const snapshot = await takeDomSnapshot({driver: eyesDriver})
+    expect(snapshot).to.eql({
+      cdt: 'top page',
+      frames: [
+        {
+          cdt: 'frame',
           frames: [
             {
-              ...wrapperFrame,
+              cdt: 'nested frame',
+              frames: [],
+              resourceContents: {},
+              resourceUrls: [],
+              scriptVersion: 'mock value',
+              srcAttr: null,
             },
           ],
-          crossFramesXPaths: [],
-          scriptVersion: '4.0.6',
-        },
-      })
-
-      const deeplyNestedFrameSnapshot = JSON.stringify({
-        status: 'SUCCESS',
-        value: {
-          cdt: [],
-          srcAttr: null,
-          resourceUrls: [],
           resourceContents: {},
-          blobs: [],
-          frames: [],
-          crossFramesXPaths: [],
-          selector: 'DIV[1]/SPAN[1]/DIV[1]/IFRAME[1]',
-          scriptVersion: '4.0.6',
+          resourceUrls: [],
+          scriptVersion: 'mock value',
+          srcAttr: null,
         },
-      })
-
-      driver.mockScript('dom-snapshot', function() {
-        switch (this.name) {
-          case 'DIV[1]/SPAN[1]/DIV[1]/IFRAME[1]':
-            return deeplyNestedFrameSnapshot
-          default:
-            return topLevelSnapshot
-        }
-      })
-
-      const snapshot = await takeDomSnapshot({driver: eyesDriver})
-      delete wrapperFrame.selector
-      delete wrapperFrame.crossFramesXPaths
-      delete wrapperFrame.blobs
-      expect(snapshot.frames[0].frames[0]).to.eql(wrapperFrame)
-    } catch (error) {
-      throw error
-    }
+      ],
+      resourceContents: {},
+      resourceUrls: [],
+      scriptVersion: 'mock value',
+      srcAttr: null,
+    })
   })
 })
+
+function generateSnapshotResponse(overrides) {
+  return {status: 'SUCCESS', value: generateSnapshotObject(overrides)}
+}
+
+function generateSnapshotObject(overrides) {
+  return {
+    cdt: [],
+    srcAttr: null,
+    resourceUrls: [],
+    blobs: [],
+    frames: [],
+    crossFramesXPaths: undefined,
+    scriptVersion: 'mock value',
+    ...overrides,
+  }
+}
