@@ -33,25 +33,25 @@ const supportedTests = [
     executionMode: {isCssStitching: true},
     baselineVersion: 1,
   },
-  {
-    name: 'TestCheckFrameInFrame_Fully_Fluent',
-    executionMode: {isScrollStitching: true},
-    baselineVersion: 1,
-  },
-  {
-    name: 'TestCheckFrameInFrame_Fully_Fluent2',
-    executionMode: {isCssStitching: true},
-    baselineVersion: 1,
-  },
-  {
-    name: 'TestCheckFrameInFrame_Fully_Fluent2',
-    executionMode: {isScrollStitching: true},
-    baselineVersion: 1,
-  },
-  {name: 'TestCheckFixedRegion', executionMode: {isCssStitching: true}},
-  {name: 'TestCheckFixedRegion', executionMode: {isScrollStitching: true}},
-  {name: 'TestCheckFixedRegion_Fully', executionMode: {isCssStitching: true}},
-  {name: 'TestCheckFixedRegion_Fully', executionMode: {isScrollStitching: true}},
+  //{
+  //  name: 'TestCheckFrameInFrame_Fully_Fluent',
+  //  executionMode: {isScrollStitching: true},
+  //  baselineVersion: 1,
+  //},
+  //{
+  //  name: 'TestCheckFrameInFrame_Fully_Fluent2',
+  //  executionMode: {isCssStitching: true},
+  //  baselineVersion: 1,
+  //},
+  //{
+  //  name: 'TestCheckFrameInFrame_Fully_Fluent2',
+  //  executionMode: {isScrollStitching: true},
+  //  baselineVersion: 1,
+  //},
+  //{name: 'TestCheckFixedRegion', executionMode: {isCssStitching: true}},
+  //{name: 'TestCheckFixedRegion', executionMode: {isScrollStitching: true}},
+  //{name: 'TestCheckFixedRegion_Fully', executionMode: {isCssStitching: true}},
+  //{name: 'TestCheckFixedRegion_Fully', executionMode: {isScrollStitching: true}},
   //
   // OK
   //
