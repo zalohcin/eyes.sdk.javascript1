@@ -78,6 +78,7 @@ class SessionStartInfo {
     this._saveDiffs = saveDiffs
     this._render = render
     this._properties = properties
+    this._concurrencyVersion = 1
   }
 
   /**

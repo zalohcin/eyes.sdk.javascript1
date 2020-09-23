@@ -2,7 +2,13 @@
 
 const assert = require('assert')
 const {startFakeEyesServer} = require('@applitools/sdk-fake-eyes-server')
-const {ServerConnector, Logger, Configuration, GeneralUtils} = require('../../../')
+const {
+  ServerConnector,
+  Logger,
+  Configuration,
+  GeneralUtils,
+  SessionStartInfo,
+} = require('../../../')
 const {presult} = require('../../../lib/troubleshoot/utils')
 const logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS)
 
@@ -49,7 +55,9 @@ describe('ServerConnector', () => {
   it('retry startSession if it blocked by concurrency', async () => {
     const serverConnector = getServerConnector()
     let retries = 0
+    let agentSessionId = null
     serverConnector._axios.defaults.adapter = async config => {
+      retries += 1
       if (retries >= 3) {
         return {
           status: 200,
@@ -66,15 +74,25 @@ describe('ServerConnector', () => {
           request: {},
         }
       }
-      retries += 1
+      const data = JSON.parse(config.data)
+      assert.strictEqual(data.startInfo.concurrencyVersion, 1)
+      if (retries === 1) {
+        agentSessionId = data.agentSessionId
+      } else {
+        assert.strictEqual(agentSessionId, data.agentSessionId)
+      }
       return {status: 503, config, data: {}, headers: {}, request: {}}
     }
-    const runningSession = await serverConnector.startSession({
-      appIdOrName: 'appIdOrName',
-      scenarioIdOrName: 'scenarioIdOrName',
-      environment: {displaySize: {width: 1, height: 2}},
-      batchInfo: {id: 'batchId'},
-    })
+    const runningSession = await serverConnector.startSession(
+      new SessionStartInfo({
+        agentId: 'agentId',
+        appIdOrName: 'appIdOrName',
+        scenarioIdOrName: 'scenarioIdOrName',
+        environment: {displaySize: {width: 1, height: 2}},
+        batchInfo: {id: 'batchId'},
+        defaultMatchSettings: {},
+      }),
+    )
     assert.strictEqual(retries, 3)
     assert.deepStrictEqual(runningSession.toJSON(), {
       id: 'id',
