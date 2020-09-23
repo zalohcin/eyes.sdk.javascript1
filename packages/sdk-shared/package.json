@@ -21,7 +21,7 @@
     "lint": "eslint . --ext .js",
     "preversion": "bongo preversion && yarn test",
     "version": "bongo version",
-    "postversion": "bongo postversion",
+    "postversion": "bongo postversion --skip-release-notification",
     "deps": "bongo deps"
   },
   "bugs": {

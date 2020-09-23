@@ -21,15 +21,37 @@
     xml-js "^1.6.11"
     yargs "^15.0.2"
 
-"@applitools/sdk-release-kit@^0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@applitools/sdk-release-kit/-/sdk-release-kit-0.2.2.tgz#311388c23f6e4e01380617b43026f732b907e2f6"
-  integrity sha512-YV9cYWKK24hHF5/gVFsjqAbw6bW1CdX0InFFdsvtKMIf7YeJbgcfTP+d1NtF9tB0LuGbu+CMQcztWx4Ys4qP9g==
+"@applitools/sdk-release-kit@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@applitools/sdk-release-kit/-/sdk-release-kit-0.3.1.tgz#1ddaa77d2bd8be1227de0c6bda7d54fad102f416"
+  integrity sha512-2qJQJkN3Om2W0z0V1/0OXYGGEd5OZrfWy1VnTW261s/cLBWEyodgqqL4Ey6ZuCbk9MB22nmAacGAl99XIKMT1Q==
   dependencies:
+    "@applitools/sdk-shared" "0.1.1"
     chalk "3.0.0"
+    lodash.pickby "4.6.0"
     micromatch "^4.0.2"
     node-fetch "^2.6.0"
     yargs "^15.0.2"
+
+"@applitools/sdk-shared@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@applitools/sdk-shared/-/sdk-shared-0.1.1.tgz#c46483d3fd75bf69b4a437811a804c92eaf51bce"
+  integrity sha512-RyiU8XxjcoeL1nDSV9zqCz8DEXbDMgm89roYEFRbMnCjKX8nphAzQF2HmbbdvOI+VqmTZh9/J5rlVL1BvK06Bg==
+  dependencies:
+    "@applitools/functional-commons" "1.5.4"
+    "@applitools/sdk-coverage-tests" "^1.0.13"
+    axios "^0.20.0"
+    chai "4.2.0"
+    chai-as-promised "7.1.1"
+    chalk "3.0.0"
+    chromedriver "^83.0.0"
+    cookie-parser "^1.4.5"
+    cors "^2.8.5"
+    express "^4.17.1"
+    filenamify "^4.1.0"
+    morgan "^1.10.0"
+    ncp "2.0.0"
+    yargs "^15.3.1"
 
 "@applitools/sdk-shared@0.1.2":
   version "0.1.2"
@@ -1762,6 +1784,11 @@ locate-path@^6.0.0:
   integrity sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==
   dependencies:
     p-locate "^5.0.0"
+
+lodash.pickby@4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/lodash.pickby/-/lodash.pickby-4.6.0.tgz#7dea21d8c18d7703a27c704c15d3b84a67e33aff"
+  integrity sha1-feoh2MGNdwOifHBMFdO4SmfjOv8=
 
 lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19:
   version "4.17.20"

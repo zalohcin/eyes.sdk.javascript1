@@ -33,7 +33,8 @@
     "test": "mocha --no-timeouts \"test/**/*.test.js\"",
     "preversion": "bongo preversion",
     "version": "bongo version",
-    "postversion": "bongo postversion --skip-release-notification"
+    "postversion": "bongo postversion --skip-release-notification",
+    "deps": "bongo deps"
   },
   "engines": {
     "node": ">=8.9.0"
@@ -50,7 +51,7 @@
     "zlib": "1.0.5"
   },
   "devDependencies": {
-    "@applitools/sdk-release-kit": "0.2.2",
+    "@applitools/sdk-release-kit": "^0.3.1",
     "chai": "^4.2.0",
     "eslint": "^7.9.0",
     "eslint-plugin-mocha-no-only": "^1.1.1",
