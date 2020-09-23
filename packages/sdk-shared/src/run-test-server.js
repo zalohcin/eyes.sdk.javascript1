@@ -12,7 +12,11 @@ async function runTestServer(args = {}) {
   const filepath = path.resolve(__dirname, 'test-server.js')
   const spawnArgs = [
     filepath,
-    ...Object.entries(args).reduce((acc, [key, value]) => acc.concat([`--${key}`, value]), []),
+    ...Object.entries(args).reduce(
+      (acc, [key, value]) =>
+        acc.concat([`--${key}`, typeof value === 'object' ? JSON.stringify(value) : value]),
+      [],
+    ),
   ]
   const {subProcess, exitPromise} = executeAndControlProcess('node', spawnArgs, {
     spawnOptions: {stdio: ['pipe', 'pipe', 'pipe', 'ipc']},
