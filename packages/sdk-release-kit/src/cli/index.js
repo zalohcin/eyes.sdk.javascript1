@@ -31,12 +31,7 @@ const {packInstall, lsDryRun} = require('../dry-run')
 const {lint} = require('../lint')
 const sendReleaseNotification = require('../send-report')
 const {createDotFolder} = require('../setup')
-const {
-  verifyCommits,
-  verifyInstalledVersions,
-  verifyVersions,
-  verifyNpmVersions,
-} = require('../versions')
+const {verifyCommits, verifyInstalledVersions, verifyVersions} = require('../versions')
 const {gitAdd, gitCommit, gitPullWithRebase, gitPushWithTags, isStagedForCommit} = require('../git')
 const {yarnInstall, yarnUpgrade, verifyUnfixedDeps} = require('../yarn')
 
@@ -79,8 +74,6 @@ const command = args._[0]
         } catch (err) {
           console.log(chalk.yellow(err.message))
         }
-        console.log('verify npm versions')
-        await verifyNpmVersions({pkgPath: cwd})
         console.log('yarn install')
         await yarnInstall()
         console.log('yarn upgrade')
@@ -126,7 +119,7 @@ const command = args._[0]
         } catch (err) {
           console.log(chalk.yellow(err.message))
         }
-        return verifyNpmVersions({pkgPath: cwd})
+        return
       case 'version':
         writeReleaseEntryToChangelog(cwd)
         return await gitAdd('CHANGELOG.md')
