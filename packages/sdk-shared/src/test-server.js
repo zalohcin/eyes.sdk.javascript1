@@ -13,7 +13,6 @@ function startTestServer(argv = {}) {
     allowCors,
     showLogs,
     middlewareFile,
-    hbData,
   } = argv
 
   const app = express()
@@ -23,8 +22,8 @@ function startTestServer(argv = {}) {
   }
 
   if (middlewareFile) {
-    const middleWare = hbData ? require(middlewareFile)(argv) : require(middlewareFile)
-    app.use(middleWare)
+    const middleware = require(middlewareFile)
+    app.use(middleware.generateMiddleware ? middleware.generateMiddleware(argv) : middleware)
   }
 
   if (showLogs) {
