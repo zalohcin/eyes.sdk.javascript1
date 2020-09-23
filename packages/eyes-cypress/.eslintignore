@@ -1,7 +1,8 @@
 /commands.js
-packages/eyes-cypress/test/fixtures/testApp/cypress/support
-packages/eyes-cypress/test/fixtures/testApp/cypress/integration-run
-packages/eyes-cypress/test/fixtures/testApp/cypress/integration-pack
-packages/eyes-cypress/test/fixtures/testApp/cypress/integration-timeout
-packages/eyes-cypress/test/fixtures/testApp/cypress/examples
-packages/eyes-cypress/test/it/setup/fixtures/cypress/
+test/fixtures/testApp/cypress/support
+test/fixtures/testApp/cypress/plugins
+test/fixtures/testApp/cypress/integration-run
+test/fixtures/testApp/cypress/integration-pack
+test/fixtures/testApp/cypress/integration-timeout
+test/fixtures/testApp/cypress/examples
+test/it/setup/fixtures/cypress/

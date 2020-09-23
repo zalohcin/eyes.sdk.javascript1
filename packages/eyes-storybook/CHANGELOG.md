@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- remove yarn workspaces
 
 ## 3.8.9 - 2020/8/31
 

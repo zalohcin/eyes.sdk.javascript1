@@ -26,6 +26,7 @@ const args = require('yargs')
 const chalk = require('chalk')
 const cwd = process.cwd()
 const path = require('path')
+const fs = require('fs')
 const {verifyChangelog, writeReleaseEntryToChangelog} = require('../changelog')
 const {packInstall, lsDryRun} = require('../dry-run')
 const {lint} = require('../lint')
@@ -56,34 +57,30 @@ const command = args._[0]
       case 'preversion':
       case 'pre-version':
       case 'release-pre-check':
-        console.log('git pull')
+        console.log('[bongo preversion] git pull')
         await gitPullWithRebase()
-        console.log('lint')
+        console.log('[bongo preversion] yarn install')
+        await yarnInstall()
+        console.log('[bongo preversion] yarn deps')
+        await deps()
+        console.log('[bongo preversion] lint')
         await lint(cwd)
-        console.log('verify changelog')
+        console.log('[bongo preversion] verify changelog')
         await verifyChangelog(cwd)
-        console.log('verify unfixed dependencies')
+        console.log('[bongo preversion] verify unfixed dependencies')
         verifyUnfixedDeps(cwd)
-        if (!process.env.BONGO_SKIP_VERIFY_COMMITS) {
-          console.log('verify commits')
-          await verifyCommits({pkgPath: cwd, isForce: process.env.BONGO_VERIFY_COMMITS_FORCE})
+        if (!args.skipVerifyVersions) {
+          console.log('[bongo preversion] verify commits')
+          await verifyCommits({pkgPath: cwd}).catch(err => console.log(err.message))
         }
         try {
-          console.log('verify versions')
+          console.log('[bongo preversion] verify versions')
           verifyVersions({pkgPath: cwd})
         } catch (err) {
           console.log(chalk.yellow(err.message))
         }
-        console.log('yarn install')
-        await yarnInstall()
-        console.log('yarn upgrade')
-        await yarnUpgrade({
-          folder: cwd,
-          upgradeAll: process.env.BONGO_UPGRADE_ALL,
-          skipDev: process.env.BONGO_SKIP_DEV,
-        })
-        if (!process.env.BONGO_SKIP_VERIFY_INSTALLED_VERSIONS) {
-          console.log('verify installed versions')
+        if (!args.skipVerifyInstalledVersions) {
+          console.log('[bongo preversion] verify installed versions')
           createDotFolder(cwd)
           await packInstall(cwd)
           await verifyInstalledVersions({
@@ -91,7 +88,8 @@ const command = args._[0]
             installedDirectory: path.join('.bongo', 'dry-run'),
           })
         }
-        console.log('done!')
+        console.log('[bongo preversion] done!')
+        return
       case 'send-release-notification':
       case 'hello-world':
         return await sendReleaseNotification(cwd, args.recipient)
@@ -124,20 +122,7 @@ const command = args._[0]
         writeReleaseEntryToChangelog(cwd)
         return await gitAdd('CHANGELOG.md')
       case 'deps':
-        verifyUnfixedDeps(cwd)
-        await yarnUpgrade({
-          folder: cwd,
-          upgradeAll: process.env.BONGO_UPGRADE_ALL,
-          skipDev: process.env.BONGO_SKIP_DEV,
-        })
-        if (!args.skipCommit) {
-          await gitAdd('package.json')
-          await gitAdd('CHANGELOG.md')
-          if (await isStagedForCommit('package.json', 'CHANGELOG.md')) {
-            await gitCommit()
-          }
-        }
-        return
+        return deps({shouldCommit: !args.skipCommit})
       default:
         throw new Error('Invalid option provided')
     }
@@ -151,3 +136,21 @@ const command = args._[0]
     process.exit(1)
   }
 })()
+
+async function deps({shouldCommit} = {}) {
+  verifyUnfixedDeps(cwd)
+  await yarnUpgrade({
+    folder: cwd,
+    upgradeAll: args.upgradeAll,
+    skipDev: args.skipDev,
+  })
+  if (shouldCommit) {
+    await gitAdd('package.json')
+    await gitAdd('CHANGELOG.md')
+    await gitAdd('yarn.lock')
+    if (await isStagedForCommit('package.json', 'CHANGELOG.md', 'yarn.lock')) {
+      const pkgName = JSON.parse(fs.readFileSync(path.resolve(cwd, 'package.json'))).name
+      await gitCommit(`[auto commit] ${pkgName}: upgrade deps`)
+    }
+  }
+}

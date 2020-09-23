@@ -15,16 +15,18 @@ async function yarnUpgrade({folder, upgradeAll, skipDev}) {
   const {dependencies, devDependencies} = pkgJson
   const applitoolsDeps = pickby(dependencies, (_, pkg) => pkg.startsWith('@applitools/'))
   const depsToUpgrade = upgradeAll ? dependencies : applitoolsDeps
-  const depsStr = Object.keys(depsToUpgrade).join(' ')
-  const cmd = `yarn upgrade --exact --latest ${depsStr}`
-  console.log(chalk.cyan(cmd))
-  await sh(cmd)
-  const newPkgJson = JSON.parse(fs.readFileSync(path.resolve(folder, 'package.json')))
-  const upgradedDeps = findUpgradedDeps(dependencies, newPkgJson.dependencies)
-  console.log(upgradedDeps)
-  for (const [dep, oldVersion, newVersion] of upgradedDeps) {
-    const changelogEntry = `- updated to ${dep}@${newVersion} (from ${oldVersion})`
-    writeUnreleasedItemToChangelog({targetFolder: folder, entry: changelogEntry})
+  if (depsToUpgrade.length) {
+    const depsStr = Object.keys(depsToUpgrade).join(' ')
+    const cmd = `yarn upgrade --exact --latest ${depsStr}`
+    console.log(chalk.cyan(cmd))
+    await sh(cmd)
+
+    const newPkgJson = JSON.parse(fs.readFileSync(path.resolve(folder, 'package.json')))
+    const upgradedDeps = findUpgradedDeps(dependencies, newPkgJson.dependencies)
+    for (const [dep, oldVersion, newVersion] of upgradedDeps) {
+      const changelogEntry = `- updated to ${dep}@${newVersion} (from ${oldVersion})`
+      writeUnreleasedItemToChangelog({targetFolder: folder, entry: changelogEntry})
+    }
   }
 
   if (!skipDev) {

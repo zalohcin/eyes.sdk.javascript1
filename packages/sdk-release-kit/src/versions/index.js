@@ -1,3 +1,4 @@
+const fs = require('fs')
 const path = require('path')
 const chalk = require('chalk')
 const {
@@ -25,8 +26,7 @@ async function verifyCommits({pkgPath}) {
   if (results.length) {
     throw new Error(
       'There are unreleased commits in dependencies of this package:\n' +
-        results.map(({name, output}) => `${chalk.yellow(name)}\n${chalk.cyan(output)}`).join('\n') +
-        `\nTo ignore these, re-run with BONGO_SKIP_VERIFY_COMMITS=1`,
+        results.map(({name, output}) => `${chalk.yellow(name)}\n${chalk.cyan(output)}`).join('\n'),
     )
   }
 }
@@ -36,7 +36,7 @@ async function verifyInstalledVersions(
   {isNpmLs} = {isNpmLs: false},
 ) {
   const internalPackages = makePackagesList()
-  const {dependencies} = require(path.join(pkgPath, 'package.json'))
+  const {dependencies} = JSON.parse(fs.readFileSync(path.join(pkgPath, 'package.json')))
   const filteredPackageNames = Object.keys(dependencies).filter(pkgName =>
     internalPackages.find(({name}) => name === pkgName),
   )
@@ -60,11 +60,10 @@ function verifyVersions({pkgPath}) {
 
   if (errors.length) {
     const message = errors
-      .map(({pkgName, dep, depVersion, sourceVersion}) => {
-        return chalk.red(
+      .map(
+        ({pkgName, dep, depVersion, sourceVersion}) =>
           `[${pkgName}] [MISMATCH] ${dep}: version specified for dependency in package.json is ${depVersion}, but source has version ${sourceVersion}`,
-        )
-      })
+      )
       .join('\n')
 
     throw new Error(message)

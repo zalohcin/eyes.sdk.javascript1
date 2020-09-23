@@ -11,19 +11,17 @@
   },
   "extends": ["plugin:node/recommended"],
   "plugins": ["prettier", "mocha-no-only", "node"],
-  "rules": {
-    "prettier/prettier": [
-      "error",
-      {
-          "semi": true,
-          "parser": "babel",
-          "printWidth": 100,
-          "singleQuote": true,
-          "trailingComma": "all",
-          "bracketSpacing": false,
-          "jsxBracketSameLine": true
-      }
+  "ignorePatterns": [
+    "node_modules/",
+    "dist/",
+    "screenshots/",
+    "applitools.config.js",
+    "logs",
+    "tmp/",
+    "**/test/coverage/generic/"
   ],
+  "rules": {
+    "prettier/prettier": ["error", {"allowParens": "avoid"}],
     "no-process-exit": "off",
     "no-const-assign": "error",
     "no-this-before-super": "error",
