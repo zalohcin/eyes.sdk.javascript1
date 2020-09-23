@@ -7,7 +7,7 @@ const {getEyes} = require('../../src/test-setup')
 const adjustUrlToDocker = require('../util/adjust-url-to-docker')
 
 describe('Coverage Tests', () => {
-  let driver, eyes, serverA, serverB, url
+  let driver, destroy, eyes, serverA, serverB, url
 
   beforeEach(async () => {
     url = adjustUrlToDocker('http://localhost:7373/cors_frames/cors.hbs')
@@ -22,8 +22,7 @@ describe('Coverage Tests', () => {
       },
     })
     serverB = await testServer({port: 7374, staticPath})
-
-    driver = await spec.build({browser: 'chrome'})
+    ;[driver, destroy] = await spec.build({browser: 'chrome'})
     eyes = getEyes({
       isVisualGrid: true,
       branchName: 'master',
@@ -31,7 +30,7 @@ describe('Coverage Tests', () => {
   })
 
   afterEach(async () => {
-    await spec.cleanup(driver)
+    await destroy()
     await serverA.close()
     await serverB.close()
   })
