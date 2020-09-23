@@ -3,63 +3,50 @@ const assert = require('assert')
 
 describe('createFramesPaths', () => {
   it('should return an empty array when no cross frames exist', () => {
-    const snapshot = generateSnapshot()
+    const snapshot = {
+      frames: [],
+      crossFramesXPaths: [],
+    }
     const result = createFramesPaths(snapshot)
-    assert.strictEqual(result.length, 0)
+    assert.deepStrictEqual(result, [])
   })
 
   it('should create frame paths for cross origin frames', () => {
-    const snapshot = generateSnapshot(['HTML[1]/BODY[1]'])
+    const snapshot = {
+      frames: [],
+      crossFramesXPaths: ['HTML[1]/BODY[1]'],
+    }
     const result = createFramesPaths(snapshot)
-    assert.deepStrictEqual(result[0], {
-      parentSnapshot: {
-        cdt: [],
-        srcAttr: null,
-        resourceUrls: [],
-        blobs: [],
-        frames: [],
-        scriptVersion: 'mock script',
+    assert.deepStrictEqual(result, [
+      {
+        parentSnapshot: {
+          frames: [],
+        },
+        path: ['HTML[1]/BODY[1]'],
       },
-      path: ['HTML[1]/BODY[1]'],
-    })
+    ])
   })
 
   it('should create frame paths for frames that have cross origin frames', () => {
-    const snapshot = generateSnapshot(null, [
+    const snapshot = {
+      frames: [
+        {
+          frames: [],
+          crossFramesXPaths: ['BODY[1]/IFRAME[1]'],
+          selector: 'BODY[1]',
+        },
+      ],
+      crossFramesXPaths: [],
+    }
+
+    const result = createFramesPaths(snapshot)
+    assert.deepStrictEqual(result, [
       {
-        cdt: [],
-        srcAttr: null,
-        resourceUrls: [],
-        blobs: [],
-        frames: [],
-        crossFramesXPaths: ['BODY[1]/IFRAME[1]'],
-        selector: 'BODY[1]',
-        scriptVersion: 'mock script',
+        parentSnapshot: {
+          frames: [],
+        },
+        path: ['BODY[1]', 'BODY[1]/IFRAME[1]'],
       },
     ])
-    const result = createFramesPaths(snapshot)
-    assert.deepStrictEqual(result[0], {
-      parentSnapshot: {
-        cdt: [],
-        srcAttr: null,
-        resourceUrls: [],
-        blobs: [],
-        frames: [],
-        scriptVersion: 'mock script',
-      },
-      path: ['BODY[1]', 'BODY[1]/IFRAME[1]'],
-    })
   })
-
-  function generateSnapshot(crossFramesXPaths = [], frames = []) {
-    return {
-      cdt: [],
-      srcAttr: null,
-      resourceUrls: [],
-      blobs: [],
-      frames,
-      crossFramesXPaths,
-      scriptVersion: 'mock script',
-    }
-  }
 })
