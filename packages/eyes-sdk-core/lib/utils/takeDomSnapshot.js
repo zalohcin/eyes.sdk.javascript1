@@ -27,26 +27,17 @@ async function getScriptForIE() {
 }
 
 function createSelectorMap(snapshot, path = []) {
-  const type = 'xpath'
-  const {crossFramesXPaths} = snapshot
-  const map = []
+  const map = snapshot.crossFramesXPaths
+    ? snapshot.crossFramesXPaths.map(selector => ({
+        path: path.concat(selector),
+        parentSnapshot: snapshot,
+      }))
+    : []
 
-  if (crossFramesXPaths && crossFramesXPaths.length > 0) {
-    snapshot.crossFramesXPaths.forEach(selector =>
-      map.push({
-        path: path.concat({type, selector}),
-        replace: function(innerSnapshot) {
-          snapshot.frames.push(innerSnapshot)
-        },
-      }),
-    )
-  }
-
-  if (snapshot.frames.length > 0) {
-    snapshot.frames.forEach(frame => {
-      const {selector} = frame
-      selector && map.push(...createSelectorMap(frame, path.concat({type, selector})))
-    })
+  for (const frame of snapshot.frames) {
+    if (frame.selector) {
+      map.push(...createSelectorMap(frame, path.concat(frame.selector)))
+    }
   }
 
   delete snapshot.selector
@@ -62,14 +53,14 @@ async function takeDomSnapshot({driver, startTime = Date.now(), disableBrowserFe
   const processPageAndPollScript = isIE || isEdgeLegacy ? await getScriptForIE() : await getScript()
 
   async function getCrossOriginFrames(context, selectorMap) {
-    for (const {path, replace} of selectorMap) {
-      const references = path.reduce((parent, reference) => {
-        return {reference, parent}
+    for (const {path, parentSnapshot} of selectorMap) {
+      const references = path.reduce((parent, selector) => {
+        return {reference: {type: 'xpath', selector}, parent}
       }, null)
 
       const frameContext = await context.context(references)
       const contextSnapshot = await _takeDomSnapshot(frameContext)
-      replace(contextSnapshot)
+      parentSnapshot.frames.push(contextSnapshot)
     }
   }
 
