@@ -1,7 +1,7 @@
 const assert = require('assert')
 const {makeEmitTracker, makeEmitTests} = require('../../src/code-export/emit')
 
-const createTestFileString = require('../../js/mocha-template')
+const createTestFileString = require('@applitools/sdk-shared/coverage-tests/generic/mocha-template')
 
 const fakeSdkImplementation = () => {
   let result = makeEmitTracker()
@@ -98,6 +98,7 @@ describe('Code Export', () => {
         afterEach: ['cleanup'],
       },
       commands: ['open', 'checkWindow', 'close'],
+      meta: {},
     }
     const expectedTest = `const {blah} = require('blah')
 
@@ -127,6 +128,7 @@ describe('Coverage Tests', () => {
         afterEach: ['cleanup'],
       },
       commands: ['open', 'checkWindow', 'close'],
+      meta: {},
       disabled: true,
     }
     const expectedTest = `const {blah} = require('blah')

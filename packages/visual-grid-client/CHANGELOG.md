@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- remove yarn workspaces
 
 ## 15.0.6 - 2020/9/23
 

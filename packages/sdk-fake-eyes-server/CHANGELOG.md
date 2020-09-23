@@ -3,6 +3,7 @@
 ## Unreleased
 
 - refactor and add utilities
+- remove yarn workspaces
 
 ## 1.1.3 - 2020/4/13
 

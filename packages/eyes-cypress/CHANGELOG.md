@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- remove yarn workspaces
+
 ## 3.14.0 - 2020/9/22
 
 - updated to @applitools/eyes-sdk-core@12.2.5 (from 12.1.4)

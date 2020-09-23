@@ -1,11 +1,10 @@
 # Change Log
 
 ## Unreleased
-- updated to @applitools/eyes-sdk-core@12.2.4 (from 12.2.3)
-- updated to @applitools/visual-grid-client@15.0.4 (from 15.0.3)
+
+- remove yarn workspaces
 - updated to @applitools/eyes-sdk-core@12.2.6 (from 12.2.4)
 - updated to @applitools/visual-grid-client@15.0.6 (from 15.0.4)
-
 
 ## 4.45.3 - 2020/9/4
 

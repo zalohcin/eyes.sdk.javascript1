@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- removed yarn workspaces
 
 ## 5.22.2 - 2020/9/17
 

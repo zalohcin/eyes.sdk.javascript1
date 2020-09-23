@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- remove yarn workspaces
+- updated to @applitools/eyes-webdriverio@5.22.2 (from 5.21.0)
 
 ## 1.6.9 - 2020/8/11
 
