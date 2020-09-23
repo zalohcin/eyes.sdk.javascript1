@@ -1,6 +1,6 @@
 {
   "name": "@applitools/sdk-shared",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "engines": {
     "node": ">=10.0.0"
   },
@@ -39,5 +39,7 @@
     "ncp": "2.0.0",
     "yargs": "^15.3.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "mocha": "^8.1.3"
+  }
 }

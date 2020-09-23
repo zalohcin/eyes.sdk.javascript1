@@ -44,6 +44,7 @@ describe('pluginExport', () => {
     expect(ret).to.eql({
       bla: 'ret_first',
       eyesPort: 123,
+      eyesDisableBrowserFetching: false,
       eyesFailCypressOnDiff: true,
       eyesIsDisabled: false,
       eyesBrowser: undefined,
@@ -55,6 +56,7 @@ describe('pluginExport', () => {
     expect(ret2).to.eql({
       bla: 'ret_second',
       eyesPort: 123,
+      eyesDisableBrowserFetching: false,
       eyesFailCypressOnDiff: true,
       eyesIsDisabled: false,
       eyesBrowser: undefined,
@@ -76,6 +78,7 @@ describe('pluginExport', () => {
     expect(ret).to.eql({
       bla: 'bla',
       eyesPort: 123,
+      eyesDisableBrowserFetching: false,
       eyesFailCypressOnDiff: true,
       eyesIsDisabled: false,
       eyesBrowser: undefined,
@@ -95,6 +98,7 @@ describe('pluginExport', () => {
       bla: 'ret',
       eyesPort: 123,
       eyesIsDisabled: true,
+      eyesDisableBrowserFetching: false,
       eyesFailCypressOnDiff: true,
       eyesBrowser: undefined,
       eyesTimeout: undefined,
@@ -112,6 +116,7 @@ describe('pluginExport', () => {
     expect(ret).to.eql({
       bla: 'ret',
       eyesPort: 123,
+      eyesDisableBrowserFetching: false,
       eyesIsDisabled: false,
       eyesFailCypressOnDiff: false,
       eyesBrowser: undefined,
@@ -130,10 +135,30 @@ describe('pluginExport', () => {
     expect(ret).to.eql({
       bla: 'ret',
       eyesPort: 123,
+      eyesDisableBrowserFetching: false,
       eyesIsDisabled: false,
       eyesFailCypressOnDiff: true,
       eyesBrowser: undefined,
       eyesTimeout: 1234,
+    });
+  });
+
+  it('works with eyes disableBrowserFetching', async () => {
+    const pluginExport = makePluginExport({startServer, config: {disableBrowserFetching: true}});
+    const __module = {
+      exports: () => ({bla: 'ret'}),
+    };
+
+    pluginExport(__module);
+    const ret = await __module.exports();
+    expect(ret).to.eql({
+      bla: 'ret',
+      eyesPort: 123,
+      eyesDisableBrowserFetching: true,
+      eyesIsDisabled: false,
+      eyesFailCypressOnDiff: true,
+      eyesBrowser: undefined,
+      eyesTimeout: undefined,
     });
   });
 });
