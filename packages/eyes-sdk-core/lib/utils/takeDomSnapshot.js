@@ -46,7 +46,9 @@ async function takeDomSnapshot({driver, startTime = Date.now(), disableBrowserFe
   }
 
   async function _takeDomSnapshot(context) {
-    const resultAsString = await context.execute(processPageAndPollScript, {disableBrowserFetching})
+    const resultAsString = await context.execute(processPageAndPollScript, {
+      dontFetchResources: disableBrowserFetching,
+    })
     let scriptResponse
     try {
       scriptResponse = JSON.parse(resultAsString)
