@@ -1,9 +1,17 @@
+exports.addPageMarker=function(arg){
+var s=function(){"use strict";return function(){var e=document.createElement("div"),t=document.createElement("div");return e.setAttribute("data-applitools-marker-id",""),e.append(t),document.body.append(e),e.style.position="fixed",e.style.top="0",e.style.left="0",e.style.width="3px",e.style.height="9px",e.style.border="1px solid rgb(127,127,127)",e.style.background="rgb(0,0,0)",e.style.zIndex="999999999",t.style.width="3px",t.style.height="3px",t.style.margin="3px 0",t.style.background="rgb(255,255,255)",{offset:1*window.devicePixelRatio,size:3*window.devicePixelRatio,mask:[0,1,0]}}}();
+return s(arg)
+}
 exports.blurElement=function(arg){
 var s=function(){"use strict";return function(t){var n=(void 0===t?[]:t)[0],r=void 0===n?document.activeElement:n;return r&&r.blur(),r}}();
 return s(arg)
 }
 exports.cleanupElementIds=function(arg){
 var s=function(){"use strict";return function(t){t[0].forEach((function(t){t.removeAttribute("data-eyes-selector")}))}}();
+return s(arg)
+}
+exports.cleanupPageMarker=function(arg){
+var s=function(){"use strict";return function(){var e=document.querySelector("[data-applitools-marker-id]");document.body.removeChild(e)}}();
 return s(arg)
 }
 exports.focusElement=function(arg){

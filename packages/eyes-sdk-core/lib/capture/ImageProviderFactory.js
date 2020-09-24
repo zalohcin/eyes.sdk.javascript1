@@ -1,9 +1,11 @@
 'use strict'
 
 const BrowserNames = require('../useragent/BrowserNames')
+const OSNames = require('../useragent/OSNames')
 const TakesScreenshotImageProvider = require('./TakesScreenshotImageProvider')
 const FirefoxScreenshotImageProvider = require('./FirefoxScreenshotImageProvider')
 const SafariScreenshotImageProvider = require('./SafariScreenshotImageProvider')
+const IOSSafariScreenshotImageProvider = require('./IOSSafariScreenshotImageProvider')
 
 class ImageProviderFactory {
   /**
@@ -25,7 +27,11 @@ class ImageProviderFactory {
           return new TakesScreenshotImageProvider(logger, driver, rotation)
         }
       } else if (userAgent.getBrowser() === BrowserNames.Safari) {
-        return new SafariScreenshotImageProvider(logger, driver, rotation, eyes, userAgent)
+        if (userAgent.getOS() === OSNames.IOS) {
+          return new IOSSafariScreenshotImageProvider(logger, driver, rotation, eyes, userAgent)
+        } else {
+          return new SafariScreenshotImageProvider(logger, driver, rotation, eyes, userAgent)
+        }
       }
     }
     return new TakesScreenshotImageProvider(logger, driver, rotation)

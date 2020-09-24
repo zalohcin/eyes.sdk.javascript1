@@ -441,6 +441,45 @@ function getImageSizeFromBuffer(imageBuffer) {
   throw new TypeError('Buffer contains unsupported image type.')
 }
 
+function _pixelColorAt(image, index) {
+  const r = image.data[index * 4]
+  const g = image.data[index * 4 + 1]
+  const b = image.data[index * 4 + 2]
+  const rgb = [r, g, b]
+
+  // WHITE
+  if (rgb.every(sub => sub >= 255 - 20)) return 1
+  // BLACK
+  else if (rgb.every(sub => sub <= 20)) return 0
+  // OTHER
+  else return -1
+}
+
+function _isMarkerStart(image, index, marker) {
+  for (const [chunkIndex, chunkColor] of marker.mask.entries()) {
+    const pixelIndex = index + image.width * marker.size * chunkIndex
+    for (let row = 0; row < marker.size; ++row) {
+      for (let column = 0; column < marker.size; ++column) {
+        const pixelColor = _pixelColorAt(image, pixelIndex + row * image.width + column)
+        if (pixelColor !== chunkColor) return false
+      }
+    }
+  }
+  return true
+}
+
+function findMarkerPosition(image, marker) {
+  for (let pixelIndex = 0; pixelIndex < image.width * image.height; ++pixelIndex) {
+    if (_isMarkerStart(image, pixelIndex, marker)) {
+      return {
+        x: (pixelIndex % image.width) - marker.offset,
+        y: Math.floor(pixelIndex / image.width) - marker.offset,
+      }
+    }
+  }
+  return null
+}
+
 module.exports = {
   parseImage,
   packImage,
@@ -451,4 +490,5 @@ module.exports = {
   rotateImage,
   copyPixels,
   getImageSizeFromBuffer,
+  findMarkerPosition,
 }

@@ -453,6 +453,14 @@ async function ensureRegionVisible(logger, context, positionProvider, region) {
   return remainingOffset
 }
 
+async function addPageMarker(_logger, context) {
+  return context.execute(snippets.addPageMarker)
+}
+
+async function cleanupPageMarker(_logger, context) {
+  await context.execute(snippets.cleanupPageMarker)
+}
+
 module.exports = {
   getViewportSize,
   setViewportSize,
@@ -481,4 +489,6 @@ module.exports = {
   getContextInfo,
   getChildFramesInfo,
   ensureRegionVisible,
+  addPageMarker,
+  cleanupPageMarker,
 }
