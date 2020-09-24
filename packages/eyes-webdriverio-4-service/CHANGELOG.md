@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- remove yarn workspaces
 
 ## 1.4.3 - 2020/7/24
 

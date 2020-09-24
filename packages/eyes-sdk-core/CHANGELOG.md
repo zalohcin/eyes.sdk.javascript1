@@ -3,6 +3,18 @@
 ## Unreleased
 
 
+## 12.2.8 - 2020/9/24
+
+- new release process
+
+## 12.2.7 - 2020/9/23
+
+- remove yarn workspaces
+
+## 12.2.6 - 2020/9/23
+
+- support cross origin iframes
+
 ## 12.2.5 - 2020/9/17
 
 - fix viewport position calculations ([Trello](https://trello.com/c/TuXUZUNO))

@@ -12,3 +12,5 @@
 - updated to @applitools/visual-grid-client@15.0.0 (from 14.6.4)
 - updated to @applitools/eyes-sdk-core@12.2.4 (from 12.2.0)
 - updated to @applitools/visual-grid-client@15.0.4 (from 15.0.0)
+- updated to @applitools/eyes-sdk-core@12.2.6 (from 12.2.5)
+- updated to @applitools/visual-grid-client@15.0.6 (from 15.0.5)
