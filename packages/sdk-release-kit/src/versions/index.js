@@ -33,7 +33,7 @@ async function verifyCommits({pkgPath}) {
 
 async function verifyInstalledVersions(
   {pkgPath, installedDirectory},
-  {isNpmLs} = {isNpmLs: false},
+  {isNpmLs} = {isNpmLs: true},
 ) {
   const internalPackages = makePackagesList()
   const {dependencies} = JSON.parse(fs.readFileSync(path.join(pkgPath, 'package.json')))
