@@ -14,12 +14,14 @@ const {
   Region,
 } = require('../../index')
 
-let /** @type {WebDriver} */ driver, /** @type {Eyes} */ eyes
+let driver, destroyDriver, eyes
 describe('VisualGridCheckFluent', () => {
   before(async () => {
-    driver = await spec.build({browser: 'chrome'})
+    ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
     eyes = new Eyes(new VisualGridRunner())
-    eyes.setLogHandler(new ConsoleLogHandler(false))
+    if (process.env.APPLITOOLS_SHOW_LOGS) {
+      eyes.setLogHandler(new ConsoleLogHandler(true))
+    }
     await driver.get('http://applitools.github.io/demo/TestPages/FramesTestPage/')
   })
 
@@ -75,17 +77,21 @@ describe('VisualGridCheckFluent', () => {
 
   afterEach(async () => eyes.abort())
 
-  after(() => driver.quit())
+  after(() => destroyDriver())
 })
 
 describe('Multi version browsers in Visual Grid', () => {
   before(async () => {
-    driver = await spec.build({browser: 'chrome'})
+    ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
   })
+
+  after(() => destroyDriver())
 
   beforeEach(async function() {
     eyes = new Eyes(new VisualGridRunner())
-    eyes.setLogHandler(new ConsoleLogHandler(false))
+    if (process.env.APPLITOOLS_SHOW_LOGS) {
+      eyes.setLogHandler(new ConsoleLogHandler(true))
+    }
     const configuration = eyes.getConfiguration()
     configuration.setAppName(this.test.parent.title)
     configuration.setTestName(this.currentTest.title)

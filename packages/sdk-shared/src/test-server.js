@@ -6,24 +6,30 @@ const morgan = require('morgan')
 const {resolve} = require('path')
 const cors = require('cors')
 
-function startTestServer({
-  staticPath = resolve('./test/fixtures'),
-  port = 0,
-  allowCors,
-  showLogs,
-  middlewareFile,
-} = {}) {
+function startTestServer(argv = {}) {
+  const {
+    staticPath = resolve('./test/fixtures'),
+    port = 0,
+    allowCors,
+    showLogs,
+    middlewareFile,
+  } = argv
+
   const app = express()
   app.use(cookieParser())
   if (allowCors) {
     app.use(cors())
   }
+
   if (middlewareFile) {
-    app.use(require(middlewareFile))
+    const middleware = require(middlewareFile)
+    app.use(middleware.generateMiddleware ? middleware.generateMiddleware(argv) : middleware)
   }
+
   if (showLogs) {
     app.use(morgan('tiny'))
   }
+
   app.use('/add-cookie', (req, res) => {
     const {name, value} = req.query
     res.cookie(name, value)
@@ -78,7 +84,7 @@ function startTestServer({
 }
 
 if (require.main === module) {
-  const {argv} = require('yargs')
+  const {argv} = require('yargs').option('hbData', {corece: JSON.stringify})
   console.log('running test server', argv)
   startTestServer(argv)
     .then(({close, port}) => {

@@ -21,7 +21,9 @@ function makeInitializeEyes({runner, batchName, isVisualGrid = false}) {
 
   return function initializeEyes({appName, testName}) {
     const eyes = new Eyes(runner)
-    eyes.setLogHandler(new ConsoleLogHandler(false))
+    if (process.env.APPLITOOLS_SHOW_LOGS) {
+      eyes.setLogHandler(new ConsoleLogHandler(true))
+    }
     const configuration = new Configuration()
     configuration.setAppName(appName)
     configuration.setTestName(testName)

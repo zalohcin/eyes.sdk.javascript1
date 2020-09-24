@@ -8,7 +8,6 @@ const {
   npmLs,
   verifyDependencies,
 } = require('./versions-utils')
-const {writeUnreleasedItemToChangelog} = require('../changelog')
 
 async function verifyCommits({pkgPath}) {
   const pkgs = makePackagesList()
@@ -27,18 +26,17 @@ async function verifyCommits({pkgPath}) {
   if (results.length) {
     throw new Error(
       'There are unreleased commits in dependencies of this package:\n' +
-        results.map(({name, output}) => `${chalk.yellow(name)}\n${chalk.cyan(output)}`).join('\n') +
-        `\nTo ignore these, re-run with BONGO_SKIP_VERIFY_COMMITS=1`,
+        results.map(({name, output}) => `${chalk.yellow(name)}\n${chalk.cyan(output)}`).join('\n'),
     )
   }
 }
 
 async function verifyInstalledVersions(
   {pkgPath, installedDirectory},
-  {isNpmLs} = {isNpmLs: false},
+  {isNpmLs} = {isNpmLs: true},
 ) {
   const internalPackages = makePackagesList()
-  const {dependencies} = require(path.join(pkgPath, 'package.json'))
+  const {dependencies} = JSON.parse(fs.readFileSync(path.join(pkgPath, 'package.json')))
   const filteredPackageNames = Object.keys(dependencies).filter(pkgName =>
     internalPackages.find(({name}) => name === pkgName),
   )
@@ -53,7 +51,7 @@ async function verifyInstalledVersions(
   }
 }
 
-function verifyVersions({isFix, pkgPath}) {
+function verifyVersions({pkgPath}) {
   const pkgs = makePackagesList()
   const results = []
   verifyDependencies({pkgs, pkgPath, results})
@@ -61,28 +59,14 @@ function verifyVersions({isFix, pkgPath}) {
   const errors = results.filter(({depVersion, sourceVersion}) => depVersion !== sourceVersion)
 
   if (errors.length) {
-    if (isFix) {
-      for (const error of errors) {
-        const pkg = pkgs.find(({name}) => name === error.pkgName)
-        const packageJsonPath = path.resolve(pkg.path, 'package.json')
-        const packageJson = require(packageJsonPath)
-        packageJson.dependencies[error.dep] = error.sourceVersion
-        fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2))
-        const changelogEntry = `- updated to ${error.dep}@${error.sourceVersion} (from ${error.depVersion})`
-        writeUnreleasedItemToChangelog({targetFolder: pkg.path, entry: changelogEntry})
-      }
-    } else {
-      console.log(
-        errors
-          .map(({pkgName, dep, depVersion, sourceVersion}) => {
-            return chalk.red(
-              `[${pkgName}] [MISMATCH] ${dep}: version ${depVersion} is required, but source has version ${sourceVersion}`,
-            )
-          })
-          .join('\n') + chalk.yellow('\n\nTo fix these, run `npx bongo verify-versions --fix`'),
+    const message = errors
+      .map(
+        ({pkgName, dep, depVersion, sourceVersion}) =>
+          `[${pkgName}] [MISMATCH] ${dep}: version specified for dependency in package.json is ${depVersion}, but source has version ${sourceVersion}`,
       )
-      process.exit(1)
-    }
+      .join('\n')
+
+    throw new Error(message)
   }
 }
 

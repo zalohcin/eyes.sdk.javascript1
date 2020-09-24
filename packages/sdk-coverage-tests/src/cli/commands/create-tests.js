@@ -12,7 +12,11 @@ async function createTests(args) {
   console.log(`Creating coverage tests for ${sdkImplementation.name}...`)
 
   const coverageTests =
-    sdkImplementation.tests || (await fetchCoverageTests({url: sdkImplementation.testsUrl, localPath: args.coverageTestsLocalPath}))
+    sdkImplementation.tests ||
+    (await fetchCoverageTests({
+      url: sdkImplementation.testsUrl,
+      localPath: args.coverageTestsLocalPath,
+    }))
   const supportedTests = filterTests({tests: sdkImplementation.supportedTests, args})
   const emittedTests = makeEmitTests(sdkImplementation.initialize, coverageTests).emitTests(
     supportedTests,
