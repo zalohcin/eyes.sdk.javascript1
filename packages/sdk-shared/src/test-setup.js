@@ -1,6 +1,8 @@
 'use strict'
 const {URL} = require('url')
 const cwd = process.cwd()
+const path = require('path')
+const fs = require('fs')
 const {
   StitchMode,
   BatchInfo,
@@ -181,8 +183,15 @@ function getEyes({
   configuration,
   branchName = 'master',
   showLogs,
+  debugScreenshots,
 } = {}) {
   const eyes = new Eyes(isVisualGrid ? new VisualGridRunner(10) : undefined)
+  if (debugScreenshots) {
+    const screenshotsPath = path.resolve(cwd, 'screenshots')
+    if (!fs.existsSync(screenshotsPath)) fs.mkdirSync(screenshotsPath)
+    eyes.setDebugScreenshotsPath(screenshotsPath)
+    eyes.setSaveDebugScreenshots(true)
+  }
   const conf = Object.assign(
     {
       apiKey: process.env.APPLITOOLS_API_KEY_SDK,
