@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- new release process
 
 ## 12.2.7 - 2020/9/23
 

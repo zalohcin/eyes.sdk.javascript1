@@ -146,7 +146,7 @@
     uuid "^3.3.3"
     zlib "^1.0.5"
 
-"@applitools/sdk-release-kit@0.3.1":
+"@applitools/sdk-release-kit@^0.3.1":
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/@applitools/sdk-release-kit/-/sdk-release-kit-0.3.1.tgz#1ddaa77d2bd8be1227de0c6bda7d54fad102f416"
   integrity sha512-2qJQJkN3Om2W0z0V1/0OXYGGEd5OZrfWy1VnTW261s/cLBWEyodgqqL4Ey6ZuCbk9MB22nmAacGAl99XIKMT1Q==
