@@ -59,9 +59,14 @@
     "@applitools/sdk-release-kit": "0.2.2",
     "@applitools/sdk-shared": "0.1.1",
     "eslint": "^7.2.0",
+    "eslint-plugin-mocha-no-only": "^1.1.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-testcafe": "0.2.1",
     "testcafe": "^1.9.0",
     "mocha": "^8.0.1",
-    "testcafe-browser-provider-saucelabs": "^1.8.0"
+    "testcafe-browser-provider-saucelabs": "^1.8.0",
+    "prettier": "^1.19.0"
   },
   "engines": {
     "node": ">=8.9.0"
