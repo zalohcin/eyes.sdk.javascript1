@@ -135,6 +135,9 @@ class FullPageCaptureAlgorithm {
       entireSize = new RectangleSize(image.getWidth(), image.getHeight())
     }
 
+    if (process.env.APPLITOOLS_SCREENSHOT_CAPTURED_WITH_MARKER)
+      entireSize._height = entireSize.getHeight() - 1
+
     if (!fullArea || fullArea.isEmpty()) {
       // Notice that this might still happen even if we used "getImagePart", since "entirePageSize" might be that of a frame.
       if (
