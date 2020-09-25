@@ -76,7 +76,7 @@ class MockDriver {
     })
     this.mockScript(snippets.setElementStyleProperties, ([element, properties]) => {
       return Object.entries(properties).reduce((original, [name, value]) => {
-        original[name] = element.style[name]
+        original[name] = {value: element.style[name], important: false}
         element.style[name] = value
         return original
       }, {})

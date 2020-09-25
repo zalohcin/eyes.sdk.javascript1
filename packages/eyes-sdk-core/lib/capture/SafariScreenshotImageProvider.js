@@ -8,16 +8,14 @@ class SafariScreenshotImageProvider extends ImageProvider {
    * @param {Logger} logger A Logger instance.
    * @param {EyesWrappedDriver} driver
    * @param {Eyes} eyes
-   * @param {UserAgent} userAgent
    */
-  constructor(logger, driver, rotation, eyes, userAgent) {
+  constructor(logger, driver, rotation, eyes) {
     super()
 
     this._logger = logger
     this._driver = driver
     this._rotation = rotation
     this._eyes = eyes
-    this._userAgent = userAgent
   }
 
   set rotation(rotation) {
@@ -47,7 +45,7 @@ class SafariScreenshotImageProvider extends ImageProvider {
     this._logger.verbose(`logical viewport size: ${originalViewportSize}`)
 
     if (
-      this._userAgent.getBrowserMajorVersion() === '11' &&
+      this._driver.userAgent.getBrowserMajorVersion() === '11' &&
       !this._eyes.getForceFullPageScreenshot()
     ) {
       const location = await EyesUtils.getScrollOffset(this._logger, this._driver.mainContext)
