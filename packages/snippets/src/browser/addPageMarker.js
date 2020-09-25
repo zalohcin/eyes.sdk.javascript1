@@ -22,11 +22,11 @@ function addPageMarker() {
   contrast.style.background = 'rgb(255,255,255)'
 
   const transform = {value: 'none', important: true}
-  const {transform: html} = setElementStyleProperties([
+  const html = setElementStyleProperties([
     document.documentElement,
     {transform, '-webkit-transform': transform},
   ])
-  const {transform: body} = setElementStyleProperties([
+  const body = setElementStyleProperties([
     document.body,
     {transform, '-webkit-transform': transform},
   ])

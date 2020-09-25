@@ -16,12 +16,15 @@ describe('cleanupPageMarker', () => {
 
     it('cleanup page marker', async () => {
       await driver.url(url)
+      await driver.execute("document.body.style.transform = 'translate(-10px, -10px)'")
       await driver.execute(addPageMarker)
       const element1 = await driver.$('[data-applitools-marker]')
       assert.ok(element1.elementId)
       await driver.execute(cleanupPageMarker)
       const element2 = await driver.$('[data-applitools-marker]')
       assert.ok(!element2.elementId)
+      const transform = await driver.execute('return document.body.style.transform')
+      assert.strictEqual(transform, 'translate(-10px, -10px)')
     })
   })
 })
