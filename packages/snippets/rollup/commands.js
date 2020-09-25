@@ -85,7 +85,7 @@ async function watch({formats}) {
   const watcher = rollup.watch({
     input,
     watch: {
-      buildDelay: 1000,
+      buildDelay: 7000,
     },
   })
   watcher.on('change', () => bundle({formats}))

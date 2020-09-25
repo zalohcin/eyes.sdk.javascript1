@@ -1,9 +1,11 @@
+const setElementStyleProperties = require('./setElementStyleProperties')
+
 function addPageMarker() {
   const marker = document.createElement('div')
   const contrast = document.createElement('div')
-  marker.setAttribute('data-applitools-marker-id', '')
   marker.append(contrast)
   document.body.append(marker)
+  marker.setAttribute('data-applitools-marker', '')
 
   marker.style.position = 'fixed'
   marker.style.top = '0'
@@ -18,6 +20,19 @@ function addPageMarker() {
   contrast.style.height = '3px'
   contrast.style.margin = '3px 0'
   contrast.style.background = 'rgb(255,255,255)'
+
+  const transform = {value: 'none', important: true}
+  const {transform: html} = setElementStyleProperties([
+    document.documentElement,
+    {transform, '-webkit-transform': transform},
+  ])
+  const {transform: body} = setElementStyleProperties([
+    document.body,
+    {transform, '-webkit-transform': transform},
+  ])
+
+  marker.setAttribute('data-applitools-marker-transforms', JSON.stringify({html, body}))
+
   return {
     offset: 1 * window.devicePixelRatio,
     size: 3 * window.devicePixelRatio,

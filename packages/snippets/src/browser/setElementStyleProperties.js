@@ -1,7 +1,14 @@
 function setElementStyleProperties([element, properties] = []) {
-  return Object.keys(properties).reduce((original, property) => {
-    original[property] = element.style[property]
-    element.style[property] = properties[property]
+  return Object.keys(properties).reduce((original, prop) => {
+    original[prop] = {
+      value: element.style.getPropertyValue(prop),
+      important: Boolean(element.style.getPropertyPriority(prop)),
+    }
+    element.style.setProperty(
+      prop,
+      properties[prop].value || properties[prop],
+      properties[prop].important ? 'important' : '',
+    )
     return original
   }, {})
 }

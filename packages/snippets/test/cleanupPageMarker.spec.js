@@ -17,10 +17,10 @@ describe('cleanupPageMarker', () => {
     it('cleanup page marker', async () => {
       await driver.url(url)
       await driver.execute(addPageMarker)
-      const element1 = await driver.$('[data-applitools-marker-id]')
+      const element1 = await driver.$('[data-applitools-marker]')
       assert.ok(element1.elementId)
       await driver.execute(cleanupPageMarker)
-      const element2 = await driver.$('[data-applitools-marker-id]')
+      const element2 = await driver.$('[data-applitools-marker]')
       assert.ok(!element2.elementId)
     })
   })
