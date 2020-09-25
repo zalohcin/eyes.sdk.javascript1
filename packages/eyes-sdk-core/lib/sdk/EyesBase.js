@@ -2121,6 +2121,8 @@ class EyesBase {
     if (screenshot) {
       // Cropping by region if necessary
       if (!region.isSizeEmpty()) {
+        if (process.env.APPLITOOLS_SCREENSHOT_CAPTURED_WITH_MARKER)
+          region.setHeight(region.getHeight() + 1)
         screenshot = await screenshot.getSubScreenshot(region, false)
         await this._debugScreenshotsProvider.save(screenshot.getImage(), 'SUB_SCREENSHOT')
       }
