@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- added support of chunked dom snapshot results
+- used common polling logic for dom snapshot and dom capture
 
 ## 12.2.8 - 2020/9/24
 

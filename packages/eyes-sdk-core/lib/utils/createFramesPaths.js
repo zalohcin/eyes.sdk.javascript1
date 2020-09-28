@@ -12,9 +12,6 @@ function createFramesPaths(snapshot, path = []) {
     }
   }
 
-  delete snapshot.selector
-  delete snapshot.crossFramesXPaths
-
   return paths
 }
 
