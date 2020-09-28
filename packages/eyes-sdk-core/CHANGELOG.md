@@ -4,6 +4,7 @@
 
 - increase the default number of retries for request
 - add delay before retry
+- updated to @applitools/snippets@2.0.1 (from 2.0.0)
 
 ## 12.2.8 - 2020/9/24
 
