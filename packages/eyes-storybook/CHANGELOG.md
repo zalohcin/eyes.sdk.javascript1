@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 3.8.10 - 2020/9/28
+
 - remove yarn workspaces
 - updated to @applitools/dom-snapshot@4.1.0 (from 4.0.6)
 - updated to @applitools/eyes-sdk-core@12.2.6 (from 12.2.5)
