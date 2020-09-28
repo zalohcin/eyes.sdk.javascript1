@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- increase the default number of retries for request
+- add delay before retry
 
 ## 12.2.8 - 2020/9/24
 
