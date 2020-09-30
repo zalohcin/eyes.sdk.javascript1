@@ -317,6 +317,7 @@ class EyesVisualGrid extends EyesCore {
       const snapshot = await takeDomSnapshot({
         driver: this._driver,
         disableBrowserFetching,
+        logger: this._logger,
       })
       return Array(browsers.length).fill(snapshot)
     }
@@ -336,6 +337,7 @@ class EyesVisualGrid extends EyesCore {
       const snapshot = await takeDomSnapshot({
         driver: this._driver,
         disableBrowserFetching,
+        logger: this._logger,
       })
       snapshots[viewportSize.getWidth()] = snapshot
     }
@@ -346,6 +348,7 @@ class EyesVisualGrid extends EyesCore {
       const snapshot = await takeDomSnapshot({
         driver: this._driver,
         disableBrowserFetching,
+        logger: this._logger,
       })
       snapshots[width] = snapshot
     }
