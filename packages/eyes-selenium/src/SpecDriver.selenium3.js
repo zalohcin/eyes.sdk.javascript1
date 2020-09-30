@@ -254,31 +254,41 @@ const browserOptionsNames = {
 async function build(env) {
   const {Builder} = require('selenium-webdriver')
   const {testSetup} = require('@applitools/sdk-shared')
-
-  const {browser = '', capabilities, headless, url, sauce, args = []} = testSetup.Env({
-    legacy: true,
-    ...env,
-  })
+  const {
+    browser = '',
+    capabilities,
+    url,
+    attach,
+    proxy,
+    configurable = true,
+    args = [],
+    headless,
+  } = testSetup.Env({legacy: true, ...env})
   const desiredCapabilities = {browserName: browser, ...capabilities}
-  if (!sauce) {
+  if (configurable) {
     const browserOptionsName = browserOptionsNames[browser]
     if (browserOptionsName) {
-      if (browser === 'firefox') {
-        desiredCapabilities[browserOptionsName] = {
-          args: headless ? args.concat('headless') : args,
-        }
-      } else {
-        desiredCapabilities[browserOptionsName] = {
-          args: headless ? args.concat('headless') : args,
-          w3c: false,
-        }
+      desiredCapabilities[browserOptionsName] = {
+        args: headless ? args.concat('headless') : args,
+        debuggerAddress: attach === true ? 'localhost:9222' : attach,
+      }
+      if (browser !== 'firefox') {
+        desiredCapabilities[browserOptionsName].w3c = false
       }
     }
   }
-  const driver = await new Builder()
-    .withCapabilities(desiredCapabilities)
-    .usingServer(url.href)
-    .build()
+  const builder = new Builder().withCapabilities(desiredCapabilities)
+  if (url && !attach) builder.usingServer(url.href)
+  if (proxy) {
+    builder.setProxy({
+      proxyType: 'manual',
+      httpProxy: proxy.http || proxy.server,
+      sslProxy: proxy.https || proxy.server,
+      ftpProxy: proxy.ftp,
+      noProxy: proxy.bypass,
+    })
+  }
+  const driver = await builder.build()
   return [driver, () => driver.quit()]
 }
 

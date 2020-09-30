@@ -205,21 +205,38 @@ async function build(env) {
   const {Builder} = require('selenium-webdriver')
   const {testSetup} = require('@applitools/sdk-shared')
 
-  const {browser, capabilities, headless, url, sauce, attach, args = []} = testSetup.Env(env)
+  const {
+    browser = '',
+    capabilities,
+    url,
+    attach,
+    proxy,
+    configurable = true,
+    args = [],
+    headless,
+  } = testSetup.Env(env)
   const desiredCapabilities = {browserName: browser, ...capabilities}
-  if (!sauce) {
+  if (configurable) {
     const browserOptionsName = browserOptionsNames[browser]
     if (browserOptionsName) {
       desiredCapabilities[browserOptionsName] = {
         args: headless ? args.concat('headless') : args,
-        debuggerAddress: attach === true ? '127.0.0.1:9222' : attach,
+        debuggerAddress: attach === true ? 'localhost:9222' : attach,
       }
     }
   }
-  const driver = await new Builder()
-    .withCapabilities(desiredCapabilities)
-    .usingServer(!attach ? url.href : null)
-    .build()
+  const builder = new Builder().withCapabilities(desiredCapabilities)
+  if (url && !attach) builder.usingServer(url.href)
+  if (proxy) {
+    builder.setProxy({
+      proxyType: 'manual',
+      httpProxy: proxy.http || proxy.server,
+      sslProxy: proxy.https || proxy.server,
+      ftpProxy: proxy.ftp,
+      noProxy: proxy.bypass,
+    })
+  }
+  const driver = await builder.build()
   return [driver, () => driver.quit()]
 }
 

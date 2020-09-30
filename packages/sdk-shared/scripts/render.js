@@ -384,9 +384,9 @@ if (!url && !args.attach) {
 
     console.log('\nRender results:\n', resultsStr)
   } finally {
-    if (!args.attach) {
+    // if (!args.attach) {
       await destroyDriver()
-    }
+    // }
     if (args.webdriverProxy) {
       await chromedriver.stop()
     }
