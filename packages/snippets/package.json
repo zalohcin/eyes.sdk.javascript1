@@ -1,6 +1,6 @@
 {
   "name": "@applitools/snippets",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "main": "./dist/index.js",
   "license": "SEE LICENSE IN LICENSE",
   "scripts": {
@@ -21,7 +21,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@applitools/sdk-release-kit": "^0.3.1",
+    "@applitools/sdk-release-kit": "^0.3.3",
     "@applitools/sdk-shared": "^0.1.0",
     "@babel/preset-env": "^7.11.5",
     "@rollup/plugin-babel": "^5.2.1",

@@ -16,15 +16,18 @@ function _isWorkspacePackage({pkgs, pkgName}) {
 }
 
 function makePackagesList() {
-  const packages = fs.readdirSync(path.join(cwd, '..'))
-  return packages.map(pkgPath => {
-    const pkgDir = path.join(cwd, '..', pkgPath)
-    const packageJson = JSON.parse(fs.readFileSync(path.join(pkgDir, 'package.json')))
-    return {
-      name: packageJson.name,
-      path: pkgDir,
-    }
-  })
+  const pkgsPath = path.join(cwd, '..')
+  const packages = fs.readdirSync(pkgsPath)
+  return packages
+    .filter(pkgName => fs.existsSync(path.join(pkgsPath, pkgName, 'package.json')))
+    .map(pkgName => {
+      const pkgPath = path.join(pkgsPath, pkgName)
+      const packageJson = JSON.parse(fs.readFileSync(path.join(pkgPath, 'package.json')))
+      return {
+        name: packageJson.name,
+        path: pkgPath,
+      }
+    })
 }
 
 function verifyDependencies({pkgs, pkgPath, results}) {

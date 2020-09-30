@@ -171,34 +171,57 @@ const browserOptionsNames = {
 }
 async function build(env) {
   const webdriverio = require('webdriverio')
+  const chromedriver = require('chromedriver')
   const {testSetup} = require('@applitools/sdk-shared')
   const {
     browser = '',
     capabilities,
-    headless,
     url,
+    attach,
+    proxy,
+    configurable = true,
     args = [],
+    headless,
     logLevel = 'silent',
   } = testSetup.Env({...env, legacy: true})
 
   const options = {
     desiredCapabilities: {browserName: browser, ...capabilities},
     logLevel,
+    protocol: url.protocol ? url.protocol.replace(/:$/, '') : undefined,
+    host: url.hostname,
+    port: url.port,
+    path: url.pathname,
   }
-  const browserOptionsName = browserOptionsNames[browser]
-  if (browserOptionsName) {
-    options.desiredCapabilities[browserOptionsName] = {
-      args: headless ? args.concat('headless') : args,
+  if (configurable) {
+    if (browser === 'chrome' && attach) {
+      await chromedriver.start(['--port=9515'], true)
+      options.protocol = 'http'
+      options.host = 'localhost'
+      options.port = '9515'
+      options.path = '/'
+    }
+    const browserOptionsName = browserOptionsNames[browser]
+    if (browserOptionsName) {
+      options.desiredCapabilities[browserOptionsName] = {
+        args: headless ? args.concat('headless') : args,
+        debuggerAddress: attach === true ? 'localhost:9222' : attach,
+      }
     }
   }
-  options.protocol = url.protocol ? url.protocol.replace(/:$/, '') : undefined
-  options.host = url.hostname
-  options.port = url.port
-  options.path = url.pathname
+  if (proxy) {
+    options.desiredCapabilities.proxy = {
+      proxyType: 'manual',
+      httpProxy: proxy.http || proxy.server,
+      sslProxy: proxy.https || proxy.server,
+      ftpProxy: proxy.ftp,
+      noProxy: proxy.bypass.join(','),
+    }
+  }
   const driver = webdriverio.remote(options)
   await driver.init()
 
-  return [driver, () => driver.end()]
+  return [driver, () => driver.end().then(() => chromedriver.stop())]
 }
 
 // #endregion
