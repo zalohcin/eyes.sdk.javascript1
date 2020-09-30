@@ -356,6 +356,7 @@ exports.setWindowRect = setWindowRect
 exports.build = () => {
   return [undefined, () => {}]
 }
+exports.scrollIntoView = () => {} // TestCafe does this implicitly
 // no-op for core
 exports.toEyesSelector = () => {
   return {type: false}
