@@ -372,8 +372,9 @@ if (!url && !args.attach) {
 
     await eyes.check(args.tag, target)
     await eyes.close(false)
-
+    eyes._logger._logHandler.open()
     const testResultsSummary = await runner.getAllTestResults(false)
+    eyes._logger._logHandler.close()
     const resultsStr = testResultsSummary
       .getAllResults()
       .map(testResultContainer => {
