@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 0.1.4 - 2020/10/1
+
 - update render script
 
 ## 0.1.3 - 2020/9/23
