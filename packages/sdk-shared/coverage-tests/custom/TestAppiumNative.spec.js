@@ -46,13 +46,12 @@ describe.skip('TestAppiumNative (@native @mobile)', () => {
         appActivity: 'com.applitoolstest.ScrollActivity',
         newCommandTimeout: 600,
       },
-      server: Remotes.sauce({w3c: false}),
     })
     eyes = getEyes()
     await eyes.open(driver, 'Mobile Native Tests', 'Android Native App 2')
 
     let scrollableElement = await driver.findElement(
-      new By('-android uiautomator', 'new UiSelector().scrollable(true)'), // TODO figure out how to use in SpecDriver
+      {type: '-android uiautomator', sleector: 'new UiSelector().scrollable(true)'}, // TODO figure out how to use in SpecDriver
     )
     await eyes.check(
       'Main window with ignore',
@@ -73,7 +72,6 @@ describe.skip('TestAppiumNative (@native @mobile)', () => {
         clearSystemFiles: true,
         noReset: true,
       },
-      server: Remotes.sauce({w3c: false}),
     })
     eyes = getEyes()
     await eyes.open(driver, 'JS test', 'Checking eyes settings in appium tests')

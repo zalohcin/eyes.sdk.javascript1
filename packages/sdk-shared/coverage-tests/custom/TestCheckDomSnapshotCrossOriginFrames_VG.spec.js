@@ -1,6 +1,5 @@
 const cwd = process.cwd()
 const path = require('path')
-const assert = require('assert')
 const spec = require(path.resolve(cwd, 'src/SpecDriver'))
 const {testServer} = require('../../index')
 const {getEyes} = require('../../src/test-setup')
