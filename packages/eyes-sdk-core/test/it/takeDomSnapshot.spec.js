@@ -19,7 +19,7 @@ describe('takeDomSnapshot', () => {
     driver.mockScript('dom-snapshot', function() {
       return JSON.stringify({status: 'ERROR', error: 'some error'})
     })
-    const [error] = await presult(takeDomSnapshot({driver: eyesDriver}))
+    const [error] = await presult(takeDomSnapshot({driver: eyesDriver, logger}))
     expect(error).not.to.be.undefined
     expect(error.message).to.equal('Unable to process dom snapshot: some error')
   })
@@ -28,7 +28,7 @@ describe('takeDomSnapshot', () => {
     driver.mockScript('dom-snapshot', function() {
       return JSON.stringify({status: 'WIP'})
     })
-    const [error] = await presult(takeDomSnapshot({driver: eyesDriver, startTime: 0})) // failing because startTime is the beginning of time
+    const [error] = await presult(takeDomSnapshot({driver: eyesDriver, logger, startTime: 0})) // failing because startTime is the beginning of time
     expect(error).not.to.be.undefined
     expect(error.message).to.equal('Timeout is reached.')
   })
@@ -42,7 +42,7 @@ describe('takeDomSnapshot', () => {
         frames: [],
       })
     })
-    const actualSnapshot = await takeDomSnapshot({driver: eyesDriver})
+    const actualSnapshot = await takeDomSnapshot({driver: eyesDriver, logger})
     expect(actualSnapshot).to.eql({
       cdt: 'cdt',
       frames: [],
@@ -69,7 +69,7 @@ describe('takeDomSnapshot', () => {
         children: [],
       },
     ])
-    const snapshot = await takeDomSnapshot({driver: eyesDriver})
+    const snapshot = await takeDomSnapshot({driver: eyesDriver, logger})
     expect(snapshot).to.eql({
       cdt: [],
       resourceContents: {},
@@ -126,7 +126,7 @@ describe('takeDomSnapshot', () => {
         }
       })
 
-      const snapshot = await takeDomSnapshot({driver: eyesDriver})
+      const snapshot = await takeDomSnapshot({driver: eyesDriver, logger})
       expect(snapshot).to.eql({
         cdt: 'top page',
         frames: [
@@ -197,7 +197,7 @@ describe('takeDomSnapshot', () => {
       }
     })
 
-    const snapshot = await takeDomSnapshot({driver: eyesDriver})
+    const snapshot = await takeDomSnapshot({driver: eyesDriver, logger})
     expect(snapshot).to.eql({
       cdt: 'top page',
       frames: [
