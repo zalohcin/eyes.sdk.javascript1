@@ -7,7 +7,7 @@ const yargs = require('yargs')
 const {URL} = require('url')
 const utils = require('../src/cli-utils')
 const cwd = process.cwd()
-const spec = require(path.resolve(cwd, 'src/SpecDriver'))
+const spec = require(path.resolve(cwd, 'src/spec-driver'))
 const {
   Eyes,
   ClassicRunner,

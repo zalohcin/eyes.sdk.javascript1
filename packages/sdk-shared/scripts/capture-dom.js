@@ -4,8 +4,8 @@ const fs = require('fs')
 const path = require('path')
 const filenamify = require('filenamify')
 const {Logger} = require(cwd)
-const {Driver} = require(path.resolve(cwd, 'src/SeleniumSDK'))
-const spec = require(path.resolve(cwd, 'src/SpecDriver'))
+const {Driver} = require(path.resolve(cwd, 'src/sdk'))
+const spec = require(path.resolve(cwd, 'src/spec-driver'))
 // eslint-disable-next-line node/no-extraneous-require
 const {takeDomCapture} = require(require.resolve('@applitools/eyes-sdk-core', cwd))
 

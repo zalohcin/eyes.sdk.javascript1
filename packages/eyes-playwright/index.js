@@ -1,5 +1,5 @@
 const core = require('@applitools/eyes-sdk-core')
-const {EyesFactory, CheckSettings} = require('./src/PlaywrightSDK')
+const {EyesFactory, CheckSettings} = require('./src/sdk')
 
 exports.Eyes = EyesFactory
 exports.Target = CheckSettings

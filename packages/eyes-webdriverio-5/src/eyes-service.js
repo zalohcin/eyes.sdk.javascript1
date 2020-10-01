@@ -1,7 +1,7 @@
 'use strict'
 
 const {ConsoleLogHandler, VisualGridRunner} = require('@applitools/eyes-sdk-core')
-const {EyesFactory: Eyes, CheckSettings: Target} = require('../src/WDIOSDK')
+const {EyesFactory: Eyes, CheckSettings: Target} = require('./sdk')
 const VERSION = require('../package.json').version
 
 const DEFAULT_VIEWPORT = {

@@ -1,7 +1,7 @@
 'use strict'
 const path = require('path')
 const cwd = process.cwd()
-const spec = require(path.resolve(cwd, 'src/SpecDriver'))
+const spec = require(path.resolve(cwd, 'src/spec-driver'))
 const {Target, Region} = require(cwd)
 const appName = 'Eyes Selenium SDK - Fluent API'
 
