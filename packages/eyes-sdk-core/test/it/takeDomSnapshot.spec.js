@@ -58,7 +58,7 @@ describe('takeDomSnapshot', () => {
     driver.mockScript('dom-snapshot', function() {
       return this.name === 'HTML[1]/BODY[1]/IFRAME[1]'
         ? generateSnapshotResponse({cdt: 'frame-cdt'})
-        : generateSnapshotResponse({crossFramesXPaths: ['HTML[1]/BODY[1]/IFRAME[1]']})
+        : generateSnapshotResponse({crossFramesSelectors: ['HTML[1]/BODY[1]/IFRAME[1]']})
     })
     driver.mockElements([
       {
@@ -114,14 +114,14 @@ describe('takeDomSnapshot', () => {
           case 'HTML[1]/BODY[1]/IFRAME[1]':
             return generateSnapshotResponse({
               cdt: 'frame',
-              crossFramesXPaths: ['BODY[1]/IFRAME[1]'],
+              crossFramesSelectors: ['BODY[1]/IFRAME[1]'],
             })
           case 'BODY[1]/IFRAME[1]':
             return generateSnapshotResponse({cdt: 'nested frame'})
           default:
             return generateSnapshotResponse({
               cdt: 'top page',
-              crossFramesXPaths: ['HTML[1]/BODY[1]/IFRAME[1]'],
+              crossFramesSelectors: ['HTML[1]/BODY[1]/IFRAME[1]'],
             })
         }
       })
@@ -190,7 +190,7 @@ describe('takeDomSnapshot', () => {
               generateSnapshotObject({
                 cdt: 'frame',
                 selector: 'DIV[1]/IFRAME[1]',
-                crossFramesXPaths: ['DIV[1]/SPAN[1]/DIV[1]/IFRAME[1]'],
+                crossFramesSelectors: ['DIV[1]/SPAN[1]/DIV[1]/IFRAME[1]'],
               }),
             ],
           })
@@ -238,7 +238,7 @@ function generateSnapshotObject(overrides) {
     resourceUrls: [],
     blobs: [],
     frames: [],
-    crossFramesXPaths: undefined,
+    crossFramesSelectors: undefined,
     scriptVersion: 'mock value',
     ...overrides,
   }
