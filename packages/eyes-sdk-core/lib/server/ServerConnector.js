@@ -95,8 +95,9 @@ class ServerConnector {
 
     this._axios = Axios.create({
       withApiKey: true,
-      retry: 1,
+      retry: 5,
       repeat: 0,
+      delayBeforeRetry: 200,
       delayBeforePolling: DELAY_BEFORE_POLLING,
       createRequestId,
       proxy: undefined,

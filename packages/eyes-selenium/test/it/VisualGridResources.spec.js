@@ -16,7 +16,6 @@ const {
 } = require('../../index')
 
 let driver
-const showLogs = false
 
 describe('VisualGrid Resources', () => {
   before(async function() {
@@ -32,7 +31,9 @@ describe('VisualGrid Resources', () => {
     const eyes = new Eyes(new VisualGridRunner())
     eyes.setBatch(batchInfo)
     eyes.setCorsIframeHandle(CorsIframeHandle.BLANK)
-    eyes.setLogHandler(new ConsoleLogHandler(showLogs))
+    if (process.env.APPLITOOLS_SHOW_LOGS) {
+      eyes.setLogHandler(new ConsoleLogHandler(true))
+    }
 
     const configuration = new Configuration()
     configuration.setTestName('Open Concurrency with Batch 2')
@@ -59,7 +60,9 @@ describe('VisualGrid Resources', () => {
     await driver.get('https://astappiev.github.io/test-html-pages/index-invalid-resource.html')
 
     const eyes = new Eyes(new VisualGridRunner())
-    eyes.setLogHandler(new ConsoleLogHandler(showLogs))
+    if (process.env.APPLITOOLS_SHOW_LOGS) {
+      eyes.setLogHandler(new ConsoleLogHandler(true))
+    }
     await eyes.open(driver, 'Applitools Eyes JavaScript SDK', this.test.title, {
       width: 800,
       height: 600,

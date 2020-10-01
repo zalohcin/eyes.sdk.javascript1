@@ -3,6 +3,19 @@
 ## Unreleased
 
 
+## 15.0.8 - 2020/9/28
+
+- updated to @applitools/eyes-sdk-core@12.2.9 (from 12.2.8)
+
+## 15.0.7 - 2020/9/24
+
+- remove yarn workspaces
+- updated to @applitools/eyes-sdk-core@12.2.8 (from 12.2.6)
+
+## 15.0.6 - 2020/9/23
+
+- updated to @applitools/eyes-sdk-core@12.2.6 (from 12.2.5)
+
 ## 15.0.5 - 2020/9/17
 
 - updated to @applitools/eyes-sdk-core@12.2.5 (from 12.2.4)

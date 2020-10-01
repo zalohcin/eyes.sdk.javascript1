@@ -372,8 +372,9 @@ if (!url && !args.attach) {
 
     await eyes.check(args.tag, target)
     await eyes.close(false)
-
+    eyes._logger._logHandler.open()
     const testResultsSummary = await runner.getAllTestResults(false)
+    eyes._logger._logHandler.close()
     const resultsStr = testResultsSummary
       .getAllResults()
       .map(testResultContainer => {
@@ -384,9 +385,9 @@ if (!url && !args.attach) {
 
     console.log('\nRender results:\n', resultsStr)
   } finally {
-    if (!args.attach) {
+    // if (!args.attach) {
       await destroyDriver()
-    }
+    // }
     if (args.webdriverProxy) {
       await chromedriver.stop()
     }
@@ -408,35 +409,19 @@ function buildDriver({
 } = {}) {
   let env
   if (!envBrowser) {
-    const capabilities = {
-      browserName: 'chrome',
-      'goog:chromeOptions': {
-        // w3c: false,
-        args: headless ? ['--headless'] : [],
-        mobileEmulation: isMobileEmulation ? {deviceName} : undefined,
-        debuggerAddress: attach ? '127.0.01:9222' : undefined,
-      },
-      ...driverCapabilities,
+    if (driverCapabilities) {
+      console.log(
+        'Running with capabilities:\n',
+        Object.entries(driverCapabilities)
+          .map(argToString)
+          .join('\n '),
+        '\n',
+      )
     }
 
-    if (process.env.SAUCE_USERNAME && process.env.SAUCE_ACCESS_KEY) {
-      capabilities['sauce:options'] = {
-        username: process.env.SAUCE_USERNAME,
-        accesskey: process.env.SAUCE_ACCESS_KEY,
-      }
-    }
-
-    console.log(
-      'Running with capabilities:\n',
-      Object.entries(capabilities)
-        .map(argToString)
-        .join('\n '),
-      '\n',
-    )
-
-    env = {capabilities, serverUrl: driverServer, webdriverProxy}
+    env = {browser: 'chrome', url: driverServer, capabilities: driverCapabilities, attach, headless}
   } else {
-    env = {browser: envBrowser}
+    env = {browser: envBrowser, headless}
   }
 
   return spec.build(env)

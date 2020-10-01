@@ -231,25 +231,38 @@ async function build(env) {
   const {
     browser = '',
     capabilities,
-    headless,
     url,
+    attach,
+    proxy,
+    configurable = true,
     args = [],
+    headless,
     logLevel = 'silent',
   } = testSetup.Env({...env, legacy: true})
 
   const desiredCapabilities = {browserName: browser, ...capabilities}
-  const browserOptionsName = browserOptionsNames[browser]
-  if (browserOptionsName) {
-    desiredCapabilities[browserOptionsName] = {
-      args: headless ? args.concat('headless') : args,
+  if (configurable) {
+    const browserOptionsName = browserOptionsNames[browser]
+    if (browserOptionsName) {
+      desiredCapabilities[browserOptionsName] = {
+        args: headless ? args.concat('headless') : args,
+        debuggerAddress: attach === true ? 'localhost:9222' : attach,
+      }
     }
   }
-  const seleniumWebDriver = new Builder()
-    .withCapabilities(desiredCapabilities)
-    .usingServer(url.href)
-    .build()
+  const builder = new Builder().withCapabilities(desiredCapabilities)
+  if (url && !attach) builder.usingServer(url.href)
+  if (proxy) {
+    builder.setProxy({
+      proxyType: 'manual',
+      httpProxy: proxy.http || proxy.server,
+      sslProxy: proxy.https || proxy.server,
+      ftpProxy: proxy.ftp,
+      noProxy: proxy.bypass,
+    })
+  }
   const runner = new Runner({
-    seleniumWebDriver,
+    seleniumWebDriver: builder.build(),
     logLevel: logLevel.toUpperCase(),
     allScriptsTimeout: 60000,
     getPageTimeout: 10000,
