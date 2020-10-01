@@ -3,6 +3,11 @@
 ## Unreleased
 
 
+## 3.8.11 - 2020/10/1
+
+- added "See details at..." at the beginning
+- updated to @applitools/dom-snapshot@4.1.1 (from 4.1.0)
+
 ## 3.8.10 - 2020/9/28
 
 - remove yarn workspaces
