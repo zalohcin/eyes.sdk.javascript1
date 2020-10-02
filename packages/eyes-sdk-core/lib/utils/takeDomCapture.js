@@ -3,10 +3,10 @@
 const Axios = require('axios')
 const {URL} = require('url')
 const {
-  getCaptureDomAndPollScript,
-  getPollScript,
-  getCaptureDomAndPollForIE,
-  getPollForIE,
+  getCaptureDomPoll,
+  getPollResult,
+  getCaptureDomPollForIE,
+  getPollResultForIE,
 } = require('@applitools/dom-capture')
 const ArgumentGuard = require('./ArgumentGuard')
 const GeneralUtils = require('./GeneralUtils')
@@ -15,27 +15,33 @@ const EyesUtils = require('../sdk/EyesUtils')
 
 const EXECUTION_TIMEOUT = 5 * 60 * 1000
 const POLL_TIMEOUT = 200
-const IOS_MAX_CHUNK_SIZE = 100000
+const IOS_CHUNK_BYTE_LENGTH = 100000
+const DEFAULT_CHUNK_BYTE_LENGTH = 262144000 // 250MB (could be 256MB but decide to leave a 6MB buffer)
 
 async function takeDomCapture(logger, driver, options = {}) {
   ArgumentGuard.notNull(logger, 'logger')
   ArgumentGuard.notNull(driver, 'driver')
   const {
     axios = Axios.create(),
-    maxChunkSize = driver.isIOS ? IOS_MAX_CHUNK_SIZE : undefined,
+    chunkByteLength = driver.isIOS ? IOS_CHUNK_BYTE_LENGTH : DEFAULT_CHUNK_BYTE_LENGTH,
     pollTimeout = POLL_TIMEOUT,
     executionTimeout = EXECUTION_TIMEOUT,
   } = options
+  const isLegacyBrowser = driver.isIE || driver.isEdgeLegacy
+  const arg = {chunkByteLength}
   const scripts = {
-    main: {args: [undefined, undefined, undefined, undefined, {maxChunkSize}]},
-    poll: {args: [{maxChunkSize}]},
-  }
-  if (driver.isIE || driver.isEdgeLegacy) {
-    scripts.main.script = `${await getCaptureDomAndPollForIE()} return __captureDomAndPollForIE.apply(this, arguments);`
-    scripts.poll.script = `${await getPollForIE()} return __pollForIE.apply(this, arguments);`
-  } else {
-    scripts.main.script = `${await getCaptureDomAndPollScript()} return __captureDomAndPoll.apply(this, arguments);`
-    scripts.poll.script = `${await getPollScript()} return __poll.apply(this, arguments);`
+    main: {
+      script: `return (${
+        isLegacyBrowser ? await getCaptureDomPollForIE() : await getCaptureDomPoll()
+      }).apply(null, arguments);`,
+      args: [arg],
+    },
+    poll: {
+      script: `return (${
+        isLegacyBrowser ? await getPollResultForIE() : await getPollResult()
+      }).apply(null, arguments);`,
+      args: [arg],
+    },
   }
 
   const url = await driver.getUrl()
@@ -103,7 +109,6 @@ async function takeDomCapture(logger, driver, options = {}) {
       const escapedCss = GeneralUtils.cleanStringForJSON(css)
       return {href: absHref, css: escapedCss}
     } catch (err) {
-      console.log(err)
       logger.verbose(err.toString())
       retriesCount -= 1
       if (retriesCount > 0) {

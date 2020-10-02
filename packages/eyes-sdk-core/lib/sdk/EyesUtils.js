@@ -463,7 +463,7 @@ async function executePollScript(
   let isExecutionTimedOut = false
   const executionTimer = setTimeout(() => (isExecutionTimedOut = true), executionTimeout)
   try {
-    const {script, args = []} = scripts.poll
+    const {script, args = []} = scripts.main
     let response = deserialize(await context.execute(script, ...args))
     let chunks = ''
     while (!isExecutionTimedOut) {

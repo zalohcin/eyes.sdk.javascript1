@@ -5,8 +5,8 @@ const {TypeUtils} = require('../../index')
 const FakeDomSnapshot = require('./FakeDomSnapshot')
 
 const WELL_KNOWN_SCRIPTS = {
-  'dom-snapshot': script => /^\/\* @applitools\/dom-snapshot@[\d.]+ \*\//.test(script),
-  'dom-capture': script => /^\/\* @applitools\/dom-capture@[\d.]+ \*\//.test(script),
+  'dom-snapshot': script => /\/\* @applitools\/dom-snapshot@[\d.]+ \*\//.test(script),
+  'dom-capture': script => /\/\* @applitools\/dom-capture@[\d.]+ \*\//.test(script),
 }
 
 const DEFAULT_DESKTOP_UA =
