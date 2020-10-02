@@ -19,12 +19,24 @@ return args`.trim()
       )
     })
     it('nested args array', () => {
-      const expected = `
+      // 2 levels
+      let expected = `
     let args = [...arguments]
 args[0][0] = args[0][0]()
 return args`.trim()
       assert.deepStrictEqual(
         spec.prepareArgsFunctionString([[Selector('html'), {overflow: 'hidden'}]]),
+        expected,
+      )
+      // 3 levels -- e.g., markElements snippet
+      expected = `
+    let args = [...arguments]
+args[0][0][0] = args[0][0][0]()
+return args`.trim()
+      assert.deepStrictEqual(
+        spec.prepareArgsFunctionString([
+          [[Selector('html')], ['b55f35de-999d-4406-88f5-17e857813f14']],
+        ]),
         expected,
       )
     })

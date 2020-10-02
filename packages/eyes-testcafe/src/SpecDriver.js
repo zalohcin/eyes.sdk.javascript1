@@ -49,6 +49,19 @@ function isEyesSelector(selector) {
 function isTestCafeSelector(selector) {
   return !!(selector && selector.addCustomMethods && selector.find && selector.parent)
 }
+function prepareArrayArgsString(arg, indexPath) {
+  let updatedIndexPath = [...indexPath]
+  let result = ''
+  arg.forEach((argValue, innerIndex) => {
+    updatedIndexPath.push(innerIndex)
+    if (Array.isArray(argValue)) result += prepareArrayArgsString(argValue, updatedIndexPath)
+    if (isTestCafeSelector(argValue)) {
+      const indicesString = updatedIndexPath.map(i => `[${i}]`).join('')
+      result += `args${indicesString} = args${indicesString}()\n`
+    }
+  })
+  return result
+}
 function prepareArgsFunctionString(args) {
   // NOTE:
   // Objects/functions passed into a ClientFunction get transpiled into something that is difficult to understand.
@@ -60,10 +73,7 @@ function prepareArgsFunctionString(args) {
   entry += 'let args = [...arguments]\n'
   args.forEach((arg, index) => {
     if (Array.isArray(arg)) {
-      arg.forEach((argValue, innerIndex) => {
-        if (isTestCafeSelector(argValue))
-          entry += `args[${index}][${innerIndex}] = args[${index}][${innerIndex}]()\n`
-      })
+      entry += prepareArrayArgsString(arg, [index])
     } else if (typeof arg === 'object') {
       for (const [key, value] of Object.entries(args[index])) {
         if (isTestCafeSelector(value)) entry += `args[${index}].${key} = args[${index}].${key}()\n`
@@ -159,46 +169,50 @@ function isEqualElements(_driver, element1, element2) {
   return JSON.stringify(elements[0]) === JSON.stringify(elements[1])
 }
 async function executeScript(driver, script, ...args) {
-  script = TypeUtils.isString(script) ? new Function(script) : script
-  const dependencies = {script, args}
-  let executor
+  try {
+    script = TypeUtils.isString(script) ? new Function(script) : script
+    const dependencies = {script, args}
+    let executor
 
-  // first pass (covers most cases)
-  executor = prepareClientFunction({
-    clientFunction: ClientFunction,
-    dependencies: {retrieveDomNodes: false, ...dependencies},
-    driver,
-  })
-  const {result, hasDomNodes} = await executor()
-  if (!hasDomNodes) return result
-
-  // second pass (if a DOM Node element was found, need to retrieve it with a different executor)
-  executor = prepareClientFunction({
-    clientFunction: Selector,
-    dependencies: {retrieveDomNodes: true, ...dependencies},
-    driver,
-  })
-  const domNodes = await executor()
-
-  // stitch the two results together, preserving the indended result from the provided script
-  if (!result || !Object.keys(result).length) return domNodes.selector
-  if (Array.isArray(result)) {
-    return result.map((entry, index) => {
-      if (entry && entry.isDomNode) {
-        return domNodes.length ? domNodes[index].selector : domNodes.selector
-      } else return entry
+    // first pass (covers most cases)
+    executor = prepareClientFunction({
+      clientFunction: ClientFunction,
+      dependencies: {retrieveDomNodes: false, ...dependencies},
+      driver,
     })
-  }
-  if (typeof result === 'object') {
-    const r = {}
-    Object.entries(result).forEach((entry, index) => {
-      const key = entry[0]
-      const value = entry[1]
-      if (value && value.isDomNode)
-        r[key] = domNodes.length ? domNodes[index].selector : domNodes.selector
-      else r[key] = value
+    const {result, hasDomNodes} = await executor()
+    if (!hasDomNodes) return result
+
+    // second pass (if a DOM Node element was found, need to retrieve it with a different executor)
+    executor = prepareClientFunction({
+      clientFunction: Selector,
+      dependencies: {retrieveDomNodes: true, ...dependencies},
+      driver,
     })
-    return r
+    const domNodes = await executor()
+
+    // stitch the two results together, preserving the indended result from the provided script
+    if (!result || !Object.keys(result).length) return domNodes.selector
+    if (Array.isArray(result)) {
+      return result.map((entry, index) => {
+        if (entry && entry.isDomNode) {
+          return domNodes.length ? domNodes[index].selector : domNodes.selector
+        } else return entry
+      })
+    }
+    if (typeof result === 'object') {
+      const r = {}
+      Object.entries(result).forEach((entry, index) => {
+        const key = entry[0]
+        const value = entry[1]
+        if (value && value.isDomNode)
+          r[key] = domNodes.length ? domNodes[index].selector : domNodes.selector
+        else r[key] = value
+      })
+      return r
+    }
+  } catch (error) {
+    debugger
   }
 }
 async function mainContext(driver) {
@@ -259,8 +273,8 @@ async function visit(driver, url) {
   await driver.navigateTo(url)
 }
 async function takeScreenshot(driver, opts = {}) {
-  if (driver.browser.name === 'Safari')
-    process.env.APPLITOOLS_SCREENSHOT_CAPTURED_WITH_MARKER = true
+  //if (driver.browser.name === 'Safari')
+  //  process.env.APPLITOOLS_SCREENSHOT_CAPTURED_WITH_MARKER = true
   // NOTE:
   // Since we are constrained to saving screenshots to disk, we place each screenshot in its own
   // dot-folder which has a GUID prefix (e.g., .applitools-guide/screenshot.png).
@@ -357,6 +371,7 @@ exports.build = () => {
   return [undefined, () => {}]
 }
 exports.scrollIntoView = () => {} // TestCafe does this implicitly
+exports.isStaleElementError = () => {} // TestCafe doesn't have a stale element error
 // no-op for core
 exports.toEyesSelector = () => {
   return {type: false}
