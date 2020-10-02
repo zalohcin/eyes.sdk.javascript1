@@ -30,11 +30,13 @@ describe('createFramesPaths', () => {
 
   it('should create frame paths for frames that have cross origin frames', () => {
     const frameSnapshot = {
+      cdt: 'frame',
       frames: [],
-      crossFramesXPaths: ['BODY[1]/IFRAME[1]'],
+      crossFramesXPaths: ['BODY[1]/IFRAME[1]', 'BODY[1]/IFRAME[2]'],
       selector: 'BODY[1]',
     }
     const snapshot = {
+      cdt: 'top',
       frames: [frameSnapshot],
       crossFramesXPaths: [],
     }
@@ -46,10 +48,7 @@ describe('createFramesPaths', () => {
         path: ['BODY[1]', 'BODY[1]/IFRAME[1]'],
       },
       {
-        parentSnapshot: {
-          cdt: 'parent',
-          frames: [],
-        },
+        parentSnapshot: frameSnapshot,
         path: ['BODY[1]', 'BODY[1]/IFRAME[2]'],
       },
     ])

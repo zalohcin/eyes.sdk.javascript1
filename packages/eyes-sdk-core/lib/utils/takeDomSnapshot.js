@@ -61,7 +61,7 @@ async function takeDomSnapshot(logger, driver, options = {}) {
       pollTimeout,
     })
 
-    const selectorMap = createFramesPaths(snapshot)
+    const selectorMap = createFramesPaths({snapshot, logger})
 
     for (const {path, parentSnapshot} of selectorMap) {
       const references = path.reduce((parent, selector) => {
