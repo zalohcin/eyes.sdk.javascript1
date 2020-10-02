@@ -1,6 +1,7 @@
 'use strict'
 
 const assert = require('assert')
+const assertRejects = require('assert-rejects')
 const {startFakeEyesServer} = require('@applitools/sdk-fake-eyes-server')
 const {ServerConnector, Logger, Configuration, GeneralUtils} = require('../../../')
 const {presult} = require('../../../lib/troubleshoot/utils')
@@ -293,5 +294,17 @@ describe('ServerConnector', () => {
 
     const runningSessionWithIsNewFalse = await serverConnector.startSession({})
     assert.strictEqual(runningSessionWithIsNewFalse.getIsNew(), false)
+  })
+
+  it('retry request before throw', async () => {
+    const serverConnector = getServerConnector()
+    let tries = 0
+    serverConnector._axios.defaults.adapter = async config => {
+      tries += 1
+      throw {config, code: 'ENOTFOUND'}
+    }
+
+    await assertRejects(serverConnector.startSession({}), 'ENOTFOUND')
+    assert.strictEqual(tries, 6)
   })
 })

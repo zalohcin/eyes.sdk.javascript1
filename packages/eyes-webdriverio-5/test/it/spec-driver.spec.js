@@ -1,12 +1,13 @@
 const assert = require('assert')
-const spec = require('../../src/SpecDriver')
+const os = require('os')
+const spec = require('../../src/spec-driver')
 const {By} = require('../../index')
 
-describe('SpecDriver', async () => {
+describe('spec driver', async () => {
   let browser, destroyBrowser
   const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
 
-  describe('headless desktop', async () => {
+  describe('headless desktop (@webdriver)', async () => {
     before(async () => {
       ;[browser, destroyBrowser] = await spec.build({browser: 'chrome'})
       await browser.url(url)
@@ -20,55 +21,63 @@ describe('SpecDriver', async () => {
     it('isDriver(wrong)', isDriver({input: {}, expected: false}))
     it(
       'isElement(element)',
-      isElement({input: () => browser.element('div').then(({value}) => value), expected: true}),
+      isElement({input: () => browser.findElement('css selector', 'div'), expected: true}),
     )
-    it(
-      'isElement(response-element)',
-      isElement({input: () => browser.element('div'), expected: true}),
-    )
+    it('isElement(extended-element)', isElement({input: () => browser.$('div'), expected: true}))
     it('isElement(wrong)', isElement({input: () => ({}), expected: false}))
     it('isSelector(string)', isSelector({input: 'div', expected: true}))
+    it('isSelector(function)', isSelector({input: () => {}, expected: true}))
     it('isSelector(by)', isSelector({input: By.xpath('//div'), expected: true}))
     it('isSelector(wrong)', isSelector({input: {}, expected: false}))
     it(
       'transformElement(element)',
-      transformElement({input: () => browser.element('div').then(({value}) => value)}),
+      transformElement({input: () => browser.findElement('css selector', 'div')}),
     )
-    it(
-      'transformElement(response-element)',
-      transformElement({input: () => browser.element('div')}),
-    )
+    it('transformElement(extended-element)', transformElement({input: () => browser.$('div')}))
     it(
       'isEqualElements(element, element)',
       isEqualElements({
-        input: () => browser.element('div').then(({value}) => ({element1: value, element2: value})),
+        input: () => browser.$('div').then(element => ({element1: element, element2: element})),
         expected: true,
       }),
     )
     it(
       'isEqualElements(element1, element2)',
       isEqualElements({
-        input: async () => ({
-          element1: await browser.element('div').then(({value}) => value),
-          element2: await browser.element('h1').then(({value}) => value),
-        }),
+        input: async () => ({element1: await browser.$('div'), element2: await browser.$('h1')}),
         expected: false,
       }),
     )
     it(
       'extractSelector(element)',
       extractSelector({
-        input: () => browser.element('div').then(({value}) => value),
+        input: () => browser.findElement('css selector', 'div'),
         expected: undefined,
       }),
     )
     it(
-      'extractSelector(response-element)',
-      extractSelector({input: () => browser.element('div'), expected: 'div'}),
+      'extractSelector(extended-element)',
+      extractSelector({input: () => browser.$('div'), expected: 'div'}),
     )
     it('executeScript(strings, ...args)', executeScript())
     it('findElement(string)', findElement({input: '#overflowing-div'}))
     it('findElements(string)', findElements({input: 'div'}))
+    it(
+      'findElement(function)',
+      findElement({
+        input: function() {
+          return this.document.getElementById('overflowing-div')
+        },
+      }),
+    )
+    it(
+      'findElements(function)',
+      findElements({
+        input: function() {
+          return this.document.querySelectorAll('div')
+        },
+      }),
+    )
     it('findElement(non-existent)', findElement({input: 'non-existent', expected: null}))
     it('findElements(non-existent)', findElements({input: 'non-existent', expected: []}))
     it('mainContext()', mainContext())
@@ -79,7 +88,7 @@ describe('SpecDriver', async () => {
     it('getUrl()', getUrl())
     it('visit()', visit())
     it('isMobile()', isMobile({expected: false}))
-    it('getPlatformName()', getPlatformName({expected: undefined}))
+    it('getPlatformName()', getPlatformName({expected: 'linux'}))
   })
 
   describe('onscreen desktop (@webdriver)', async () => {
@@ -117,17 +126,18 @@ describe('SpecDriver', async () => {
 
   describe('legacy browser (@webdriver)', async () => {
     before(async () => {
-      ;[browser, destroyBrowser] = await spec.build({browser: 'ie-11'})
+      ;[browser, destroyBrowser] = await spec.build({browser: 'ie-11', legacy: true})
     })
 
     after(async () => {
       await destroyBrowser()
     })
 
-    it('getWindowRect()', getWindowRect())
+    it('getWindowRect()', getWindowRect({legacy: true}))
     it(
       'setWindowRect({x, y, width, height})',
       setWindowRect({
+        legacy: true,
         input: {x: 0, y: 0, width: 510, height: 511},
         expected: {x: 0, y: 0, width: 510, height: 511},
       }),
@@ -135,6 +145,7 @@ describe('SpecDriver', async () => {
     it(
       'setWindowRect({x, y})',
       setWindowRect({
+        legacy: true,
         input: {x: 11, y: 12},
         expected: {x: 11, y: 12, width: 510, height: 511},
       }),
@@ -142,11 +153,12 @@ describe('SpecDriver', async () => {
     it(
       'setWindowRect({width, height})',
       setWindowRect({
+        legacy: true,
         input: {width: 551, height: 552},
         expected: {x: 11, y: 12, width: 551, height: 552},
       }),
     )
-    it('getPlatformName()', getPlatformName({expected: 'Windows 10'}))
+    it('getPlatformName()', getPlatformName({expected: 'WINDOWS'}))
   })
 
   describe('mobile browser (@mobile)', async () => {
@@ -163,7 +175,7 @@ describe('SpecDriver', async () => {
     it('getPlatformName()', getPlatformName({expected: 'Android'}))
     it('isNative()', isNative({expected: false}))
     it('getOrientation()', getOrientation({expected: 'portrait'}))
-    it('getPlatformVersion()', getPlatformVersion({expected: '10.0'}))
+    it('getPlatformVersion()', getPlatformVersion({expected: '10'}))
   })
 
   describe('native app (@mobile @native)', async () => {
@@ -184,6 +196,106 @@ describe('SpecDriver', async () => {
     it('getPlatformName()', getPlatformName({expected: 'Android'}))
     it('getPlatformVersion()', getPlatformVersion({expected: '6.0'}))
     it('getOrientation()', getOrientation({expected: 'landscape'}))
+  })
+
+  describe('headless desktop (@puppeteer)', async () => {
+    before(async () => {
+      ;[browser, destroyBrowser] = await spec.build({browser: 'chrome', protocol: 'cdp'})
+      await browser.url(url)
+    })
+
+    after(async () => {
+      await destroyBrowser()
+    })
+
+    it('isDriver(driver)', isDriver({expected: true}))
+    it('isDriver(wrong)', isDriver({input: {}, expected: false}))
+    it(
+      'isElement(element)',
+      isElement({input: () => browser.findElement('css selector', 'div'), expected: true}),
+    )
+    it('isElement(extended-element)', isElement({input: () => browser.$('div'), expected: true}))
+    it('isElement(wrong)', isElement({input: () => ({}), expected: false}))
+    it('isSelector(string)', isSelector({input: 'div', expected: true}))
+    it('isSelector(function)', isSelector({input: () => {}, expected: true}))
+    it('isSelector(by)', isSelector({input: By.xpath('//div'), expected: true}))
+    it('isSelector(wrong)', isSelector({input: {}, expected: false}))
+    it(
+      'transformElement(element)',
+      transformElement({input: () => browser.findElement('css selector', 'div')}),
+    )
+    it('transformElement(extended-element)', transformElement({input: () => browser.$('div')}))
+    it(
+      'extractSelector(element)',
+      extractSelector({
+        input: () => browser.findElement('css selector', 'div'),
+        expected: undefined,
+      }),
+    )
+    it(
+      'extractSelector(extended-element)',
+      extractSelector({input: () => browser.$('div'), expected: 'div'}),
+    )
+    it('executeScript(strings, ...args)', executeScript())
+    it('mainContext()', mainContext())
+    it('parentContext()', parentContext())
+    it('childContext(element)', childContext())
+    it('findElement(string)', findElement({input: '#overflowing-div'}))
+    it('findElements(string)', findElements({input: 'div'}))
+    it(
+      'findElement(function)',
+      findElement({
+        input: function() {
+          return this.document.getElementById('overflowing-div')
+        },
+      }),
+    )
+    it(
+      'findElements(function)',
+      findElements({
+        input: function() {
+          return this.document.querySelectorAll('div')
+        },
+      }),
+    )
+    it('findElement(non-existent)', findElement({input: 'non-existent', expected: null}))
+    it('findElements(non-existent)', findElements({input: 'non-existent', expected: []}))
+    it('getSessionId()', getSessionId())
+    it('getTitle()', getTitle())
+    it('getUrl()', getUrl())
+    it('visit()', visit())
+    it('isMobile()', isMobile({expected: false}))
+    it('getPlatformName()', getPlatformName({expected: os.type().toLowerCase()}))
+  })
+
+  describe('onscreen desktop (@puppeteer)', async () => {
+    before(async () => {
+      ;[browser, destroyBrowser] = await spec.build({
+        browser: 'chrome',
+        protocol: 'cdp',
+        headless: false,
+      })
+    })
+
+    after(async () => {
+      await destroyBrowser()
+    })
+
+    it('getWindowRect()', getWindowRect())
+    it(
+      'setWindowRect({x, y, width, height})',
+      setWindowRect({
+        input: {x: 0, y: 0, width: 301, height: 302},
+        expected: {x: 0, y: 0, width: 301, height: 302},
+      }),
+    )
+    it(
+      'setWindowRect({width, height})',
+      setWindowRect({
+        input: {width: 551, height: 552},
+        expected: {x: null, y: null, width: 551, height: 552},
+      }),
+    )
   })
 
   function isDriver({input, expected}) {
@@ -215,9 +327,8 @@ describe('SpecDriver', async () => {
   function transformElement({input}) {
     return async () => {
       const element = await input()
-      const elementId = element.value
-        ? element.value['element-6066-11e4-a52e-4f735466cecf'] || element.value.ELEMENT
-        : element['element-6066-11e4-a52e-4f735466cecf'] || element.ELEMENT
+      const elementId =
+        element.elementId || element['element-6066-11e4-a52e-4f735466cecf'] || element.ELEMENT
       const result = spec.transformElement(element)
       assert.deepStrictEqual(result, {
         ELEMENT: elementId,
@@ -234,7 +345,7 @@ describe('SpecDriver', async () => {
   function executeScript() {
     return async () => {
       const args = [0, 'string', {key: 'value'}, [0, 1, 2, 3]]
-      const {value: expected} = await browser.execute('return arguments', ...args)
+      const expected = await browser.execute('return arguments', ...args)
       const result = await spec.executeScript(browser, 'return arguments', ...args)
       assert.deepStrictEqual(result, expected)
     }
@@ -242,54 +353,53 @@ describe('SpecDriver', async () => {
   function mainContext() {
     return async () => {
       try {
-        const {value: mainDocument} = await browser.element('html')
-        await browser.frame(await browser.element('[name="frame1"]').then(({value}) => value))
-        await browser.frame(await browser.element('[name="frame1-1"]').then(({value}) => value))
-        const {value: frameDocument} = await browser.element('html')
+        const mainDocument = await browser.$('html')
+        await browser.switchToFrame(await browser.findElement('css selector', '[name="frame1"]'))
+        await browser.switchToFrame(await browser.findElement('css selector', '[name="frame1-1"]'))
+        const frameDocument = await browser.$('html')
         assert.ok(!(await spec.isEqualElements(browser, mainDocument, frameDocument)))
         await spec.mainContext(browser)
-        const {value: resultDocument} = await browser.element('html')
+        const resultDocument = await browser.$('html')
         assert.ok(await spec.isEqualElements(browser, resultDocument, mainDocument))
       } finally {
-        await browser.frame(null).catch(() => null)
+        await browser.switchToFrame(null).catch(() => null)
       }
     }
   }
   function parentContext() {
     return async () => {
       try {
-        await browser.frame(await browser.element('[name="frame1"]').then(({value}) => value))
-        const {value: parentDocument} = await browser.element('html')
-        await browser.frame(await browser.element('[name="frame1-1"]').then(({value}) => value))
-        const {value: frameDocument} = await browser.element('html')
+        await browser.switchToFrame(await browser.findElement('css selector', '[name="frame1"]'))
+        const parentDocument = await browser.$('html')
+        await browser.switchToFrame(await browser.findElement('css selector', '[name="frame1-1"]'))
+        const frameDocument = await browser.$('html')
         assert.ok(!(await spec.isEqualElements(browser, parentDocument, frameDocument)))
         await spec.parentContext(browser)
-        const {value: resultDocument} = await browser.element('html')
+        const resultDocument = await browser.$('html')
         assert.ok(await spec.isEqualElements(browser, resultDocument, parentDocument))
       } finally {
-        await browser.frame(null).catch(() => null)
+        await browser.switchToFrame(null).catch(() => null)
       }
     }
   }
   function childContext() {
     return async () => {
       try {
-        const {value: element} = await browser.element('[name="frame1"]')
-        await browser.frame(element)
-        const {value: expectedDocument} = await browser.element('html')
-        await browser.frame(null)
+        const element = await browser.findElement('css selector', '[name="frame1"]')
+        await browser.switchToFrame(element)
+        const expectedDocument = await browser.$('html')
+        await browser.switchToFrame(null)
         await spec.childContext(browser, element)
-        const {value: resultDocument} = await browser.element('html')
+        const resultDocument = await browser.$('html')
         assert.ok(await spec.isEqualElements(browser, resultDocument, expectedDocument))
       } finally {
-        await browser.frame(null).catch(() => null)
+        await browser.switchToFrame(null).catch(() => null)
       }
     }
   }
   function findElement({input, expected} = {}) {
     return async () => {
-      const result =
-        expected !== undefined ? expected : await browser.element(input).then(({value}) => value)
+      const result = expected !== undefined ? expected : await browser.$(input)
       const element = await spec.findElement(browser, input)
       if (element !== result) {
         assert.ok(await spec.isEqualElements(browser, element, result))
@@ -298,8 +408,7 @@ describe('SpecDriver', async () => {
   }
   function findElements({input, expected} = {}) {
     return async () => {
-      const result =
-        expected !== undefined ? expected : await browser.elements(input).then(({value}) => value)
+      const result = expected !== undefined ? expected : await browser.$$(input)
       const elements = await spec.findElements(browser, input)
       assert.strictEqual(elements.length, result.length)
       for (const [index, element] of elements.entries()) {
@@ -307,21 +416,31 @@ describe('SpecDriver', async () => {
       }
     }
   }
-  function getWindowRect() {
+  function getWindowRect({legacy = false} = {}) {
     return async () => {
-      const {x, y} = await browser.windowHandlePosition().then(({value}) => value)
-      const {width, height} = await browser.windowHandleSize().then(({value}) => value)
-      const rect = {x, y, width, height}
+      let rect
+      if (legacy) {
+        const {x, y} = await browser.getWindowPosition()
+        const {width, height} = await browser.getWindowSize()
+        rect = {x, y, width, height}
+      } else {
+        rect = await browser.getWindowRect()
+      }
       const result = await spec.getWindowRect(browser)
       assert.deepStrictEqual(result, rect)
     }
   }
-  function setWindowRect({input, expected} = {}) {
+  function setWindowRect({legacy = false, input, expected} = {}) {
     return async () => {
       await spec.setWindowRect(browser, input)
-      const {x, y} = await browser.windowHandlePosition().then(({value}) => value)
-      const {width, height} = await browser.windowHandleSize().then(({value}) => value)
-      const rect = {x, y, width, height}
+      let rect
+      if (legacy) {
+        const {x, y} = await browser.getWindowPosition()
+        const {width, height} = await browser.getWindowSize()
+        rect = {x, y, width, height}
+      } else {
+        rect = await browser.getWindowRect()
+      }
       assert.deepStrictEqual(rect, expected)
     }
   }
@@ -333,7 +452,7 @@ describe('SpecDriver', async () => {
   }
   function getSessionId() {
     return async () => {
-      const expected = browser.requestHandler.sessionID
+      const expected = browser.sessionId
       const {sessionId} = await spec.getDriverInfo(browser)
       assert.deepStrictEqual(sessionId, expected)
     }

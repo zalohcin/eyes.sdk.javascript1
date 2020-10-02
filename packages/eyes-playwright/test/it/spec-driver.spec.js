@@ -1,8 +1,8 @@
 const assert = require('assert')
 const {testSetup} = require('@applitools/sdk-shared')
-const spec = require('../../src/SpecDriver')
+const spec = require('../../src/spec-driver')
 
-describe('SpecDriver', async () => {
+describe('spec driver', async () => {
   let page, destroyPage
   const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
 

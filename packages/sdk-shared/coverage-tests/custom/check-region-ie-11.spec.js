@@ -3,7 +3,7 @@
 
 const cwd = process.cwd()
 const path = require('path')
-const spec = require(path.resolve(cwd, 'src/SpecDriver'))
+const spec = require(path.resolve(cwd, 'src/spec-driver'))
 const {Target} = require(cwd)
 const {getEyes} = require('../../src/test-setup')
 

@@ -145,13 +145,20 @@ const browserNames = {
 async function build(env) {
   const playwright = require('playwright')
   const {testSetup} = require('@applitools/sdk-shared')
-  const {browser, device, url, headless, args = []} = testSetup.Env(env, 'cdp')
+  const {browser, device, url, attach, proxy, args = [], headless} = testSetup.Env(env, 'cdp')
   const launcher = playwright[browserNames[browser] || browser]
   if (!launcher) throw new Error(`Browser "${browser}" is not supported.`)
+  if (attach) throw new Error(`Attaching to the existed browser doesn't supported by playwright`)
   const options = {
     args,
     headless,
     ignoreDefaultArgs: ['--hide-scrollbars'],
+  }
+  if (proxy) {
+    options.proxy = {
+      server: proxy.https || proxy.http || proxy.server,
+      bypass: proxy.bypass.join(','),
+    }
   }
   let driver
   if (url) {

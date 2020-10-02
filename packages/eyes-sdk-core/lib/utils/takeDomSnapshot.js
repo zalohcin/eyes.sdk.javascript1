@@ -50,6 +50,12 @@ async function takeDomSnapshot(logger, driver, options = {}) {
   return deserializeDomSnapshotResult(snapshot)
 
   async function takeContextDomSnapshot(context) {
+    logger.verbose(
+      `taking dom snapshot. ${
+        context._reference ? `context referece: ${JSON.stringify(context._reference)}` : ''
+      }`,
+    )
+
     const snapshot = await EyesUtils.executePollScript(logger, context, scripts, {
       executionTimeout,
       pollTimeout,

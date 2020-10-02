@@ -2,7 +2,7 @@
 const cwd = process.cwd()
 const path = require('path')
 const {getEyes} = require('../../src/test-setup')
-const spec = require(path.resolve(cwd, 'src/SpecDriver'))
+const spec = require(path.resolve(cwd, 'src/spec-driver'))
 const fs = require('fs')
 const {promisify} = require('util')
 const ncp = require('ncp')

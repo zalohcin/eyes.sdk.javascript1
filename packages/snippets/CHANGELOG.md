@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+
+## 2.0.1 - 2020/9/28
+
 - remove yarn workspaces
 
 ## 2.0.0 - 2020/9/14

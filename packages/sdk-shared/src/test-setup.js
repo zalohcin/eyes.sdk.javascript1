@@ -88,9 +88,16 @@ const BROWSERS = {
     type: 'sauce',
     url: SAUCE_SERVER_URL,
     capabilities: {
-      browserName: 'internet explorer',
-      browserVersion: '11.285',
-      platformName: 'Windows 10',
+      w3c: {
+        browserName: 'internet explorer',
+        browserVersion: '11.285',
+        platformName: 'Windows 10',
+      },
+      legacy: {
+        browserName: 'internet explorer',
+        platform: 'Windows 10',
+        version: '11.285',
+      },
     },
     options: {
       name: 'IE 11',
@@ -154,8 +161,11 @@ function Env(
     const preset = DEVICES[device] || BROWSERS[browser]
     if (preset) {
       env.url = preset.url ? new URL(preset.url) : env.url
-      env.capabilities = Object.assign(env.capabilities, preset.capabilities)
-      env.sauce = preset.type === 'sauce'
+      env.capabilities = Object.assign(
+        env.capabilities,
+        (legacy ? preset.capabilities.legacy : preset.capabilities.w3c) || preset.capabilities,
+      )
+      env.configurable = preset.type !== 'sauce'
       if (preset.options) {
         if (preset.type === 'sauce') {
           if (legacy) Object.assign(env.capabilities, preset.options)

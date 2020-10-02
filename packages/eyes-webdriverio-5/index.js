@@ -6,8 +6,8 @@ if (!process.env.APPLITOOLS_WDIO_MAJOR_VERSION) {
   process.env.APPLITOOLS_WDIO_MAJOR_VERSION = major
 }
 
-const {EyesClassic, EyesVisualGrid, EyesFactory, CheckSettings} = require('./src/WDIOSDK')
-const {LegacySelector} = require('./src/LegacyAPI')
+const {EyesClassic, EyesVisualGrid, EyesFactory, CheckSettings} = require('./src/sdk')
+const {LegacySelector} = require('./src/legacy-api')
 
 /**
  * @typedef {import('./src/SpecWrappedDriver').Driver} Driver
@@ -35,7 +35,7 @@ exports.EyesVisualGrid = EyesVisualGrid
 exports.Target = CheckSettings
 exports.WebdriverioCheckSettings = CheckSettings
 exports.By = LegacySelector
-exports.EyesService = require('./src/EyesService')
+exports.EyesService = require('./src/eyes-service')
 
 exports.AccessibilityLevel = core.AccessibilityLevel
 exports.AccessibilityMatchSettings = core.AccessibilityMatchSettings
