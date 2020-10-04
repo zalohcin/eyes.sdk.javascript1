@@ -64,9 +64,6 @@ describe('takeDomSnapshot', () => {
       {
         selector: '[data-applitools-selector="123"]',
         frame: true,
-        isCORS: true,
-        attributes: [],
-        children: [],
       },
     ])
     const snapshot = await takeDomSnapshot({driver: eyesDriver, logger})
@@ -94,15 +91,10 @@ describe('takeDomSnapshot', () => {
       {
         selector: '[data-applitools-selector="123"]',
         frame: true,
-        isCORS: true,
-        attributes: [],
         children: [
           {
             selector: '[data-applitools-selector="456"]',
             frame: true,
-            isCORS: true,
-            attributes: [],
-            children: [],
           },
         ],
       },
@@ -159,14 +151,10 @@ describe('takeDomSnapshot', () => {
       {
         selector: '[data-applitools-selector="123"]',
         frame: true,
-        attributes: [],
         children: [
           {
             selector: '[data-applitools-selector="456"]',
             frame: true,
-            isCORS: true,
-            attributes: [],
-            children: [],
           },
         ],
       },
@@ -226,9 +214,6 @@ describe('takeDomSnapshot', () => {
     driver.mockElements([
       {
         selector: '[data-applitools-selector="123"]',
-        isCORS: true,
-        attributes: [],
-        children: [],
       },
     ])
     driver.mockScript('dom-snapshot', function() {
@@ -246,15 +231,10 @@ describe('takeDomSnapshot', () => {
     driver.mockElements([
       {
         selector: '[data-applitools-selector="123"]',
-        isCORS: true,
         frame: true,
-        attributes: [],
         children: [
           {
             selector: '[data-applitools-selector="456"]',
-            isCORS: true,
-            attributes: [],
-            children: [],
           },
         ],
       },
