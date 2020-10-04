@@ -250,7 +250,7 @@ class MockDriver {
     if (TypeUtils.isString(reference)) {
       reference = await this.findElement(reference)
     }
-    const frame = this._contexts.get(reference.contextId)
+    const frame = reference && this._contexts.get(reference.contextId)
     if (frame && this._contextId === frame.parentId) {
       this._contextId = frame.id
       return this

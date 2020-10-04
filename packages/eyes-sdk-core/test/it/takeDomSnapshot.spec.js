@@ -56,13 +56,13 @@ describe('takeDomSnapshot', () => {
 
   it('should take a dom snapshot with cross origin frames', async () => {
     driver.mockScript('dom-snapshot', function() {
-      return this.name === 'HTML[1]/BODY[1]/IFRAME[1]'
+      return this.name === '[data-applitools-selector="123"]'
         ? generateSnapshotResponse({cdt: 'frame-cdt'})
-        : generateSnapshotResponse({crossFramesSelectors: ['HTML[1]/BODY[1]/IFRAME[1]']})
+        : generateSnapshotResponse({crossFramesSelectors: ['[data-applitools-selector="123"]']})
     })
     driver.mockElements([
       {
-        selector: 'HTML[1]/BODY[1]/IFRAME[1]',
+        selector: '[data-applitools-selector="123"]',
         frame: true,
         isCORS: true,
         attributes: [],
@@ -93,13 +93,13 @@ describe('takeDomSnapshot', () => {
     try {
       driver.mockElements([
         {
-          selector: 'HTML[1]/BODY[1]/IFRAME[1]',
+          selector: '[data-applitools-selector="123"]',
           frame: true,
           isCORS: true,
           attributes: [],
           children: [
             {
-              selector: 'BODY[1]/IFRAME[1]',
+              selector: '[data-applitools-selector="456"]',
               frame: true,
               isCORS: true,
               attributes: [],
@@ -111,17 +111,17 @@ describe('takeDomSnapshot', () => {
 
       driver.mockScript('dom-snapshot', function() {
         switch (this.name) {
-          case 'HTML[1]/BODY[1]/IFRAME[1]':
+          case '[data-applitools-selector="123"]':
             return generateSnapshotResponse({
               cdt: 'frame',
-              crossFramesSelectors: ['BODY[1]/IFRAME[1]'],
+              crossFramesSelectors: ['[data-applitools-selector="456"]'],
             })
-          case 'BODY[1]/IFRAME[1]':
+          case '[data-applitools-selector="456"]':
             return generateSnapshotResponse({cdt: 'nested frame'})
           default:
             return generateSnapshotResponse({
               cdt: 'top page',
-              crossFramesSelectors: ['HTML[1]/BODY[1]/IFRAME[1]'],
+              crossFramesSelectors: ['[data-applitools-selector="123"]'],
             })
         }
       })
@@ -161,12 +161,12 @@ describe('takeDomSnapshot', () => {
   it('should take a dom snapshot with nested frames containing cross origin frames', async () => {
     driver.mockElements([
       {
-        selector: 'DIV[1]/IFRAME[1]',
+        selector: '[data-applitools-selector="123"]',
         frame: true,
         attributes: [],
         children: [
           {
-            selector: 'DIV[1]/SPAN[1]/DIV[1]/IFRAME[1]',
+            selector: '[data-applitools-selector="456"]',
             frame: true,
             isCORS: true,
             attributes: [],
@@ -178,10 +178,10 @@ describe('takeDomSnapshot', () => {
 
     driver.mockScript('dom-snapshot', function() {
       switch (this.name) {
-        case 'DIV[1]/SPAN[1]/DIV[1]/IFRAME[1]':
+        case '[data-applitools-selector="456"]':
           return generateSnapshotResponse({
             cdt: 'nested frame',
-            selector: 'DIV[1]/SPAN[1]/DIV[1]/IFRAME[1]',
+            selector: '[data-applitools-selector="456"]',
           })
         default:
           return generateSnapshotResponse({
@@ -189,8 +189,8 @@ describe('takeDomSnapshot', () => {
             frames: [
               generateSnapshotObject({
                 cdt: 'frame',
-                selector: 'DIV[1]/IFRAME[1]',
-                crossFramesSelectors: ['DIV[1]/SPAN[1]/DIV[1]/IFRAME[1]'],
+                selector: '[data-applitools-selector="123"]',
+                crossFramesSelectors: ['[data-applitools-selector="456"]'],
               }),
             ],
           })
