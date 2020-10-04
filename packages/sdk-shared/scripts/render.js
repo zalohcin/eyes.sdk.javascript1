@@ -1,28 +1,244 @@
+#!/usr/bin/env node
 'use strict'
 const fs = require('fs')
 const path = require('path')
-const chromedriver = require('chromedriver')
+const util = require('util')
+const yargs = require('yargs')
 const {URL} = require('url')
+const utils = require('../src/cli-utils')
 const cwd = process.cwd()
-const spec = require(path.resolve(cwd, 'src/SpecDriver'))
+const spec = require(path.resolve(cwd, 'src/spec-driver'))
 const {
   Eyes,
   ClassicRunner,
   VisualGridRunner,
-  Target,
   FileLogHandler,
-  Configuration,
-  StitchMode,
   DeviceName,
   ScreenOrientation,
   MatchLevel,
-  // FileDebugScreenshotsProvider,
 } = require(cwd)
-const {BROWSERS} = require('../src/test-setup')
+const {BROWSERS, DEVICES} = require('../src/test-setup')
 const scrollPage = require('../src/scroll-page')
 
-const yargs = require('yargs')
-const args = yargs
+const delay = util.promisify(setTimeout)
+
+const checkOptions = {
+  name: {
+    describe: 'tag for checkpoint',
+    type: 'string',
+    default: 'render script',
+  },
+  region: {
+    describe: 'region to check',
+    type: 'string',
+    coerce(str) {
+      const region = utils.parseRegion(str)
+      if (region) return region
+      return utils.parseSelector(str)
+    },
+  },
+  frames: {
+    describe: 'comma-separated list of frame references',
+    type: 'string',
+    coerce(str) {
+      return utils.parseList(str).map(frame => {
+        const map = utils.parseMap(frame)
+        if (map) return map
+        return utils.parseSelector(frame)
+      })
+    },
+  },
+  scrollRootElement: {
+    describe: 'selector to scroll root element',
+    type: 'string',
+    coerce: utils.parseScript,
+  },
+  ignoreRegions: {
+    describe: 'comma-separated list of selectors to ignore',
+    type: 'string',
+    coerce: parseRegionReferences,
+  },
+  layoutRegions: {
+    describe: 'comma-separated list of selectors for layout regions',
+    type: 'string',
+    coerce: parseRegionReferences,
+  },
+  ignoreDisplacements: {
+    describe: 'when specified, ignore displaced content',
+    type: 'boolean',
+    default: false,
+  },
+  layoutBreakpoints: {
+    describe: 'comma-separated list of breakpoints (widths) for js layouts',
+    type: 'string',
+    coerce(str) {
+      if (['', 'true'].includes(str)) return true
+      else return utils.parseList(str).map(width => Number.parseInt(width.trim()))
+    },
+  },
+  matchTimeout: {
+    describe: 'match timeout',
+    type: 'number',
+    default: 0,
+  },
+  matchLevel: {
+    describe: 'match level',
+    type: 'string',
+    choices: Object.values(MatchLevel),
+  },
+  fully: {
+    type: 'boolean',
+    describe: 'whether to check target fully',
+    default: false,
+  },
+}
+
+const buildOptions = {
+  browser: {
+    describe: 'preset name of browser. (e.g. "edge-18", "ie-11", "safari-11", "firefox")',
+    type: 'string',
+    default: 'chrome',
+    choices: Object.keys(BROWSERS),
+  },
+  device: {
+    describe: 'preset name of browser (e.g. "iPhone X", "Pixel 4")',
+    type: 'string',
+    choices: Object.keys(DEVICES),
+  },
+  capabilities: {
+    describe:
+      'capabilities for driver "deviceName=>iPhone 8 Simulator; platformName=>iOS; platformVersion=>13.2; appiumVersion=>1.16.0; browserName=>Safari"',
+    type: 'string',
+    coerce: utils.parseMap,
+  },
+  attach: {
+    describe: 'attach to existing chrome via remote debugging port',
+    type: 'boolean',
+  },
+  driverUrl: {
+    describe: 'url to the driver server',
+    type: 'string',
+  },
+  headless: {
+    describe: 'open browser in headless mode',
+    type: 'boolean',
+    default: true,
+  },
+  // browserProxy: {
+  //   describe:
+  //     'whether to use charles as a proxy to webdriver calls (works on port 8888, need to start Charles manually prior to running this script',
+  //   type: 'boolean',
+  // },
+}
+
+const eyesConfig = {
+  vg: {
+    type: 'boolean',
+    describe: 'when specified, use visual grid instead of classic runner',
+  },
+  css: {
+    type: 'boolean',
+    describe: 'when specified, use CSS stitch mode',
+  },
+  viewportSize: {
+    describe: 'viewport size to open the browser (widthxheight)',
+    type: 'string',
+    default: '1024x768',
+    coerce: utils.parseSize,
+    conflicts: ['device'],
+  },
+  apiKey: {
+    describe: 'Applitools API key',
+    type: 'string',
+    default: process.env.APPLITOOLS_API_KEY,
+  },
+  serverUrl: {
+    describe: 'server url',
+    type: 'string',
+  },
+  proxy: {
+    describe: 'proxy string, e.g. http://localhost:8888',
+    type: 'string',
+  },
+  stitchOverlap: {
+    describe: 'stitch overlap',
+    type: 'number',
+  },
+  saveDebugScreenshots: {
+    describe: 'save debug screenshots',
+    type: 'boolean',
+  },
+  envName: {
+    describe: 'baseline env name',
+    type: 'string',
+  },
+  appName: {
+    describe: 'app name for baseline',
+    type: 'string',
+    default: 'selenium render',
+  },
+  displayName: {
+    describe:
+      "display name for test. This is what shows up in the dashboard as the test name, but doesn't affect the baseline.",
+    type: 'string',
+  },
+  batchId: {
+    describe: 'batch id',
+    type: 'string',
+  },
+  batchName: {
+    describe: 'batch name',
+    type: 'string',
+  },
+  accessibilityValidation: {
+    describe: 'accessibility validation (comma-separated, e.g. AA,WCAG_2_0)',
+    type: 'string',
+    coerce: utils.parseSequence(['level', 'version'], ','),
+  },
+  renderBrowsers: {
+    describe: 'comma-separated list of browser to render in vg mode (e.g. chrome(800x600))',
+    type: 'string',
+    implies: ['vg'],
+    coerce(str) {
+      const regexp = /^(chrome|chrome-1|chrome-2|chrome-canary|firefox|firefox-1|firefox-2|ie11|ie10|edge|safari|safari-1|safari-2|ie-vmware|edge-chromium|edge-chromium-1|edge-chromium-2)(\( *(\d+) *(x|,) *(\d+) *\))?$/
+      return utils.parseList(str).map(browser => {
+        const match = browser.match(regexp)
+        if (!match) {
+          throw new Error(
+            'invalid syntax. Supports only chrome[-one-version-back/-two-versions-back], firefox[-one-version-back/-two-versions-back], ie11, ie10, edge, safari[-one-version-back/-two-versions-back] as browsers, and the syntax is browser(widthxheight)',
+          )
+        }
+        return {
+          name: match[1],
+          width: Number.parseInt(match[3], 10),
+          height: Number.parseInt(match[5], 10),
+        }
+      })
+    },
+  },
+  renderEmulations: {
+    describe:
+      'comma-separated list of chrome-emulation devices to render in vg mode (e.g. "Pixel 4:portrait", "Nexus 7")',
+    type: 'string',
+    implies: ['vg'],
+    coerce(str) {
+      const deviceNames = Object.values(DeviceName)
+      const orientations = Object.values(ScreenOrientation)
+      return utils.parseList(str).map(deviceStr => {
+        const deviceInfo = utils.parseSequence(['deviceName', 'screenOrientation'], ':')(deviceStr)
+        if (!deviceNames.includes(deviceInfo.deviceName)) {
+          throw new Error(`invalid device name. Supports only ${deviceNames.join(', ')}`)
+        }
+        if (deviceInfo.screenOrientation && !orientations.includes(deviceInfo.screenOrientation)) {
+          throw new Error(`invalid screen orientation. Supports only ${orientations.join(', ')}`)
+        }
+        return {chromeEmulationInfo: deviceInfo}
+      })
+    },
+  },
+}
+
+const {argv: args} = yargs
   .usage('yarn render <url> [options]')
   .example(
     'yarn render http://example.org --viewport-size 800x600 --css',
@@ -30,158 +246,23 @@ const args = yargs
   )
   .example(
     'yarn render http://example.org --vg --browser firefox(1200x900)',
-    'visual grid render, defalut viewport size of 1024x768, vg browser is firefox at 1200x900',
+    'visual grid render, default viewport size of 1024x768, vg browser is firefox at 1200x900',
   )
   .example(
     'yarn render http://example.org --ignore-regions "#ignore-this,.dynamic-element" --fully',
-    'classic full page screenshot, 2 ignore selectors',
+    'classic full page screenshot, 2 ignore regions',
   )
-  .option('api-key', {
-    describe: 'Applitools API key',
-    type: 'string',
-    default: process.env.APPLITOOLS_API_KEY,
-  })
-  .option('target-element', {
-    describe: 'translates to Target.region(...)',
-    type: 'string',
-  })
-  .option('target-frame', {
-    describe: 'translates to Target.frame(...)',
-    type: 'string',
-  })
-  .option('vg', {
-    type: 'boolean',
-    describe: 'when specified, use visual grid instead of classic runner',
-  })
-  .option('css', {
-    type: 'boolean',
-    describe: 'when specified, use CSS stitch mode',
-  })
-  .option('headless', {
-    default: true,
-    type: 'boolean',
-    describe: 'open browser in non-headless mode',
-  })
-  .option('fully', {
-    type: 'boolean',
-    describe: 'whether to check target fully',
-    default: false,
-  })
+  .options(checkOptions)
+  .options(buildOptions)
+  .options(eyesConfig)
   .option('delay', {
     describe: 'delay in seconds before capturing page',
     type: 'number',
     default: 0,
   })
-  .option('browser', {
-    alias: 'b',
-    describe: 'the browser to render to when in vg mode',
-    type: 'string',
-    coerce: parseBrowser,
-  })
-  .option('device-name', {
-    describe: 'the chrome-emulation device name to render to when in vg mode',
-    type: 'string',
-    choices: Object.values(DeviceName),
-  })
-  .option('screen-orientation', {
-    describe: 'the device screen oriantation to render to when in chrome emulation',
-    type: 'string',
-    choices: Object.values(ScreenOrientation),
-  })
-  .option('ignore-displacements', {
-    describe: 'when specified, ignore displaced content',
-    type: 'boolean',
-    default: false,
-  })
-  .option('ignore-regions', {
-    describe: 'comma-separated list of selectors to ignore',
-    type: 'string',
-  })
-  .option('layout-regions', {
-    describe: 'comma-separated list of selectors for layout regions',
-    type: 'string',
-  })
-  .option('layout-breakpoints', {
-    describe: 'comma-separated list of breakpoints (widths) for js layouts',
-    type: 'string',
-    coerce: parseLayoutBreakpoints,
-  })
-  .option('viewport-size', {
-    describe: 'the viewport size to open the browser (widthxheight)',
-    type: 'string',
-    default: '1024x768',
-  })
   .option('scroll-page', {
     describe: 'before taking the screenshot, scroll page to the bottom and up',
     type: 'boolean',
-  })
-  .option('match-timeout', {
-    describe: 'match timeout',
-    type: 'number',
-    default: 0,
-  })
-  .option('match-level', {
-    describe: 'match level',
-    type: 'string',
-    choices: Object.values(MatchLevel),
-  })
-  .option('accessibility-validation', {
-    describe: 'accessibility validation (comma separated, e.g. AA.WCAG_2_0)',
-    type: 'string',
-  })
-  .option('server-url', {
-    describe: 'server url',
-    type: 'string',
-  })
-  .option('api-key', {
-    describe: 'API key',
-    type: 'string',
-  })
-  .option('proxy', {
-    describe: 'proxy string, e.g. http://localhost:8888',
-    type: 'string',
-  })
-  .option('webdriver-proxy', {
-    describe:
-      'whether to use charles as a proxy to webdriver calls (works on port 8888, need to start Charles manually prior to running this script',
-    type: 'boolean',
-  })
-  .option('env-name', {
-    describe: 'baseline env name',
-    type: 'string',
-  })
-  .option('driver-capabilities', {
-    describe:
-      'capabilities for driver. Comma-separated with colon for key/value. Example: --sauce-options "deviceName:iPhone 8 Simulator,platformName:iOS,platformVersion:13.2,appiumVersion:1.16.0,browserName:Safari"',
-    type: 'string',
-    coerce: parseCompoundParameter,
-  })
-  .option('driver-server', {
-    describe: 'server for driver.',
-    type: 'string',
-  })
-  .option('tag', {
-    describe: 'tag for checkpoint',
-    type: 'string',
-    default: 'selenium render',
-  })
-  .option('app-name', {
-    describe: 'app name for baseline',
-    type: 'string',
-    default: 'selenium render',
-  })
-  .option('display-name', {
-    describe:
-      "display name for test. This is what shows up in the dashboard as the test name, but doesn't affect the baseline.",
-    type: 'string',
-  })
-  .option('batch-id', {
-    describe: 'batch id',
-    type: 'string',
-  })
-  .option('batch-name', {
-    describe: 'batch name',
-    type: 'string',
   })
   .option('run-before', {
     describe:
@@ -189,28 +270,7 @@ const args = yargs
     type: 'string',
     coerce: processRunBefore,
   })
-  .option('attach', {
-    describe: 'attach to existing chrome via remote debugging port',
-    type: 'boolean',
-  })
-  .option('scroll-root-element', {
-    describe: 'selector to scroll root element',
-    type: 'string',
-  })
-  .option('stitch-overlap', {
-    describe: 'stitch overlap',
-    type: 'number',
-  })
-  .option('save-debug-screenshots', {
-    describe: 'saveDebugScreenshots',
-    type: 'boolean',
-  })
-  .option('env-browser', {
-    describe: 'preset name of browser. For example "edge-18", "ie-11", "safari-11", "firefox"',
-    type: 'string',
-    choices: Object.keys(BROWSERS),
-  })
-  .help().argv
+  .help()
 
 let [url] = args._
 if (!url && !args.attach) {
@@ -218,12 +278,6 @@ if (!url && !args.attach) {
 }
 
 ;(async function() {
-  const isMobileEmulation = args.deviceName && !args.vg
-
-  if (args.webdriverProxy) {
-    await chromedriver.start(['--whitelisted-ips=127.0.0.1'], true)
-  }
-
   let runBeforeFunc
   if (args.runBefore !== undefined) {
     if (!fs.existsSync(args.runBefore)) {
@@ -235,13 +289,20 @@ if (!url && !args.attach) {
     }
   }
 
-  const [driver, destroyDriver] = await buildDriver({...args, isMobileEmulation})
+  const [driver, destroyDriver] = await spec.build({
+    browser: args.browser,
+    device: args.device,
+    capabilities: args.capabilities,
+    url: args.driverUrl,
+    attach: args.attach,
+    headless: args.headless,
+  })
 
   if (args.attach) {
-    url = await spec.executeScript(driver, 'return window.location.href')
+    url = await spec.getUrl(driver)
   }
 
-  console.log('Running Selenium render for', url)
+  console.log('Running render script for', url)
   console.log(
     'Options:\n ',
     Object.entries(args)
@@ -251,54 +312,27 @@ if (!url && !args.attach) {
   )
 
   const runner = args.vg ? new VisualGridRunner() : new ClassicRunner()
-  const eyes = new Eyes(runner)
-  const configuration = new Configuration({
-    stitchMode: args.css ? StitchMode.CSS : StitchMode.SCROLL,
-  })
-  if (args.viewportSize && !isMobileEmulation) {
-    const [width, height] = args.viewportSize.split('x').map(Number)
-    configuration.setViewportSize({width, height})
-  }
-  if (args.browser) {
-    configuration.addBrowsers(args.browser)
-  }
-  if (args.deviceName) {
-    configuration.addDeviceEmulation(args.deviceName, args.screenOrientation)
-  }
-  if (args.serverUrl) {
-    configuration.setServerUrl(args.serverUrl)
-  }
-  if (args.apiKey) {
-    configuration.setApiKey(args.apiKey)
-  }
-  if (args.proxy) {
-    configuration.setProxy(args.proxy)
-  }
-  if (args.accessibilityValidation) {
-    const [level, version] = args.accessibilityValidation.split(',')
-    configuration.setAccessibilityValidation({level, version})
-  }
-  if (args.matchLevel) {
-    configuration.setMatchLevel(args.matchLevel)
-  }
-  if (args.envName) {
-    configuration.setBaselineEnvName(args.envName) // determines the baseline
-    configuration.setEnvironmentName(args.envName) // shows up in the Environment column in the dasboard
-  }
-  if (args.displayName) {
-    configuration.setDisplayName(args.displayName)
-  }
-  if (args.batchId || args.batchName) {
-    configuration.setBatch({id: args.batchId, name: args.batchName})
-  }
-  if (args.batchId) {
-    configuration.setDontCloseBatches(true)
-  }
-  if (args.stitchOverlap) {
-    configuration.setStitchOverlap(args.stitchOverlap)
-  }
 
-  eyes.setConfiguration(configuration)
+  const eyes = new Eyes(runner)
+  eyes.setConfiguration({
+    apiKey: args.apiKey,
+    serverUrl: args.serverUrl,
+    viewportSize: args.viewportSize,
+    browserInfo:
+      args.renderBrowsers || args.renderEmulations
+        ? [...args.renderBrowsers, ...args.renderEmulations]
+        : undefined,
+    proxy: args.proxy,
+    accessibilityValidation: args.accessibilityValidation,
+    matchLevel: args.matchLevel,
+    stitchMode: args.css ? 'CSS' : 'Scroll',
+    stitchOverlap: args.stitchOverlap,
+    displayName: args.displayName,
+    baselineEnvName: args.envName, // determines the baseline
+    environmentName: args.envName, // shows up in the Environment column in the dashboard
+    batch: args.batchId || args.batchName ? {id: args.batchId, name: args.batchName} : undefined,
+    dontCloseBatches: Boolean(args.batchId),
+  })
 
   const {logger, logFilePath} = initLog(eyes, new URL(url).hostname.replace(/\./g, '-'))
   logger.log('[render script] Running Selenium render for', url)
@@ -324,53 +358,27 @@ if (!url && !args.attach) {
 
     await eyes.open(driver, args.appName, url)
 
-    let target
-
-    if (args.targetElement) {
-      target = Target.region(args.targetElement)
-    } else if (args.targetFrame) {
-      target = Target.frame(args.targetFrame)
-    } else {
-      target = Target.window()
-    }
-    target = target
-      .fully(args.fully)
-      .ignoreDisplacements(args.ignoreDisplacements)
-      .timeout(args.matchTimeout)
-
-    if (args.ignoreRegions) {
-      target.ignoreRegions.apply(
-        target,
-        args.ignoreRegions.split(',').map(s => s.trim()),
-      )
-    }
-
-    if (args.layoutRegions) {
-      target.layoutRegions.apply(
-        target,
-        args.layoutRegions.split(',').map(s => s.trim()),
-      )
-    }
-
-    if (args.hasOwnProperty('layoutBreakpoints')) {
-      target.layoutBreakpoints(args.layoutBreakpoints)
-    }
-
-    if (args.scrollRootElement) {
-      target.scrollRootElement(args.scrollRootElement)
-    }
-
-    logger.log('[render script] awaiting delay...', args.delay * 1000)
-    await new Promise(r => setTimeout(r, args.delay * 1000))
+    logger.log(`[render script] awaiting delay... ${args.delay}s`)
+    await delay(args.delay * 1000)
     logger.log('[render script] awaiting delay... DONE')
-
-    // debugger
 
     if (args.scrollPage) {
       await spec.executeScript(driver, scrollPage)
     }
 
-    await eyes.check(args.tag, target)
+    await eyes.check({
+      name: args.name,
+      region: args.region,
+      frames: args.frames,
+      scrollRootElement: args.scrollRootElement,
+      ignoreRegions: args.ignoreRegions,
+      layoutRegions: args.layoutRegions,
+      layoutBreakpoints: args.layoutBreakpoints,
+      ignoreDisplacements: args.ignoreDisplacements,
+      timeout: args.matchTimeout,
+      isFully: args.fully,
+    })
+
     await eyes.close(false)
     eyes._logger._logHandler.open()
     const testResultsSummary = await runner.getAllTestResults(false)
@@ -385,47 +393,12 @@ if (!url && !args.attach) {
 
     console.log('\nRender results:\n', resultsStr)
   } finally {
-    // if (!args.attach) {
-      await destroyDriver()
-    // }
-    if (args.webdriverProxy) {
-      await chromedriver.stop()
-    }
+    await destroyDriver()
   }
 })().catch(ex => {
   console.log(ex)
   process.exit(1)
 })
-
-function buildDriver({
-  headless,
-  webdriverProxy,
-  driverCapabilities,
-  driverServer,
-  isMobileEmulation,
-  deviceName,
-  attach,
-  envBrowser,
-} = {}) {
-  let env
-  if (!envBrowser) {
-    if (driverCapabilities) {
-      console.log(
-        'Running with capabilities:\n',
-        Object.entries(driverCapabilities)
-          .map(argToString)
-          .join('\n '),
-        '\n',
-      )
-    }
-
-    env = {browser: 'chrome', url: driverServer, capabilities: driverCapabilities, attach, headless}
-  } else {
-    env = {browser: envBrowser, headless}
-  }
-
-  return spec.build(env)
-}
 
 function initLog(eyes, filename) {
   const logFilePath = path.resolve(__dirname, `../logs/${filename}-${formatDate(new Date())}.log`)
@@ -475,40 +448,6 @@ function formatDate(d) {
   return `${d.getFullYear()}-${month}-${date}-${hours}-${minutes}-${seconds}`
 }
 
-function parseBrowser(arg) {
-  const match = /^(chrome|chrome-1|chrome-2|chrome-canary|firefox|firefox-1|firefox-2|ie11|ie10|edge|safari|safari-1|safari-2|ie-vmware|edge-chromium|edge-chromium-1|edge-chromium-2)(\( *(\d+) *(x|,) *(\d+) *\))?$/.exec(
-    arg,
-  )
-
-  if (!match)
-    throw new Error(
-      'invalid syntax. Supports only chrome[-one-version-back/-two-versions-back], firefox[-one-version-back/-two-versions-back], ie11, ie10, edge, safari[-one-version-back/-two-versions-back] as browsers, and the syntax is browser(widthxheight)',
-    )
-
-  return {name: match[1], width: parseInt(match[3], 10), height: parseInt(match[5], 10)}
-}
-
-function parseLayoutBreakpoints(arg) {
-  if (['', 'true'].includes(arg)) return true
-  else if (['false'].includes(arg)) return false
-  else return arg.split(',').map(s => Number.parseInt(s.trim()))
-}
-
-/**
- * "key1:value1,key2:value2,key3:value3" --> {key1: value1, key2: value2, key3: value3}
- */
-function parseCompoundParameter(str) {
-  if (!str) return str
-
-  return str
-    .split(',')
-    .map(keyValue => keyValue.split('=>'))
-    .reduce((acc, [key, value]) => {
-      acc[key] = value // not casting to Number or Boolean since I didn't need it
-      return acc
-    }, {})
-}
-
 function argToString([key, value]) {
   const valueStr = typeof value === 'object' ? JSON.stringify(value) : value
   const shouldShow = !['_', '$0'].includes(key) && key.indexOf('-') === -1 // don't show the entire cli, and show only the camelCase version of each arg
@@ -518,4 +457,12 @@ function argToString([key, value]) {
 function processRunBefore(str) {
   if (str.charAt(0) !== '/') str = `./${str}`
   return path.resolve(cwd, str)
+}
+
+function parseRegionReferences(str) {
+  return utils.parseList(str).map(frame => {
+    const region = utils.parseRegion(frame)
+    if (region) return region
+    return utils.parseSelector(frame)
+  })
 }

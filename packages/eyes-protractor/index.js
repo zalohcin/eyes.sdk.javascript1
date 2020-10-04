@@ -1,6 +1,6 @@
 const core = require('@applitools/eyes-sdk-core')
 
-const {CheckSettings, EyesClassic, EyesVisualGrid, EyesFactory} = require('./src/ProtractorSDK')
+const {CheckSettings, EyesClassic, EyesVisualGrid, EyesFactory} = require('./src/sdk')
 
 exports.Eyes = EyesFactory
 exports.EyesProtractor = EyesClassic

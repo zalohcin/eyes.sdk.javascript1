@@ -1,7 +1,7 @@
 'use strict'
 const path = require('path')
 const cwd = process.cwd()
-const spec = require(path.resolve(cwd, 'src/SpecDriver'))
+const spec = require(path.resolve(cwd, 'src/spec-driver'))
 const {getEyes} = require('../../src/test-setup')
 const {TestCheckScrollableModal} = require('./TestFluentApi_utils')
 

@@ -153,9 +153,12 @@ async function build(env) {
     args,
     headless,
     ignoreDefaultArgs: ['--hide-scrollbars'],
-    proxy: proxy
-      ? {server: proxy.https || proxy.http || proxy.server, bypass: proxy.bypass.join(',')}
-      : null,
+  }
+  if (proxy) {
+    options.proxy = {
+      server: proxy.https || proxy.http || proxy.server,
+      bypass: proxy.bypass.join(','),
+    }
   }
   let driver
   if (url) {
@@ -166,7 +169,6 @@ async function build(env) {
   } else {
     driver = await launcher.launch(options)
   }
-  console.log(attach)
   const context = await driver.newContext(device ? playwright.devices[device] : {})
   const page = await context.newPage()
   return [page, () => driver.close()]

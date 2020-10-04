@@ -1,5 +1,5 @@
 const {TypeUtils} = require('@applitools/eyes-sdk-core')
-const {withLegacyDriverAPI} = require('./LegacyAPI')
+const {withLegacyDriverAPI} = require('./legacy-api')
 
 // #region HELPERS
 
@@ -47,6 +47,15 @@ function isSelector(selector) {
     TypeUtils.isString(selector)
   )
 }
+function transformDriver(driver) {
+  const cmd = require('selenium-webdriver/lib/command')
+
+  cmd.Name.SWITCH_TO_PARENT_FRAME = 'switchToParentFrame'
+  driver
+    .getExecutor()
+    .defineCommand(cmd.Name.SWITCH_TO_PARENT_FRAME, 'POST', '/session/:sessionId/frame/parent')
+  return driver
+}
 function isStaleElementError(error) {
   if (!error) return false
   error = error.originalError || error
@@ -71,7 +80,9 @@ async function mainContext(driver) {
   return driver
 }
 async function parentContext(driver) {
-  await driver.switchTo().parentFrame()
+  const cmd = require('selenium-webdriver/lib/command')
+
+  await driver.schedule(new cmd.Command(cmd.Name.SWITCH_TO_PARENT_FRAME))
   return driver
 }
 async function childContext(driver, element) {
@@ -96,14 +107,37 @@ async function findElements(driver, selector) {
   return driver.findElements(transformSelector(selector))
 }
 async function getElementRect(_driver, element) {
-  return element.getRect()
+  const {x, y} = await element.getLocation()
+  const {width, height} = await element.getSize()
+  return {x, y, width, height}
 }
 async function getWindowRect(driver) {
   try {
-    return driver
-      .manage()
-      .window()
-      .getRect()
+    if (TypeUtils.isFunction(driver.manage().window().getRect)) {
+      return driver
+        .manage()
+        .window()
+        .getRect()
+    } else {
+      const rect = {x: 0, y: 0, width: 0, height: 0}
+      if (TypeUtils.isFunction(driver.manage().window().getPosition)) {
+        const {x, y} = await driver
+          .manage()
+          .window()
+          .getPosition()
+        rect.x = x
+        rect.y = y
+      }
+      if (TypeUtils.isFunction(driver.manage().window().getSize)) {
+        const {width, height} = await driver
+          .manage()
+          .window()
+          .getSize()
+        rect.width = width
+        rect.height = height
+      }
+      return rect
+    }
   } catch (err) {
     // workaround for Appium
     const cmd = require('selenium-webdriver/lib/command')
@@ -114,10 +148,26 @@ async function getWindowRect(driver) {
   }
 }
 async function setWindowRect(driver, rect = {}) {
-  await driver
-    .manage()
-    .window()
-    .setRect(rect)
+  const {x = null, y = null, width = null, height = null} = rect
+  if (TypeUtils.isFunction(driver.manage().window().setRect)) {
+    await driver
+      .manage()
+      .window()
+      .setRect({x, y, width, height})
+  } else {
+    if (x !== null && y !== null) {
+      await driver
+        .manage()
+        .window()
+        .setPosition(x, y)
+    }
+    if (width !== null && height !== null) {
+      await driver
+        .manage()
+        .window()
+        .setSize(width, height)
+    }
+  }
 }
 async function getOrientation(driver) {
   const capabilities = await driver.getCapabilities()
@@ -184,13 +234,13 @@ async function scrollIntoView(driver, element, align = false) {
   await driver.executeScript('arguments[0].scrollIntoView(arguments[1])', element, align)
 }
 async function hover(driver, element, {x, y} = {}) {
+  const {ActionSequence} = require('selenium-webdriver')
+
   if (isSelector(element)) {
     element = await findElement(driver, element)
   }
-  await driver
-    .actions()
-    .move({origin: element, x, y})
-    .perform()
+  const action = new ActionSequence(driver)
+  await action.mouseMove(element, {x, y}).perform()
 }
 
 // #endregion
@@ -204,7 +254,6 @@ const browserOptionsNames = {
 async function build(env) {
   const {Builder} = require('selenium-webdriver')
   const {testSetup} = require('@applitools/sdk-shared')
-
   const {
     browser = '',
     capabilities,
@@ -214,7 +263,7 @@ async function build(env) {
     configurable = true,
     args = [],
     headless,
-  } = testSetup.Env(env)
+  } = testSetup.Env({legacy: true, ...env})
   const desiredCapabilities = {browserName: browser, ...capabilities}
   if (configurable) {
     const browserOptionsName = browserOptionsNames[browser]
@@ -222,6 +271,9 @@ async function build(env) {
       desiredCapabilities[browserOptionsName] = {
         args: headless ? args.concat('headless') : args,
         debuggerAddress: attach === true ? 'localhost:9222' : attach,
+      }
+      if (browser !== 'firefox') {
+        desiredCapabilities[browserOptionsName].w3c = false
       }
     }
   }
@@ -253,6 +305,7 @@ function wrapDriver(browser) {
 exports.isDriver = isDriver
 exports.isElement = isElement
 exports.isSelector = isSelector
+exports.transformDriver = transformDriver
 exports.isEqualElements = isEqualElements
 exports.isStaleElementError = isStaleElementError
 

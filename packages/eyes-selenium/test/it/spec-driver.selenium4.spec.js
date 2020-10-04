@@ -1,5 +1,5 @@
 const assert = require('assert')
-const spec = require('../../src/SpecDriver')
+const spec = require('../../src/spec-driver')
 const {By} = require('selenium-webdriver')
 
 before(function() {
@@ -8,7 +8,7 @@ before(function() {
   }
 })
 
-describe('SpecDriver @selenium4', async () => {
+describe('spec driver @selenium4', async () => {
   let driver, destroyDriver
   const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
 
@@ -103,7 +103,7 @@ describe('SpecDriver @selenium4', async () => {
 
   describe('legacy driver (@webdriver)', async () => {
     before(async () => {
-      ;[driver, destroyDriver] = await spec.build({browser: 'ie-11'})
+      ;[driver, destroyDriver] = await spec.build({browser: 'ie-11', legacy: true})
     })
 
     after(async () => {
@@ -132,7 +132,7 @@ describe('SpecDriver @selenium4', async () => {
         expected: {x: 11, y: 12, width: 551, height: 552},
       }),
     )
-    it('getPlatformName()', getPlatformName({expected: 'windows'}))
+    it('getPlatformName()', getPlatformName({expected: 'WINDOWS'}))
   })
 
   describe('mobile driver (@mobile)', async () => {

@@ -10,7 +10,7 @@ const {
 const ncp = require('ncp')
 const {promisify} = require('util')
 const pncp = promisify(ncp)
-const spec = require('../../../src/SpecDriver')
+const spec = require('../../../src/spec-driver')
 
 describe('JS Coverage tests', () => {
   it('works in a project with duplicate protractor', async () => {

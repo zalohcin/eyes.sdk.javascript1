@@ -1,5 +1,3 @@
-const {By} = require('selenium-webdriver')
-
 function withLegacyDriverAPI(driver) {
   const api = {
     get remoteWebDriver() {
@@ -9,52 +7,52 @@ function withLegacyDriverAPI(driver) {
       return driver
     },
     async findElementById(id) {
-      return driver.findElement(By.id(id))
+      return driver.findElement({id})
     },
     async findElementsById(id) {
-      return driver.findElements(By.id(id))
+      return driver.findElements({id})
     },
     async findElementByName(name) {
-      return driver.findElement(By.name(name))
+      return driver.findElement({name})
     },
     async findElementsByName(name) {
-      return driver.findElements(By.name(name))
+      return driver.findElements({name})
     },
-    async findElementByCssSelector(cssSelector) {
-      return driver.findElement(By.cssSelector(cssSelector))
+    async findElementByCssSelector(css) {
+      return driver.findElement({css})
     },
-    async findElementsByCssSelector(cssSelector) {
-      return driver.findElements(By.cssSelector(cssSelector))
+    async findElementsByCssSelector(css) {
+      return driver.findElements({css})
     },
     async findElementByClassName(className) {
-      throw driver.findElement(By.className(className))
+      throw driver.findElement({className})
     },
     async findElementsByClassName(className) {
-      throw driver.findElements(By.className(className))
+      throw driver.findElements({className})
     },
     async findElementByLinkText(linkText) {
-      throw driver.findElement(By.linkText(linkText))
+      throw driver.findElement({linkText})
     },
     async findElementsByLinkText(linkText) {
-      throw driver.findElements(By.linkText(linkText))
+      throw driver.findElements({linkText})
     },
     async findElementByPartialLinkText(partialLinkText) {
-      throw driver.findElement(By.partialLinkText(partialLinkText))
+      throw driver.findElement({partialLinkText})
     },
     async findElementsByPartialLinkText(partialLinkText) {
-      throw driver.findElements(By.partialLinkText(partialLinkText))
+      throw driver.findElements({partialLinkText})
     },
     async findElementByTagName(tagName) {
-      return driver.findElement(By.tagName(tagName))
+      return driver.findElement({tagName})
     },
     async findElementsByTagName(tagName) {
-      return driver.findElements(By.tagName(tagName))
+      return driver.findElements({tagName})
     },
     async findElementByXPath(xpath) {
-      return driver.findElement(By.xpath(xpath))
+      return driver.findElement({xpath})
     },
     async findElementsByXPath(xpath) {
-      return driver.findElements(By.xpath(xpath))
+      return driver.findElements({xpath})
     },
     async getBrowserName() {
       const capabilities = await driver.getCapabilities()
