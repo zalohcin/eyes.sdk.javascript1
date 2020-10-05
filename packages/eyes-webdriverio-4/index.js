@@ -1,6 +1,6 @@
 const core = require('@applitools/eyes-sdk-core')
-const {EyesClassic, EyesVisualGrid, EyesFactory, CheckSettings} = require('./src/WDIOSDK')
-const {LegacySelector} = require('./src/LegacyAPI')
+const {EyesClassic, EyesVisualGrid, EyesFactory, CheckSettings} = require('./src/sdk')
+const {LegacySelector} = require('./src/legacy-api')
 
 exports.Eyes = EyesFactory
 exports.EyesWDIO = EyesClassic

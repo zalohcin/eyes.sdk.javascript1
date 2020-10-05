@@ -21,6 +21,14 @@ function processResults({results = [], totalTime, concurrency}) {
   );
   errors = flatten(errors).filter(({err}) => err.constructor.name === 'Error');
 
+  const hasResults = unresolved.length || passedOrNew.length;
+  const seeDetailsStr =
+    hasResults && `See details at ${(passedOrNew[0] || unresolved[0]).getAppUrls().getBatch()}`;
+
+  if (hasResults) {
+    outputStr += `${seeDetailsStr}\n\n`;
+  }
+
   outputStr += '[EYES: TEST RESULTS]:\n\n';
   if (passedOrNew.length > 0) {
     outputStr += testResultsOutput(passedOrNew);
@@ -38,7 +46,6 @@ function processResults({results = [], totalTime, concurrency}) {
     outputStr += '\n';
   }
 
-  const hasResults = unresolved.length || passedOrNew.length;
   if (!errors.length && !hasResults) {
     outputStr += 'Test is finished but no results returned.\n';
   }
@@ -68,9 +75,7 @@ function processResults({results = [], totalTime, concurrency}) {
   }
 
   if (hasResults) {
-    outputStr += `\nSee details at ${(passedOrNew[0] || unresolved[0])
-      .getAppUrls()
-      .getBatch()}\nTotal time: ${Math.round(totalTime / 1000)} seconds\n`;
+    outputStr += `\n${seeDetailsStr}\nTotal time: ${Math.round(totalTime / 1000)} seconds\n`;
   }
 
   if (concurrency == 10) {

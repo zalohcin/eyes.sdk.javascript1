@@ -3,7 +3,7 @@
 require('chromedriver')
 const {expect} = require('chai')
 const {By} = require('selenium-webdriver')
-const spec = require('../../src/SpecDriver')
+const spec = require('../../src/spec-driver')
 const {
   Eyes,
   VisualGridRunner,

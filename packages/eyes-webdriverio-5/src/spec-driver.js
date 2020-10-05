@@ -1,5 +1,5 @@
 const {TypeUtils} = require('@applitools/eyes-sdk-core')
-const {LegacySelector, withLegacyDriverAPI} = require('./LegacyAPI')
+const {LegacySelector, withLegacyDriverAPI} = require('./legacy-api')
 
 // #region HELPERS
 
@@ -214,14 +214,18 @@ const browserOptionsNames = {
 }
 async function build(env) {
   const webdriverio = require('webdriverio')
+  const chromedriver = require('chromedriver')
   const {testSetup} = require('@applitools/sdk-shared')
   const {
+    protocol = 'wd',
     browser = '',
     capabilities,
-    headless,
     url,
-    protocol,
+    attach,
+    proxy,
+    configurable = true,
     args = [],
+    headless,
     logLevel = 'silent',
   } = testSetup.Env(env)
 
@@ -229,25 +233,46 @@ async function build(env) {
     capabilities: {browserName: browser, ...capabilities},
     logLevel,
   }
-  const browserOptionsName = browserOptionsNames[browser]
-  if (protocol === 'cdp') {
+  if (browser === 'chrome' && protocol === 'cdp') {
     options.automationProtocol = 'devtools'
-    if (browserOptionsName) {
-      options.capabilities[browserOptionsName] = {headless, args}
-    }
+    options.capabilities[browserOptionsNames.chrome] = {headless, args}
   } else if (protocol === 'wd') {
+    options.automationProtocol = 'webdriver'
     options.protocol = url.protocol ? url.protocol.replace(/:$/, '') : undefined
     options.hostname = url.hostname
-    options.port = Number(url.port)
+    if (url.port) options.port = Number(url.port)
+    else if (options.protocol === 'http') options.port = 80
+    else if (options.protocol === 'https') options.port = 443
     options.path = url.pathname
-    if (browserOptionsName) {
-      options.capabilities[browserOptionsName] = {
-        args: headless ? args.concat('headless') : args,
+    if (configurable) {
+      if (browser === 'chrome' && attach) {
+        await chromedriver.start(['--port=9515'], true)
+        options.protocol = 'http'
+        options.hostname = 'localhost'
+        options.port = 9515
+        options.path = '/'
+      }
+      const browserOptionsName = browserOptionsNames[browser]
+      if (browserOptionsName) {
+        options.capabilities[browserOptionsName] = {
+          args: headless ? args.concat('headless') : args,
+          w3c: !attach,
+          debuggerAddress: attach === true ? 'localhost:9222' : attach,
+        }
       }
     }
   }
+  if (proxy) {
+    options.capabilities.proxy = {
+      proxyType: 'manual',
+      httpProxy: proxy.http || proxy.server,
+      sslProxy: proxy.https || proxy.server,
+      ftpProxy: proxy.ftp,
+      noProxy: proxy.bypass.join(','),
+    }
+  }
   const driver = await webdriverio.remote(options)
-  return [driver, () => driver.deleteSession()]
+  return [driver, () => driver.deleteSession().then(() => chromedriver.stop())]
 }
 
 // #endregion

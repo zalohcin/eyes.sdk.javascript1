@@ -1,7 +1,14 @@
 const assert = require('assert')
-const spec = require('../../src/SpecDriver')
+const spec = require('../../src/spec-driver')
+const {By} = require('selenium-webdriver')
 
-describe('SpecDriver', async () => {
+before(function() {
+  if (process.env.APPLITOOLS_SELENIUM_MAJOR_VERSION !== '3') {
+    this.skip()
+  }
+})
+
+describe('spec driver @selenium3', async () => {
   let driver, destroyDriver
   const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
 
@@ -20,22 +27,18 @@ describe('SpecDriver', async () => {
     it('isDriver(wrong)', isDriver({input: {}, expected: false}))
     it(
       'isElement(element)',
-      isElement({input: () => driver.findElement({css: 'div'}), expected: true}),
-    )
-    it(
-      'isElement(element-finder)',
-      isElement({input: () => driver.element({css: 'div'}), expected: true}),
+      isElement({input: () => driver.findElement(By.css('div')), expected: true}),
     )
     it('isElement(wrong)', isElement({input: () => ({}), expected: false}))
     it('isSelector(string)', isSelector({input: 'div', expected: true}))
-    it('isSelector(by)', isSelector({input: {xpath: '//div'}, expected: true}))
+    it('isSelector(by)', isSelector({input: By.xpath('//div'), expected: true}))
     it('isSelector(wrong)', isSelector({input: {}, expected: false}))
     it(
       'isEqualElements(element, element)',
       isEqualElements({
         input: () =>
           driver
-            .findElement({css: 'div'})
+            .findElement(By.css('div'))
             .then(element => ({element1: element, element2: element})),
         expected: true,
       }),
@@ -44,15 +47,15 @@ describe('SpecDriver', async () => {
       'isEqualElements(element1, element2)',
       isEqualElements({
         input: async () => ({
-          element1: await driver.findElement({css: 'div'}),
-          element2: await driver.findElement({css: 'h1'}),
+          element1: await driver.findElement(By.css('div')),
+          element2: await driver.findElement(By.css('h1')),
         }),
         expected: false,
       }),
     )
     it('executeScript(strings, ...args)', executeScript())
-    it('findElement(by-hash)', findElement({input: {css: '#overflowing-div'}}))
-    it('findElements(by-hash)', findElements({input: {css: 'div'}}))
+    it('findElement(string)', findElement({input: By.css('#overflowing-div')}))
+    it('findElements(string)', findElements({input: By.css('div')}))
     it('findElement(non-existent)', findElement({input: 'non-existent', expected: null}))
     it('findElements(non-existent)', findElements({input: 'non-existent', expected: []}))
     it('mainContext()', mainContext())
@@ -63,23 +66,7 @@ describe('SpecDriver', async () => {
     it('getUrl()', getUrl())
     it('visit()', visit())
     it('isMobile()', isMobile({expected: false}))
-    it('getPlatformName()', getPlatformName({expected: 'linux'}))
-  })
-
-  describe('headless desktop (@angular)', async () => {
-    before(async () => {
-      ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
-      driver = spec.transformDriver(driver)
-      await driver.get('https://applitools.github.io/demo/TestPages/AngularPage/')
-      await driver.waitForAngular()
-    })
-
-    after(async () => {
-      await destroyDriver()
-    })
-
-    it('findElement(by-ng)', findElement({input: () => driver.by.model('name')}))
-    it('findElements(by-ng)', findElements({input: () => driver.by.model('name')}))
+    it('getPlatformName()', getPlatformName({expected: 'Linux'}))
   })
 
   describe('onscreen desktop (@webdriver)', async () => {
@@ -124,12 +111,13 @@ describe('SpecDriver', async () => {
       await destroyDriver()
     })
 
-    it('getWindowRect()', getWindowRect())
+    it('getWindowRect()', getWindowRect({legacy: true}))
     it(
       'setWindowRect({x, y, width, height})',
       setWindowRect({
         input: {x: 0, y: 0, width: 510, height: 511},
         expected: {x: 0, y: 0, width: 510, height: 511},
+        legacy: true,
       }),
     )
     it(
@@ -137,6 +125,7 @@ describe('SpecDriver', async () => {
       setWindowRect({
         input: {x: 11, y: 12},
         expected: {x: 11, y: 12, width: 510, height: 511},
+        legacy: true,
       }),
     )
     it(
@@ -144,6 +133,7 @@ describe('SpecDriver', async () => {
       setWindowRect({
         input: {width: 551, height: 552},
         expected: {x: 11, y: 12, width: 551, height: 552},
+        legacy: true,
       }),
     )
     it('getPlatformName()', getPlatformName({expected: 'WINDOWS'}))
@@ -203,13 +193,13 @@ describe('SpecDriver', async () => {
   function mainContext() {
     return async () => {
       try {
-        const mainDocument = await driver.findElement({css: 'html'})
-        await driver.switchTo().frame(await driver.findElement({css: '[name="frame1"]'}))
-        await driver.switchTo().frame(await driver.findElement({css: '[name="frame1-1"]'}))
-        const frameDocument = await driver.findElement({css: 'html'})
+        const mainDocument = await driver.findElement(By.css('html'))
+        await driver.switchTo().frame(await driver.findElement(By.css('[name="frame1"]')))
+        await driver.switchTo().frame(await driver.findElement(By.css('[name="frame1-1"]')))
+        const frameDocument = await driver.findElement(By.css('html'))
         assert.ok(!(await spec.isEqualElements(driver, mainDocument, frameDocument)))
         await spec.mainContext(driver)
-        const resultDocument = await driver.findElement({css: 'html'})
+        const resultDocument = await driver.findElement(By.css('html'))
         assert.ok(await spec.isEqualElements(driver, resultDocument, mainDocument))
       } finally {
         await driver
@@ -222,13 +212,13 @@ describe('SpecDriver', async () => {
   function parentContext() {
     return async () => {
       try {
-        await driver.switchTo().frame(await driver.findElement({css: '[name="frame1"]'}))
-        const parentDocument = await driver.findElement({css: 'html'})
-        await driver.switchTo().frame(await driver.findElement({css: '[name="frame1-1"]'}))
-        const frameDocument = await driver.findElement({css: 'html'})
+        await driver.switchTo().frame(await driver.findElement(By.css('[name="frame1"]')))
+        const parentDocument = await driver.findElement(By.css('html'))
+        await driver.switchTo().frame(await driver.findElement(By.css('[name="frame1-1"]')))
+        const frameDocument = await driver.findElement(By.css('html'))
         assert.ok(!(await spec.isEqualElements(driver, parentDocument, frameDocument)))
         await spec.parentContext(driver)
-        const resultDocument = await driver.findElement({css: 'html'})
+        const resultDocument = await driver.findElement(By.css('html'))
         assert.ok(await spec.isEqualElements(driver, resultDocument, parentDocument))
       } finally {
         await driver
@@ -241,12 +231,12 @@ describe('SpecDriver', async () => {
   function childContext() {
     return async () => {
       try {
-        const element = await driver.findElement({css: '[name="frame1"]'})
+        const element = await driver.findElement(By.css('[name="frame1"]'))
         await driver.switchTo().frame(element)
-        const expectedDocument = await driver.findElement({css: 'html'})
+        const expectedDocument = await driver.findElement(By.css('html'))
         await driver.switchTo().frame(null)
         await spec.childContext(driver, element)
-        const resultDocument = await driver.findElement({css: 'html'})
+        const resultDocument = await driver.findElement(By.css('html'))
         assert.ok(await spec.isEqualElements(driver, resultDocument, expectedDocument))
       } finally {
         await driver
@@ -258,7 +248,6 @@ describe('SpecDriver', async () => {
   }
   function findElement({input, expected} = {}) {
     return async () => {
-      input = typeof input === 'function' ? input() : input
       const result = expected !== undefined ? expected : await driver.findElement(input)
       const element = await spec.findElement(driver, input)
       if (element !== result) {
@@ -268,7 +257,6 @@ describe('SpecDriver', async () => {
   }
   function findElements({input, expected} = {}) {
     return async () => {
-      input = typeof input === 'function' ? input() : input
       const result = expected !== undefined ? expected : await driver.findElements(input)
       const elements = await spec.findElements(driver, input)
       assert.strictEqual(elements.length, result.length)
@@ -279,15 +267,23 @@ describe('SpecDriver', async () => {
   }
   function getWindowRect() {
     return async () => {
-      const {x, y} = await driver
-        .manage()
-        .window()
-        .getPosition()
-      const {width, height} = await driver
-        .manage()
-        .window()
-        .getSize()
-      const rect = {x, y, width, height}
+      let rect
+      if (driver.manage().window().getRect) {
+        rect = await driver
+          .manage()
+          .window()
+          .getRect()
+      } else {
+        const {x, y} = await driver
+          .manage()
+          .window()
+          .getPosition()
+        const {width, height} = await driver
+          .manage()
+          .window()
+          .getSize()
+        rect = {x, y, width, height}
+      }
       const result = await spec.getWindowRect(driver)
       assert.deepStrictEqual(result, rect)
     }
@@ -295,15 +291,23 @@ describe('SpecDriver', async () => {
   function setWindowRect({input, expected} = {}) {
     return async () => {
       await spec.setWindowRect(driver, input)
-      const {x, y} = await driver
-        .manage()
-        .window()
-        .getPosition()
-      const {width, height} = await driver
-        .manage()
-        .window()
-        .getSize()
-      const rect = {x, y, width, height}
+      let rect
+      if (driver.manage().window().getRect) {
+        rect = await driver
+          .manage()
+          .window()
+          .getRect()
+      } else {
+        const {x, y} = await driver
+          .manage()
+          .window()
+          .getPosition()
+        const {width, height} = await driver
+          .manage()
+          .window()
+          .getSize()
+        rect = {x, y, width, height}
+      }
       assert.deepStrictEqual(rect, expected)
     }
   }

@@ -2,7 +2,7 @@
 const cwd = process.cwd()
 const path = require('path')
 const {getEyes, batch} = require('../../src/test-setup')
-const spec = require(path.resolve(cwd, 'src/SpecDriver'))
+const spec = require(path.resolve(cwd, 'src/spec-driver'))
 const {
   ScreenOrientation,
   IosDeviceName,
