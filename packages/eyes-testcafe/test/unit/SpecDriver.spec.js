@@ -39,6 +39,19 @@ return args`.trim()
         ]),
         expected,
       )
+      // 3 levels (v2) -- e.g., markElements snippet
+      const input = [
+        [
+          [Selector('a'), Selector('b')],
+          ['aaaaa', 'bbbbb'],
+        ],
+      ]
+      expected = `
+    let args = [...arguments]
+args[0][0][0] = args[0][0][0]()
+args[0][0][1] = args[0][0][1]()
+return args`.trim()
+      assert.deepStrictEqual(spec.prepareArgsFunctionString(input), expected)
     })
   })
 })

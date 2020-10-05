@@ -50,13 +50,12 @@ function isTestCafeSelector(selector) {
   return !!(selector && selector.addCustomMethods && selector.find && selector.parent)
 }
 function prepareArrayArgsString(arg, indexPath) {
-  let updatedIndexPath = [...indexPath]
   let result = ''
   arg.forEach((argValue, innerIndex) => {
-    updatedIndexPath.push(innerIndex)
-    if (Array.isArray(argValue)) result += prepareArrayArgsString(argValue, updatedIndexPath)
+    const currentPath = [...indexPath, innerIndex]
+    if (Array.isArray(argValue)) result += prepareArrayArgsString(argValue, currentPath)
     if (isTestCafeSelector(argValue)) {
-      const indicesString = updatedIndexPath.map(i => `[${i}]`).join('')
+      const indicesString = currentPath.map(i => `[${i}]`).join('')
       result += `args${indicesString} = args${indicesString}()\n`
     }
   })
