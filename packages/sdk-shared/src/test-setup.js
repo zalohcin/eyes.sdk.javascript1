@@ -56,6 +56,26 @@ const DEVICES = {
       ...SAUCE_CREDENTIALS,
     },
   },
+  'iPhone 5S': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
+    capabilities: {
+      deviceName: 'iPhone 5s Simulator',
+      platformVersion: '12.4',
+      platformName: 'iOS',
+      ...SAUCE_CREDENTIALS,
+    },
+  },
+  'iPhone 11 Pro': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
+    capabilities: {
+      deviceName: 'iPhone 11 Pro Simulator',
+      platformVersion: '13.4',
+      platformName: 'iOS',
+      ...SAUCE_CREDENTIALS,
+    },
+  },
   'iPhone XS': {
     type: 'sauce',
     url: SAUCE_SERVER_URL,
@@ -64,6 +84,30 @@ const DEVICES = {
       platformVersion: '13.0',
       deviceName: 'iPhone XS Simulator',
       ...SAUCE_CREDENTIALS,
+    },
+  },
+  'iPad Air': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
+    capabilities: {
+      deviceName: 'iPad Air Simulator',
+      platformVersion: '12.4',
+      platformName: 'iOS',
+      ...SAUCE_CREDENTIALS,
+    },
+  },
+  'perfecto': {
+    url: 'https://testingcloud.perfectomobile.com/nexperience/perfectomobile/wd/hub',
+    capabilities: {
+      'platformName': 'iOS',
+      'platformVersion': '12.2',
+      'location': 'NA-US-BOS',
+      'resolution': '1242x2688',
+      'manufacturer': 'Apple',
+      'model': 'iPhone-XS Max',
+      orientation: 'LANDSCAPE',
+      'waitForAvailableLicense': true,
+      securityToken: 'eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJmZjE2YTM1ZS05ZDg3LTRkMjYtOTEyYS0xZmY0MzgwM2RjNjEifQ.eyJqdGkiOiIxNjI4ZDg5Yi0yMTBlLTRkNTItYWQyMy1mOTZkNzg3ZGI4ZDgiLCJleHAiOjAsIm5iZiI6MCwiaWF0IjoxNjAwODU0NjYzLCJpc3MiOiJodHRwczovL2F1dGgyLnBlcmZlY3RvbW9iaWxlLmNvbS9hdXRoL3JlYWxtcy90ZXN0aW5nY2xvdWQtcGVyZmVjdG9tb2JpbGUtY29tIiwiYXVkIjoiaHR0cHM6Ly9hdXRoMi5wZXJmZWN0b21vYmlsZS5jb20vYXV0aC9yZWFsbXMvdGVzdGluZ2Nsb3VkLXBlcmZlY3RvbW9iaWxlLWNvbSIsInN1YiI6IjQ4OWE1YzhjLTQ0MWQtNGM2NC05ZTU5LTE4YmFlOTY0MDM4NiIsInR5cCI6Ik9mZmxpbmUiLCJhenAiOiJvZmZsaW5lLXRva2VuLWdlbmVyYXRvciIsIm5vbmNlIjoiMzlmZWVlMDktMTQwMi00NDAzLWFmNmEtYWQzN2RmYzk4ODE5IiwiYXV0aF90aW1lIjowLCJzZXNzaW9uX3N0YXRlIjoiZDFjZDkxNDAtYjFhNC00YjI0LWI5ZmYtMTIxZGFkNmJiZDQ3IiwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBvZmZsaW5lX2FjY2VzcyBwcm9maWxlIGVtYWlsIn0.NJvVw77rBObnm9KGRfmM4zy5zOfCPWPpWoPqicLatOg'
     },
   },
 }
@@ -166,14 +210,16 @@ function Env(
         (legacy ? preset.capabilities.legacy : preset.capabilities.w3c) || preset.capabilities,
       )
       env.configurable = preset.type !== 'sauce'
-      if (preset.options) {
-        if (preset.type === 'sauce') {
-          if (legacy) Object.assign(env.capabilities, preset.options)
-          else env.capabilities['sauce:options'] = {...preset.options}
+      if (preset.type === 'sauce') {
+        if (legacy || env.device) {
+          env.options = env.capabilities = {...env.capabilities, ...preset.options}
         } else {
-          env.options = preset.options
+          env.options = env.capabilities['sauce:options'] = {...preset.options}
         }
+      } else {
+        env.options = preset.options || {}
       }
+      env.options.deviceOrientation = env.orientation
     }
   } else if (protocol === 'cdp') {
     url = url || process.env.CVG_TESTS_CDP_REMOTE

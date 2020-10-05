@@ -7,19 +7,20 @@ function addPageMarker() {
   document.body.append(marker)
   marker.setAttribute('data-applitools-marker', '')
 
-  marker.style.position = 'fixed'
-  marker.style.top = '0'
-  marker.style.left = '0'
-  marker.style.width = '3px'
-  marker.style.height = '9px'
-  marker.style.border = '1px solid rgb(127,127,127)'
-  marker.style.background = 'rgb(0,0,0)'
-  marker.style.zIndex = '999999999'
+  marker.style.setProperty('position', 'fixed', 'important')
+  marker.style.setProperty('top', '0', 'important')
+  marker.style.setProperty('left', '0', 'important')
+  marker.style.setProperty('width', '3px', 'important')
+  marker.style.setProperty('height', '9px', 'important')
+  marker.style.setProperty('box-sizing', 'content-box', 'important')
+  marker.style.setProperty('border', '1px solid rgb(127,127,127)', 'important')
+  marker.style.setProperty('background', 'rgb(0,0,0)', 'important')
+  marker.style.setProperty('z-index', '999999999', 'important')
 
-  contrast.style.width = '3px'
-  contrast.style.height = '3px'
-  contrast.style.margin = '3px 0'
-  contrast.style.background = 'rgb(255,255,255)'
+  contrast.style.setProperty('width', '3px', 'important')
+  contrast.style.setProperty('height', '3px', 'important')
+  contrast.style.setProperty('margin', '3px 0', 'important')
+  contrast.style.setProperty('background', 'rgb(255,255,255)', 'important')
 
   const transform = {value: 'none', important: true}
   const html = setElementStyleProperties([

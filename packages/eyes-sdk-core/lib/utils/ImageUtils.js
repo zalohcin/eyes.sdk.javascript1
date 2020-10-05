@@ -441,7 +441,7 @@ function getImageSizeFromBuffer(imageBuffer) {
   throw new TypeError('Buffer contains unsupported image type.')
 }
 
-function _pixelColorAt(image, index, threshold = 0) {
+function pixelColorAt(image, index, threshold = 0) {
   const r = image.data[index * 4]
   const g = image.data[index * 4 + 1]
   const b = image.data[index * 4 + 2]
@@ -455,7 +455,7 @@ function _pixelColorAt(image, index, threshold = 0) {
   else return -1
 }
 
-function _isMarkerStart(image, index, marker) {
+function isMarkerStart(image, index, marker) {
   const roundNumber = marker.size - Math.floor(marker.size / 2)
   for (const [chunkIndex, chunkColor] of marker.mask.entries()) {
     const pixelOffset = index + image.width * marker.size * chunkIndex
@@ -476,7 +476,7 @@ function _isMarkerStart(image, index, marker) {
           pixelIndex += (step % sideLength) * image.width
         }
 
-        const pixelColor = _pixelColorAt(image, pixelIndex, threshold)
+        const pixelColor = pixelColorAt(image, pixelIndex, threshold)
         if (pixelColor !== chunkColor) {
           return false
         }
@@ -488,7 +488,7 @@ function _isMarkerStart(image, index, marker) {
 
 function findMarkerPosition(image, marker) {
   for (let pixelIndex = 0; pixelIndex < image.width * image.height; ++pixelIndex) {
-    if (_isMarkerStart(image, pixelIndex, marker)) {
+    if (isMarkerStart(image, pixelIndex, marker)) {
       return {
         x: (pixelIndex % image.width) - marker.offset,
         y: Math.floor(pixelIndex / image.width) - marker.offset,
