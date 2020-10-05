@@ -213,6 +213,7 @@ async function executeScript(driver, script, ...args) {
     }
   } catch (error) {
     debugger
+    throw error
   }
 }
 async function mainContext(driver) {
@@ -344,6 +345,9 @@ async function setWindowRect(driver, {x, y, width, height} = {}) {
 async function getDriverInfo(_driver) {
   return {}
 }
+async function hover(driver, selector) {
+  await driver.hover(selector)
+}
 
 exports.getDriverInfo = getDriverInfo
 exports.isDriver = isDriver
@@ -366,6 +370,7 @@ exports.type = type
 exports.waitUntilDisplayed = waitUntilDisplayed
 exports.getWindowRect = getWindowRect
 exports.setWindowRect = setWindowRect
+exports.hover = hover
 // no-op for coverage-tests
 exports.build = () => {
   return [undefined, () => {}]
