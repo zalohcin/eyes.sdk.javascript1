@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- add warnings when `setViewportSize` fails during taking dom snapshot with layout breakpoints
 
 ## 12.2.9 - 2020/9/28
 
