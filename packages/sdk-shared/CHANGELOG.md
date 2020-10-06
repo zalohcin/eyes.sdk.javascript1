@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- replace `SpecDriver` with `spec-driver`
 
 ## 0.1.4 - 2020/10/1
 
