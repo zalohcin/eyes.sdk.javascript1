@@ -25,7 +25,6 @@ const DEVICES = {
       deviceName: 'Android Emulator',
       platformName: 'Android',
       platformVersion: '6.0',
-      deviceOrientation: 'landscape',
       clearSystemFiles: true,
       noReset: true,
       ...SAUCE_CREDENTIALS,
