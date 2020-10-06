@@ -273,8 +273,6 @@ async function visit(driver, url) {
   await driver.navigateTo(url)
 }
 async function takeScreenshot(driver, opts = {}) {
-  //if (driver.browser.name === 'Safari')
-  //  process.env.APPLITOOLS_SCREENSHOT_CAPTURED_WITH_MARKER = true
   // NOTE:
   // Since we are constrained to saving screenshots to disk, we place each screenshot in its own
   // dot-folder which has a GUID prefix (e.g., .applitools-guide/screenshot.png).
