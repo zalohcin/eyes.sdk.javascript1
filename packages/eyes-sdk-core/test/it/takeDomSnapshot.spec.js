@@ -19,18 +19,18 @@ describe('takeDomSnapshot', () => {
     driver.mockScript('dom-snapshot', function() {
       return JSON.stringify({status: 'ERROR', error: 'some error'})
     })
-    const [error] = await presult(takeDomSnapshot({driver: eyesDriver, logger}))
+    const [error] = await presult(takeDomSnapshot(logger, eyesDriver))
     expect(error).not.to.be.undefined
-    expect(error.message).to.equal('Unable to process dom snapshot: some error')
+    expect(error.message).to.equal("Error during execute poll script: 'some error'")
   })
 
   it('should throw an error if timeout is reached', async () => {
     driver.mockScript('dom-snapshot', function() {
       return JSON.stringify({status: 'WIP'})
     })
-    const [error] = await presult(takeDomSnapshot({driver: eyesDriver, logger, startTime: 0})) // failing because startTime is the beginning of time
+    const [error] = await presult(takeDomSnapshot(logger, eyesDriver, {executionTimeout: 0}))
     expect(error).not.to.be.undefined
-    expect(error.message).to.equal('Timeout is reached.')
+    expect(error.message).to.equal('Poll script execution is timed out')
   })
 
   it('should take a dom snapshot', async () => {
@@ -42,7 +42,7 @@ describe('takeDomSnapshot', () => {
         frames: [],
       })
     })
-    const actualSnapshot = await takeDomSnapshot({driver: eyesDriver, logger})
+    const actualSnapshot = await takeDomSnapshot(logger, eyesDriver)
     expect(actualSnapshot).to.eql({
       cdt: 'cdt',
       frames: [],
@@ -66,7 +66,7 @@ describe('takeDomSnapshot', () => {
         frame: true,
       },
     ])
-    const snapshot = await takeDomSnapshot({driver: eyesDriver, logger})
+    const snapshot = await takeDomSnapshot(logger, eyesDriver)
     expect(snapshot).to.eql({
       cdt: [],
       resourceContents: {},
@@ -117,7 +117,7 @@ describe('takeDomSnapshot', () => {
       }
     })
 
-    const snapshot = await takeDomSnapshot({driver: eyesDriver, logger})
+    const snapshot = await takeDomSnapshot(logger, eyesDriver)
     expect(snapshot).to.eql({
       cdt: 'top page',
       frames: [
@@ -181,7 +181,7 @@ describe('takeDomSnapshot', () => {
       }
     })
 
-    const snapshot = await takeDomSnapshot({driver: eyesDriver, logger})
+    const snapshot = await takeDomSnapshot(logger, eyesDriver)
     expect(snapshot).to.eql({
       cdt: 'top page',
       frames: [
@@ -223,7 +223,7 @@ describe('takeDomSnapshot', () => {
       })
     })
 
-    const snapshot = await takeDomSnapshot({driver: eyesDriver, logger})
+    const snapshot = await takeDomSnapshot(logger, eyesDriver)
     expect(snapshot.frames).to.deep.equal([])
   })
 
@@ -254,7 +254,7 @@ describe('takeDomSnapshot', () => {
       }
     })
 
-    const snapshot = await takeDomSnapshot({driver: eyesDriver, logger})
+    const snapshot = await takeDomSnapshot(logger, eyesDriver)
     expect(snapshot.frames).to.deep.equal([
       {
         cdt: 'inner parent frame',

@@ -17,9 +17,6 @@ function createFramesPaths({snapshot, path = [], logger}) {
     paths.map(({path}) => path.join('-->')).join(' , '),
   )
 
-  delete snapshot.selector
-  delete snapshot.crossFramesSelectors
-
   return paths
 }
 

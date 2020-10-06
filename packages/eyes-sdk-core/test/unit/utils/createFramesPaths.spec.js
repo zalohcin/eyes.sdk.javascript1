@@ -22,42 +22,33 @@ describe('createFramesPaths', () => {
     const result = createFramesPaths({snapshot, logger})
     assert.deepStrictEqual(result, [
       {
-        parentSnapshot: {
-          frames: [],
-        },
+        parentSnapshot: snapshot,
         path: ['selector1'],
       },
     ])
   })
 
   it('should create frame paths for frames that have cross origin frames', () => {
+    const frameSnapshot = {
+      cdt: 'frame',
+      frames: [],
+      crossFramesSelectors: ['selector1', 'selector2'],
+      selector: 'selector0',
+    }
     const snapshot = {
       cdt: 'top',
-      frames: [
-        {
-          cdt: 'parent',
-          frames: [],
-          crossFramesSelectors: ['selector1', 'selector2'],
-          selector: 'selector0',
-        },
-      ],
+      frames: [frameSnapshot],
       crossFramesSelectors: [],
     }
 
     const result = createFramesPaths({snapshot, logger})
     assert.deepStrictEqual(result, [
       {
-        parentSnapshot: {
-          cdt: 'parent',
-          frames: [],
-        },
+        parentSnapshot: frameSnapshot,
         path: ['selector0', 'selector1'],
       },
       {
-        parentSnapshot: {
-          cdt: 'parent',
-          frames: [],
-        },
+        parentSnapshot: frameSnapshot,
         path: ['selector0', 'selector2'],
       },
     ])
