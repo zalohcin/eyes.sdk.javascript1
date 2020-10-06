@@ -225,8 +225,8 @@ describe('createRenderRequests', () => {
 
   it('handles iosDeviceInfo', () => {
     const iosDeviceInfo = {
-      name: 'ios device',
-      version: 'ios version',
+      deviceName: 'ios device',
+      iosVersion: 'ios version',
       screenOrientation: 'ios screen orientation',
     }
     const browsers = [{iosDeviceInfo}]
@@ -247,7 +247,11 @@ describe('createRenderRequests', () => {
         browser: {name: 'safari'},
         platform: {name: 'ios'},
         renderInfo: {
-          iosDeviceInfo,
+          iosDeviceInfo: {
+            name: 'ios device',
+            version: 'ios version',
+            screenOrientation: 'ios screen orientation',
+          },
           region: undefined,
           selector: undefined,
           sizeMode: undefined,
