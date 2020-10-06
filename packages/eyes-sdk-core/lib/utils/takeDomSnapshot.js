@@ -65,12 +65,19 @@ async function takeDomSnapshot(logger, driver, options = {}) {
 
     for (const {path, parentSnapshot} of selectorMap) {
       const references = path.reduce((parent, selector) => {
-        return {reference: {type: 'xpath', selector}, parent}
+        return {reference: {type: 'css', selector}, parent}
       }, null)
 
-      const frameContext = await context.context(references)
-      const contextSnapshot = await takeContextDomSnapshot(frameContext)
-      parentSnapshot.frames.push(contextSnapshot)
+      try {
+        const frameContext = await context.context(references)
+        const contextSnapshot = await takeContextDomSnapshot(frameContext)
+        parentSnapshot.frames.push(contextSnapshot)
+      } catch (err) {
+        const pathMap = selectorMap.map(({path}) => path.join('->')).join(' | ')
+        logger.verbose(
+          `could not switch to frame during takeDomSnapshot. Path to frame: ${pathMap}`,
+        )
+      }
     }
 
     return snapshot

@@ -8,7 +8,7 @@ describe('createFramesPaths', () => {
   it('should return an empty array when no cross frames exist', () => {
     const snapshot = {
       frames: [],
-      crossFramesXPaths: [],
+      crossFramesSelectors: [],
     }
     const result = createFramesPaths({snapshot, logger})
     assert.deepStrictEqual(result, [])
@@ -17,13 +17,13 @@ describe('createFramesPaths', () => {
   it('should create frame paths for cross origin frames', () => {
     const snapshot = {
       frames: [],
-      crossFramesXPaths: ['HTML[1]/BODY[1]'],
+      crossFramesSelectors: ['selector1'],
     }
     const result = createFramesPaths({snapshot, logger})
     assert.deepStrictEqual(result, [
       {
         parentSnapshot: snapshot,
-        path: ['HTML[1]/BODY[1]'],
+        path: ['selector1'],
       },
     ])
   })
@@ -32,24 +32,24 @@ describe('createFramesPaths', () => {
     const frameSnapshot = {
       cdt: 'frame',
       frames: [],
-      crossFramesXPaths: ['BODY[1]/IFRAME[1]', 'BODY[1]/IFRAME[2]'],
-      selector: 'BODY[1]',
+      crossFramesSelectors: ['selector1', 'selector2'],
+      selector: 'selector0',
     }
     const snapshot = {
       cdt: 'top',
       frames: [frameSnapshot],
-      crossFramesXPaths: [],
+      crossFramesSelectors: [],
     }
 
     const result = createFramesPaths({snapshot, logger})
     assert.deepStrictEqual(result, [
       {
         parentSnapshot: frameSnapshot,
-        path: ['BODY[1]', 'BODY[1]/IFRAME[1]'],
+        path: ['selector0', 'selector1'],
       },
       {
         parentSnapshot: frameSnapshot,
-        path: ['BODY[1]', 'BODY[1]/IFRAME[2]'],
+        path: ['selector0', 'selector2'],
       },
     ])
   })

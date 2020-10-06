@@ -17,7 +17,6 @@ const {
   ScreenOrientation,
   MatchLevel,
 } = require(cwd)
-const {BROWSERS, DEVICES} = require('../src/test-setup')
 const scrollPage = require('../src/scroll-page')
 
 const delay = util.promisify(setTimeout)
@@ -98,12 +97,14 @@ const buildOptions = {
     describe: 'preset name of browser. (e.g. "edge-18", "ie-11", "safari-11", "firefox")',
     type: 'string',
     default: 'chrome',
-    choices: Object.keys(BROWSERS),
   },
   device: {
     describe: 'preset name of browser (e.g. "iPhone X", "Pixel 4")',
     type: 'string',
-    choices: Object.keys(DEVICES),
+  },
+  deviceOrientation: {
+    describe: 'device orientation',
+    type: 'string',
   },
   capabilities: {
     describe:
@@ -143,7 +144,6 @@ const eyesConfig = {
   viewportSize: {
     describe: 'viewport size to open the browser (widthxheight)',
     type: 'string',
-    default: '1024x768',
     coerce: utils.parseSize,
     conflicts: ['device'],
   },
@@ -292,6 +292,7 @@ if (!url && !args.attach) {
   const [driver, destroyDriver] = await spec.build({
     browser: args.browser,
     device: args.device,
+    orientation: args.deviceOrientation,
     capabilities: args.capabilities,
     url: args.driverUrl,
     attach: args.attach,
@@ -317,7 +318,7 @@ if (!url && !args.attach) {
   eyes.setConfiguration({
     apiKey: args.apiKey,
     serverUrl: args.serverUrl,
-    viewportSize: args.viewportSize,
+    viewportSize: args.viewportSize || !args.device ? {width: 1024, height: 768} : undefined,
     browserInfo:
       args.renderBrowsers || args.renderEmulations
         ? [...args.renderBrowsers, ...args.renderEmulations]

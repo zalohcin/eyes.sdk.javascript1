@@ -27,7 +27,7 @@ const DEFAULT_PROPS = {
 }
 
 class MockDriver {
-  constructor({device, platform, browser, ua} = {}) {
+  constructor({viewport = {width: 1000, height: 1000}, device, platform, browser, ua} = {}) {
     this._device = device
     this._platform = platform
     this._browser = browser
@@ -35,8 +35,9 @@ class MockDriver {
     this._window = {
       title: 'Default Page Title',
       url: 'http://default.url',
-      rect: {x: 0, y: 0, width: 1000, height: 1000},
+      rect: {x: 0, y: 0, ...viewport},
     }
+    this._methods = new Map()
     this._scripts = new Map()
     this._elements = new Map()
     this._contexts = new Map()
@@ -76,7 +77,7 @@ class MockDriver {
     })
     this.mockScript(snippets.setElementStyleProperties, ([element, properties]) => {
       return Object.entries(properties).reduce((original, [name, value]) => {
-        original[name] = element.style[name]
+        original[name] = {value: element.style[name], important: false}
         element.style[name] = value
         return original
       }, {})
@@ -209,6 +210,19 @@ class MockDriver {
         })
       }
     }
+  }
+  wrapMethod(name, wrapper) {
+    if (!this[name] || name.startsWith('_') || !TypeUtils.isFunction(this[name])) return
+    if (this._methods.has(name)) this.unwrapMethod(name)
+    this._methods.set(name, this[name])
+    this[name] = new Proxy(this[name], {
+      apply: (method, driver, args) => wrapper(method, driver, args),
+    })
+  }
+  unwrapMethod(name) {
+    const method = this._methods.get(name)
+    if (!method) return
+    this[name] = method
   }
 
   get info() {

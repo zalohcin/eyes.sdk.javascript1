@@ -499,6 +499,14 @@ async function executePollScript(
   }
 }
 
+async function addPageMarker(_logger, context) {
+  return context.execute(snippets.addPageMarker)
+}
+
+async function cleanupPageMarker(_logger, context) {
+  await context.execute(snippets.cleanupPageMarker)
+}
+
 module.exports = {
   getViewportSize,
   setViewportSize,
@@ -528,4 +536,6 @@ module.exports = {
   getChildFramesInfo,
   ensureRegionVisible,
   executePollScript,
+  addPageMarker,
+  cleanupPageMarker,
 }
