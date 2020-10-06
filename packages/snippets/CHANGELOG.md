@@ -4,6 +4,10 @@
 ## Unreleased
 
 
+## 2.0.3 - 2020/10/6
+
+- publish with dist folder
+
 ## 2.0.2 - 2020/10/6
 
 - added `addPageMarker` and `cleanupPageMarker` snippets
