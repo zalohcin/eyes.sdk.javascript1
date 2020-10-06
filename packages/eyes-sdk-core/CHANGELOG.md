@@ -7,6 +7,8 @@
 - add warnings when `setViewportSize` fails during taking dom snapshot with layout breakpoints
 - updated to @applitools/dom-snapshot@4.1.2 (from 4.1.0)
 - updated to @applitools/snippets@2.0.3 (from 2.0.1)
+- updated to @applitools/dom-capture@8.0.0 (from 7.3.0)
+- updated to @applitools/dom-snapshot@4.2.0 (from 4.1.2)
 
 ## 12.2.9 - 2020/9/28
 

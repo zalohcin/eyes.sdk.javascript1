@@ -32,8 +32,8 @@
   "main": "./index.js",
   "typings": "./typings/index.d.ts",
   "dependencies": {
-    "@applitools/dom-capture": "7.3.0",
-    "@applitools/dom-snapshot": "4.1.2",
+    "@applitools/dom-capture": "8.0.0",
+    "@applitools/dom-snapshot": "4.2.0",
     "@applitools/isomorphic-fetch": "3.0.0",
     "@applitools/snippets": "2.0.3",
     "axios": "0.19.2",
@@ -48,8 +48,8 @@
   },
   "devDependencies": {
     "@applitools/sdk-fake-eyes-server": "^2.0.0",
-    "@applitools/sdk-release-kit": "^0.3.1",
-    "@applitools/visual-grid-client": "^15.0.7",
+    "@applitools/sdk-release-kit": "^0.3.4",
+    "@applitools/visual-grid-client": "^15.0.8",
     "assert-rejects": "1.0.0",
     "chai": "4.2.0",
     "chai-uuid": "1.0.6",
@@ -76,7 +76,7 @@
     "preversion": "bongo preversion && yarn test",
     "version": "bongo version",
     "postversion": "bongo postversion --skip-release-notification",
-    "deps": "bongo deps"
+    "deps": "bongo deps --skipVerifyInstalledVersions"
   },
   "bin": {
     "eyes-check-network": "./bin/runCheckNetwork.js"
