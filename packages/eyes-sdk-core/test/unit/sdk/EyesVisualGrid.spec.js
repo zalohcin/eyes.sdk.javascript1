@@ -182,8 +182,8 @@ describe('EyesVisualGrid', () => {
       await eyes.check({layoutBreakpoints: true})
       await eyes.close(false)
       const warns = [
-        `Following configurations [(chrome, 200)] have a viewport-width which is not able to be set on your local browser, because it has a limit of 300 pixels. As a fallback, the resources that will be used for this checkpoint have been captured on the browser's limit (300 pixels). To resolve this, you may use a headless browser as it can be resized to any size.`,
-        `Following configurations [(chrome, 1000)] have a viewport-width which is not able to be set on your local browser, because it has a limit of 800 pixels. As a fallback, the resources that will be used for this checkpoint have been captured on the browser's limit (800 pixels). To resolve this, you may use a headless browser as it can be resized to any size.`,
+        `The following configurations [(chrome, 200)] have a viewport-width of 200 pixels, while your local browser has a limit of 300 pixels, so the SDK couldn't resize it to the desired size. As a fallback, the resources that will be used for these checkpoints have been captured on the browser's limit (300 pixels). To resolve this, you may use a headless browser as it can be resized to any size.`,
+        `The following configurations [(chrome, 1000)] have a viewport-width of 1000 pixels, while your local browser has a limit of 800 pixels, so the SDK couldn't resize it to the desired size. As a fallback, the resources that will be used for these checkpoints have been captured on the browser's limit (800 pixels). To resolve this, you may use a headless browser as it can be resized to any size.`,
       ]
       warns.forEach((warn, index) => {
         assert.strictEqual(output[index], chalk.yellow(warn) + '\n')
