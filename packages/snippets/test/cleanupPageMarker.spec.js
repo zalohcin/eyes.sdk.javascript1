@@ -4,6 +4,30 @@ const {addPageMarker, cleanupPageMarker} = require('../dist/index')
 describe('cleanupPageMarker', () => {
   const url = 'https://applitools.github.io/demo/TestPages/SnippetsTestPage/'
 
+  describe('chrome', () => {
+    let page
+
+    before(async function() {
+      page = await global.getDriver('chrome')
+      if (!page) {
+        this.skip()
+      }
+    })
+
+    it('cleanup page marker', async () => {
+      await page.url(url)
+      await page.evaluate("document.body.style.transform = 'translate(-10px, -10px)'")
+      await page.evaluate(addPageMarker)
+      const element1 = await page.$('[data-applitools-marker]')
+      assert.ok(element1)
+      await page.evaluate(cleanupPageMarker)
+      const element2 = await page.$('[data-applitools-marker]')
+      assert.ok(!element2)
+      const transform = await page.evaluate('document.body.style.transform')
+      assert.strictEqual(transform, 'translate(-10px, -10px)')
+    })
+  })
+
   describe('ios safari', () => {
     let driver
 
