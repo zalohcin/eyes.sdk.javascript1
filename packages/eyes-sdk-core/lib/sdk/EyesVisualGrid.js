@@ -370,15 +370,21 @@ class EyesVisualGrid extends EyesCore {
         await this._driver.setViewportSize({width: requiredWidth, height: viewportSize.getHeight()})
       } catch (err) {
         const actualViewportSize = await this._driver.getViewportSize()
-        const failedBrowsers = browsersInfo.map(({name, width}) => `(${name}, ${width})`).join(', ')
-        const message = isStrictBreakpoints
-          ? chalk.yellow(
-              `One of the configured layout breakpoints is ${requiredWidth} pixels, while your local browser has a limit of ${actualViewportSize.getWidth()}, so the SDK couldn't resize it to the desired size. As a fallback, the resources that will be used for the following configurations: [${failedBrowsers}] have been captured on the browser's limit (${actualViewportSize.getWidth()} pixels). To resolve this, you may use a headless browser as it can be resized to any size.`,
-            )
-          : chalk.yellow(
-              `The following configurations [${failedBrowsers}] have a viewport-width of ${requiredWidth} pixels, while your local browser has a limit of ${actualViewportSize.getWidth()} pixels, so the SDK couldn't resize it to the desired size. As a fallback, the resources that will be used for these checkpoints have been captured on the browser's limit (${actualViewportSize.getWidth()} pixels). To resolve this, you may use a headless browser as it can be resized to any size.`,
-            )
-        console.log(message)
+        if (isStrictBreakpoints) {
+          const failedBrowsers = browsersInfo
+            .map(({name, width}) => `(${name}, ${width})`)
+            .join(', ')
+          const message = chalk.yellow(
+            `One of the configured layout breakpoints is ${requiredWidth} pixels, while your local browser has a limit of ${actualViewportSize.getWidth()}, so the SDK couldn't resize it to the desired size. As a fallback, the resources that will be used for the following configurations: [${failedBrowsers}] have been captured on the browser's limit (${actualViewportSize.getWidth()} pixels). To resolve this, you may use a headless browser as it can be resized to any size.`,
+          )
+          console.log(message)
+        } else {
+          const failedBrowsers = browsersInfo.map(({name}) => `(${name})`).join(', ')
+          const message = chalk.yellow(
+            `The following configurations [${failedBrowsers}] have a viewport-width of ${requiredWidth} pixels, while your local browser has a limit of ${actualViewportSize.getWidth()} pixels, so the SDK couldn't resize it to the desired size. As a fallback, the resources that will be used for these checkpoints have been captured on the browser's limit (${actualViewportSize.getWidth()} pixels). To resolve this, you may use a headless browser as it can be resized to any size.`,
+          )
+          console.log(message)
+        }
       }
       const snapshot = await takeDomSnapshot({
         driver: this._driver,
