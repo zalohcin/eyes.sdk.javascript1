@@ -32,14 +32,14 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "12.2.6",
+    "@applitools/eyes-sdk-core": "12.2.8",
     "@applitools/visual-grid-client": "15.0.6"
   },
   "peerDependencies": {
     "playwright": ">=1.0.0"
   },
   "devDependencies": {
-    "@applitools/sdk-coverage-tests": "^1.0.7",
+    "@applitools/sdk-coverage-tests": "^1.0.14",
     "@applitools/sdk-fake-eyes-server": "^2.0.0",
     "@applitools/sdk-release-kit": "^0.3.1",
     "@applitools/sdk-shared": "^0.1.2",
