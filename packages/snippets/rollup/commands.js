@@ -74,7 +74,9 @@ async function bundle({formats}) {
 
   for (const [format, output] of Object.entries(outputs)) {
     if (output.length > 0) {
-      fs.writeFileSync(path.resolve(process.cwd(), config.output[format]), concat[format](output))
+      const outputPath = path.resolve(process.cwd(), config.output[format])
+      fs.mkdirSync(path.dirname(outputPath), {recursive: true})
+      fs.writeFileSync(outputPath, concat[format](output))
     }
   }
 }
