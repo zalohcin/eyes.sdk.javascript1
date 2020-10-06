@@ -1,6 +1,6 @@
 function createFramesPaths({snapshot, path = [], logger}) {
-  const paths = snapshot.crossFramesXPaths
-    ? snapshot.crossFramesXPaths.map(selector => ({
+  const paths = snapshot.crossFramesSelectors
+    ? snapshot.crossFramesSelectors.map(selector => ({
         path: path.concat(selector),
         parentSnapshot: snapshot,
       }))
@@ -13,12 +13,12 @@ function createFramesPaths({snapshot, path = [], logger}) {
   }
 
   logger.verbose(
-    `frames paths for ${snapshot.crossFramesXPaths}`,
+    `frames paths for ${snapshot.crossFramesSelectors}`,
     paths.map(({path}) => path.join('-->')).join(' , '),
   )
 
   delete snapshot.selector
-  delete snapshot.crossFramesXPaths
+  delete snapshot.crossFramesSelectors
 
   return paths
 }

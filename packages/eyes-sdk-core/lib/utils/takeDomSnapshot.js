@@ -36,17 +36,27 @@ async function takeDomSnapshot({logger, driver, startTime = Date.now(), disableB
   async function getCrossOriginFrames(context, selectorMap) {
     for (const {path, parentSnapshot} of selectorMap) {
       const references = path.reduce((parent, selector) => {
-        return {reference: {type: 'xpath', selector}, parent}
+        return {reference: {type: 'css', selector}, parent}
       }, null)
-
-      const frameContext = await context.context(references)
-      const contextSnapshot = await _takeDomSnapshot(frameContext)
-      parentSnapshot.frames.push(contextSnapshot)
+      try {
+        const frameContext = await context.context(references)
+        const contextSnapshot = await _takeDomSnapshot(frameContext)
+        parentSnapshot.frames.push(contextSnapshot)
+      } catch (error) {
+        const pathMap = selectorMap.map(({path}) => path.join('->')).join(' | ')
+        logger.verbose(
+          `could not switch to frame during takeDomSnapshot. Path to frame: ${pathMap}`,
+        )
+      }
     }
   }
 
   async function _takeDomSnapshot(context) {
-    logger.verbose(`taking dom snapshot. ${context._reference ? `context referece: ${JSON.stringify(context._reference)}` : ''}`)
+    logger.verbose(
+      `taking dom snapshot. ${
+        context._reference ? `context referece: ${JSON.stringify(context._reference)}` : ''
+      }`,
+    )
     const resultAsString = await context.execute(processPageAndPollScript, {
       dontFetchResources: disableBrowserFetching,
     })
