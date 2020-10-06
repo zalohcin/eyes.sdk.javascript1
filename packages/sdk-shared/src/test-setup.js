@@ -58,6 +58,26 @@ const DEVICES = {
       ...SAUCE_CREDENTIALS,
     },
   },
+  'iPhone 5S': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
+    capabilities: {
+      deviceName: 'iPhone 5s Simulator',
+      platformVersion: '12.4',
+      platformName: 'iOS',
+      ...SAUCE_CREDENTIALS,
+    },
+  },
+  'iPhone 11 Pro': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
+    capabilities: {
+      deviceName: 'iPhone 11 Pro Simulator',
+      platformVersion: '13.4',
+      platformName: 'iOS',
+      ...SAUCE_CREDENTIALS,
+    },
+  },
   'iPhone XS': {
     type: 'sauce',
     url: SAUCE_SERVER_URL,
@@ -65,6 +85,16 @@ const DEVICES = {
       platformName: 'iOS',
       platformVersion: '13.0',
       deviceName: 'iPhone XS Simulator',
+      ...SAUCE_CREDENTIALS,
+    },
+  },
+  'iPad Air': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
+    capabilities: {
+      deviceName: 'iPad Air Simulator',
+      platformVersion: '12.4',
+      platformName: 'iOS',
       ...SAUCE_CREDENTIALS,
     },
   },
@@ -90,9 +120,16 @@ const BROWSERS = {
     type: 'sauce',
     url: SAUCE_SERVER_URL,
     capabilities: {
-      browserName: 'internet explorer',
-      browserVersion: '11.285',
-      platformName: 'Windows 10',
+      w3c: {
+        browserName: 'internet explorer',
+        browserVersion: '11.285',
+        platformName: 'Windows 10',
+      },
+      legacy: {
+        browserName: 'internet explorer',
+        platform: 'Windows 10',
+        version: '11.285',
+      },
     },
     options: {
       name: 'IE 11',
@@ -156,16 +193,21 @@ function Env(
     const preset = DEVICES[device] || BROWSERS[browser]
     if (preset) {
       env.url = preset.url ? new URL(preset.url) : env.url
-      env.capabilities = Object.assign(env.capabilities, preset.capabilities)
-      env.sauce = preset.type === 'sauce'
-      if (preset.options) {
-        if (preset.type === 'sauce') {
-          if (legacy) Object.assign(env.capabilities, preset.options)
-          else env.capabilities['sauce:options'] = {...preset.options}
+      env.capabilities = Object.assign(
+        env.capabilities,
+        (legacy ? preset.capabilities.legacy : preset.capabilities.w3c) || preset.capabilities,
+      )
+      env.configurable = preset.type !== 'sauce'
+      if (preset.type === 'sauce') {
+        if (legacy || env.device) {
+          env.options = env.capabilities = {...env.capabilities, ...preset.options}
         } else {
-          env.options = preset.options
+          env.options = env.capabilities['sauce:options'] = {...preset.options}
         }
+      } else {
+        env.options = preset.options || {}
       }
+      env.options.deviceOrientation = env.orientation
     }
   } else if (protocol === 'cdp') {
     url = url || process.env.CVG_TESTS_CDP_REMOTE

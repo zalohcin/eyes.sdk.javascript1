@@ -1,5 +1,5 @@
 const {TypeUtils} = require('@applitools/eyes-sdk-core')
-const {LegacySelector, withLegacyDriverAPI} = require('./LegacyAPI')
+const {LegacySelector, withLegacyDriverAPI} = require('./legacy-api')
 
 // #region HELPERS
 

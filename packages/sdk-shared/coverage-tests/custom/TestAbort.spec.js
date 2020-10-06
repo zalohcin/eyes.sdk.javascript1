@@ -17,7 +17,7 @@ const {
   Eyes,
   StitchMode,
 } = require(cwd)
-const spec = require(path.resolve(cwd, 'src/SpecDriver'))
+const spec = require(path.resolve(cwd, 'src/spec-driver'))
 
 const appName = 'Test abort'
 const testedUrl = 'https://applitools.com/docs/topics/overview.html'

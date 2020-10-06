@@ -1,5 +1,5 @@
 const {TypeUtils} = require('@applitools/eyes-sdk-core')
-const {LegacySelector, withLegacyDriverAPI} = require('./LegacyAPI')
+const {LegacySelector, withLegacyDriverAPI} = require('./legacy-api')
 
 // #region HELPERS
 
@@ -240,7 +240,9 @@ async function build(env) {
     options.automationProtocol = 'webdriver'
     options.protocol = url.protocol ? url.protocol.replace(/:$/, '') : undefined
     options.hostname = url.hostname
-    options.port = Number(url.port)
+    if (url.port) options.port = Number(url.port)
+    else if (options.protocol === 'http') options.port = 80
+    else if (options.protocol === 'https') options.port = 443
     options.path = url.pathname
     if (configurable) {
       if (browser === 'chrome' && attach) {

@@ -4,6 +4,10 @@
 
 - added debugScreenshots boolean option to getEyes that will automatically create a screenshots dir in the cwd
 
+## 0.1.4 - 2020/10/1
+
+- update render script
+
 ## 0.1.3 - 2020/9/23
 
 - remove yarn workspaces

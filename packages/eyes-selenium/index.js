@@ -6,7 +6,7 @@ if (!process.env.APPLITOOLS_SELENIUM_MAJOR_VERSION) {
   process.env.APPLITOOLS_SELENIUM_MAJOR_VERSION = major
 }
 
-const {EyesClassic, EyesVisualGrid, EyesFactory, CheckSettings} = require('./src/SeleniumSDK')
+const {EyesClassic, EyesVisualGrid, EyesFactory, CheckSettings} = require('./src/sdk')
 
 exports.Eyes = EyesFactory
 exports.EyesSelenium = EyesClassic

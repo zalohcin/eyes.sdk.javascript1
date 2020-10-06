@@ -27,7 +27,7 @@ async function getScriptForIE() {
   return `${scriptBody} return __processPageAndSerializePollForIE(document, arguments[0]);`
 }
 
-async function takeDomSnapshot({driver, startTime = Date.now(), disableBrowserFetching}) {
+async function takeDomSnapshot({logger, driver, startTime = Date.now(), disableBrowserFetching}) {
   const {browserName, browserVersion} = driver
   const isIE = browserName === 'internet explorer'
   const isEdgeLegacy = browserName.toLowerCase().includes('edge') && browserVersion <= 44
@@ -36,16 +36,27 @@ async function takeDomSnapshot({driver, startTime = Date.now(), disableBrowserFe
   async function getCrossOriginFrames(context, selectorMap) {
     for (const {path, parentSnapshot} of selectorMap) {
       const references = path.reduce((parent, selector) => {
-        return {reference: {type: 'xpath', selector}, parent}
+        return {reference: {type: 'css', selector}, parent}
       }, null)
-
-      const frameContext = await context.context(references)
-      const contextSnapshot = await _takeDomSnapshot(frameContext)
-      parentSnapshot.frames.push(contextSnapshot)
+      try {
+        const frameContext = await context.context(references)
+        const contextSnapshot = await _takeDomSnapshot(frameContext)
+        parentSnapshot.frames.push(contextSnapshot)
+      } catch (error) {
+        const pathMap = selectorMap.map(({path}) => path.join('->')).join(' | ')
+        logger.verbose(
+          `could not switch to frame during takeDomSnapshot. Path to frame: ${pathMap}`,
+        )
+      }
     }
   }
 
   async function _takeDomSnapshot(context) {
+    logger.verbose(
+      `taking dom snapshot. ${
+        context._reference ? `context referece: ${JSON.stringify(context._reference)}` : ''
+      }`,
+    )
     const resultAsString = await context.execute(processPageAndPollScript, {
       dontFetchResources: disableBrowserFetching,
     })
@@ -61,7 +72,7 @@ async function takeDomSnapshot({driver, startTime = Date.now(), disableBrowserFe
     }
 
     if (scriptResponse.status === 'SUCCESS') {
-      const selectorMap = createFramesPaths(scriptResponse.value)
+      const selectorMap = createFramesPaths({snapshot: scriptResponse.value, logger})
       await getCrossOriginFrames(context, selectorMap)
       return scriptResponse.value
     } else if (scriptResponse.status === 'ERROR') {

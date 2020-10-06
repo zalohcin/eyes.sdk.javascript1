@@ -1,8 +1,8 @@
 const assert = require('assert')
-const spec = require('../../src/SpecDriver')
-const {LegacySelector, withLegacyDriverAPI} = require('../../src/LegacyAPI')
+const spec = require('../../src/spec-driver')
+const {LegacySelector, withLegacyDriverAPI} = require('../../src/legacy-api')
 
-describe('LegacyAPI', () => {
+describe('legacy api', () => {
   let browser, destroyBrowser, driver
   before(async () => {
     ;[browser, destroyBrowser] = await spec.build({browser: 'chrome'})
@@ -52,6 +52,27 @@ describe('LegacyAPI', () => {
     assert.strictEqual(await driver.getBrowserName(), 'chrome')
   })
 
+  it('click(by)', async () => {
+    try {
+      const isBlurred = await driver.executeScript(
+        'return document.querySelector("input") !== document.activeElement',
+      )
+      assert.ok(isBlurred)
+      await driver.click('input')
+      const isFocused = await driver.executeScript(
+        'return document.querySelector("input") === document.activeElement',
+      )
+      assert.ok(isFocused)
+    } finally {
+      await driver.executeScript('document.activeElement.blur()')
+    }
+  })
+
+  it('get locator', async () => {
+    const element = await driver.findElement(LegacySelector.css('div'))
+    assert.strictEqual(element.locator, 'css selector:div')
+  })
+
   it('element.getDriver()', async () => {
     const element = await driver.findElement(LegacySelector.css('div'))
     assert.strictEqual(element.getDriver(), driver)
@@ -71,12 +92,20 @@ describe('LegacyAPI', () => {
     assert.ok(spec.isElement(childElement))
   })
   it('element.click()', async () => {
-    const element = await driver.findElement(LegacySelector.css('input'))
-    const isBlurred = await element.executeScript('return arguments[0] !== document.activeElement')
-    assert.ok(isBlurred)
-    await element.click()
-    const isFocused = await element.executeScript('return arguments[0] === document.activeElement')
-    assert.ok(isFocused)
+    try {
+      const element = await driver.findElement(LegacySelector.css('input'))
+      const isBlurred = await element.executeScript(
+        'return arguments[0] !== document.activeElement',
+      )
+      assert.ok(isBlurred)
+      await element.click()
+      const isFocused = await element.executeScript(
+        'return arguments[0] === document.activeElement',
+      )
+      assert.ok(isFocused)
+    } finally {
+      await driver.executeScript('document.activeElement.blur()')
+    }
   })
   it('element.sendKeys(string)', async () => {
     const element = await driver.findElement(LegacySelector.css('input'))
