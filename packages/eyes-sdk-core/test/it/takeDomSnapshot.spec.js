@@ -86,7 +86,7 @@ describe('takeDomSnapshot', () => {
     })
   })
 
-  it('should take a dom snapshot with nested cross origin frames', async () => {
+  it('should take a dom snapshot ith nested cross origin frames', async () => {
     driver.mockElements([
       {
         selector: '[data-applitools-selector="123"]',

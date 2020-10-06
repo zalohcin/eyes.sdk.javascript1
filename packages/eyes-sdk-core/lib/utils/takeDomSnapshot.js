@@ -43,7 +43,10 @@ async function takeDomSnapshot({logger, driver, startTime = Date.now(), disableB
         const contextSnapshot = await _takeDomSnapshot(frameContext)
         parentSnapshot.frames.push(contextSnapshot)
       } catch (error) {
-        logger.verbose(`could not switch to frame: ${error}`)
+        const pathMap = selectorMap.map(({path}) => path.join('->')).join(' | ')
+        logger.verbose(
+          `could not switch to frame during takeDomSnapshot. Path to frame: ${pathMap}`,
+        )
       }
     }
   }
