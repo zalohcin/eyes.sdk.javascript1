@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 12.3.0 - 2020/10/6
+
 - added support of chunked dom snapshot results
 - used common polling logic for dom snapshot and dom capture
 - add warnings when `setViewportSize` fails during taking dom snapshot with layout breakpoints
