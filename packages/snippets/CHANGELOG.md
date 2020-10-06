@@ -4,6 +4,11 @@
 ## Unreleased
 
 
+## 2.0.2 - 2020/10/6
+
+- added `addPageMarker` and `cleanupPageMarker` snippets
+- handle priority of the style properties in `getElementStyleProperties` and `setElementStyleProperties`
+
 ## 2.0.1 - 2020/9/28
 
 - remove yarn workspaces
