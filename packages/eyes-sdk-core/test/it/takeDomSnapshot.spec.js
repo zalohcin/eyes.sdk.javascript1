@@ -56,17 +56,14 @@ describe('takeDomSnapshot', () => {
 
   it('should take a dom snapshot with cross origin frames', async () => {
     driver.mockScript('dom-snapshot', function() {
-      return this.name === 'HTML[1]/BODY[1]/IFRAME[1]'
+      return this.name === '[data-applitools-selector="123"]'
         ? generateSnapshotResponse({cdt: 'frame-cdt'})
-        : generateSnapshotResponse({crossFramesXPaths: ['HTML[1]/BODY[1]/IFRAME[1]']})
+        : generateSnapshotResponse({crossFramesSelectors: ['[data-applitools-selector="123"]']})
     })
     driver.mockElements([
       {
-        selector: 'HTML[1]/BODY[1]/IFRAME[1]',
+        selector: '[data-applitools-selector="123"]',
         frame: true,
-        isCORS: true,
-        attributes: [],
-        children: [],
       },
     ])
     const snapshot = await takeDomSnapshot({driver: eyesDriver, logger})
@@ -89,88 +86,15 @@ describe('takeDomSnapshot', () => {
     })
   })
 
-  it('should take a dom snapshot with nested cross origin frames', async () => {
-    try {
-      driver.mockElements([
-        {
-          selector: 'HTML[1]/BODY[1]/IFRAME[1]',
-          frame: true,
-          isCORS: true,
-          attributes: [],
-          children: [
-            {
-              selector: 'BODY[1]/IFRAME[1]',
-              frame: true,
-              isCORS: true,
-              attributes: [],
-              children: [],
-            },
-          ],
-        },
-      ])
-
-      driver.mockScript('dom-snapshot', function() {
-        switch (this.name) {
-          case 'HTML[1]/BODY[1]/IFRAME[1]':
-            return generateSnapshotResponse({
-              cdt: 'frame',
-              crossFramesXPaths: ['BODY[1]/IFRAME[1]'],
-            })
-          case 'BODY[1]/IFRAME[1]':
-            return generateSnapshotResponse({cdt: 'nested frame'})
-          default:
-            return generateSnapshotResponse({
-              cdt: 'top page',
-              crossFramesXPaths: ['HTML[1]/BODY[1]/IFRAME[1]'],
-            })
-        }
-      })
-
-      const snapshot = await takeDomSnapshot({driver: eyesDriver, logger})
-      expect(snapshot).to.eql({
-        cdt: 'top page',
-        frames: [
-          {
-            cdt: 'frame',
-            frames: [
-              {
-                cdt: 'nested frame',
-                frames: [],
-                resourceContents: {},
-                resourceUrls: [],
-                scriptVersion: 'mock value',
-                srcAttr: null,
-              },
-            ],
-            resourceContents: {},
-            resourceUrls: [],
-            scriptVersion: 'mock value',
-            srcAttr: null,
-          },
-        ],
-        resourceContents: {},
-        resourceUrls: [],
-        scriptVersion: 'mock value',
-        srcAttr: null,
-      })
-    } catch (error) {
-      throw error
-    }
-  })
-
-  it('should take a dom snapshot with nested frames containing cross origin frames', async () => {
+  it('should take a dom snapshot ith nested cross origin frames', async () => {
     driver.mockElements([
       {
-        selector: 'DIV[1]/IFRAME[1]',
+        selector: '[data-applitools-selector="123"]',
         frame: true,
-        attributes: [],
         children: [
           {
-            selector: 'DIV[1]/SPAN[1]/DIV[1]/IFRAME[1]',
+            selector: '[data-applitools-selector="456"]',
             frame: true,
-            isCORS: true,
-            attributes: [],
-            children: [],
           },
         ],
       },
@@ -178,10 +102,70 @@ describe('takeDomSnapshot', () => {
 
     driver.mockScript('dom-snapshot', function() {
       switch (this.name) {
-        case 'DIV[1]/SPAN[1]/DIV[1]/IFRAME[1]':
+        case '[data-applitools-selector="123"]':
+          return generateSnapshotResponse({
+            cdt: 'frame',
+            crossFramesSelectors: ['[data-applitools-selector="456"]'],
+          })
+        case '[data-applitools-selector="456"]':
+          return generateSnapshotResponse({cdt: 'nested frame'})
+        default:
+          return generateSnapshotResponse({
+            cdt: 'top page',
+            crossFramesSelectors: ['[data-applitools-selector="123"]'],
+          })
+      }
+    })
+
+    const snapshot = await takeDomSnapshot({driver: eyesDriver, logger})
+    expect(snapshot).to.eql({
+      cdt: 'top page',
+      frames: [
+        {
+          cdt: 'frame',
+          frames: [
+            {
+              cdt: 'nested frame',
+              frames: [],
+              resourceContents: {},
+              resourceUrls: [],
+              scriptVersion: 'mock value',
+              srcAttr: null,
+            },
+          ],
+          resourceContents: {},
+          resourceUrls: [],
+          scriptVersion: 'mock value',
+          srcAttr: null,
+        },
+      ],
+      resourceContents: {},
+      resourceUrls: [],
+      scriptVersion: 'mock value',
+      srcAttr: null,
+    })
+  })
+
+  it('should take a dom snapshot with nested frames containing cross origin frames', async () => {
+    driver.mockElements([
+      {
+        selector: '[data-applitools-selector="123"]',
+        frame: true,
+        children: [
+          {
+            selector: '[data-applitools-selector="456"]',
+            frame: true,
+          },
+        ],
+      },
+    ])
+
+    driver.mockScript('dom-snapshot', function() {
+      switch (this.name) {
+        case '[data-applitools-selector="456"]':
           return generateSnapshotResponse({
             cdt: 'nested frame',
-            selector: 'DIV[1]/SPAN[1]/DIV[1]/IFRAME[1]',
+            selector: '[data-applitools-selector="456"]',
           })
         default:
           return generateSnapshotResponse({
@@ -189,8 +173,8 @@ describe('takeDomSnapshot', () => {
             frames: [
               generateSnapshotObject({
                 cdt: 'frame',
-                selector: 'DIV[1]/IFRAME[1]',
-                crossFramesXPaths: ['DIV[1]/SPAN[1]/DIV[1]/IFRAME[1]'],
+                selector: '[data-applitools-selector="123"]',
+                crossFramesSelectors: ['[data-applitools-selector="456"]'],
               }),
             ],
           })
@@ -225,6 +209,63 @@ describe('takeDomSnapshot', () => {
       srcAttr: null,
     })
   })
+
+  it('should handle failure to switch to frame', async () => {
+    driver.mockElements([
+      {
+        selector: '[data-applitools-selector="123"]',
+      },
+    ])
+    driver.mockScript('dom-snapshot', function() {
+      return generateSnapshotResponse({
+        cdt: 'top frame',
+        crossFramesSelectors: ['[data-applitools-selector="123"]'],
+      })
+    })
+
+    const snapshot = await takeDomSnapshot({driver: eyesDriver, logger})
+    expect(snapshot.frames).to.deep.equal([])
+  })
+
+  it('should handle failure to switch to nested frame', async () => {
+    driver.mockElements([
+      {
+        selector: '[data-applitools-selector="123"]',
+        frame: true,
+        children: [
+          {
+            selector: '[data-applitools-selector="456"]',
+          },
+        ],
+      },
+    ])
+    driver.mockScript('dom-snapshot', function() {
+      switch (this.name) {
+        case '[data-applitools-selector="123"]':
+          return generateSnapshotResponse({
+            cdt: 'inner parent frame',
+            crossFramesSelectors: ['[data-applitools-selector="456"]'],
+          })
+        default:
+          return generateSnapshotResponse({
+            cdt: 'top frame',
+            crossFramesSelectors: ['[data-applitools-selector="123"]'],
+          })
+      }
+    })
+
+    const snapshot = await takeDomSnapshot({driver: eyesDriver, logger})
+    expect(snapshot.frames).to.deep.equal([
+      {
+        cdt: 'inner parent frame',
+        resourceContents: {},
+        resourceUrls: [],
+        frames: [],
+        scriptVersion: 'mock value',
+        srcAttr: null,
+      },
+    ])
+  })
 })
 
 function generateSnapshotResponse(overrides) {
@@ -238,7 +279,7 @@ function generateSnapshotObject(overrides) {
     resourceUrls: [],
     blobs: [],
     frames: [],
-    crossFramesXPaths: undefined,
+    crossFramesSelectors: undefined,
     scriptVersion: 'mock value',
     ...overrides,
   }
