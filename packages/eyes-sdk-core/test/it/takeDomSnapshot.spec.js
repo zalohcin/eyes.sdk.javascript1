@@ -117,7 +117,7 @@ describe('takeDomSnapshot', () => {
       }
     })
 
-    const snapshot = await takeDomSnapshot({driver: eyesDriver, logger})
+    const snapshot = await takeDomSnapshot(logger, eyesDriver)
     expect(snapshot).to.eql({
       cdt: 'top page',
       frames: [
@@ -223,7 +223,7 @@ describe('takeDomSnapshot', () => {
       })
     })
 
-    const snapshot = await takeDomSnapshot({driver: eyesDriver, logger})
+    const snapshot = await takeDomSnapshot(logger, eyesDriver)
     expect(snapshot.frames).to.deep.equal([])
   })
 
@@ -254,7 +254,7 @@ describe('takeDomSnapshot', () => {
       }
     })
 
-    const snapshot = await takeDomSnapshot({driver: eyesDriver, logger})
+    const snapshot = await takeDomSnapshot(logger, eyesDriver)
     expect(snapshot.frames).to.deep.equal([
       {
         cdt: 'inner parent frame',

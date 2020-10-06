@@ -312,11 +312,7 @@ class EyesVisualGrid extends EyesCore {
     const browsers = this._configuration.getBrowsersInfo()
     if (!breakpoints) {
       this._logger.verbose(`taking single dom snapshot`)
-      const snapshot = await takeDomSnapshot({
-        logger: this._logger,
-        driver: this._driver,
-        disableBrowserFetching,
-      })
+      const snapshot = await takeDomSnapshot(this._logger, this._driver, {disableBrowserFetching})
       return Array(browsers.length).fill(snapshot)
     }
 
@@ -355,11 +351,7 @@ class EyesVisualGrid extends EyesCore {
     const snapshots = Array(browsers.length)
     if (requiredWidths.has(viewportSize.getWidth())) {
       this._logger.log(`taking dom snapshot for existing width ${viewportSize.getWidth()}`)
-      const snapshot = await takeDomSnapshot({
-        logger: this._logger,
-        driver: this._driver,
-        disableBrowserFetching,
-      })
+      const snapshot = await takeDomSnapshot(this._logger, this._driver, {disableBrowserFetching})
       requiredWidths
         .get(viewportSize.getWidth())
         .forEach(({index}) => (snapshots[index] = snapshot))
@@ -386,11 +378,7 @@ class EyesVisualGrid extends EyesCore {
           console.log(message)
         }
       }
-      const snapshot = await takeDomSnapshot({
-        logger: this._logger,
-        driver: this._driver,
-        disableBrowserFetching,
-      })
+      const snapshot = await takeDomSnapshot(this._logger, this._driver, {disableBrowserFetching})
       browsersInfo.forEach(({index}) => (snapshots[index] = snapshot))
     }
     await this._driver.setViewportSize(viewportSize)
