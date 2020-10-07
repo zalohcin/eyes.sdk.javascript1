@@ -3,6 +3,10 @@
 ## Unreleased
 
 
+## 5.24.1 - 2020/10/7
+
+- updated to @applitools/eyes-sdk-core@12.3.1 (from 12.3.0)
+
 ## 5.24.0 - 2020/10/6
 
 - updated to @applitools/eyes-sdk-core@12.3.0 (from 12.2.6)
