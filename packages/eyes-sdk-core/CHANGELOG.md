@@ -12,6 +12,7 @@
 - added support of chunked dom snapshot results
 - used common polling logic for dom snapshot and dom capture
 - add warnings when `setViewportSize` fails during taking dom snapshot with layout breakpoints
+- support multiple versions of ios for visual grid
 - updated to @applitools/dom-snapshot@4.1.2 (from 4.1.0)
 - updated to @applitools/snippets@2.0.3 (from 2.0.1)
 - updated to @applitools/dom-capture@8.0.0 (from 7.3.0)
