@@ -72,7 +72,7 @@ describe('TestVGServerConfigs', () => {
 
     await spec.visit(webDriver, 'http://applitools.github.io/demo')
     await eyes.open(webDriver, 'Eyes SDK', 'UFG Mobile Web Happy Flow', {width: 800, height: 600})
-    await eyes.checkWindow()
+    await eyes.check({isFully: true})
     await eyes.close()
   })
 
