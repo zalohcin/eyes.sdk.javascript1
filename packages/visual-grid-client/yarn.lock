@@ -25,10 +25,10 @@
     css-tree "1.0.0-alpha.39"
     pako "1.0.11"
 
-"@applitools/eyes-sdk-core@12.3.0":
-  version "12.3.0"
-  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-12.3.0.tgz#5330b59896223bd439b509d514a9f3df78df330c"
-  integrity sha512-QIiwSQrz+6fW3wlDfffcndPMcq9ZODWtT7KnP9XkjoQ4dlydBVtL02nKHlGqYBIaVcYzMKGRhvK5mhmDllj3mw==
+"@applitools/eyes-sdk-core@12.3.1":
+  version "12.3.1"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-12.3.1.tgz#bbbeae2b6cc2fb420b2217cd6143a948e6f08f9d"
+  integrity sha512-u0a69InidVqsjxZQqQMtTrOkqtf/rmt+UuMYBJaipbq4aLBYAqlsgxlyYXbtwSuCoLj2yXUeR7NXDj531Ms4Tw==
   dependencies:
     "@applitools/dom-capture" "8.0.0"
     "@applitools/dom-snapshot" "4.2.0"
@@ -156,9 +156,9 @@
     yargs "15.3.1"
 
 "@applitools/sdk-shared@^0.1.0":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@applitools/sdk-shared/-/sdk-shared-0.1.4.tgz#d8c51afbc588cb45394288492cacf7e24670a3ba"
-  integrity sha512-268xmaUn8VVNDmGRPsbK9KlkvgLcUhHAVvZKbFZ1ymZ2mOjjaulIzrANqzq2KRzTnnS7hv9i0pUwJodCHvXeNw==
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@applitools/sdk-shared/-/sdk-shared-0.1.5.tgz#249381707ca1c3a9231d9dc66c6ebb36c7c11bac"
+  integrity sha512-zU5lCG4Dgw8DwGnirachGCEe5YrxQ6xyS28T6ISPSJiaBncTCuxQv8i/J1c12jZOabsml19xO3SliO/LkWZxtQ==
   dependencies:
     "@applitools/functional-commons" "1.6.0"
     "@applitools/sdk-coverage-tests" "1.0.14"

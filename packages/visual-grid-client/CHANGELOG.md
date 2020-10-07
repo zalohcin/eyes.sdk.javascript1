@@ -1,11 +1,13 @@
 # Change Log
 
 ## Unreleased
+- updated to @applitools/eyes-sdk-core@12.3.1 (from 12.3.0)
 
 
 ## 15.0.9 - 2020/10/6
 
 - updated to @applitools/eyes-sdk-core@12.3.0 (from 12.2.9)
+- support multiple versions of ios
 
 ## 15.0.8 - 2020/9/28
 
