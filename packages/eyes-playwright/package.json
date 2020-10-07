@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-playwright",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Applitools Eyes SDK for Playwright",
   "keywords": [
     "eyes-playwright",
@@ -39,7 +39,7 @@
     "playwright": ">=1.0.0"
   },
   "devDependencies": {
-    "@applitools/sdk-coverage-tests": "^1.0.14",
+    "@applitools/sdk-coverage-tests": "^1.0.15",
     "@applitools/sdk-fake-eyes-server": "^2.0.0",
     "@applitools/sdk-release-kit": "^0.3.1",
     "@applitools/sdk-shared": "^0.1.2",
@@ -61,7 +61,7 @@
     "coverage:sandbox": "coverage-tests create-tests && yarn test:coverage && coverage-tests process-report",
     "coverage:prod": "coverage-tests create-tests && yarn test:coverage && coverage-tests process-report --send-report prod",
     "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-playwright' APPLITOOLS_BATCH_ID=$(uuidgen) XUNIT_FILE=coverage-test-report.xml mocha --config .mocharc.cvg.js",
-    "preversion": "bongo preversion && yarn test && yarn coverage:prod",
+    "preversion": "bongo preversion",
     "version": "bongo version",
     "postversion": "bongo postversion",
     "deps": "bongo deps"
