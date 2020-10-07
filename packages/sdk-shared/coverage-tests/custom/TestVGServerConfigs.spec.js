@@ -209,7 +209,7 @@ describe('Miscellaneous VG tests', () => {
     ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
   })
   after(async () => {
-    await destroyDriver
+    await destroyDriver()
   })
 
   it('TestWarningForEDGE', async () => {
