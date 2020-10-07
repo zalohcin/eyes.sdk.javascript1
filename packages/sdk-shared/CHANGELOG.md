@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 0.2.0 - 2020/10/7
+
 - update TestMobileWeb_VG to take full page
 
 ## 0.1.5 - 2020/10/6
