@@ -41,7 +41,7 @@
   "devDependencies": {
     "@applitools/sdk-coverage-tests": "^1.0.15",
     "@applitools/sdk-fake-eyes-server": "^2.0.0",
-    "@applitools/sdk-release-kit": "^0.3.1",
+    "@applitools/sdk-release-kit": "^0.4.0",
     "@applitools/sdk-shared": "^0.1.2",
     "eslint": "^7.9.0",
     "eslint-plugin-mocha-no-only": "^1.1.1",
