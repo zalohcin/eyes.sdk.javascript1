@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 12.3.1 - 2020/10/7
+
 - add support for proxy configurations that use a default port (e.g., port 80) with isHttpOnly ([Trello 539](https://trello.com/c/0RPLxkOo), [commit](https://github.com/applitools/eyes.sdk.javascript1/commit/f0225dd9d5d761f5941eea1fa145bfaea9170877))
 
 ## 12.3.0 - 2020/10/6
