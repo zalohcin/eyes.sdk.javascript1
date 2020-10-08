@@ -50,11 +50,14 @@ function makeGetRenderStatus({logger, doGetRenderStatus, getStatusInterval = 500
         const renderId = renderIds[i]
 
         const selectorRegions = rs.getSelectorRegions()
+
         if (selectorRegions && selectorRegions.length > 0) {
           selectorRegions.forEach(selectorRegion => {
-            if (selectorRegion.getError()) {
-              log(`Warning: region error: ${selectorRegion.getError()}`)
-            }
+            selectorRegion.forEach(innerRegion => {
+              if (innerRegion.getError()) {
+                log(`Warning: region error: ${selectorRegion.getError()}`)
+              }
+            })
           })
         }
 

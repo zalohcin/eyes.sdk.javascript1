@@ -29,18 +29,22 @@ class RenderStatusResults {
     if (deviceSize && !(deviceSize instanceof RectangleSize)) {
       deviceSize = new RectangleSize(deviceSize)
     }
-
-    if (selectorRegions && selectorRegions.length > 0 && !(selectorRegions[0] instanceof Region)) {
-      selectorRegions = selectorRegions.map(
-        region =>
-          new Region({
-            left: region.x,
-            top: region.y,
-            width: region.width,
-            height: region.height,
-            error: region.error,
-          }),
-      )
+    if (
+      selectorRegions &&
+      selectorRegions.length > 0 &&
+      !(selectorRegions[0][0] instanceof Region)
+    ) {
+      selectorRegions = selectorRegions.map(region => {
+        return region.map(innerRegion => {
+          return new Region({
+            left: innerRegion.x,
+            top: innerRegion.y,
+            width: innerRegion.width,
+            height: innerRegion.height,
+            error: innerRegion.error,
+          })
+        })
+      })
     }
 
     this._status = status

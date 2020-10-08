@@ -218,7 +218,7 @@ function makeCheckWindow({
         return
       }
 
-      const imageLocationRegion = sizeMode === 'selector' ? selectorRegions[0] : undefined
+      const imageLocationRegion = sizeMode === 'selector' ? selectorRegions[0][0] : undefined
 
       let imageLocation = undefined
       if (sizeMode === 'selector' && imageLocationRegion) {
@@ -234,6 +234,7 @@ function makeCheckWindow({
         imageLocationRegion,
       })
 
+      debugger
       const checkSettings = createCheckSettings({
         ignore: noOffsetRegions[noOffsetSelectors.ignore],
         floating: offsetRegions[offsetSelectors.floating],
