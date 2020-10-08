@@ -50,17 +50,49 @@ describe('addPageMarker', () => {
       }
     })
 
+    it.only('returns safe area on landscape mode', async () => {
+      await driver.url(url)
+      await driver.execute('window.scrollTo(1000, 1000)')
+      await driver.setOrientation('landscape')
+      await driver.saveScreenshot('state.png')
+      const marker = await driver.execute(addPageMarker)
+      await driver.setOrientation('portrait')
+      assert.deepStrictEqual(marker, {
+        offset: 1,
+        mask: [0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0],
+        orientation: 90,
+        isCover: false,
+        safeArea: {top: 0, left: 44, right: 44, bottom: 21},
+        pixelRation: 3,
+      })
+      const element = await driver.$('[data-applitools-marker]')
+      assert.ok(element.elementId)
+      const {x, y, width, height} = await driver.execute(function(element) {
+        return element.getBoundingClientRect()
+      }, element)
+      assert.deepStrictEqual({x, y, width, height}, {x: 0, y: 0, width: 14, height: 3})
+    })
+
     it('add page marker on scrolled page', async () => {
       await driver.url(url)
       await driver.execute('window.scrollTo(1000, 1000)')
       const marker = await driver.execute(addPageMarker)
-      assert.deepStrictEqual(marker, {offset: 3, size: 9, mask: [0, 1, 0]})
+      await driver.saveScreenshot('filename-0.png')
+      console.log(marker)
+      assert.deepStrictEqual(marker, {
+        offset: 1,
+        mask: [0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0],
+        orientation: 0,
+        isCover: false,
+        safeArea: {top: 0, left: 44, right: 44, bottom: 21},
+        pixelRation: 3,
+      })
       const element = await driver.$('[data-applitools-marker]')
       assert.ok(element.elementId)
-      const {x, y} = await driver.execute(function(element) {
+      const {x, y, width, height} = await driver.execute(function(element) {
         return element.getBoundingClientRect()
       }, element)
-      assert.deepStrictEqual({x, y}, {x: 0, y: 0})
+      assert.deepStrictEqual({x, y, width, height}, {x: 0, y: 0, width: 14, height: 3})
     })
 
     it('add page marker on translated page', async () => {
@@ -70,13 +102,22 @@ describe('addPageMarker', () => {
         document.documentElement.style.webkitTransform = 'translate(-1000px, -1000px)'
       })
       const marker = await driver.execute(addPageMarker)
-      assert.deepStrictEqual(marker, {offset: 3, size: 9, mask: [0, 1, 0]})
+      await driver.saveScreenshot('filename-1.png')
+      console.log(marker)
+      assert.deepStrictEqual(marker, {
+        offset: 1,
+        mask: [0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0],
+        orientation: 0,
+        isCover: false,
+        safeArea: {top: 0, left: 44, right: 44, bottom: 21},
+        pixelRation: 3,
+      })
       const element = await driver.$('[data-applitools-marker]')
       assert.ok(element.elementId)
-      const {x, y} = await driver.execute(function(element) {
+      const {x, y, width, height} = await driver.execute(function(element) {
         return element.getBoundingClientRect()
       }, element)
-      assert.deepStrictEqual({x, y}, {x: 0, y: 0})
+      assert.deepStrictEqual({x, y, width, height}, {x: 0, y: 0, width: 14, height: 3})
     })
   })
 })

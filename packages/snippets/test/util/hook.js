@@ -46,7 +46,6 @@ exports.mochaHooks = {
               name: 'Snippets tests',
               browserName: 'Safari',
               deviceName: 'iPhone XS Simulator',
-              deviceOrientation: 'portrait',
               platformVersion: '13.4',
               platformName: 'iOS',
               username: process.env.SAUCE_USERNAME,

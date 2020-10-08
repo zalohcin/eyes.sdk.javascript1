@@ -1,44 +1,53 @@
-const setElementStyleProperties = require('./setElementStyleProperties')
-
-function addPageMarker() {
+function addPageMarker([mask = [0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0]] = []) {
   const marker = document.createElement('div')
-  const contrast = document.createElement('div')
-  marker.appendChild(contrast)
-  document.body.appendChild(marker)
-  marker.setAttribute('data-applitools-marker', '')
 
-  marker.style.setProperty('position', 'fixed', 'important')
-  marker.style.setProperty('top', '0', 'important')
-  marker.style.setProperty('left', '0', 'important')
-  marker.style.setProperty('width', '3px', 'important')
-  marker.style.setProperty('height', '9px', 'important')
+  marker.style.setProperty('position', 'absolute', 'important')
+  marker.style.setProperty('display', 'flex', 'important')
   marker.style.setProperty('box-sizing', 'content-box', 'important')
   marker.style.setProperty('border', '1px solid rgb(127,127,127)', 'important')
-  marker.style.setProperty('background', 'rgb(0,0,0)', 'important')
   marker.style.setProperty('z-index', '999999999', 'important')
+  marker.setAttribute('data-applitools-marker', '')
+  mask.forEach(color => {
+    const pixel = document.createElement('div')
+    pixel.style.setProperty('width', '1px', 'important')
+    pixel.style.setProperty('height', '1px', 'important')
+    pixel.style.setProperty('background', color ? '#fff' : '#000', 'important')
+    marker.appendChild(pixel)
+  })
+  document.body.appendChild(marker)
 
-  contrast.style.setProperty('width', '3px', 'important')
-  contrast.style.setProperty('height', '3px', 'important')
-  contrast.style.setProperty('margin', '3px 0', 'important')
-  contrast.style.setProperty('background', 'rgb(255,255,255)', 'important')
+  const {top, left} = document.body.getBoundingClientRect()
+  marker.style.setProperty('top', `${-top + document.scrollingElement.clientHeight - marker.offsetHeight}px`, 'important')
+  marker.style.setProperty('left', `${-left + document.scrollingElement.clientWidth - marker.offsetWidth}px`, 'important')
 
-  const transform = {value: 'none', important: true}
-  const html = setElementStyleProperties([
-    document.documentElement,
-    {transform, '-webkit-transform': transform},
-  ])
-  const body = setElementStyleProperties([
-    document.body,
-    {transform, '-webkit-transform': transform},
-  ])
+  let env
+  if (CSS && CSS.supports) {
+    if (CSS.supports('top: env(safe-area-inset-top)')) env = 'env'
+    else if (CSS.supports('top: constant(safe-area-inset-top)')) env = 'constant'
+  }
 
-  document.documentElement.setAttribute('data-applitools-original-transforms', JSON.stringify(html))
-  document.body.setAttribute('data-applitools-original-transforms', JSON.stringify(body))
+  if (env) {
+    marker.style.setProperty('--bottom', `${env}(safe-area-inset-bottom)`)
+    marker.style.setProperty('--top', `${env}(safe-area-inset-top)`)
+    marker.style.setProperty('--left', `${env}(safe-area-inset-left)`)
+    marker.style.setProperty('--right', `${env}(safe-area-inset-right)`)
+  }
+
+  const viewport = document.querySelector('meta[name="viewport"]')
+  const cs = getComputedStyle(marker)
 
   return {
-    offset: 1 * window.devicePixelRatio,
-    size: 3 * window.devicePixelRatio,
-    mask: [0, 1, 0],
+    mask,
+    offset: 1,
+    pixelRation: window.devicePixelRatio,
+    orientation: window.screen.orientation ? window.screen.orientation.angle : window.orientation,
+    isCover: viewport.content.includes('viewport-fit=cover'),
+    safeArea: {
+      bottom: Number.parseInt(cs.getPropertyValue('--bottom')) || 0,
+      top: Number.parseInt(cs.getPropertyValue('--env-top')) || 0,
+      left: Number.parseInt(cs.getPropertyValue('--env-left')) || 0,
+      right: Number.parseInt(cs.getPropertyValue('--env-right')) || 0,
+    },
   }
 }
 
