@@ -90,6 +90,7 @@ function makeRenderingGridClient({
     throw new Error('concurrency is not a number')
   }
 
+  logger.verbose('vgc concurrency is', concurrency)
   ;({batchSequence, baselineBranch, parentBranch, branch, batchNotify} = backwardCompatible(
     [{batchSequenceName}, {batchSequence}],
     [{baselineBranchName}, {baselineBranch}],
