@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-storybook",
-  "version": "3.8.9",
+  "version": "3.8.11",
   "description": "",
   "engines": {
     "node": ">=8.6.0"
@@ -33,7 +33,8 @@
     "postinstall": "node src/postinstall",
     "preversion": "bongo preversion && yarn test",
     "version": "bongo version",
-    "postversion": "bongo postversion --skip-release-notification"
+    "postversion": "bongo postversion --skip-release-notification",
+    "deps": "bongo deps"
   },
   "keywords": [
     "applitools",
@@ -51,23 +52,23 @@
     "url": "git://github.com/applitools/eyes.sdk.javascript1.git"
   },
   "dependencies": {
-    "@applitools/dom-snapshot": "4.0.3",
-    "@applitools/eyes-sdk-core": "12.2.0",
-    "@applitools/functional-commons": "1.5.4",
+    "@applitools/dom-snapshot": "4.1.1",
+    "@applitools/eyes-sdk-core": "12.2.9",
+    "@applitools/functional-commons": "1.6.0",
     "@applitools/monitoring-commons": "1.0.19",
-    "@applitools/visual-grid-client": "15.0.0",
-    "boxen": "^4.2.0",
+    "@applitools/visual-grid-client": "15.0.8",
+    "boxen": "4.2.0",
     "chalk": "3.0.0",
-    "detect-port": "^1.3.0",
-    "lodash.flatten": "^4.4.0",
-    "lodash.pick": "^4.4.0",
-    "ora": "^3.4.0",
-    "puppeteer": "^1.20.0",
-    "yargs": "^12.0.5"
+    "detect-port": "1.3.0",
+    "lodash.flatten": "4.4.0",
+    "lodash.pick": "4.4.0",
+    "ora": "3.4.0",
+    "puppeteer": "1.20.0",
+    "yargs": "12.0.5"
   },
   "devDependencies": {
-    "@applitools/sdk-release-kit": "0.2.2",
-    "@applitools/sdk-shared": "0.1.0",
+    "@applitools/sdk-release-kit": "^0.3.1",
+    "@applitools/sdk-shared": "^0.1.0",
     "@storybook/addon-options": "^5.2.8",
     "@storybook/react": "^5.2.8",
     "@testing-library/dom": "^5.6.1",

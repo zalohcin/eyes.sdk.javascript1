@@ -854,13 +854,14 @@ eyes.setConfiguration(configuration)
 #### iOS device
 
 ```js
-const {IosDeviceName, ScreenOrientation} = require('@applitools/eyes-playwright')
+const {IosDeviceName, ScreenOrientation, IosVersion} = require('@applitools/eyes-playwright')
 // ...
 const configuration = eyes.getConfiguration()
 configuration.addBrowser({
   iosDeviceInfo: {
     deviceName: IosDeviceName.iPhone_11,
-    screenOrientation: ScreenOrientation.LANDSCAPE,
+    screenOrientation: ScreenOrientation.LANDSCAPE, // optional, default: ScreenOrientation.PORTRAIT
+    iosVersion: IosVersion.LATEST // optional, default: undefined (i.e. the default is determined by the Ultrafast grid)
   },
 })
 eyes.setConfiguration(configuration)

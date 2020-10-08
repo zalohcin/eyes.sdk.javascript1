@@ -1,5 +1,5 @@
 const core = require('@applitools/eyes-sdk-core')
-const {EyesFactory, CheckSettings} = require('./src/PlaywrightSDK')
+const {EyesFactory, CheckSettings} = require('./src/sdk')
 
 exports.Eyes = EyesFactory
 exports.Target = CheckSettings
@@ -13,6 +13,7 @@ exports.BrowserType = core.BrowserType
 exports.Configuration = core.Configuration
 exports.DeviceName = core.DeviceName
 exports.IosDeviceName = core.IosDeviceName
+exports.IosVersion = core.IosVersion
 exports.ExactMatchSettings = core.ExactMatchSettings
 exports.FloatingMatchSettings = core.FloatingMatchSettings
 exports.ImageMatchSettings = core.ImageMatchSettings

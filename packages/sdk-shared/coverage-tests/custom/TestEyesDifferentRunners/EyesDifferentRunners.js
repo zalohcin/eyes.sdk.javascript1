@@ -4,7 +4,7 @@ const path = require('path')
 const assert = require('assert')
 const {Target, BrowserType} = require(process.cwd())
 const {getApiData} = require('../../util/ApiAssertions')
-const spec = require(path.resolve(cwd, 'src/SpecDriver'))
+const spec = require(path.resolve(cwd, 'src/spec-driver'))
 
 function testSetup(getCheckSettings, validateResults) {
   return function(url, matchingLevel) {

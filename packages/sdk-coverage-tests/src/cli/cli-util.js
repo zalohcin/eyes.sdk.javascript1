@@ -4,7 +4,10 @@ const {findDifferencesBetweenCollections} = require('../common-util')
 const {isMatch} = require('micromatch')
 const vm = require('vm')
 
-async function fetchCoverageTests({url = 'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/master/tests.js', localPath}) {
+async function fetchCoverageTests({
+  url = 'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/master/tests.js',
+  localPath,
+}) {
   const testsFileScript = localPath
     ? fs.readFileSync(localPath).toString()
     : (await axios(url)).data

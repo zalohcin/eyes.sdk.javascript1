@@ -6,7 +6,7 @@ if (!process.env.APPLITOOLS_SELENIUM_MAJOR_VERSION) {
   process.env.APPLITOOLS_SELENIUM_MAJOR_VERSION = major
 }
 
-const {EyesClassic, EyesVisualGrid, EyesFactory, CheckSettings} = require('./src/SeleniumSDK')
+const {EyesClassic, EyesVisualGrid, EyesFactory, CheckSettings} = require('./src/sdk')
 
 exports.Eyes = EyesFactory
 exports.EyesSelenium = EyesClassic
@@ -23,6 +23,7 @@ exports.BrowserType = core.BrowserType
 exports.Configuration = core.Configuration
 exports.DeviceName = core.DeviceName
 exports.IosDeviceName = core.IosDeviceName
+exports.IosVersion = core.IosVersion
 exports.ExactMatchSettings = core.ExactMatchSettings
 exports.FloatingMatchSettings = core.FloatingMatchSettings
 exports.ImageMatchSettings = core.ImageMatchSettings

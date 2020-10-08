@@ -28,7 +28,9 @@ describe('CheckFluent', () => {
       eyes = new Eyes()
     }
     eyes.setBatch(batch)
-    eyes.setLogHandler(new ConsoleLogHandler(false))
+    if (process.env.APPLITOOLS_SHOW_LOGS) {
+      eyes.setLogHandler(new ConsoleLogHandler(true))
+    }
     driver = await eyes.open(driver, this.test.parent.title, this.currentTest.title, {
       width: 700,
       height: 460,

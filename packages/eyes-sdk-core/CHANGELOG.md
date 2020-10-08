@@ -3,6 +3,39 @@
 ## Unreleased
 
 
+## 12.3.1 - 2020/10/7
+
+- add support for proxy configurations that use a default port (e.g., port 80) with isHttpOnly ([Trello 539](https://trello.com/c/0RPLxkOo), [commit](https://github.com/applitools/eyes.sdk.javascript1/commit/f0225dd9d5d761f5941eea1fa145bfaea9170877))
+
+## 12.3.0 - 2020/10/6
+
+- added support of chunked dom snapshot results
+- used common polling logic for dom snapshot and dom capture
+- add warnings when `setViewportSize` fails during taking dom snapshot with layout breakpoints
+- support multiple versions of ios for visual grid
+- updated to @applitools/dom-snapshot@4.1.2 (from 4.1.0)
+- updated to @applitools/snippets@2.0.3 (from 2.0.1)
+- updated to @applitools/dom-capture@8.0.0 (from 7.3.0)
+- updated to @applitools/dom-snapshot@4.2.0 (from 4.1.2)
+
+## 12.2.9 - 2020/9/28
+
+- increase the default number of retries for request
+- add delay before retry
+- updated to @applitools/snippets@2.0.1 (from 2.0.0)
+
+## 12.2.8 - 2020/9/24
+
+- new release process
+
+## 12.2.7 - 2020/9/23
+
+- remove yarn workspaces
+
+## 12.2.6 - 2020/9/23
+
+- support cross origin iframes
+
 ## 12.2.5 - 2020/9/17
 
 - fix viewport position calculations ([Trello](https://trello.com/c/TuXUZUNO))
