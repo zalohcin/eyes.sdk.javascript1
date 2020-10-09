@@ -65,6 +65,7 @@ describe('testWindow', () => {
       ],
       showLogs: process.env.APPLITOOLS_SHOW_LOGS,
       saveDebugData: process.env.APPLITOOLS_SAVE_DEBUG_DATA,
+      saveNewTests: false,
     }
 
     const checkParams = {

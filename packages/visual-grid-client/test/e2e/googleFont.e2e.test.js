@@ -57,6 +57,7 @@ describe('openEyes', () => {
       testName: 'renders google font on IE correctly',
       browser: [{width: 640, height: 480, name: 'ie11'}],
       userAgent,
+      saveNewTests: false,
     })
 
     checkWindow({
