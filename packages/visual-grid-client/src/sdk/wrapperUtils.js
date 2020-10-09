@@ -56,6 +56,7 @@ function configureWrappers({
   useDom,
   enablePatterns,
   ignoreDisplacements,
+  userAgents,
 }) {
   for (let i = 0, ii = wrappers.length; i < ii; i++) {
     const wrapper = wrappers[i]
@@ -66,6 +67,8 @@ function configureWrappers({
 
     validateAndAddProperties(wrapper, properties)
     wrapper.setBatch(batch)
+
+    wrapper.setInferredEnvironment(`useragent:${userAgents[browsers[i].name]}`)
 
     displayName !== undefined && wrapper.setDisplayName(displayName)
     baselineBranch !== undefined && wrapper.setBaselineBranchName(baselineBranch)

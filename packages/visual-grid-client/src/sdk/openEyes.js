@@ -58,11 +58,8 @@ function makeOpenEyes({
   waitForRenderedStatus,
   renderThroat,
   eyesTransactionThroat,
-  getRenderInfoPromise,
-  getHandledRenderInfoPromise,
-  getRenderInfo,
+  getInitialData,
   agentId,
-  getUserAgents: _getUserAgents,
   globalState,
   wrappers: _wrappers,
   visualGridOptions: _visualGridOptions,
@@ -103,7 +100,6 @@ function makeOpenEyes({
     compareWithParentBranch = _compareWithParentBranch,
     ignoreBaseline = _ignoreBaseline,
     notifyOnCompletion,
-    getUserAgents = _getUserAgents,
     visualGridOptions = _visualGridOptions,
   }) {
     logger.verbose(`openEyes: testName=${testName}, browser=`, browser)
@@ -183,6 +179,8 @@ function makeOpenEyes({
         getBatchInfoWithCache,
       })
 
+    const {renderInfo, userAgents} = await getInitialData()
+
     configureWrappers({
       wrappers,
       browsers,
@@ -209,6 +207,7 @@ function makeOpenEyes({
       ignoreBaseline,
       serverUrl,
       agentId,
+      userAgents,
     })
 
     if (!globalState.batchStore.hasCloseBatch()) {
@@ -216,14 +215,6 @@ function makeOpenEyes({
       globalState.batchStore.setCloseBatch(
         serverConnector.deleteBatchSessions.bind(serverConnector),
       )
-    }
-
-    const renderInfoPromise = getRenderInfoPromise() || getHandledRenderInfoPromise(getRenderInfo())
-
-    const renderInfo = await renderInfoPromise
-
-    if (renderInfo instanceof Error) {
-      throw renderInfo
     }
 
     logger.verbose('openEyes: opening wrappers')
@@ -265,7 +256,6 @@ function makeOpenEyes({
       openEyesPromises,
       matchLevel,
       userAgent,
-      getUserAgents,
       visualGridOptions,
     })
 

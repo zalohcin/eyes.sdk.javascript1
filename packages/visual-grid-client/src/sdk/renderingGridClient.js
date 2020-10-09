@@ -7,7 +7,7 @@ const {
   Logger,
   GeneralUtils: {backwardCompatible},
 } = require('@applitools/eyes-sdk-core')
-const {ptimeoutWithError} = require('@applitools/functional-commons')
+const {ptimeoutWithError, presult} = require('@applitools/functional-commons')
 const makeGetAllResources = require('./getAllResources')
 const extractCssResources = require('./extractCssResources')
 const makeFetchResource = require('./fetchResource')
@@ -16,7 +16,6 @@ const makeWaitForRenderedStatus = require('./waitForRenderedStatus')
 const makeGetRenderStatus = require('./getRenderStatus')
 const makePutResources = require('./putResources')
 const makeRender = require('./render')
-const makeGetUserAgents = require('./getUserAgents')
 const makeOpenEyes = require('./openEyes')
 const makeCreateRGridDOMAndGetResourceMapping = require('./createRGridDOMAndGetResourceMapping')
 const makeCloseBatch = require('./makeCloseBatch')
@@ -155,7 +154,6 @@ function makeRenderingGridClient({
   const createRGridDOMAndGetResourceMapping = makeCreateRGridDOMAndGetResourceMapping({
     getAllResources,
   })
-  const getUserAgents = makeGetUserAgents(doGetUserAgents)
 
   const batch = new BatchInfo({
     name: batchName,
@@ -197,15 +195,12 @@ function makeRenderingGridClient({
     render,
     waitForRenderedStatus,
     renderThroat,
-    getRenderInfoPromise,
-    getHandledRenderInfoPromise,
-    getRenderInfo,
+    getInitialData,
     createRGridDOMAndGetResourceMapping,
     eyesTransactionThroat,
     agentId,
     userAgent,
     globalState,
-    getUserAgents,
     visualGridOptions,
   }
 
@@ -220,41 +215,34 @@ function makeRenderingGridClient({
     testWindow,
   }
 
-  function getRenderInfo() {
+  async function getInitialData() {
+    if (renderInfoPromise) return renderInfoPromise
+
     if (!renderWrapper.getApiKey()) {
       renderWrapper.setApiKey(apiKey)
     }
 
-    return doGetRenderInfo()
-  }
+    const [err, renderInfo] = await presult(doGetRenderInfo())
 
-  function getRenderInfoPromise() {
-    return renderInfoPromise
-  }
-
-  function getHandledRenderInfoPromise(promise) {
-    renderInfoPromise = promise
-      .then(renderInfo => {
-        setRenderingInfo(renderInfo)
-        return renderInfo
-      })
-      .catch(err => {
-        if (err.response) {
-          if (err.response.status === 401) {
-            return new Error(authorizationErrMsg)
-          }
-          if (err.response.status === 403) {
-            return new Error(blockedAccountErrMsg)
-          }
-          if (err.response.status === 400) {
-            return new Error(badRequestErrMsg)
-          }
+    if (err) {
+      if (err.response) {
+        if (err.response.status === 401) {
+          throw new Error(authorizationErrMsg)
         }
+        if (err.response.status === 403) {
+          throw new Error(blockedAccountErrMsg)
+        }
+        if (err.response.status === 400) {
+          throw new Error(badRequestErrMsg)
+        }
+      }
 
-        return err
-      })
+      throw err
+    }
 
-    return renderInfoPromise
+    setRenderingInfo(renderInfo)
+    const userAgents = await doGetUserAgents()
+    return {renderInfo, userAgents}
   }
 }
 

@@ -55,7 +55,7 @@ describe('openEyes', () => {
     const {checkWindow, close} = await openEyes({
       appName: 'some app',
       testName: 'renders google font on IE correctly',
-      browser: [{width: 640, height: 480, name: 'ie11'}],
+      browser: [{width: 640, height: 480, name: 'ie'}],
       userAgent,
       saveNewTests: false,
     })

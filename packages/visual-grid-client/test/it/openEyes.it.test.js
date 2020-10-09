@@ -1099,7 +1099,7 @@ Received: 'firefox-1'.`,
     expect(err3[0].message).have.string(failMsg())
   })
 
-  it('sets configuration on wrappers', () => {
+  it('sets configuration on wrappers', async () => {
     const wrappers = [
       createFakeWrapper(baseUrl),
       createFakeWrapper(baseUrl),
@@ -1115,7 +1115,7 @@ Received: 'firefox-1'.`,
       agentId: 'agentId',
     }).openEyes
 
-    openEyes({
+    await openEyes({
       wrappers,
       url: 'bla',
       appName,
@@ -1164,7 +1164,7 @@ Received: 'firefox-1'.`,
     expect(wrappers[2].deviceInfo).to.equal('Desktop')
   })
 
-  it('sets configuration on wrappers in makeRenderingGridClient', () => {
+  it('sets configuration on wrappers in makeRenderingGridClient', async () => {
     const wrappers = [
       createFakeWrapper(baseUrl),
       createFakeWrapper(baseUrl),
@@ -1196,7 +1196,7 @@ Received: 'firefox-1'.`,
       agentId: 'agentId',
     }).openEyes
 
-    openEyes({
+    await openEyes({
       wrappers,
       url: 'bla',
     })
@@ -1226,7 +1226,7 @@ Received: 'firefox-1'.`,
     expect(wrappers[2].deviceInfo).to.equal('Desktop')
   })
 
-  it('sets proxy with username/password wrappers', () => {
+  it('sets proxy with username/password wrappers', async () => {
     openEyes = makeRenderingGridClient({
       showLogs: APPLITOOLS_SHOW_LOGS,
       apiKey,
@@ -1234,7 +1234,7 @@ Received: 'firefox-1'.`,
       proxy: {uri: 'uri', username: 'user', password: 'pass'},
     }).openEyes
 
-    openEyes({
+    await openEyes({
       wrappers: [wrapper],
       appName,
     })
@@ -1248,7 +1248,7 @@ Received: 'firefox-1'.`,
       proxy: null,
     }).openEyes
 
-    openEyes({
+    await openEyes({
       wrappers: [wrapper],
       appName,
     })

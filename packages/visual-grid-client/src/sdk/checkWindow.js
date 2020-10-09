@@ -28,7 +28,6 @@ function makeCheckWindow({
   openEyesPromises,
   userAgent,
   matchLevel: _matchLevel,
-  getUserAgents,
   visualGridOptions: _visualGridOptions,
 }) {
   return function checkWindow({
@@ -193,8 +192,6 @@ function makeCheckWindow({
         logger.log(
           `aborting checkWindow after render request complete but before waiting for rendered status`,
         )
-        const userAgents = await getUserAgents()
-        wrapper.setInferredEnvironment(`useragent:${userAgents[browsers[index].name]}`)
         if (renderJobs.has(renderRequest)) renderJobs.get(renderRequest)()
         return
       }
@@ -202,8 +199,6 @@ function makeCheckWindow({
       // render error fails all tests
       if (renderErr) {
         logger.log('got render error aborting tests', renderErr)
-        const userAgents = await getUserAgents()
-        wrapper.setInferredEnvironment(`useragent:${userAgents[browsers[index].name]}`)
         testController.setFatalError(renderErr)
         if (renderJobs.has(renderRequest)) renderJobs.get(renderRequest)()
         return
@@ -229,8 +224,6 @@ function makeCheckWindow({
 
       if (renderStatusErr) {
         logger.log('got render status error aborting tests')
-        const userAgents = await getUserAgents()
-        wrapper.setInferredEnvironment(`useragent:${userAgents[browsers[index].name]}`)
         testController.setFatalError(renderStatusErr)
         if (renderJobs.has(renderRequest)) renderJobs.get(renderRequest)()
         return
