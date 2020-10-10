@@ -646,7 +646,7 @@ Received: 'firefox-1'.`,
       }
 
       openEyes = makeRenderingGridClient({
-        concurrency: 2,
+        testconcurrency: 2,
         apiKey,
         showLogs: APPLITOOLS_SHOW_LOGS,
         renderWrapper: wrapper,
@@ -676,7 +676,7 @@ Received: 'firefox-1'.`,
       }
 
       openEyes = makeRenderingGridClient({
-        concurrency: 1,
+        testConcurrency: 1,
         apiKey,
         showLogs: APPLITOOLS_SHOW_LOGS,
         renderWrapper: wrapper,
@@ -719,7 +719,7 @@ Received: 'firefox-1'.`,
       }
 
       openEyes = makeRenderingGridClient({
-        concurrency: 1,
+        testConcurrency: 1,
         apiKey,
         showLogs: APPLITOOLS_SHOW_LOGS,
         renderWrapper: wrapper,
@@ -795,7 +795,7 @@ Received: 'firefox-1'.`,
       openEyes = makeRenderingGridClient({
         renderTimeout: 0,
         putResourcesTimeout: 0,
-        concurrency: 1,
+        testConcurrency: 1,
         apiKey,
         showLogs: APPLITOOLS_SHOW_LOGS,
         renderWrapper: wrapper,
@@ -885,21 +885,23 @@ Received: 'firefox-1'.`,
       openEyes = makeRenderingGridClient({
         renderTimeout: 0,
         putResourcesTimeout: 0,
-        concurrency: 2,
-        renderConcurrencyFactor: 1,
+        testConcurrency: 2,
         apiKey,
         showLogs: APPLITOOLS_SHOW_LOGS,
         renderWrapper: wrapper,
       }).openEyes
     })
 
-    it('runs renders with max concurrency', async () => {
+    it.only('runs renders with max concurrency', async () => {
       const {checkWindow, close} = await openEyes({
         wrappers: [wrapper],
         appName,
       })
+      console.log('111')
       checkWindow({url: '', snapshot: {cdt: []}, target: null, sizeMode: null})
+      console.log('222')
       await psetTimeout(10)
+      console.log('333')
       expect(renderCount).to.equal(1)
       expect(renderStatusCount).to.equal(0) // still batching initial renderIds for /render-status request
 
@@ -1005,8 +1007,7 @@ Received: 'firefox-1'.`,
       openEyes = makeRenderingGridClient({
         putResourcesTimeout: 0,
         renderTimeout: 0,
-        concurrency: 1,
-        renderConcurrencyFactor: 1,
+        testConcurrency: 1,
         apiKey,
         showLogs: APPLITOOLS_SHOW_LOGS,
         renderWrapper: wrapper,
@@ -1914,7 +1915,7 @@ Received: 'firefox-1'.`,
 
   it('handles empty tests', async () => {
     openEyes = makeRenderingGridClient({
-      concurrency: 1,
+      testConcurrency: 1,
       apiKey,
       showLogs: APPLITOOLS_SHOW_LOGS,
       renderWrapper: wrapper,

@@ -33,6 +33,7 @@ module.exports = [
   'ignoreBaseline',
   'serverUrl',
   'concurrency',
+  'testConcurrency',
   'useDom',
   'enablePatterns',
   'ignoreDisplacements',

@@ -33,12 +33,8 @@ function generateConfig({argv = {}, defaultConfig = {}, externalConfigParams = [
     result.showLogs = true;
   }
 
-  if (
-    result.storyDataGap === undefined &&
-    result.concurrency !== undefined &&
-    result.renderConcurrencyFactor !== undefined
-  ) {
-    result.storyDataGap = result.concurrency * result.renderConcurrencyFactor;
+  if (result.storyDataGap === undefined && result.concurrency !== undefined) {
+    result.storyDataGap = result.concurrency;
   }
   return result;
 }

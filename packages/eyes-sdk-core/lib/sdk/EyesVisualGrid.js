@@ -189,9 +189,6 @@ class EyesVisualGrid extends EyesCore {
       this._configuration.addBrowser(vs.getWidth(), vs.getHeight(), BrowserType.CHROME)
     }
 
-    if (this._runner.getConcurrentSessions())
-      this._configuration.setConcurrentSessions(this._runner.getConcurrentSessions())
-
     const {openEyes} = await this._runner.getVisualGridClientWithCache({
       logger: this._logger,
       agentId: this.getFullAgentId(),
@@ -200,7 +197,8 @@ class EyesVisualGrid extends EyesCore {
       saveDebugData: this._configuration.getSaveDebugData(),
       proxy: this._configuration.getProxy(),
       serverUrl: this._configuration.getServerUrl(),
-      concurrency: this._configuration.getConcurrentSessions(),
+      concurrency: this._runner.legacyConcurrency || this._configuration.getConcurrentSessions(),
+      testConcurrency: this._runner.testConcurrency,
     })
 
     if (this._configuration.getViewportSize()) {

@@ -1184,6 +1184,7 @@ class Configuration {
   /* ------------ Visual Grid properties ------------ */
 
   /**
+   * @deprecated
    * @return {number}
    */
   getConcurrentSessions() {
@@ -1191,6 +1192,7 @@ class Configuration {
   }
 
   /**
+   * @deprecated
    * @param {number} value
    * @return {this}
    */

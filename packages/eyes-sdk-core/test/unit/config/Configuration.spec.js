@@ -216,6 +216,11 @@ describe('Configuration', () => {
       assert.strictEqual(configuration.getAppName(), 'test')
       assert.strictEqual(configuration.getApiKey(), 'apiKey')
     })
+
+    it('default values', () => {
+      const configuration = new Configuration()
+      assert.strictEqual(configuration.getConcurrentSessions(), 1)
+    })
   })
 
   it('saveNewTests', () => {

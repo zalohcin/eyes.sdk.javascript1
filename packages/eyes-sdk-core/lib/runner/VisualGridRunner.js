@@ -3,19 +3,40 @@
 const {GeneralUtils} = require('../..')
 const EyesRunner = require('./EyesRunner')
 
+/**
+ * @typedef {{testConcurrency: number}} RunnerOptions
+ */
+
 class VisualGridRunner extends EyesRunner {
   /**
-   * @param {number} [concurrentSessions]
+   * @param {number|RunnerOptions} [concurrencyOrRunnerOptions]
    */
-  constructor(concurrentSessions) {
+  constructor(concurrencyOrRunnerOptions) {
     super()
-    this._concurrentSessions = concurrentSessions
+    if (typeof concurrencyOrRunnerOptions === 'number') {
+      this._legacyConcurrency = concurrencyOrRunnerOptions
+    } else if (concurrencyOrRunnerOptions && concurrencyOrRunnerOptions.testConcurrency) {
+      this._concurrentSessions = concurrencyOrRunnerOptions.testConcurrency
+    } else if (concurrencyOrRunnerOptions) {
+      throw new Error(
+        'VisualGridRunner expects an object argument with property testConcurrency for controlling the number of concurrent visual tests',
+      )
+    }
   }
 
   /**
+   * @deprecated
    * @return {number}
    */
   getConcurrentSessions() {
+    return this._concurrentSessions
+  }
+
+  get legacyConcurrency() {
+    return this._legacyConcurrency
+  }
+
+  get testConcurrency() {
     return this._concurrentSessions
   }
 

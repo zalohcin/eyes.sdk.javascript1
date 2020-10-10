@@ -30,6 +30,7 @@ const {
   blockedAccountErrMsg,
   badRequestErrMsg,
 } = require('./wrapperUtils')
+const getFinalConcurrency = require('./getFinalConcurrency')
 require('@applitools/isomorphic-fetch')
 
 // TODO when supporting only Node version >= 8.6.0 then we can use ...config for all the params that are just passed on to makeOpenEyes
@@ -42,7 +43,7 @@ function makeRenderingGridClient({
   renderStatusTimeout,
   renderStatusInterval,
   concurrency = Infinity,
-  renderConcurrencyFactor = 5,
+  testConcurrency = Infinity,
   appName,
   browser = {width: 1024, height: 768},
   apiKey,
@@ -83,13 +84,13 @@ function makeRenderingGridClient({
   dontCloseBatches,
   visualGridOptions,
 }) {
-  const openEyesConcurrency = Number(concurrency)
+  const finalConcurrency = getFinalConcurrency({concurrency, testConcurrency})
 
-  if (isNaN(openEyesConcurrency)) {
+  if (isNaN(finalConcurrency)) {
     throw new Error('concurrency is not a number')
   }
   logger = logger || new Logger(showLogs, 'visual-grid-client')
-  logger.verbose('vgc concurrency is', concurrency)
+  logger.verbose('vgc concurrency is', finalConcurrency)
   ;({batchSequence, baselineBranch, parentBranch, branch, batchNotify} = backwardCompatible(
     [{batchSequenceName}, {batchSequence}],
     [{baselineBranchName}, {baselineBranch}],
@@ -100,8 +101,8 @@ function makeRenderingGridClient({
   ))
 
   let renderInfoPromise
-  const eyesTransactionThroat = transactionThroat(openEyesConcurrency)
-  const renderThroat = throatPkg(openEyesConcurrency * renderConcurrencyFactor)
+  const eyesTransactionThroat = transactionThroat(finalConcurrency)
+  const renderThroat = throatPkg(finalConcurrency)
   renderWrapper =
     renderWrapper ||
     createRenderWrapper({
