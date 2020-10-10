@@ -366,4 +366,20 @@ describe('ServerConnector', () => {
     await assertRejects(serverConnector.startSession({}), 'ENOTFOUND')
     assert.strictEqual(tries, 6)
   })
+
+  it('logEvent', async () => {
+    const events = [
+      {timestamp: new Date().toISOString(), level: 'Notice', event: 'test 1'},
+      {timestamp: new Date().toISOString(), level: 'Notice', event: 'test 2'},
+    ]
+    const serverConnector = getServerConnector()
+    serverConnector._axios.defaults.adapter = async config => {
+      assert.deepStrictEqual(config.data, JSON.stringify({events}))
+      return {
+        status: 200,
+        config,
+      }
+    }
+    await serverConnector.logEvents(events)
+  })
 })
