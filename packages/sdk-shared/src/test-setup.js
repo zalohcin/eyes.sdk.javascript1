@@ -224,7 +224,7 @@ function getEyes({
   showLogs,
   runner,
 } = {}) {
-  runner = runner || (isVisualGrid ? new VisualGridRunner() : undefined)
+  runner = runner || (isVisualGrid ? new VisualGridRunner({testConcurrency: 500}) : undefined)
   const eyes = new Eyes(runner)
   const conf = Object.assign(
     {
@@ -236,7 +236,6 @@ function getEyes({
       matchTimeout: 0,
       stitchMode: isCssStitching ? StitchMode.CSS : StitchMode.SCROLL,
       saveNewTests: false,
-      concurrentSessions: 100,
     },
     configuration,
   )
