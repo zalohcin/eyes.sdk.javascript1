@@ -131,6 +131,10 @@ class EyesWrapper extends EyesBase {
     return this._serverConnector.getUserAgents()
   }
 
+  logEvents(events) {
+    return this._serverConnector.logEvents(events)
+  }
+
   checkWindow({screenshotUrl, tag, domUrl, checkSettings, imageLocation, url}) {
     const regionProvider = new NullRegionProvider()
     this.screenshotUrl = screenshotUrl

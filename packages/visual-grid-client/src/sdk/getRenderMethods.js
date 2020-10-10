@@ -8,6 +8,7 @@ function getRenderMethods(renderWrapper) {
   const doGetRenderStatus = renderWrapper.getRenderStatus.bind(renderWrapper)
   const setRenderingInfo = renderWrapper.setRenderingInfo.bind(renderWrapper)
   const doGetUserAgents = renderWrapper.getUserAgents.bind(renderWrapper)
+  const doLogEvents = renderWrapper.logEvents.bind(renderWrapper)
   return {
     doGetRenderInfo,
     doRenderBatch,
@@ -16,6 +17,7 @@ function getRenderMethods(renderWrapper) {
     doGetRenderStatus,
     setRenderingInfo,
     doGetUserAgents,
+    doLogEvents,
   }
 }
 

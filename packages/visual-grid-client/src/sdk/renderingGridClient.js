@@ -6,6 +6,7 @@ const {
   BatchInfo,
   Logger,
   GeneralUtils: {backwardCompatible},
+  BatchStartEvent,
 } = require('@applitools/eyes-sdk-core')
 const {ptimeoutWithError, presult} = require('@applitools/functional-commons')
 const makeGetAllResources = require('./getAllResources')
@@ -42,8 +43,8 @@ function makeRenderingGridClient({
   putResourcesTimeout,
   renderStatusTimeout,
   renderStatusInterval,
-  concurrency = Infinity,
-  testConcurrency = Infinity,
+  concurrency,
+  testConcurrency,
   appName,
   browser = {width: 1024, height: 768},
   apiKey,
@@ -100,7 +101,7 @@ function makeRenderingGridClient({
     logger,
   ))
 
-  let renderInfoPromise
+  let initialDataPromise
   const eyesTransactionThroat = transactionThroat(finalConcurrency)
   const renderThroat = throatPkg(finalConcurrency)
   renderWrapper =
@@ -120,6 +121,7 @@ function makeRenderingGridClient({
     doGetRenderStatus,
     setRenderingInfo,
     doGetUserAgents,
+    doLogEvents,
   } = getRenderMethods(renderWrapper)
   const resourceCache = createResourceCache()
   const fetchCache = createResourceCache()
@@ -217,8 +219,13 @@ function makeRenderingGridClient({
   }
 
   async function getInitialData() {
-    if (renderInfoPromise) return renderInfoPromise
+    if (initialDataPromise) return initialDataPromise
 
+    initialDataPromise = doGetInitialData()
+    return initialDataPromise
+  }
+
+  async function doGetInitialData() {
     if (!renderWrapper.getApiKey()) {
       renderWrapper.setApiKey(apiKey)
     }
@@ -243,6 +250,9 @@ function makeRenderingGridClient({
 
     setRenderingInfo(renderInfo)
     const userAgents = await doGetUserAgents()
+    await doLogEvents([BatchStartEvent({concurrency, testConcurrency})]).catch(err => {
+      logger.log('error when logging batchStart', err)
+    })
     return {renderInfo, userAgents}
   }
 }

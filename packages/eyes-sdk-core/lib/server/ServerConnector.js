@@ -21,6 +21,10 @@ const RenderStatusResults = require('../renderer/RenderStatusResults')
  * @typedef {import('../geometry/Region').RegionObject} RegionObject
  */
 
+/**
+ * @typedef {import('../logging/LogEvent').LogEvent} LogEvent
+ */
+
 // Constants
 const EYES_API_PATH = '/api/sessions'
 const DEFAULT_TIMEOUT_MS = 300000 // ms (5 min)
@@ -822,6 +826,30 @@ class ServerConnector {
         `ServerConnector.getIosDevicesSizes - unexpected status (${response.statusText})`,
       )
     }
+  }
+
+  /**
+   * @param {LogEvent[]} events
+   * @return {Promise<string>}
+   */
+  async logEvents(events) {
+    ArgumentGuard.isArray(events, 'events')
+    this._logger.verbose(`ServerConnector.logEvents called with ${events.length} events`)
+
+    const config = {
+      name: 'logEvents',
+      method: 'POST',
+      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH, '/log'),
+      data: {events},
+    }
+
+    const response = await this._axios.request(config)
+    if (response.status === HTTP_STATUS_CODES.OK) {
+      this._logger.verbose('ServerConnector.logEvents - post succeeded', response.data)
+      return response.data
+    }
+
+    throw new Error(`ServerConnector.logEvents - unexpected status (${response.statusText})`)
   }
 }
 
