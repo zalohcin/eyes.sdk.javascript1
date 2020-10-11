@@ -562,10 +562,7 @@ class ServerConnector {
    */
   async renderCheckResources(resources) {
     ArgumentGuard.notNull(resources, 'resources')
-    const hashes = resources.map(resource => ({
-      hashFormat: 'sha256',
-      hash: resource.getSha256Hash(),
-    }))
+    const hashes = resources.map(resource => resource.getSha256Hash())
     this._logger.verbose(`ServerConnector.renderCheckResources called with resources - ${hashes}`)
 
     const config = {
