@@ -17,50 +17,49 @@ function calculateMatchRegions({
 
   function mapSelectionToRegions(selector, addOffset) {
     if (selector && selector.length > 0) {
-      let region
       const regions = []
-      for (const selectorObj of selector) {
-        region = selectorToRegion(selectorObj, addOffset)
-        if (region.length > 0) {
-          regions.push(...region)
+      for (const [index, selectorObj] of selector.entries()) {
+        const region = selectorToRegion(selectorObj, addOffset, index)
+        if (region) {
+          regions.push(region)
         }
       }
+      selectorRegionIndex++
       return regions.length === 0 ? undefined : regions
     }
 
     return selector
   }
 
-  function selectorToRegion(selectorObj, addOffset) {
+  function selectorToRegion(selectorObj, addOffset, index = 0) {
     if (selectorObj.selector) {
-      return selectorRegions[selectorRegionIndex++].map(selectorRegion => {
-        if (!selectorRegion || selectorRegion.getError()) {
-          return null
-        }
+      const selectorRegion = selectorRegions[selectorRegionIndex][index] || []
+      if (!selectorRegion || selectorRegion.getError()) {
+        return null
+      }
 
-        let ret = imageLocationRegion
-          ? {
-              width: selectorRegion.getWidth(),
-              height: selectorRegion.getHeight(),
-              left: Math.max(0, selectorRegion.getLeft() - imageLocationRegion.getLeft()),
-              top: Math.max(0, selectorRegion.getTop() - imageLocationRegion.getTop()),
-            }
-          : selectorRegion.toJSON()
+      let ret = imageLocationRegion
+        ? {
+            width: selectorRegion.getWidth(),
+            height: selectorRegion.getHeight(),
+            left: Math.max(0, selectorRegion.getLeft() - imageLocationRegion.getLeft()),
+            top: Math.max(0, selectorRegion.getTop() - imageLocationRegion.getTop()),
+          }
+        : selectorRegion.toJSON()
 
-        if (addOffset) {
-          ret = Object.assign(ret, {
-            maxUpOffset: selectorObj.maxUpOffset,
-            maxDownOffset: selectorObj.maxDownOffset,
-            maxLeftOffset: selectorObj.maxLeftOffset,
-            maxRightOffset: selectorObj.maxRightOffset,
-          })
-        }
-        if (selectorObj.accessibilityType) {
-          ret.accessibilityType = selectorObj.accessibilityType
-        }
+      if (addOffset) {
+        ret = Object.assign(ret, {
+          maxUpOffset: selectorObj.maxUpOffset,
+          maxDownOffset: selectorObj.maxDownOffset,
+          maxLeftOffset: selectorObj.maxLeftOffset,
+          maxRightOffset: selectorObj.maxRightOffset,
+        })
+      }
+      if (selectorObj.accessibilityType) {
+        ret.accessibilityType = selectorObj.accessibilityType
+      }
 
-        return ret
-      })
+      return ret
     } else {
       return selectorObj
     }
