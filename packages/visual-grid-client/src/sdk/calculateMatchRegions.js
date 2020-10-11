@@ -1,25 +1,32 @@
 'use strict'
 
-function calculateMatchRegions({
-  noOffsetSelectors,
-  offsetSelectors,
-  selectorRegions,
-  imageLocationRegion,
-}) {
+function calculateMatchRegions({selectors, selectorRegions, imageLocationRegion}) {
+  const offsetSelectors = selectors.floating || []
+  const noOffsetSelectors = selectors.all || []
+
   let selectorRegionIndex = imageLocationRegion ? 1 : 0
-  const noOffsetRegions = noOffsetSelectors.map(selector => mapSelectionToRegions(selector, false))
-  const offsetRegions = offsetSelectors.map(selector => mapSelectionToRegions(selector, true))
+  const noOffsetRegions = noOffsetSelectors.map(selector => mapSelectionToRegions(selector))
+
+  const offsetRegions = offsetSelectors.map(selector => {
+    const offsetRegion = mapSelectionToRegions(selector)
+    return Object.assign(offsetRegion, {
+      maxUpOffset: offsetRegion.maxUpOffset,
+      maxDownOffset: offsetRegion.maxDownOffset,
+      maxLeftOffset: offsetRegion.maxLeftOffset,
+      maxRightOffset: offsetRegion.maxRightOffset,
+    })
+  })
 
   return {
     noOffsetRegions,
     offsetRegions,
   }
 
-  function mapSelectionToRegions(selector, addOffset) {
+  function mapSelectionToRegions(selector) {
     if (selector && selector.length > 0) {
       const regions = []
       for (const [index, selectorObj] of selector.entries()) {
-        const region = selectorToRegion(selectorObj, addOffset, index)
+        const region = selectorToRegion(selectorObj, index)
         if (region) {
           regions.push(region)
         }
@@ -31,10 +38,10 @@ function calculateMatchRegions({
     return selector
   }
 
-  function selectorToRegion(selectorObj, addOffset, index = 0) {
+  function selectorToRegion(selectorObj, index = 0) {
     if (selectorObj.selector) {
       const selectorRegion = selectorRegions[selectorRegionIndex][index] || []
-      if (!selectorRegion || selectorRegion.getError()) {
+      if (!selectorRegion || selectorRegion.length === 0) {
         return null
       }
 
@@ -47,14 +54,6 @@ function calculateMatchRegions({
           }
         : selectorRegion.toJSON()
 
-      if (addOffset) {
-        ret = Object.assign(ret, {
-          maxUpOffset: selectorObj.maxUpOffset,
-          maxDownOffset: selectorObj.maxDownOffset,
-          maxLeftOffset: selectorObj.maxLeftOffset,
-          maxRightOffset: selectorObj.maxRightOffset,
-        })
-      }
       if (selectorObj.accessibilityType) {
         ret.accessibilityType = selectorObj.accessibilityType
       }

@@ -102,19 +102,17 @@ function makeCheckWindow({
       ),
     )
 
-    const noOffsetSelectors = {
+    const renderPromise = presult(startRender())
+
+    const selectors = {
       all: [ignore, layout, strict, content, accessibility],
+      floating: [floating],
       ignore: 0,
       layout: 1,
       strict: 2,
       content: 3,
       accessibility: 4,
     }
-    const offsetSelectors = {
-      all: [floating],
-      floating: 0,
-    }
-    const renderPromise = presult(startRender())
 
     let renderJobs // This will be an array of `resolve` functions to rendering jobs. See `createRenderJob` below.
 
@@ -228,20 +226,18 @@ function makeCheckWindow({
       }
 
       const {noOffsetRegions, offsetRegions} = calculateMatchRegions({
-        noOffsetSelectors: noOffsetSelectors.all,
-        offsetSelectors: offsetSelectors.all,
+        selectors,
         selectorRegions,
         imageLocationRegion,
       })
 
-      debugger
       const checkSettings = createCheckSettings({
-        ignore: noOffsetRegions[noOffsetSelectors.ignore],
-        floating: offsetRegions[offsetSelectors.floating],
-        layout: noOffsetRegions[noOffsetSelectors.layout],
-        strict: noOffsetRegions[noOffsetSelectors.strict],
-        content: noOffsetRegions[noOffsetSelectors.content],
-        accessibility: noOffsetRegions[noOffsetSelectors.accessibility],
+        ignore: noOffsetRegions[selectors.ignore],
+        layout: noOffsetRegions[selectors.layout],
+        strict: noOffsetRegions[selectors.strict],
+        content: noOffsetRegions[selectors.content],
+        accessibility: noOffsetRegions[selectors.accessibility],
+        floating: offsetRegions,
         useDom,
         enablePatterns,
         ignoreDisplacements,
@@ -296,8 +292,8 @@ function makeCheckWindow({
         selector,
         region,
         scriptHooks,
-        noOffsetSelectors: noOffsetSelectors.all,
-        offsetSelectors: offsetSelectors.all,
+        noOffsetSelectors: selectors.all,
+        offsetSelectors: selectors.floating,
         sendDom,
         visualGridOptions,
       })

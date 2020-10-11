@@ -48,19 +48,6 @@ function makeGetRenderStatus({logger, doGetRenderStatus, getStatusInterval = 500
     } else {
       renderStatuses.forEach((rs, i) => {
         const renderId = renderIds[i]
-
-        const selectorRegions = rs.getSelectorRegions()
-
-        if (selectorRegions && selectorRegions.length > 0) {
-          selectorRegions.forEach(selectorRegion => {
-            selectorRegion.forEach(innerRegion => {
-              if (innerRegion.getError()) {
-                log(`Warning: region error: ${selectorRegion.getError()}`)
-              }
-            })
-          })
-        }
-
         pendingRendersForJob[renderId].resolve(rs)
       })
     }
