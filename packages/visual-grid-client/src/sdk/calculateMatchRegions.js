@@ -9,7 +9,7 @@ function calculateMatchRegions({selectors, selectorRegions, imageLocationRegion}
 
   const offsetRegions = offsetSelectors.map(selector => {
     const offsetRegion = mapSelectionToRegions(selector)
-    debugger
+
     return (
       offsetRegion &&
       Object.assign(offsetRegion, {
