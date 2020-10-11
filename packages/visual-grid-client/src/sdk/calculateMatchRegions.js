@@ -9,12 +9,16 @@ function calculateMatchRegions({selectors, selectorRegions, imageLocationRegion}
 
   const offsetRegions = offsetSelectors.map(selector => {
     const offsetRegion = mapSelectionToRegions(selector)
-    return Object.assign(offsetRegion, {
-      maxUpOffset: offsetRegion.maxUpOffset,
-      maxDownOffset: offsetRegion.maxDownOffset,
-      maxLeftOffset: offsetRegion.maxLeftOffset,
-      maxRightOffset: offsetRegion.maxRightOffset,
-    })
+    debugger
+    return (
+      offsetRegion &&
+      Object.assign(offsetRegion, {
+        maxUpOffset: offsetRegion.maxUpOffset,
+        maxDownOffset: offsetRegion.maxDownOffset,
+        maxLeftOffset: offsetRegion.maxLeftOffset,
+        maxRightOffset: offsetRegion.maxRightOffset,
+      })
+    )
   })
 
   return {
