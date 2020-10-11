@@ -73,6 +73,7 @@ describe('createRenderRequests', () => {
         browser: {name: 'b1'},
         scriptHooks,
         sendDom,
+        enableMultipleResultsPerSelector: true,
         renderInfo: {
           width: 1,
           height: 2,
@@ -90,6 +91,7 @@ describe('createRenderRequests', () => {
         browser: {name: 'b2'},
         scriptHooks,
         sendDom,
+        enableMultipleResultsPerSelector: true,
         renderInfo: {
           width: 3,
           height: 4,
@@ -121,6 +123,7 @@ describe('createRenderRequests', () => {
         url,
         dom: domObj,
         resources: resourcesObj,
+        enableMultipleResultsPerSelector: true,
         renderInfo: {
           emulationInfo: {deviceName, screenOrientation},
           height: undefined,
@@ -155,6 +158,7 @@ describe('createRenderRequests', () => {
         url,
         dom: domObj,
         resources: resourcesObj,
+        enableMultipleResultsPerSelector: true,
         renderInfo: {
           emulationInfo: {
             width: 1,
@@ -201,6 +205,7 @@ describe('createRenderRequests', () => {
         url,
         dom: domObj,
         resources: resourcesObj,
+        enableMultipleResultsPerSelector: true,
         renderInfo: {
           height: 2,
           width: 1,
@@ -246,6 +251,7 @@ describe('createRenderRequests', () => {
         resources: resourcesObj,
         browser: {name: 'safari'},
         platform: {name: 'ios'},
+        enableMultipleResultsPerSelector: true,
         renderInfo: {
           iosDeviceInfo: {
             name: 'ios device',
@@ -293,6 +299,7 @@ describe('createRenderRequests', () => {
         },
         resources: resourcesObj,
         browser: {name: browser.name},
+        enableMultipleResultsPerSelector: true,
         renderInfo: {
           width: browser.width,
           height: browser.height,
