@@ -319,9 +319,9 @@ if (!url && !args.attach) {
     apiKey: args.apiKey,
     serverUrl: args.serverUrl,
     viewportSize: args.viewportSize || !args.device ? {width: 1024, height: 768} : undefined,
-    browserInfo:
+    browsersInfo:
       args.renderBrowsers || args.renderEmulations
-        ? [...args.renderBrowsers, ...args.renderEmulations]
+        ? [...(args.renderBrowsers || []), ...(args.renderEmulations || [])]
         : undefined,
     proxy: args.proxy,
     accessibilityValidation: args.accessibilityValidation,
