@@ -103,17 +103,6 @@ function makeCheckWindow({
     )
 
     const renderPromise = presult(startRender())
-
-    const selectors = {
-      all: [ignore, layout, strict, content, accessibility],
-      floating: [floating],
-      ignore: 0,
-      layout: 1,
-      strict: 2,
-      content: 3,
-      accessibility: 4,
-    }
-
     let renderJobs // This will be an array of `resolve` functions to rendering jobs. See `createRenderJob` below.
 
     setCheckWindowPromises(
@@ -216,6 +205,7 @@ function makeCheckWindow({
         return
       }
 
+      const userSelectors = [ignore, layout, strict, content, accessibility, floating]
       const imageLocationRegion = sizeMode === 'selector' ? selectorRegions[0][0] : undefined
 
       let imageLocation = undefined
@@ -225,19 +215,31 @@ function makeCheckWindow({
         imageLocation = new Region(region).getLocation()
       }
 
-      const {noOffsetRegions, offsetRegions} = calculateMatchRegions({
-        selectors,
+      const regions = calculateMatchRegions({
+        userSelectors,
         selectorRegions,
         imageLocationRegion,
       })
 
       const checkSettings = createCheckSettings({
-        ignore: noOffsetRegions[selectors.ignore],
-        layout: noOffsetRegions[selectors.layout],
-        strict: noOffsetRegions[selectors.strict],
-        content: noOffsetRegions[selectors.content],
-        accessibility: noOffsetRegions[selectors.accessibility],
-        floating: offsetRegions,
+        ignore: regions[0],
+        layout: regions[1],
+        strict: regions[2],
+        content: regions[3],
+        accessibility: regions[4].map((region, index) => {
+          Object.assign(region, {
+            accessibilityType: userSelectors[4][index].accessibilityType,
+          })
+        }),
+        floating: regions[5].map((region, index) => {
+          const floatingRegion = userSelectors[5][index]
+          Object.assign(region, {
+            maxUpOffset: floatingRegion.maxUpOffset,
+            maxDownOffset: floatingRegion.maxDownOffset,
+            maxLeftOffset: floatingRegion.maxLeftOffset,
+            maxRightOffset: floatingRegion.maxRightOffset,
+          })
+        }),
         useDom,
         enablePatterns,
         ignoreDisplacements,
@@ -290,10 +292,9 @@ function makeCheckWindow({
         renderInfo,
         sizeMode,
         selector,
+        userRegions: userSelectors,
         region,
         scriptHooks,
-        noOffsetSelectors: selectors.all,
-        offsetSelectors: selectors.floating,
         sendDom,
         visualGridOptions,
       })

@@ -12,17 +12,15 @@ function createRenderRequests({
   sizeMode,
   selector,
   region,
+  userRegions,
   scriptHooks,
-  noOffsetSelectors = [],
-  offsetSelectors = [],
   sendDom,
   visualGridOptions,
 }) {
   const selectorsToFindRegionsFor = calculateSelectorsToFindRegionsFor({
     sizeMode,
     selector,
-    noOffsetSelectors,
-    offsetSelectors,
+    userRegions,
   })
 
   return browsers.map((browser, index) => {

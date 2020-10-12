@@ -75,7 +75,7 @@ describe('openEyes', () => {
     }
   })
 
-  it('passes with correct screenshot', async () => {
+  it.only('passes with correct screenshot', async () => {
     await page.goto(`${baseUrl}/test.html`)
 
     const {cdt, url, resourceContents, resourceUrls} = await processPage()
@@ -85,8 +85,8 @@ describe('openEyes', () => {
       testName: 'passes with correct screenshot',
       browser: [
         {width: 640, height: 480, name: 'chrome'},
-        {width: 800, height: 600, name: 'firefox'},
-        {deviceName: 'iPhone X'},
+        // {width: 800, height: 600, name: 'firefox'},
+        // {deviceName: 'iPhone X'},
       ],
       showLogs: process.env.APPLITOOLS_SHOW_LOGS,
       saveDebugData: process.env.APPLITOOLS_SAVE_DEBUG_DATA,
@@ -101,10 +101,12 @@ describe('openEyes', () => {
       tag: 'first',
       url,
       scriptHooks,
+      ignore: [{selector: '.some_class'}, {selector: '.some_other_class'}],
     })
 
     const [errArr, results] = await presult(close())
     errArr && console.log(errArr)
+    debugger
     expect(errArr).to.be.undefined
 
     expect(results.length).to.eq(3)
