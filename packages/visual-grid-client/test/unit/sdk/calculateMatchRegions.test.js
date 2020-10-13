@@ -7,7 +7,7 @@ const calculateMatchRegions = require('../../../src/sdk/calculateMatchRegions')
 describe('calculateMatchRegions', () => {
   it('handles null ignore regions', () => {
     const regions = calculateMatchRegions({
-      userSelectors: [undefined, undefined, undefined, undefined, undefined, undefined],
+      codedRegions: [undefined, undefined, undefined, undefined, undefined, undefined],
       selectorRegions: [],
     })
     expect(regions[0]).to.be.undefined
@@ -20,8 +20,8 @@ describe('calculateMatchRegions', () => {
 
   it('handles non-selector no-offset ignore regions', () => {
     const ignore = ['bla']
-    const userSelectors = [ignore, undefined, undefined, undefined, undefined, undefined]
-    expect(calculateMatchRegions({userSelectors, selectorRegions: []})).to.eql([
+    const codedRegions = [ignore, undefined, undefined, undefined, undefined, undefined]
+    expect(calculateMatchRegions({codedRegions, selectorRegions: []})).to.eql([
       ignore,
       undefined,
       undefined,
@@ -33,15 +33,15 @@ describe('calculateMatchRegions', () => {
 
   it('handles single no-offset region', () => {
     const ignore = {bla: 'kuku'}
-    const userSelectors = [[ignore], undefined, undefined, undefined, undefined, undefined]
-    const res = calculateMatchRegions({userSelectors, selectorRegions: []})
+    const codedRegions = [[ignore], undefined, undefined, undefined, undefined, undefined]
+    const res = calculateMatchRegions({codedRegions, selectorRegions: []})
     expect(res).to.eql([[ignore], undefined, undefined, undefined, undefined, undefined])
   })
 
   it('handles single no-offset region with type', () => {
     const accessibility = {bla: 'kuku', accessibilityType: 'RegularText'}
-    const userSelectors = [undefined, undefined, undefined, [accessibility]]
-    expect(calculateMatchRegions({userSelectors, selectorRegions: []})).to.eql([
+    const codedRegions = [undefined, undefined, undefined, [accessibility]]
+    expect(calculateMatchRegions({codedRegions, selectorRegions: []})).to.eql([
       undefined,
       undefined,
       undefined,
@@ -53,8 +53,8 @@ describe('calculateMatchRegions', () => {
     const ignore = {bla: 'kuku'}
     const layout = {bla: 'kuku'}
     const content = {bla: 'kuku'}
-    const userSelectors = [[ignore], undefined, [layout], [content], undefined, undefined]
-    expect(calculateMatchRegions({userSelectors, selectorRegions: []})).to.eql([
+    const codedRegions = [[ignore], undefined, [layout], [content], undefined, undefined]
+    expect(calculateMatchRegions({codedRegions, selectorRegions: []})).to.eql([
       [ignore],
       undefined,
       [layout],
@@ -67,8 +67,8 @@ describe('calculateMatchRegions', () => {
   it('handles single no-offset with order region and types', () => {
     const a1 = {bla: 'kuku', accessibilityType: 'LargeText'}
     const a2 = {bla: 'kuku', accessibilityType: 'RegularText'}
-    const userSelectors = [undefined, undefined, [a2], [a1], undefined, undefined]
-    expect(calculateMatchRegions({userSelectors, selectorRegions: []})).to.eql([
+    const codedRegions = [undefined, undefined, [a2], [a1], undefined, undefined]
+    expect(calculateMatchRegions({codedRegions, selectorRegions: []})).to.eql([
       undefined,
       undefined,
       [a2],
@@ -81,8 +81,8 @@ describe('calculateMatchRegions', () => {
   it('handles no-offset exact region with order region and types', () => {
     const a1 = {top: 100, left: 0, width: 1000, height: 100, accessibilityType: 'LargeText'}
     const a2 = {top: 2, left: 2, width: 2, height: 2, accessibilityType: 'RegularText'}
-    const userSelectors = [undefined, undefined, [a1], [a2], undefined, undefined]
-    expect(calculateMatchRegions({userSelectors, selectorRegions: []})).to.eql([
+    const codedRegions = [undefined, undefined, [a1], [a2], undefined, undefined]
+    expect(calculateMatchRegions({codedRegions, selectorRegions: []})).to.eql([
       undefined,
       undefined,
       [a1],
@@ -94,8 +94,8 @@ describe('calculateMatchRegions', () => {
 
   it('handles single offset region', () => {
     const floating = {bla: 'kuku'}
-    const userSelectors = [undefined, undefined, undefined, undefined, undefined, [floating]]
-    expect(calculateMatchRegions({userSelectors, selectorRegions: []})).to.eql([
+    const codedRegions = [undefined, undefined, undefined, undefined, undefined, [floating]]
+    expect(calculateMatchRegions({codedRegions, selectorRegions: []})).to.eql([
       undefined,
       undefined,
       undefined,
@@ -108,7 +108,7 @@ describe('calculateMatchRegions', () => {
   it('handles offset region with order', () => {
     const floating = {bla: 'kuku'}
     const whatever = {bla: 'whatever'}
-    const userSelectors = [
+    const codedRegions = [
       undefined,
       undefined,
       undefined,
@@ -116,7 +116,7 @@ describe('calculateMatchRegions', () => {
       undefined,
       [whatever, floating],
     ]
-    expect(calculateMatchRegions({userSelectors, selectorRegions: []})).to.eql([
+    expect(calculateMatchRegions({codedRegions, selectorRegions: []})).to.eql([
       undefined,
       undefined,
       undefined,
@@ -128,9 +128,9 @@ describe('calculateMatchRegions', () => {
 
   it('handles single no-offset region in middle of array with order', () => {
     const layout = [{selector: 'kuku'}]
-    const userSelectors = [undefined, layout, undefined, undefined, undefined, undefined]
+    const codedRegions = [undefined, layout, undefined, undefined, undefined, undefined]
     expect(
-      calculateMatchRegions({userSelectors, selectorRegions: [[{toJSON: () => 'kuku'}]]}),
+      calculateMatchRegions({codedRegions, selectorRegions: [[{toJSON: () => 'kuku'}]]}),
     ).to.eql([undefined, ['kuku'], undefined, undefined, undefined, undefined])
   })
 
@@ -146,8 +146,8 @@ describe('calculateMatchRegions', () => {
       [{toJSON: () => 'ddd'}],
       [{toJSON: () => 'eee'}],
     ]
-    const userSelectors = [ignore, layout, strict]
-    expect(calculateMatchRegions({userSelectors, selectorRegions})).to.eql([
+    const codedRegions = [ignore, layout, strict]
+    expect(calculateMatchRegions({codedRegions, selectorRegions})).to.eql([
       ['aaa', 'bbb'],
       ['ccc'],
       ['ddd', 'eee'],
@@ -157,8 +157,8 @@ describe('calculateMatchRegions', () => {
   it('handles selector offset-regions without image offset', () => {
     const floating = [{selector: 'bla'}, {selector: 'kuku'}]
     const selectorRegions = [[{toJSON: () => 'aaa'}], [{toJSON: () => 'bbb'}]]
-    const userSelectors = [undefined, undefined, undefined, floating]
-    expect(calculateMatchRegions({userSelectors, selectorRegions})).to.eql([
+    const codedRegions = [undefined, undefined, undefined, floating]
+    expect(calculateMatchRegions({codedRegions, selectorRegions})).to.eql([
       undefined,
       undefined,
       undefined,
@@ -180,10 +180,10 @@ describe('calculateMatchRegions', () => {
       [{getLeft: () => 11, getTop: () => 22, getWidth: () => 55, getHeight: () => 44}],
     ]
     const imageLocationRegion = {getLeft: () => 1, getTop: () => 2}
-    const userSelectors = [ignore, layout, strict, content]
+    const codedRegions = [ignore, layout, strict, content]
     expect(
       calculateMatchRegions({
-        userSelectors,
+        codedRegions,
         selectorRegions,
         imageLocationRegion,
       }),
@@ -236,8 +236,8 @@ describe('calculateMatchRegions', () => {
       [{getLeft: () => 10, getTop: () => 20, getWidth: () => 30, getHeight: () => 40}],
     ]
     const imageLocationRegion = {getLeft: () => 3, getTop: () => 4}
-    const userSelectors = [ignore, layout, strict, content]
-    expect(calculateMatchRegions({userSelectors, selectorRegions, imageLocationRegion})).to.eql([
+    const codedRegions = [ignore, layout, strict, content]
+    expect(calculateMatchRegions({codedRegions, selectorRegions, imageLocationRegion})).to.eql([
       [
         {
           width: 3,
@@ -290,12 +290,12 @@ describe('calculateMatchRegions', () => {
       [{toJSON: () => 'hhh'}],
       [{toJSON: () => 'jjj'}],
     ]
-    const userSelectors = [ignore, layout, strict, content]
-    expect(calculateMatchRegions({userSelectors, selectorRegions})).to.eql([
-      ['aaa', 'bbb', 'kuku'],
-      ['ccc', 'ddd', 'kuku2'],
-      ['eee', 'fff', 'ggg', 'kuku3'],
-      ['hhh', 'jjj', 'kuku3'],
+    const codedRegions = [ignore, layout, strict, content]
+    expect(calculateMatchRegions({codedRegions, selectorRegions})).to.eql([
+      ['kuku', 'aaa'],
+      ['bbb', 'kuku2'],
+      ['ccc', 'ddd', 'kuku3'],
+      ['eee', 'kuku3'],
     ])
   })
 
@@ -318,15 +318,13 @@ describe('calculateMatchRegions', () => {
       [{toJSON: () => 'ddd'}],
       [{toJSON: () => 'eee'}],
       [{toJSON: () => 'fff'}],
-      [{toJSON: () => ({one: 'ggg'})}],
-      [{toJSON: () => ({two: 'hhh'})}],
     ]
-    const userSelectors = [ignore, layout, strict, content, floating]
-    expect(calculateMatchRegions({userSelectors, selectorRegions})).to.eql([
-      ['aaa', 'bbb', 'ccc', 'ddd', 'kuku', 'bubu'],
-      ['eee', 'fff', 'bubu2'],
-      [{one: 'ggg'}, {two: 'hhh'}, 'kuku2', 'bubu3', 'dudu3'],
-      ['aaa3'],
+    const codedRegions = [ignore, layout, strict, content, floating]
+    expect(calculateMatchRegions({codedRegions, selectorRegions})).to.eql([
+      ['kuku', 'aaa', 'bubu', 'bbb'],
+      ['ccc', 'bubu2'],
+      ['kuku2', 'ddd', 'bubu3', 'dudu3', 'eee'],
+      ['fff', 'aaa3'],
       [{kuku: 'kuku'}].map((x, i) => Object.assign(x, offset(i))),
     ])
   })

@@ -1,41 +1,33 @@
 'use strict'
-
-function calculateMatchRegions({userSelectors = [], selectorRegions = [], imageLocationRegion}) {
+function calculateMatchRegions({codedRegions = [], selectorRegions = [], imageLocationRegion}) {
   let selectorRegionIndex = imageLocationRegion ? 1 : 0
-  const regions = []
 
-  selectorRegions = selectorRegions.map(regions => {
-    return regions.map(region => {
-      return imageLocationRegion
-        ? {
-            width: region.getWidth(),
-            height: region.getHeight(),
-            left: Math.max(0, region.getLeft() - imageLocationRegion.getLeft()),
-            top: Math.max(0, region.getTop() - imageLocationRegion.getTop()),
-          }
-        : region.toJSON()
-    })
-  })
+  return codedRegions.map(selectors => {
+    if (selectors && selectors.length > 0) {
+      return selectors.reduce((regions, userRegion) => {
+        const userRegions = userRegion.selector
+          ? selectorRegions[selectorRegionIndex++]
+          : [userRegion]
 
-  for (const userSelector of userSelectors) {
-    if (userSelector && userSelector.length > 0) {
-      const currentLength = userSelector.length
-      const innerArrays = selectorRegions.slice(
-        selectorRegionIndex,
-        selectorRegionIndex + currentLength,
-      )
-      innerArrays.push(userSelector.filter(selector => !selector.selector))
-      selectorRegionIndex += currentLength
-      const flattened = innerArrays.reduce((prev, curr) => prev.concat(curr), [])
-      if (flattened.length > 0) {
-        regions.push(flattened)
-      }
-    } else {
-      regions.push(undefined)
+        if (userRegions && userRegions.length > 0) {
+          userRegions.forEach(region => {
+            if (imageLocationRegion) {
+              regions.push({
+                width: region.getWidth(),
+                height: region.getHeight(),
+                left: Math.max(0, region.getLeft() - imageLocationRegion.getLeft()),
+                top: Math.max(0, region.getTop() - imageLocationRegion.getTop()),
+              })
+            } else {
+              const regionObject = region['toJSON'] ? region.toJSON() : region
+              regions.push(regionObject)
+            }
+          })
+        }
+
+        return regions
+      }, [])
     }
-  }
-
-  return regions
+  })
 }
-
 module.exports = calculateMatchRegions

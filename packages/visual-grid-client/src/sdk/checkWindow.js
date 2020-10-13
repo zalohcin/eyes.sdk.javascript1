@@ -101,7 +101,7 @@ function makeCheckWindow({
         }),
       ),
     )
-    const userSelectors = [ignore, layout, strict, content, accessibility, floating]
+    const codedRegions = [ignore, layout, strict, content, accessibility, floating]
     const renderPromise = presult(startRender())
     let renderJobs // This will be an array of `resolve` functions to rendering jobs. See `createRenderJob` below.
 
@@ -215,7 +215,7 @@ function makeCheckWindow({
       }
 
       const regions = calculateMatchRegions({
-        userSelectors,
+        codedRegions,
         selectorRegions,
         imageLocationRegion,
       })
@@ -224,14 +224,14 @@ function makeCheckWindow({
         regions[4] &&
         regions[4].map((region, index) => {
           return Object.assign(region, {
-            accessibilityType: userSelectors[4][index].accessibilityType,
+            accessibilityType: codedRegions[4][index].accessibilityType,
           })
         })
 
       const floatingRegion =
         regions[5] &&
         regions[5].map((region, index) => {
-          const floatingRegion = userSelectors[5][index]
+          const floatingRegion = codedRegions[5][index]
           return Object.assign(region, {
             maxUpOffset: floatingRegion.maxUpOffset,
             maxDownOffset: floatingRegion.maxDownOffset,
@@ -299,7 +299,7 @@ function makeCheckWindow({
         renderInfo,
         sizeMode,
         selector,
-        userRegions: userSelectors,
+        userRegions: codedRegions,
         region,
         scriptHooks,
         sendDom,

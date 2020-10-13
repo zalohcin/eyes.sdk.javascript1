@@ -31,15 +31,17 @@ class RenderStatusResults {
     }
     if (selectorRegions && selectorRegions.length > 0) {
       selectorRegions = selectorRegions.map(regions => {
-        return regions.map(innerRegion => {
-          return new Region({
-            left: innerRegion.x,
-            top: innerRegion.y,
-            width: innerRegion.width,
-            height: innerRegion.height,
-            error: innerRegion.error,
-          })
-        })
+        return regions.length > 0
+          ? regions.map(innerRegion => {
+              return new Region({
+                left: innerRegion.x,
+                top: innerRegion.y,
+                width: innerRegion.width,
+                height: innerRegion.height,
+                error: innerRegion.error,
+              })
+            })
+          : []
       })
     }
 

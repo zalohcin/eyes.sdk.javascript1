@@ -106,7 +106,6 @@ describe('openEyes', () => {
 
     const [errArr, results] = await presult(close())
     errArr && console.log(errArr)
-    debugger
     expect(errArr).to.be.undefined
 
     expect(results.length).to.eq(3)
