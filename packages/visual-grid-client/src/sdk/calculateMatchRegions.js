@@ -1,6 +1,6 @@
 'use strict'
 
-function calculateMatchRegions({userSelectors, selectorRegions, imageLocationRegion}) {
+function calculateMatchRegions({userSelectors = [], selectorRegions = [], imageLocationRegion}) {
   let selectorRegionIndex = imageLocationRegion ? 1 : 0
   const regions = []
 

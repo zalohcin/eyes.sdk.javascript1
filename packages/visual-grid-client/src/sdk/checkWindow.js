@@ -101,7 +101,7 @@ function makeCheckWindow({
         }),
       ),
     )
-
+    const userSelectors = [ignore, layout, strict, content, accessibility, floating]
     const renderPromise = presult(startRender())
     let renderJobs // This will be an array of `resolve` functions to rendering jobs. See `createRenderJob` below.
 
@@ -205,7 +205,6 @@ function makeCheckWindow({
         return
       }
 
-      const userSelectors = [ignore, layout, strict, content, accessibility, floating]
       const imageLocationRegion = sizeMode === 'selector' ? selectorRegions[0][0] : undefined
 
       let imageLocation = undefined
@@ -226,20 +225,24 @@ function makeCheckWindow({
         layout: regions[1],
         strict: regions[2],
         content: regions[3],
-        accessibility: regions[4].map((region, index) => {
-          Object.assign(region, {
-            accessibilityType: userSelectors[4][index].accessibilityType,
-          })
-        }),
-        floating: regions[5].map((region, index) => {
-          const floatingRegion = userSelectors[5][index]
-          Object.assign(region, {
-            maxUpOffset: floatingRegion.maxUpOffset,
-            maxDownOffset: floatingRegion.maxDownOffset,
-            maxLeftOffset: floatingRegion.maxLeftOffset,
-            maxRightOffset: floatingRegion.maxRightOffset,
-          })
-        }),
+        accessibility:
+          regions[4] &&
+          regions[4].map((region, index) => {
+            Object.assign(region, {
+              accessibilityType: userSelectors[4][index].accessibilityType,
+            })
+          }),
+        floating:
+          regions[5] &&
+          regions[5].map((region, index) => {
+            const floatingRegion = userSelectors[5][index]
+            Object.assign(region, {
+              maxUpOffset: floatingRegion.maxUpOffset,
+              maxDownOffset: floatingRegion.maxDownOffset,
+              maxLeftOffset: floatingRegion.maxLeftOffset,
+              maxRightOffset: floatingRegion.maxRightOffset,
+            })
+          }),
         useDom,
         enablePatterns,
         ignoreDisplacements,

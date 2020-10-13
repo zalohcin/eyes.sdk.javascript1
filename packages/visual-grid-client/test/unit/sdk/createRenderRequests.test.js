@@ -52,8 +52,7 @@ describe('createRenderRequests', () => {
       region,
       scriptHooks,
       sendDom,
-      noOffsetSelectors: [],
-      offsetSelectors: [],
+      userRegions: [],
     })
 
     const resourcesObj = {url1: 'hash1', url2: 'hash2'}
@@ -112,8 +111,7 @@ describe('createRenderRequests', () => {
       pages: [{rGridDom: dom, allResources: resources}],
       browsers,
       renderInfo,
-      noOffsetSelectors: [],
-      offsetSelectors: [],
+      userRegions: [],
     })
 
     expect(renderRequests.map(r => r.toJSON())).to.eql([
@@ -147,8 +145,7 @@ describe('createRenderRequests', () => {
       pages: [{rGridDom: dom, allResources: resources}],
       browsers,
       renderInfo,
-      noOffsetSelectors: [],
-      offsetSelectors: [],
+      userRegions: [],
     })
 
     expect(renderRequests.map(r => r.toJSON())).to.eql([
@@ -177,7 +174,7 @@ describe('createRenderRequests', () => {
     ])
   })
 
-  it('handles ignore, layout, strict, content, accessibility and floating regions', () => {
+  it.only('handles ignore, layout, strict, content, accessibility and floating regions', () => {
     const browsers = [{width: 1, height: 2}]
     const ignore = ['kuku', {type: 'css', selector: 'bla'}]
     const layout = [{type: 'css', selector: 'bla2'}, 'kuku2']
@@ -194,8 +191,7 @@ describe('createRenderRequests', () => {
       pages: [{rGridDom: dom, allResources: resources}],
       browsers,
       renderInfo,
-      noOffsetSelectors: [ignore, layout, strict, content, accessibility],
-      offsetSelectors: [floating],
+      userRegions: [ignore, layout, strict, content, accessibility, floating],
     })
 
     expect(renderRequests.map(r => r.toJSON())).to.eql([
