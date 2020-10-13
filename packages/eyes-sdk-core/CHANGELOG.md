@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 12.4.1 - 2020/10/13
+
 - disable native mobile app viewport screenshotting (until check region functionality is also supported)
 
 ## 12.4.0 - 2020/10/13
