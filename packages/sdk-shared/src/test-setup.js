@@ -11,20 +11,51 @@ const SAUCE_CREDENTIALS = {
 }
 
 const DEVICES = {
+  'app-ios': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
+    capabilities: {
+      appiumVersion: '1.17.1',
+      automationName: 'XCUITest',
+      platformName: 'iOS',
+      platformVersion: '13.2',
+      deviceName: 'iPhone 11 Simulator',
+      app: 'https://applitools.bintray.com/Examples/HelloWorldiOS_1_0.zip',
+      newCommandTimeout: 600,
+      ...SAUCE_CREDENTIALS,
+    },
+  },
+  'app-android': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
+    capabilities: {
+      appiumVersion: '1.16.0',
+      automationName: 'uiautomator2',
+      platformName: 'Android',
+      platformVersion: '8.0',
+      deviceName: 'Android Emulator',
+      app: 'https://applitools.bintray.com/Examples/app-debug.apk',
+      appPackage: 'com.applitoolstest',
+      appActivity: 'com.applitoolstest.ScrollActivity',
+      newCommandTimeout: 600,
+      ...SAUCE_CREDENTIALS,
+    },
+  },
   'Android Emulator': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
     capabilities: {
       deviceName: 'Android Emulator',
       platformName: 'Android',
       platformVersion: '6.0',
-      deviceOrientation: 'landscape',
       clearSystemFiles: true,
       noReset: true,
       ...SAUCE_CREDENTIALS,
     },
-    url: SAUCE_SERVER_URL,
-    sauce: true,
   },
   'Pixel 3a XL': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
     capabilities: {
       deviceName: 'Google Pixel 3a XL GoogleAPI Emulator',
       platformName: 'Android',
@@ -32,10 +63,10 @@ const DEVICES = {
       deviceOrientation: 'portrait',
       ...SAUCE_CREDENTIALS,
     },
-    url: SAUCE_SERVER_URL,
-    sauce: true,
   },
   'Samsung Galaxy S8': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
     capabilities: {
       browserName: '',
       name: 'Android Demo',
@@ -46,68 +77,119 @@ const DEVICES = {
       automationName: 'uiautomator2',
       ...SAUCE_CREDENTIALS,
     },
+  },
+  'iPhone 5S': {
+    type: 'sauce',
     url: SAUCE_SERVER_URL,
-    sauce: true,
+    capabilities: {
+      deviceName: 'iPhone 5s Simulator',
+      platformVersion: '12.4',
+      platformName: 'iOS',
+      ...SAUCE_CREDENTIALS,
+    },
+  },
+  'iPhone 11 Pro': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
+    capabilities: {
+      deviceName: 'iPhone 11 Pro Simulator',
+      platformVersion: '13.4',
+      platformName: 'iOS',
+      ...SAUCE_CREDENTIALS,
+    },
+  },
+  'iPhone XS': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
+    capabilities: {
+      platformName: 'iOS',
+      platformVersion: '13.0',
+      deviceName: 'iPhone XS Simulator',
+      ...SAUCE_CREDENTIALS,
+    },
+  },
+  'iPad Air': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
+    capabilities: {
+      deviceName: 'iPad Air Simulator',
+      platformVersion: '12.4',
+      platformName: 'iOS',
+      ...SAUCE_CREDENTIALS,
+    },
   },
 }
 
 const BROWSERS = {
   'edge-18': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
     capabilities: {
-      name: 'Edge 18',
       browserName: 'MicrosoftEdge',
-      browserVersion: '18',
+      browserVersion: '18.17763',
       platformName: 'Windows 10',
+    },
+    options: {
+      name: 'Edge 18',
+      avoidProxy: true,
       screenResolution: '1920x1080',
       ...SAUCE_CREDENTIALS,
     },
-    url: SAUCE_SERVER_URL,
-    sauce: true,
   },
   'ie-11': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
     capabilities: {
+      w3c: {
+        browserName: 'internet explorer',
+        browserVersion: '11.285',
+        platformName: 'Windows 10',
+      },
+      legacy: {
+        browserName: 'internet explorer',
+        platform: 'Windows 10',
+        version: '11.285',
+      },
+    },
+    options: {
       name: 'IE 11',
-      browserName: 'internet explorer',
-      browserVersion: '11.285',
-      platformName: 'Windows 10',
       screenResolution: '1920x1080',
       ...SAUCE_CREDENTIALS,
     },
-    url: SAUCE_SERVER_URL,
-    sauce: true,
   },
   'safari-11': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
     capabilities: {
-      name: 'Safari 11',
-      seleniumVersion: '3.4.0',
       browserName: 'safari',
       browserVersion: '11.0',
       platformName: 'macOS 10.12',
+    },
+    options: {
+      name: 'Safari 11',
+      seleniumVersion: '3.4.0',
       ...SAUCE_CREDENTIALS,
     },
-    url: SAUCE_SERVER_URL,
-    sauce: true,
   },
   'safari-12': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
     capabilities: {
-      name: 'Safari 12',
-      seleniumVersion: '3.4.0',
       browserName: 'safari',
       browserVersion: '12.1',
       platformName: 'macOS 10.13',
+    },
+    options: {
+      name: 'Safari 12',
+      seleniumVersion: '3.4.0',
       ...SAUCE_CREDENTIALS,
     },
-    url: SAUCE_SERVER_URL,
-    sauce: true,
   },
   firefox: {
+    url: 'http://localhost:4445/wd/hub',
     capabilities: {
       browserName: 'firefox',
-      seleniumVersion: '3.141.59',
-      ...SAUCE_CREDENTIALS,
     },
-    url: SAUCE_SERVER_URL,
-    sauce: true,
   },
   chrome: {
     capabilities: {
@@ -117,7 +199,7 @@ const BROWSERS = {
 }
 
 function Env(
-  {browser, app, device, url, headless = !process.env.NO_HEADLESS, ...options} = {},
+  {browser, app, device, url, headless = !process.env.NO_HEADLESS, legacy, ...options} = {},
   protocol = 'wd',
 ) {
   const env = {browser, device, headless, protocol, ...options}
@@ -131,7 +213,21 @@ function Env(
     const preset = DEVICES[device] || BROWSERS[browser]
     if (preset) {
       env.url = preset.url ? new URL(preset.url) : env.url
-      env.capabilities = Object.assign(env.capabilities, preset.capabilities)
+      env.capabilities = Object.assign(
+        env.capabilities,
+        (legacy ? preset.capabilities.legacy : preset.capabilities.w3c) || preset.capabilities,
+      )
+      env.configurable = preset.type !== 'sauce'
+      if (preset.type === 'sauce') {
+        if (legacy || env.device) {
+          env.options = env.capabilities = {...env.capabilities, ...preset.options}
+        } else {
+          env.options = env.capabilities['sauce:options'] = {...preset.options}
+        }
+      } else {
+        env.options = preset.options || {}
+      }
+      env.options.deviceOrientation = env.orientation
     }
   } else if (protocol === 'cdp') {
     url = url || process.env.CVG_TESTS_CDP_REMOTE
@@ -156,9 +252,9 @@ function getEyes({vg, ...config} = {}) {
   }
   eyes.setConfiguration(new Configuration(conf))
 
-  if (process.env.APPLITOOLS_SHOW_LOGS) {
-    eyes.setLogHandler(new ConsoleLogHandler(true))
-  }
+  // if (process.env.APPLITOOLS_SHOW_LOGS || showLogs) {
+  //   eyes.setLogHandler(new ConsoleLogHandler(true))
+  // }
 
   return eyes
 }

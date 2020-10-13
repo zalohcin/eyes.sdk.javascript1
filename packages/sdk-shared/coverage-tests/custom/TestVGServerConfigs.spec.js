@@ -2,10 +2,11 @@
 const cwd = process.cwd()
 const path = require('path')
 const {getEyes, batch} = require('../../src/test-setup')
-const spec = require(path.resolve(cwd, 'src/SpecDriver'))
+const spec = require(path.resolve(cwd, 'src/spec-driver'))
 const {
   ScreenOrientation,
   IosDeviceName,
+  IosVersion,
   BrowserType,
   AccessibilityLevel,
   AccessibilityGuidelinesVersion,
@@ -15,21 +16,22 @@ const {
 const {assertDefaultMatchSettings, assertImageMatchSettings} = require('../util/ApiAssertions')
 const util = require('util')
 const chai = require('chai')
+const chalk = require('chalk')
 const chaiAsPromised = require('chai-as-promised')
 chai.use(chaiAsPromised)
 const expect = chai.expect
 
 describe('TestVGServerConfigs', () => {
-  let webDriver, eyes, runner
+  let webDriver, destroyDriver, eyes, runner
 
   beforeEach(async () => {
-    webDriver = await spec.build({browser: 'chrome'})
+    ;[webDriver, destroyDriver] = await spec.build({browser: 'chrome'})
     eyes = await getEyes({isVisualGrid: true})
     runner = eyes.getRunner()
   })
 
   afterEach(async () => {
-    await spec.cleanup(webDriver)
+    await destroyDriver()
   })
 
   it(`TestVGDoubleCloseNoCheck`, async () => {
@@ -44,20 +46,33 @@ describe('TestVGServerConfigs', () => {
     await expect(eyes.close()).to.be.rejectedWith(Error, 'IllegalState: Eyes not open')
   })
 
-  // TODO unskip when VG ios stabilizes (https://trello.com/c/5hGd01CW/552-ios-malformed-screenshot)
-  it.skip(`TestMobileWeb_VG`, async () => {
+  it(`TestMobileWeb_VG`, async () => {
     const conf = eyes.getConfiguration()
-    conf.addBrowser({
-      iosDeviceInfo: {
-        deviceName: IosDeviceName.iPhone_XR,
-        screenOrientation: ScreenOrientation.LANDSCAPE,
+    conf.addBrowsers(
+      {
+        iosDeviceInfo: {
+          deviceName: IosDeviceName.iPhone_XR,
+          screenOrientation: ScreenOrientation.LANDSCAPE,
+        },
       },
-    })
+      {
+        iosDeviceInfo: {
+          deviceName: IosDeviceName.iPhone_XR,
+          iosVersion: IosVersion.LATEST,
+        },
+      },
+      {
+        iosDeviceInfo: {
+          deviceName: IosDeviceName.iPhone_XR,
+          iosVersion: IosVersion.LATEST_ONE_VERSION_BACK,
+        },
+      },
+    )
     eyes.setConfiguration(conf)
 
     await spec.visit(webDriver, 'http://applitools.github.io/demo')
     await eyes.open(webDriver, 'Eyes SDK', 'UFG Mobile Web Happy Flow', {width: 800, height: 600})
-    await eyes.checkWindow()
+    await eyes.check({isFully: true})
     await eyes.close()
   })
 
@@ -189,22 +204,20 @@ describe('TestVGServerConfigs', () => {
 })
 
 describe('Miscellaneous VG tests', () => {
-  let driver
+  let driver, destroyDriver
   before(async () => {
-    driver = await spec.build({browser: 'chrome'})
+    ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
   })
   after(async () => {
-    await spec.cleanup(driver)
+    await destroyDriver()
   })
 
   it('TestWarningForEDGE', async () => {
     const origConsoleLog = console.log
     const logOutput = []
     console.log = (...args) => logOutput.push(util.format(...args))
-    const yellowStart = '\u001b[33m'
-    const yellowEnd = '\u001b[39m'
     const edgeWarningText = `The 'edge' option that is being used in your browsers' configuration will soon be deprecated. Please change it to either 'edgelegacy' for the legacy version or to 'edgechromium' for the new Chromium-based version. Please note, when using the built-in BrowserType enum, then the values are BrowserType.EDGE_LEGACY and BrowserType.EDGE_CHROMIUM, respectively.`
-    const edgeWarning = `${yellowStart}${edgeWarningText}${yellowEnd}`
+    const edgeWarning = chalk.yellow(edgeWarningText)
 
     try {
       const eyes = getEyes({isVisualGrid: true})

@@ -1,9 +1,11 @@
+const fs = require('fs')
 const path = require('path')
 const chalk = require('chalk')
 const {isMatch} = require('micromatch')
 const {exec} = require('child_process')
 const {promisify} = require('util')
 const pexec = promisify(exec)
+const cwd = process.cwd()
 
 function _isAlreadyChecked({pkgName, dep, results}) {
   return results.find(result => result.pkgName === pkgName && result.dep === dep)
@@ -14,27 +16,23 @@ function _isWorkspacePackage({pkgs, pkgName}) {
 }
 
 function makePackagesList() {
-  const {packages} = require(path.join(
-    __dirname,
-    '..',
-    '..',
-    '..',
-    '..',
-    'package.json',
-  )).workspaces
-  return packages.map(pkgPath => {
-    const pkgDir = path.join(__dirname, '..', '..', '..', '..', pkgPath)
-    const packageJson = require(path.join(pkgDir, 'package.json'))
-    return {
-      name: packageJson.name,
-      path: pkgDir,
-    }
-  })
+  const pkgsPath = path.join(cwd, '..')
+  const packages = fs.readdirSync(pkgsPath)
+  return packages
+    .filter(pkgName => fs.existsSync(path.join(pkgsPath, pkgName, 'package.json')))
+    .map(pkgName => {
+      const pkgPath = path.join(pkgsPath, pkgName)
+      const packageJson = JSON.parse(fs.readFileSync(path.join(pkgPath, 'package.json')))
+      return {
+        name: packageJson.name,
+        path: pkgPath,
+      }
+    })
 }
 
 function verifyDependencies({pkgs, pkgPath, results}) {
   const packageJsonPath = path.resolve(pkgPath, 'package.json')
-  const packageJson = require(packageJsonPath)
+  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath))
   const pkgName = packageJson.name
   const {dependencies} = packageJson
 
@@ -43,7 +41,7 @@ function verifyDependencies({pkgs, pkgPath, results}) {
       const depVersion = dependencies[dep]
       const pkg = pkgs.find(({name}) => name === dep)
       const depPackageJsonPath = path.join(pkg.path, 'package.json')
-      const depPackageJson = require(depPackageJsonPath)
+      const depPackageJson = JSON.parse(fs.readFileSync(depPackageJsonPath))
       const sourceVersion = depPackageJson.version
       results.push({pkgName, dep, depVersion, sourceVersion, error: true})
       verifyDependencies({pkgs, pkgPath: pkg.path, results})
@@ -107,7 +105,7 @@ function findEntryByPackageName(input, target) {
 }
 
 async function checkPackageCommits(pkgPath) {
-  const packageJson = require(path.resolve(pkgPath, 'package.json'))
+  const packageJson = JSON.parse(fs.readFileSync(path.resolve(pkgPath, 'package.json')))
   const {name, version} = packageJson
   const tagName = `${name}@${version}`
   const exclusions = `":(exclude,icase)../*/changelog.md" ":!../*/test/*"`

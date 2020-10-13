@@ -300,7 +300,8 @@ module.exports = {
   browser: {
     iosDeviceInfo: {
       deviceName: 'iPhone XR',
-      screenOrientation: 'landscape',
+      screenOrientation: 'landscape', // optional, default: 'portrait'
+      iosVersion: 'latest' // optional, default: undefined (i.e. the default is determined by the Ultrafast grid)
     },
   }
 }

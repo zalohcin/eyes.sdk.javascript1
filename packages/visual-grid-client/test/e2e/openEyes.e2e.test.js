@@ -10,6 +10,7 @@ const {DiffsFoundError, deserializeDomSnapshotResult} = require('@applitools/eye
 const {getProcessPageAndSerialize} = require('@applitools/dom-snapshot')
 const fs = require('fs')
 const {resolve} = require('path')
+const testLogger = require('../util/testLogger')
 
 describe('openEyes', () => {
   let baseUrl, closeServer, openEyes
@@ -22,6 +23,7 @@ describe('openEyes', () => {
       showLogs: process.env.APPLITOOLS_SHOW_LOGS,
       apiKey,
       fetchResourceTimeout: 2000,
+      logger: testLogger,
     }).openEyes
   })
 
@@ -95,9 +97,7 @@ describe('openEyes', () => {
     }
 
     checkWindow({
-      resourceUrls,
-      resourceContents,
-      cdt,
+      snapshot: {resourceUrls, resourceContents, cdt},
       tag: 'first',
       url,
       scriptHooks,
@@ -135,9 +135,7 @@ describe('openEyes', () => {
     cdt.find(node => node.nodeValue === "hi, I'm red").nodeValue = 'WRONG TEXT'
 
     checkWindow({
-      resourceUrls,
-      resourceContents,
-      cdt,
+      snapshot: {resourceUrls, resourceContents, cdt},
       tag: 'first',
       url,
       scriptHooks,

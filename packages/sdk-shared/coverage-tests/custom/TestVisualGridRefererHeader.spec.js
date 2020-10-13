@@ -4,12 +4,13 @@ const path = require('path')
 const cwd = process.cwd()
 const testServer = require('../../src/test-server')
 const {Target} = require(cwd)
-const spec = require(path.resolve(cwd, 'src/SpecDriver'))
+const spec = require(path.resolve(cwd, 'src/spec-driver'))
 const {getEyes} = require('../../src/test-setup')
+const adjustUrlToDocker = require('../util/adjust-url-to-docker')
 
 describe('TestVisualGridRefererHeader', () => {
   let testServer1, testServer2
-  let driver
+  let driver, destroyDriver
 
   before(async () => {
     const staticPath = path.join(__dirname, '../fixtures')
@@ -28,17 +29,17 @@ describe('TestVisualGridRefererHeader', () => {
   })
 
   beforeEach(async () => {
-    driver = await spec.build({browser: 'chrome'})
+    ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
   })
 
   afterEach(async () => {
-    await spec.cleanup(driver)
+    await destroyDriver()
   })
 
   it('send referer header', async () => {
-    const url = 'http://localhost:5555/cors.html'
+    const url = adjustUrlToDocker('http://localhost:5555/cors.html')
     await spec.visit(driver, url)
-    const eyes = getEyes('VG')
+    const eyes = getEyes({isVisualGrid: true})
     await eyes.open(driver, 'VgFetch', ' VgFetch referer', {width: 800, height: 600})
     await eyes.check('referer', Target.window())
     await eyes.close()

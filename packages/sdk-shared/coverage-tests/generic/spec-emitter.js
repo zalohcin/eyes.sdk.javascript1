@@ -41,30 +41,29 @@ module.exports = function(tracker, test) {
   addHook('deps', `const cwd = process.cwd()`)
   addHook('deps', `const path = require('path')`)
   addHook('deps', `const assert = require('assert')`)
-  addHook('deps', `const spec = require(path.resolve(cwd, 'src/SpecDriver'))`)
+  addHook('deps', `const spec = require(path.resolve(cwd, 'src/spec-driver'))`)
+  addHook('deps', `const {Configuration} = require(cwd)`)
   addHook('deps', `const {testSetup} = require('@applitools/sdk-shared')`)
 
-  addHook('vars', `let driver, eyes`)
+  addHook('vars', `let driver, destroyDriver, eyes`)
+  addHook('vars', 'let baselineTestName')
 
-  addHook('beforeEach', js`driver = await spec.build(${test.env} || {browser: 'chrome'})`)
+  addHook(
+    'beforeEach',
+    js`[driver, destroyDriver] = await spec.build(${test.env} || {browser: 'chrome'})`,
+  )
   addHook('beforeEach', js`eyes = testSetup.getEyes(${test.config})`)
   if (test.visit) {
     addHook('beforeEach', js`spec.visit(driver, ${test.visit})`)
   }
 
-  addHook('afterEach', js`await spec.cleanup(driver)`)
+  addHook('afterEach', js`await destroyDriver(driver)`)
 
   const driver = {
     constructor: {
       isStaleElementError(error) {
         return addCommand(js`spec.isStaleElementError(${error})`)
       },
-    },
-    build(env) {
-      addCommand(js`await spec.build(${env})`)
-    },
-    cleanup() {
-      addCommand(js`await spec.cleanup(driver)`)
     },
     visit(url) {
       addCommand(js`await spec.visit(driver, ${url})`)
@@ -97,6 +96,12 @@ module.exports = function(tracker, test) {
     type(element, keys) {
       addCommand(js`await spec.type(driver, ${element}, ${keys})`)
     },
+    scrollIntoView(element, align) {
+      addCommand(js`await spec.scrollIntoView(driver, ${element}, ${align})`)
+    },
+    hover(element, offset) {
+      addCommand(js`await spec.hover(driver, ${element}, ${offset})`)
+    },
   }
 
   const eyes = {
@@ -104,6 +109,9 @@ module.exports = function(tracker, test) {
       setViewportSize(viewportSize) {
         addCommand(js`await eyes.constructor.setViewportSize(driver, ${viewportSize})`)
       },
+    },
+    setConfiguration(config) {
+      addCommand(js`await eyes.setConfiguration(new Configuration(${config}))`)
     },
     runner: {
       getAllTestResults(throwEx) {

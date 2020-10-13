@@ -3,6 +3,56 @@
 ## Unreleased
 
 
+## 15.0.10 - 2020/10/13
+
+- updated to @applitools/eyes-sdk-core@12.3.1 (from 12.3.0)
+- updated to @applitools/eyes-sdk-core@12.3.2 (from 12.3.1)
+
+## 15.0.9 - 2020/10/6
+
+- updated to @applitools/eyes-sdk-core@12.3.0 (from 12.2.9)
+- support multiple versions of ios
+
+## 15.0.8 - 2020/9/28
+
+- updated to @applitools/eyes-sdk-core@12.2.9 (from 12.2.8)
+
+## 15.0.7 - 2020/9/24
+
+- remove yarn workspaces
+- updated to @applitools/eyes-sdk-core@12.2.8 (from 12.2.6)
+
+## 15.0.6 - 2020/9/23
+
+- updated to @applitools/eyes-sdk-core@12.2.6 (from 12.2.5)
+
+## 15.0.5 - 2020/9/17
+
+- updated to @applitools/eyes-sdk-core@12.2.5 (from 12.2.4)
+
+## 15.0.4 - 2020/9/15
+
+- updated to @applitools/eyes-sdk-core@12.2.4 (from 12.2.3)
+
+## 15.0.3 - 2020/9/2
+
+- updated to @applitools/eyes-sdk-core@12.2.3 (from 12.2.2)
+
+## 15.0.2 - 2020/9/1
+
+- updated to @applitools/eyes-sdk-core@12.2.2 (from 12.2.1)
+
+## 15.0.1 - 2020/9/1
+
+- updated to @applitools/eyes-sdk-core@12.2.1 (from 12.2.0)
+
+## 15.0.0 - 2020/8/30
+
+- Breaking change: added support for multiple dom snapshots for `checkWindow`, `testWindow` and `takeScreenshot`
+- removed @applitools/dom-snapshot from dependencies
+- move `takeDomSnapshot` to `eyes-sdk-core`
+- updated to @applitools/eyes-sdk-core@12.2.0 (from 12.1.4)
+
 ## 14.7.5 - 2020/8/13
 
 - updated to @applitools/eyes-sdk-core@12.1.4 (from 12.1.3)

@@ -24,6 +24,8 @@ function convertSdkNameToReportName(sdkName) {
       return 'java'
     case 'eyes_selenium_dotnet':
       return 'dotnet'
+    case 'playwright':
+      return 'playwright'
     default:
       throw new Error('Unsupported SDK')
   }

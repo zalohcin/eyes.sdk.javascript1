@@ -16,7 +16,7 @@ describe('eyes-storybook', () => {
         '\nThis test disables APPLITOOLS_SHOW_LOGS so dont be surprised son !!! See: test/e2e/eyes-storybook.e2e.test.js:15\n',
       );
     }
-    process.env.APPLITOOLS_SHOW_LOGS = false;
+    delete process.env.APPLITOOLS_SHOW_LOGS;
   });
 
   after(async () => {
@@ -42,7 +42,7 @@ describe('eyes-storybook', () => {
 
     const normalizedStdout = stdout
       .replace(
-        /See details at https\:\/\/.+.applitools.com\/app\/test-results\/.+/,
+        /See details at https\:\/\/.+.applitools.com\/app\/test-results\/.+/g,
         'See details at <some_url>',
       )
       .replace(/Total time\: \d+ seconds/, 'Total time: <some_time> seconds')
@@ -54,6 +54,8 @@ describe('eyes-storybook', () => {
 Ignoring parameters for story: "with some emoji Button" since they are not serilizable. Error: "Converting circular structure to JSON
     --> starting at object with constructor 'Object'
     --- property 'inner' closes the circle"
+
+See details at <some_url>
 
 [EYES: TEST RESULTS]:
 
@@ -182,7 +184,7 @@ Need a higher concurrency in your account? Email us @ sdr@applitools.com with yo
 
     const normalizedStdout = stdout
       .replace(
-        /See details at https\:\/\/.+.applitools.com\/app\/test-results\/.+/,
+        /See details at https\:\/\/.+.applitools.com\/app\/test-results\/.+/g,
         'See details at <some_url>',
       )
       .replace(/Total time\: \d+ seconds/, 'Total time: <some_time> seconds')
@@ -190,6 +192,8 @@ Need a higher concurrency in your account? Email us @ sdr@applitools.com with yo
 
     expect(normalizedStdout).to.equal(`Using @applitools/eyes-storybook version ${version}.
 
+
+See details at <some_url>
 
 [EYES: TEST RESULTS]:
 

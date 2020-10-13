@@ -18,7 +18,7 @@ const ScrollPositionProvider = require('../positioning/ScrollPositionProvider')
 const CssTranslateElementPositionProvider = require('../positioning/CssTranslateElementPositionProvider')
 const ScrollElementPositionProvider = require('../positioning/ScrollElementPositionProvider')
 const ClassicRunner = require('../runner/ClassicRunner')
-const DomCapture = require('../DomCapture')
+const takeDomCapture = require('../utils/takeDomCapture')
 const EyesUtils = require('./EyesUtils')
 const EyesCore = require('./EyesCore')
 const ElementNotFoundError = require('../errors/ElementNotFoundError')
@@ -699,7 +699,7 @@ class EyesClassic extends EyesCore {
   async tryCaptureDom() {
     try {
       this._logger.verbose('Getting window DOM...')
-      return await DomCapture.getFullWindowDom(this._logger, this._driver)
+      return await takeDomCapture(this._logger, this._driver)
     } catch (ignored) {
       return ''
     }
@@ -749,7 +749,10 @@ class EyesClassic extends EyesCore {
    */
   getImageLocation() {
     if (this._regionToCheck) {
-      return this._regionToCheck.getLocation()
+      return new Location(
+        Math.round(this._regionToCheck.getLeft()),
+        Math.round(this._regionToCheck.getTop()),
+      )
     }
     return Location.ZERO
   }

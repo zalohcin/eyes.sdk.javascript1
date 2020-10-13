@@ -3,21 +3,21 @@
 
 const cwd = process.cwd()
 const path = require('path')
-const spec = require(path.resolve(cwd, 'src/SpecDriver'))
+const spec = require(path.resolve(cwd, 'src/spec-driver'))
 const {Target} = require(cwd)
 const {getEyes} = require('../../src/test-setup')
 
 describe('Check Region IE11 (@ie)', () => {
   let eyes
-  let driver
+  let driver, destroyDriver
 
   beforeEach(async () => {
-    driver = await spec.build({browser: 'ie-11', remote: 'sauce'})
+    ;[driver, destroyDriver] = await spec.build({browser: 'ie-11', remote: 'sauce'})
     eyes = getEyes()
   })
 
   afterEach(async () => {
-    await spec.cleanup(driver)
+    await destroyDriver()
     await eyes.abortIfNotClosed()
   })
 

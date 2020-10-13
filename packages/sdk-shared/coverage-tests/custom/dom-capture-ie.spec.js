@@ -2,22 +2,22 @@
 const cwd = process.cwd()
 const path = require('path')
 const {getEyes} = require('../../src/test-setup')
-const spec = require(path.resolve(cwd, 'src/SpecDriver'))
+const spec = require(path.resolve(cwd, 'src/spec-driver'))
 const {Target} = require(cwd)
 const {assertImage} = require('../util/ApiAssertions')
 
 describe('Coverage Tests', async () => {
   describe('edge (@edge)', () => {
     let eyes
-    let driver
+    let driver, destroyDriver
 
     before(async () => {
-      driver = await spec.build({browser: 'edge-18', remote: 'sauce'})
+      ;[driver, destroyDriver] = await spec.build({browser: 'edge-18', remote: 'sauce'})
       eyes = getEyes()
     })
 
     after(async () => {
-      await spec.cleanup(driver)
+      await destroyDriver()
       await eyes.abortIfNotClosed()
     })
 
@@ -34,15 +34,15 @@ describe('Coverage Tests', async () => {
   })
   describe('ie (@ie)', () => {
     let eyes
-    let driver
+    let driver, destroyDriver
 
     before(async () => {
-      driver = await spec.build({browser: 'ie-11', remote: 'sauce', legacy: true})
+      ;[driver, destroyDriver] = await spec.build({browser: 'ie-11', remote: 'sauce', legacy: true})
       eyes = getEyes()
     })
 
     after(async () => {
-      await spec.cleanup(driver)
+      await destroyDriver()
       await eyes.abortIfNotClosed()
     })
 

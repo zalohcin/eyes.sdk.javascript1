@@ -2,18 +2,18 @@
 const cwd = process.cwd()
 const path = require('path')
 const {getEyes} = require('../../../src/test-setup')
-const spec = require(path.resolve(cwd, 'src/SpecDriver'))
+const spec = require(path.resolve(cwd, 'src/spec-driver'))
 const {BrowserType, MatchLevel} = require(cwd)
 const {testSetup, getCheckSettings, validateVG} = require('./EyesDifferentRunners')
 
 describe('TestEyesDifferentRunners VG', () => {
   afterEach(async function() {
-    await spec.cleanup(this.webDriver)
+    await this.destroyDriver()
     await this.eyes.abortIfNotClosed()
   })
 
   beforeEach(async function() {
-    this.webDriver = await spec.build({browser: 'chrome'})
+    ;[this.webDriver, this.destroyDriver] = await spec.build({browser: 'chrome'})
     this.eyes = await getEyes({isVisualGrid: true})
     let conf = this.eyes.getConfiguration()
     conf.setTestName(`Top Sites - ${this.currentTest.title}`)

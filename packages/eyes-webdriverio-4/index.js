@@ -1,6 +1,6 @@
 const core = require('@applitools/eyes-sdk-core')
-const {EyesClassic, EyesVisualGrid, EyesFactory, CheckSettings} = require('./src/WDIOSDK')
-const {LegacySelector} = require('./src/LegacyAPI')
+const {EyesClassic, EyesVisualGrid, EyesFactory, CheckSettings} = require('./src/sdk')
+const {LegacySelector} = require('./src/legacy-api')
 
 exports.Eyes = EyesFactory
 exports.EyesWDIO = EyesClassic
@@ -22,6 +22,7 @@ exports.BrowserType = core.BrowserType
 exports.DeviceName = core.DeviceName
 exports.ScreenOrientation = core.ScreenOrientation
 exports.IosDeviceName = core.IosDeviceName
+exports.IosVersion = core.IosVersion
 exports.Region = core.Region
 exports.MatchLevel = core.MatchLevel
 exports.RectangleSize = core.RectangleSize

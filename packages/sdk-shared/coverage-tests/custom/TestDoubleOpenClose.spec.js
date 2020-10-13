@@ -3,22 +3,22 @@ const path = require('path')
 const assert = require('assert')
 const cwd = process.cwd()
 const {getEyes, batch} = require('../../src/test-setup')
-const spec = require(path.resolve(cwd, 'src/SpecDriver'))
+const spec = require(path.resolve(cwd, 'src/spec-driver'))
 const {Target, ClassicRunner, VisualGridRunner, Eyes} = require(cwd)
 
 const appName = 'Eyes Selenium SDK - Double Open Close'
 
 describe(appName, () => {
-  let webDriver, eyes
+  let webDriver, destroyDriver, eyes
 
   afterEach(async () => {
     await eyes.abortIfNotClosed()
-    await spec.cleanup(webDriver)
+    await destroyDriver()
   })
   describe('Classic', () => {
     let runner
     beforeEach(async () => {
-      webDriver = await spec.build({browser: 'chrome'})
+      ;[webDriver, destroyDriver] = await spec.build({browser: 'chrome'})
       eyes = await getEyes({isCssStitching: true})
       runner = eyes.getRunner()
     })
@@ -86,7 +86,7 @@ describe(appName, () => {
   describe('VG', () => {
     let runner
     beforeEach(async () => {
-      webDriver = await spec.build({browser: 'chrome'})
+      ;[webDriver, destroyDriver] = await spec.build({browser: 'chrome'})
       eyes = await getEyes({isVisualGrid: true})
       runner = eyes.getRunner()
     })
@@ -135,12 +135,12 @@ describe(appName, () => {
 })
 
 describe(appName, () => {
-  let webDriver
+  let webDriver, destroyDriver
   beforeEach(async () => {
-    webDriver = await spec.build({browser: 'chrome'})
+    ;[webDriver, destroyDriver] = await spec.build({browser: 'chrome'})
   })
   afterEach(async () => {
-    await spec.cleanup(webDriver)
+    await destroyDriver()
   })
   it('TestDoubleOpenCheckCloseAsyncWithDifferentInstances', async () => {
     await spec.visit(webDriver, 'https://applitools.github.io/demo/TestPages/VisualGridTestPage/')

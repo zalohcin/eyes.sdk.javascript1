@@ -10,7 +10,7 @@ const {
 const ncp = require('ncp')
 const {promisify} = require('util')
 const pncp = promisify(ncp)
-const spec = require('../../../src/SpecDriver')
+const spec = require('../../../src/spec-driver')
 
 describe('JS Coverage tests', () => {
   it('works in a project with duplicate protractor', async () => {
@@ -30,8 +30,10 @@ describe('JS Coverage tests', () => {
     // make Node take protractor from new node_modules location (I don't really know what I'm doing here, I found what to do through debugging)
     module.constructor._pathCache = {}
 
-    // we can't use TestSetup because the driver needs to be require'd from this module
-    const driver = await spec.build({browser: 'chrome'})
+    // IMPORTANT: we can't use spec.build because the driver needs to be require'd from this module
+    const driver = await buildDriver({
+      capabilities: {browserName: 'chrome', 'goog:chromeOptions': {args: ['headless']}},
+    })
 
     try {
       await driver.get('https://example.org')
@@ -47,8 +49,16 @@ describe('JS Coverage tests', () => {
       await eyes.check('', Target.window())
       await eyes.close(false)
     } finally {
-      driver.quit()
-      // fs.rmdirSync(otherNodeModules, {recursive: true})
+      await driver.quit()
+      fs.rmdirSync(otherNodeModules, {recursive: true})
     }
   })
 })
+
+async function buildDriver({capabilities, url = process.env.CVG_TESTS_REMOTE}) {
+  const {Builder} = require('selenium-webdriver')
+  return new Builder()
+    .withCapabilities(capabilities)
+    .usingServer(url)
+    .build()
+}

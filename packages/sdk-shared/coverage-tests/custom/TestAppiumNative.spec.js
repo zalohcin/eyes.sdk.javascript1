@@ -2,18 +2,18 @@
 const cwd = process.cwd()
 const path = require('path')
 const {getEyes} = require('../../src/test-setup')
-const spec = require(path.resolve(cwd, 'src/SpecDriver'))
+const spec = require(path.resolve(cwd, 'src/spec-driver'))
 const {Target, Region} = require(cwd)
 
 describe.skip('TestAppiumNative (@native @mobile)', () => {
-  let driver, eyes
+  let driver, destroyDriver, eyes
   afterEach(async () => {
-    await spec.cleanup(driver)
+    await destroyDriver()
     await eyes.abortIfNotClosed()
   })
 
   it(`AndroidNativeAppTest1`, async () => {
-    driver = await spec.build({
+    ;[driver, destroyDriver] = await spec.build({
       capabilities: {
         browserName: '',
         name: 'AndroidNativeAppTest1',
@@ -24,7 +24,6 @@ describe.skip('TestAppiumNative (@native @mobile)', () => {
         clearSystemFiles: true,
         noReset: true,
       },
-      server: Remotes.sauce({w3c: false}),
     })
 
     eyes = new getEyes()
@@ -34,7 +33,7 @@ describe.skip('TestAppiumNative (@native @mobile)', () => {
   })
 
   it.skip(`AndroidNativeAppTest2`, async () => {
-    driver = await spec.build({
+    ;[driver, destroyDriver] = await spec.build({
       capabilities: {
         browserName: '',
         name: 'AndroidNativeAppTest2',
@@ -47,13 +46,12 @@ describe.skip('TestAppiumNative (@native @mobile)', () => {
         appActivity: 'com.applitoolstest.ScrollActivity',
         newCommandTimeout: 600,
       },
-      server: Remotes.sauce({w3c: false}),
     })
     eyes = getEyes()
     await eyes.open(driver, 'Mobile Native Tests', 'Android Native App 2')
 
     let scrollableElement = await driver.findElement(
-      new By('-android uiautomator', 'new UiSelector().scrollable(true)'), // TODO figure out how to use in SpecDriver
+      {type: '-android uiautomator', sleector: 'new UiSelector().scrollable(true)'}, // TODO figure out how to use in SpecDriver
     )
     await eyes.check(
       'Main window with ignore',
@@ -63,7 +61,7 @@ describe.skip('TestAppiumNative (@native @mobile)', () => {
   })
 
   it.skip(`Native iOS app on sauce lab`, async () => {
-    driver = await spec.build({
+    ;[driver, destroyDriver] = await spec.build({
       capabilities: {
         browserName: '',
         platformName: 'iOS',
@@ -74,7 +72,6 @@ describe.skip('TestAppiumNative (@native @mobile)', () => {
         clearSystemFiles: true,
         noReset: true,
       },
-      server: Remotes.sauce({w3c: false}),
     })
     eyes = getEyes()
     await eyes.open(driver, 'JS test', 'Checking eyes settings in appium tests')

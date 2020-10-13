@@ -171,12 +171,11 @@ class Region {
     } else {
       ArgumentGuard.isNumber(left, 'left')
       ArgumentGuard.isNumber(top, 'top')
-      ArgumentGuard.greaterThanOrEqualToZero(width, 'width', true)
-      ArgumentGuard.greaterThanOrEqualToZero(height, 'height', true)
+      ArgumentGuard.greaterThanOrEqualToZero(width, 'width')
+      ArgumentGuard.greaterThanOrEqualToZero(height, 'height')
 
-      // TODO: remove call to Math.ceil
-      this._left = Math.ceil(left)
-      this._top = Math.ceil(top)
+      this._left = left
+      this._top = top
       this._width = width
       this._height = height
       this._coordinatesType = coordinatesType || CoordinatesTypes.SCREENSHOT_AS_IS

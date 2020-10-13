@@ -3,13 +3,13 @@ const cwd = process.cwd()
 const path = require('path')
 const {getEyes} = require('../../../src/test-setup')
 const {assertImages} = require('../../util/ApiAssertions')
-const spec = require(path.resolve(cwd, 'src/SpecDriver'))
+const spec = require(path.resolve(cwd, 'src/spec-driver'))
 const {MatchLevel} = require(cwd)
 const {testSetup, getCheckSettings} = require('./EyesDifferentRunners')
 
 describe('TestEyesDifferentRunners Selenium', () => {
   beforeEach(async function() {
-    this.webDriver = await spec.build({browser: 'chrome'})
+    ;[this.webDriver, this.destroyDriver] = await spec.build({browser: 'chrome'})
     this.eyes = await getEyes()
     this.eyes.setSaveNewTests(false)
     this.eyes.setSendDom(true)
@@ -19,7 +19,7 @@ describe('TestEyesDifferentRunners Selenium', () => {
     })
   })
   afterEach(async function() {
-    await spec.cleanup(this.webDriver)
+    await this.destroyDriver()
     await this.eyes.abortIfNotClosed()
   })
   let testCase = testSetup(getCheckSettings, async eyes => {

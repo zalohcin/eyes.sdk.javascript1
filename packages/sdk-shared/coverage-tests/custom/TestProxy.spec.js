@@ -2,7 +2,7 @@
 const cwd = process.cwd()
 const path = require('path')
 const {getEyes} = require('../../src/test-setup')
-const spec = require(path.resolve(cwd, 'src/SpecDriver'))
+const spec = require(path.resolve(cwd, 'src/spec-driver'))
 const {ProxySettings} = require(cwd)
 const childProcess = require('child_process')
 const chai = require('chai')
@@ -22,7 +22,7 @@ describe.skip('TestProxy', () => {
   })
 
   async function checkNetworkPassThroughProxy() {
-    const webDriver = await spec.build({browser: 'chrome'})
+    const [webDriver, destroyDriver] = await spec.build({browser: 'chrome'})
     const eyes = await getEyes({isVisualGrid: true})
     try {
       let conf = eyes.getConfiguration()
@@ -38,14 +38,13 @@ describe.skip('TestProxy', () => {
       await eyes.close()
       await expect(eyes.close()).to.be.rejectedWith(Error, 'IllegalState: Eyes not open')
     } finally {
-      debugger
       await eyes.abortIfNotClosed()
-      await spec.cleanup(webDriver)
+      await destroyDriver()
     }
   }
 
   async function checkNetworkFailIfNoProxy() {
-    const webDriver = await spec.build({browser: 'chrome'})
+    const [webDriver, destroyDriver] = await spec.build({browser: 'chrome'})
     const eyes = await getEyes({isVisualGrid: true})
     try {
       let conf = eyes.getConfiguration()
@@ -58,7 +57,7 @@ describe.skip('TestProxy', () => {
         'tunneling socket could not be established',
       )
     } finally {
-      await spec.cleanup(webDriver)
+      await destroyDriver()
       if (eyes.getIsOpen()) {
         await eyes.abort()
       }

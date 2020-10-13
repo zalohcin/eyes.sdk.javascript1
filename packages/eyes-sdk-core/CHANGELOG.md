@@ -3,6 +3,81 @@
 ## Unreleased
 
 
+## 12.4.0 - 2020/10/13
+
+- improve screenshots on native mobile apps (with Appium) so just the application viewport is captured ([PR 135](https://github.com/applitools/eyes.sdk.javascript1/pull/135))
+=======
+
+## 12.3.2 - 2020/10/13
+
+- override cors frame's src after dom snapshot is taken
+- prevent taking a screenshot of the invisible part of the region ([Trello 544](https://trello.com/c/wJsUyBPE), [Trello 528](https://trello.com/c/iu2Png9p), [commit](https://github.com/applitools/eyes.sdk.javascript1/commit/c4adcdd74d479284075835e7a99489d8ba37825f))
+- updated to @applitools/dom-snapshot@4.2.1 (from 4.2.0)
+
+## 12.3.1 - 2020/10/7
+
+- add support for proxy configurations that use a default port (e.g., port 80) with isHttpOnly ([Trello 539](https://trello.com/c/0RPLxkOo), [commit](https://github.com/applitools/eyes.sdk.javascript1/commit/f0225dd9d5d761f5941eea1fa145bfaea9170877))
+
+## 12.3.0 - 2020/10/6
+
+- added support of chunked dom snapshot results
+- used common polling logic for dom snapshot and dom capture
+- add warnings when `setViewportSize` fails during taking dom snapshot with layout breakpoints
+- support multiple versions of ios for visual grid
+- updated to @applitools/dom-snapshot@4.1.2 (from 4.1.0)
+- updated to @applitools/snippets@2.0.3 (from 2.0.1)
+- updated to @applitools/dom-capture@8.0.0 (from 7.3.0)
+- updated to @applitools/dom-snapshot@4.2.0 (from 4.1.2)
+
+## 12.2.9 - 2020/9/28
+
+- increase the default number of retries for request
+- add delay before retry
+- updated to @applitools/snippets@2.0.1 (from 2.0.0)
+
+## 12.2.8 - 2020/9/24
+
+- new release process
+
+## 12.2.7 - 2020/9/23
+
+- remove yarn workspaces
+
+## 12.2.6 - 2020/9/23
+
+- support cross origin iframes
+
+## 12.2.5 - 2020/9/17
+
+- fix viewport position calculations ([Trello](https://trello.com/c/TuXUZUNO))
+- fix `takeDomCapture`
+
+## 12.2.4 - 2020/9/15
+
+- add new `takeDomSnapshot` implementation
+- remove `selenium-webdriver` dependency
+
+## 12.2.3 - 2020/9/2
+
+- add `disableBrowserFetching` configuration parameter ([Trello](https://trello.com/c/ixJJZdiA))
+
+## 12.2.2 - 2020/9/1
+
+- fix layout breakpoints configuration
+
+## 12.2.1 - 2020/9/1
+
+- fix layout breakpoints configuration
+
+## 12.2.0 - 2020/8/30
+
+- add support for `layoutBreakpoints`
+- avoid javascript execution on native devices during viewport size extraction
+- mark coded regions and target elements with unique selectors for the visual grid
+- improve handling of fractional metrics ([Trello](https://trello.com/c/TuXUZUNO/441-sonatype-wdio-5-targetregion-appears-off-by-one-pixel))
+- updated to @applitools/snippets@1.1.0 (from 1.0.3)
+- updated to @applitools/snippets@1.1.1 (from 1.1.0)
+
 ## 12.1.4 - 2020/8/13
 
 - avoid starting session with missing displaySize ([Trello 1](https://trello.com/c/jppq7ILy) [Trello 2](https://trello.com/c/5zDFhiMG))

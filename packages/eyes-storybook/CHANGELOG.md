@@ -3,6 +3,32 @@
 ## Unreleased
 
 
+## 3.9.0 - 2020/10/12
+
+- updated to @applitools/dom-snapshot@4.2.0 (from 4.1.1)
+- updated to @applitools/eyes-sdk-core@12.3.1 (from 12.2.9)
+- updated to @applitools/visual-grid-client@15.0.9 (from 15.0.8)
+
+## 3.8.11 - 2020/10/1
+
+- added "See details at..." at the beginning
+- updated to @applitools/dom-snapshot@4.1.1 (from 4.1.0)
+
+## 3.8.10 - 2020/9/28
+
+- remove yarn workspaces
+- updated to @applitools/dom-snapshot@4.1.0 (from 4.0.6)
+- updated to @applitools/eyes-sdk-core@12.2.6 (from 12.2.5)
+- updated to @applitools/visual-grid-client@15.0.6 (from 15.0.5)
+- updated to @applitools/eyes-sdk-core@12.2.9 (from 12.2.6)
+- updated to @applitools/visual-grid-client@15.0.8 (from 15.0.6)
+
+## 3.8.9 - 2020/8/31
+
+- fix exception when getStoryData throws an error ([Trello](https://trello.com/c/FLDMYl2O))
+- updated to @applitools/eyes-sdk-core@12.2.0 (from 12.1.4)
+- updated to @applitools/visual-grid-client@15.0.0 (from 14.7.5)
+
 ## 3.8.8 - 2020/8/13
 
 - updated to @applitools/eyes-sdk-core@12.1.4 (from 12.1.0)

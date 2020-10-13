@@ -311,10 +311,10 @@ function cropImage(image, region) {
 
     // process the pixels - crop
     const croppedArray = []
-    const yStart = region.getTop()
-    const yEnd = Math.min(region.getTop() + region.getHeight(), image.height)
-    const xStart = region.getLeft()
-    const xEnd = Math.min(region.getLeft() + region.getWidth(), image.width)
+    const yStart = Math.round(region.getTop())
+    const yEnd = Math.min(Math.round(region.getTop() + region.getHeight()), image.height)
+    const xStart = Math.round(region.getLeft())
+    const xEnd = Math.min(Math.round(region.getLeft() + region.getWidth()), image.width)
 
     let y, x, idx, i
     for (y = yStart; y < yEnd; y += 1) {
@@ -441,6 +441,63 @@ function getImageSizeFromBuffer(imageBuffer) {
   throw new TypeError('Buffer contains unsupported image type.')
 }
 
+function pixelColorAt(image, index, threshold = 0) {
+  const r = image.data[index * 4]
+  const g = image.data[index * 4 + 1]
+  const b = image.data[index * 4 + 2]
+  const rgb = [r, g, b]
+
+  // WHITE
+  if (rgb.every(sub => sub >= 255 - threshold)) return 1
+  // BLACK
+  else if (rgb.every(sub => sub <= threshold)) return 0
+  // OTHER
+  else return -1
+}
+
+function isMarkerStart(image, index, marker) {
+  const roundNumber = marker.size - Math.floor(marker.size / 2)
+  for (const [chunkIndex, chunkColor] of marker.mask.entries()) {
+    const pixelOffset = index + image.width * marker.size * chunkIndex
+    for (let round = 0; round < roundNumber; ++round) {
+      const sideLength = marker.size - round * 2
+      const stepsNumber = sideLength * 4 - 4
+      const threshold = Math.min((roundNumber - round) * 10 + 10, 100)
+      for (let step = 0; step < stepsNumber; ++step) {
+        let pixelIndex = pixelOffset + round + round * image.width
+
+        if (step < sideLength) {
+          pixelIndex += step
+        } else if (step < sideLength * 2 - 1) {
+          pixelIndex += sideLength - 1 + ((step % sideLength) + 1) * image.width
+        } else if (step < sideLength * 3 - 2) {
+          pixelIndex += (sideLength - 1) * image.width + (sideLength - (step % sideLength) - 1)
+        } else {
+          pixelIndex += (step % sideLength) * image.width
+        }
+
+        const pixelColor = pixelColorAt(image, pixelIndex, threshold)
+        if (pixelColor !== chunkColor) {
+          return false
+        }
+      }
+    }
+  }
+  return true
+}
+
+function findMarkerPosition(image, marker) {
+  for (let pixelIndex = 0; pixelIndex < image.width * image.height; ++pixelIndex) {
+    if (isMarkerStart(image, pixelIndex, marker)) {
+      return {
+        x: (pixelIndex % image.width) - marker.offset,
+        y: Math.floor(pixelIndex / image.width) - marker.offset,
+      }
+    }
+  }
+  return null
+}
+
 module.exports = {
   parseImage,
   packImage,
@@ -451,4 +508,5 @@ module.exports = {
   rotateImage,
   copyPixels,
   getImageSizeFromBuffer,
+  findMarkerPosition,
 }

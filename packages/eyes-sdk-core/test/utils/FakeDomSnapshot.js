@@ -7,10 +7,11 @@ function generatePositionStyle(rect) {
 }
 
 function elementToCdt(element) {
+  const fakeAttr = {name: 'data-fake-selector', value: element.selector}
   const cdt = {
     nodeType: 1,
     nodeName: 'DIV',
-    attributes: [{name: 'data-fake-selector', value: element.selector}],
+    attributes: element.attributes ? [...element.attributes, fakeAttr] : [fakeAttr],
     childNodeIndexes: [],
   }
   if (element.rect) {

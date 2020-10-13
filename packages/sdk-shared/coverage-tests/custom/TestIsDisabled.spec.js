@@ -2,18 +2,18 @@
 const cwd = process.cwd()
 const path = require('path')
 const {getEyes} = require('../../src/test-setup')
-const spec = require(path.resolve(cwd, 'src/SpecDriver'))
+const spec = require(path.resolve(cwd, 'src/spec-driver'))
 const {Target} = require(cwd)
 
 describe('Coverage Tests', () => {
-  let driver, eyes
+  let driver, destroyDriver, eyes
   beforeEach(async () => {
-    driver = await spec.build({browser: 'chrome'})
+    ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
     eyes = getEyes('classic', 'CSS')
   })
   afterEach(async () => {
     await eyes.abortIfNotClosed()
-    await spec.cleanup(driver)
+    await destroyDriver()
   })
 
   it('TestIsDisabled', async () => {
