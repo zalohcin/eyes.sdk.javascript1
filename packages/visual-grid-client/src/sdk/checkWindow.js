@@ -220,29 +220,33 @@ function makeCheckWindow({
         imageLocationRegion,
       })
 
+      const accessibilityRegion =
+        regions[4] &&
+        regions[4].map((region, index) => {
+          return Object.assign(region, {
+            accessibilityType: userSelectors[4][index].accessibilityType,
+          })
+        })
+
+      const floatingRegion =
+        regions[5] &&
+        regions[5].map((region, index) => {
+          const floatingRegion = userSelectors[5][index]
+          return Object.assign(region, {
+            maxUpOffset: floatingRegion.maxUpOffset,
+            maxDownOffset: floatingRegion.maxDownOffset,
+            maxLeftOffset: floatingRegion.maxLeftOffset,
+            maxRightOffset: floatingRegion.maxRightOffset,
+          })
+        })
+
       const checkSettings = createCheckSettings({
         ignore: regions[0],
         layout: regions[1],
         strict: regions[2],
         content: regions[3],
-        accessibility:
-          regions[4] &&
-          regions[4].map((region, index) => {
-            Object.assign(region, {
-              accessibilityType: userSelectors[4][index].accessibilityType,
-            })
-          }),
-        floating:
-          regions[5] &&
-          regions[5].map((region, index) => {
-            const floatingRegion = userSelectors[5][index]
-            Object.assign(region, {
-              maxUpOffset: floatingRegion.maxUpOffset,
-              maxDownOffset: floatingRegion.maxDownOffset,
-              maxLeftOffset: floatingRegion.maxLeftOffset,
-              maxRightOffset: floatingRegion.maxRightOffset,
-            })
-          }),
+        accessibility: accessibilityRegion,
+        floating: floatingRegion,
         useDom,
         enablePatterns,
         ignoreDisplacements,

@@ -45,10 +45,12 @@ function createCheckSettings({
 
   if (accessibility) {
     for (const region of accessibility) {
-      if (region instanceof GetAccessibilityRegion) {
-        checkSettings.accessibilityRegion(region)
-      } else {
-        checkSettings.accessibilityRegion(new Region(region), region.accessibilityType)
+      if (region) {
+        if (region instanceof GetAccessibilityRegion) {
+          checkSettings.accessibilityRegion(region)
+        } else {
+          checkSettings.accessibilityRegion(new Region(region), region.accessibilityType)
+        }
       }
     }
   }
