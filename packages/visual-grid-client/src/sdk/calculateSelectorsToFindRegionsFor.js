@@ -1,6 +1,6 @@
 'use strict'
 
-function stripSelector({selector, type}) {
+function selectorObject({selector, type}) {
   return type === 'xpath' || type === 'css' ? {type, selector} : selector
 }
 
@@ -12,9 +12,9 @@ function calculateSelectorsToFindRegionsFor({sizeMode, selector, userRegions = [
 
   const selectors = userRegions.reduce((prev, regions) => {
     if (Array.isArray(regions)) {
-      prev.push(...regions.filter(region => stripSelector(region)))
+      prev.push(...regions.filter(region => selectorObject(region)))
     } else if (regions && regions.selector) {
-      prev.push(stripSelector(regions))
+      prev.push(selectorObject(regions))
     }
 
     return prev
