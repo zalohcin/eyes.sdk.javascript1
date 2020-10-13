@@ -30,10 +30,10 @@
     "@applitools/functional-commons" "1.6.0"
     css-tree "^1.0.0-alpha.39"
 
-"@applitools/dom-snapshot@4.2.0":
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-4.2.0.tgz#72254be14ff073f6a2b05144e10dd2f1ae1ba93f"
-  integrity sha512-p2y8ndJAHVl95ZSlGw3n+5NIrF4DgeMai9bmY1NoZfgMPwOLPPFkCK3WqeRMHztT+BEcjhIrSR9eFg0R9DCkYw==
+"@applitools/dom-snapshot@4.2.1":
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-4.2.1.tgz#26495372535109dd8d2ad35f1f9f171b21262b74"
+  integrity sha512-a64sYVxKhPRwxneinAVN28JeRe+9C/touEyXIL1s0a7FSlJ7bsVQid7ZwqTrQu+8W//VWiYxgGI1SK11Y/a6Eg==
   dependencies:
     "@applitools/dom-shared" "1.0.4"
     "@applitools/functional-commons" "1.6.0"
