@@ -11,7 +11,7 @@ function calculateMatchRegions({codedRegions = [], selectorRegions = [], imageLo
 
         if (userRegions && userRegions.length > 0) {
           userRegions.forEach(region => {
-            if (imageLocationRegion) {
+            if (imageLocationRegion && region['getWidth']) {
               regions.push({
                 width: region.getWidth(),
                 height: region.getHeight(),
