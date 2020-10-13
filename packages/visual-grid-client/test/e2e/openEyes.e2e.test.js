@@ -75,7 +75,7 @@ describe('openEyes', () => {
     }
   })
 
-  it.only('passes with correct screenshot', async () => {
+  it('passes with correct screenshot', async () => {
     await page.goto(`${baseUrl}/test.html`)
 
     const {cdt, url, resourceContents, resourceUrls} = await processPage()
@@ -85,8 +85,8 @@ describe('openEyes', () => {
       testName: 'passes with correct screenshot',
       browser: [
         {width: 640, height: 480, name: 'chrome'},
-        // {width: 800, height: 600, name: 'firefox'},
-        // {deviceName: 'iPhone X'},
+        {width: 800, height: 600, name: 'firefox'},
+        {deviceName: 'iPhone X'},
       ],
       showLogs: process.env.APPLITOOLS_SHOW_LOGS,
       saveDebugData: process.env.APPLITOOLS_SAVE_DEBUG_DATA,

@@ -174,7 +174,7 @@ describe('createRenderRequests', () => {
     ])
   })
 
-  it.only('handles ignore, layout, strict, content, accessibility and floating regions', () => {
+  it('handles ignore, layout, strict, content, accessibility and floating regions', () => {
     const browsers = [{width: 1, height: 2}]
     const ignore = ['kuku', {type: 'css', selector: 'bla'}]
     const layout = [{type: 'css', selector: 'bla2'}, 'kuku2']
@@ -216,8 +216,8 @@ describe('createRenderRequests', () => {
           {type: 'css', selector: 'bla4'},
           {type: 'css', selector: 'c2'},
           {type: 'css', selector: 'c3'},
-          {type: 'css', selector: 'bla5'},
-          {type: 'css', selector: 'bla6'},
+          {type: 'css', selector: 'bla5', accessibilityType: 'RegularText'},
+          {type: 'css', selector: 'bla6', accessibilityType: 'LargeText'},
           {type: 'css', selector: 'sel'},
         ],
       },
