@@ -29,16 +29,18 @@ function createCheckSettings({
 
   if (floating) {
     for (const region of floating) {
-      if (region instanceof GetFloatingRegion) {
-        checkSettings.floatingRegion(region)
-      } else {
-        checkSettings.floatingRegion(
-          new Region(region),
-          region.maxUpOffset,
-          region.maxDownOffset,
-          region.maxLeftOffset,
-          region.maxRightOffset,
-        )
+      if (region) {
+        if (region instanceof GetFloatingRegion) {
+          checkSettings.floatingRegion(region)
+        } else {
+          checkSettings.floatingRegion(
+            new Region(region),
+            region.maxUpOffset,
+            region.maxDownOffset,
+            region.maxLeftOffset,
+            region.maxRightOffset,
+          )
+        }
       }
     }
   }
