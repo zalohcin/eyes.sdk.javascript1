@@ -34,8 +34,9 @@ class ImageProviderFactory {
         }
       }
     }
-    if (driver.isNative)
-      return new MobileApplicationScreenshotImageProvider(logger, driver, rotation)
+    // TODO: address native check region support before re-enabling
+    //if (driver.isNative)
+    //  return new MobileApplicationScreenshotImageProvider(logger, driver, rotation)
     return new TakesScreenshotImageProvider(logger, driver, rotation)
   }
 }
