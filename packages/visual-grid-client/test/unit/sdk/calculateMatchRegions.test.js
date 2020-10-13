@@ -154,23 +154,15 @@ describe('calculateMatchRegions', () => {
     ])
   })
 
-  it.skip('handles selector offset-regions without image offset', () => {
-    const offset = x => ({
-      maxUpOffset: x + 1,
-      maxDownOffset: x + 2,
-      maxRightOffset: x + 3,
-      maxLeftOffset: x + 4,
-    })
-    const floating = [{selector: 'bla'}, {selector: 'kuku'}].map((x, i) =>
-      Object.assign(x, offset(i)),
-    )
-    const selectorRegions = [[], [], [], [{toJSON: () => 'aaa'}], [{toJSON: () => 'bbb'}]]
+  it('handles selector offset-regions without image offset', () => {
+    const floating = [{selector: 'bla'}, {selector: 'kuku'}]
+    const selectorRegions = [[{toJSON: () => 'aaa'}], [{toJSON: () => 'bbb'}]]
     const userSelectors = [undefined, undefined, undefined, floating]
     expect(calculateMatchRegions({userSelectors, selectorRegions})).to.eql([
       undefined,
       undefined,
       undefined,
-      [{selector: 'bla'}, {selector: 'kuku'}].map((x, i) => Object.assign(x, offset(i))),
+      ['aaa', 'bbb'],
     ])
   })
 
@@ -307,23 +299,18 @@ describe('calculateMatchRegions', () => {
     ])
   })
 
-  it.skip('handles offset and non-offset regions', () => {
+  it('handles offset and non-offset regions', () => {
     const offset = x => ({
       maxUpOffset: x + 1,
-      maxDownOffset: x + 2,
-      maxRightOffset: x + 3,
-      maxLeftOffset: x + 4,
+      maxDownOffset: x + 1,
+      maxRightOffset: x + 1,
+      maxLeftOffset: x + 1,
     })
     const ignore = ['kuku', {selector: 'bla'}, 'bubu', {selector: 'clams'}]
     const layout = [{selector: 'bla2'}, 'bubu2']
     const strict = ['kuku2', {selector: 'bla'}, 'bubu3', 'dudu3', {selector: 'bla'}]
     const content = [{selector: 'blaaa'}, 'aaa3']
-    const floating = [
-      {kuku: 'kuku'},
-      {selector: 'bla'},
-      {bubu: 'bubu'},
-      {selector: 'clams'},
-    ].map((x, i) => Object.assign(x, offset(i)))
+    const floating = [{kuku: 'kuku'}, {selector: 'bla'}].map((x, i) => Object.assign(x, offset(i)))
     const selectorRegions = [
       [{toJSON: () => 'aaa'}],
       [{toJSON: () => 'bbb'}],
@@ -338,8 +325,9 @@ describe('calculateMatchRegions', () => {
     expect(calculateMatchRegions({userSelectors, selectorRegions})).to.eql([
       ['aaa', 'bbb', 'ccc', 'ddd', 'kuku', 'bubu'],
       ['eee', 'fff', 'bubu2'],
-      ['fff', 'aaa3'],
-      [{kuku: 'kuku'}, {bubu: 'bubu'}].map((x, i) => Object.assign(x, offset(i))),
+      [{one: 'ggg'}, {two: 'hhh'}, 'kuku2', 'bubu3', 'dudu3'],
+      ['aaa3'],
+      [{kuku: 'kuku'}].map((x, i) => Object.assign(x, offset(i))),
     ])
   })
 })
