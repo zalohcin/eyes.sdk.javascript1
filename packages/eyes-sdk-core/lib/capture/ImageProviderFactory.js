@@ -6,7 +6,7 @@ const TakesScreenshotImageProvider = require('./TakesScreenshotImageProvider')
 const FirefoxScreenshotImageProvider = require('./FirefoxScreenshotImageProvider')
 const SafariScreenshotImageProvider = require('./SafariScreenshotImageProvider')
 const IOSSafariScreenshotImageProvider = require('./IOSSafariScreenshotImageProvider')
-const MobileApplicationScreenshotImageProvider = require('./MobileApplicationScreenshotImageProvider')
+//const MobileApplicationScreenshotImageProvider = require('./MobileApplicationScreenshotImageProvider')
 
 class ImageProviderFactory {
   /**
