@@ -101,7 +101,7 @@ function makeCheckWindow({
         }),
       ),
     )
-    const codedRegions = [ignore, layout, strict, content, accessibility, floating]
+    const userRegions = [ignore, layout, strict, content, accessibility, floating]
     const renderPromise = presult(startRender())
     let renderJobs // This will be an array of `resolve` functions to rendering jobs. See `createRenderJob` below.
 
@@ -214,24 +214,31 @@ function makeCheckWindow({
         imageLocation = new Region(region).getLocation()
       }
 
-      const regions = calculateMatchRegions({
-        codedRegions,
+      const [
+        ignoreRegions,
+        layoutRegions,
+        strictRegions,
+        contentRegions,
+        accessibilityRegions,
+        floatingRegions,
+      ] = calculateMatchRegions({
+        userRegions,
         selectorRegions,
         imageLocationRegion,
       })
 
-      const accessibilityRegion =
-        regions[4] &&
-        regions[4].map((region, index) => {
+      const processedAccessibilityRegions =
+        accessibilityRegions &&
+        accessibilityRegions.map((region, index) => {
           return Object.assign(region, {
-            accessibilityType: codedRegions[4][index].accessibilityType,
+            accessibilityType: userRegions[4][index].accessibilityType,
           })
         })
 
-      const floatingRegion =
-        regions[5] &&
-        regions[5].map((region, index) => {
-          const floatingRegion = codedRegions[5][index]
+      const processedFloatingRegions =
+        floatingRegions &&
+        floatingRegions.map((region, index) => {
+          const floatingRegion = userRegions[5][index]
           return Object.assign(region, {
             maxUpOffset: floatingRegion.maxUpOffset,
             maxDownOffset: floatingRegion.maxDownOffset,
@@ -241,12 +248,12 @@ function makeCheckWindow({
         })
 
       const checkSettings = createCheckSettings({
-        ignore: regions[0],
-        layout: regions[1],
-        strict: regions[2],
-        content: regions[3],
-        accessibility: accessibilityRegion,
-        floating: floatingRegion,
+        ignore: ignoreRegions,
+        layout: layoutRegions,
+        strict: strictRegions,
+        content: contentRegions,
+        accessibility: processedAccessibilityRegions,
+        floating: processedFloatingRegions,
         useDom,
         enablePatterns,
         ignoreDisplacements,
@@ -299,7 +306,7 @@ function makeCheckWindow({
         renderInfo,
         sizeMode,
         selector,
-        userRegions: codedRegions,
+        userRegions,
         region,
         scriptHooks,
         sendDom,

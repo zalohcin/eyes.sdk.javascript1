@@ -1,16 +1,17 @@
 'use strict'
-function calculateMatchRegions({codedRegions = [], selectorRegions = [], imageLocationRegion}) {
+function calculateMatchRegions({userRegions = [], selectorRegions = [], imageLocationRegion}) {
   let selectorRegionIndex = imageLocationRegion ? 1 : 0
 
-  return codedRegions.map(selectors => {
-    if (selectors && selectors.length > 0) {
+  return userRegions.map(selector => {
+    if (selector) {
+      const selectors = Array.isArray(selector) ? selector : [selector]
       return selectors.reduce((regions, userRegion) => {
-        const userRegions = userRegion.selector
+        const codedRegions = userRegion.selector
           ? selectorRegions[selectorRegionIndex++]
           : [userRegion]
 
-        if (userRegions && userRegions.length > 0) {
-          userRegions.forEach(region => {
+        if (codedRegions && codedRegions.length > 0) {
+          codedRegions.forEach(region => {
             if (imageLocationRegion && region['getWidth']) {
               regions.push({
                 width: region.getWidth(),
