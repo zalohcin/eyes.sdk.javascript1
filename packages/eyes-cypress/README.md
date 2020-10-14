@@ -657,6 +657,12 @@ cy.eyesOpen({
 
 The list of devices is available at https://github.com/applitools/eyes.sdk.javascript1/blob/master/packages/eyes-sdk-core/lib/config/IosDeviceName.js
 
+Possible values for `iosVersion` are:
+
+- `'latest'` - the latest iOS version that's supported by the UFG
+- `'latest-1'` - one version prior to the latest version
+- `undefined` - the UFG's default
+
 ## Setting a timeout
 
 At the end of the test run, Eyes-Cypress will wait for the results of all visual tests. There's a default timeout of 2 minutes between the end of the test run and the end of the visual tests (although it should not take so long normally!).

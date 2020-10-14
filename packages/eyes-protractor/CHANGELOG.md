@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-
+- add iosVersion to readme
 
 ## 1.9.0 - 2020/10/6
 

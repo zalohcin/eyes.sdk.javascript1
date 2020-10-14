@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- add iosVersion to readme
+
 ## 1.2.0 - 2020/10/7
 
 - updated to @applitools/eyes-sdk-core@12.3.1 (from 11.5.0)

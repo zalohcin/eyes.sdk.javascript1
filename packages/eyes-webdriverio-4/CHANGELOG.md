@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- add iosVersion to readme
+
 ## 2.23.0 - 2020/10/7
 
 - remove yarn workspaces
