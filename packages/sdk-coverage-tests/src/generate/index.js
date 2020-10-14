@@ -1,8 +1,10 @@
-const {makeEmitTests} = require('./execute')
+const {prepareTests} = require('./prepare')
+const {makeTests} = require('./make')
 const {createTestFiles, createTestMetaData} = require('./save')
 
 module.exports = {
-  makeEmitTests,
+  prepareTests,
+  makeTests,
   createTestFiles,
   createTestMetaData,
 }

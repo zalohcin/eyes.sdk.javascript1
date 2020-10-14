@@ -1,7 +1,3 @@
-function getNameFromObject(object) {
-  return Object.keys(object)[0]
-}
-
 function findDifferencesBetweenCollections(hostCollection = [], guestCollection = []) {
   const _hostCollection = Array.isArray(hostCollection)
     ? hostCollection
@@ -12,12 +8,21 @@ function findDifferencesBetweenCollections(hostCollection = [], guestCollection 
   return _hostCollection.filter(test => !_guestCollection.has(test))
 }
 
+function isUrl(value) {
+  if (typeof value !== 'string') return false
+  return /^https?:/.test(value)
+}
+
 function isFunction(value) {
   return typeof value === 'function'
 }
 
 function isObject(value) {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
+function isEmptyObject(value) {
+  return isObject(value) && Object.keys(value).length === 0
 }
 
 function mergeObjects(base, other) {
@@ -37,9 +42,10 @@ function capitalize(string) {
 
 module.exports = {
   findDifferencesBetweenCollections,
-  getNameFromObject,
   mergeObjects,
+  isUrl,
   isFunction,
   isObject,
+  isEmptyObject,
   capitalize,
 }

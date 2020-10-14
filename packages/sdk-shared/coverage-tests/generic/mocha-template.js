@@ -1,4 +1,4 @@
-function makeMochaTestTemplate({key, name, output, meta}) {
+function makeMochaTestTemplate({name, output, meta}) {
   const tags = []
   if (meta.features) tags.push(...meta.features.map(feature => `@${feature}`))
   if (meta.native) tags.push('@native')
@@ -7,7 +7,7 @@ function makeMochaTestTemplate({key, name, output, meta}) {
     tags.push(`@${meta.browser.replace(/-[\d.]+$/, '')}`)
   }
 
-  return `// ${key}
+  return `// ${name}
 ${output.hooks.deps.join('\n')}
 
 describe${output.disabled ? '.skip' : ''}('Coverage Tests', () => {

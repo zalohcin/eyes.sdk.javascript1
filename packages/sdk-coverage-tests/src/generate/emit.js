@@ -125,8 +125,9 @@ function withHistory(groups) {
         return wrapCommand(`${name}.${key}`, Reflect.get(target, key))
       },
       apply(target, thisArg, args) {
-        history.push({name, args})
-        return Reflect.apply(target, thisArg, args)
+        const result = Reflect.apply(target, thisArg, args)
+        history.push({name, args, result})
+        return result
       },
     })
   }

@@ -1,4 +1,6 @@
 const {convertJunitXmlToResultSchema} = require('./xml')
+const {sendReport, sendNotification} = require('./send')
+const uploadToStorage = require('./upload')
 
 function convertSdkNameToReportName(sdkName) {
   switch (sdkName) {
@@ -31,18 +33,10 @@ function convertSdkNameToReportName(sdkName) {
   }
 }
 
-function createReport({sdkName, xmlResult, browser, group, sandbox, id, metaData} = {}) {
-  return {
-    sdk: convertSdkNameToReportName(sdkName),
-    group: group ? group : 'selenium',
-    sandbox: sandbox !== undefined ? sandbox : true,
-    results: convertJunitXmlToResultSchema({xmlResult, browser, metaData}),
-    id,
-  }
-}
-
 module.exports = {
-  createReport,
   convertJunitXmlToResultSchema,
   convertSdkNameToReportName,
+  sendReport,
+  sendNotification,
+  uploadToStorage,
 }

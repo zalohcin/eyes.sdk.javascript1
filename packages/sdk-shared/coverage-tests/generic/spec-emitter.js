@@ -53,9 +53,6 @@ module.exports = function(tracker, test) {
     js`[driver, destroyDriver] = await spec.build(${test.env} || {browser: 'chrome'})`,
   )
   addHook('beforeEach', js`eyes = testSetup.getEyes(${test.config})`)
-  if (test.visit) {
-    addHook('beforeEach', js`spec.visit(driver, ${test.visit})`)
-  }
 
   addHook('afterEach', js`await destroyDriver(driver)`)
 
@@ -123,7 +120,7 @@ module.exports = function(tracker, test) {
         js`await eyes.open(
             driver,
             ${appName},
-            ${test.name},
+            ${test.baselineName},
             ${viewportSize},
           )`,
       )
