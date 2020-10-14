@@ -5,7 +5,7 @@ const {getEyes} = require('../../src/test-setup')
 const spec = require(path.resolve(cwd, 'src/spec-driver'))
 const {Target} = require(cwd)
 
-describe('app viewport (@native @mobile @android)', function() {
+describe.skip('app viewport (@native @mobile @android)', function() {
   let driver, destroyDriver, eyes
   before(async () => {
     ;[driver, destroyDriver] = await spec.build({
