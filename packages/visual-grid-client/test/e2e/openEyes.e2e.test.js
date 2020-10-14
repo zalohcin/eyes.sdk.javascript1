@@ -141,7 +141,7 @@ describe('openEyes', () => {
     // }
   })
 
-  it('fails with incorrect screenshot', async () => {
+  it.only('fails with incorrect screenshot', async () => {
     await page.goto(`${baseUrl}/test.html`)
 
     const {cdt, url, resourceContents, resourceUrls} = await processPage()

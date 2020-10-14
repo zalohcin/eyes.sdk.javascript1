@@ -7,6 +7,7 @@ const createRenderRequests = require('./createRenderRequests')
 const createCheckSettings = require('./createCheckSettings')
 const calculateMatchRegions = require('./calculateMatchRegions')
 const isInvalidAccessibility = require('./isInvalidAccessibility')
+const calculateSelectorsToFindRegionsFor = require('./calculateSelectorsToFindRegionsFor')
 
 function makeCheckWindow({
   globalState,
@@ -101,7 +102,19 @@ function makeCheckWindow({
         }),
       ),
     )
-    const userRegions = [ignore, layout, strict, content, accessibility, floating]
+
+    // const userRegions = [ignore, layout, strict, content, accessibility, floating]
+    const {selectorsToFindRegionsFor, getMatchRegions} = calculateSelectorsToFindRegionsFor({
+      sizeMode,
+      selector,
+      ignore,
+      layout,
+      strict,
+      content,
+      accessibility,
+      floating,
+    })
+
     const renderPromise = presult(startRender())
     let renderJobs // This will be an array of `resolve` functions to rendering jobs. See `createRenderJob` below.
 
@@ -221,39 +234,15 @@ function makeCheckWindow({
         contentRegions,
         accessibilityRegions,
         floatingRegions,
-      ] = calculateMatchRegions({
-        userRegions,
-        selectorRegions,
-        imageLocationRegion,
-      })
-
-      const processedAccessibilityRegions =
-        accessibilityRegions &&
-        accessibilityRegions.map((region, index) => {
-          return Object.assign(region, {
-            accessibilityType: userRegions[4][index].accessibilityType,
-          })
-        })
-
-      const processedFloatingRegions =
-        floatingRegions &&
-        floatingRegions.map((region, index) => {
-          const floatingRegion = userRegions[5][index]
-          return Object.assign(region, {
-            maxUpOffset: floatingRegion.maxUpOffset,
-            maxDownOffset: floatingRegion.maxDownOffset,
-            maxLeftOffset: floatingRegion.maxLeftOffset,
-            maxRightOffset: floatingRegion.maxRightOffset,
-          })
-        })
+      ] = getMatchRegions({selectorRegions, imageLocationRegion})
 
       const checkSettings = createCheckSettings({
         ignore: ignoreRegions,
         layout: layoutRegions,
         strict: strictRegions,
         content: contentRegions,
-        accessibility: processedAccessibilityRegions,
-        floating: processedFloatingRegions,
+        accessibility: accessibilityRegions,
+        floating: floatingRegions,
         useDom,
         enablePatterns,
         ignoreDisplacements,
@@ -306,7 +295,7 @@ function makeCheckWindow({
         renderInfo,
         sizeMode,
         selector,
-        userRegions,
+        selectorsToFindRegionsFor,
         region,
         scriptHooks,
         sendDom,
