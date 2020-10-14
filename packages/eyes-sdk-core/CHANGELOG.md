@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 12.4.2 - 2020/10/14
+
 - re-enable native app viewport screenshotting along with added support for checkRegion
 
 ## 12.4.1 - 2020/10/13
