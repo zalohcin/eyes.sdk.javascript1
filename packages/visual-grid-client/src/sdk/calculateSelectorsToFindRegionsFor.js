@@ -12,7 +12,7 @@ function calculateSelectorsToFindRegionsFor({sizeMode, selector, userRegions = [
 
   const selectors = userRegions.reduce((prev, regions) => {
     if (Array.isArray(regions)) {
-      prev.push(...regions.filter(region => selectorObject(region)))
+      prev.push(...regions.filter(region => region.selector).map(selectorObject))
     } else if (regions && regions.selector) {
       prev.push(selectorObject(regions))
     }

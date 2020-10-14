@@ -6,18 +6,18 @@ const calculateSelectorsToFindRegionsFor = require('../../../src/sdk/calculateSe
 
 describe('calculateSelectorsToFindRegionsFor', () => {
   it('handles no sizeMode selector and no selectors', () => {
-    expect(calculateSelectorsToFindRegionsFor({userRegions: []})).to.be.undefined
-    expect(calculateSelectorsToFindRegionsFor({userRegions: [], sizeMode: 'bla'})).to.be.undefined
+    expect(calculateSelectorsToFindRegionsFor({sizeMode: ''})).to.be.undefined
+    expect(
+      calculateSelectorsToFindRegionsFor({
+        sizeMode: 'bla',
+      }),
+    ).to.be.undefined
   })
 
   it('handles sizeMode selector, but no selectors', () => {
-    expect(
-      calculateSelectorsToFindRegionsFor({
-        userRegions: [],
-        sizeMode: 'selector',
-        selector: 'bla',
-      }),
-    ).to.eql(['bla'])
+    expect(calculateSelectorsToFindRegionsFor({sizeMode: 'selector', selector: 'bla'})).to.eql([
+      'bla',
+    ])
   })
 
   it('handles no sizeMode selector, with no-offset selector', () => {
@@ -41,7 +41,7 @@ describe('calculateSelectorsToFindRegionsFor', () => {
   it('handles no sizeMode selector, with no-offset array', () => {
     expect(
       calculateSelectorsToFindRegionsFor({
-        userRegions: [{selector: 'bla'}, undefined, undefined],
+        userRegions: [[{selector: 'bla'}], undefined, undefined],
       }),
     ).to.eql(['bla'])
   })
@@ -49,7 +49,7 @@ describe('calculateSelectorsToFindRegionsFor', () => {
   it('handles no sizeMode selector, with no-offset second index array', () => {
     expect(
       calculateSelectorsToFindRegionsFor({
-        userRegions: [undefined, {selector: 'bla'}, undefined],
+        userRegions: [undefined, [{selector: 'bla'}], undefined],
       }),
     ).to.eql(['bla'])
   })
@@ -57,7 +57,7 @@ describe('calculateSelectorsToFindRegionsFor', () => {
   it('handles no sizeMode selector, with no-offset multiple arrays', () => {
     expect(
       calculateSelectorsToFindRegionsFor({
-        userRegions: [{selector: 'bla'}, undefined, {selector: 'bla2'}],
+        userRegions: [[{selector: 'bla'}], undefined, [{selector: 'bla2'}]],
       }),
     ).to.eql(['bla', 'bla2'])
   })
@@ -65,7 +65,7 @@ describe('calculateSelectorsToFindRegionsFor', () => {
   it('handles no sizeMode selector, with combined no-offset arrays and selectors', () => {
     expect(
       calculateSelectorsToFindRegionsFor({
-        userRegions: [undefined, {selector: 'bla'}, {selector: 'bla2'}],
+        userRegions: [undefined, [{selector: 'bla'}], {selector: 'bla2'}],
       }),
     ).to.eql(['bla', 'bla2'])
   })
@@ -74,10 +74,7 @@ describe('calculateSelectorsToFindRegionsFor', () => {
     expect(
       calculateSelectorsToFindRegionsFor({
         userRegions: [
-          {a: 'b'},
-          {selector: 'bla'},
-          {c: 'd'},
-          {selector: 'kuku'},
+          [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'kuku'}],
           undefined,
           undefined,
         ],
@@ -89,14 +86,8 @@ describe('calculateSelectorsToFindRegionsFor', () => {
     expect(
       calculateSelectorsToFindRegionsFor({
         userRegions: [
-          {a: 'b'},
-          {selector: 'bla'},
-          {c: 'd'},
-          {selector: 'kuku'},
-          {a: 'b'},
-          {selector: 'aaa'},
-          {c: 'd'},
-          {selector: 'bbb'},
+          [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'kuku'}],
+          [{a: 'b'}, {selector: 'aaa'}, {c: 'd'}, {selector: 'bbb'}],
           undefined,
         ],
       }),
@@ -114,7 +105,7 @@ describe('calculateSelectorsToFindRegionsFor', () => {
   it('handles no sizeMode selector, with offset-selector array', () => {
     expect(
       calculateSelectorsToFindRegionsFor({
-        userRegions: [undefined, undefined, undefined, {selector: 'bla'}],
+        userRegions: [undefined, undefined, undefined, [{selector: 'bla'}]],
       }),
     ).to.eql(['bla'])
   })
@@ -126,10 +117,7 @@ describe('calculateSelectorsToFindRegionsFor', () => {
           undefined,
           undefined,
           undefined,
-          {a: 'b'},
-          {selector: 'bla'},
-          {c: 'd'},
-          {selector: 'kuku'},
+          [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'kuku'}],
         ],
       }),
     ).to.eql(['bla', 'kuku'])
@@ -169,28 +157,11 @@ describe('calculateSelectorsToFindRegionsFor', () => {
     expect(
       calculateSelectorsToFindRegionsFor({
         userRegions: [
-          {a: 'b'},
-          {selector: 'bla'},
-          {c: 'd'},
-          {selector: 'kuku'},
-          {selector: 'ignore'},
-          {a: 'b'},
-          {selector: 'bla'},
-          {c: 'd'},
-          {selector: 'layout'},
-          {a: 'b'},
-          {selector: 'bla'},
-          {c: 'd'},
-          {selector: 'strict'},
-          {a: 'b'},
-          {selector: 'bla'},
-          {c: 'd'},
-          {selector: 'content'},
-          {a: 'b'},
-          {selector: 'bla'},
-          {c: 'd'},
-          {selector: 'kuku'},
-          {selector: 'float'},
+          [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'kuku'}, {selector: 'ignore'}],
+          [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'layout'}],
+          [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'strict'}],
+          [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'content'}],
+          [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'kuku'}, {selector: 'float'}],
         ],
       }),
     ).to.eql([
@@ -213,21 +184,11 @@ describe('calculateSelectorsToFindRegionsFor', () => {
     expect(
       calculateSelectorsToFindRegionsFor({
         userRegions: [
-          {a: 'b'},
-          {selector: 'bla'},
-          {c: 'd'},
-          {selector: 'kuku'},
-          {selector: 'ignore'},
+          [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'kuku'}, {selector: 'ignore'}],
           {selector: 'layout'},
-          {selector: 'strict'},
-          {selector: 'yo'},
-          {d: 'g'},
-          {selector: 'content'},
-          {a: 'b'},
-          {selector: 'bla'},
-          {c: 'd'},
-          {selector: 'kuku'},
-          {selector: 'float'},
+          [{selector: 'strict'}, {selector: 'yo'}, {d: 'g'}],
+          [{selector: 'content'}],
+          [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'kuku'}, {selector: 'float'}],
         ],
         sizeMode: 'selector',
         selector: 'selector',
