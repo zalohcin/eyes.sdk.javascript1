@@ -11,6 +11,7 @@ const {getProcessPageAndSerialize} = require('@applitools/dom-snapshot')
 const fs = require('fs')
 const {resolve} = require('path')
 const testLogger = require('../util/testLogger')
+const {ApiAssertions} = require('@applitools/sdk-shared')
 
 describe('openEyes', () => {
   let baseUrl, closeServer, openEyes
@@ -110,6 +111,25 @@ describe('openEyes', () => {
 
     expect(results.length).to.eq(3)
     expect(results.map(r => r.getStatus())).to.eql(['Passed', 'Passed', 'Passed'])
+
+    const expectedRegions = [
+      [
+        {left: 8, top: 412, width: 151, height: 227},
+        {left: 8, top: 667, width: 151, height: 227},
+        {left: 8, top: 922, width: 151, height: 227},
+      ],
+      [], // this seems like a bug in the grid for Firefox
+      [
+        {left: 8, top: 471, width: 151, height: 227},
+        {left: 8, top: 726, width: 151, height: 227},
+        {left: 8, top: 981, width: 151, height: 227},
+      ],
+    ]
+
+    for (const [index, testResults] of results.entries()) {
+      const testData = await ApiAssertions.getApiData(testResults, apiKey)
+      expect(testData.actualAppOutput[0].imageMatchSettings.ignore).to.eql(expectedRegions[index])
+    }
   })
 
   it('fails with incorrect screenshot', async () => {
