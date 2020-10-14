@@ -6,7 +6,7 @@ const TakesScreenshotImageProvider = require('./TakesScreenshotImageProvider')
 const FirefoxScreenshotImageProvider = require('./FirefoxScreenshotImageProvider')
 const SafariScreenshotImageProvider = require('./SafariScreenshotImageProvider')
 const IOSSafariScreenshotImageProvider = require('./IOSSafariScreenshotImageProvider')
-//const MobileApplicationScreenshotImageProvider = require('./MobileApplicationScreenshotImageProvider')
+const MobileApplicationScreenshotImageProvider = require('./MobileApplicationScreenshotImageProvider')
 
 class ImageProviderFactory {
   /**
@@ -34,9 +34,8 @@ class ImageProviderFactory {
         }
       }
     }
-    // TODO: address native check region support before re-enabling
-    //if (driver.isNative)
-    //  return new MobileApplicationScreenshotImageProvider(logger, driver, rotation)
+    if (driver.isNative)
+      return new MobileApplicationScreenshotImageProvider(logger, driver, rotation)
     return new TakesScreenshotImageProvider(logger, driver, rotation)
   }
 }
