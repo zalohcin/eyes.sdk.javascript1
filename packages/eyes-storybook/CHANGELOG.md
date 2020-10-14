@@ -2,7 +2,13 @@
 
 ## Unreleased
 
+
+## 3.9.1 - 2020/10/14
+
 - add iosVersion to readme
+- updated to @applitools/dom-snapshot@4.2.1 (from 4.2.0)
+- updated to @applitools/eyes-sdk-core@12.4.2 (from 12.3.1)
+- updated to @applitools/visual-grid-client@15.0.10 (from 15.0.9)
 
 ## 3.9.0 - 2020/10/12
 
