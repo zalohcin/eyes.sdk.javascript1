@@ -25,9 +25,9 @@ var tests = {
       ClassicCSS: {config: {check: 'classic', stitchMode: 'CSS', baselineName: 'TestCheckWindow'}},
       ClassicScroll: {config: {check: 'classic', stitchMode: 'Scroll', baselineName: 'TestCheckWindow_Scroll'}},
       ClassicVG: {config: {check: 'classic', vg: true, baselineName: 'TestCheckWindow_VG'}},
-      CSS: {config: {stitchMode: 'CSS'}, baselineName: 'TestCheckWindow'},
-      Scroll: {config: {stitchMode: 'Scroll'}, baselineName: 'TestCheckWindow_Scroll'},
-      VG: {config: {vg: true}, baselineName: 'TestCheckWindow_VG'},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckWindow'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckWindow_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckWindow_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
