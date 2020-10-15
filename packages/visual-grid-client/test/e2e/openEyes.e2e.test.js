@@ -76,7 +76,7 @@ describe('openEyes', () => {
     }
   })
 
-  it('passes with correct screenshot', async () => {
+  it.only('passes with correct screenshot', async () => {
     await page.goto(`${baseUrl}/test.html`)
 
     const {cdt, url, resourceContents, resourceUrls} = await processPage()
@@ -112,6 +112,12 @@ describe('openEyes', () => {
           maxRightOffset: 10,
         },
       ],
+      accessibility: [
+        {
+          selector: '.region',
+          accessibilityType: 'LargeText',
+        },
+      ],
     })
 
     const [errArr, results] = await presult(close())
@@ -141,7 +147,7 @@ describe('openEyes', () => {
     // }
   })
 
-  it.only('fails with incorrect screenshot', async () => {
+  it('fails with incorrect screenshot', async () => {
     await page.goto(`${baseUrl}/test.html`)
 
     const {cdt, url, resourceContents, resourceUrls} = await processPage()

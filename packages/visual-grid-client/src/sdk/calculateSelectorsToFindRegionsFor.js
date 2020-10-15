@@ -32,9 +32,6 @@ function calculateSelectorsToFindRegionsFor({
   }, [])
 
   function getMatchRegions({selectorRegions, imageLocationRegion}) {
-    const accesibilityRegionIndex = 4
-    const floatingRegionIndex = 5
-
     let selectorRegionIndex = imageLocationRegion ? 1 : 0
     return userRegions.map((userRegion, userRegionIndex) => {
       if (userRegion) {
@@ -46,35 +43,8 @@ function calculateSelectorsToFindRegionsFor({
 
           if (codedRegions && codedRegions.length > 0) {
             codedRegions.forEach(region => {
-              if (imageLocationRegion && region['getWidth']) {
-                const regionObject = {
-                  width: region.getWidth(),
-                  height: region.getHeight(),
-                  left: Math.max(0, region.getLeft() - imageLocationRegion.getLeft()),
-                  top: Math.max(0, region.getTop() - imageLocationRegion.getTop()),
-                }
-
-                regions.push(regionObject)
-              } else {
-                const regionObject = region['toJSON'] ? region.toJSON() : region
-                // accesibility regions
-                if (userRegionIndex === accesibilityRegionIndex) {
-                  Object.assign(regionObject, {
-                    accessibilityType: userSelector.accessibilityType,
-                  })
-                }
-                // floating region
-                if (userRegionIndex === floatingRegionIndex) {
-                  Object.assign(regionObject, {
-                    maxUpOffset: userSelector.maxUpOffset,
-                    maxDownOffset: userSelector.maxDownOffset,
-                    maxLeftOffset: userSelector.maxLeftOffset,
-                    maxRightOffset: userSelector.maxRightOffset,
-                  })
-                }
-
-                regions.push(regionObject)
-              }
+              const regionObject = regionify({region, imageLocationRegion})
+              regions.push(regionWithUserInput({regionObject, userSelector, userRegionIndex}))
             })
           }
 
@@ -85,10 +55,42 @@ function calculateSelectorsToFindRegionsFor({
   }
 
   // NOTE: in rare cases there might be duplicates here. Intentionally not removing them because later we map `selectorsToFindRegionsFor` to `selectorRegions`.
-  console.log((selectorsToFindRegionsFor || []).concat(selectors))
   return {
     selectorsToFindRegionsFor: (selectorsToFindRegionsFor || []).concat(selectors),
     getMatchRegions,
+  }
+}
+
+function regionify({region, imageLocationRegion}) {
+  if (imageLocationRegion && region['getWidth']) {
+    return {
+      width: region.getWidth(),
+      height: region.getHeight(),
+      left: Math.max(0, region.getLeft() - imageLocationRegion.getLeft()),
+      top: Math.max(0, region.getTop() - imageLocationRegion.getTop()),
+    }
+  } else {
+    return region['toJSON'] ? region.toJSON() : region
+  }
+}
+
+function regionWithUserInput({regionObject, userSelector, userRegionIndex}) {
+  const accesibilityRegionIndex = 4
+  const floatingRegionIndex = 5
+  // accesibility regions
+  if (userRegionIndex === accesibilityRegionIndex) {
+    Object.assign(regionObject, {
+      accessibilityType: userSelector.accessibilityType,
+    })
+  }
+  // floating region
+  if (userRegionIndex === floatingRegionIndex) {
+    Object.assign(regionObject, {
+      maxUpOffset: userSelector.maxUpOffset,
+      maxDownOffset: userSelector.maxDownOffset,
+      maxLeftOffset: userSelector.maxLeftOffset,
+      maxRightOffset: userSelector.maxRightOffset,
+    })
   }
 }
 

@@ -5,7 +5,6 @@ const {presult} = require('@applitools/functional-commons')
 const saveData = require('../troubleshoot/saveData')
 const createRenderRequests = require('./createRenderRequests')
 const createCheckSettings = require('./createCheckSettings')
-const calculateMatchRegions = require('./calculateMatchRegions')
 const isInvalidAccessibility = require('./isInvalidAccessibility')
 const calculateSelectorsToFindRegionsFor = require('./calculateSelectorsToFindRegionsFor')
 
