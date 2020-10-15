@@ -3,6 +3,8 @@
 ## Unreleased
 
 - add iosVersion to readme
+- updated to @applitools/eyes-sdk-core@12.4.2 (from 12.3.1)
+- updated to @applitools/visual-grid-client@15.0.10 (from 15.0.9)
 
 ## 1.2.0 - 2020/10/7
 
