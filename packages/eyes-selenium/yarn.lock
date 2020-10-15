@@ -201,13 +201,13 @@
     ncp "2.0.0"
     yargs "15.3.1"
 
-"@applitools/sdk-shared@^0.1.5":
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/@applitools/sdk-shared/-/sdk-shared-0.1.5.tgz#249381707ca1c3a9231d9dc66c6ebb36c7c11bac"
-  integrity sha512-zU5lCG4Dgw8DwGnirachGCEe5YrxQ6xyS28T6ISPSJiaBncTCuxQv8i/J1c12jZOabsml19xO3SliO/LkWZxtQ==
+"@applitools/sdk-shared@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@applitools/sdk-shared/-/sdk-shared-0.3.0.tgz#68fe4c7f5aa2ed09e3512dd718f5cf3462b0fbf2"
+  integrity sha512-44cbaLF61L/nmOwi+wXjBpCp0uGOXn6SVtDlNL6JHafEhxCWqCrMYyHUSFSoLqLD7jd5goa68xnfUcdeTnpccg==
   dependencies:
     "@applitools/functional-commons" "1.6.0"
-    "@applitools/sdk-coverage-tests" "1.0.14"
+    "@applitools/sdk-coverage-tests" "1.0.16"
     axios "0.20.0"
     chai "4.2.0"
     chai-as-promised "7.1.1"
