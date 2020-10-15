@@ -4,227 +4,189 @@ const {describe, it} = require('mocha')
 const {expect} = require('chai')
 const calculateSelectorsToFindRegionsFor = require('../../../src/sdk/calculateSelectorsToFindRegionsFor')
 
-describe('calculateSelectorsToFindRegionsFor', () => {
-  it('handles no sizeMode selector and no selectors', () => {
-    expect(calculateSelectorsToFindRegionsFor({sizeMode: ''})).to.be.undefined
-    expect(
-      calculateSelectorsToFindRegionsFor({
-        sizeMode: 'bla',
-      }),
-    ).to.be.undefined
-  })
+describe('calculateSelectorsToFindRegionsFor Tests', () => {
+  describe('calculateSelectorsToFindRegionsFor', () => {
+    it('handles no arguments', () => {
+      const {selectorsToFindRegionsFor} = calculateSelectorsToFindRegionsFor({})
+      expect(selectorsToFindRegionsFor).to.be.undefined
+    })
 
-  it('handles sizeMode selector, but no selectors', () => {
-    expect(calculateSelectorsToFindRegionsFor({sizeMode: 'selector', selector: 'bla'})).to.eql([
-      'bla',
-    ])
-  })
+    it('handles sizeMode without selector or selectors', () => {
+      const {selectorsToFindRegionsFor} = calculateSelectorsToFindRegionsFor({sizeMode: 'bla'})
+      expect(selectorsToFindRegionsFor).to.be.undefined
+    })
 
-  it('handles no sizeMode selector, with no-offset selector', () => {
-    expect(calculateSelectorsToFindRegionsFor({userRegions: [{selector: 'bla'}]})).to.eql(['bla'])
-  })
-
-  it('handles no sizeMode selector, with no-offset second index selector', () => {
-    expect(
-      calculateSelectorsToFindRegionsFor({userRegions: [undefined, {selector: 'bla'}]}),
-    ).to.eql(['bla'])
-  })
-
-  it('handles no sizeMode selector, with no-offset multiple selectors', () => {
-    expect(
-      calculateSelectorsToFindRegionsFor({
-        userRegions: [undefined, {selector: 'bla'}, {selector: 'bla2'}],
-      }),
-    ).to.eql(['bla', 'bla2'])
-  })
-
-  it('handles no sizeMode selector, with no-offset array', () => {
-    expect(
-      calculateSelectorsToFindRegionsFor({
-        userRegions: [[{selector: 'bla'}], undefined, undefined],
-      }),
-    ).to.eql(['bla'])
-  })
-
-  it('handles no sizeMode selector, with no-offset second index array', () => {
-    expect(
-      calculateSelectorsToFindRegionsFor({
-        userRegions: [undefined, [{selector: 'bla'}], undefined],
-      }),
-    ).to.eql(['bla'])
-  })
-
-  it('handles no sizeMode selector, with no-offset multiple arrays', () => {
-    expect(
-      calculateSelectorsToFindRegionsFor({
-        userRegions: [[{selector: 'bla'}], undefined, [{selector: 'bla2'}]],
-      }),
-    ).to.eql(['bla', 'bla2'])
-  })
-
-  it('handles no sizeMode selector, with combined no-offset arrays and selectors', () => {
-    expect(
-      calculateSelectorsToFindRegionsFor({
-        userRegions: [undefined, [{selector: 'bla'}], {selector: 'bla2'}],
-      }),
-    ).to.eql(['bla', 'bla2'])
-  })
-
-  it('handles no sizeMode selector, with no-offset combined selector and absolute regions', () => {
-    expect(
-      calculateSelectorsToFindRegionsFor({
-        userRegions: [
-          [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'kuku'}],
-          undefined,
-          undefined,
-        ],
-      }),
-    ).to.eql(['bla', 'kuku'])
-  })
-
-  it('handles no sizeMode selector, with no-offset combined selector and absolute regions', () => {
-    expect(
-      calculateSelectorsToFindRegionsFor({
-        userRegions: [
-          [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'kuku'}],
-          [{a: 'b'}, {selector: 'aaa'}, {c: 'd'}, {selector: 'bbb'}],
-          undefined,
-        ],
-      }),
-    ).to.eql(['bla', 'kuku', 'aaa', 'bbb'])
-  })
-
-  it('handles no sizeMode selector, with offset-selector', () => {
-    expect(
-      calculateSelectorsToFindRegionsFor({
-        userRegions: [undefined, undefined, undefined, {selector: 'bla'}],
-      }),
-    ).to.eql(['bla'])
-  })
-
-  it('handles no sizeMode selector, with offset-selector array', () => {
-    expect(
-      calculateSelectorsToFindRegionsFor({
-        userRegions: [undefined, undefined, undefined, [{selector: 'bla'}]],
-      }),
-    ).to.eql(['bla'])
-  })
-
-  it('handles no sizeMode selector, with offset combined selector and absolute regions', () => {
-    expect(
-      calculateSelectorsToFindRegionsFor({
-        userRegions: [
-          undefined,
-          undefined,
-          undefined,
-          [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'kuku'}],
-        ],
-      }),
-    ).to.eql(['bla', 'kuku'])
-  })
-
-  it('handles no sizeMode selector, no-offset AND offset selectors', () => {
-    expect(
-      calculateSelectorsToFindRegionsFor({
-        userRegions: [
-          {selector: 'ignore'},
-          {selector: 'layout'},
-          {selector: 'strict'},
-          {selector: 'content'},
-          {selector: 'float'},
-        ],
-      }),
-    ).to.eql(['ignore', 'layout', 'strict', 'content', 'float'])
-  })
-
-  it('handles sizeMode selector, with no-offset AND offset selectors', () => {
-    expect(
-      calculateSelectorsToFindRegionsFor({
+    it('handles sizeMode with selector, but no selectors', () => {
+      const {selectorsToFindRegionsFor} = calculateSelectorsToFindRegionsFor({
         sizeMode: 'selector',
-        selector: 'selector',
-        userRegions: [
-          {selector: 'ignore'},
-          {selector: 'layout'},
-          {selector: 'strict'},
-          {selector: 'content'},
-          {selector: 'float'},
-        ],
-      }),
-    ).to.eql(['selector', 'ignore', 'layout', 'strict', 'content', 'float'])
-  })
+        selector: 'bla',
+      })
+      expect(selectorsToFindRegionsFor).to.eql(['bla'])
+    })
 
-  it('handles no sizeMode selector, with no-offset selector AND offset selector *arrays* (including duplicates)', () => {
-    expect(
-      calculateSelectorsToFindRegionsFor({
-        userRegions: [
-          [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'kuku'}, {selector: 'ignore'}],
-          [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'layout'}],
-          [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'strict'}],
-          [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'content'}],
-          [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'kuku'}, {selector: 'float'}],
-        ],
-      }),
-    ).to.eql([
-      'bla',
-      'kuku',
-      'ignore',
-      'bla',
-      'layout',
-      'bla',
-      'strict',
-      'bla',
-      'content',
-      'bla',
-      'kuku',
-      'float',
-    ])
-  })
+    it('handles no sizeMode with selector', () => {
+      const ignore = [{selector: 'bla'}]
+      const {selectorsToFindRegionsFor} = calculateSelectorsToFindRegionsFor({ignore})
+      expect(selectorsToFindRegionsFor).to.eql(['bla'])
+    })
 
-  it('handles sizeMode selector, with no-offset selector AND offset selector *arrays* (including duplicates)', () => {
-    expect(
-      calculateSelectorsToFindRegionsFor({
-        userRegions: [
-          [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'kuku'}, {selector: 'ignore'}],
-          {selector: 'layout'},
-          [{selector: 'strict'}, {selector: 'yo'}, {d: 'g'}],
-          [{selector: 'content'}],
-          [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'kuku'}, {selector: 'float'}],
-        ],
+    it('handles non-array selectors', () => {
+      const layout = {selector: 'bla'}
+      const content = {selector: 'bla2'}
+      const {selectorsToFindRegionsFor} = calculateSelectorsToFindRegionsFor({layout, content})
+      expect(selectorsToFindRegionsFor).to.eql(['bla', 'bla2'])
+    })
+
+    it('handles array selectors', () => {
+      const ignore = [{selector: 'bla'}]
+      const layout = [{selector: 'blu'}]
+      const {selectorsToFindRegionsFor} = calculateSelectorsToFindRegionsFor({ignore, layout})
+      expect(selectorsToFindRegionsFor).to.eql(['bla', 'blu'])
+    })
+
+    it('handles non-array differnt index selectors without sizeMode or selector', () => {
+      const layout = {selector: 'bla'}
+      const {selectorsToFindRegionsFor} = calculateSelectorsToFindRegionsFor({layout})
+      expect(selectorsToFindRegionsFor).to.eql(['bla'])
+    })
+
+    it('handles array different index selectors without sizeMode or selector', () => {
+      const layout = [{selector: 'bla'}]
+      const {selectorsToFindRegionsFor} = calculateSelectorsToFindRegionsFor({layout})
+      expect(selectorsToFindRegionsFor).to.eql(['bla'])
+    })
+
+    it('handles only selectors without sizeMode or selector', () => {
+      const ignore = [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'kuku'}]
+      const {selectorsToFindRegionsFor} = calculateSelectorsToFindRegionsFor({ignore})
+      expect(selectorsToFindRegionsFor).to.eql(['bla', 'kuku'])
+    })
+
+    it('handles sizeMode = selector, with selector', () => {
+      const ignore = [{selector: 'ignore'}]
+      const layout = [{selector: 'layout'}]
+      const {selectorsToFindRegionsFor} = calculateSelectorsToFindRegionsFor({
         sizeMode: 'selector',
-        selector: 'selector',
-      }),
-    ).to.eql([
-      'selector',
-      'bla',
-      'kuku',
-      'ignore',
-      'layout',
-      'strict',
-      'yo',
-      'content',
-      'bla',
-      'kuku',
-      'float',
-    ])
+        selector: 'some_selector',
+        ignore,
+        layout,
+      })
+      expect(selectorsToFindRegionsFor).to.eql(['some_selector', 'ignore', 'layout'])
+    })
+
+    it('handles sizeMode = selector, without selector', () => {
+      const {selectorsToFindRegionsFor} = calculateSelectorsToFindRegionsFor({
+        sizeMode: 'selector',
+        ignore: [{selector: 'ignore'}],
+      })
+      expect(selectorsToFindRegionsFor).to.eql([undefined, 'ignore'])
+    })
+
+    it('handles multiple selector arrays with duplicates and without sizeMode or selector', () => {
+      const ignore = [
+        {a: 'b'},
+        {selector: 'bla'},
+        {c: 'd'},
+        {selector: 'kuku'},
+        {selector: 'ignore'},
+      ]
+      const layout = [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'layout'}]
+      const strict = [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'strict'}]
+      const content = [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'content'}]
+      const floating = [
+        {a: 'b'},
+        {selector: 'bla'},
+        {c: 'd'},
+        {selector: 'kuku'},
+        {selector: 'float'},
+      ]
+      const {selectorsToFindRegionsFor} = calculateSelectorsToFindRegionsFor({
+        ignore,
+        layout,
+        strict,
+        content,
+        floating,
+      })
+      expect(selectorsToFindRegionsFor).to.eql([
+        'bla',
+        'kuku',
+        'ignore',
+        'bla',
+        'layout',
+        'bla',
+        'strict',
+        'bla',
+        'content',
+        'bla',
+        'kuku',
+        'float',
+      ])
+    })
+
+    it('handles multiple selector arrays with duplicates and with sizeMode = selector', () => {
+      const ignore = [
+        {a: 'b'},
+        {selector: 'bla'},
+        {c: 'd'},
+        {selector: 'kuku'},
+        {selector: 'ignore'},
+      ]
+      const layout = {selector: 'layout'}
+      const strict = [{selector: 'strict'}, {selector: 'yo'}, {d: 'g'}]
+      const content = [{selector: 'content'}]
+      const floating = [
+        {a: 'b'},
+        {selector: 'bla'},
+        {c: 'd'},
+        {selector: 'kuku'},
+        {selector: 'float'},
+      ]
+      const {selectorsToFindRegionsFor} = calculateSelectorsToFindRegionsFor({
+        ignore,
+        layout,
+        strict,
+        content,
+        floating,
+        sizeMode: 'selector',
+        selector: 'some_selector',
+      })
+      expect(selectorsToFindRegionsFor).to.eql([
+        'some_selector',
+        'bla',
+        'kuku',
+        'ignore',
+        'layout',
+        'strict',
+        'yo',
+        'content',
+        'bla',
+        'kuku',
+        'float',
+      ])
+    })
+
+    it('handles well formated typed selectors', () => {
+      const ignore = {selector: 'bla'}
+      const layout = {type: 'css', selector: 'bla1'}
+      const strict = {type: 'xpath', selector: 'bla2'}
+      const content = {type: 'css selector', selector: 'kuku'}
+      const floating = {type: 'link text', selector: 'kuku1'}
+      const {selectorsToFindRegionsFor} = calculateSelectorsToFindRegionsFor({
+        ignore,
+        layout,
+        strict,
+        content,
+        floating,
+      })
+      expect(selectorsToFindRegionsFor).to.eql([
+        'bla',
+        {type: 'css', selector: 'bla1'},
+        {type: 'xpath', selector: 'bla2'},
+        'kuku',
+        'kuku1',
+      ])
+    })
   })
 
-  it('handles well formated typed selectors', () => {
-    expect(
-      calculateSelectorsToFindRegionsFor({
-        userRegions: [
-          {selector: 'bla'},
-          {type: 'css', selector: 'bla1'},
-          {type: 'xpath', selector: 'bla2'},
-          {type: 'css selector', selector: 'kuku'},
-          {type: 'link text', selector: 'kuku1'},
-        ],
-      }),
-    ).to.eql([
-      'bla',
-      {type: 'css', selector: 'bla1'},
-      {type: 'xpath', selector: 'bla2'},
-      'kuku',
-      'kuku1',
-    ])
-  })
+  describe('getMatchRegions', () => {})
 })

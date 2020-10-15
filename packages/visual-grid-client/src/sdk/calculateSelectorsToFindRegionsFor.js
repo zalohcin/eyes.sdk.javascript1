@@ -18,7 +18,7 @@ function calculateSelectorsToFindRegionsFor({
   const userRegions = [ignore, layout, strict, content, accessibility, floating]
 
   if (userRegions.every(s => !s)) {
-    return {selectorsToFindRegionsFor}
+    return {selectorsToFindRegionsFor, getMatchRegions}
   }
 
   const selectors = userRegions.reduce((prev, regions) => {
@@ -31,20 +31,26 @@ function calculateSelectorsToFindRegionsFor({
     return prev
   }, [])
 
+  // NOTE: in rare cases there might be duplicates here. Intentionally not removing them because later we map `selectorsToFindRegionsFor` to `selectorRegions`.
+  return {
+    selectorsToFindRegionsFor: (selectorsToFindRegionsFor || []).concat(selectors),
+    getMatchRegions,
+  }
+
   function getMatchRegions({selectorRegions, imageLocationRegion}) {
     let selectorRegionIndex = imageLocationRegion ? 1 : 0
-    return userRegions.map((userRegion, userRegionIndex) => {
-      if (userRegion) {
-        const userSelectors = Array.isArray(userRegion) ? userRegion : [userRegion]
-        return userSelectors.reduce((regions, userSelector) => {
-          const codedRegions = userSelector.selector
+    return userRegions.map((userInput, userRegionIndex) => {
+      if (userInput) {
+        const userRegions = Array.isArray(userInput) ? userInput : [userInput]
+        return userRegions.reduce((regions, userRegion) => {
+          const codedRegions = userRegion.selector
             ? selectorRegions[selectorRegionIndex++]
-            : [userSelector]
+            : [userRegion]
 
           if (codedRegions && codedRegions.length > 0) {
             codedRegions.forEach(region => {
               const regionObject = regionify({region, imageLocationRegion})
-              regions.push(regionWithUserInput({regionObject, userSelector, userRegionIndex}))
+              regions.push(regionWithUserInput({regionObject, userRegion, userRegionIndex}))
             })
           }
 
@@ -52,12 +58,6 @@ function calculateSelectorsToFindRegionsFor({
         }, [])
       }
     })
-  }
-
-  // NOTE: in rare cases there might be duplicates here. Intentionally not removing them because later we map `selectorsToFindRegionsFor` to `selectorRegions`.
-  return {
-    selectorsToFindRegionsFor: (selectorsToFindRegionsFor || []).concat(selectors),
-    getMatchRegions,
   }
 }
 
@@ -92,6 +92,8 @@ function regionWithUserInput({regionObject, userSelector, userRegionIndex}) {
       maxRightOffset: userSelector.maxRightOffset,
     })
   }
+
+  return regionObject
 }
 
 module.exports = calculateSelectorsToFindRegionsFor
