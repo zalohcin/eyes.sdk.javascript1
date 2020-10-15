@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 5.25.1 - 2020/10/15
+
 - add iosVersion to readme
 
 ## 5.25.0 - 2020/10/14
