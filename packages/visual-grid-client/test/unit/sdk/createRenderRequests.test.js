@@ -176,22 +176,12 @@ describe('createRenderRequests', () => {
 
   it('handles ignore, layout, strict, content, accessibility and floating regions', () => {
     const browsers = [{width: 1, height: 2}]
-    const ignore = ['kuku', {type: 'css', selector: 'bla'}]
-    const layout = [{type: 'css', selector: 'bla2'}, 'kuku2']
-    const strict = ['kuku3', {type: 'css', selector: 'bla3'}, {type: 'css', selector: 'bla4'}]
-    const content = ['c1', {type: 'css', selector: 'c2'}, {type: 'css', selector: 'c3'}]
-    const accessibility = [
-      'kuku4',
-      {type: 'css', selector: 'bla5', accessibilityType: 'RegularText'},
-      {type: 'css', selector: 'bla6', accessibilityType: 'LargeText'},
-    ]
-    const floating = [{some: 'thing'}, {type: 'css', selector: 'sel'}]
     const renderRequests = createRenderRequests({
       url,
       pages: [{rGridDom: dom, allResources: resources}],
       browsers,
       renderInfo,
-      userRegions: [ignore, layout, strict, content, accessibility, floating],
+      selectorsToFindRegionsFor: [{selector: 'bla', type: 'css'}],
     })
 
     expect(renderRequests.map(r => r.toJSON())).to.eql([
@@ -209,17 +199,7 @@ describe('createRenderRequests', () => {
           region: undefined,
           sizeMode: undefined,
         },
-        selectorsToFindRegionsFor: [
-          {type: 'css', selector: 'bla'},
-          {type: 'css', selector: 'bla2'},
-          {type: 'css', selector: 'bla3'},
-          {type: 'css', selector: 'bla4'},
-          {type: 'css', selector: 'c2'},
-          {type: 'css', selector: 'c3'},
-          {type: 'css', selector: 'bla5', accessibilityType: 'RegularText'},
-          {type: 'css', selector: 'bla6', accessibilityType: 'LargeText'},
-          {type: 'css', selector: 'sel'},
-        ],
+        selectorsToFindRegionsFor: [{type: 'css', selector: 'bla'}],
       },
     ])
   })

@@ -217,7 +217,7 @@ function makeCheckWindow({
         return
       }
 
-      const imageLocationRegion = sizeMode === 'selector' ? selectorRegions[0][0] : undefined
+      const {imageLocationRegion, ...regions} = getMatchRegions({selectorRegions})
 
       let imageLocation = undefined
       if (sizeMode === 'selector' && imageLocationRegion) {
@@ -226,22 +226,8 @@ function makeCheckWindow({
         imageLocation = new Region(region).getLocation()
       }
 
-      const [
-        ignoreRegions,
-        layoutRegions,
-        strictRegions,
-        contentRegions,
-        accessibilityRegions,
-        floatingRegions,
-      ] = getMatchRegions({selectorRegions, imageLocationRegion})
-
       const checkSettings = createCheckSettings({
-        ignore: ignoreRegions,
-        layout: layoutRegions,
-        strict: strictRegions,
-        content: contentRegions,
-        accessibility: accessibilityRegions,
-        floating: floatingRegions,
+        ...regions,
         useDom,
         enablePatterns,
         ignoreDisplacements,

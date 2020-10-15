@@ -11,7 +11,6 @@ const {getProcessPageAndSerialize} = require('@applitools/dom-snapshot')
 const fs = require('fs')
 const {resolve} = require('path')
 const testLogger = require('../util/testLogger')
-const {ApiAssertions} = require('@applitools/sdk-shared')
 
 describe('openEyes', () => {
   let baseUrl, closeServer, openEyes
@@ -76,7 +75,7 @@ describe('openEyes', () => {
     }
   })
 
-  it.only('passes with correct screenshot', async () => {
+  it('passes with correct screenshot', async () => {
     await page.goto(`${baseUrl}/test.html`)
 
     const {cdt, url, resourceContents, resourceUrls} = await processPage()
@@ -86,8 +85,8 @@ describe('openEyes', () => {
       testName: 'passes with correct screenshot',
       browser: [
         {width: 640, height: 480, name: 'chrome'},
-        // {width: 800, height: 600, name: 'firefox'},
-        // {deviceName: 'iPhone X'},
+        {width: 800, height: 600, name: 'firefox'},
+        {deviceName: 'iPhone X'},
       ],
       showLogs: process.env.APPLITOOLS_SHOW_LOGS,
       saveDebugData: process.env.APPLITOOLS_SAVE_DEBUG_DATA,
@@ -102,49 +101,15 @@ describe('openEyes', () => {
       tag: 'first',
       url,
       scriptHooks,
-      // ignore: [{selector: 'div[class*="bg-"]'}],
-      floating: [
-        {
-          selector: 'div[class*="bg-"]',
-          maxUpOffset: 10,
-          maxDownOffset: 10,
-          maxLeftOffset: 10,
-          maxRightOffset: 10,
-        },
-      ],
-      accessibility: [
-        {
-          selector: '.region',
-          accessibilityType: 'LargeText',
-        },
-      ],
+      ignore: {selector: 'div[class*="bg-"]'},
     })
 
     const [errArr, results] = await presult(close())
     errArr && console.log(errArr)
     expect(errArr).to.be.undefined
 
-    // expect(results.length).to.eq(3)
-    // expect(results.map(r => r.getStatus())).to.eql(['Passed', 'Passed', 'Passed'])
-
-    // const expectedRegions = [
-    //   [
-    //     {left: 8, top: 412, width: 151, height: 227},
-    //     {left: 8, top: 667, width: 151, height: 227},
-    //     {left: 8, top: 922, width: 151, height: 227},
-    //   ],
-    //   [], // this seems like a bug in the grid for Firefox
-    //   [
-    //     {left: 8, top: 471, width: 151, height: 227},
-    //     {left: 8, top: 726, width: 151, height: 227},
-    //     {left: 8, top: 981, width: 151, height: 227},
-    //   ],
-    // ]
-
-    // for (const [index, testResults] of results.entries()) {
-    //   const testData = await ApiAssertions.getApiData(testResults, apiKey)
-    //   expect(testData.actualAppOutput[0].imageMatchSettings.ignore).to.eql(expectedRegions[index])
-    // }
+    expect(results.length).to.eq(3)
+    expect(results.map(r => r.getStatus())).to.eql(['Passed', 'Passed', 'Passed'])
   })
 
   it('fails with incorrect screenshot', async () => {

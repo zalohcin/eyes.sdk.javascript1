@@ -189,17 +189,14 @@ describe('calculateSelectorsToFindRegionsFor Tests', () => {
     })
   })
 
-  describe.only('getMatchRegions', () => {
-    const accessibilityIndex = 4
-    const floatingIndex = 5
-
+  describe('getMatchRegions', () => {
     it('handles a single selector', () => {
       const ignore = {selector: '.ignore'}
       const {getMatchRegions} = calculateSelectorsToFindRegionsFor({ignore})
       const ignoreRegionFromGrid = new Region({left: 1, top: 1, width: 2, height: 1})
       const selectorRegions = [[ignoreRegionFromGrid]]
-      const [ignoreRegion] = getMatchRegions({selectorRegions})
-      expect(ignoreRegion).to.eql([
+      const regions = getMatchRegions({selectorRegions})
+      expect(regions.ignore).to.eql([
         {left: 1, top: 1, width: 2, height: 1, coordinatesType: 'SCREENSHOT_AS_IS'},
       ])
     })
@@ -209,9 +206,9 @@ describe('calculateSelectorsToFindRegionsFor Tests', () => {
       const {getMatchRegions} = calculateSelectorsToFindRegionsFor({layout})
       const ignoreRegionFromGrid = new Region({left: 1, top: 1, width: 2, height: 1})
       const selectorRegions = [[ignoreRegionFromGrid]]
-      const [ignoreRegion, layoutRegion] = getMatchRegions({selectorRegions})
-      expect(ignoreRegion).to.be.undefined
-      expect(layoutRegion).to.eql([
+      const regions = getMatchRegions({selectorRegions})
+      expect(regions.ignore).to.be.undefined
+      expect(regions.layout).to.eql([
         {left: 1, top: 1, width: 2, height: 1, coordinatesType: 'SCREENSHOT_AS_IS'},
       ])
     })
@@ -225,12 +222,12 @@ describe('calculateSelectorsToFindRegionsFor Tests', () => {
         [new Region({left: 1, top: 1, width: 2, height: 1})],
         [new Region({left: 3, top: 3, width: 5, height: 4})],
       ]
-      const [ignoreRegion, layoutRegion] = getMatchRegions({selectorRegions})
+      const regions = getMatchRegions({selectorRegions})
 
-      expect(ignoreRegion).to.eql([
+      expect(regions.ignore).to.eql([
         {left: 1, top: 1, width: 2, height: 1, coordinatesType: 'SCREENSHOT_AS_IS'},
       ])
-      expect(layoutRegion).to.eql([
+      expect(regions.layout).to.eql([
         {left: 3, top: 3, width: 5, height: 4, coordinatesType: 'SCREENSHOT_AS_IS'},
       ])
     })
@@ -251,13 +248,13 @@ describe('calculateSelectorsToFindRegionsFor Tests', () => {
           new Region({left: 5, top: 5, width: 6, height: 5}),
         ],
       ]
-      const [ignoreRegion, layoutRegion] = getMatchRegions({selectorRegions})
+      const regions = getMatchRegions({selectorRegions})
 
-      expect(ignoreRegion).to.eql([
+      expect(regions.ignore).to.eql([
         {left: 1, top: 1, width: 2, height: 1, coordinatesType: 'SCREENSHOT_AS_IS'},
         {left: 2, top: 2, width: 3, height: 2, coordinatesType: 'SCREENSHOT_AS_IS'},
       ])
-      expect(layoutRegion).to.eql([
+      expect(regions.layout).to.eql([
         {left: 3, top: 3, width: 4, height: 3, coordinatesType: 'SCREENSHOT_AS_IS'},
         {left: 4, top: 4, width: 5, height: 4, coordinatesType: 'SCREENSHOT_AS_IS'},
         {left: 5, top: 5, width: 6, height: 5, coordinatesType: 'SCREENSHOT_AS_IS'},
@@ -282,11 +279,11 @@ describe('calculateSelectorsToFindRegionsFor Tests', () => {
       ]
       const regions = getMatchRegions({selectorRegions})
 
-      expect(regions[accessibilityIndex][0])
+      expect(regions.accessibility[0])
         .to.haveOwnProperty('accessibilityType')
         .and.equal('LargeText')
 
-      expect(regions[floatingIndex][0])
+      expect(regions.floating[0])
         .to.haveOwnProperty('maxUpOffset')
         .and.equal(10)
     })
@@ -311,11 +308,11 @@ describe('calculateSelectorsToFindRegionsFor Tests', () => {
       ]
       const regions = getMatchRegions({selectorRegions})
 
-      expect(regions[accessibilityIndex][0])
+      expect(regions.accessibility[0])
         .to.haveOwnProperty('accessibilityType')
         .and.equal('LargeText')
 
-      expect(regions[floatingIndex][0])
+      expect(regions.floating[0])
         .to.haveOwnProperty('maxUpOffset')
         .and.equal(10)
     })
@@ -329,13 +326,13 @@ describe('calculateSelectorsToFindRegionsFor Tests', () => {
         [new Region({left: 1, top: 1, width: 2, height: 1})],
         [new Region({left: 3, top: 3, width: 5, height: 4})],
       ]
-      const [ignoreRegion, layoutRegion] = getMatchRegions({selectorRegions})
+      const regions = getMatchRegions({selectorRegions})
 
-      expect(ignoreRegion).to.eql([
+      expect(regions.ignore).to.eql([
         {left: 1, top: 1, width: 2, height: 1, coordinatesType: 'SCREENSHOT_AS_IS'},
         {left: 3, top: 4, width: 5, height: 6, coordinatesType: 'SCREENSHOT_AS_IS'},
       ])
-      expect(layoutRegion).to.eql([
+      expect(regions.layout).to.eql([
         {left: 3, top: 3, width: 5, height: 4, coordinatesType: 'SCREENSHOT_AS_IS'},
       ])
     })
@@ -363,7 +360,12 @@ describe('calculateSelectorsToFindRegionsFor Tests', () => {
       ]
 
       const imageLocationRegion = new Region({left: 9, top: 8, width: 7, height: 6})
-      const {getMatchRegions} = calculateSelectorsToFindRegionsFor({accessibility, floating})
+      const sizeMode = 'selector'
+      const {getMatchRegions} = calculateSelectorsToFindRegionsFor({
+        accessibility,
+        floating,
+        sizeMode,
+      })
 
       const selectorRegions = [
         [imageLocationRegion],
@@ -372,13 +374,13 @@ describe('calculateSelectorsToFindRegionsFor Tests', () => {
         [new Region({left: 4, top: 3, width: 5, height: 2})],
         [new Region({left: 0, top: 1, width: 5, height: 3})],
       ]
-      const regions = getMatchRegions({selectorRegions, imageLocationRegion})
+      const regions = getMatchRegions({selectorRegions})
 
-      expect(regions[accessibilityIndex]).to.eql([
+      expect(regions.accessibility).to.eql([
         {left: 0, top: 0, width: 2, height: 1, accessibilityType: 'RegularText'},
         {left: 0, top: 0, width: 5, height: 4, accessibilityType: 'LargeText'},
       ])
-      expect(regions[floatingIndex]).to.eql([
+      expect(regions.floating).to.eql([
         {
           left: 0,
           top: 0,
