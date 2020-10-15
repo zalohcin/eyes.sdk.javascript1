@@ -186,6 +186,8 @@ function makeCheckWindow({
 
       const renderRequest = await renderRequestPromises[index]
 
+      renderRequest.setRendererIdentifier(wrapper.getRendererIdentifier())
+
       const [renderErr, renderId] = await presult(renderJob(renderRequest))
 
       if (testController.shouldStopTest(index)) {

@@ -68,6 +68,8 @@ function configureWrappers({
     validateAndAddProperties(wrapper, properties)
     wrapper.setBatch(batch)
 
+    wrapper.populateRendererInfo(browser)
+
     wrapper.setInferredEnvironment(`useragent:${userAgents[browsers[i].name]}`)
 
     displayName !== undefined && wrapper.setDisplayName(displayName)

@@ -16,6 +16,7 @@ const createResourceCache = require('./createResourceCache')
 const makeWaitForRenderedStatus = require('./waitForRenderedStatus')
 const makeGetRenderStatus = require('./getRenderStatus')
 const makePutResources = require('./putResources')
+const makeGetRendererInfo = require('./getRendererInfo')
 const makeRender = require('./render')
 const makeOpenEyes = require('./openEyes')
 const makeCreateRGridDOMAndGetResourceMapping = require('./createRGridDOMAndGetResourceMapping')
@@ -40,6 +41,7 @@ function makeRenderingGridClient({
   logger,
   showLogs,
   renderTimeout,
+  rendererInfoTimeout,
   putResourcesTimeout,
   renderStatusTimeout,
   renderStatusInterval,
@@ -121,6 +123,7 @@ function makeRenderingGridClient({
     doGetRenderStatus,
     setRenderingInfo,
     doGetUserAgents,
+    doGetRendererInfo,
     doLogEvents,
   } = getRenderMethods(renderWrapper)
   const resourceCache = createResourceCache()
@@ -138,6 +141,7 @@ function makeRenderingGridClient({
     timeout: putResourcesTimeout,
   })
   const render = makeRender({logger, doRenderBatch, timeout: renderTimeout})
+  const getRendererInfo = makeGetRendererInfo({doGetRendererInfo, timeout: rendererInfoTimeout})
   const getRenderStatus = makeGetRenderStatus({
     logger,
     doGetRenderStatus,
@@ -195,6 +199,7 @@ function makeRenderingGridClient({
     serverUrl,
     logger,
     putResources,
+    getRendererInfo,
     render,
     waitForRenderedStatus,
     renderThroat,

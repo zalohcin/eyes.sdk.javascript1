@@ -554,6 +554,33 @@ class ServerConnector {
     throw new Error(`ServerConnector.render - unexpected status (${response.statusText})`)
   }
 
+  async renderGetRendererInfo(renderRequests) {
+    ArgumentGuard.notNull(renderRequests, 'renderRequests')
+    this._logger.verbose(`ServerConnector.renderGetRendererInfo called with ${renderRequests}`)
+
+    const config = {
+      name: 'renderGetRendererInfo',
+      withApiKey: false,
+      method: 'POST',
+      url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/renderer-info'),
+      headers: {
+        'X-Auth-Token': this._renderingInfo.getAccessToken(),
+      },
+      data: renderRequests,
+    }
+
+    const response = await this._axios.request(config)
+    const validStatusCodes = [HTTP_STATUS_CODES.OK]
+    if (validStatusCodes.includes(response.status)) {
+      this._logger.verbose('ServerConnector.renderGetRendererInfo - post succeeded', response.data)
+      return response.data
+    }
+
+    throw new Error(
+      `ServerConnector.renderGetRendererInfo - unexpected status (${response.statusText})`,
+    )
+  }
+
   /**
    * Checks if resources already exist on the server
    *

@@ -54,6 +54,7 @@ function makeOpenEyes({
   serverUrl,
   logger,
   putResources,
+  getRendererInfo,
   render,
   waitForRenderedStatus,
   renderThroat,
@@ -177,6 +178,7 @@ function makeOpenEyes({
         apiKey,
         logHandler: logger.getLogHandler(),
         getBatchInfoWithCache,
+        getRendererInfo,
       })
 
     const {renderInfo, userAgents} = await getInitialData()
