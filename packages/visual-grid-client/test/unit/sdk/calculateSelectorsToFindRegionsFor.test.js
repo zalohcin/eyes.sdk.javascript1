@@ -345,19 +345,60 @@ describe('calculateSelectorsToFindRegionsFor Tests', () => {
         {selector: '.ignore', accessibilityType: 'RegularText'},
         {selector: '.whatever', accessibilityType: 'LargeText'},
       ]
+      const floating = [
+        {
+          selector: 'ignore-me',
+          maxUpOffset: 10,
+          maxDownOffset: 10,
+          maxLeftOffset: 10,
+          maxRightOffset: 10,
+        },
+        {
+          selector: 'ignore-you',
+          maxUpOffset: 11,
+          maxDownOffset: 11,
+          maxLeftOffset: 11,
+          maxRightOffset: 11,
+        },
+      ]
+
       const imageLocationRegion = new Region({left: 9, top: 8, width: 7, height: 6})
-      const {getMatchRegions} = calculateSelectorsToFindRegionsFor({accessibility})
+      const {getMatchRegions} = calculateSelectorsToFindRegionsFor({accessibility, floating})
 
       const selectorRegions = [
         [imageLocationRegion],
         [new Region({left: 1, top: 1, width: 2, height: 1})],
         [new Region({left: 3, top: 3, width: 5, height: 4})],
+        [new Region({left: 4, top: 3, width: 5, height: 2})],
+        [new Region({left: 0, top: 1, width: 5, height: 3})],
       ]
       const regions = getMatchRegions({selectorRegions, imageLocationRegion})
 
       expect(regions[accessibilityIndex]).to.eql([
         {left: 0, top: 0, width: 2, height: 1, accessibilityType: 'RegularText'},
         {left: 0, top: 0, width: 5, height: 4, accessibilityType: 'LargeText'},
+      ])
+      expect(regions[floatingIndex]).to.eql([
+        {
+          left: 0,
+          top: 0,
+          width: 5,
+          height: 2,
+          maxUpOffset: 10,
+          maxDownOffset: 10,
+          maxLeftOffset: 10,
+          maxRightOffset: 10,
+        },
+        {
+          left: 0,
+          top: 0,
+          width: 5,
+          height: 3,
+          maxUpOffset: 11,
+          maxDownOffset: 11,
+          maxLeftOffset: 11,
+          maxRightOffset: 11,
+        },
       ])
     })
   })
