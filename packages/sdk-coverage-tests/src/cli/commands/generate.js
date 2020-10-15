@@ -15,7 +15,7 @@ async function generate({configPath, ...options}) {
     }
     console.log(`Creating coverage tests for ${config.name}...`)
 
-    const suite = await prepareTests(config.tests)
+    const suite = await prepareTests(config.testsPath, config.testsOverrides)
 
     const emittedTests = makeTests(suite, config.initialize)
     await createTestFiles(emittedTests, config)

@@ -46,7 +46,6 @@ module.exports = function(tracker, test) {
   addHook('deps', `const {testSetup} = require('@applitools/sdk-shared')`)
 
   addHook('vars', `let driver, destroyDriver, eyes`)
-  addHook('vars', 'let baselineTestName')
 
   addHook(
     'beforeEach',
@@ -120,7 +119,7 @@ module.exports = function(tracker, test) {
         js`await eyes.open(
             driver,
             ${appName},
-            ${test.baselineName},
+            ${test.config.baselineName},
             ${viewportSize},
           )`,
       )

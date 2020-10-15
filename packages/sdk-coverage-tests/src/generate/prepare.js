@@ -1,19 +1,18 @@
 const fs = require('fs')
 const vm = require('vm')
 const fetch = require('node-fetch')
-const {isUrl, isFunction, mergeObjects} = require('../common-util')
+const {isUrl, mergeObjects} = require('../common-util')
 
-async function prepareTests(path) {
+async function prepareTests(path, overrides) {
   const {tests, ...options} = await getSuite(path)
   return {
-    tests: mergeTests(tests),
+    tests: flatTests(mergeObjects(tests, overrides)),
     ...options,
   }
 }
 
 async function getSuite(path) {
   const context = vm.createContext({process})
-  console.log(path)
   const source = isUrl(path)
     ? await fetch(path).then(response => response.text())
     : fs.readFileSync(path).toString()
@@ -21,22 +20,21 @@ async function getSuite(path) {
   return {tests: context.tests, pages: context.pages}
 }
 
-function mergeTests(tests) {
-  return Object.entries(tests).reduce((tests, [testName, test]) => {
-    if (test.variants) {
-      Object.entries(test.variants).forEach(([variantName, variant]) => {
-        tests[testName + variantName] = mergeObjects(normalizeTest(test), variant)
-        delete tests[testName + variantName].variants
+function flatTests(tests) {
+  return Object.entries(tests).reduce((tests, [testName, {variants, ...test}]) => {
+    test.name = testName
+    test.config = test.config || {}
+    if (variants) {
+      Object.entries(variants).forEach(([variantName, overrides]) => {
+        const testVariant = mergeObjects(test, overrides)
+        if (variantName) testVariant.name += `__${variantName}`
+        tests.push(testVariant)
       })
     } else {
-      tests[testName] = normalizeTest(test)
+      tests.push(test)
     }
     return tests
-  }, {})
-}
-
-function normalizeTest(test) {
-  return isFunction(test) ? {test} : test
+  }, [])
 }
 
 exports.prepareTests = prepareTests

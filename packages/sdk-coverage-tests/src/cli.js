@@ -17,9 +17,28 @@ const cli = yargs
           type: 'string',
           default: './test/coverage/index.js',
         },
-        tests: {
+        name: {
+          alias: 'n',
+          description: 'the sdk name',
+          type: 'string',
+        },
+        testsPath: {
           alias: 't',
           description: 'path to the tests file (local or remote)',
+          type: 'string',
+        },
+        outPath: {
+          alias: 'o',
+          description: 'path to save generated files',
+          type: 'string',
+        },
+        metaPath: {
+          description: 'path to save metadata file',
+          type: 'string',
+        },
+        ext: {
+          alias: 'e',
+          description: 'extension for generated files (e.g. ".spec.js")',
           type: 'string',
         },
       }),
@@ -35,15 +54,18 @@ const cli = yargs
           type: 'string',
           default: './test/coverage/index.js',
         },
+        name: {
+          alias: 'n',
+          description: 'the sdk name',
+          type: 'string',
+        },
         metaPath: {
           description: 'path to the json metadata file generated with tests',
           type: 'string',
-          default: './test/coverage/index.js',
         },
         resultsPath: {
           description: 'path to the junit xml file',
           type: 'string',
-          default: './test/coverage/index.js',
         },
         reportId: {
           alias: 'id',

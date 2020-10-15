@@ -1,4 +1,4 @@
-function makeMochaTestTemplate({name, output, meta}) {
+function makeMochaTestTemplate({name, skip, output, meta}) {
   const tags = []
   if (meta.features) tags.push(...meta.features.map(feature => `@${feature}`))
   if (meta.native) tags.push('@native')
@@ -10,7 +10,7 @@ function makeMochaTestTemplate({name, output, meta}) {
   return `// ${name}
 ${output.hooks.deps.join('\n')}
 
-describe${output.disabled ? '.skip' : ''}('Coverage Tests', () => {
+describe${skip ? '.skip' : ''}('Coverage Tests', () => {
   ${output.hooks.vars.join('\n  ')}
   beforeEach(async () => {
     ${output.hooks.beforeEach.join('\n    ')}

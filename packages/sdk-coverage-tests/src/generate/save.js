@@ -1,8 +1,8 @@
 const fs = require('fs')
 const path = require('path')
 
-async function createTestFiles(tests, {out, ext, testFrameworkTemplate} = {}) {
-  const targetDirectory = path.join(process.cwd(), out)
+async function createTestFiles(tests, {outPath, ext, testFrameworkTemplate} = {}) {
+  const targetDirectory = path.join(process.cwd(), outPath)
 
   fs.rmdirSync(targetDirectory, {recursive: true})
   fs.mkdirSync(targetDirectory, {recursive: true})

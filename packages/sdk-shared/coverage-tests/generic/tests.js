@@ -1,3 +1,4 @@
+/* eslint-disable */
 const viewportSize = {width: 700, height: 460}
 const throwException = true
 
@@ -9,27 +10,24 @@ var pages = {
   ScrollableBody: 'https://applitools.github.io/demo/TestPages/SimpleTestPage/scrollablebody.html',
   Simple: 'https://applitools.github.io/demo/TestPages/SimpleTestPage/index.html',
   FixedRegion: 'http://applitools.github.io/demo/TestPages/fixed-position',
-  Modal: 'https://applitools.github.io/demo/TestPages/ModalsPage/index.html',
+  Modals: 'https://applitools.github.io/demo/TestPages/ModalsPage/index.html',
   HorizontalScroll: 'https://applitools.github.io/demo/TestPages/horizontal-scroll.html',
   FractionalMetric: 'https://applitools.github.io/demo/TestPages/FractionalMetrics',
   FrameLargerThenViewport: 'https://applitools.github.io/demo/TestPages/OutOfViewport/',
 }
 
-const VARIANTS = {}
-
 var tests = {
   // #region CHECK WINDOW
 
-  TestCheckWindow: {
+  CheckWindow: {
     page: 'Default',
-    config: {baselineName: 'TestCheckWindow'},
     variants: {
-      ClassicVG: {config: {check: 'classic', vg: true}},
-      ClassicCSS: {config: {check: 'classic', stitchMode: 'CSS'}},
-      ClassicScroll: {config: {stitchMode: 'Scroll', check: 'classic'}},
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      ClassicCSS: {config: {check: 'classic', stitchMode: 'CSS', baselineName: 'TestCheckWindow'}},
+      ClassicScroll: {config: {check: 'classic', stitchMode: 'Scroll', baselineName: 'TestCheckWindow_Scroll'}},
+      ClassicVG: {config: {check: 'classic', vg: true, baselineName: 'TestCheckWindow_VG'}},
+      CSS: {config: {stitchMode: 'CSS'}, baselineName: 'TestCheckWindow'},
+      Scroll: {config: {stitchMode: 'Scroll'}, baselineName: 'TestCheckWindow_Scroll'},
+      VG: {config: {vg: true}, baselineName: 'TestCheckWindow_VG'},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
@@ -37,13 +35,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestCheckWindowAfterScroll: {
+  CheckWindow_ManualScroll: {
     page: 'Default',
-    config: {baselineName: 'TestCheckWindowAfterScroll'},
     variants: {
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckWindowAfterScroll'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckWindowAfterScroll_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckWindowAfterScroll_VG'}},
     },
     test: ({driver, eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
@@ -52,11 +49,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestCheckWindowFully: {
+  CheckWindowFully: {
     page: 'Default',
-    config: {baselineName: 'TestCheckWindowFully'},
     variants: {
-      ...VARIANTS,
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckWindowFully'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckWindowFully_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckWindowFully_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
@@ -64,13 +62,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestCheckWindow_Body: {
+  CheckWindowFully_Body: {
     page: 'ScrollableBody',
-    config: {baselineName: 'TestCheckWindow_Body'},
     variants: {
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckWindow_Body'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckWindow_Body_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckWindow_Body_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Scroll Root Element', viewportSize})
@@ -78,11 +75,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestCheckWindow_Html: {
+  CheckWindowFully_Html: {
     page: 'ScrollableBody',
-    config: {baselineName: 'TestCheckWindow_Html'},
     variants: {
-      ...VARIANTS,
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckWindow_Html'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckWindow_Html_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckWindow_Html_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Scroll Root Element', viewportSize})
@@ -90,11 +88,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestCheckWindow_Simple_Html: {
+  CheckWindowFully_Simple_Html: {
     page: 'Simple',
-    config: {baselineName: 'TestCheckWindow_Simple_Html'},
     variants: {
-      ...VARIANTS,
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckWindow_Simple_Html'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckWindow_Simple_Html_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckWindow_Simple_Html_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Scroll Root Element', viewportSize})
@@ -102,15 +101,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestDoubleCheckWindow: {
+  CheckWindow_Double: {
     page: 'Default',
-    config: {
-      baselineName: 'TestDoubleCheckWindow',
-    },
     variants: {
-      ClassicVG: {config: {vg: true, check: 'classic'}},
-      ClassicCSS: {config: {stitchMode: 'CSS', check: 'classic'}},
-      ClassicScroll: {config: {stitchMode: 'Scroll', check: 'classic'}},
+      ClassicCSS: {config: {check: 'classic', stitchMode: 'CSS', baselineName: 'TestDoubleCheckWindow'}},
+      ClassicScroll: {config: {check: 'classic', stitchMode: 'Scroll', baselineName: 'TestDoubleCheckWindow_Scroll'}},
+      ClassicVG: {config: {check: 'classic', vg: true, baselineName: 'TestDoubleCheckWindow_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
@@ -119,13 +115,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestCheckPageWithHeader_Window: {
+  CheckWindow_StickyHeaderPage: {
     page: 'StickyHeader',
-    config: {
-      baselineName: 'TestCheckPageWithHeader_Window',
-    },
     variants: {
-      ...VARIANTS,
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckPageWithHeader_Window'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckPageWithHeader_Window_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckPageWithHeader_Window_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Page With Header', viewportSize})
@@ -133,13 +128,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestCheckPageWithHeader_Window_Fully: {
+  CheckWindowFully_StickyHeaderPage: {
     page: 'StickyHeader',
-    config: {
-      baselineName: 'TestCheckPageWithHeader_Window_Fully',
-    },
     variants: {
-      ...VARIANTS,
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckPageWithHeader_Window_Fully'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckPageWithHeader_Window_Fully_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckPageWithHeader_Window_Fully_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Page With Header', viewportSize})
@@ -147,11 +141,9 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestWindowWithModal_Fully: {
+  CheckWindowFully_ModalsPage: {
     page: 'Modals',
-    config: {
-      baselineName: 'TestScrollableContentInModal_Fully',
-    },
+    config: {baselineName: 'TestScrollableContentInModal_Fully'},
     test: ({driver, eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
       driver.click('#open_scrollable_modal')
@@ -159,12 +151,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestHorizonalScroll: {
+  CheckWindowFully_HorizontalScrollPage: {
     page: 'HorizontalScroll',
     env: {browser: 'firefox'},
     variants: {
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestHorizonalScroll'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestHorizonalScroll_Scroll'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Applitools Eyes SDK', viewportSize: {width: 600, height: 400}})
@@ -177,32 +169,28 @@ var tests = {
 
   // #region CHECK FRAME
 
-  TestCheckFrame: {
+  CheckFrame: {
     page: 'Default',
-    config: {
-      baselineName: 'TestCheckFrame',
-    },
     variants: {
-      ClassicVG: {config: {vg: true, check: 'classic'}},
-      ClassicCSS: {config: {stitchMode: 'CSS', check: 'classic'}},
-      ClassicScroll: {config: {stitchMode: 'Scroll', check: 'classic'}},
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      ClassicCSS: {config: {check: 'classic', stitchMode: 'CSS', baselineName: 'TestCheckFrame'}},
+      ClassicScroll: {config: {check: 'classic', stitchMode: 'Scroll', baselineName: 'TestCheckFrame_Scroll'}},
+      ClassicVG: {config: {check: 'classic', vg: true, baselineName: 'TestCheckFrame_VG'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckFrame'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckFrame_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckFrame_VG'}},
     },
     test: ({eyes}) => {
-      eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      eyes.open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
       eyes.check({frames: ['[name="frame1"]']})
       eyes.close(throwException)
     },
   },
-  TestCheckFrameFully_Fluent: {
+  CheckFrameFully: {
     page: 'Default',
-    config: {
-      baselineName: 'TestCheckFrameFully_Fluent',
-    },
     variants: {
-      ...VARIANTS,
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckFrameFully_Fluent'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckFrameFully_Fluent_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckFrameFully_Fluent_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
@@ -210,13 +198,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestCheckFrameInFrame_Fully_Fluent: {
+  CheckFrameInFrameFully: {
     page: 'Default',
-    config: {
-      baselineName: 'TestCheckFrameInFrame_Fully_Fluent',
-    },
     variants: {
-      ...VARIANTS,
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckFrameInFrame_Fully_Fluent'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckFrameInFrame_Fully_Fluent_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckFrameInFrame_Fully_Fluent_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
@@ -224,13 +211,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestCheckFrameInFrame_Fully_Fluent2: {
+  CheckFrameInFrameFully_Double: {
     page: 'Default',
-    config: {
-      baselineName: 'TestCheckFrameInFrame_Fully_Fluent2',
-    },
     variants: {
-      ...VARIANTS,
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckFrameInFrame_Fully_Fluent2'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckFrameInFrame_Fully_Fluent2_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckFrameInFrame_Fully_Fluent2_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
@@ -244,13 +230,12 @@ var tests = {
 
   // #region CHECK REGION
 
-  TestCheckRegion: {
+  CheckRegionBySelector: {
     page: 'Default',
-    config: {baselineName: 'TestCheckRegion'},
     variants: {
-      ClassicVG: {config: {vg: true, check: 'classic'}},
-      ClassicCSS: {config: {stitchMode: 'CSS', check: 'classic'}},
-      ClassicScroll: {config: {stitchMode: 'Scroll', check: 'classic'}},
+      ClassicCSS: {config: {check: 'classic', stitchMode: 'CSS', baselineName: 'TestCheckRegion'}},
+      ClassicScroll: {config: {check: 'classic', stitchMode: 'Scroll', baselineName: 'TestCheckRegion_Scroll'}},
+      ClassicVG: {config: {check: 'classic', vg: true, baselineName: 'TestCheckRegion_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
@@ -258,13 +243,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestCheckRegion2: {
+  CheckRegionBySelector_Image: {
     page: 'Default',
-    config: {baselineName: 'TestCheckRegion2'},
     variants: {
-      ClassicVG: {config: {vg: true, check: 'classic'}},
-      ClassicCSS: {config: {stitchMode: 'CSS', check: 'classic'}},
-      ClassicScroll: {config: {stitchMode: 'Scroll', check: 'classic'}},
+      ClassicCSS: {config: {check: 'classic', stitchMode: 'CSS', baselineName: 'TestCheckRegion2'}},
+      ClassicScroll: {config: {check: 'classic', stitchMode: 'Scroll', baselineName: 'TestCheckRegion2_Scroll'}},
+      ClassicVG: {config: {check: 'classic', vg: true, baselineName: 'TestCheckRegion2_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
@@ -272,70 +256,7 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestCheckElementFully_Fluent: {
-    page: 'Default',
-    config: {baselineName: 'TestCheckElementFully_Fluent'},
-    variants: {
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
-    },
-    test: ({eyes}) => {
-      eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
-      eyes.check({region: '#overflowing-div-image', isFully: true})
-      eyes.close(throwException)
-    },
-  },
-  TestCheckRegionByCoordinates_Fluent: {
-    page: 'Default',
-    config: {
-      baselineName: 'TestCheckRegionByCoordinates_Fluent',
-    },
-    variants: {
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
-    },
-    test: ({eyes}) => {
-      eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
-      eyes.check({region: {left: 50, top: 70, width: 90, height: 110}})
-      eyes.close(throwException)
-    },
-  },
-  TestCheckOverflowingRegionByCoordinates_Fluent: {
-    page: 'Default',
-    config: {
-      baselineName: 'TestCheckOverflowingRegionByCoordinates_Fluent',
-    },
-    variants: {
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
-    },
-    test: ({eyes}) => {
-      eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
-      eyes.check({region: {left: 50, top: 110, width: 90, height: 550}})
-      eyes.close(throwException)
-    },
-  },
-  TestCheckRegionBySelectorAfterManualScroll_Fluent: {
-    page: 'Default',
-    config: {
-      baselineName: 'TestCheckRegionByCoordinateInFrameFully_Fluent',
-    },
-    variants: {
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
-    },
-    test: ({driver, eyes}) => {
-      eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
-      driver.executeScript('window.scrollBy(0, 250)')
-      eyes.check({region: '#centered'})
-      eyes.close(throwException)
-    },
-  },
-  CheckRegionWithFractionalMetrics: {
+  CheckRegion_FractionalMetrics: {
     page: 'FractionalMetric',
     config: {baselineName: 'CheckRegionWithFractionalMetrics'},
     test: ({eyes}) => {
@@ -344,15 +265,65 @@ var tests = {
       eyes.close()
     },
   },
-  TestCheckPageWithHeader_Region: {
-    page: 'StickyHeader',
-    config: {
-      baselineName: 'TestCheckPageWithHeader_Region',
-    },
+  CheckRegionBySelector_ManualScroll: {
+    page: 'Default',
     variants: {
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckRegionBySelectorAfterManualScroll_Fluent'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckRegionBySelectorAfterManualScroll_Fluent_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckRegionBySelectorAfterManualScroll_Fluent_VG'}},
+    },
+    test: ({driver, eyes}) => {
+      eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      driver.executeScript('window.scrollBy(0, 250)')
+      eyes.check({region: '#centered'})
+      eyes.close(throwException)
+    },
+  },
+  CheckRegionBySelectorFully: {
+    page: 'Default',
+    variants: {
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckElementFully_Fluent'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckElementFully_Fluent_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckElementFully_Fluent_VG'}},
+    },
+    test: ({eyes}) => {
+      eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      eyes.check({region: '#overflowing-div-image', isFully: true})
+      eyes.close(throwException)
+    },
+  },
+  CheckRegionByCoordinates: {
+    page: 'Default',
+    variants: {
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckRegionByCoordinates_Fluent'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckRegionByCoordinates_Fluent_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckRegionByCoordinates_Fluent_VG'}},
+    },
+    test: ({eyes}) => {
+      eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      eyes.check({region: {left: 50, top: 70, width: 90, height: 110}})
+      eyes.close(throwException)
+    },
+  },
+  CheckRegionByCoordinates_Overflowing: {
+    page: 'Default',
+    variants: {
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckOverflowingRegionByCoordinates_Fluent'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckOverflowingRegionByCoordinates_Fluent_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckOverflowingRegionByCoordinates_Fluent_VG'}},
+    },
+    test: ({eyes}) => {
+      eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      eyes.check({region: {left: 50, top: 110, width: 90, height: 550}})
+      eyes.close(throwException)
+    },
+  },
+  CheckRegionBySelector_StickyHeaderPage: {
+    page: 'StickyHeader',
+    variants: {
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckPageWithHeader_Region'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckPageWithHeader_Region_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckPageWithHeader_Region_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Page With Header', viewportSize})
@@ -360,15 +331,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestCheckPageWithHeader_Region_Fully: {
+  CheckRegionBySelectorFully_StickyHeaderPage: {
     page: 'StickyHeader',
-    config: {
-      baselineName: 'TestCheckPageWithHeader_Region_Fully',
-    },
     variants: {
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckPageWithHeader_Region_Fully'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckPageWithHeader_Region_Fully_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckPageWithHeader_Region_Fully_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Page With Header', viewportSize})
@@ -376,15 +344,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestCheckFixedRegion: {
+  CheckRegionBySelector_Fixed: {
     page: 'FixedRegion',
-    config: {
-      baselineName: 'TestCheckFixedRegion',
-    },
     variants: {
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckFixedRegion'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckFixedRegion_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckFixedRegion_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
@@ -392,15 +357,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestSimpleModal: {
+  CheckRegionBySelector_Modal: {
     page: 'Modals',
-    config: {
-      baselineName: 'TestSimpleModal',
-    },
     variants: {
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestSimpleModal'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestSimpleModal_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestSimpleModal_VG'}},
     },
     test: ({driver, eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
@@ -409,15 +371,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestCheckFixedRegion_Fully: {
+  CheckRegionBySelectorFully_Fixed: {
     page: 'FixedRegion',
-    config: {
-      baselineName: 'TestCheckFixedRegion_Fully',
-    },
     variants: {
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckFixedRegion_Fully'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckFixedRegion_Fully_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckFixedRegion_Fully_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
@@ -425,15 +384,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestCheckScrollableModal: {
+  CheckRegionBySelectorFully_ScrollableModal: {
     page: 'Default',
-    config: {
-      baselineName: 'TestCheckScrollableModal',
-    },
     variants: {
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckScrollableModal'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckScrollableModal_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckScrollableModal_VG'}},
     },
     test: ({driver, eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
@@ -442,14 +398,11 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestScrollableModal_Fully: {
+  CheckRegionBySelectorFully_ScrollableModal_ModalsPage: {
     page: 'Modals',
-    config: {
-      baselineName: 'TestScrollableModal_Fully',
-    },
     variants: {
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestScrollableModal_Fully'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestScrollableModal_Fully_Scroll'}},
     },
     test: ({driver, eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
@@ -462,14 +415,11 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestScrollableContentInModal_Fully: {
+  CheckRegionBySelectorFully_ScrollableContentModal: {
     page: 'Modals',
-    config: {
-      baselineName: 'TestScrollableContentInModal_Fully',
-    },
     variants: {
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestScrollableContentInModal_Fully'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestScrollableContentInModal_Fully_Scroll'}},
     },
     test: ({driver, eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
@@ -482,12 +432,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  AppiumAndroidCheckRegion: {
+  CheckRegionBySelector_Native: {
+    features: ['native-selectors'],
     env: {
       device: 'Samsung Galaxy S8',
       app: 'https://applitools.bintray.com/Examples/eyes-android-hello-world.apk',
     },
-    features: ['native-selectors'],
     config: {baselineName: 'AppiumAndroidCheckRegion'},
     test: ({eyes}) => {
       eyes.open({appName: 'Applitools Eyes SDK'})
@@ -495,16 +445,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-
-  TestCheckRegionByCoordinateInFrame_Fluent: {
+  CheckRegionByCoordinatesInFrame: {
     page: 'Default',
-    config: {
-      baselineName: 'TestCheckRegionByCoordinateInFrame_Fluent',
-    },
     variants: {
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckRegionByCoordinateInFrame_Fluent'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckRegionByCoordinateInFrame_Fluent_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckRegionByCoordinateInFrame_Fluent_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
@@ -515,15 +461,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestCheckRegionByCoordinateInFrameFully_Fluent: {
+  CheckRegionByCoordinatesInFrameFully: {
     page: 'Default',
-    config: {
-      baselineName: 'TestCheckRegionByCoordinateInFrameFully_Fluent',
-    },
     variants: {
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckRegionByCoordinateInFrameFully_Fluent'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckRegionByCoordinateInFrameFully_Fluent_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckRegionByCoordinateInFrameFully_Fluent_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
@@ -535,16 +478,15 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestCheckRegionInFrame: {
+  CheckRegionBySelectorInFrameFully: {
     page: 'Default',
-    config: {baselineName: 'TestCheckRegionInFrame'},
     variants: {
-      ClassicVG: {config: {check: 'classic', vg: true}},
-      ClassicCSS: {config: {check: 'classic', stitchMode: 'CSS'}},
-      ClassicScroll: {config: {stitchMode: 'Scroll', check: 'classic'}},
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      ClassicCSS: {config: {check: 'classic', stitchMode: 'CSS', baselineName: 'TestCheckRegionInFrame'}},
+      ClassicScroll: {config: {stitchMode: 'Scroll', check: 'classic', baselineName: 'TestCheckRegionInFrame_Scroll'}},
+      ClassicVG: {config: {check: 'classic', vg: true, baselineName: 'TestCheckRegionInFrame_VG'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckRegionInFrame'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckRegionInFrame_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckRegionInFrame_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
@@ -552,15 +494,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestCheckRegionInAVeryBigFrame: {
+  CheckRegionBySelectorInFrame_Overflowing: {
     page: 'Wix',
-    config: {
-      baselineName: 'TestCheckRegionInAVeryBigFrame',
-    },
     variants: {
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckRegionInAVeryBigFrame'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckRegionInAVeryBigFrame_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckRegionInAVeryBigFrame_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Special Cases', viewportSize})
@@ -568,16 +507,13 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestCheckRegionInAVeryBigFrameAfterManualSwitchToFrame: {
+  CheckRegionBySelectorInFrame_Overflowing_ManualSwitchToFrame: {
     features: ['webdriver'],
     page: 'Wix',
-    config: {
-      baselineName: 'TestCheckRegionInAVeryBigFrameAfterManualSwitchToFrame',
-    },
     variants: {
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckRegionInAVeryBigFrameAfterManualSwitchToFrame'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckRegionInAVeryBigFrameAfterManualSwitchToFrame_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckRegionInAVeryBigFrameAfterManualSwitchToFrame_VG'}},
     },
     test: ({driver, eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Special Cases', viewportSize})
@@ -586,7 +522,7 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  CheckRegionInFrameLargerThenViewport: {
+  CheckRegionBySelectorInFrameFully_Overflowing: {
     page: 'FrameLargerThenViewport',
     config: {baselineName: 'CheckRegionInFrameLargerThenViewport'},
     variants: {
@@ -609,15 +545,12 @@ var tests = {
 
   // #region CODED REGIONS
 
-  TestCheckFullWindowWithMultipleIgnoreRegionsBySelector_Fluent: {
+  CheckWindowFully_MultipleIgnoreRegionsBySelector: {
     page: 'Default',
-    config: {
-      baselineName: 'TestCheckFullWindowWithMultipleIgnoreRegionsBySelector_Fluent',
-    },
     variants: {
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckFullWindowWithMultipleIgnoreRegionsBySelector_Fluent'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckFullWindowWithMultipleIgnoreRegionsBySelector_Fluent_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckFullWindowWithMultipleIgnoreRegionsBySelector_Fluent_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
@@ -625,15 +558,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestCheckWindowWithFloatingByRegion_Fluent: {
+  CheckWindow_FloatingRegionByCoordinates: {
     page: 'Default',
-    config: {
-      baselineName: 'TestCheckWindowWithFloatingByRegion_Fluent',
-    },
     variants: {
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckWindowWithFloatingByRegion_Fluent'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckWindowWithFloatingByRegion_Fluent_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckWindowWithFloatingByRegion_Fluent_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
@@ -651,15 +581,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestCheckWindowWithFloatingBySelector_Fluent: {
+  CheckWindow_FloatingRegionBySelector: {
     page: 'Default',
-    config: {
-      baselineName: 'TestCheckWindowWithFloatingBySelector_Fluent',
-    },
     variants: {
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckWindowWithFloatingBySelector_Fluent'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckWindowWithFloatingBySelector_Fluent_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckWindowWithFloatingBySelector_Fluent_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
@@ -677,15 +604,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestCheckWindowWithIgnoreBySelector_Fluent: {
+  CheckWindow_IgnoreRegionBySelector: {
     page: 'Default',
-    config: {
-      baselineName: 'TestCheckWindowWithIgnoreBySelector_Fluent',
-    },
     variants: {
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckWindowWithIgnoreBySelector_Fluent'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckWindowWithIgnoreBySelector_Fluent_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckWindowWithIgnoreBySelector_Fluent_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
@@ -693,15 +617,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestCheckWindowWithIgnoreBySelector_Centered_Fluent: {
+  CheckWindow_IgnoreRegionBySelector_Centered: {
     page: 'Default',
-    config: {
-      baselineName: 'TestCheckWindowWithIgnoreBySelector_Centered_Fluent',
-    },
     variants: {
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckWindowWithIgnoreBySelector_Centered_Fluent'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckWindowWithIgnoreBySelector_Centered_Fluent_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckWindowWithIgnoreBySelector_Centered_Fluent_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
@@ -709,15 +630,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestCheckWindowWithIgnoreBySelector_Stretched_Fluent: {
+  CheckWindow_IgnoreRegionBySelector_Stretched: {
     page: 'Default',
-    config: {
-      baselineName: 'TestCheckWindowWithIgnoreBySelector_Stretched_Fluent',
-    },
     variants: {
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckWindowWithIgnoreBySelector_Stretched_Fluent'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckWindowWithIgnoreBySelector_Stretched_Fluent_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckWindowWithIgnoreBySelector_Stretched_Fluent_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
@@ -725,15 +643,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestCheckWindowWithIgnoreRegion_Fluent: {
+  CheckWindowFully_IgnoreRegionByCoordinates: {
     page: 'Default',
-    config: {
-      baselineName: 'TestCheckWindowWithIgnoreRegion_Fluent',
-    },
     variants: {
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckWindowWithIgnoreRegion_Fluent'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckWindowWithIgnoreRegion_Fluent_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckWindowWithIgnoreRegion_Fluent_VG'}},
     },
     test: ({driver, eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
@@ -745,16 +660,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-
-  TestCheckElementWithIgnoreRegionByElementOutsideTheViewport_Fluent: {
+  CheckRegionBySelector_IgnoreRegionBySelector_Outside: {
     page: 'Default',
-    config: {
-      baselineName: 'TestCheckElementWithIgnoreRegionByElementOutsideTheViewport_Fluent',
-    },
     variants: {
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckElementWithIgnoreRegionByElementOutsideTheViewport_Fluent'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckElementWithIgnoreRegionByElementOutsideTheViewport_Fluent_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckElementWithIgnoreRegionByElementOutsideTheViewport_Fluent_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
@@ -762,15 +673,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestCheckElementWithIgnoreRegionBySameElement_Fluent: {
+  CheckRegionBySelector_IgnoreRegionBySelector_TheSame: {
     page: 'Default',
-    config: {
-      baselineName: 'TestCheckElementWithIgnoreRegionBySameElement_Fluent',
-    },
     variants: {
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckElementWithIgnoreRegionBySameElement_Fluent'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckElementWithIgnoreRegionBySameElement_Fluent_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckElementWithIgnoreRegionBySameElement_Fluent_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
@@ -778,15 +686,15 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestCheckRegionInFrame3_Fluent: {
+  CheckFrameFully_FloatingRegionByCoordinates: {
     page: 'Default',
     config: {
       baselineName: 'TestCheckRegionInFrame3_Fluent',
     },
     variants: {
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckRegionInFrame3_Fluent'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckRegionInFrame3_Fluent_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckRegionInFrame3_Fluent_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
@@ -807,15 +715,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestCheckRegionWithIgnoreRegion_Fluent: {
+  CheckRegionBySelector_IgnoreRegionByCoordinates: {
     page: 'Default',
-    config: {
-      baselineName: 'TestCheckRegionWithIgnoreRegion_Fluent',
-    },
     variants: {
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckRegionWithIgnoreRegion_Fluent'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckRegionWithIgnoreRegion_Fluent_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckRegionWithIgnoreRegion_Fluent_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
@@ -831,10 +736,10 @@ var tests = {
 
   // #region CUSTOM
 
-  TestAbortIfNotClosed: {
+  AbortIfNotClosed: {
     variants: {
-      VG: {config: {vg: true}},
       '': {config: {vg: false}},
+      VG: {config: {vg: true}},
     },
     test: ({driver, eyes}) => {
       driver.visit('data:text/html,<p>Test</p>')
@@ -843,14 +748,12 @@ var tests = {
       eyes.abort()
     },
   },
-  TestAcmeLogin: {
-    name: 'AcmeLogin',
+  AcmeLogin: {
     page: 'Acme',
-    config: {baselineName: 'TestAcmeLogin'},
     variants: {
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestAcmeLogin'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestAcmeLogin_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestAcmeLogin_VG'}},
     },
     test: ({driver, eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - ACME', viewportSize: {width: 1024, height: 768}})
@@ -861,13 +764,12 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestScrollbarsHiddenAndReturned_Fluent: {
+  HideAndRestoreScrollbars: {
     page: 'Default',
-    config: {baselineName: 'TestScrollbarsHiddenAndReturned_Fluent'},
     variants: {
-      VG: {config: {vg: true}},
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestScrollbarsHiddenAndReturned_Fluent'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestScrollbarsHiddenAndReturned_Fluent_Scroll'}},
+      VG: {config: {vg: true, baselineName: 'TestScrollbarsHiddenAndReturned_Fluent_VG'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
@@ -877,10 +779,10 @@ var tests = {
       eyes.close(throwException)
     },
   },
-  TestVisualLocators: {
+  VisualLocators: {
     variants: {
-      VG: {config: {vg: true}},
-      '': {config: {vg: false}},
+      '': {config: {vg: false, baselineName: 'TestVisualLocators'}},
+      VG: {config: {vg: true, baselineName: 'TestVisualLocators_VG'}},
     },
     test: ({driver, eyes, assert}) => {
       driver.visit('default')
@@ -895,7 +797,7 @@ var tests = {
       })
     },
   },
-  TestTooBigViewportSize: {
+  TooBigViewportSize: {
     env: {browser: 'chrome', headless: false},
     test: ({driver, eyes, assert}) => {
       eyes.open({
@@ -912,10 +814,10 @@ var tests = {
       eyes.close(false)
     },
   },
-  TestSetViewportSize: {
+  SetViewportSize: {
     variants: {
-      Edge: {env: {browser: 'edge-18'}},
       '': {env: {browser: 'chrome'}},
+      Edge: {env: {browser: 'edge-18'}},
     },
     test: ({driver, eyes, assert}) => {
       const expectedViewportSize = {width: 600, height: 600}
@@ -927,13 +829,15 @@ var tests = {
       assert.deepStrictEqual(actualViewportSize, expectedViewportSize)
     },
   },
-  RefreshStaleScrollRootElementAfterPageReload: ({driver, eyes}) => {
-    driver.visit('https://applitools.github.io/demo/TestPages/RefreshDomPage')
-    eyes.open({appName: 'Applitools Eyes SDK', viewportSize: {width: 600, height: 500}})
-    eyes.check()
-    driver.visit('https://applitools.github.io/demo/TestPages/RefreshDomPage')
-    eyes.check()
-    eyes.close()
+  RefreshStaleScrollRootElementAfterPageReload: {
+    test: ({driver, eyes}) => {
+      driver.visit('https://applitools.github.io/demo/TestPages/RefreshDomPage')
+      eyes.open({appName: 'Applitools Eyes SDK', viewportSize: {width: 600, height: 500}})
+      eyes.check()
+      driver.visit('https://applitools.github.io/demo/TestPages/RefreshDomPage')
+      eyes.check()
+      eyes.close()
+    },
   },
   CheckStaleElement: {
     features: ['webdriver'],
@@ -975,10 +879,12 @@ var tests = {
       eyes.close()
     },
   },
-  TestGetAllTestResults: ({eyes, assert}) => {
-    eyes.open({appName: 'Applitools Eyes SDK'})
-    assert.throws(() => eyes.close())
-    eyes.runner.getAllTestResults(false)
+  TestGetAllTestResults: {
+    test: ({eyes, assert}) => {
+      eyes.open({appName: 'Applitools Eyes SDK'})
+      assert.throws(() => eyes.close())
+      eyes.runner.getAllTestResults(false)
+    },
   },
 
   // #endregion

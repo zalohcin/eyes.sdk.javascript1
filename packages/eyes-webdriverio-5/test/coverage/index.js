@@ -1,15 +1,16 @@
 const {
   makeEmitter,
   makeTemplate,
-  supportedTests,
+  testsOverrides,
 } = require('@applitools/sdk-shared/coverage-tests/generic')
 
 module.exports = {
   name: 'eyes.webdriverio.javascript5',
-  out: './test/coverage/generic',
+  outPath: './test/coverage/generic',
   ext: '.spec.js',
+  // testsPath:
+  //   'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/env-and-meta/tests.js',
   initialize: makeEmitter,
   testFrameworkTemplate: makeTemplate,
-  supportedTests,
-  testsUrl: 'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/env-and-meta/tests.js',
+  testsOverrides,
 }
