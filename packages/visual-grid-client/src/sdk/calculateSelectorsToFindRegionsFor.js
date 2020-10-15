@@ -74,22 +74,22 @@ function regionify({region, imageLocationRegion}) {
   }
 }
 
-function regionWithUserInput({regionObject, userSelector, userRegionIndex}) {
+function regionWithUserInput({regionObject, userRegion, userRegionIndex}) {
   const accesibilityRegionIndex = 4
   const floatingRegionIndex = 5
   // accesibility regions
   if (userRegionIndex === accesibilityRegionIndex) {
     Object.assign(regionObject, {
-      accessibilityType: userSelector.accessibilityType,
+      accessibilityType: userRegion.accessibilityType,
     })
   }
   // floating region
   if (userRegionIndex === floatingRegionIndex) {
     Object.assign(regionObject, {
-      maxUpOffset: userSelector.maxUpOffset,
-      maxDownOffset: userSelector.maxDownOffset,
-      maxLeftOffset: userSelector.maxLeftOffset,
-      maxRightOffset: userSelector.maxRightOffset,
+      maxUpOffset: userRegion.maxUpOffset,
+      maxDownOffset: userRegion.maxDownOffset,
+      maxLeftOffset: userRegion.maxLeftOffset,
+      maxRightOffset: userRegion.maxRightOffset,
     })
   }
 

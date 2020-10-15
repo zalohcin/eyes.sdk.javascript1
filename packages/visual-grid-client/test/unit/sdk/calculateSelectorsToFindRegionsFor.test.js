@@ -3,6 +3,7 @@
 const {describe, it} = require('mocha')
 const {expect} = require('chai')
 const calculateSelectorsToFindRegionsFor = require('../../../src/sdk/calculateSelectorsToFindRegionsFor')
+const {Region} = require('@applitools/eyes-sdk-core')
 
 describe('calculateSelectorsToFindRegionsFor Tests', () => {
   describe('calculateSelectorsToFindRegionsFor', () => {
@@ -188,5 +189,176 @@ describe('calculateSelectorsToFindRegionsFor Tests', () => {
     })
   })
 
-  describe('getMatchRegions', () => {})
+  describe.only('getMatchRegions', () => {
+    const accessibilityIndex = 4
+    const floatingIndex = 5
+
+    it('handles a single selector', () => {
+      const ignore = {selector: '.ignore'}
+      const {getMatchRegions} = calculateSelectorsToFindRegionsFor({ignore})
+      const ignoreRegionFromGrid = new Region({left: 1, top: 1, width: 2, height: 1})
+      const selectorRegions = [[ignoreRegionFromGrid]]
+      const [ignoreRegion] = getMatchRegions({selectorRegions})
+      expect(ignoreRegion).to.eql([
+        {left: 1, top: 1, width: 2, height: 1, coordinatesType: 'SCREENSHOT_AS_IS'},
+      ])
+    })
+
+    it('handles a single selector in an array', () => {
+      const layout = [{selector: '.layout'}]
+      const {getMatchRegions} = calculateSelectorsToFindRegionsFor({layout})
+      const ignoreRegionFromGrid = new Region({left: 1, top: 1, width: 2, height: 1})
+      const selectorRegions = [[ignoreRegionFromGrid]]
+      const [ignoreRegion, layoutRegion] = getMatchRegions({selectorRegions})
+      expect(ignoreRegion).to.be.undefined
+      expect(layoutRegion).to.eql([
+        {left: 1, top: 1, width: 2, height: 1, coordinatesType: 'SCREENSHOT_AS_IS'},
+      ])
+    })
+
+    it('handles multiple selectors', () => {
+      const ignore = [{selector: '.ignore'}]
+      const layout = [{selector: '.layout'}]
+      const {getMatchRegions} = calculateSelectorsToFindRegionsFor({ignore, layout})
+
+      const selectorRegions = [
+        [new Region({left: 1, top: 1, width: 2, height: 1})],
+        [new Region({left: 3, top: 3, width: 5, height: 4})],
+      ]
+      const [ignoreRegion, layoutRegion] = getMatchRegions({selectorRegions})
+
+      expect(ignoreRegion).to.eql([
+        {left: 1, top: 1, width: 2, height: 1, coordinatesType: 'SCREENSHOT_AS_IS'},
+      ])
+      expect(layoutRegion).to.eql([
+        {left: 3, top: 3, width: 5, height: 4, coordinatesType: 'SCREENSHOT_AS_IS'},
+      ])
+    })
+
+    it('handles multiple grid regions per selector', () => {
+      const ignore = {selector: '.ignore'}
+      const layout = {selector: '.layout'}
+      const {getMatchRegions} = calculateSelectorsToFindRegionsFor({ignore, layout})
+
+      const selectorRegions = [
+        [
+          new Region({left: 1, top: 1, width: 2, height: 1}),
+          new Region({left: 2, top: 2, width: 3, height: 2}),
+        ],
+        [
+          new Region({left: 3, top: 3, width: 4, height: 3}),
+          new Region({left: 4, top: 4, width: 5, height: 4}),
+          new Region({left: 5, top: 5, width: 6, height: 5}),
+        ],
+      ]
+      const [ignoreRegion, layoutRegion] = getMatchRegions({selectorRegions})
+
+      expect(ignoreRegion).to.eql([
+        {left: 1, top: 1, width: 2, height: 1, coordinatesType: 'SCREENSHOT_AS_IS'},
+        {left: 2, top: 2, width: 3, height: 2, coordinatesType: 'SCREENSHOT_AS_IS'},
+      ])
+      expect(layoutRegion).to.eql([
+        {left: 3, top: 3, width: 4, height: 3, coordinatesType: 'SCREENSHOT_AS_IS'},
+        {left: 4, top: 4, width: 5, height: 4, coordinatesType: 'SCREENSHOT_AS_IS'},
+        {left: 5, top: 5, width: 6, height: 5, coordinatesType: 'SCREENSHOT_AS_IS'},
+      ])
+    })
+
+    it('handles multiple non-array selectors', () => {
+      const accessibility = {selector: 'ignore-me', accessibilityType: 'LargeText'}
+      const floating = {
+        selector: 'ignore-you',
+        maxUpOffset: 10,
+        maxDownOffset: 10,
+        maxLeftOffset: 10,
+        maxRightOffset: 10,
+      }
+
+      const {getMatchRegions} = calculateSelectorsToFindRegionsFor({accessibility, floating})
+
+      const selectorRegions = [
+        [new Region({left: 1, top: 1, width: 2, height: 1})],
+        [new Region({left: 1, top: 1, width: 2, height: 1})],
+      ]
+      const regions = getMatchRegions({selectorRegions})
+
+      expect(regions[accessibilityIndex][0])
+        .to.haveOwnProperty('accessibilityType')
+        .and.equal('LargeText')
+
+      expect(regions[floatingIndex][0])
+        .to.haveOwnProperty('maxUpOffset')
+        .and.equal(10)
+    })
+
+    it('handles multiple array selectors', () => {
+      const accessibility = [{selector: 'ignore-me', accessibilityType: 'LargeText'}]
+      const floating = [
+        {
+          selector: 'ignore-you',
+          maxUpOffset: 10,
+          maxDownOffset: 10,
+          maxLeftOffset: 10,
+          maxRightOffset: 10,
+        },
+      ]
+
+      const {getMatchRegions} = calculateSelectorsToFindRegionsFor({accessibility, floating})
+
+      const selectorRegions = [
+        [new Region({left: 1, top: 1, width: 2, height: 1})],
+        [new Region({left: 1, top: 1, width: 2, height: 1})],
+      ]
+      const regions = getMatchRegions({selectorRegions})
+
+      expect(regions[accessibilityIndex][0])
+        .to.haveOwnProperty('accessibilityType')
+        .and.equal('LargeText')
+
+      expect(regions[floatingIndex][0])
+        .to.haveOwnProperty('maxUpOffset')
+        .and.equal(10)
+    })
+
+    it('handles multiple selectors with user-provided region', () => {
+      const ignore = [{selector: '.ignore'}, new Region({left: 3, top: 4, width: 5, height: 6})]
+      const layout = [{selector: '.layout'}]
+      const {getMatchRegions} = calculateSelectorsToFindRegionsFor({ignore, layout})
+
+      const selectorRegions = [
+        [new Region({left: 1, top: 1, width: 2, height: 1})],
+        [new Region({left: 3, top: 3, width: 5, height: 4})],
+      ]
+      const [ignoreRegion, layoutRegion] = getMatchRegions({selectorRegions})
+
+      expect(ignoreRegion).to.eql([
+        {left: 1, top: 1, width: 2, height: 1, coordinatesType: 'SCREENSHOT_AS_IS'},
+        {left: 3, top: 4, width: 5, height: 6, coordinatesType: 'SCREENSHOT_AS_IS'},
+      ])
+      expect(layoutRegion).to.eql([
+        {left: 3, top: 3, width: 5, height: 4, coordinatesType: 'SCREENSHOT_AS_IS'},
+      ])
+    })
+
+    it('handles multiple selectors with user-provided region and imageLocationRegion', () => {
+      const accessibility = [
+        {selector: '.ignore', accessibilityType: 'RegularText'},
+        {selector: '.whatever', accessibilityType: 'LargeText'},
+      ]
+      const imageLocationRegion = new Region({left: 9, top: 8, width: 7, height: 6})
+      const {getMatchRegions} = calculateSelectorsToFindRegionsFor({accessibility})
+
+      const selectorRegions = [
+        [imageLocationRegion],
+        [new Region({left: 1, top: 1, width: 2, height: 1})],
+        [new Region({left: 3, top: 3, width: 5, height: 4})],
+      ]
+      const regions = getMatchRegions({selectorRegions, imageLocationRegion})
+
+      expect(regions[accessibilityIndex]).to.eql([
+        {left: 0, top: 0, width: 2, height: 1, accessibilityType: 'RegularText'},
+        {left: 0, top: 0, width: 5, height: 4, accessibilityType: 'LargeText'},
+      ])
+    })
+  })
 })
