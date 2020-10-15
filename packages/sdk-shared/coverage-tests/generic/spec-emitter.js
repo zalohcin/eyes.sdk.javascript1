@@ -51,7 +51,7 @@ module.exports = function(tracker, test) {
     'beforeEach',
     js`[driver, destroyDriver] = await spec.build(${test.env} || {browser: 'chrome'})`,
   )
-  addHook('beforeEach', js`eyes = testSetup.getEyes(${test.config})`)
+  addHook('beforeEach', js`eyes = testSetup.getEyes(${{displayName: test.name, ...test.config}})`)
 
   addHook('afterEach', js`await destroyDriver(driver)`)
 
@@ -138,7 +138,7 @@ module.exports = function(tracker, test) {
             ${checkSettings.isFully},
           )`)
         }
-        return addCommand(js`await eyes.checkRegionBy(
+        return addCommand(js`await eyes.checkElementBy(
           ${checkSettings.region},
           ${checkSettings.name},
           ${checkSettings.timeout},

@@ -71,7 +71,7 @@ module.exports = {
       Scroll: {skip: true},
     },
   },
-  CheckRegionByCoordinatesInFrameFully: {
+  CheckRegionByCoordinatesInFrame: {
     variants: {
       CSS: {skip: true},
       Scroll: {skip: true},

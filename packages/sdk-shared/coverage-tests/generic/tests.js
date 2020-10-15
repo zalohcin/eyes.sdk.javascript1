@@ -143,7 +143,7 @@ var tests = {
   },
   CheckWindowFully_ModalsPage: {
     page: 'Modals',
-    config: {baselineName: 'TestScrollableContentInModal_Fully'},
+    config: {baselineName: 'TestWindowWithModal_Fully_Scroll'},
     test: ({driver, eyes}) => {
       eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
       driver.click('#open_scrollable_modal')
@@ -172,15 +172,15 @@ var tests = {
   CheckFrame: {
     page: 'Default',
     variants: {
-      ClassicCSS: {config: {check: 'classic', stitchMode: 'CSS', baselineName: 'TestCheckFrame'}},
-      ClassicScroll: {config: {check: 'classic', stitchMode: 'Scroll', baselineName: 'TestCheckFrame_Scroll'}},
-      ClassicVG: {config: {check: 'classic', vg: true, baselineName: 'TestCheckFrame_VG'}},
-      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckFrame'}},
-      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckFrame_Scroll'}},
-      VG: {config: {vg: true, baselineName: 'TestCheckFrame_VG'}},
+      ClassicCSS: {config: {check: 'classic', stitchMode: 'CSS', baselineName: 'TestCheckFrame', appName: 'Eyes Selenium SDK - Classic API'}},
+      ClassicScroll: {config: {check: 'classic', stitchMode: 'Scroll', baselineName: 'TestCheckFrame_Scroll', appName: 'Eyes Selenium SDK - Classic API'}},
+      ClassicVG: {config: {check: 'classic', vg: true, baselineName: 'TestCheckFrame_VG', appName: 'Eyes Selenium SDK - Classic API'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckFrame_Fluent', appName: 'Eyes Selenium SDK - Fluent API'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckFrame_Fluent_Scroll', appName: 'Eyes Selenium SDK - Fluent API'}},
+      VG: {config: {vg: true, baselineName: 'TestCheckFrame_VG', appName: 'Eyes Selenium SDK - Classic API'}},
     },
     test: ({eyes}) => {
-      eyes.open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
+      eyes.open({viewportSize})
       eyes.check({frames: ['[name="frame1"]']})
       eyes.close(throwException)
     },
@@ -489,7 +489,7 @@ var tests = {
       VG: {config: {vg: true, baselineName: 'TestCheckRegionInFrame_VG'}},
     },
     test: ({eyes}) => {
-      eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      eyes.open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
       eyes.check({region: '#inner-frame-div', frames: ['[name="frame1"]'], isFully: true})
       eyes.close(throwException)
     },
@@ -524,10 +524,9 @@ var tests = {
   },
   CheckRegionBySelectorInFrameFully_Overflowing: {
     page: 'FrameLargerThenViewport',
-    config: {baselineName: 'CheckRegionInFrameLargerThenViewport'},
     variants: {
-      CSS: {config: {stitchMode: 'CSS'}},
-      Scroll: {config: {stitchMode: 'Scroll'}},
+      CSS: {config: {stitchMode: 'CSS', baselineName: 'CheckRegionInFrameLargerThenViewport'}},
+      Scroll: {config: {stitchMode: 'Scroll', baselineName: 'CheckRegionInFrameLargerThenViewport_Scroll'}},
     },
     test: ({eyes}) => {
       eyes.open({appName: 'Applitools Eyes SDK', viewportSize: {width: 800, height: 600}})
@@ -688,9 +687,6 @@ var tests = {
   },
   CheckFrameFully_FloatingRegionByCoordinates: {
     page: 'Default',
-    config: {
-      baselineName: 'TestCheckRegionInFrame3_Fluent',
-    },
     variants: {
       CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckRegionInFrame3_Fluent'}},
       Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckRegionInFrame3_Fluent_Scroll'}},
@@ -780,12 +776,12 @@ var tests = {
     },
   },
   VisualLocators: {
+    page: 'Default',
     variants: {
       '': {config: {vg: false, baselineName: 'TestVisualLocators'}},
       VG: {config: {vg: true, baselineName: 'TestVisualLocators_VG'}},
     },
-    test: ({driver, eyes, assert}) => {
-      driver.visit('default')
+    test: ({eyes, assert}) => {
       eyes.open({appName: 'Applitools Eyes SDK'})
       const regionsMap = eyes
         .locate({locatorNames: ['applitools_title']})
@@ -854,6 +850,7 @@ var tests = {
     },
   },
   CheckRefreshableElement: {
+    skip: true,
     features: ['webdriver'],
     test: ({driver, eyes}) => {
       driver.visit('http://localhost:5000/TestPages/RefreshDomPage/auto-refresh')

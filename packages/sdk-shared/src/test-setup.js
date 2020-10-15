@@ -245,6 +245,7 @@ function getEyes({vg, ...config} = {}) {
     apiKey: process.env.APPLITOOLS_API_KEY_SDK,
     batch,
     parentBranchName: 'master',
+    branchName: 'master',
     dontCloseBatches: true,
     matchTimeout: 0,
     saveNewTests: false,
