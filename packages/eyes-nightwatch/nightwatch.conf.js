@@ -22,8 +22,6 @@ module.exports = {
 
   webdriver: {},
 
-  test_runner: 'mocha',
-
   test_settings: {
     default: {
       disable_error_log: false,
