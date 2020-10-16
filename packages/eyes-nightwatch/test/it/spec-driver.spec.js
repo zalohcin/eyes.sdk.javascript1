@@ -16,21 +16,21 @@ describe('spec driver', async () => {
       await destroyDriver()
     })
 
-    it('isDriver(driver)', isDriver({expected: true}))
-    it('isDriver(wrong)', isDriver({input: {}, expected: false}))
-    it(
+    it.skip('isDriver(driver)', isDriver({expected: true}))
+    it.skip('isDriver(wrong)', isDriver({input: {}, expected: false}))
+    it.skip(
       'isElement(element)',
       isElement({input: () => driver.findElement({css: 'div'}), expected: true}),
     )
-    it(
+    it.skip(
       'isElement(element-finder)',
       isElement({input: () => driver.element({css: 'div'}), expected: true}),
     )
-    it('isElement(wrong)', isElement({input: () => ({}), expected: false}))
-    it('isSelector(string)', isSelector({input: 'div', expected: true}))
-    it('isSelector(by)', isSelector({input: {xpath: '//div'}, expected: true}))
-    it('isSelector(wrong)', isSelector({input: {}, expected: false}))
-    it(
+    it.skip('isElement(wrong)', isElement({input: () => ({}), expected: false}))
+    it.skip('isSelector(string)', isSelector({input: 'div', expected: true}))
+    it.skip('isSelector(by)', isSelector({input: {xpath: '//div'}, expected: true}))
+    it.skip('isSelector(wrong)', isSelector({input: {}, expected: false}))
+    it.skip(
       'isEqualElements(element, element)',
       isEqualElements({
         input: () =>
@@ -40,7 +40,7 @@ describe('spec driver', async () => {
         expected: true,
       }),
     )
-    it(
+    it.skip(
       'isEqualElements(element1, element2)',
       isEqualElements({
         input: async () => ({
@@ -50,20 +50,20 @@ describe('spec driver', async () => {
         expected: false,
       }),
     )
-    it('executeScript(strings, ...args)', executeScript())
-    it('findElement(by-hash)', findElement({input: {css: '#overflowing-div'}}))
-    it('findElements(by-hash)', findElements({input: {css: 'div'}}))
-    it('findElement(non-existent)', findElement({input: 'non-existent', expected: null}))
-    it('findElements(non-existent)', findElements({input: 'non-existent', expected: []}))
-    it('mainContext()', mainContext())
-    it('parentContext()', parentContext())
-    it('childContext(element)', childContext())
-    it('getSessionId()', getSessionId())
-    it('getTitle()', getTitle())
-    it('getUrl()', getUrl())
-    it('visit()', visit())
-    it('isMobile()', isMobile({expected: false}))
-    it('getPlatformName()', getPlatformName({expected: 'linux'}))
+    it.skip('executeScript(strings, ...args)', executeScript())
+    it.skip('findElement(by-hash)', findElement({input: {css: '#overflowing-div'}}))
+    it.skip('findElements(by-hash)', findElements({input: {css: 'div'}}))
+    it.skip('findElement(non-existent)', findElement({input: 'non-existent', expected: null}))
+    it.skip('findElements(non-existent)', findElements({input: 'non-existent', expected: []}))
+    it.skip('mainContext()', mainContext())
+    it.skip('parentContext()', parentContext())
+    it.skip('childContext(element)', childContext())
+    it.skip('getSessionId()', getSessionId())
+    it.skip('getTitle()', getTitle())
+    it.skip('getUrl()', getUrl())
+    it.skip('visit()', visit())
+    it.skip('isMobile()', isMobile({expected: false}))
+    it.skip('getPlatformName()', getPlatformName({expected: 'linux'}))
   })
 
   describe('headless desktop (@angular)', async () => {
@@ -78,8 +78,8 @@ describe('spec driver', async () => {
       await destroyDriver()
     })
 
-    it('findElement(by-ng)', findElement({input: () => driver.by.model('name')}))
-    it('findElements(by-ng)', findElements({input: () => driver.by.model('name')}))
+    it.skip('findElement(by-ng)', findElement({input: () => driver.by.model('name')}))
+    it.skip('findElements(by-ng)', findElements({input: () => driver.by.model('name')}))
   })
 
   describe('onscreen desktop (@webdriver)', async () => {
@@ -91,22 +91,22 @@ describe('spec driver', async () => {
       await destroyDriver()
     })
 
-    it('getWindowRect()', getWindowRect())
-    it(
+    it.skip('getWindowRect()', getWindowRect())
+    it.skip(
       'setWindowRect({x, y, width, height})',
       setWindowRect({
         input: {x: 0, y: 0, width: 510, height: 511},
         expected: {x: 0, y: 0, width: 510, height: 511},
       }),
     )
-    it(
+    it.skip(
       'setWindowRect({x, y})',
       setWindowRect({
         input: {x: 11, y: 12},
         expected: {x: 11, y: 12, width: 510, height: 511},
       }),
     )
-    it(
+    it.skip(
       'setWindowRect({width, height})',
       setWindowRect({
         input: {width: 551, height: 552},
@@ -124,29 +124,29 @@ describe('spec driver', async () => {
       await destroyDriver()
     })
 
-    it('getWindowRect()', getWindowRect())
-    it(
+    it.skip('getWindowRect()', getWindowRect())
+    it.skip(
       'setWindowRect({x, y, width, height})',
       setWindowRect({
         input: {x: 0, y: 0, width: 510, height: 511},
         expected: {x: 0, y: 0, width: 510, height: 511},
       }),
     )
-    it(
+    it.skip(
       'setWindowRect({x, y})',
       setWindowRect({
         input: {x: 11, y: 12},
         expected: {x: 11, y: 12, width: 510, height: 511},
       }),
     )
-    it(
+    it.skip(
       'setWindowRect({width, height})',
       setWindowRect({
         input: {width: 551, height: 552},
         expected: {x: 11, y: 12, width: 551, height: 552},
       }),
     )
-    it('getPlatformName()', getPlatformName({expected: 'WINDOWS'}))
+    it.skip('getPlatformName()', getPlatformName({expected: 'WINDOWS'}))
   })
 
   describe('mobile driver (@mobile)', async () => {
@@ -158,12 +158,12 @@ describe('spec driver', async () => {
       await destroyDriver()
     })
 
-    it('isMobile()', isMobile({expected: true}))
-    it('getDeviceName()', getDeviceName({expected: 'Google Pixel 3a XL GoogleAPI Emulator'}))
-    it('getPlatformName()', getPlatformName({expected: 'Android'}))
-    it('isNative()', isNative({expected: false}))
-    it('getOrientation()', getOrientation({expected: 'portrait'}))
-    it('getPlatformVersion()', getPlatformVersion({expected: '10'}))
+    it.skip('isMobile()', isMobile({expected: true}))
+    it.skip('getDeviceName()', getDeviceName({expected: 'Google Pixel 3a XL GoogleAPI Emulator'}))
+    it.skip('getPlatformName()', getPlatformName({expected: 'Android'}))
+    it.skip('isNative()', isNative({expected: false}))
+    it.skip('getOrientation()', getOrientation({expected: 'portrait'}))
+    it.skip('getPlatformVersion()', getPlatformVersion({expected: '10'}))
   })
 
   function isDriver({input, expected}) {
