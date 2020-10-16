@@ -48,7 +48,12 @@ describe('spec driver', async () => {
       const element2 = await driver.element('css selector', 'h1')
       assert.ok(!spec.isEqualElements(driver, element1, element2))
     })
-    //it.skip('executeScript(strings, ...args)', executeScript())
+    it('executeScript(strings, ...args)', async function(driver) {
+      const script = 'return arguments'
+      const args = [0, 1, 2, 3]
+      const result = await spec.executeScript(driver, script, args)
+      assert.deepStrictEqual(result.value[0], args)
+    })
     //it.skip('findElement(by-hash)', findElement({input: {css: '#overflowing-div'}}))
     //it.skip('findElements(by-hash)', findElements({input: {css: 'div'}}))
     //it.skip('findElement(non-existent)', findElement({input: 'non-existent', expected: null}))

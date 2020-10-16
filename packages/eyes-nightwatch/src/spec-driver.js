@@ -73,9 +73,9 @@ function isEqualElements(_driver, element1, element2) {
 //
 //// #region COMMANDS
 //
-//async function executeScript(driver, script, ...args) {
-//  return driver.executeScript(script, ...args)
-//}
+async function executeScript(driver, script, ...args) {
+  return driver.execute(script, args)
+}
 //async function mainContext(driver) {
 //  await driver.switchTo().defaultContent()
 //  return driver
@@ -229,7 +229,7 @@ exports.isSelector = isSelector
 exports.isEqualElements = isEqualElements
 //exports.isStaleElementError = isStaleElementError
 //
-//exports.executeScript = executeScript
+exports.executeScript = executeScript
 //exports.mainContext = mainContext
 //exports.parentContext = parentContext
 //exports.childContext = childContext
