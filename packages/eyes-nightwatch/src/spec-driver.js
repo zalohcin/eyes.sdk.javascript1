@@ -33,11 +33,10 @@ const {TypeUtils} = require('@applitools/eyes-sdk-core')
 function isDriver(driver) {
   return TypeUtils.instanceOf(driver, 'NightwatchAPI')
 }
-//function isElement(element) {
-//  return (
-//    TypeUtils.instanceOf(element, 'WebElement') || TypeUtils.instanceOf(element, 'ElementFinder')
-//  )
-//}
+function isElement(element) {
+  if (!element) return false
+  return Boolean(element.sessionId && element.value && element.value.ELEMENT)
+}
 //function isSelector(selector) {
 //  if (!selector) return false
 //  return (
@@ -228,7 +227,7 @@ function isDriver(driver) {
 //// #endregion
 //
 exports.isDriver = isDriver
-//exports.isElement = isElement
+exports.isElement = isElement
 //exports.isSelector = isSelector
 //exports.transformDriver = transformDriver
 //exports.transformElement = transformElement

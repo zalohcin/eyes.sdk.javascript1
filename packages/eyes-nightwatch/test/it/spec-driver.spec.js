@@ -20,10 +20,10 @@ describe('spec driver', async () => {
     it('isDriver(wrong)', function(_driver) {
       return assert.ok(!spec.isDriver({}))
     })
-    //it.skip(
-    //  'isElement(element)',
-    //  isElement({input: () => driver.findElement({css: 'div'}), expected: true}),
-    //)
+    it('isElement(element)', async function(driver) {
+      const element = await driver.element('css selector', 'div')
+      assert.ok(spec.isElement(element))
+    })
     //it.skip(
     //  'isElement(element-finder)',
     //  isElement({input: () => driver.element({css: 'div'}), expected: true}),
