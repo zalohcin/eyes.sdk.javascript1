@@ -24,15 +24,22 @@ describe('spec driver', async () => {
       const element = await driver.element('css selector', 'div')
       assert.ok(spec.isElement(element))
     })
-    //it.skip(
-    //  'isElement(element-finder)',
-    //  isElement({input: () => driver.element({css: 'div'}), expected: true}),
-    //)
-    //it.skip('isElement(wrong)', isElement({input: () => ({}), expected: false}))
-    //it.skip('isSelector(string)', isSelector({input: 'div', expected: true}))
-    //it.skip('isSelector(by)', isSelector({input: {xpath: '//div'}, expected: true}))
-    //it.skip('isSelector(wrong)', isSelector({input: {}, expected: false}))
-    //it.skip(
+    it('isElement(element result value)', async function(driver) {
+      const result = await driver.element('css selector', 'div')
+      assert.ok(spec.isElement(result.value))
+    })
+    it('isElement(wrong)', function(_driver) {
+      spec.isElement({})
+    })
+    // NOTE: Nightwatch separates the strategy from the selector - so it's always 2 values
+    // e.g., using 'css selector', with 'div'
+    it('isSelector(string)', function(_driver) {
+      assert.ok(spec.isSelector('div'))
+    })
+    it('isSelector(wrong)', function(_driver) {
+      assert.ok(!spec.isSelector())
+    })
+    //it.only(
     //  'isEqualElements(element, element)',
     //  isEqualElements({
     //    input: () =>

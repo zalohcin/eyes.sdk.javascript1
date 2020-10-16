@@ -35,18 +35,12 @@ function isDriver(driver) {
 }
 function isElement(element) {
   if (!element) return false
-  return Boolean(element.sessionId && element.value && element.value.ELEMENT)
+  return Boolean((element.sessionId && element.value && element.value.ELEMENT) || element.ELEMENT)
 }
-//function isSelector(selector) {
-//  if (!selector) return false
-//  return (
-//    TypeUtils.isString(selector) ||
-//    TypeUtils.has(selector, ['type', 'selector']) ||
-//    TypeUtils.has(selector, ['using', 'value']) ||
-//    Object.keys(selector).some(key => byHash.includes(key)) ||
-//    TypeUtils.isFunction(selector.findElementsOverride)
-//  )
-//}
+function isSelector(selector) {
+  if (!selector) return false
+  return TypeUtils.isString(selector)
+}
 //function transformDriver(driver) {
 //  const {CommandName} = require('protractor')
 //
@@ -228,7 +222,7 @@ function isElement(element) {
 //
 exports.isDriver = isDriver
 exports.isElement = isElement
-//exports.isSelector = isSelector
+exports.isSelector = isSelector
 //exports.transformDriver = transformDriver
 //exports.transformElement = transformElement
 //exports.isEqualElements = isEqualElements
