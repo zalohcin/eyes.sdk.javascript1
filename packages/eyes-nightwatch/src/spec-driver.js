@@ -14,9 +14,10 @@ const {TypeUtils} = require('@applitools/eyes-sdk-core')
 //  'xpath',
 //]
 //
-//function extractElementId(element) {
-//  return element.getId()
-//}
+function extractElementId(element) {
+  const _element = element.value ? element.value : element
+  return _element.ELEMENT
+}
 //
 //function transformSelector(selector) {
 //  if (TypeUtils.has(selector, ['type', 'selector'])) {
@@ -61,12 +62,12 @@ function isSelector(selector) {
 //  error = error.originalError || error
 //  return error instanceof Error && error.name === 'StaleElementReferenceError'
 //}
-//async function isEqualElements(_driver, element1, element2) {
-//  if (!element1 || !element2) return false
-//  const elementId1 = await extractElementId(element1)
-//  const elementId2 = await extractElementId(element2)
-//  return elementId1 === elementId2
-//}
+function isEqualElements(_driver, element1, element2) {
+  if (!element1 || !element2) return false
+  const elementId1 = extractElementId(element1)
+  const elementId2 = extractElementId(element2)
+  return Boolean(elementId1 === elementId2)
+}
 //
 //// #endregion
 //
@@ -225,7 +226,7 @@ exports.isElement = isElement
 exports.isSelector = isSelector
 //exports.transformDriver = transformDriver
 //exports.transformElement = transformElement
-//exports.isEqualElements = isEqualElements
+exports.isEqualElements = isEqualElements
 //exports.isStaleElementError = isStaleElementError
 //
 //exports.executeScript = executeScript

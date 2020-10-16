@@ -39,26 +39,15 @@ describe('spec driver', async () => {
     it('isSelector(wrong)', function(_driver) {
       assert.ok(!spec.isSelector())
     })
-    //it.only(
-    //  'isEqualElements(element, element)',
-    //  isEqualElements({
-    //    input: () =>
-    //      driver
-    //        .findElement({css: 'div'})
-    //        .then(element => ({element1: element, element2: element})),
-    //    expected: true,
-    //  }),
-    //)
-    //it.skip(
-    //  'isEqualElements(element1, element2)',
-    //  isEqualElements({
-    //    input: async () => ({
-    //      element1: await driver.findElement({css: 'div'}),
-    //      element2: await driver.findElement({css: 'h1'}),
-    //    }),
-    //    expected: false,
-    //  }),
-    //)
+    it('isEqualElements(element, element)', async function(driver) {
+      const element = await driver.element('css selector', 'div')
+      assert.ok(spec.isEqualElements(driver, element, element))
+    })
+    it('isEqualElements(element1, element2)', async function(driver) {
+      const element1 = await driver.element('css selector', 'div')
+      const element2 = await driver.element('css selector', 'h1')
+      assert.ok(!spec.isEqualElements(driver, element1, element2))
+    })
     //it.skip('executeScript(strings, ...args)', executeScript())
     //it.skip('findElement(by-hash)', findElement({input: {css: '#overflowing-div'}}))
     //it.skip('findElements(by-hash)', findElements({input: {css: 'div'}}))
