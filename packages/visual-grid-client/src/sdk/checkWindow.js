@@ -231,13 +231,7 @@ function makeCheckWindow({
         return
       }
 
-      const {
-        imageLocation: screenshotUrl,
-        domLocation,
-        userAgent,
-        deviceSize,
-        selectorRegions,
-      } = renderStatusResult
+      const {imageLocation: screenshotUrl, domLocation, selectorRegions} = renderStatusResult
 
       if (screenshotUrl) {
         logger.verbose(`screenshot available for ${renderId} at ${screenshotUrl}`)
@@ -246,11 +240,6 @@ function makeCheckWindow({
       }
 
       renderJobs.get(renderRequest)()
-
-      wrapper.setInferredEnvironment(`useragent:${userAgent}`)
-      if (deviceSize) {
-        wrapper.setViewportSize(deviceSize)
-      }
 
       logger.verbose(
         `checkWindow waiting for prev job. test=${testName}, stepCount #${currStepCount}`,

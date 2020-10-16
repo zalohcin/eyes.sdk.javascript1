@@ -181,7 +181,7 @@ function makeOpenEyes({
         getRendererInfo,
       })
 
-    const {renderInfo, userAgents} = await getInitialData()
+    const {renderInfo} = await getInitialData()
 
     configureWrappers({
       wrappers,
@@ -209,7 +209,6 @@ function makeOpenEyes({
       ignoreBaseline,
       serverUrl,
       agentId,
-      userAgents,
     })
 
     if (!globalState.batchStore.hasCloseBatch()) {

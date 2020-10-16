@@ -122,7 +122,6 @@ function makeRenderingGridClient({
     doPutResource,
     doGetRenderStatus,
     setRenderingInfo,
-    doGetUserAgents,
     doGetRendererInfo,
     doLogEvents,
   } = getRenderMethods(renderWrapper)
@@ -254,11 +253,10 @@ function makeRenderingGridClient({
     }
 
     setRenderingInfo(renderInfo)
-    const userAgents = await doGetUserAgents()
     await doLogEvents([BatchStartEvent({concurrency, testConcurrency})]).catch(err => {
       logger.log('error when logging batchStart', err)
     })
-    return {renderInfo, userAgents}
+    return {renderInfo}
   }
 }
 

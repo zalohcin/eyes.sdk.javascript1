@@ -7,7 +7,6 @@ function getRenderMethods(renderWrapper) {
   const doPutResource = renderWrapper.putResource.bind(renderWrapper)
   const doGetRenderStatus = renderWrapper.getRenderStatus.bind(renderWrapper)
   const setRenderingInfo = renderWrapper.setRenderingInfo.bind(renderWrapper)
-  const doGetUserAgents = renderWrapper.getUserAgents.bind(renderWrapper)
   const doGetRendererInfo = renderWrapper.getRendererInfo.bind(renderWrapper)
   const doLogEvents = renderWrapper.logEvents.bind(renderWrapper)
   return {
@@ -17,7 +16,6 @@ function getRenderMethods(renderWrapper) {
     doPutResource,
     doGetRenderStatus,
     setRenderingInfo,
-    doGetUserAgents,
     doGetRendererInfo,
     doLogEvents,
   }

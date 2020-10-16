@@ -180,10 +180,6 @@ class EyesWrapper extends EyesBase {
     return this._serverConnector.renderStatusById(renderId)
   }
 
-  getUserAgents() {
-    return this._serverConnector.getUserAgents()
-  }
-
   logEvents(events) {
     return this._serverConnector.logEvents(events)
   }
