@@ -1,4 +1,4 @@
-//const {TypeUtils} = require('@applitools/eyes-sdk-core')
+const {TypeUtils} = require('@applitools/eyes-sdk-core')
 //
 //// #region HELPERS
 //
@@ -30,9 +30,9 @@
 //
 //// #region UTILITY
 //
-//function isDriver(driver) {
-//  return TypeUtils.instanceOf(driver, 'ProtractorBrowser')
-//}
+function isDriver(driver) {
+  return TypeUtils.instanceOf(driver, 'NightwatchAPI')
+}
 //function isElement(element) {
 //  return (
 //    TypeUtils.instanceOf(element, 'WebElement') || TypeUtils.instanceOf(element, 'ElementFinder')
@@ -224,58 +224,10 @@
 //  chrome: 'goog:chromeOptions',
 //  firefox: 'moz:firefoxOptions',
 //}
-//async function build(env) {
-//  const {Builder, Runner} = require('protractor')
-//  const {testSetup} = require('@applitools/sdk-shared')
-//
-//  const {
-//    browser = '',
-//    capabilities,
-//    url,
-//    attach,
-//    proxy,
-//    configurable = true,
-//    args = [],
-//    headless,
-//    logLevel = 'silent',
-//  } = testSetup.Env({...env, legacy: true})
-//
-//  const desiredCapabilities = {browserName: browser, ...capabilities}
-//  if (configurable) {
-//    const browserOptionsName = browserOptionsNames[browser]
-//    if (browserOptionsName) {
-//      desiredCapabilities[browserOptionsName] = {
-//        args: headless ? args.concat('headless') : args,
-//        debuggerAddress: attach === true ? 'localhost:9222' : attach,
-//      }
-//    }
-//  }
-//  const builder = new Builder().withCapabilities(desiredCapabilities)
-//  if (url && !attach) builder.usingServer(url.href)
-//  if (proxy) {
-//    builder.setProxy({
-//      proxyType: 'manual',
-//      httpProxy: proxy.http || proxy.server,
-//      sslProxy: proxy.https || proxy.server,
-//      ftpProxy: proxy.ftp,
-//      noProxy: proxy.bypass,
-//    })
-//  }
-//  const runner = new Runner({
-//    seleniumWebDriver: builder.build(),
-//    logLevel: logLevel.toUpperCase(),
-//    allScriptsTimeout: 60000,
-//    getPageTimeout: 10000,
-//  })
-//  const driver = await runner.createBrowser().ready
-//  driver.by = driver.constructor.By
-//  driver.waitForAngularEnabled(false)
-//  return [driver, () => driver.quit()]
-//}
 //
 //// #endregion
 //
-//exports.isDriver = isDriver
+exports.isDriver = isDriver
 //exports.isElement = isElement
 //exports.isSelector = isSelector
 //exports.transformDriver = transformDriver
@@ -304,4 +256,7 @@
 //exports.scrollIntoView = scrollIntoView
 //exports.hover = hover
 //
-//exports.build = build
+// no-op for generic tests
+exports.build = () => {
+  return [{}, () => {}]
+}
