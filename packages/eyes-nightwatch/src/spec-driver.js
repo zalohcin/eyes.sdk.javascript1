@@ -74,7 +74,8 @@ function isEqualElements(_driver, element1, element2) {
 //// #region COMMANDS
 //
 async function executeScript(driver, script, ...args) {
-  return driver.execute(script, args)
+  const result = await driver.execute(script, args)
+  return result.value
 }
 //async function mainContext(driver) {
 //  await driver.switchTo().defaultContent()
@@ -93,7 +94,7 @@ async function executeScript(driver, script, ...args) {
 async function findElement(driver, selector) {
   if (TypeUtils.isString(selector)) {
     const element = await driver.element('css selector', selector)
-    return element
+    return element.value
   }
 }
 async function findElements(driver, selector) {

@@ -24,10 +24,6 @@ describe('spec driver', async () => {
       const element = await driver.element('css selector', 'div')
       assert.ok(spec.isElement(element))
     })
-    it('isElement(element result value)', async function(driver) {
-      const result = await driver.element('css selector', 'div')
-      assert.ok(spec.isElement(result.value))
-    })
     it('isElement(wrong)', function(_driver) {
       spec.isElement({})
     })
@@ -52,7 +48,7 @@ describe('spec driver', async () => {
       const script = 'return arguments'
       const args = [0, 1, 2, 3]
       const result = await spec.executeScript(driver, script, args)
-      assert.deepStrictEqual(result.value[0], args)
+      assert.deepStrictEqual(result[0], args)
     })
     it('findElement(selector)', async function(driver) {
       const element = await spec.findElement(driver, '#overflowing-div')
@@ -64,7 +60,6 @@ describe('spec driver', async () => {
     })
     it('findElements(selector)', async function(driver) {
       const elements = await spec.findElements(driver, 'div')
-      debugger
       assert.ok(Array.isArray(elements))
       assert.ok(elements.length > 0)
       assert.ok(spec.isElement(elements[0]))
