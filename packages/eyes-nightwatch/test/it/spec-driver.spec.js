@@ -54,9 +54,27 @@ describe('spec driver', async () => {
       const result = await spec.executeScript(driver, script, args)
       assert.deepStrictEqual(result.value[0], args)
     })
-    //it.skip('findElement(by-hash)', findElement({input: {css: '#overflowing-div'}}))
+    it('findElement(selector)', async function(driver) {
+      const element = await spec.findElement(driver, '#overflowing-div')
+      assert.ok(spec.isElement(element))
+    })
+    it('findElement(non-existent)', async function(driver) {
+      const element = await spec.findElement(driver, 'blah')
+      assert.ok(!spec.isElement(element))
+    })
+    it('findElements(selector)', async function(driver) {
+      const elements = await spec.findElements(driver, 'div')
+      debugger
+      assert.ok(Array.isArray(elements))
+      assert.ok(elements.length > 0)
+      assert.ok(spec.isElement(elements[0]))
+    })
+    it('findElements(non-existent)', async function(driver) {
+      const elements = await spec.findElements(driver, 'blah')
+      assert.ok(Array.isArray(elements))
+      assert.ok(!elements.length)
+    })
     //it.skip('findElements(by-hash)', findElements({input: {css: 'div'}}))
-    //it.skip('findElement(non-existent)', findElement({input: 'non-existent', expected: null}))
     //it.skip('findElements(non-existent)', findElements({input: 'non-existent', expected: []}))
     //it.skip('mainContext()', mainContext())
     //it.skip('parentContext()', parentContext())
@@ -73,11 +91,9 @@ describe('spec driver', async () => {
   //  before(async () => {
   //    ;[driver, destroyDriver] = await spec.build({browser: 'chrome', headless: false})
   //  })
-
   //  after(async () => {
   //    await destroyDriver()
   //  })
-
   //  it.skip('getWindowRect()', getWindowRect())
   //  it.skip(
   //    'setWindowRect({x, y, width, height})',
@@ -100,51 +116,15 @@ describe('spec driver', async () => {
   //      expected: {x: 11, y: 12, width: 551, height: 552},
   //    }),
   //  )
-  //})
-
-  //describe('legacy driver (@webdriver)', async () => {
-  //  before(async () => {
-  //    ;[driver, destroyDriver] = await spec.build({browser: 'ie-11'})
-  //  })
-
-  //  after(async () => {
-  //    await destroyDriver()
-  //  })
-
-  //  it.skip('getWindowRect()', getWindowRect())
-  //  it.skip(
-  //    'setWindowRect({x, y, width, height})',
-  //    setWindowRect({
-  //      input: {x: 0, y: 0, width: 510, height: 511},
-  //      expected: {x: 0, y: 0, width: 510, height: 511},
-  //    }),
-  //  )
-  //  it.skip(
-  //    'setWindowRect({x, y})',
-  //    setWindowRect({
-  //      input: {x: 11, y: 12},
-  //      expected: {x: 11, y: 12, width: 510, height: 511},
-  //    }),
-  //  )
-  //  it.skip(
-  //    'setWindowRect({width, height})',
-  //    setWindowRect({
-  //      input: {width: 551, height: 552},
-  //      expected: {x: 11, y: 12, width: 551, height: 552},
-  //    }),
-  //  )
-  //  it.skip('getPlatformName()', getPlatformName({expected: 'WINDOWS'}))
   //})
 
   //describe('mobile driver (@mobile)', async () => {
   //  before(async () => {
   //    ;[driver, destroyDriver] = await spec.build({browser: 'chrome', device: 'Pixel 3a XL'})
   //  })
-
   //  after(async () => {
   //    await destroyDriver()
   //  })
-
   //  it.skip('isMobile()', isMobile({expected: true}))
   //  it.skip('getDeviceName()', getDeviceName({expected: 'Google Pixel 3a XL GoogleAPI Emulator'}))
   //  it.skip('getPlatformName()', getPlatformName({expected: 'Android'}))

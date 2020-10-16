@@ -90,21 +90,18 @@ async function executeScript(driver, script, ...args) {
 //  await driver.switchTo().frame(element)
 //  return driver
 //}
-//async function findElement(driver, selector) {
-//  try {
-//    if (TypeUtils.isString(selector)) selector = {css: selector}
-//    const element = await driver.findElement(transformSelector(selector))
-//    return element
-//  } catch (err) {
-//    if (err.name === 'NoSuchElementError') return null
-//    else throw err
-//  }
-//}
-//async function findElements(driver, selector) {
-//  if (TypeUtils.isString(selector)) selector = {css: selector}
-//  const elements = await driver.findElements(transformSelector(selector))
-//  return elements
-//}
+async function findElement(driver, selector) {
+  if (TypeUtils.isString(selector)) {
+    const element = await driver.element('css selector', selector)
+    return element
+  }
+}
+async function findElements(driver, selector) {
+  if (TypeUtils.isString(selector)) {
+    const elements = await driver.elements('css selector', selector)
+    return elements.value
+  }
+}
 //async function getElementRect(_driver, element) {
 //  const {x, y} = await element.getLocation()
 //  const {width, height} = await element.getSize()
@@ -233,8 +230,8 @@ exports.executeScript = executeScript
 //exports.mainContext = mainContext
 //exports.parentContext = parentContext
 //exports.childContext = childContext
-//exports.findElement = findElement
-//exports.findElements = findElements
+exports.findElement = findElement
+exports.findElements = findElements
 //exports.getElementRect = getElementRect
 //exports.getWindowRect = getWindowRect
 //exports.setWindowRect = setWindowRect
