@@ -5,19 +5,20 @@ describe('spec driver', async () => {
   const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
 
   describe('headless desktop', async () => {
-    before(function(driver) {
+    before(function(driver, done) {
       driver.url(url)
+      done()
     })
     after(function(browser, done) {
-      browser.end(function() {
+      return browser.end(function() {
         done()
       })
     })
     it('isDriver(driver)', function(driver) {
-      assert.ok(spec.isDriver(driver))
+      return assert.ok(spec.isDriver(driver))
     })
     it('isDriver(wrong)', function(_driver) {
-      assert.ok(!spec.isDriver({}))
+      return assert.ok(!spec.isDriver({}))
     })
     //it.skip(
     //  'isElement(element)',
