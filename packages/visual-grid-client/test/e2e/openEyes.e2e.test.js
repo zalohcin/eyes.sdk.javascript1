@@ -11,6 +11,7 @@ const {getProcessPageAndSerialize} = require('@applitools/dom-snapshot')
 const fs = require('fs')
 const {resolve} = require('path')
 const testLogger = require('../util/testLogger')
+const {ApiAssertions} = require('@applitools/sdk-shared')
 
 describe('openEyes', () => {
   let baseUrl, closeServer, openEyes
@@ -101,7 +102,6 @@ describe('openEyes', () => {
       tag: 'first',
       url,
       scriptHooks,
-      ignore: {selector: 'div[class*="bg-"]'},
     })
 
     const [errArr, results] = await presult(close())
@@ -110,6 +110,66 @@ describe('openEyes', () => {
 
     expect(results.length).to.eq(3)
     expect(results.map(r => r.getStatus())).to.eql(['Passed', 'Passed', 'Passed'])
+  })
+
+  it('passes with correct screenshots and ignore regions', async () => {
+    await page.goto(`${baseUrl}/test.html`)
+
+    const {cdt, url, resourceContents, resourceUrls} = await processPage()
+
+    const {checkWindow, close} = await openEyes({
+      appName: 'some app',
+      testName: 'passes with correct regions',
+      browser: [
+        {width: 640, height: 480, name: 'chrome'},
+        {width: 800, height: 600, name: 'firefox'},
+        {deviceName: 'iPhone X'},
+      ],
+      showLogs: process.env.APPLITOOLS_SHOW_LOGS,
+      saveDebugData: process.env.APPLITOOLS_SAVE_DEBUG_DATA,
+    })
+
+    const scriptHooks = {
+      beforeCaptureScreenshot: "document.body.style.backgroundColor = 'gold'",
+    }
+
+    checkWindow({
+      snapshot: {resourceUrls, resourceContents, cdt},
+      tag: 'first',
+      url,
+      scriptHooks,
+      ignore: [{selector: 'div[class*="bg-"]'}],
+    })
+
+    const [errArr, results] = await presult(close())
+    errArr && console.log(errArr)
+    expect(errArr).to.be.undefined
+
+    expect(results.length).to.eq(3)
+    expect(results.map(r => r.getStatus())).to.eql(['Passed', 'Passed', 'Passed'])
+
+    const expectedRegions = [
+      [
+        {left: 8, top: 412, width: 151, height: 227},
+        {left: 8, top: 667, width: 151, height: 227},
+        {left: 8, top: 922, width: 151, height: 227},
+      ],
+      [
+        {left: 8, top: 418, width: 151, height: 227},
+        {left: 8, top: 674, width: 151, height: 227},
+        {left: 8, top: 930, width: 151, height: 227},
+      ],
+      [
+        {left: 8, top: 471, width: 151, height: 227},
+        {left: 8, top: 726, width: 151, height: 227},
+        {left: 8, top: 981, width: 151, height: 227},
+      ],
+    ]
+
+    for (const [index, testResults] of results.entries()) {
+      const testData = await ApiAssertions.getApiData(testResults, apiKey)
+      expect(testData.actualAppOutput[0].imageMatchSettings.ignore).to.eql(expectedRegions[index])
+    }
   })
 
   it('fails with incorrect screenshot', async () => {

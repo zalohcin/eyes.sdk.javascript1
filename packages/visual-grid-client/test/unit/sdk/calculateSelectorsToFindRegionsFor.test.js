@@ -57,7 +57,7 @@ describe('calculateSelectorsToFindRegionsFor Tests', () => {
       expect(selectorsToFindRegionsFor).to.eql(['bla'])
     })
 
-    it('handles only selectors without sizeMode or selector', () => {
+    it('handles mixed ignore regions with selectors and other region types', () => {
       const ignore = [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'kuku'}]
       const {selectorsToFindRegionsFor} = calculateSelectorsToFindRegionsFor({ignore})
       expect(selectorsToFindRegionsFor).to.eql(['bla', 'kuku'])
@@ -170,21 +170,15 @@ describe('calculateSelectorsToFindRegionsFor Tests', () => {
       const ignore = {selector: 'bla'}
       const layout = {type: 'css', selector: 'bla1'}
       const strict = {type: 'xpath', selector: 'bla2'}
-      const content = {type: 'css selector', selector: 'kuku'}
-      const floating = {type: 'link text', selector: 'kuku1'}
       const {selectorsToFindRegionsFor} = calculateSelectorsToFindRegionsFor({
         ignore,
         layout,
         strict,
-        content,
-        floating,
       })
       expect(selectorsToFindRegionsFor).to.eql([
         'bla',
         {type: 'css', selector: 'bla1'},
         {type: 'xpath', selector: 'bla2'},
-        'kuku',
-        'kuku1',
       ])
     })
   })
@@ -279,13 +273,32 @@ describe('calculateSelectorsToFindRegionsFor Tests', () => {
       ]
       const regions = getMatchRegions({selectorRegions})
 
-      expect(regions.accessibility[0])
-        .to.haveOwnProperty('accessibilityType')
-        .and.equal('LargeText')
-
-      expect(regions.floating[0])
-        .to.haveOwnProperty('maxUpOffset')
-        .and.equal(10)
+      expect(regions).to.eql({
+        imageLocationRegion: undefined,
+        accessibility: [
+          {
+            accessibilityType: 'LargeText',
+            coordinatesType: 'SCREENSHOT_AS_IS',
+            height: 1,
+            left: 1,
+            top: 1,
+            width: 2,
+          },
+        ],
+        floating: [
+          {
+            coordinatesType: 'SCREENSHOT_AS_IS',
+            height: 1,
+            left: 1,
+            maxDownOffset: 10,
+            maxLeftOffset: 10,
+            maxRightOffset: 10,
+            maxUpOffset: 10,
+            top: 1,
+            width: 2,
+          },
+        ],
+      })
     })
 
     it('handles multiple array selectors', () => {
@@ -402,6 +415,8 @@ describe('calculateSelectorsToFindRegionsFor Tests', () => {
           maxRightOffset: 11,
         },
       ])
+
+      expect(regions.imageLocationRegion).to.eql(imageLocationRegion)
     })
   })
 })
