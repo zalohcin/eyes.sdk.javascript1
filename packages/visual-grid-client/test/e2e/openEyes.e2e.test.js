@@ -112,7 +112,7 @@ describe('openEyes', () => {
     expect(results.map(r => r.getStatus())).to.eql(['Passed', 'Passed', 'Passed'])
   })
 
-  it('passes with correct screenshots and ignore regions', async () => {
+  it('passes with correct screenshot and regions', async () => {
     await page.goto(`${baseUrl}/test.html`)
 
     const {cdt, url, resourceContents, resourceUrls} = await processPage()
@@ -139,6 +139,7 @@ describe('openEyes', () => {
       url,
       scriptHooks,
       ignore: [{selector: 'div[class*="bg-"]'}],
+      floating: [{selector: 'img[src*="smurfs.jpg"]', maxUpOffset: 3}],
     })
 
     const [errArr, results] = await presult(close())
@@ -148,7 +149,7 @@ describe('openEyes', () => {
     expect(results.length).to.eq(3)
     expect(results.map(r => r.getStatus())).to.eql(['Passed', 'Passed', 'Passed'])
 
-    const expectedRegions = [
+    const expectedIgnoreRegions = [
       [
         {left: 8, top: 412, width: 151, height: 227},
         {left: 8, top: 667, width: 151, height: 227},
@@ -166,9 +167,53 @@ describe('openEyes', () => {
       ],
     ]
 
+    const expectedFloatingRegions = [
+      [
+        {
+          maxLeftOffset: 0,
+          maxRightOffset: 0,
+          maxUpOffset: 3,
+          maxDownOffset: 0,
+          left: 8,
+          top: 163,
+          width: 151,
+          height: 227,
+        },
+      ],
+      [
+        {
+          maxLeftOffset: 0,
+          maxRightOffset: 0,
+          maxUpOffset: 3,
+          maxDownOffset: 0,
+          left: 8,
+          top: 168,
+          width: 151,
+          height: 227,
+        },
+      ],
+      [
+        {
+          maxLeftOffset: 0,
+          maxRightOffset: 0,
+          maxUpOffset: 3,
+          maxDownOffset: 0,
+          left: 8,
+          top: 221,
+          width: 151,
+          height: 227,
+        },
+      ],
+    ]
+
     for (const [index, testResults] of results.entries()) {
       const testData = await ApiAssertions.getApiData(testResults, apiKey)
-      expect(testData.actualAppOutput[0].imageMatchSettings.ignore).to.eql(expectedRegions[index])
+      expect(testData.actualAppOutput[0].imageMatchSettings.ignore).to.eql(
+        expectedIgnoreRegions[index],
+      )
+      expect(testData.actualAppOutput[0].imageMatchSettings.floating).to.eql(
+        expectedFloatingRegions[index],
+      )
     }
   })
 
