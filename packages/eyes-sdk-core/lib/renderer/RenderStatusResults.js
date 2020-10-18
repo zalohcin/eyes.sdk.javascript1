@@ -14,7 +14,7 @@ class RenderStatusResults {
    * @param {string} os
    * @param {string} userAgent
    * @param {RectangleSize|object} deviceSize
-   * @param {Region[][]} selectorRegions
+   * @param {object[][]} selectorRegions
    */
   constructor({
     status,

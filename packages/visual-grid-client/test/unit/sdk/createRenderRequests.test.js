@@ -174,7 +174,7 @@ describe('createRenderRequests', () => {
     ])
   })
 
-  it('handles ignore, layout, strict, content, accessibility and floating regions', () => {
+  it('handles selectorsToFindRegionsFor', () => {
     const browsers = [{width: 1, height: 2}]
     const renderRequests = createRenderRequests({
       url,

@@ -331,11 +331,16 @@ describe('calculateSelectorsToFindRegionsFor Tests', () => {
     })
 
     it('handles multiple selectors with user-provided region', () => {
-      const ignore = [{selector: '.ignore'}, new Region({left: 3, top: 4, width: 5, height: 6})]
+      const ignore = [
+        {selector: '.ignore-1'},
+        new Region({left: 3, top: 4, width: 5, height: 6}),
+        {selector: '.ignore-2'},
+      ]
       const layout = [{selector: '.layout'}]
       const {getMatchRegions} = calculateSelectorsToFindRegionsFor({ignore, layout})
 
       const selectorRegions = [
+        [new Region({left: 1, top: 1, width: 2, height: 1})],
         [new Region({left: 1, top: 1, width: 2, height: 1})],
         [new Region({left: 3, top: 3, width: 5, height: 4})],
       ]
@@ -344,6 +349,7 @@ describe('calculateSelectorsToFindRegionsFor Tests', () => {
       expect(regions.ignore).to.eql([
         {left: 1, top: 1, width: 2, height: 1, coordinatesType: 'SCREENSHOT_AS_IS'},
         {left: 3, top: 4, width: 5, height: 6, coordinatesType: 'SCREENSHOT_AS_IS'},
+        {left: 1, top: 1, width: 2, height: 1, coordinatesType: 'SCREENSHOT_AS_IS'},
       ])
       expect(regions.layout).to.eql([
         {left: 3, top: 3, width: 5, height: 4, coordinatesType: 'SCREENSHOT_AS_IS'},
@@ -352,19 +358,19 @@ describe('calculateSelectorsToFindRegionsFor Tests', () => {
 
     it('handles multiple selectors with user-provided region and imageLocationRegion', () => {
       const accessibility = [
-        {selector: '.ignore', accessibilityType: 'RegularText'},
-        {selector: '.whatever', accessibilityType: 'LargeText'},
+        {selector: '.accessibility-1', accessibilityType: 'RegularText'},
+        {selector: '.accessibility-2', accessibilityType: 'LargeText'},
       ]
       const floating = [
         {
-          selector: 'ignore-me',
+          selector: 'float-1',
           maxUpOffset: 10,
           maxDownOffset: 10,
           maxLeftOffset: 10,
           maxRightOffset: 10,
         },
         {
-          selector: 'ignore-you',
+          selector: 'float-2',
           maxUpOffset: 11,
           maxDownOffset: 11,
           maxLeftOffset: 11,
