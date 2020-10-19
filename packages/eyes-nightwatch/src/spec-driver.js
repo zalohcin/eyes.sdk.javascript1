@@ -18,6 +18,12 @@ function extractElementId(element) {
   const _element = element.value ? element.value : element
   return _element.ELEMENT
 }
+async function getFrameId(driver, element) {
+  const name = await driver.elementIdAttribute(extractElementId(element), 'name')
+  if (name) return name.value
+  const id = await driver.elementIdAttribute(extractElementId(element), 'id')
+  if (id) return id.value
+}
 //
 //function transformSelector(selector) {
 //  if (TypeUtils.has(selector, ['type', 'selector'])) {
@@ -83,10 +89,10 @@ async function mainContext(driver) {
 async function parentContext(driver) {
   await driver.frameParent()
 }
-//async function childContext(driver, element) {
-//  await driver.switchTo().frame(element)
-//  return driver
-//}
+async function childContext(driver, element) {
+  const frameId = await getFrameId(driver, element)
+  await driver.frame(frameId)
+}
 async function findElement(driver, selector) {
   if (TypeUtils.isString(selector)) {
     const element = await driver.element('css selector', selector)
@@ -135,29 +141,30 @@ async function findElements(driver, selector) {
 //  const orientation = capabilities.get('orientation') || capabilities.get('deviceOrientation')
 //  return orientation.toLowerCase()
 //}
-//async function getDriverInfo(driver) {
-//  const capabilities = await driver.getCapabilities()
-//  const session = await driver.getSession()
-//  const sessionId = session.getId()
-//  const deviceName = capabilities.has('desired')
-//    ? capabilities.get('desired').deviceName
-//    : capabilities.get('deviceName')
-//  const platformName = capabilities.get('platformName') || capabilities.get('platform')
-//  const platformVersion = capabilities.get('platformVersion')
-//  const browserName = capabilities.get('browserName')
-//  const browserVersion = capabilities.get('browserVersion')
-//  const isMobile = ['android', 'ios'].includes(platformName && platformName.toLowerCase())
-//  return {
-//    sessionId,
-//    isMobile,
-//    isNative: isMobile && !browserName,
-//    deviceName,
-//    platformName,
-//    platformVersion,
-//    browserName,
-//    browserVersion,
-//  }
-//}
+function getDriverInfo(driver) {
+  return {sessionId: driver.sessionId}
+  //const capabilities = await driver.getCapabilities()
+  //const session = await driver.getSession()
+  //const sessionId = session.getId()
+  //const deviceName = capabilities.has('desired')
+  //  ? capabilities.get('desired').deviceName
+  //  : capabilities.get('deviceName')
+  //const platformName = capabilities.get('platformName') || capabilities.get('platform')
+  //const platformVersion = capabilities.get('platformVersion')
+  //const browserName = capabilities.get('browserName')
+  //const browserVersion = capabilities.get('browserVersion')
+  //const isMobile = ['android', 'ios'].includes(platformName && platformName.toLowerCase())
+  //return {
+  //  sessionId,
+  //  isMobile,
+  //  isNative: isMobile && !browserName,
+  //  deviceName,
+  //  platformName,
+  //  platformVersion,
+  //  browserName,
+  //  browserVersion,
+  //}
+}
 //async function getTitle(driver) {
 //  return driver.getTitle()
 //}
@@ -226,14 +233,14 @@ exports.isEqualElements = isEqualElements
 exports.executeScript = executeScript
 exports.mainContext = mainContext
 exports.parentContext = parentContext
-//exports.childContext = childContext
+exports.childContext = childContext
 exports.findElement = findElement
 exports.findElements = findElements
 //exports.getElementRect = getElementRect
 //exports.getWindowRect = getWindowRect
 //exports.setWindowRect = setWindowRect
 //exports.getOrientation = getOrientation
-//exports.getDriverInfo = getDriverInfo
+exports.getDriverInfo = getDriverInfo
 //exports.getTitle = getTitle
 //exports.getUrl = getUrl
 //exports.visit = visit

@@ -105,8 +105,20 @@ describe('spec driver', async () => {
       const resultDocument = await driver.element('css selector', 'html')
       assert.ok(await spec.isEqualElements(driver, resultDocument, parentDocument))
     })
-    //it.skip('childContext(element)', childContext())
-    //it.skip('getSessionId()', getSessionId())
+    // TODO: suboptimal solution, revisit
+    it('childContext(element)', async function(driver) {
+      await driver.frame('frame1')
+      const expectedDocument = await driver.element('css selector', 'html')
+      await driver.frame()
+      const frameElement = await driver.element('css selector', '[name="frame1"]')
+      await spec.childContext(driver, frameElement)
+      const resultDocument = await driver.element('css selector', 'html')
+      assert.ok(await spec.isEqualElements(driver, resultDocument, expectedDocument))
+    })
+    it('getSessionId()', function(driver) {
+      const sessionId = driver.sessionId
+      assert.deepStrictEqual(spec.getDriverInfo(driver).sessionId, sessionId)
+    })
     //it.skip('getTitle()', getTitle())
     //it.skip('getUrl()', getUrl())
     //it.skip('visit()', visit())
