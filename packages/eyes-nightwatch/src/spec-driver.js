@@ -77,10 +77,9 @@ async function executeScript(driver, script, ...args) {
   const result = await driver.execute(script, args)
   return result.value
 }
-//async function mainContext(driver) {
-//  await driver.switchTo().defaultContent()
-//  return driver
-//}
+async function mainContext(driver) {
+  await driver.frame()
+}
 //async function parentContext(driver) {
 //  const {Command, CommandName} = require('protractor')
 //
@@ -228,7 +227,7 @@ exports.isEqualElements = isEqualElements
 //exports.isStaleElementError = isStaleElementError
 //
 exports.executeScript = executeScript
-//exports.mainContext = mainContext
+exports.mainContext = mainContext
 //exports.parentContext = parentContext
 //exports.childContext = childContext
 exports.findElement = findElement
