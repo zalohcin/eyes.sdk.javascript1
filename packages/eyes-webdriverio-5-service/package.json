@@ -20,7 +20,7 @@
   },
   "main": "index.js",
   "dependencies": {
-    "@applitools/eyes-webdriverio": "5.24.0"
+    "@applitools/eyes-webdriverio": "5.25.1"
   },
   "devDependencies": {
     "@applitools/sdk-release-kit": "^0.3.1",
