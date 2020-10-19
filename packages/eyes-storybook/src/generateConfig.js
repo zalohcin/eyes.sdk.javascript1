@@ -18,7 +18,12 @@ function generateConfig({argv = {}, defaultConfig = {}, externalConfigParams = [
     result.waitBeforeScreenshots !== defaultConfig.waitBeforeScreenshots &&
     result.waitBeforeScreenshot === defaultConfig.waitBeforeScreenshot
   ) {
-    console.log(deprecationWarning({deprecatedThing: "'waitBeforeScreenshots'", newThing: "'waitBeforeScreenshot' (no 's')"}));
+    console.log(
+      deprecationWarning({
+        deprecatedThing: "'waitBeforeScreenshots'",
+        newThing: "'waitBeforeScreenshot' (no 's')",
+      }),
+    );
     result.waitBeforeScreenshot = result.waitBeforeScreenshots;
   }
 
