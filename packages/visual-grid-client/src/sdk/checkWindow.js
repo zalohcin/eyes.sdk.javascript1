@@ -2,7 +2,6 @@
 
 const {Region} = require('@applitools/eyes-sdk-core')
 const {presult} = require('@applitools/functional-commons')
-const saveData = require('../troubleshoot/saveData')
 const createRenderRequests = require('./createRenderRequests')
 const createCheckSettings = require('./createCheckSettings')
 const isInvalidAccessibility = require('./isInvalidAccessibility')
@@ -11,7 +10,6 @@ const calculateSelectorsToFindRegionsFor = require('./calculateSelectorsToFindRe
 function makeCheckWindow({
   globalState,
   testController,
-  saveDebugData,
   createRGridDOMAndGetResourceMapping,
   renderBatch,
   waitForRenderedStatus,
@@ -75,17 +73,6 @@ function makeCheckWindow({
     if (testController.shouldStopAllTests()) {
       logger.log('aborting checkWindow synchronously')
       return
-    }
-
-    if (typeof window === 'undefined') {
-      const handleBrowserDebugData = require('../troubleshoot/handleBrowserDebugData')
-      snapshots.forEach(snapshot => {
-        handleBrowserDebugData({
-          frame: snapshot,
-          metaData: {agentId: wrappers[0].getBaseAgentId()},
-          logger,
-        })
-      })
     }
 
     const getResourcesPromise = Promise.all(
@@ -295,12 +282,6 @@ function makeCheckWindow({
       renderJobs = renderRequests.map(createRenderJob)
       const renderIds = await renderBatchPromise
       globalState.setQueuedRendersCount(globalState.getQueuedRendersCount() - 1)
-
-      if (saveDebugData) {
-        for (const [index, renderId] of renderIds.entries()) {
-          await saveData({renderId, cdt: snapshots[index].cdt, resources, url, logger})
-        }
-      }
 
       return renderIds
     }
