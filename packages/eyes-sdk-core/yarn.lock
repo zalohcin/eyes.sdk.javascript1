@@ -35,13 +35,13 @@
     css-tree "1.0.0-alpha.39"
     pako "1.0.11"
 
-"@applitools/eyes-sdk-core@12.3.2":
-  version "12.3.2"
-  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-12.3.2.tgz#4633c1f44c7fa210c4bbfa4501a543ea2be8666c"
-  integrity sha512-ObmVyfG5eUvTiJbufK4P+IJwZou5i4553zRQhR1HVJulSs/icXWy2ClMzA+gAM+Lg5RjzCYrPOUEmIzU9VE0jw==
+"@applitools/eyes-sdk-core@12.4.3":
+  version "12.4.3"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-12.4.3.tgz#602ff519cd82fb7f6b64dc2a70e8eca701d1f18d"
+  integrity sha512-XxoyvNiU187NSak/zVsDp6YYdZOtPkgKRXCie8fKULNb93Ud6FBTeol4frysSXdDF25QpGqI7GhnsF1NpmWGKw==
   dependencies:
     "@applitools/dom-capture" "8.0.0"
-    "@applitools/dom-snapshot" "4.2.1"
+    "@applitools/dom-snapshot" "4.2.2"
     "@applitools/isomorphic-fetch" "3.0.0"
     "@applitools/snippets" "2.0.3"
     axios "0.19.2"
@@ -183,11 +183,11 @@
   integrity sha512-YKJIUr+Cu1UvM/GLZ9HJXR+hbmnXU5rT+x4wiG/zmzyYG6es5LlZIU752e27XqxTRmszgTf79GvImNuA0uLl+A==
 
 "@applitools/visual-grid-client@^15.0.8":
-  version "15.0.10"
-  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-15.0.10.tgz#2edac7e4b6dc3d8bf7d398338b4483547cecb814"
-  integrity sha512-UcLAA+HYOC36kLXHlxPO6BcfqqD6Pxp+c6oZSq0YanFzxCUafFhKiRCzNTAT4w1GiSVnPhIkJeSinenaPjBfxw==
+  version "15.0.11"
+  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-15.0.11.tgz#03074a7896bc38cb018e708f9031bf7f74f81aa4"
+  integrity sha512-ly84hR4sSGmuah4UasuGGM7wE2iq+cYLjDDy2roRp7dg9CVoPMsIyTomWU1iPKUWGEpqD31Pw7K0Ve0PTiADaw==
   dependencies:
-    "@applitools/eyes-sdk-core" "12.3.2"
+    "@applitools/eyes-sdk-core" "12.4.3"
     "@applitools/functional-commons" "1.6.0"
     "@applitools/http-commons" "2.4.3"
     "@applitools/isomorphic-fetch" "3.0.0"
@@ -2937,9 +2937,9 @@ uc.micro@^1.0.1, uc.micro@^1.0.5:
   integrity sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==
 
 uglify-js@^3.1.4:
-  version "3.11.2"
-  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.11.2.tgz#9f50325544273c27b20e586def140e7726c525ea"
-  integrity sha512-G440NU6fewtnQftSgqRV1r2A5ChKbU1gqFCJ7I8S7MPpY/eZZfLGefaY6gUZYiWebMaO+txgiQ1ZyLDuNWJulg==
+  version "3.11.3"
+  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.11.3.tgz#b2f8c87826344f091ba48c417c499d6cba5d5786"
+  integrity sha512-wDRziHG94mNj2n3R864CvYw/+pc9y/RNImiTyrrf8BzgWn75JgFSwYvXrtZQMnMnOp/4UTrf3iCSQxSStPiByA==
 
 underscore@~1.10.2:
   version "1.10.2"
