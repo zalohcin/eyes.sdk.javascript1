@@ -86,34 +86,46 @@ describe('spec driver', async () => {
       assert.ok(!elements.length)
     })
     it('mainContext()', async function(driver) {
-      const mainDocument = await driver.element('css selector', 'html')
-      await driver.frame('frame1')
-      await driver.frame('frame1-1')
-      const frameDocument = await driver.element('css selector', 'html')
-      assert.ok(!(await spec.isEqualElements(driver, mainDocument, frameDocument)))
-      await spec.mainContext(driver)
-      const resultDocument = await driver.element('css selector', 'html')
-      assert.ok(await spec.isEqualElements(driver, resultDocument, mainDocument))
+      try {
+        const mainDocument = await driver.element('css selector', 'html')
+        await driver.frame('frame1')
+        await driver.frame('frame1-1')
+        const frameDocument = await driver.element('css selector', 'html')
+        assert.ok(!(await spec.isEqualElements(driver, mainDocument, frameDocument)))
+        await spec.mainContext(driver)
+        const resultDocument = await driver.element('css selector', 'html')
+        assert.ok(await spec.isEqualElements(driver, resultDocument, mainDocument))
+      } finally {
+        await driver.frame()
+      }
     })
     it('parentContext()', async function(driver) {
-      await driver.frame('frame1')
-      const parentDocument = await driver.element('css selector', 'html')
-      await driver.frame('frame1-1')
-      const frameDocument = await driver.element('css selector', 'html')
-      assert.ok(!(await spec.isEqualElements(driver, parentDocument, frameDocument)))
-      await spec.parentContext(driver)
-      const resultDocument = await driver.element('css selector', 'html')
-      assert.ok(await spec.isEqualElements(driver, resultDocument, parentDocument))
+      try {
+        await driver.frame('frame1')
+        const parentDocument = await driver.element('css selector', 'html')
+        await driver.frame('frame1-1')
+        const frameDocument = await driver.element('css selector', 'html')
+        assert.ok(!(await spec.isEqualElements(driver, parentDocument, frameDocument)))
+        await spec.parentContext(driver)
+        const resultDocument = await driver.element('css selector', 'html')
+        assert.ok(await spec.isEqualElements(driver, resultDocument, parentDocument))
+      } finally {
+        await driver.frame()
+      }
     })
     // TODO: suboptimal solution, revisit
     it('childContext(element)', async function(driver) {
-      await driver.frame('frame1')
-      const expectedDocument = await driver.element('css selector', 'html')
-      await driver.frame()
-      const frameElement = await driver.element('css selector', '[name="frame1"]')
-      await spec.childContext(driver, frameElement)
-      const resultDocument = await driver.element('css selector', 'html')
-      assert.ok(await spec.isEqualElements(driver, resultDocument, expectedDocument))
+      try {
+        await driver.frame('frame1')
+        const expectedDocument = await driver.element('css selector', 'html')
+        await driver.frame()
+        const frameElement = await driver.element('css selector', '[name="frame1"]')
+        await spec.childContext(driver, frameElement)
+        const resultDocument = await driver.element('css selector', 'html')
+        assert.ok(await spec.isEqualElements(driver, resultDocument, expectedDocument))
+      } finally {
+        await driver.frame()
+      }
     })
     it('getSessionId()', function(driver) {
       const sessionId = driver.sessionId
@@ -129,11 +141,15 @@ describe('spec driver', async () => {
       assert.deepStrictEqual(await spec.getUrl(driver), expected)
     })
     it('visit()', async function(driver) {
-      const blank = 'about:blank'
-      await spec.visit(driver, blank)
-      const result = await driver.url()
-      const actual = result.value
-      assert.deepStrictEqual(actual, blank)
+      try {
+        const blank = 'about:blank'
+        await spec.visit(driver, blank)
+        const result = await driver.url()
+        const actual = result.value
+        assert.deepStrictEqual(actual, blank)
+      } finally {
+        await driver.url(url)
+      }
     })
     it('isMobile()', async function(driver) {
       const {isMobile} = await spec.getDriverInfo(driver)
