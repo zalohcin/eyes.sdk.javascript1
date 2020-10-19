@@ -25,10 +25,10 @@
     css-tree "1.0.0-alpha.39"
     pako "1.0.11"
 
-"@applitools/eyes-sdk-core@12.4.3":
-  version "12.4.3"
-  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-12.4.3.tgz#602ff519cd82fb7f6b64dc2a70e8eca701d1f18d"
-  integrity sha512-XxoyvNiU187NSak/zVsDp6YYdZOtPkgKRXCie8fKULNb93Ud6FBTeol4frysSXdDF25QpGqI7GhnsF1NpmWGKw==
+"@applitools/eyes-sdk-core@12.4.4":
+  version "12.4.4"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-12.4.4.tgz#9b3376a805b0177ebefb0281812dcbb7f69ab7b0"
+  integrity sha512-hT+VwQ4tk+7Grja4vx2YeXLbPMbqeaCj8UMfmpwHc89RlQ9jtbJccLIjFqvmn2b0Xolqb7ZUAR9UZWj75UgFUw==
   dependencies:
     "@applitools/dom-capture" "8.0.0"
     "@applitools/dom-snapshot" "4.2.2"
@@ -2922,9 +2922,9 @@ ua-parser-js@^0.7.20:
   integrity sha512-YUxzMjJ5T71w6a8WWVcMGM6YWOTX27rCoIQgLXiWaxqXSx9D7DNjiGWn1aJIRSQ5qr0xuhra77bSIh6voR/46Q==
 
 uglify-js@^3.1.4:
-  version "3.11.2"
-  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.11.2.tgz#9f50325544273c27b20e586def140e7726c525ea"
-  integrity sha512-G440NU6fewtnQftSgqRV1r2A5ChKbU1gqFCJ7I8S7MPpY/eZZfLGefaY6gUZYiWebMaO+txgiQ1ZyLDuNWJulg==
+  version "3.11.3"
+  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.11.3.tgz#b2f8c87826344f091ba48c417c499d6cba5d5786"
+  integrity sha512-wDRziHG94mNj2n3R864CvYw/+pc9y/RNImiTyrrf8BzgWn75JgFSwYvXrtZQMnMnOp/4UTrf3iCSQxSStPiByA==
 
 unpipe@1.0.0, unpipe@~1.0.0:
   version "1.0.0"

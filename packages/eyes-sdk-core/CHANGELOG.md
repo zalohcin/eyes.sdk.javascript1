@@ -3,6 +3,10 @@
 ## Unreleased
 
 
+## 12.4.4 - 2020/10/19
+
+- deprecate `saveDebugData`
+
 ## 12.4.3 - 2020/10/18
 
 - use `enableMultipleResultsPerSelector` in render request
