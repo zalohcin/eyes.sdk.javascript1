@@ -142,7 +142,14 @@ async function findElements(driver, selector) {
 //  return orientation.toLowerCase()
 //}
 function getDriverInfo(driver) {
-  return {sessionId: driver.sessionId}
+  const sessionId = driver.sessionId
+  const capabilities = driver.capabilities
+  const platformName = capabilities.platformName || capabilities.platform
+  const isMobile = ['android', 'ios'].includes(platformName && platformName.toLowerCase())
+  return {
+    isMobile,
+    sessionId,
+  }
   //const capabilities = await driver.getCapabilities()
   //const session = await driver.getSession()
   //const sessionId = session.getId()

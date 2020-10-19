@@ -135,7 +135,10 @@ describe('spec driver', async () => {
       const actual = result.value
       assert.deepStrictEqual(actual, blank)
     })
-    //it.skip('isMobile()', isMobile({expected: false}))
+    it('isMobile()', async function(driver) {
+      const {isMobile} = await spec.getDriverInfo(driver)
+      assert.deepStrictEqual(isMobile, false)
+    })
     //it.skip('getPlatformName()', getPlatformName({expected: 'linux'}))
   })
 
