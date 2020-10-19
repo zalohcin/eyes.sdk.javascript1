@@ -168,9 +168,10 @@ function getDriverInfo(driver) {
 function getTitle(driver) {
   return driver.title()
 }
-//async function getUrl(driver) {
-//  return driver.getCurrentUrl()
-//}
+async function getUrl(driver) {
+  const result = await driver.url()
+  return result.value
+}
 //async function visit(driver, url) {
 //  return driver.get(url)
 //}
@@ -242,7 +243,7 @@ exports.findElements = findElements
 //exports.getOrientation = getOrientation
 exports.getDriverInfo = getDriverInfo
 exports.getTitle = getTitle
-//exports.getUrl = getUrl
+exports.getUrl = getUrl
 //exports.visit = visit
 //exports.takeScreenshot = takeScreenshot
 //exports.click = click
