@@ -1,59 +1,3 @@
-const {findDifferencesBetweenCollections} = require('../common-util')
-const {isMatch} = require('micromatch')
-
-function findUnsupportedTests(sdkImplementation, coverageTests) {
-  const sdkSupportedTests = sdkImplementation.supportedTests.map(test => test.name)
-  return findDifferencesBetweenCollections(coverageTests, sdkSupportedTests)
-}
-
-function filterTestsByName(filter, tests) {
-  if (!filter) return tests
-  return tests.filter(test => {
-    return isMatch(test.name, filter)
-  })
-}
-
-function filterTestsByMode(filter, tests) {
-  if (!filter) return tests
-  return tests.filter(test => {
-    return test.executionMode.hasOwnProperty(filter)
-  })
-}
-
-function filterTestsByIndexes(indexes, tests) {
-  if (!indexes) return tests
-  const _indexes =
-    typeof indexes === 'string' ? indexes.split(',').map(id => Math.floor(id)) : indexes
-  let _tests = []
-  _indexes.forEach(id => {
-    _tests.push(tests[id])
-  })
-  return _tests
-}
-
-function filterTests({tests, args}) {
-  let result = tests
-  result = filterTestsByName(args.filterName, result)
-  result = filterTestsByMode(args.filterMode, result)
-  result = filterTestsByIndexes(args.filterIndexes, result)
-  return result
-}
-
-function numberOfUniqueTests({tests, args}) {
-  return Object.values(tests).reduce((num, tests) => {
-    if (args.all || tests.some(test => !test.disabled)) {
-      num += 1
-    }
-    return num
-  }, 0)
-}
-
-function numberOfTestVariations({tests, args}) {
-  return Object.values(tests)
-    .flat()
-    .filter(t => args.all || !t.disabled).length
-}
-
 function sortErrorsByType(errors) {
   return errors.sort((a, b) => {
     const nameA = a.name.toLowerCase()
@@ -89,15 +33,8 @@ function needsChromeDriver(args, sdkImplementation) {
 }
 
 module.exports = {
-  findUnsupportedTests,
-  filterTests,
-  filterTestsByName,
-  filterTestsByMode,
-  filterTestsByIndexes,
   getTestIndexesFromErrors,
   sortErrorsByType,
   getPassedTestIndexes,
-  numberOfUniqueTests,
-  numberOfTestVariations,
   needsChromeDriver,
 }

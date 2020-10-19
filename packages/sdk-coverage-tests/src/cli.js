@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 const yargs = require('yargs')
-const {generate, report} = require('./cli/commands')
+const generate = require('./cli/generate')
+const report = require('./cli/report')
 
 const cliName = 'SAT - SDK Agnostic Test-framework'
 
@@ -17,11 +18,6 @@ const cli = yargs
           type: 'string',
           default: './test/coverage/index.js',
         },
-        name: {
-          alias: 'n',
-          description: 'the sdk name',
-          type: 'string',
-        },
         testsPath: {
           alias: 't',
           description: 'path to the tests file (local or remote)',
@@ -34,6 +30,20 @@ const cli = yargs
         },
         metaPath: {
           description: 'path to save metadata file',
+          type: 'string',
+        },
+        emitSkipped: {
+          description: 'whether to create tests that are marked as skipped',
+          type: 'boolean',
+          default: true,
+        },
+        ignoreSkip: {
+          description: 'ignore skip flag',
+          type: 'boolean',
+        },
+        name: {
+          alias: 'n',
+          description: 'the sdk name',
           type: 'string',
         },
         ext: {
@@ -73,10 +83,6 @@ const cli = yargs
         },
       }),
     handler: report,
-  })
-  .option('verbose', {
-    alias: 'v',
-    describe: 'log debug output',
   })
   .demandCommand(1, 'You need to specify a command before moving on')
 

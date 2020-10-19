@@ -1,5 +1,5 @@
 const convert = require('xml-js')
-const {logDebug} = require('../log')
+const {logDebug} = require('../../log')
 
 function convertJunitXmlToResultSchema({xmlResult, browser, metaData}) {
   const tests = parseJunitXmlForTests(xmlResult).filter(test => !test.skipped && !test.ignored)

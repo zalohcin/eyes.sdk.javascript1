@@ -1,7 +1,7 @@
 const {
   makeEmitter,
   makeTemplate,
-  testsOverrides,
+  overrideTests,
 } = require('@applitools/sdk-shared/coverage-tests/generic')
 
 module.exports = {
@@ -9,8 +9,7 @@ module.exports = {
   outPath: './test/coverage/generic',
   ext: '.spec.js',
   testsPath: '../sdk-shared/coverage-tests/generic/tests.js',
-    // 'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/env-and-meta/tests.js',
-  initialize: makeEmitter,
+  initializeSdk: makeEmitter,
   testFrameworkTemplate: makeTemplate,
-  testsOverrides,
+  overrideTests,
 }

@@ -1,12 +1,40 @@
 const path = require('path')
 const fs = require('fs')
 const chalk = require('chalk')
-const {
-  convertJunitXmlToResultSchema,
-  convertSdkNameToReportName,
-  sendReport,
-  uploadToStorage,
-} = require('../../report')
+const {convertJunitXmlToResultSchema} = require('./xml')
+const {sendReport} = require('./send')
+const uploadToStorage = require('./upload')
+
+function convertSdkNameToReportName(sdkName) {
+  switch (sdkName) {
+    case 'eyes-selenium':
+      return 'js_selenium_4'
+    case 'eyes-selenium-3':
+      return 'js_selenium_3'
+    case 'eyes.webdriverio.javascript5':
+      return 'js_wdio_5'
+    case 'eyes.webdriverio.javascript4':
+      return 'js_wdio_4'
+    case 'eyes-images':
+      return 'js_images'
+    case 'eyes-testcafe':
+      return 'testcafe'
+    case 'eyes-protractor':
+      return 'js_protractor'
+    case 'eyes_selenium_python':
+      return 'python'
+    case 'eyes_selenium_ruby':
+      return 'ruby'
+    case 'eyes_selenium_java':
+      return 'java'
+    case 'eyes_selenium_dotnet':
+      return 'dotnet'
+    case 'playwright':
+      return 'playwright'
+    default:
+      throw new Error('Unsupported SDK')
+  }
+}
 
 const DEFAULT_CONFIG = {
   metaPath: '',
