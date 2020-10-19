@@ -3,6 +3,7 @@
 ## Unreleased
 
 - deprecate `saveDebugData`
+- updated to @applitools/eyes-sdk-core@12.4.4 (from 12.4.3)
 
 ## 15.0.11 - 2020/10/18
 
