@@ -80,12 +80,9 @@ async function executeScript(driver, script, ...args) {
 async function mainContext(driver) {
   await driver.frame()
 }
-//async function parentContext(driver) {
-//  const {Command, CommandName} = require('protractor')
-//
-//  await driver.schedule(new Command(CommandName.SWITCH_TO_PARENT_FRAME))
-//  return driver
-//}
+async function parentContext(driver) {
+  await driver.frameParent()
+}
 //async function childContext(driver, element) {
 //  await driver.switchTo().frame(element)
 //  return driver
@@ -228,7 +225,7 @@ exports.isEqualElements = isEqualElements
 //
 exports.executeScript = executeScript
 exports.mainContext = mainContext
-//exports.parentContext = parentContext
+exports.parentContext = parentContext
 //exports.childContext = childContext
 exports.findElement = findElement
 exports.findElements = findElements
