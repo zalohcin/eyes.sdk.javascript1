@@ -13,8 +13,12 @@ config({
     FixedRegion: 'http://applitools.github.io/demo/TestPages/fixed-position',
     Modals: 'https://applitools.github.io/demo/TestPages/ModalsPage/index.html',
     HorizontalScroll: 'https://applitools.github.io/demo/TestPages/horizontal-scroll.html',
+    BurgerMenu: 'http://applitools.github.io/demo/TestPages/PageWithBurgerMenu',
     FractionalMetric: 'https://applitools.github.io/demo/TestPages/FractionalMetrics',
     FrameLargerThenViewport: 'https://applitools.github.io/demo/TestPages/OutOfViewport/',
+    CrossOriginFrames: 'https://applitools.github.io/demo/TestPages/CorsTestPage',
+    StickyHeaderWithRegions: 'https://applitools.github.io/demo/TestPages/StickyHeaderWithRegions',
+    JsLayout: 'https://applitools.github.io/demo/TestPages/JsLayout'
   },
 })
 
@@ -174,6 +178,16 @@ test('CheckWindowFully_HorizontalScrollPage', {
     eyes.check({isFully: true})
     eyes.close(throwException)
   },
+})
+
+test('CheckWindowFully_BurgerMenu', {
+  page: 'BurgerMenu',
+  config: {stitchMode: 'CSS', baselineName: 'CheckPageWithBurgerMenuFully'},
+  test: ({eyes}) => {
+    eyes.open({appName: 'Applitools Eyes SDK', viewportSize})
+    eyes.check({isFully: true})
+    eyes.close(throwException)
+  }
 })
 
 // #endregion
@@ -473,6 +487,23 @@ test('CheckRegionBySelector_Native', {
     eyes.check({region: 'android.widget.Button'})
     eyes.close(throwException)
   },
+})
+
+test('CheckRegionByElement_Hover', {
+  page: 'StickyHeaderWithRegions',
+  config: {hideScrollbars: false},
+  variants: {
+    CSS: {stitchMode: 'CSS', baselineName: 'CheckHoveredRegionInViewport'},
+    Scroll: {stitchMode: 'Scroll', baselineName: 'CheckHoveredRegionInViewport_Scroll'},
+  },
+  test: ({driver, eyes}) => {
+    eyes.open({appName: 'Applitools Eyes SDK', viewportSize})
+    const input = driver.findElement('#input').ref('input')
+    driver.scrollIntoView(input)
+    driver.hover(input)
+    eyes.check({region: input})
+    eyes.close()
+  }
 })
 
 test('CheckRegionByCoordinatesInFrame', {
@@ -937,6 +968,53 @@ test('TestGetAllTestResults', {
     assert.throws(() => eyes.close())
     eyes.runner.getAllTestResults(false)
   },
+})
+
+test('CrossOriginFrames', {
+  page: 'CrossOriginFrames',
+  config: {vg: true, baselineName: 'TestCheckDomSnapshotCrossOriginFrames_VG'},
+  test: ({eyes}) => {
+    eyes.open({appName: 'Cross origin iframes', viewportSize: {width: 1200, height: 800}})
+    eyes.check()
+    eyes.close(throwException)
+  }
+})
+
+test('JsLayoutBreakpoints', {
+  page: 'JsLayout',
+  config: {
+    vg: true,
+    baselineName: 'CheckWindowOnJsLayoutPage',
+    browsersInfo: [
+      {name: 'chrome', width: 1000, height: 800},
+      {iosDeviceInfo: {deviceName: 'iPad (7th generation)'}},
+      {chromeEmulationInfo: {deviceName: 'Pixel 4 XL'}},
+    ],
+  },
+  test: ({eyes}) => {
+    eyes.open({appName: 'Applitools Eyes SDK'})
+    eyes.check({layoutBreakpoints: [500, 1000],})
+    eyes.close()
+  }
+})
+
+test('JsLayoutBreakpoints_Config', {
+  page: 'JsLayout',
+  config: {
+    vg: true,
+    baselineName: 'CheckWindowOnJsLayoutPage',
+    browsersInfo: [
+      {name: 'chrome', width: 1000, height: 800},
+      {iosDeviceInfo: {deviceName: 'iPad (7th generation)'}},
+      {chromeEmulationInfo: {deviceName: 'Pixel 4 XL'}},
+    ],
+    layoutBreakpoints: [500, 1000],
+  },
+  test: ({eyes}) => {
+    eyes.open({appName: 'Applitools Eyes SDK'})
+    eyes.check()
+    eyes.close()
+  }
 })
 
 // #endregion
