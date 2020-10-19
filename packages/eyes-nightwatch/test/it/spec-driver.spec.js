@@ -50,6 +50,22 @@ describe('spec driver', async () => {
       const result = await spec.executeScript(driver, script, args)
       assert.deepStrictEqual(result[0], args)
     })
+    it('executeScript(function, ...args)', async function(driver) {
+      const script = function() {
+        return arguments
+      }
+      const args = [0, 1, 2, 3]
+      const result = await spec.executeScript(driver, script, args)
+      assert.deepStrictEqual(result[0], args)
+    })
+    it('executeScript(element)', async function(driver) {
+      const element = await driver.element('css selector', 'div')
+      const script = function() {
+        return arguments
+      }
+      const result = await spec.executeScript(driver, script, element)
+      assert.deepStrictEqual(result[0], element)
+    })
     it('findElement(selector)', async function(driver) {
       const element = await spec.findElement(driver, '#overflowing-div')
       assert.ok(spec.isElement(element))
@@ -69,8 +85,6 @@ describe('spec driver', async () => {
       assert.ok(Array.isArray(elements))
       assert.ok(!elements.length)
     })
-    //it.skip('findElements(by-hash)', findElements({input: {css: 'div'}}))
-    //it.skip('findElements(non-existent)', findElements({input: 'non-existent', expected: []}))
     //it.skip('mainContext()', mainContext())
     //it.skip('parentContext()', parentContext())
     //it.skip('childContext(element)', childContext())
