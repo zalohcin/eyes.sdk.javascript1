@@ -139,7 +139,6 @@ describe('spec driver', async () => {
       const {isMobile} = await spec.getDriverInfo(driver)
       assert.deepStrictEqual(isMobile, false)
     })
-    //it.skip('getPlatformName()', getPlatformName({expected: 'linux'}))
   })
 
   //describe('onscreen desktop (@webdriver)', async () => {
