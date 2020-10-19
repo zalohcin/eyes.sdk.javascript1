@@ -119,7 +119,10 @@ describe('spec driver', async () => {
       const sessionId = driver.sessionId
       assert.deepStrictEqual(spec.getDriverInfo(driver).sessionId, sessionId)
     })
-    //it.skip('getTitle()', getTitle())
+    it('getTitle()', async function(driver) {
+      const expected = await driver.getTitle()
+      assert.deepStrictEqual(await spec.getTitle(driver), expected)
+    })
     //it.skip('getUrl()', getUrl())
     //it.skip('visit()', visit())
     //it.skip('isMobile()', isMobile({expected: false}))

@@ -165,9 +165,9 @@ function getDriverInfo(driver) {
   //  browserVersion,
   //}
 }
-//async function getTitle(driver) {
-//  return driver.getTitle()
-//}
+function getTitle(driver) {
+  return driver.title()
+}
 //async function getUrl(driver) {
 //  return driver.getCurrentUrl()
 //}
@@ -241,7 +241,7 @@ exports.findElements = findElements
 //exports.setWindowRect = setWindowRect
 //exports.getOrientation = getOrientation
 exports.getDriverInfo = getDriverInfo
-//exports.getTitle = getTitle
+exports.getTitle = getTitle
 //exports.getUrl = getUrl
 //exports.visit = visit
 //exports.takeScreenshot = takeScreenshot
