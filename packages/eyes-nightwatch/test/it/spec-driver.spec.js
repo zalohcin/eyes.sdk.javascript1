@@ -123,14 +123,18 @@ describe('spec driver', async () => {
       const expected = await driver.getTitle()
       assert.deepStrictEqual(await spec.getTitle(driver), expected)
     })
-    it.only('getUrl()', async function(driver) {
+    it('getUrl()', async function(driver) {
       const result = await driver.url()
       const expected = result.value
       assert.deepStrictEqual(await spec.getUrl(driver), expected)
     })
-    //it.only('visit()', async function(driver) {
-    //  assert.deepStrictEqual(await spec.getUrl(driver), expected)
-    //})
+    it('visit()', async function(driver) {
+      const blank = 'about:blank'
+      await spec.visit(driver, blank)
+      const result = await driver.url()
+      const actual = result.value
+      assert.deepStrictEqual(actual, blank)
+    })
     //it.skip('isMobile()', isMobile({expected: false}))
     //it.skip('getPlatformName()', getPlatformName({expected: 'linux'}))
   })
