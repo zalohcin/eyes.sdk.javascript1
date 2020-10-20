@@ -1,6 +1,6 @@
-const {useEmitter, withHistory} = require('../../emitter')
+const {useEmitter, withHistory} = require('../emitter')
 const {describeTest} = require('./describe')
-const {isFunction, mergeObjects} = require('../../common-util')
+const {isFunction, mergeObjects} = require('../common-util')
 
 function emitTests(tests, config) {
   let processedTests = Object.entries(tests).reduce((tests, [testName, {variants, ...test}]) => {

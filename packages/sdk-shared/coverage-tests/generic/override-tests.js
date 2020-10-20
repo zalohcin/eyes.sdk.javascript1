@@ -129,4 +129,29 @@ module.exports = {
       CSS: {skip: true},
     },
   },
+  CheckRegionBySelector: {
+    variants: {
+      ClassicVG: {config: {branchName: 'no-fully-by-default'}},
+    },
+  },
+  CheckRegionBySelector_Image: {
+    variants: {
+      ClassicVG: {config: {branchName: 'no-fully-by-default'}},
+    },
+  },
+  CheckRegionBySelectorFully: {
+    variants: {
+      VG: {config: {branchName: 'no-full-selector'}},
+    },
+  },
+  CheckRegionBySelectorFully_Fixed: {
+    variants: {
+      VG: {config: {branchName: 'no-full-selector'}},
+    },
+  },
+  HideAndRestoreScrollbars: {
+    variants: {
+      VG: {config: {branchName: 'no-full-selector'}},
+    },
+  },
 }

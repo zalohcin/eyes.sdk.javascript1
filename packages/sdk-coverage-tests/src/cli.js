@@ -79,7 +79,10 @@ const cli = yargs
         },
         reportId: {
           alias: 'id',
-          describe: 'Id of the report which will be displayed at the dashboard',
+          describe: 'id of the report which will be displayed at the dashboard',
+        },
+        sandbox: {
+          description: `don't send a result report to the sandbox QA dashboard`,
         },
       }),
     handler: report,

@@ -17,7 +17,6 @@ config({
     BurgerMenu: 'http://applitools.github.io/demo/TestPages/PageWithBurgerMenu',
     FractionalMetric: 'https://applitools.github.io/demo/TestPages/FractionalMetrics',
     FrameLargerThenViewport: 'https://applitools.github.io/demo/TestPages/OutOfViewport/',
-    CrossOriginFrames: 'https://applitools.github.io/demo/TestPages/CorsTestPage',
     StickyHeaderWithRegions: 'https://applitools.github.io/demo/TestPages/StickyHeaderWithRegions',
     JsLayout: 'https://applitools.github.io/demo/TestPages/JsLayout'
   },
@@ -494,8 +493,8 @@ test('CheckRegionByElement_Hover', {
   page: 'StickyHeaderWithRegions',
   config: {hideScrollbars: false},
   variants: {
-    CSS: {stitchMode: 'CSS', baselineName: 'CheckHoveredRegionInViewport'},
-    Scroll: {stitchMode: 'Scroll', baselineName: 'CheckHoveredRegionInViewport_Scroll'},
+    CSS: {config: {stitchMode: 'CSS'}},
+    Scroll: {config: {stitchMode: 'Scroll'}},
   },
   test: ({driver, eyes}) => {
     eyes.open({appName: 'Applitools Eyes SDK', viewportSize})
@@ -971,21 +970,10 @@ test('TestGetAllTestResults', {
   },
 })
 
-test('CrossOriginFrames', {
-  page: 'CrossOriginFrames',
-  config: {vg: true, baselineName: 'TestCheckDomSnapshotCrossOriginFrames_VG'},
-  test: ({eyes}) => {
-    eyes.open({appName: 'Cross origin iframes', viewportSize: {width: 1200, height: 800}})
-    eyes.check()
-    eyes.close(throwException)
-  }
-})
-
 test('JsLayoutBreakpoints', {
   page: 'JsLayout',
   config: {
     vg: true,
-    baselineName: 'CheckWindowOnJsLayoutPage',
     browsersInfo: [
       {name: 'chrome', width: 1000, height: 800},
       {iosDeviceInfo: {deviceName: 'iPad (7th generation)'}},
@@ -1003,7 +991,6 @@ test('JsLayoutBreakpoints_Config', {
   page: 'JsLayout',
   config: {
     vg: true,
-    baselineName: 'CheckWindowOnJsLayoutPage',
     browsersInfo: [
       {name: 'chrome', width: 1000, height: 800},
       {iosDeviceInfo: {deviceName: 'iPad (7th generation)'}},

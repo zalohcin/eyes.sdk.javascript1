@@ -1,4 +1,4 @@
-const {isEmptyObject} = require('../../common-util')
+const {isEmptyObject} = require('../common-util')
 
 function describeTest({name, history, page, env = {}, config = {}}) {
   const description = {

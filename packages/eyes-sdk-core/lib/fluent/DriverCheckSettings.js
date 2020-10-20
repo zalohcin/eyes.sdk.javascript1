@@ -167,7 +167,7 @@ class CheckSettings {
     /** @private @type {string} */
     this._name = undefined
     /** @private @type {number} */
-    this._timeout = undefined
+    this._timeout = -1
     /** @private @type {boolean} */
     this._sendDom = undefined
     /** @private @type {MatchLevel} */
