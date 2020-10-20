@@ -12,7 +12,7 @@ function getCallSite(elevation = 1) {
 
 function useFramework() {
   const context = {
-    config: null,
+    testsConfig: null,
     tests: {},
   }
 

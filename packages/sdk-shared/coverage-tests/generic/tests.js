@@ -1,4 +1,5 @@
 /* eslint-disable */
+
 const viewportSize = {width: 700, height: 460}
 const throwException = true
 

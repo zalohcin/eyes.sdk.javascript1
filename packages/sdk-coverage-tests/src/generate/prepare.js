@@ -1,8 +1,8 @@
 const vm = require('vm')
 const fs = require('fs')
 const fetch = require('node-fetch')
-const {useFramework} = require('../../framework')
-const {isUrl, mergeObjects} = require('../../common-util')
+const {useFramework} = require('../framework')
+const {isUrl, mergeObjects} = require('../common-util')
 
 async function prepareTests(config) {
   const source = isUrl(config.testsPath)
