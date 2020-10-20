@@ -77,7 +77,7 @@ module.exports = {
           // acceptInsecureCerts: true,
           'moz:firefoxOptions': {
             args: [
-              '-headless',
+              //'-headless',
               // '-verbose'
             ],
           },
