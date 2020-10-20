@@ -1,7 +1,7 @@
 const assert = require('assert')
 const spec = require('../../src/spec-driver')
 
-describe.skip('spec driver', async () => {
+describe('spec driver', async () => {
   const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
 
   describe('headless desktop', async () => {
@@ -9,8 +9,8 @@ describe.skip('spec driver', async () => {
       driver.url(url)
       done()
     })
-    after(function(browser, done) {
-      return browser.end(function() {
+    after(function(driver, done) {
+      return driver.end(function() {
         done()
       })
     })
