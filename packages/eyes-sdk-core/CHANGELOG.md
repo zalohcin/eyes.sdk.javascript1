@@ -3,6 +3,23 @@
 ## Unreleased
 
 
+## 12.4.4 - 2020/10/19
+
+- deprecate `saveDebugData`
+
+## 12.4.3 - 2020/10/18
+
+- use `enableMultipleResultsPerSelector` in render request
+- updated to @applitools/dom-snapshot@4.2.2 (from 4.2.1)
+
+## 12.4.2 - 2020/10/14
+
+- re-enable native app viewport screenshotting along with added support for checkRegion
+
+## 12.4.1 - 2020/10/13
+
+- disable native mobile app viewport screenshotting (until check region functionality is also supported)
+
 ## 12.4.0 - 2020/10/13
 
 - improve screenshots on native mobile apps (with Appium) so just the application viewport is captured ([PR 135](https://github.com/applitools/eyes.sdk.javascript1/pull/135))

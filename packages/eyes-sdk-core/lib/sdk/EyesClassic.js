@@ -202,6 +202,7 @@ class EyesClassic extends EyesCore {
       } else if (checkSettings.getTargetElement()) {
         const targetElement = await this._context.element(checkSettings.getTargetElement())
         if (!targetElement) throw new ElementNotFoundError() // TODO move in a proper place
+        if (this._driver.isNative) process.env.APPLITOOLS_SKIP_MOBILE_NATIVE_SCREENSHOT_HOOK = true
         if (this._stitchContent) {
           return this._checkFullElement(checkSettings, targetElement)
         } else {

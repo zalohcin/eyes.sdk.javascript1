@@ -9,7 +9,8 @@ describe('app viewport (@native @mobile @android)', function() {
   let driver, destroyDriver, eyes
   before(async () => {
     ;[driver, destroyDriver] = await spec.build({
-      device: 'app-android',
+      device: 'Samsung Galaxy S8',
+      app: 'https://applitools.bintray.com/Examples/eyes-android-hello-world.apk',
     })
     eyes = new getEyes()
   })
@@ -20,7 +21,11 @@ describe('app viewport (@native @mobile @android)', function() {
   })
 
   it('should capture the app without the system status/navigation bars', async () => {
-    await eyes.open(driver, 'Mobile Native Tests', 'app viewport')
+    await eyes.open(
+      driver,
+      'Mobile Native Tests',
+      'should capture the app without the system status/navigation bars',
+    )
     await eyes.check('check', Target.window())
     await eyes.close(true)
   })

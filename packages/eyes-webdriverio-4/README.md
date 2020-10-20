@@ -1002,3 +1002,11 @@ configuration.addBrowser({
 })
 eyes.setConfiguration(configuration)
 ```
+
+The list of devices is available at https://github.com/applitools/eyes.sdk.javascript1/blob/master/packages/eyes-sdk-core/lib/config/IosDeviceName.js
+
+Possible values for `iosVersion` are:
+
+- `IosVersion.LATEST` - the latest iOS version that's supported by the UFG
+- `IosVersion.LATEST_ONE_VERSION_BACK'` - one version prior to the latest version
+- `undefined` - the UFG's default

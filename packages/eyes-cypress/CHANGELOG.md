@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+- deprecate `saveDebugData`
+
+## 3.15.2 - 2020/10/18
+
+- updated to @applitools/dom-snapshot@4.2.2 (from 4.2.0)
+- updated to @applitools/eyes-sdk-core@12.4.3 (from 12.3.1)
+- updated to @applitools/visual-grid-client@15.0.11 (from 15.0.9)
+
+## 3.15.1 - 2020/10/14
+
+- add iosVersion to readme
 
 ## 3.15.0 - 2020/10/12
 

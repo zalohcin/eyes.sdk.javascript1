@@ -469,7 +469,6 @@ The list above is also the order of precedence, which means that if you pass a p
 | -------------             |:-------------               |:-----------   |
 | `testName`                | The value of Cypress's test title | Test name. If this is not specified, the test name will be the title of the `it` block where the test is running.    |
 | `browser`                 | { width: 800, height: 600, name: 'chrome' } | The size and browser of the generated screenshots. This doesn't need to be the same as the browser that Cypress is running. It could be a different size and also a different browser. For more info and possible values, see the [browser section below](#configuring-the-browser).|
-| `saveDebugData`           | false                       | Whether to save troubleshooting data. See the troubleshooting section of this doc for more info. |
 | `batchId`                 | random                      | Provides ability to group tests into batches. Read more about batches [here](https://applitools.com/docs/topics/working-with-test-batches/how-to-group-tests-into-batches.html). |
 | `batchName`               | The name of the first test in the batch                   | Provides a name to the batch (for display purpose only). |
 | `batchSequenceName`               | undefined | Name for managing batch statistics. |
@@ -657,6 +656,12 @@ cy.eyesOpen({
 
 The list of devices is available at https://github.com/applitools/eyes.sdk.javascript1/blob/master/packages/eyes-sdk-core/lib/config/IosDeviceName.js
 
+Possible values for `iosVersion` are:
+
+- `'latest'` - the latest iOS version that's supported by the UFG
+- `'latest-1'` - one version prior to the latest version
+- `undefined` - the UFG's default
+
 ## Setting a timeout
 
 At the end of the test run, Eyes-Cypress will wait for the results of all visual tests. There's a default timeout of 2 minutes between the end of the test run and the end of the visual tests (although it should not take so long normally!).
@@ -691,8 +696,3 @@ Adding a [tsconfig.json](http://www.typescriptlang.org/docs/handbook/tsconfig-js
   ]
 }
 ```
-
-
-## Troubleshooting
-
-If issues occur, the `saveDebugData` config property can be set to true in order to save helpful information. The information will be saved under a folder named `.applitools` in the current working directory. This could be then used for getting support on your issue.
