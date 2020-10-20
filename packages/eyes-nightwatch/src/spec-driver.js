@@ -110,32 +110,13 @@ async function findElements(driver, selector) {
 //  const {width, height} = await element.getSize()
 //  return {x, y, width, height}
 //}
-//async function getWindowRect(driver) {
-//  const {x, y} = await driver
-//    .manage()
-//    .window()
-//    .getPosition()
-//  const {width, height} = await driver
-//    .manage()
-//    .window()
-//    .getSize()
-//  return {x, y, width, height}
-//}
-//async function setWindowRect(driver, rect = {}) {
-//  const {x = null, y = null, width = null, height = null} = rect
-//  if (x !== null && y !== null) {
-//    await driver
-//      .manage()
-//      .window()
-//      .setPosition(x, y)
-//  }
-//  if (width !== null && height !== null) {
-//    await driver
-//      .manage()
-//      .window()
-//      .setSize(width, height)
-//  }
-//}
+async function getWindowRect(driver) {
+  const result = await driver.getWindowRect()
+  return result && result.value ? result.value : result
+}
+async function setWindowRect(driver, rect = {}) {
+  await driver.setWindowRect(rect)
+}
 //async function getOrientation(driver) {
 //  const capabilities = await driver.getCapabilities()
 //  const orientation = capabilities.get('orientation') || capabilities.get('deviceOrientation')
@@ -245,8 +226,8 @@ exports.childContext = childContext
 exports.findElement = findElement
 exports.findElements = findElements
 //exports.getElementRect = getElementRect
-//exports.getWindowRect = getWindowRect
-//exports.setWindowRect = setWindowRect
+exports.getWindowRect = getWindowRect
+exports.setWindowRect = setWindowRect
 //exports.getOrientation = getOrientation
 exports.getDriverInfo = getDriverInfo
 exports.getTitle = getTitle
