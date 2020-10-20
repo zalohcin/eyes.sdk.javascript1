@@ -59,7 +59,7 @@
     "nock": "^12.0.3",
     "node-fetch": "^2.6.0",
     "prettier": "1.19.0",
-    "nightwatch": "^1.3.4",
+    "nightwatch": "1.3.4",
     "spec-xunit-file": "0.0.1-3",
     "yargs": "^15.3.1"
   },
