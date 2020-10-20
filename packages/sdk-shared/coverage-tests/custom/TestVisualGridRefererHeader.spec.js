@@ -36,6 +36,10 @@ describe('TestVisualGridRefererHeader', () => {
     await destroyDriver()
   })
 
+  afterEach(async () => {
+    await spec.cleanup(driver)
+  })
+
   it('send referer header', async () => {
     const url = adjustUrlToDocker('http://localhost:5555/cors.html')
     await spec.visit(driver, url)

@@ -34,6 +34,17 @@ const DEVICES = {
       ...SAUCE_CREDENTIALS,
     },
   },
+  'Pixel 3 XL': {
+    capabilities: {
+      deviceName: 'Google Pixel 3 XL GoogleAPI Emulator',
+      platformName: 'Android',
+      platformVersion: '10.0',
+      deviceOrientation: 'portrait',
+      ...SAUCE_CREDENTIALS,
+    },
+    url: SAUCE_SERVER_URL,
+    sauce: true,
+  },
   'Samsung Galaxy S8': {
     type: 'sauce',
     url: SAUCE_SERVER_URL,

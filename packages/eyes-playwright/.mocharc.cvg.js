@@ -2,7 +2,7 @@ const tags = ['chrome', 'chromium', 'firefox', 'webkit', 'safari']
 module.exports = {
   spec: [
     './test/coverage/generic/*.spec.js',
-    '../sdk-shared/coverage-tests/custom/**.spec.js',
+    '../sdk-shared/coverage-tests/custom/**/*.spec.js',
   ],
   parallel: true,
   jobs: 15,

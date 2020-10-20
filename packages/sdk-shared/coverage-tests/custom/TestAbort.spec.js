@@ -25,7 +25,9 @@ const testedUrl = 'https://applitools.com/docs/topics/overview.html'
 describe(appName, () => {
   let webDriver, destroyDriver, eyes, config, runner
   after(async () => {
-    await displayRunInfo(runner)
+    if (process.env.APPLITOOLS_SHOW_LOGS) {
+      await displayRunInfo(runner)
+    }
   })
 
   async function afterEach() {
@@ -76,7 +78,7 @@ describe(appName, () => {
       ;[webDriver, destroyDriver] = await spec.build({browser: 'chrome'})
     }
 
-    it.skip(`Test_GetAllResults_VG`, async () => {
+    it(`Test_GetAllResults_VG`, async () => {
       await beforeEach()
       expect(Test_ThrowBeforeOpen).to.throw('Before Open')
       await afterEach()
@@ -127,6 +129,7 @@ function getConfig() {
   let config = new Configuration()
   config.setAppName(appName)
   config.setBatch(batch)
+  config.setDontCloseBatches(true)
   if (process.env['APPLITOOLS_API_KEY_SDK']) {
     config.setApiKey(process.env['APPLITOOLS_API_KEY_SDK'])
   }
@@ -136,7 +139,7 @@ function getConfig() {
   config.addBrowser(900, 600, BrowserType.FIREFOX)
   config.addBrowser(900, 600, BrowserType.IE_10)
   config.addBrowser(900, 600, BrowserType.IE_11)
-  config.addBrowser(900, 600, BrowserType.EDGE)
+  config.addBrowser(900, 600, BrowserType.EDGE_LEGACY)
   config.addDeviceEmulation(DeviceName.iPhone_4, ScreenOrientation.PORTRAIT)
   config.addDeviceEmulation(DeviceName.Galaxy_S5, ScreenOrientation.LANDSCAPE)
   return config

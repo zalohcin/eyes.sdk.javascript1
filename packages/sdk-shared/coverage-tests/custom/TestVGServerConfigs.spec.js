@@ -138,7 +138,7 @@ describe('TestVGServerConfigs', () => {
     conf
       .setAccessibilityValidation({
         level: AccessibilityLevel.AA,
-        version: AccessibilityGuidelinesVersion.WCAG_2_0,
+        guidelinesVersion: AccessibilityGuidelinesVersion.WCAG_2_0,
       })
       .setIgnoreDisplacements(false)
     eyes.setConfiguration(conf)
@@ -148,7 +148,7 @@ describe('TestVGServerConfigs', () => {
     conf
       .setAccessibilityValidation({
         level: AccessibilityLevel.AAA,
-        version: AccessibilityGuidelinesVersion.WCAG_2_1,
+        guidelinesVersion: AccessibilityGuidelinesVersion.WCAG_2_1,
       })
       .setIgnoreDisplacements(true)
     eyes.setConfiguration(conf)
@@ -158,7 +158,7 @@ describe('TestVGServerConfigs', () => {
     conf
       .setAccessibilityValidation({
         level: AccessibilityLevel.AA,
-        version: AccessibilityGuidelinesVersion.WCAG_2_0,
+        guidelinesVersion: AccessibilityGuidelinesVersion.WCAG_2_0,
       })
       .setMatchLevel(MatchLevel.Layout)
     eyes.setConfiguration(conf)

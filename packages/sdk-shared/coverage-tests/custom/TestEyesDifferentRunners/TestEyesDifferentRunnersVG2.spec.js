@@ -4,7 +4,7 @@ const path = require('path')
 const {getEyes} = require('../../../src/test-setup')
 const spec = require(path.resolve(cwd, 'src/spec-driver'))
 const {MatchLevel} = require(cwd)
-const {testSetup, getCheckSettings} = require('./EyesDifferentRunners')
+const {testSetup, getCheckSettings, validateVG2} = require('./EyesDifferentRunners')
 
 describe('TestEyesDifferentRunners VG2', () => {
   afterEach(async function() {
@@ -22,11 +22,9 @@ describe('TestEyesDifferentRunners VG2', () => {
     })
   })
 
-  let testCase = testSetup(getCheckSettings, async () =>
-    console.log('Need merge of the runners updates to retrieve the test results for assertions'),
-  )
+  let testCase = testSetup(getCheckSettings, validateVG2)
   let cases = [['https://amazon.com', MatchLevel.Layout]]
   cases.forEach(testData => {
-    it(testData[0], testCase(...testData))
+    it('TestEyesDifferentRunners', testCase(...testData))
   })
 })

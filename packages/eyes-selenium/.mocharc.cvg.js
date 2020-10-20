@@ -11,10 +11,10 @@ const tags = [
 module.exports = {
   spec: [
     './test/coverage/generic/*.spec.js',
-    '../sdk-shared/coverage-tests/custom/**.spec.js',
+    '../sdk-shared/coverage-tests/custom/**/*.spec.js',
   ],
   parallel: true,
-  jobs: 15,
+  jobs: 5,
   timeout: 0,
   reporter: 'spec-xunit-file',
   require: ['./test/util/version-alias.js', '../sdk-shared/coverage-tests/util/mocha-hooks.js'],
