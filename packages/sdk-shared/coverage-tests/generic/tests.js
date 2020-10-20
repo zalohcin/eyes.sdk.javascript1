@@ -947,6 +947,7 @@ test('CheckRefreshableElement', {
 })
 
 test('CheckRefreshableElementInsideFrame', {
+  skip: true,
   features: ['webdriver'],
   test: ({driver, eyes}) => {
     driver.visit('https://applitools.github.io/demo/TestPages/RefreshDomPage/iframe')
