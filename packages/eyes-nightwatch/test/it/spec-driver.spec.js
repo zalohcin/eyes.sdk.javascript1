@@ -158,64 +158,64 @@ describe('spec driver', async () => {
     it.skip('takeScreenshot()', async function(_driver) {})
   })
 
-  describe('onscreen desktop (@webdriver)', async () => {
-    before(function(_driver, done) {
-      //;[driver, destroyDriver] = await spec.build({browser: 'chrome', headless: false})
-      done()
-    })
-    after(function(_driver, done) {
-      //await destroyDriver()
-      done()
-    })
-    it.skip('getWindowRect()', function(_driver) {})
-    it.skip('setWindowRect({x, y, width, height})', function(_driver) {
-      //setWindowRect({
-      //  input: {x: 0, y: 0, width: 510, height: 511},
-      //  expected: {x: 0, y: 0, width: 510, height: 511},
-      //}),
-    })
-    it.skip('setWindowRect({x, y})', function(_driver) {
-      //setWindowRect({
-      //  input: {x: 11, y: 12},
-      //  expected: {x: 11, y: 12, width: 510, height: 511},
-      //}),
-    })
-    it.skip('setWindowRect({width, height})', function(_driver) {
-      //setWindowRect({
-      //  input: {width: 551, height: 552},
-      //  expected: {x: 11, y: 12, width: 551, height: 552},
-      //}),
-    })
-  })
+  //describe('onscreen desktop (@webdriver)', async () => {
+  //  before(function(_driver, done) {
+  //    //;[driver, destroyDriver] = await spec.build({browser: 'chrome', headless: false})
+  //    done()
+  //  })
+  //  after(function(_driver, done) {
+  //    //await destroyDriver()
+  //    done()
+  //  })
+  //  it.skip('getWindowRect()', function(_driver) {})
+  //  it.skip('setWindowRect({x, y, width, height})', function(_driver) {
+  //    //setWindowRect({
+  //    //  input: {x: 0, y: 0, width: 510, height: 511},
+  //    //  expected: {x: 0, y: 0, width: 510, height: 511},
+  //    //}),
+  //  })
+  //  it.skip('setWindowRect({x, y})', function(_driver) {
+  //    //setWindowRect({
+  //    //  input: {x: 11, y: 12},
+  //    //  expected: {x: 11, y: 12, width: 510, height: 511},
+  //    //}),
+  //  })
+  //  it.skip('setWindowRect({width, height})', function(_driver) {
+  //    //setWindowRect({
+  //    //  input: {width: 551, height: 552},
+  //    //  expected: {x: 11, y: 12, width: 551, height: 552},
+  //    //}),
+  //  })
+  //})
 
-  describe('mobile driver (@mobile)', async () => {
-    before(function(_driver, done) {
-      //;[driver, destroyDriver] = await spec.build({browser: 'chrome', device: 'Pixel 3a XL'})
-      done()
-    })
-    after(function(_driver, done) {
-      //await destroyDriver()
-      done()
-    })
-    it.skip('isMobile()', function(_driver) {
-      //isMobile({expected: true}
-    })
-    it.skip('getDeviceName()', function(_driver) {
-      //getDeviceName({expected: 'Google Pixel 3a XL GoogleAPI Emulator'})
-    })
-    it.skip('getPlatformName()', function(_driver) {
-      //getPlatformName({expected: 'Android'})
-    })
-    it.skip('isNative()', function(_driver) {
-      //isNative({expected: false})
-    })
-    it.skip('getOrientation()', function(_driver) {
-      //getOrientation({expected: 'portrait'})
-    })
-    it.skip('getPlatformVersion()', function(_driver) {
-      //getPlatformVersion({expected: '10'})
-    })
-  })
+  //describe('mobile driver (@mobile)', async () => {
+  //  before(function(_driver, done) {
+  //    //;[driver, destroyDriver] = await spec.build({browser: 'chrome', device: 'Pixel 3a XL'})
+  //    done()
+  //  })
+  //  after(function(_driver, done) {
+  //    //await destroyDriver()
+  //    done()
+  //  })
+  //  it.skip('isMobile()', function(_driver) {
+  //    //isMobile({expected: true}
+  //  })
+  //  it.skip('getDeviceName()', function(_driver) {
+  //    //getDeviceName({expected: 'Google Pixel 3a XL GoogleAPI Emulator'})
+  //  })
+  //  it.skip('getPlatformName()', function(_driver) {
+  //    //getPlatformName({expected: 'Android'})
+  //  })
+  //  it.skip('isNative()', function(_driver) {
+  //    //isNative({expected: false})
+  //  })
+  //  it.skip('getOrientation()', function(_driver) {
+  //    //getOrientation({expected: 'portrait'})
+  //  })
+  //  it.skip('getPlatformVersion()', function(_driver) {
+  //    //getPlatformVersion({expected: '10'})
+  //  })
+  //})
   //function getWindowRect() {
   //  return async () => {
   //    const {x, y} = await driver
