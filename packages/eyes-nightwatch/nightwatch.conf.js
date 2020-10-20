@@ -32,12 +32,21 @@ module.exports = {
         on_failure: true,
       },
 
+      // JSON Wire Protocol (JWP) -- a.k.a. w3c: false (implicit in Chrome)
       desiredCapabilities: {
         browserName: 'chrome',
         'goog:chromeOptions': {
           args: ['--headless'],
         },
       },
+      // W3C
+      //capabilities: {
+      //  browserName: 'chrome',
+      //  'goog:chromeOptions': {
+      //    w3c: true,
+      //    args: ['--headless'],
+      //  },
+      //},
 
       webdriver: {
         port: 9515,
