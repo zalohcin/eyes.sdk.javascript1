@@ -16,7 +16,7 @@ const {TypeUtils} = require('@applitools/eyes-sdk-core')
 //
 function extractElementId(element) {
   const _element = element.value ? element.value : element
-  return _element.ELEMENT
+  return Object.values(_element)[0]
 }
 async function getFrameId(driver, element) {
   const name = await driver.elementIdAttribute(extractElementId(element), 'name')
