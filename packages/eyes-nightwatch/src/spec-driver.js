@@ -178,7 +178,7 @@ async function click(driver, element) {
     const selector = element
     return await driver.click('css selector', selector)
   }
-  await driver.elementIdClick(extractElementId)
+  await driver.elementIdClick(extractElementId(element))
 }
 async function type(driver, element, keys) {
   if (isSelector(element)) {

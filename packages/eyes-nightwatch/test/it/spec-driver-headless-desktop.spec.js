@@ -1,6 +1,11 @@
 const assert = require('assert')
 const spec = require('../../src/spec-driver')
 
+// TODO: add test for click
+// TODO: add test for type
+// TODO: add test for scrollIntoView
+// TODO: add test for hover
+// TODO: add test for waitUntilIsDisplayed
 describe('spec driver', async () => {
   const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
 
