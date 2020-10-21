@@ -159,5 +159,17 @@ describe('spec driver', async () => {
       const result = await spec.takeScreenshot(driver)
       assert.ok(Buffer.isBuffer(result))
     })
+    // TODO: revisit
+    it.skip('isStaleElementError(err)', async function(driver) {
+      const element = await driver.element('css selector', '#overflowing-div')
+      const elementId = spec.extractElementId(element)
+      await driver.refresh()
+      try {
+        driver.elementIdDisplayed(elementId) // breaks the promise chain if it throws?
+      } catch (err) {
+        console.log('HEY') // <---- never reaches here
+        assert.ok(spec.isStaleElementError(err))
+      }
+    })
   })
 })

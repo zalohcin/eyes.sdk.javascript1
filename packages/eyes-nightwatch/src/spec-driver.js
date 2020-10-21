@@ -90,11 +90,10 @@ function isSelector(selector) {
   if (!selector) return false
   return TypeUtils.isString(selector)
 }
-//function isStaleElementError(error) {
-//  if (!error) return false
-//  error = error.originalError || error
-//  return error instanceof Error && error.name === 'StaleElementReferenceError'
-//}
+function isStaleElementError(error) {
+  if (!error) return false
+  return error instanceof Error && error.name === 'StaleElementReference'
+}
 function isEqualElements(_driver, element1, element2) {
   if (!element1 || !element2) return false
   const elementId1 = extractElementId(element1)
@@ -226,11 +225,8 @@ async function takeScreenshot(driver) {
 exports.isDriver = isDriver
 exports.isElement = isElement
 exports.isSelector = isSelector
-//exports.transformDriver = transformDriver
-//exports.transformElement = transformElement
 exports.isEqualElements = isEqualElements
-//exports.isStaleElementError = isStaleElementError
-//
+exports.isStaleElementError = isStaleElementError
 exports.executeScript = executeScript
 exports.mainContext = mainContext
 exports.parentContext = parentContext
@@ -251,8 +247,8 @@ exports.takeScreenshot = takeScreenshot
 //exports.waitUntilDisplayed = waitUntilDisplayed
 //exports.scrollIntoView = scrollIntoView
 //exports.hover = hover
-//
-// no-op for generic tests
+// for tests
 exports.build = () => {
   return [{}, () => {}]
 }
+exports.extractElementId = extractElementId
