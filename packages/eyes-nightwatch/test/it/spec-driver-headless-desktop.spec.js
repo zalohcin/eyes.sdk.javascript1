@@ -170,7 +170,7 @@ describe('spec driver', async () => {
       const elementId = spec.extractElementId(element)
       await driver.refresh()
       try {
-        driver.elementIdDisplayed(elementId) // breaks the promise chain if it throws?
+        await driver.elementIdClick(elementId) // breaks the promise chain when it throws (on w3c: false)
       } catch (err) {
         console.log('HEY') // <---- never reaches here
         assert.ok(spec.isStaleElementError(err))
