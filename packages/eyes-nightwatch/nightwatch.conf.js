@@ -138,13 +138,12 @@ module.exports = {
       desiredCapabilities: {
         'bstack:options': {
           local: 'false',
-          userName: '${BROWSERSTACK_USER}',
-          accessKey: '${BROWSERSTACK_KEY}',
         },
       },
 
       disable_error_log: true,
       webdriver: {
+        port: 443,
         keep_alive: true,
         start_process: false,
       },
@@ -180,6 +179,20 @@ module.exports = {
           local: 'false',
           seleniumVersion: '3.5.2',
           resolution: '1366x768',
+        },
+      },
+    },
+
+    'browserstack.android': {
+      extends: 'browserstack',
+      desiredCapabilities: {
+        app: 'app_android',
+        automationName: 'UiAutomator2',
+        platformName: 'Android',
+        osVersion: '9.0',
+        device: 'google pixel 2',
+        browserstack: {
+          appiumVersion: '1.17.0',
         },
       },
     },
@@ -227,9 +240,11 @@ module.exports = {
 }
 
 function loadServices() {
-  try {
-    Services.seleniumServer = require('selenium-server')
-  } catch (err) {}
+  process.env.BROWSERSTACK_USER = process.env.BROWSERSTACK_USERNAME
+  process.env.BROWSERSTACK_KEY = process.env.BROWSERSTACK_ACCESS_KEY
+  //try {
+  //  Services.seleniumServer = require('selenium-server')
+  //} catch (err) {}
 
   try {
     Services.chromedriver = require('chromedriver')
