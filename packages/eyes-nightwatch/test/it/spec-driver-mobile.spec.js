@@ -1,65 +1,44 @@
 const assert = require('assert')
 const spec = require('../../src/spec-driver')
+const returnFake = true
 
+// TODO: test against iOS
 describe('spec driver', async () => {
-  const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
-
   describe('mobile driver (@mobile)', async () => {
     before(function(_driver, done) {
-      //;[driver, destroyDriver] = await spec.build({browser: 'chrome', device: 'Pixel 3a XL'})
       done()
     })
-    after(function(_driver, done) {
-      //await destroyDriver()
-      done()
+    after(function(driver, done) {
+      return driver.end(function() {
+        done()
+      })
     })
-    it.skip('isMobile()', function(_driver) {
-      //isMobile({expected: true}
+    it('isMobile()', function(driver) {
+      const {isMobile} = spec.getDriverInfo(driver, {returnFake})
+      assert.ok(isMobile)
     })
-    it.skip('getDeviceName()', function(_driver) {
-      //getDeviceName({expected: 'Google Pixel 3a XL GoogleAPI Emulator'})
+    it('getDeviceName()', function(driver) {
+      const {deviceName} = spec.getDriverInfo(driver, {returnFake})
+      assert.deepStrictEqual(deviceName, 'google pixel 2')
     })
-    it.skip('getPlatformName()', function(_driver) {
-      //getPlatformName({expected: 'Android'})
+    it('getPlatformName()', function(driver) {
+      const {platformName} = spec.getDriverInfo(driver, {returnFake})
+      assert.deepStrictEqual(platformName, 'Android')
     })
-    it.skip('isNative()', function(_driver) {
-      //isNative({expected: false})
+    // TODO: test on Sauce
+    it('getPlatformVersion()', function(driver) {
+      const {platformVersion} = spec.getDriverInfo(driver, {returnFake})
+      assert.deepStrictEqual(platformVersion, '9.0')
     })
-    it.skip('getOrientation()', function(_driver) {
-      //getOrientation({expected: 'portrait'})
+    // TODO: test w/ orientation set on BS (fake captured w/o it)
+    // TODO: test on Sauce
+    it('getOrientation()', function(driver) {
+      const result = spec.getOrientation(driver, {returnFake})
+      assert.strictEqual(result, 'portrait')
     })
-    it.skip('getPlatformVersion()', function(_driver) {
-      //getPlatformVersion({expected: '10'})
+    it('isNative()', function(driver) {
+      const {isNative} = spec.getDriverInfo(driver, {returnFake})
+      assert.strictEqual(isNative, true)
     })
   })
-  //function getOrientation({expected} = {}) {
-  //  return async () => {
-  //    const result = await spec.getOrientation(driver)
-  //    assert.strictEqual(result, expected)
-  //  }
-  //}
-  //function isNative({expected} = {}) {
-  //  return async () => {
-  //    const {isNative} = await spec.getDriverInfo(driver)
-  //    assert.strictEqual(isNative, expected)
-  //  }
-  //}
-  //function getDeviceName({expected} = {}) {
-  //  return async () => {
-  //    const {deviceName} = await spec.getDriverInfo(driver)
-  //    assert.strictEqual(deviceName, expected)
-  //  }
-  //}
-  //function getPlatformName({expected} = {}) {
-  //  return async () => {
-  //    const {platformName} = await spec.getDriverInfo(driver)
-  //    assert.strictEqual(platformName, expected)
-  //  }
-  //}
-  //function getPlatformVersion({expected} = {}) {
-  //  return async () => {
-  //    const {platformVersion} = await spec.getDriverInfo(driver)
-  //    assert.strictEqual(platformVersion, expected)
-  //  }
-  //}
 })

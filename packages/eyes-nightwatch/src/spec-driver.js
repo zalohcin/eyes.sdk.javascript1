@@ -24,6 +24,48 @@ async function getFrameId(driver, element) {
   const id = await driver.elementIdAttribute(extractElementId(element), 'id')
   if (id) return id.value
 }
+function getCapabilities(driver, opts) {
+  if (opts.returnFake) {
+    const fake = {
+      platform: 'ANDROID',
+      automationName: 'UiAutomator2',
+      platformName: 'Android',
+      osVersion: '9.0',
+      device: 'google pixel 2',
+      browserstack: '{"appiumVersion"=>"1.17.0"}',
+      'bstack:options': {local: false},
+      chromeOptions: {args: ['--headless'], w3c: false},
+      acceptSslCert: false,
+      detected_language: 'nightwatch.js/1.3.4 (mac)',
+      new_bucketing: true,
+      os_version: '9.0',
+      browser_name: 'chrome',
+      deviceName: 'Android',
+      sessionName: 'spec driver',
+      buildName: 'nightwatch-test-build',
+      'browserstack.minOSVersion': '4.1',
+      appPackage: 'com.applitools.eyes.android',
+      appActivity: 'com.applitools.eyes.android.activity.StartActivity',
+      bundleID: 'com.applitools.eyes.android',
+      bundleId: 'com.applitools.eyes.android',
+      nativeWebScreenshot: true,
+      version: '',
+      mobile: {browser: 'mobile', version: 'Google Pixel 2-9.0'},
+      orig_os: 'android',
+      '64bit': false,
+      udid: 'HT79V1A01893',
+      adbExecTimeout: 120000,
+      uiautomator2ServerLaunchTimeout: 60000,
+      newCommandTimeout: 0,
+      realMobile: 'true',
+      acceptSslCerts: false,
+      enablePerformanceLogging: false,
+      systemPort: 8203,
+    }
+    return fake
+  }
+  return driver.capabilities
+}
 //
 //function transformSelector(selector) {
 //  if (TypeUtils.has(selector, ['type', 'selector'])) {
@@ -117,18 +159,28 @@ async function getWindowRect(driver) {
 async function setWindowRect(driver, rect = {}) {
   await driver.setWindowRect(rect)
 }
-//async function getOrientation(driver) {
-//  const capabilities = await driver.getCapabilities()
-//  const orientation = capabilities.get('orientation') || capabilities.get('deviceOrientation')
-//  return orientation.toLowerCase()
-//}
-function getDriverInfo(driver) {
+function getOrientation(driver, opts = {}) {
+  const capabilities = getCapabilities(driver, opts)
+  const orientation = capabilities.orientation || capabilities.deviceOrientation
+  return orientation ? orientation.toLowerCase() : 'portrait'
+}
+function getDriverInfo(driver, opts = {}) {
   const sessionId = driver.sessionId
-  const capabilities = driver.capabilities
+  const capabilities = getCapabilities(driver, opts)
+  const browserName = capabilities.browserName
+  const deviceName = capabilities.device ? capabilities.device : capabilities.deviceName
   const platformName = capabilities.platformName || capabilities.platform
+  const platformVersion = capabilities.osVersion
+    ? capabilities.osVersion
+    : capabilities.platformVersion
   const isMobile = ['android', 'ios'].includes(platformName && platformName.toLowerCase())
+  const isNative = isMobile && !browserName
   return {
+    deviceName,
     isMobile,
+    isNative,
+    platformName,
+    platformVersion,
     sessionId,
   }
   //const capabilities = await driver.getCapabilities()
@@ -202,15 +254,6 @@ async function visit(driver, url) {
 //
 //// #endregion
 //
-//// #region TESTING
-//
-//const browserOptionsNames = {
-//  chrome: 'goog:chromeOptions',
-//  firefox: 'moz:firefoxOptions',
-//}
-//
-//// #endregion
-//
 exports.isDriver = isDriver
 exports.isElement = isElement
 exports.isSelector = isSelector
@@ -228,7 +271,7 @@ exports.findElements = findElements
 //exports.getElementRect = getElementRect
 exports.getWindowRect = getWindowRect
 exports.setWindowRect = setWindowRect
-//exports.getOrientation = getOrientation
+exports.getOrientation = getOrientation
 exports.getDriverInfo = getDriverInfo
 exports.getTitle = getTitle
 exports.getUrl = getUrl
