@@ -1,19 +1,6 @@
 const {TypeUtils} = require('@applitools/eyes-sdk-core')
-//
+
 //// #region HELPERS
-//
-//const byHash = [
-//  'className',
-//  'css',
-//  'id',
-//  'js',
-//  'linkText',
-//  'name',
-//  'partialLinkText',
-//  'tagName',
-//  'xpath',
-//]
-//
 function extractElementId(element) {
   const _element = element.value ? element.value : element
   return Object.values(_element)[0]
@@ -66,7 +53,6 @@ function getCapabilities(driver, opts) {
   }
   return driver.capabilities
 }
-//
 //function transformSelector(selector) {
 //  if (TypeUtils.has(selector, ['type', 'selector'])) {
 //    if (selector.type === 'css') return {css: selector.selector}
@@ -74,11 +60,9 @@ function getCapabilities(driver, opts) {
 //  }
 //  return selector
 //}
-//
 //// #endregion
-//
+
 //// #region UTILITY
-//
 function isDriver(driver) {
   return TypeUtils.instanceOf(driver, 'NightwatchAPI')
 }
@@ -100,11 +84,9 @@ function isEqualElements(_driver, element1, element2) {
   const elementId2 = extractElementId(element2)
   return Boolean(elementId1 === elementId2)
 }
-//
 //// #endregion
-//
+
 //// #region COMMANDS
-//
 async function executeScript(driver, script, ...args) {
   const result = await driver.execute(script, args)
   return result.value
@@ -186,12 +168,13 @@ async function takeScreenshot(driver) {
   }
   return await driver.screenshot(true, fn)
 }
-//async function click(driver, element) {
-//  if (isSelector(element)) {
-//    element = await findElement(driver, element)
-//  }
-//  return element.click()
-//}
+async function click(driver, element) {
+  if (isSelector(element)) {
+    const selector = element
+    await driver.click('css selector', selector)
+  }
+  await driver.elementIdClick(extractElementId)
+}
 //async function type(driver, element, keys) {
 //  if (isSelector(element)) {
 //    element = await findElement(driver, element)
@@ -242,7 +225,7 @@ exports.getTitle = getTitle
 exports.getUrl = getUrl
 exports.visit = visit
 exports.takeScreenshot = takeScreenshot
-//exports.click = click
+exports.click = click
 //exports.type = type
 //exports.waitUntilDisplayed = waitUntilDisplayed
 //exports.scrollIntoView = scrollIntoView
