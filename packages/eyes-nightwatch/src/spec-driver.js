@@ -187,18 +187,15 @@ async function type(driver, element, keys) {
   }
   await driver.elementIdValue(extractElementId(element), keys)
 }
-//async function waitUntilDisplayed(driver, selector, timeout) {
-//  const {until} = require('protractor')
-//
-//  const element = await findElement(driver, selector)
-//  return driver.wait(until.elementIsVisible(element), timeout)
-//}
-//async function scrollIntoView(driver, element, align = false) {
-//  if (isSelector(element)) {
-//    element = await findElement(driver, element)
-//  }
-//  await driver.executeScript('arguments[0].scrollIntoView(arguments[1])', element, align)
-//}
+async function waitUntilDisplayed(driver, selector, timeout) {
+  await driver.waitForElementVisible('css selector', selector, timeout)
+}
+async function scrollIntoView(driver, element) {
+  // NOTE: moveTo will scroll the element into view, but it also moves the mouse
+  // cursor to the element. This might have unintended side effects.
+  // Will need to wait and see, since there's no simple alternative.
+  await driver.moveTo(extractElementId(element))
+}
 async function hover(driver, element, {x, y} = {}) {
   if (isSelector(element)) {
     const selector = element
@@ -231,8 +228,8 @@ exports.visit = visit
 exports.takeScreenshot = takeScreenshot
 exports.click = click
 exports.type = type
-//exports.waitUntilDisplayed = waitUntilDisplayed
-//exports.scrollIntoView = scrollIntoView
+exports.waitUntilDisplayed = waitUntilDisplayed
+exports.scrollIntoView = scrollIntoView
 exports.hover = hover
 // for tests
 exports.build = () => {
