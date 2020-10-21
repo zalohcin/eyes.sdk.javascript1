@@ -12,46 +12,7 @@ async function getFrameId(driver, element) {
   if (id) return id.value
 }
 function getCapabilities(driver, opts) {
-  if (opts.returnFake) {
-    const fake = {
-      platform: 'ANDROID',
-      automationName: 'UiAutomator2',
-      platformName: 'Android',
-      osVersion: '9.0',
-      device: 'google pixel 2',
-      browserstack: '{"appiumVersion"=>"1.17.0"}',
-      'bstack:options': {local: false},
-      chromeOptions: {args: ['--headless'], w3c: false},
-      acceptSslCert: false,
-      detected_language: 'nightwatch.js/1.3.4 (mac)',
-      new_bucketing: true,
-      os_version: '9.0',
-      browser_name: 'chrome',
-      deviceName: 'Android',
-      sessionName: 'spec driver',
-      buildName: 'nightwatch-test-build',
-      'browserstack.minOSVersion': '4.1',
-      appPackage: 'com.applitools.eyes.android',
-      appActivity: 'com.applitools.eyes.android.activity.StartActivity',
-      bundleID: 'com.applitools.eyes.android',
-      bundleId: 'com.applitools.eyes.android',
-      nativeWebScreenshot: true,
-      version: '',
-      mobile: {browser: 'mobile', version: 'Google Pixel 2-9.0'},
-      orig_os: 'android',
-      '64bit': false,
-      udid: 'HT79V1A01893',
-      adbExecTimeout: 120000,
-      uiautomator2ServerLaunchTimeout: 60000,
-      newCommandTimeout: 0,
-      realMobile: 'true',
-      acceptSslCerts: false,
-      enablePerformanceLogging: false,
-      systemPort: 8203,
-    }
-    return fake
-  }
-  return driver.capabilities
+  return opts.using ? opts.using : driver.capabilities
 }
 //function transformSelector(selector) {
 //  if (TypeUtils.has(selector, ['type', 'selector'])) {
