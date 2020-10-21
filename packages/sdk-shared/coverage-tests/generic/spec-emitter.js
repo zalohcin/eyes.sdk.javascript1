@@ -42,8 +42,7 @@ module.exports = function(tracker, test) {
   addHook('deps', `const path = require('path')`)
   addHook('deps', `const assert = require('assert')`)
   addHook('deps', `const spec = require(path.resolve(cwd, 'src/spec-driver'))`)
-  addHook('deps', `const {Configuration} = require(cwd)`)
-  addHook('deps', `const {testSetup} = require('@applitools/sdk-shared')`)
+  addHook('deps', `const {testSetup, getTestInfo} = require('@applitools/sdk-shared')`)
 
   addHook('vars', `let driver, destroyDriver, eyes`)
 
@@ -77,14 +76,10 @@ module.exports = function(tracker, test) {
       addCommand(js`await spec.mainContext(driver)`)
     },
     findElement(selector) {
-      return addCommand(
-        js`await spec.findElement(driver, {type: 'css', selector: ${selector}})`,
-      ).type('Element')
+      return addCommand(js`await spec.findElement(driver, ${selector})`).type('Element')
     },
     findElements(selector) {
-      return addCommand(
-        js`await spec.findElements(driver, {type: 'css', selector: ${selector}})`,
-      ).type('Array<Element>')
+      return addCommand(js`await spec.findElements(driver, ${selector})`).type('Array<Element>')
     },
     click(element) {
       addCommand(js`await spec.click(driver, ${element})`)
@@ -208,5 +203,11 @@ module.exports = function(tracker, test) {
     },
   }
 
-  return {driver, eyes, assert}
+  const helpers = {
+    getTestInfo(result) {
+      return addCommand(js`await getTestInfo(${result})`).type('TestInfo')
+    },
+  }
+
+  return {driver, eyes, assert, helpers}
 }

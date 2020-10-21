@@ -56,6 +56,22 @@ test('CheckWindow_ManualScroll', {
   },
 })
 
+test('CheckWindow_ManualScrollToTheEnd', {
+  // should work on buggy safari version
+  page: 'Default',
+  features: ['webdriver'],
+  variants: {
+    Safari11: {env: {browser: 'safari-11', legacy: true}},
+    Safari12: {env: {browser: 'safari-12', legacy: true}}
+  },
+  test: ({driver, eyes}) => {
+    eyes.open({appName: 'Eyes Selenium SDK', viewportSize})
+    driver.executeScript('window.scrollTo(0, 9999)')
+    eyes.check()
+    eyes.close()
+  },
+})
+
 test('CheckWindowFully', {
   page: 'Default',
   variants: {
@@ -67,6 +83,22 @@ test('CheckWindowFully', {
     eyes.open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
     eyes.check({isFully: true})
     eyes.close(throwException)
+  },
+})
+
+test('CheckWindowFully_IgnoreDisplacements', {
+  page: 'Default',
+  variants: {
+    CSS: {config: {stitchMode: 'CSS', baselineName: 'TestIgnoreDisplacements'}},
+    Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestIgnoreDisplacements_Scroll'}},
+    VG: {config: {vg: true, baselineName: 'TestIgnoreDisplacements_VG'}},
+  },
+  test: ({eyes, assert, helpers}) => {
+    eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+    eyes.check({isFully: true, ignoreDisplacements: true})
+    const result = eyes.close(false).ref('result')
+    const info = helpers.getTestInfo(result).ref('info')
+    assert.strictEqual(info.actualAppOutput[0].imageMatchSettings.ignoreDisplacements, true)
   },
 })
 
@@ -433,7 +465,7 @@ test('CheckRegionBySelectorFully_ScrollableModal', {
   },
   test: ({driver, eyes}) => {
     eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
-    driver.click(driver.findElement('#centered').ref('element'))
+    driver.click('#centered')
     eyes.check({region: '#modal-content', scrollRootElement: '#modal1', isFully: true})
     eyes.close(throwException)
   },
@@ -556,6 +588,23 @@ test('CheckRegionBySelectorInFrameFully', {
     eyes.check({region: '#inner-frame-div', frames: ['[name="frame1"]'], isFully: true})
     eyes.close(throwException)
   },
+})
+
+test('CheckRegionBySelectorInFrameInFrameFully', {
+  page: 'Default',
+  variants: {
+    CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckRegionInFrameInFrame_Fluent'}},
+    Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckRegionInFrameInFrame_Fluent_Scroll'}},
+  },
+  test: ({eyes}) => {
+    eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+    eyes.check({
+      frames: ['frame1', 'frame1-1'],
+      region: {type: 'css', selector: 'img'},
+      isFully: true,
+    })
+    eyes.close()
+  }
 })
 
 test('CheckRegionBySelectorInFrame_Overflowing', {
@@ -804,6 +853,46 @@ test('CheckRegionBySelector_IgnoreRegionByCoordinates', {
   },
 })
 
+test('CheckWindow_AccessibilityRegionByElement', {
+  page: 'Default',
+  config: {
+    defaultMatchSettings: {
+      accessibilitySettings: {level: 'AAA', guidelinesVersion: 'WCAG_2_0'}
+    }
+  },
+  variants: {
+    CSS: {config: {stitchMode: 'CSS', baselineName: 'TestAccessibilityRegions'}},
+    Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestAccessibilityRegions_Scroll'}},
+    VG: {config: {vg: true, baselineName: 'TestAccessibilityRegions_VG'}},
+  },
+  test: ({driver, eyes, assert, helpers}) => {
+    eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+    const accessibilityRegions = driver.findElements({type: 'css', selector: '.ignore'}).ref('accessibilityRegions')
+    eyes.check({
+      accessibilityRegions: [
+        {region: accessibilityRegions[0], type: 'LargeText'},
+        {region: accessibilityRegions[1], type: 'LargeText'},
+        {region: accessibilityRegions[2], type: 'LargeText'},
+      ]
+    })
+    const result = eyes.close().ref('results')
+
+    const info = helpers.getTestInfo(result).ref('info')
+    const imageMatchSettings = info.actualAppOutput[0].imageMatchSettings
+    assert.strictEqual(imageMatchSettings.accessibilitySettings.level, 'AAA')
+    assert.strictEqual(imageMatchSettings.accessibilitySettings.version, 'WCAG_2_0')
+    const expectedAccessibilityRegions = [
+      {isDisabled: false, type: 'LargeText', left: 10, top: 284, width: 800, height: 500},
+      {isDisabled: false, type: 'LargeText', left: 122, top: 928, width: 456, height: 306},
+      {isDisabled: false, type: 'LargeText', left: 8, top: 1270, width: 690, height: 206},
+    ]
+    assert.strictEqual(imageMatchSettings.accessibility.length, expectedAccessibilityRegions.length)
+    for (const [index, accessibilityRegion] of imageMatchSettings.accessibility.entries()) {
+      assert.deepStrictEqual(accessibilityRegion, expectedAccessibilityRegions[index])
+    }
+  }
+})
+
 // #endregion
 
 // #region CUSTOM
@@ -1002,6 +1091,108 @@ test('JsLayoutBreakpoints_Config', {
   test: ({eyes}) => {
     eyes.open({appName: 'Applitools Eyes SDK'})
     eyes.check()
+    eyes.close()
+  }
+})
+
+test('CheckLongIframeModal', {
+  page: 'Default',
+  variants: {
+    CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckLongIFrameModal'}},
+    Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckLongIFrameModal_Scroll'}},
+    VG: {config: {vg: true, baselineName: 'TestCheckLongIFrameModal_VG'}},
+  },
+  test: ({driver, eyes}) => {
+    eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+    driver.click({type: 'css', selector: '#stretched'})
+    const regions = [
+      {left: 0, top: 0, width: 400, height: 5000},
+      {left: 0, top: 5000, width: 400, height: 5000},
+      {left: 0, top: 10000, width: 400, height: 5000},
+      {left: 0, top: 15000, width: 400, height: 5000},
+      {left: 0, top: 20000, width: 400, height: 2818}
+    ]
+    for (const region of regions) {
+      eyes.check({
+        scrollRootElement: '#modal2',
+        frames: [{type: 'css', selector: '#modal2 iframe'}],
+        region,
+        isFully: true,
+      })
+    }
+    eyes.close()
+  }
+})
+
+test('CheckLongOutOfBoundsIframeModal', {
+  page: 'Default',
+  variants: {
+    CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckLongOutOfBoundsIFrameModal'}},
+    Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckLongOutOfBoundsIFrameModal_Scroll'}},
+    VG: {config: {vg: true, baselineName: 'TestCheckLongOutOfBoundsIFrameModal_VG'}},
+  },
+  test: ({driver, eyes}) => {
+    eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+    driver.click({type: 'css', selector: '#hidden_click'})
+    const regions = [
+      {left: 0, top: 0, width: 400, height: 5000},
+      {left: 0, top: 5000, width: 400, height: 5000},
+      {left: 0, top: 10000, width: 400, height: 5000},
+      {left: 0, top: 15000, width: 400, height: 5000},
+      {left: 0, top: 20000, width: 400, height: 2818}
+    ]
+    for (const region of regions) {
+      eyes.check({
+        scrollRootElement: '#modal3',
+        frames: [{type: 'css', selector: '#modal3 iframe'}],
+        region,
+        isFully: true,
+      })
+    }
+    eyes.close()
+  }
+})
+
+test('CheckRegionInFrame_Multiple', {
+  page: 'Default',
+  variants: {
+    CSS: {config: {stitchMode: 'CSS', baselineName: 'TestCheckRegionInFrame2_Fluent'}},
+    Scroll: {config: {stitchMode: 'Scroll', baselineName: 'TestCheckRegionInFrame2_Fluent_Scroll'}},
+  },
+  test: ({eyes}) => {
+    eyes.open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+    eyes.check({
+      frames: ['frame1'],
+      region: '#inner-frame-div',
+      ignoreRegions: [{left: 50, top: 50, width: 100, height: 100}],
+      isFully: true,
+    })
+    eyes.check({
+      frames: ['frame1'],
+      region: '#inner-frame-div',
+      ignoreRegions: [
+        {left: 50, top: 50, width: 100, height: 100},
+        {left: 70, top: 170, width: 90, height: 90},
+      ],
+      isFully: true,
+    })
+    eyes.check({
+      frames: ['frame1'],
+      region: '#inner-frame-div',
+      isFully: true,
+      timeout: 5000
+    })
+    eyes.check({
+      frames: ['frame1'],
+      region: '#inner-frame-div',
+      isFully: true,
+    })
+    eyes.check({
+      frames: ['frame1'],
+      floatingRegions: [{left: 200, top: 200, width: 150, height: 150}],
+      isFully: true,
+      matchLevel: 'Layout'
+    })
     eyes.close()
   }
 })

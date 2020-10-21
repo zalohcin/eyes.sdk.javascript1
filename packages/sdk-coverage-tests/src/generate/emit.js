@@ -5,15 +5,16 @@ const {isFunction, mergeObjects} = require('../common-util')
 function emitTests(tests, config) {
   let processedTests = Object.entries(tests).reduce((tests, [testName, {variants, ...test}]) => {
     test.name = testName
-    test.config = test.config || {}
     if (variants) {
       Object.entries(variants).forEach(([variantName, overrides]) => {
         const testVariant = mergeObjects(test, overrides)
+        testVariant.config = testVariant.config || {}
         testVariant.skip = testVariant.skip && !config.ignoreSkip
         if (variantName) testVariant.name += `__${variantName}`
         tests.push(testVariant)
       })
     } else {
+      test.config = test.config || {}
       test.skip = test.skip && !config.ignoreSkip
       tests.push(test)
     }

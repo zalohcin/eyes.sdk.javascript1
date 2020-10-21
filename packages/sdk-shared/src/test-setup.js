@@ -143,9 +143,16 @@ const BROWSERS = {
     type: 'sauce',
     url: SAUCE_SERVER_URL,
     capabilities: {
-      browserName: 'safari',
-      browserVersion: '11.0',
-      platformName: 'macOS 10.12',
+      w3c: {
+        browserName: 'safari',
+        browserVersion: '11.0',
+        platformName: 'macOS 10.12',
+      },
+      legacy: {
+        browserName: 'safari',
+        version: '11.0',
+        platform: 'macOS 10.12',
+      },
     },
     options: {
       name: 'Safari 11',
@@ -157,9 +164,16 @@ const BROWSERS = {
     type: 'sauce',
     url: SAUCE_SERVER_URL,
     capabilities: {
-      browserName: 'safari',
-      browserVersion: '12.1',
-      platformName: 'macOS 10.13',
+      w3c: {
+        browserName: 'safari',
+        browserVersion: '12.1',
+        platformName: 'macOS 10.13',
+      },
+      legacy: {
+        browserName: 'safari',
+        version: '12.1',
+        platform: 'macOS 10.13',
+      },
     },
     options: {
       name: 'Safari 12',
