@@ -113,11 +113,16 @@ async function findElements(driver, selector) {
     return elements.value
   }
 }
-//async function getElementRect(_driver, element) {
-//  const {x, y} = await element.getLocation()
-//  const {width, height} = await element.getSize()
-//  return {x, y, width, height}
-//}
+async function getElementRect(driver, element) {
+  const location = await driver.elementIdLocation(extractElementId(element))
+  const size = await driver.elementIdSize(extractElementId(element))
+  return {
+    x: location.value.x,
+    y: location.value.y,
+    width: size.value.width,
+    height: size.value.height,
+  }
+}
 async function getWindowRect(driver) {
   const result = await driver.getWindowRect()
   return result && result.value ? result.value : result
@@ -215,7 +220,7 @@ exports.parentContext = parentContext
 exports.childContext = childContext
 exports.findElement = findElement
 exports.findElements = findElements
-//exports.getElementRect = getElementRect
+exports.getElementRect = getElementRect
 exports.getWindowRect = getWindowRect
 exports.setWindowRect = setWindowRect
 exports.getOrientation = getOrientation

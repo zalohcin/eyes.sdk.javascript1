@@ -171,5 +171,15 @@ describe('spec driver', async () => {
         assert.ok(spec.isStaleElementError(err))
       }
     })
+    it('getElementRect()', async function(driver) {
+      const element = await driver.element('css selector', '#overflowing-div')
+      const rect = await spec.getElementRect(driver, element)
+      assert.deepStrictEqual(rect, {
+        height: 184,
+        width: 304,
+        x: 8,
+        y: 79.875,
+      })
+    })
   })
 })
