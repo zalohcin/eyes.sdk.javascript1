@@ -2,6 +2,10 @@ const assert = require('assert')
 const spec = require('../../src/spec-driver')
 const fakeCaps = require('./fixtures/fake-caps-android')
 
+// NOTE: to run this against a real mobile configuration
+// - comment out fakeCaps
+// - run with: npx nightwatch --env browserstack.android test/it/spec-driver-mobile.spec.js
+
 // TODO: test against iOS
 describe('spec driver', async () => {
   describe('mobile driver (@mobile)', async () => {
