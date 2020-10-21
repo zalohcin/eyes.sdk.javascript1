@@ -175,12 +175,13 @@ async function click(driver, element) {
   }
   await driver.elementIdClick(extractElementId)
 }
-//async function type(driver, element, keys) {
-//  if (isSelector(element)) {
-//    element = await findElement(driver, element)
-//  }
-//  return element.sendKeys(keys)
-//}
+async function type(driver, element, keys) {
+  if (isSelector(element)) {
+    const selector = element
+    element = await driver.setValue('css selector', selector, keys)
+  }
+  await driver.elementIdValue(extractElementId(element), keys)
+}
 //async function waitUntilDisplayed(driver, selector, timeout) {
 //  const {until} = require('protractor')
 //
@@ -226,7 +227,7 @@ exports.getUrl = getUrl
 exports.visit = visit
 exports.takeScreenshot = takeScreenshot
 exports.click = click
-//exports.type = type
+exports.type = type
 //exports.waitUntilDisplayed = waitUntilDisplayed
 //exports.scrollIntoView = scrollIntoView
 //exports.hover = hover
