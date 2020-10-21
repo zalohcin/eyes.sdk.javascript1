@@ -171,14 +171,14 @@ async function takeScreenshot(driver) {
 async function click(driver, element) {
   if (isSelector(element)) {
     const selector = element
-    await driver.click('css selector', selector)
+    return await driver.click('css selector', selector)
   }
   await driver.elementIdClick(extractElementId)
 }
 async function type(driver, element, keys) {
   if (isSelector(element)) {
     const selector = element
-    element = await driver.setValue('css selector', selector, keys)
+    return await driver.setValue('css selector', selector, keys)
   }
   await driver.elementIdValue(extractElementId(element), keys)
 }
@@ -194,15 +194,13 @@ async function type(driver, element, keys) {
 //  }
 //  await driver.executeScript('arguments[0].scrollIntoView(arguments[1])', element, align)
 //}
-//async function hover(driver, element, {x, y} = {}) {
-//  if (isSelector(element)) {
-//    element = await findElement(driver, element)
-//  }
-//  await driver
-//    .actions()
-//    .mouseMove(element, {x, y})
-//    .perform()
-//}
+async function hover(driver, element, {x, y} = {}) {
+  if (isSelector(element)) {
+    const selector = element
+    return await driver.moveToElement('css selector', selector, x, y)
+  }
+  await driver.moveTo(extractElementId(element), x, y)
+}
 //
 //// #endregion
 //
@@ -230,7 +228,7 @@ exports.click = click
 exports.type = type
 //exports.waitUntilDisplayed = waitUntilDisplayed
 //exports.scrollIntoView = scrollIntoView
-//exports.hover = hover
+exports.hover = hover
 // for tests
 exports.build = () => {
   return [{}, () => {}]
