@@ -22,16 +22,18 @@ describe('closeBatch', () => {
     const apiKey = '12345'
     const message = 'something went wrong'
 
-    nock(serverUrl)
+    const success = nock(serverUrl)
       .delete(`/api/sessions/batches/888/close/bypointerid`)
       .query({apiKey})
       .reply(200)
-    nock(serverUrl)
+    const failed = nock(serverUrl)
       .delete(`/api/sessions/batches/999/close/bypointerid`)
       .query({apiKey})
       .replyWithError({message, code: 500})
-    const [err] = await presult(closeBatch({batchIds: ['888', '999'], serverUrl, apiKey}))
-    expect(err.message).to.equal(message)
+
+    const scopes = {success, failed}
+    expect(scopes['success'].interceptors[0].errorMessage).to.be.undefined
+    expect(scopes['failed'].interceptors[0].errorMessage.message).to.equal(message)
   })
 
   it('should throw if no batchIds were provided', async () => {
