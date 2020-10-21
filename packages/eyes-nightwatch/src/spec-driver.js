@@ -90,21 +90,6 @@ function isSelector(selector) {
   if (!selector) return false
   return TypeUtils.isString(selector)
 }
-//function transformDriver(driver) {
-//  const {CommandName} = require('protractor')
-//
-//  CommandName.SWITCH_TO_PARENT_FRAME = 'switchToParentFrame'
-//  driver
-//    .getExecutor()
-//    .defineCommand(CommandName.SWITCH_TO_PARENT_FRAME, 'POST', '/session/:sessionId/frame/parent')
-//  return driver
-//}
-//function transformElement(element) {
-//  if (TypeUtils.instanceOf(element, 'ElementFinder')) {
-//    return element.getWebElement()
-//  }
-//  return element
-//}
 //function isStaleElementError(error) {
 //  if (!error) return false
 //  error = error.originalError || error
@@ -183,27 +168,6 @@ function getDriverInfo(driver, opts = {}) {
     platformVersion,
     sessionId,
   }
-  //const capabilities = await driver.getCapabilities()
-  //const session = await driver.getSession()
-  //const sessionId = session.getId()
-  //const deviceName = capabilities.has('desired')
-  //  ? capabilities.get('desired').deviceName
-  //  : capabilities.get('deviceName')
-  //const platformName = capabilities.get('platformName') || capabilities.get('platform')
-  //const platformVersion = capabilities.get('platformVersion')
-  //const browserName = capabilities.get('browserName')
-  //const browserVersion = capabilities.get('browserVersion')
-  //const isMobile = ['android', 'ios'].includes(platformName && platformName.toLowerCase())
-  //return {
-  //  sessionId,
-  //  isMobile,
-  //  isNative: isMobile && !browserName,
-  //  deviceName,
-  //  platformName,
-  //  platformVersion,
-  //  browserName,
-  //  browserVersion,
-  //}
 }
 async function getTitle(driver) {
   return driver.title()
