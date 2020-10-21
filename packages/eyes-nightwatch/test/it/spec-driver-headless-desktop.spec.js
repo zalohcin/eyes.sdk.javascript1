@@ -155,6 +155,9 @@ describe('spec driver', async () => {
       const {isMobile} = await spec.getDriverInfo(driver)
       assert.deepStrictEqual(isMobile, false)
     })
-    it.skip('takeScreenshot()', async function(_driver) {})
+    it('takeScreenshot()', async function(driver) {
+      const result = await spec.takeScreenshot(driver)
+      assert.ok(Buffer.isBuffer(result))
+    })
   })
 })

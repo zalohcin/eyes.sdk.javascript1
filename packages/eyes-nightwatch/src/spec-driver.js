@@ -179,9 +179,14 @@ async function getUrl(driver) {
 async function visit(driver, url) {
   return driver.url(url)
 }
-//async function takeScreenshot(driver) {
-//  return driver.takeScreenshot()
-//}
+async function takeScreenshot(driver) {
+  // NOTE: passing a callback is needed in order to return the screenshot
+  // simply awaiting on the result returns undefined
+  const fn = result => {
+    return Buffer.from(result.value, 'base64')
+  }
+  return await driver.screenshot(true, fn)
+}
 //async function click(driver, element) {
 //  if (isSelector(element)) {
 //    element = await findElement(driver, element)
@@ -240,7 +245,7 @@ exports.getDriverInfo = getDriverInfo
 exports.getTitle = getTitle
 exports.getUrl = getUrl
 exports.visit = visit
-//exports.takeScreenshot = takeScreenshot
+exports.takeScreenshot = takeScreenshot
 //exports.click = click
 //exports.type = type
 //exports.waitUntilDisplayed = waitUntilDisplayed
