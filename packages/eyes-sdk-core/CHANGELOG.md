@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 12.5.1 - 2020/10/22
+
 - rename `_getSetBatchId` to `getBatchIdWithoutGenerating`
 
 ## 12.5.0 - 2020/10/22
