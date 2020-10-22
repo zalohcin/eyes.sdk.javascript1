@@ -1,5 +1,4 @@
 // Refer to the online docs for more details: https://nightwatchjs.org/gettingstarted/configuration/
-const chromedriver = require('chromedriver')
 const Services = {}
 loadServices()
 
@@ -51,23 +50,23 @@ module.exports = {
       webdriver: {
         port: 9515,
         start_process: true,
-        server_path: chromedriver.path,
+        server_path: Services.chromedriver ? Services.chromedriver.path : '',
       },
     },
 
-    safari: {
-      desiredCapabilities: {
-        browserName: 'safari',
-        alwaysMatch: {
-          acceptInsecureCerts: false,
-        },
-      },
-      webdriver: {
-        port: 4445,
-        start_process: true,
-        server_path: '/usr/bin/safaridriver',
-      },
-    },
+    //safari: {
+    //  desiredCapabilities: {
+    //    browserName: 'safari',
+    //    alwaysMatch: {
+    //      acceptInsecureCerts: false,
+    //    },
+    //  },
+    //  webdriver: {
+    //    port: 4445,
+    //    start_process: true,
+    //    server_path: '/usr/bin/safaridriver',
+    //  },
+    //},
 
     firefox: {
       desiredCapabilities: {
@@ -93,20 +92,39 @@ module.exports = {
         ],
       },
     },
+    'firefox.headless': {
+      desiredCapabilities: {
+        browserName: 'firefox',
+        alwaysMatch: {
+          // Enable this if you encounter unexpected SSL certificate errors in Firefox
+          // acceptInsecureCerts: true,
+          'moz:firefoxOptions': {
+            args: [
+              '-headless',
+              // '-verbose'
+            ],
+          },
+        },
+      },
+      webdriver: {
+        start_process: true,
+        port: 4444,
+        server_path: Services.geckodriver ? Services.geckodriver.path : '',
+        cli_args: [
+          // very verbose geckodriver logs
+          // '-vv'
+        ],
+      },
+    },
 
-    chrome: {
+    'chrome.headless': {
       desiredCapabilities: {
         browserName: 'chrome',
-        chromeOptions: {
-          // This tells Chromedriver to run using the legacy JSONWire protocol (not required in Chrome 78)
-          // w3c: false,
-          // More info on Chromedriver: https://sites.google.com/a/chromium.org/chromedriver/
-          args: [
-            //'--no-sandbox',
-            //'--ignore-certificate-errors',
-            //'--allow-insecure-localhost',
-            //'--headless'
-          ],
+        'goog:chromeOptions': {
+          // This tells Chromedriver to run using the legacy JSONWire protocol
+          // w3c: false
+          // set to false implicitly
+          args: ['--headless'],
         },
       },
 
@@ -149,39 +167,39 @@ module.exports = {
       },
     },
 
-    'browserstack.chrome': {
-      extends: 'browserstack',
-      desiredCapabilities: {
-        browserName: 'chrome',
-        chromeOptions: {
-          // This tells Chromedriver to run using the legacy JSONWire protocol
-          // More info on Chromedriver: https://sites.google.com/a/chromium.org/chromedriver/
-          w3c: false,
-        },
-      },
-    },
+    //'browserstack.chrome': {
+    //  extends: 'browserstack',
+    //  desiredCapabilities: {
+    //    browserName: 'chrome',
+    //    chromeOptions: {
+    //      // This tells Chromedriver to run using the legacy JSONWire protocol
+    //      // More info on Chromedriver: https://sites.google.com/a/chromium.org/chromedriver/
+    //      w3c: false,
+    //    },
+    //  },
+    //},
 
-    'browserstack.firefox': {
-      extends: 'browserstack',
-      desiredCapabilities: {
-        browserName: 'firefox',
-      },
-    },
+    //'browserstack.firefox': {
+    //  extends: 'browserstack',
+    //  desiredCapabilities: {
+    //    browserName: 'firefox',
+    //  },
+    //},
 
-    'browserstack.ie': {
-      extends: 'browserstack',
-      desiredCapabilities: {
-        browserName: 'IE',
-        browserVersion: '11.0',
-        'bstack:options': {
-          os: 'Windows',
-          osVersion: '10',
-          local: 'false',
-          seleniumVersion: '3.5.2',
-          resolution: '1366x768',
-        },
-      },
-    },
+    //'browserstack.ie': {
+    //  extends: 'browserstack',
+    //  desiredCapabilities: {
+    //    browserName: 'IE',
+    //    browserVersion: '11.0',
+    //    'bstack:options': {
+    //      os: 'Windows',
+    //      osVersion: '10',
+    //      local: 'false',
+    //      seleniumVersion: '3.5.2',
+    //      resolution: '1366x768',
+    //    },
+    //  },
+    //},
 
     'browserstack.android': {
       extends: 'browserstack',
@@ -201,41 +219,41 @@ module.exports = {
     // Configuration for when using the Selenium service, either locally or remote,  |
     //  like Selenium Grid                                                           |
     //////////////////////////////////////////////////////////////////////////////////
-    selenium: {
-      // Selenium Server is running locally and is managed by Nightwatch
-      selenium: {
-        start_process: true,
-        port: 4444,
-        server_path: Services.seleniumServer ? Services.seleniumServer.path : '',
-        cli_args: {
-          'webdriver.gecko.driver': Services.geckodriver ? Services.geckodriver.path : '',
-          'webdriver.chrome.driver': Services.chromedriver ? Services.chromedriver.path : '',
-        },
-      },
-    },
+    //selenium: {
+    //  // Selenium Server is running locally and is managed by Nightwatch
+    //  selenium: {
+    //    start_process: true,
+    //    port: 4444,
+    //    server_path: Services.seleniumServer ? Services.seleniumServer.path : '',
+    //    cli_args: {
+    //      'webdriver.gecko.driver': Services.geckodriver ? Services.geckodriver.path : '',
+    //      'webdriver.chrome.driver': Services.chromedriver ? Services.chromedriver.path : '',
+    //    },
+    //  },
+    //},
 
-    'selenium.chrome': {
-      extends: 'selenium',
-      desiredCapabilities: {
-        browserName: 'chrome',
-        chromeOptions: {
-          w3c: false,
-        },
-      },
-    },
+    //'selenium.chrome': {
+    //  extends: 'selenium',
+    //  desiredCapabilities: {
+    //    browserName: 'chrome',
+    //    chromeOptions: {
+    //      w3c: false,
+    //    },
+    //  },
+    //},
 
-    'selenium.firefox': {
-      extends: 'selenium',
-      desiredCapabilities: {
-        browserName: 'firefox',
-        'moz:firefoxOptions': {
-          args: [
-            // '-headless',
-            // '-verbose'
-          ],
-        },
-      },
-    },
+    //'selenium.firefox': {
+    //  extends: 'selenium',
+    //  desiredCapabilities: {
+    //    browserName: 'firefox',
+    //    'moz:firefoxOptions': {
+    //      args: [
+    //        // '-headless',
+    //        // '-verbose'
+    //      ],
+    //    },
+    //  },
+    //},
   },
 }
 
