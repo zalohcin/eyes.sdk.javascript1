@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 15.0.13 - 2020/10/22
+
 - updated to @applitools/eyes-sdk-core@12.5.1 (from 12.4.4)
 - fix closing batches ([Trello](https://trello.com/c/8zPehdmh))
 
