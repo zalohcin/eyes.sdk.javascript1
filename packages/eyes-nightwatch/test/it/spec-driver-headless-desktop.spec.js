@@ -121,12 +121,8 @@ describe('spec driver', async () => {
     // TODO: suboptimal solution, revisit
     it('childContext(element)', async function(driver) {
       try {
-        if (spec.isW3C(driver)) {
-          const element = await driver.element('css selector', '[name="frame1"]')
-          await driver.frame(element.value)
-        } else {
-          await driver.frame('frame1')
-        }
+        const element = await driver.element('css selector', '[name="frame1"]')
+        await driver.frame(element.value)
         const expectedDocument = await driver.element('css selector', 'html')
         await driver.frame()
         const frameElement = await driver.element('css selector', '[name="frame1"]')

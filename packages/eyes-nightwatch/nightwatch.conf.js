@@ -68,6 +68,27 @@ module.exports = {
     //  },
     //},
 
+    // NOTE: doesn't work - I think it's a bug in capability merging that was fixed in a later version
+    chrome: {
+      capabilities: {
+        browserName: 'chrome',
+        'goog:chromeOptions': {
+          w3c: true,
+          args: ['--headless'],
+        },
+      },
+
+      webdriver: {
+        start_process: true,
+        port: 9515,
+        server_path: Services.chromedriver ? Services.chromedriver.path : '',
+        cli_args: [
+          // --verbose
+        ],
+      },
+    },
+
+    // implicitly w3c: true
     firefox: {
       desiredCapabilities: {
         browserName: 'firefox',

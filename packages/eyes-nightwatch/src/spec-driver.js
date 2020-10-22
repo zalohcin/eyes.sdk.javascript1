@@ -5,18 +5,8 @@ function extractElementId(element) {
   const _element = element.value ? element.value : element
   return Object.values(_element)[0]
 }
-async function getFrameId(driver, element) {
-  const name = await driver.elementIdAttribute(extractElementId(element), 'name')
-  if (name) return name.value
-  const id = await driver.elementIdAttribute(extractElementId(element), 'id')
-  if (id) return id.value
-}
 function getCapabilities(driver, opts) {
   return opts.using ? opts.using : driver.capabilities
-}
-// TODO: fortify this
-function isW3C(driver) {
-  return !!driver.capabilities['moz:geckodriverVersion']
 }
 //function transformSelector(selector) {
 //  if (TypeUtils.has(selector, ['type', 'selector'])) {
@@ -66,8 +56,7 @@ async function childContext(driver, element) {
   if (isSelector(element)) {
     element = await driver.element('css selector', element)
   }
-  const frameId = isW3C(driver) ? element.value : await getFrameId(driver, element)
-  await driver.frame(frameId)
+  await driver.frame(element.value)
 }
 async function findElement(driver, selector) {
   if (TypeUtils.isString(selector)) {
@@ -204,4 +193,3 @@ exports.build = () => {
   return [{}, () => {}]
 }
 exports.extractElementId = extractElementId
-exports.isW3C = isW3C
