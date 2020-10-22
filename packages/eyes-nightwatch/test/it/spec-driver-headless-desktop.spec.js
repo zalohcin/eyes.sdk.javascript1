@@ -1,7 +1,7 @@
 const assert = require('assert')
 const spec = require('../../src/spec-driver')
 
-describe('spec driver', async () => {
+describe('spec driver', () => {
   const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
 
   describe('headless desktop', async () => {
@@ -58,13 +58,25 @@ describe('spec driver', async () => {
       const result = await spec.executeScript(driver, script, args)
       assert.deepStrictEqual(result[0], args)
     })
-    it('executeScript(element)', async function(driver) {
+    it('executeScript(element) return', async function(driver) {
       const element = await driver.element('css selector', 'div')
       const script = function() {
         return arguments
       }
       const result = await spec.executeScript(driver, script, element)
-      assert.deepStrictEqual(result[0], element)
+      assert.deepStrictEqual(result[0], element.value)
+    })
+    it('executeScript(element) use', async function(driver) {
+      const element = await driver.element('css selector', 'html')
+      const script = "return getComputedStyle(arguments[0]).getPropertyValue('overflow')"
+      assert.deepStrictEqual(await spec.executeScript(driver, script, element), 'visible')
+    })
+    it('executeScript(element) re-use', async function(driver) {
+      const element = await driver.element('css selector', 'html')
+      const recycledElement = await spec.executeScript(driver, 'return arguments[0]', element)
+      const script = "return getComputedStyle(arguments[0]).getPropertyValue('overflow')"
+      const result = await spec.executeScript(driver, script, recycledElement)
+      assert.deepStrictEqual(result, 'visible')
     })
     it('findElement(selector)', async function(driver) {
       const element = await spec.findElement(driver, '#overflowing-div')

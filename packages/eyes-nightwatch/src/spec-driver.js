@@ -36,7 +36,10 @@ function isEqualElements(_driver, element1, element2) {
 
 //// #region COMMANDS
 async function executeScript(driver, script, ...args) {
-  const result = await driver.execute(script, args)
+  const argsWithPreparedElements = args.map(
+    arg => (arg = isElement(arg) && arg.value ? arg.value : arg),
+  )
+  const result = await driver.execute(script, argsWithPreparedElements)
   return result.value
 }
 async function mainContext(driver) {
