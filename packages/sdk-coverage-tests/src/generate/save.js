@@ -9,7 +9,7 @@ async function createTestFiles(tests, {outPath, ext, testFrameworkTemplate} = {}
 
   tests.forEach(test => {
     const payload = testFrameworkTemplate(test)
-    const filePath = path.resolve(targetDirectory, `${test.filename}${ext}`)
+    const filePath = path.resolve(targetDirectory, `${test.key}${ext}`)
     fs.writeFileSync(filePath, payload)
   })
 }
@@ -19,7 +19,7 @@ async function createTestMetaData(tests, {metaPath = ''} = {}) {
   fs.mkdirSync(targetDirectory, {recursive: true})
 
   const meta = tests.reduce((meta, test) => {
-    meta[test.filename] = {isGeneric: true}
+    meta[test.key] = {isGeneric: true}
     return meta
   }, {})
 

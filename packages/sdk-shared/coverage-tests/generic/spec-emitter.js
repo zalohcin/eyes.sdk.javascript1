@@ -133,7 +133,7 @@ module.exports = function(tracker, test) {
             ${checkSettings.isFully},
           )`)
         }
-        return addCommand(js`await eyes.checkElementBy(
+        return addCommand(js`await eyes.checkRegionBy(
           ${checkSettings.region},
           ${checkSettings.name},
           ${checkSettings.timeout},

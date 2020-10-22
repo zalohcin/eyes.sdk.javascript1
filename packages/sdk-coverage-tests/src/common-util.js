@@ -37,7 +37,15 @@ function mergeObjects(base, other) {
 }
 
 function capitalize(string) {
-  return string[0].toUpperCase() + string.slice(1)
+  return string[0].toUpperCase() + string.substring(1)
+}
+
+function toPascalCase(string) {
+  if (!string) return string
+  return string
+    .split(' ')
+    .map(word => capitalize(word))
+    .join('')
 }
 
 module.exports = {
@@ -48,4 +56,5 @@ module.exports = {
   isObject,
   isEmptyObject,
   capitalize,
+  toPascalCase,
 }

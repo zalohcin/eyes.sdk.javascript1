@@ -1,19 +1,27 @@
 const {useEmitter, withHistory} = require('../emitter')
 const {describeTest} = require('./describe')
-const {isFunction, mergeObjects} = require('../common-util')
+const {isFunction, mergeObjects, toPascalCase} = require('../common-util')
 
 function emitTests(tests, config) {
   let processedTests = Object.entries(tests).reduce((tests, [testName, {variants, ...test}]) => {
     test.name = testName
+    test.key = test.key || toPascalCase(testName)
     if (variants) {
-      Object.entries(variants).forEach(([variantName, overrides]) => {
-        const testVariant = mergeObjects(test, overrides)
+      Object.entries(variants).forEach(([variantName, variant]) => {
+        let testVariant = mergeObjects(test, variant)
+        testVariant.name += ' ' + variantName
+        if (config.overrideTests && config.overrideTests[testVariant.name]) {
+          testVariant = mergeObjects(testVariant, config.overrideTests[testVariant.name])
+        }
         testVariant.config = testVariant.config || {}
         testVariant.skip = testVariant.skip && !config.ignoreSkip
-        if (variantName) testVariant.name += `__${variantName}`
+        testVariant.key += variant.key || toPascalCase(variantName)
         tests.push(testVariant)
       })
     } else {
+      if (config.overrideTests && config.overrideTests[test.name]) {
+        test = mergeObjects(test, config.overrideTests[test.name])
+      }
       test.config = test.config || {}
       test.skip = test.skip && !config.ignoreSkip
       tests.push(test)
@@ -29,7 +37,7 @@ function emitTests(tests, config) {
     if (!isFunction(test.test)) {
       throw new Error(`Missing implementation for test ${test.name}`)
     }
-    test.config.baselineName = test.config.baselineName || test.name
+    test.config.baselineName = test.config.baselineName || test.key
     const [output, emitter] = useEmitter()
     test.output = output
     test.meta = {features: test.features}
@@ -43,7 +51,6 @@ function emitTests(tests, config) {
     if (test.page) sdk.driver.visit(config.pages[test.page])
     test.test(sdk)
     test.description = describeTest(test)
-    test.filename = test.name
     return test
   })
 }

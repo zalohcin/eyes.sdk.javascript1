@@ -2,7 +2,7 @@ const vm = require('vm')
 const fs = require('fs')
 const fetch = require('node-fetch')
 const {useFramework} = require('../framework')
-const {isUrl, mergeObjects} = require('../common-util')
+const {isUrl} = require('../common-util')
 
 async function prepareTests(config) {
   const source = isUrl(config.testsPath)
@@ -12,8 +12,6 @@ async function prepareTests(config) {
   const {context, api} = useFramework()
 
   vm.runInContext(source, vm.createContext({...api, process}))
-
-  context.tests = mergeObjects(context.tests, config.overrideTests || {})
 
   return context
 }
