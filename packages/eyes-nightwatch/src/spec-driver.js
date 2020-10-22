@@ -14,6 +14,10 @@ async function getFrameId(driver, element) {
 function getCapabilities(driver, opts) {
   return opts.using ? opts.using : driver.capabilities
 }
+// TODO: fortify this
+function isW3C(driver) {
+  return !!driver.capabilities['moz:geckodriverVersion']
+}
 //function transformSelector(selector) {
 //  if (TypeUtils.has(selector, ['type', 'selector'])) {
 //    if (selector.type === 'css') return {css: selector.selector}
@@ -28,8 +32,8 @@ function isDriver(driver) {
   return TypeUtils.instanceOf(driver, 'NightwatchAPI')
 }
 function isElement(element) {
-  if (!element) return false
-  return Boolean((element.sessionId && element.value && element.value.ELEMENT) || element.ELEMENT)
+  if (!element || element.error) return false
+  return !!extractElementId(element)
 }
 function isSelector(selector) {
   if (!selector) return false
@@ -59,7 +63,10 @@ async function parentContext(driver) {
   await driver.frameParent()
 }
 async function childContext(driver, element) {
-  const frameId = await getFrameId(driver, element)
+  if (isSelector(element)) {
+    element = await driver.element('css selector', element)
+  }
+  const frameId = isW3C(driver) ? element.value : await getFrameId(driver, element)
   await driver.frame(frameId)
 }
 async function findElement(driver, selector) {
@@ -78,10 +85,10 @@ async function getElementRect(driver, element) {
   const location = await driver.elementIdLocation(extractElementId(element))
   const size = await driver.elementIdSize(extractElementId(element))
   return {
-    x: location.value.x,
-    y: location.value.y,
-    width: size.value.width,
-    height: size.value.height,
+    x: Math.round(location.value.x),
+    y: Math.round(location.value.y),
+    width: Math.round(size.value.width),
+    height: Math.round(size.value.height),
   }
 }
 async function getWindowRect(driver) {
@@ -197,3 +204,4 @@ exports.build = () => {
   return [{}, () => {}]
 }
 exports.extractElementId = extractElementId
+exports.isW3C = isW3C

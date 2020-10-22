@@ -93,8 +93,8 @@ describe('spec driver', async () => {
     it('mainContext()', async function(driver) {
       try {
         const mainDocument = await driver.element('css selector', 'html')
-        await driver.frame('frame1')
-        await driver.frame('frame1-1')
+        await spec.childContext(driver, '[name="frame1"]')
+        await spec.childContext(driver, '[name="frame1-1"]')
         const frameDocument = await driver.element('css selector', 'html')
         assert.ok(!(await spec.isEqualElements(driver, mainDocument, frameDocument)))
         await spec.mainContext(driver)
@@ -106,9 +106,9 @@ describe('spec driver', async () => {
     })
     it('parentContext()', async function(driver) {
       try {
-        await driver.frame('frame1')
+        await spec.childContext(driver, '[name="frame1"]')
         const parentDocument = await driver.element('css selector', 'html')
-        await driver.frame('frame1-1')
+        await spec.childContext(driver, '[name="frame1-1"]')
         const frameDocument = await driver.element('css selector', 'html')
         assert.ok(!(await spec.isEqualElements(driver, parentDocument, frameDocument)))
         await spec.parentContext(driver)
@@ -121,7 +121,12 @@ describe('spec driver', async () => {
     // TODO: suboptimal solution, revisit
     it('childContext(element)', async function(driver) {
       try {
-        await driver.frame('frame1')
+        if (spec.isW3C(driver)) {
+          const element = await driver.element('css selector', '[name="frame1"]')
+          await driver.frame(element.value)
+        } else {
+          await driver.frame('frame1')
+        }
         const expectedDocument = await driver.element('css selector', 'html')
         await driver.frame()
         const frameElement = await driver.element('css selector', '[name="frame1"]')
@@ -183,7 +188,7 @@ describe('spec driver', async () => {
         height: 184,
         width: 304,
         x: 8,
-        y: 79.875,
+        y: 80,
       })
     })
   })
