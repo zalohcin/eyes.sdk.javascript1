@@ -48,7 +48,7 @@ describe('spec driver', () => {
       const script = 'return arguments'
       const args = [0, 1, 2, 3]
       const result = await spec.executeScript(driver, script, args)
-      assert.deepStrictEqual(result[0], args)
+      assert.deepStrictEqual(result, args)
     })
     it('executeScript(function, ...args)', async function(driver) {
       const script = function() {
@@ -56,7 +56,7 @@ describe('spec driver', () => {
       }
       const args = [0, 1, 2, 3]
       const result = await spec.executeScript(driver, script, args)
-      assert.deepStrictEqual(result[0], args)
+      assert.deepStrictEqual(result, args)
     })
     it('executeScript(element) return', async function(driver) {
       const element = await driver.element('css selector', 'div')

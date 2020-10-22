@@ -8,6 +8,34 @@ function extractElementId(element) {
 function getCapabilities(driver, opts) {
   return opts.using ? opts.using : driver.capabilities
 }
+function transformSelectorType(type) {
+  return type === 'css' ? 'css selector' : type
+}
+async function findSpecializedElement(driver, arg) {
+  const selector = isSelector(arg._element) ? arg._element : arg._element.selector
+  return await driver.element(transformSelectorType(arg._element.type), selector)
+}
+async function prepareArgWithElement(driver, arg) {
+  const element =
+    arg.constructor.name === 'SpecializedElement' ? await findSpecializedElement(driver, arg) : arg
+  return isElement(element) && element.value ? element.value : element
+}
+async function prepareArgsWithElements(driver, args) {
+  if (Array.isArray(args)) {
+    let results = []
+    for (const i in args) {
+      if (Array.isArray(args[i])) {
+        return await prepareArgsWithElements(driver, args[i])
+      } else {
+        const result = await prepareArgWithElement(driver, args[i])
+        results.push(result)
+      }
+    }
+    return results
+  }
+  const results = await prepareArgWithElement(driver, args)
+  return [results]
+}
 //// #endregion
 
 //// #region UTILITY
@@ -35,11 +63,9 @@ function isEqualElements(_driver, element1, element2) {
 //// #endregion
 
 //// #region COMMANDS
-async function executeScript(driver, script, ...args) {
-  const argsWithPreparedElements = args.map(
-    arg => (arg = isElement(arg) && arg.value ? arg.value : arg),
-  )
-  const result = await driver.execute(script, argsWithPreparedElements)
+async function executeScript(driver, script, args = []) {
+  const preparedArgs = await prepareArgsWithElements(driver, args)
+  const result = await driver.execute(script, preparedArgs)
   return result.value
 }
 async function mainContext(driver) {
