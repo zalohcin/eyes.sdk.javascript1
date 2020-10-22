@@ -40,6 +40,9 @@ module.exports = {
   'should hide and restore scrollbars with vg': {config: {branchName: 'no-full-selector'}},
 
   'should send floating region by coordinates with vg': {skip: true},
+  'check frame after manual switch to frame with css stitching classic': {skip: true},
+  'check frame after manual switch to frame with vg classic': {config: {branchName: 'no-fully-by-default'}},
+  'check regions by coordinates in overflowed frame with scroll stitching': {config: {branchName: 'next'}},
 
   // CheckFrameFully_FloatingRegionByCoordinates: {
   //   variants: {

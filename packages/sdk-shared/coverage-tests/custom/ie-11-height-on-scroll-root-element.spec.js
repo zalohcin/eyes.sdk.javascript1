@@ -1,7 +1,7 @@
 // re: https://trello.com/c/Y0Q6QAHK
 const cwd = process.cwd()
 const path = require('path')
-const spec = require(path.resolve(cwd, 'src/SpecDriver'))
+const spec = require(path.resolve(cwd, 'src/spec-driver'))
 const {getEyes} = require('../../src/test-setup')
 const {Target} = require(cwd)
 

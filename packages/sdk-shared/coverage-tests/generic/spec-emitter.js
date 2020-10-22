@@ -22,7 +22,7 @@ function serialize(data) {
     return `[${data.map(serialize).join(', ')}]`
   } else if (typeof data === 'object' && data !== null) {
     const properties = Object.entries(data).reduce((data, [key, value]) => {
-      return data.concat(`${key}: ${serialize(value)}`)
+      return value !== undefined ? data.concat(`${key}: ${serialize(value)}`) : data
     }, [])
     return `{${properties.join(', ')}}`
   } else {
@@ -50,7 +50,10 @@ module.exports = function(tracker, test) {
     'beforeEach',
     js`[driver, destroyDriver] = await spec.build(${test.env} || {browser: 'chrome'})`,
   )
-  addHook('beforeEach', js`eyes = testSetup.getEyes(${{displayName: test.name, ...test.config}})`)
+  addHook(
+    'beforeEach',
+    js`eyes = testSetup.getEyes(${{vg: test.vg, displayName: test.name, ...test.config}})`,
+  )
 
   addHook('afterEach', js`await destroyDriver(driver)`)
 
@@ -120,7 +123,7 @@ module.exports = function(tracker, test) {
       )
     },
     check(checkSettings = {}) {
-      if (!test.config || test.config.check !== 'classic') {
+      if (test.api !== 'classic') {
         return addCommand(js`await eyes.check(${checkSettings})`)
       } else if (checkSettings.region) {
         if (checkSettings.frames && checkSettings.frames.length > 0) {
@@ -183,6 +186,9 @@ module.exports = function(tracker, test) {
     },
     ok(value, message) {
       addCommand(js`assert.ok(${value}, ${message})`)
+    },
+    instanceOf(object, className, message) {
+      addCommand(js`assert.ok(${object}.constructor.name === ${className}, ${message})`)
     },
     throws(func, check, message) {
       let command

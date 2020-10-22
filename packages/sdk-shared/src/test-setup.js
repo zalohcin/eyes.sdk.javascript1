@@ -100,6 +100,19 @@ const DEVICES = {
       ...SAUCE_CREDENTIALS,
     },
   },
+  'Android 8.0 Chrome Emulator': {
+    capabilities: {
+      browserName: 'chrome',
+      'goog:chromeOptions': {
+        mobileEmulation: {
+          deviceMetrics: {width: 384, height: 512, pixelRatio: 2},
+          userAgent:
+            'Mozilla/5.0 (Linux; Android 8.0.0; Android SDK built for x86_64 Build/OSR1.180418.004) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Mobile Safari/537.36',
+        },
+        args: ['headless', 'hide-scrollbars'],
+      },
+    },
+  },
 }
 
 const BROWSERS = {

@@ -2,7 +2,7 @@
 const cwd = process.cwd()
 const path = require('path')
 const {Target, StitchMode} = require(cwd)
-const spec = require(path.resolve(cwd, 'src/SpecDriver'))
+const spec = require(path.resolve(cwd, 'src/spec-driver'))
 const {getEyes} = require('../../../src/test-setup')
 
 const iPhoneAgent =
@@ -14,9 +14,9 @@ const iPadAgent10 =
 
 function testMobileDevices(device, page) {
   return async () => {
-    let webDriver, eyes
+    let webDriver, destroyDriver, eyes
     try {
-      webDriver = await spec.build({
+      ;[webDriver, destroyDriver] = await spec.build({
         capabilities: getDeviceEmulationCaps(device.mobileEmulation),
       })
       eyes = getEyes()
@@ -37,7 +37,7 @@ function testMobileDevices(device, page) {
       await eyes.check('step 1', Target.window().fully())
       await eyes.close()
     } finally {
-      await spec.cleanup(webDriver)
+      await destroyDriver()
       await eyes.abortIfNotClosed()
     }
   }
@@ -45,11 +45,7 @@ function testMobileDevices(device, page) {
 
 function getMobileEmulation(agent, width, height, pixelRatio) {
   return {
-    deviceMetrics: {
-      width: width,
-      height: height,
-      pixelRatio: pixelRatio,
-    },
+    deviceMetrics: {width: 384, height: 512, pixelRatio: 2},
     userAgent: agent,
   }
 }
@@ -59,7 +55,7 @@ function getDeviceEmulationCaps(mobileEmulation) {
     browserName: 'chrome',
     'goog:chromeOptions': {
       mobileEmulation: mobileEmulation,
-      args: ['headless'],
+      args: ['headless', 'hide-scrollbars'],
     },
   }
 }

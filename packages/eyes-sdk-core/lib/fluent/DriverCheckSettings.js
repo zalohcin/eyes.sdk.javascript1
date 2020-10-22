@@ -266,10 +266,10 @@ class CheckSettings {
     if (!Number.isNaN(Number(object.timeout))) {
       settings.timeout(object.timeout)
     }
-    if (object.sendDom) {
+    if (object.sendDom !== undefined) {
       settings.sendDom(object.sendDom)
     }
-    if (object.useDom) {
+    if (object.useDom !== undefined) {
       settings.useDom(object.useDom)
     }
     if (object.enablePatterns) {
