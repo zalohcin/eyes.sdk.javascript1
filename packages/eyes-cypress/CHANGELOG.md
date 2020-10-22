@@ -3,6 +3,9 @@
 ## Unreleased
 
 - deprecate `saveDebugData`
+- updated to @applitools/eyes-sdk-core@12.5.1 (from 12.4.3)
+- updated to @applitools/visual-grid-client@15.0.13 (from 15.0.11)
+- fix closing batches ([Trello](https://trello.com/c/8zPehdmh))
 
 ## 3.15.2 - 2020/10/18
 
