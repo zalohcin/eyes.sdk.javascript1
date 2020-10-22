@@ -1,11 +1,6 @@
 const assert = require('assert')
 const spec = require('../../src/spec-driver')
 
-// TODO: add test for click
-// TODO: add test for type
-// TODO: add test for scrollIntoView
-// TODO: add test for hover
-// TODO: add test for waitUntilIsDisplayed
 describe('spec driver', async () => {
   const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
 
@@ -118,7 +113,6 @@ describe('spec driver', async () => {
         await driver.frame()
       }
     })
-    // TODO: suboptimal solution, revisit
     it('childContext(element)', async function(driver) {
       try {
         const element = await driver.element('css selector', '[name="frame1"]')
@@ -187,5 +181,10 @@ describe('spec driver', async () => {
         y: 80,
       })
     })
+    it.skip('click()')
+    it.skip('type()')
+    it.skip('scrollIntoView()')
+    it.skip('hover()')
+    it.skip('waitUntilIsDisplayed()')
   })
 })

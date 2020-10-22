@@ -8,13 +8,6 @@ function extractElementId(element) {
 function getCapabilities(driver, opts) {
   return opts.using ? opts.using : driver.capabilities
 }
-//function transformSelector(selector) {
-//  if (TypeUtils.has(selector, ['type', 'selector'])) {
-//    if (selector.type === 'css') return {css: selector.selector}
-//    else if (selector.type === 'xpath') return {xpath: selector.selector}
-//  }
-//  return selector
-//}
 //// #endregion
 
 //// #region UTILITY
