@@ -1,7 +1,7 @@
 'use strict'
 const {URL} = require('url')
 const cwd = process.cwd()
-const {BatchInfo, Configuration, Eyes, VisualGridRunner, ConsoleLogHandler} = require(cwd)
+const {BatchInfo, Configuration, Eyes, VisualGridRunner} = require(cwd)
 
 const SAUCE_SERVER_URL = 'https://ondemand.saucelabs.com:443/wd/hub'
 

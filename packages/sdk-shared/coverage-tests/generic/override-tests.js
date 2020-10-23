@@ -43,8 +43,12 @@ module.exports = {
 
   'should send floating region by coordinates with vg': {skip: true},
   'check frame after manual switch to frame with css stitching classic': {skip: true},
-  'check frame after manual switch to frame with vg classic': {config: {branchName: 'no-fully-by-default'}},
-  'check regions by coordinates in overflowed frame with scroll stitching': {config: {branchName: 'next'}},
+  'check frame after manual switch to frame with vg classic': {
+    config: {branchName: 'no-fully-by-default'},
+  },
+  'check regions by coordinates in overflowed frame with scroll stitching': {
+    config: {branchName: 'next'},
+  },
   /**
    *  Fails because of the difference between SCREEN SIZE and LAYOUT VIEWPORT SIZE.
    *  We should use screen.width/screen.height for cropping/scaling and innerWidth/innerHeight to understand element location related to the viewport

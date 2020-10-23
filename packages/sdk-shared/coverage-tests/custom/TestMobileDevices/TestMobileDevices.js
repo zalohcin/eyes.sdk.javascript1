@@ -45,7 +45,7 @@ function testMobileDevices(device, page) {
 
 function getMobileEmulation(agent, width, height, pixelRatio) {
   return {
-    deviceMetrics: {width: 384, height: 512, pixelRatio: 2},
+    deviceMetrics: {width, height, pixelRatio},
     userAgent: agent,
   }
 }
