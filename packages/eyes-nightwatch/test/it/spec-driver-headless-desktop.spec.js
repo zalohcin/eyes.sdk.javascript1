@@ -48,7 +48,7 @@ describe('spec driver', () => {
       const script = 'return arguments'
       const args = [0, 1, 2, 3]
       const result = await spec.executeScript(driver, script, args)
-      assert.deepStrictEqual(result, args)
+      assert.deepStrictEqual(result[0], args)
     })
     it('executeScript(function, ...args)', async function(driver) {
       const script = function() {
@@ -56,7 +56,7 @@ describe('spec driver', () => {
       }
       const args = [0, 1, 2, 3]
       const result = await spec.executeScript(driver, script, args)
-      assert.deepStrictEqual(result, args)
+      assert.deepStrictEqual(result[0], args)
     })
     it('executeScript(element) return', async function(driver) {
       const element = await driver.element('css selector', 'div')
@@ -77,6 +77,17 @@ describe('spec driver', () => {
       const script = "return getComputedStyle(arguments[0]).getPropertyValue('overflow')"
       const result = await spec.executeScript(driver, script, recycledElement)
       assert.deepStrictEqual(result, 'visible')
+    })
+    it('executeScript(nested args)', async function(driver) {
+      const args = [
+        {
+          type: 'css',
+          selector: 'html',
+        },
+        ['transform', '-webkit-transform'],
+      ]
+      const result = await spec.executeScript(driver, 'return arguments', args)
+      assert.deepStrictEqual(result[0], args)
     })
     it('findElement(selector)', async function(driver) {
       const element = await spec.findElement(driver, '#overflowing-div')

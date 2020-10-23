@@ -22,19 +22,21 @@ async function prepareArgWithElement(driver, arg) {
 }
 async function prepareArgsWithElements(driver, args) {
   if (Array.isArray(args)) {
-    let results = []
+    const results = []
     for (const i in args) {
+      let result
       if (Array.isArray(args[i])) {
-        return await prepareArgsWithElements(driver, args[i])
+        result = await Promise.all(
+          args[i].map(async nestedArg => await prepareArgWithElement(driver, nestedArg)),
+        )
       } else {
-        const result = await prepareArgWithElement(driver, args[i])
-        results.push(result)
+        result = await prepareArgWithElement(driver, args[i])
       }
+      results.push(result)
     }
     return results
   }
-  const results = await prepareArgWithElement(driver, args)
-  return [results]
+  return [await prepareArgWithElement(driver, args)]
 }
 //// #endregion
 
@@ -63,7 +65,7 @@ function isEqualElements(_driver, element1, element2) {
 //// #endregion
 
 //// #region COMMANDS
-async function executeScript(driver, script, args = []) {
+async function executeScript(driver, script, ...args) {
   const preparedArgs = await prepareArgsWithElements(driver, args)
   const result = await driver.execute(script, preparedArgs)
   return result.value
