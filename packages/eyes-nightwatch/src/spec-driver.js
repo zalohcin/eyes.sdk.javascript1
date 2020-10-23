@@ -16,8 +16,9 @@ async function findSpecializedElement(driver, arg) {
   return await driver.element(transformSelectorType(arg._element.type), selector)
 }
 async function prepareArgWithElement(driver, arg) {
-  const element =
-    arg.constructor.name === 'SpecializedElement' ? await findSpecializedElement(driver, arg) : arg
+  const element = TypeUtils.instanceOf(arg, 'SpecializedElement')
+    ? await findSpecializedElement(driver, arg)
+    : arg
   return isElement(element) && element.value ? element.value : element
 }
 async function prepareArgsWithElements(driver, args) {
