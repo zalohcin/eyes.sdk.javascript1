@@ -1,7 +1,7 @@
 const tags = ['chrome', 'chromium', 'firefox', 'webkit', 'safari']
 module.exports = {
   spec: [
-    './test/coverage/generic/*.spec.js',
+    './test/generic/*.spec.js',
     '../sdk-shared/coverage-tests/custom/**/*.spec.js',
   ],
   parallel: true,

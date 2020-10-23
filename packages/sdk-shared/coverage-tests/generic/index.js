@@ -3,7 +3,7 @@ const makeEmitter = require('./spec-emitter')
 const overrideTests = require('./override-tests')
 
 module.exports = {
-  outPath: './test/coverage/generic',
+  outPath: './test/generic',
   ext: '.spec.js',
   testsPath: '../sdk-shared/coverage-tests/generic/tests.js',
   initializeSdk: makeEmitter,
