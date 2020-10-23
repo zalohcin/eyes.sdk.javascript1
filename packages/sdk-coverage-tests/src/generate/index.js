@@ -5,7 +5,8 @@ const {emitTests} = require('./emit')
 const {createTestFiles, createTestMetaData} = require('./save')
 
 const DEFAULT_CONFIG = {
-  testsPath: 'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/master/tests.js',
+  testsPath:
+    'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/master/coverage-tests.js',
 }
 
 async function generate({configPath, ...options}) {
@@ -15,7 +16,7 @@ async function generate({configPath, ...options}) {
       ...require(path.join(path.resolve('.'), configPath)),
       ...options,
     }
-    console.log(`Creating coverage tests for ${config.name}...`)
+    console.log(`Creating coverage tests for ${config.name}...\n`)
 
     const {tests, testsConfig} = await prepareTests(config)
 
@@ -23,7 +24,7 @@ async function generate({configPath, ...options}) {
     await createTestFiles(emittedTests, config)
     await createTestMetaData(emittedTests, config)
     console.log(
-      `\nCreated ${emittedTests.length} (${
+      `Created ${emittedTests.length} (${
         emittedTests.filter(t => !t.skip).length
       } enabled) test files for ${Object.keys(tests).length} unique tests.`,
     )
