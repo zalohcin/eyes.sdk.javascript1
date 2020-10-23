@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-sdk-core",
-  "version": "12.5.1",
+  "version": "12.5.2",
   "description": "The core components of Eyes JavaScript SDK",
   "keywords": [
     "applitools",
@@ -71,7 +71,7 @@
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
     "test:it": "mocha --no-timeouts \"test/it/**/*.spec.js\"",
     "types:generate": "node ./scripts/build-typings",
-    "preversion": "bongo preversion && yarn test",
+    "preversion": "bongo preversion --skipVerifyInstalledVersions && yarn test",
     "version": "bongo version",
     "postversion": "bongo postversion --skip-release-notification",
     "deps": "bongo deps"

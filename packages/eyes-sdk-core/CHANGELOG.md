@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 12.5.2 - 2020/10/23
+
 - remove unused devDependencies
 - fix sending multiple region types by the same element in vg mode
 - fix sending `ignoreDisplacements` in vg mode
