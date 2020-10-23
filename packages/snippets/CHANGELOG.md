@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- fix `blurElement`: use default value if element passed as `null`
+- fix `getElementRect`: extract element fixed ancestor inner offset even if it not scrollable
+- fix `setElementMarkers`: concat ids instead of override
 
 ## 2.0.3 - 2020/10/6
 
