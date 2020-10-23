@@ -10,7 +10,7 @@ describe.skip('TestRenderings', () => {
   beforeEach(async () => {
     driver = await spec.build({browser: 'chrome'})
     await spec.visit(driver, 'https://applitools.com/helloworld')
-    eyes = await getEyes({isVisualGrid: true})
+    eyes = await getEyes({vg: true})
     runner = eyes.getRunner()
   })
   it('Test_VG_RCA_Config', async () => {

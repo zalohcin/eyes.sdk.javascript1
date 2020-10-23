@@ -19,7 +19,7 @@ describe(appName, () => {
     let runner
     beforeEach(async () => {
       ;[webDriver, destroyDriver] = await spec.build({browser: 'chrome'})
-      eyes = await getEyes({isCssStitching: true})
+      eyes = await getEyes({stitchMode: 'CSS'})
       runner = eyes.getRunner()
     })
 
@@ -87,7 +87,7 @@ describe(appName, () => {
     let runner
     beforeEach(async () => {
       ;[webDriver, destroyDriver] = await spec.build({browser: 'chrome'})
-      eyes = await getEyes({isVisualGrid: true})
+      eyes = await getEyes({vg: true})
       runner = eyes.getRunner()
     })
 

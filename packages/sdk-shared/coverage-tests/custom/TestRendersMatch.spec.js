@@ -15,7 +15,7 @@ let viewportList = [
 ]
 
 describe(appName, async () => {
-  it('TestSuccess', async () => {
+  it.skip('TestSuccess', async () => {
     const runner = new VisualGridRunner(10)
 
     const [driver, destroyDriver] = await spec.build({browser: 'chrome'})

@@ -26,7 +26,7 @@ describe('TestVGServerConfigs', () => {
 
   beforeEach(async () => {
     ;[webDriver, destroyDriver] = await spec.build({browser: 'chrome'})
-    eyes = await getEyes({isVisualGrid: true})
+    eyes = await getEyes({vg: true})
     runner = eyes.getRunner()
   })
 
@@ -220,7 +220,7 @@ describe('Miscellaneous VG tests', () => {
     const edgeWarning = chalk.yellow(edgeWarningText)
 
     try {
-      const eyes = getEyes({isVisualGrid: true})
+      const eyes = getEyes({vg: true})
       const configuration = eyes.getConfiguration()
       configuration.addBrowser(1000, 900, BrowserType.EDGE)
       configuration.addBrowser(1000, 900, BrowserType.FIREFOX)

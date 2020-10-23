@@ -19,8 +19,8 @@ describe('TestEyesConfiguration', async () => {
 
   testCases.forEach(data => {
     it(`TestEyesConfiguration`, async () => {
-      let eyes = getEyes({isVisualGrid: data.useVisualGrid})
-      let driver = await spec.build({browser: 'chrome'})
+      let eyes = getEyes({vg: data.useVisualGrid})
+      let [driver, destroyDriver] = await spec.build({browser: 'chrome'})
       await spec.visit(driver, 'https://applitools.github.io/demo/TestPages/FramesTestPage/')
       let originalBatchSequence = process.env.APPLITOOLS_BATCH_SEQUENCE
       if (data.sequenceNameEnvVar !== undefined) {
@@ -44,7 +44,7 @@ describe('TestEyesConfiguration', async () => {
       let results
       try {
         assert.deepStrictEqual(effectiveSequenceName, batchInfo.getSequenceName(), 'SequenceName')
-        let conf = new Configuration()
+        let conf = eyes.getConfiguration()
         let testName = `Test - ${data.useVisualGrid ? 'Visual Grid' : 'Selenium'}`
         conf
           .setAppName('app')
@@ -64,7 +64,7 @@ describe('TestEyesConfiguration', async () => {
         await eyes.check('', Target.window())
       } finally {
         results = await eyes.close(false)
-        await spec.cleanup(driver)
+        await destroyDriver()
       }
 
       let sessionResults = await getApiData(results)

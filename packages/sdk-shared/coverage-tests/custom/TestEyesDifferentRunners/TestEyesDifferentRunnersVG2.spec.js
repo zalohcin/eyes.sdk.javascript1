@@ -14,7 +14,7 @@ describe('TestEyesDifferentRunners VG2', () => {
 
   beforeEach(async function() {
     ;[this.webDriver, this.destroyDriver] = await spec.build({browser: 'chrome'})
-    this.eyes = await getEyes({isVisualGrid: true})
+    this.eyes = await getEyes({vg: true})
     this.eyes.setSaveNewTests(false)
     await this.eyes.open(this.webDriver, 'Top Sites', `Top Sites - ${this.currentTest.title}`, {
       width: 800,

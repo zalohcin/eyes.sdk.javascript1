@@ -35,7 +35,7 @@ describe(appName, () => {
           driver,
           'https://applitools.github.io/demo/TestPages/MobileDemo/adaptive.html',
         )
-        eyes = getEyes({isCssStitching: true})
+        eyes = getEyes({stitchMode: 'CSS'})
         await eyes.open(driver, appName, `TestWebAppScrolling`, {
           width: 360,
           height: 740,
@@ -83,7 +83,7 @@ describe(appName, () => {
           driver,
           'https://applitools.github.io/demo/TestPages/MobileDemo/AccessPayments/',
         )
-        eyes = getEyes({isCssStitching: true})
+        eyes = getEyes({stitchMode: 'CSS'})
         await eyes.open(driver, appName, 'TestWebAppScrolling2', {width: 386, height: 512})
         await eyes.check('big page on mobile', Target.window().fully())
         await eyes.close()
