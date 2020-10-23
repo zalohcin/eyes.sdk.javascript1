@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- fix sending multiple region types by the same element in vg mode
+- fix sending `ignoreDisplacements` in vg mode
+- fix check settings when set `false` in `sendDom` using object notation
+- remove force hiding scrollbars during taking full page screenshot with css stitching
 
 ## 12.5.1 - 2020/10/22
 
