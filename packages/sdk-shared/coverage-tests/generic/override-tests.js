@@ -26,8 +26,10 @@ module.exports = {
   'check region by coordinates in frame with css stitching': {skip: true},
   'check region by coordinates in frame with scroll stitching': {skip: true},
   'check region by coordinates in frame fully with css stitching': {skip: true},
-  // result https://eyes.applitools.com/app/test-results/00000251798974340734/00000251798974260280/steps/1?accountId=xIpd7EWjhU6cjJzDGrMcUw~~&mode=step-editor
+
+  // Result: https://eyes.applitools.com/app/test-results/00000251798974340734/00000251798974260280/steps/1?accountId=xIpd7EWjhU6cjJzDGrMcUw~~&mode=step-editor
   'check region by selector in frame in frame fully with scroll stitching': {skip: true},
+
   'check region by selector in overflowed frame with scroll stitching': {skip: true},
   'check region by selector in overflowed frame after manual scroll with scroll stitching': {
     skip: true,
@@ -43,21 +45,9 @@ module.exports = {
   'check frame after manual switch to frame with css stitching classic': {skip: true},
   'check frame after manual switch to frame with vg classic': {config: {branchName: 'no-fully-by-default'}},
   'check regions by coordinates in overflowed frame with scroll stitching': {config: {branchName: 'next'}},
-
-  // CheckFrameFully_FloatingRegionByCoordinates: {
-  //   variants: {
-  //     VG: {skip: true},
-  //     CSS: {skip: true},
-  //   },
-  // },
-  // CheckWindow_IgnoreRegionBySelector_Centered: {
-  //   variants: {
-  //     VG: {skip: true},
-  //   },
-  // },
-  // CheckWindow_IgnoreRegionBySelector_Stretched: {
-  //   variants: {
-  //     VG: {skip: true},
-  //   },
-  // },
+  /**
+   *  Fails because of the difference between SCREEN SIZE and LAYOUT VIEWPORT SIZE.
+   *  We should use screen.width/screen.height for cropping/scaling and innerWidth/innerHeight to understand element location related to the viewport
+   */
+  'check window fully on android chrome emulator on desktop page': {skip: true},
 }

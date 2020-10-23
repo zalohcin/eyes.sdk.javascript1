@@ -196,12 +196,15 @@ async function build(env) {
       options.port = '9515'
       options.path = '/'
     }
-    const browserOptionsName = browserOptionsNames[browser]
+    const browserOptionsName = browserOptionsNames[browser || options.capabilities.browserName]
     if (browserOptionsName) {
-      options.desiredCapabilities[browserOptionsName] = {
-        args: headless ? args.concat('headless') : args,
-        debuggerAddress: attach === true ? 'localhost:9222' : attach,
+      const browserOptions = options.capabilities[browserOptionsName] || {}
+      browserOptions.args = [...(browserOptions.args || []), ...args]
+      if (headless) browserOptions.args.push('headless')
+      if (attach) {
+        browserOptions.debuggerAddress = attach === true ? 'localhost:9222' : attach
       }
+      options.capabilities[browserOptionsName] = browserOptions
     }
   }
   if (proxy) {
