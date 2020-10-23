@@ -1,7 +1,7 @@
 const assert = require('assert')
-const {cleanupElementIds, markElements} = require('../dist/index')
+const {cleanupElementMarkers, setElementMarkers} = require('../dist/index')
 
-describe('cleanupElementIds', () => {
+describe('cleanupElementMarkers', () => {
   const url = 'https://applitools.github.io/demo/TestPages/SnippetsTestPage/'
 
   describe('chrome', () => {
@@ -14,16 +14,15 @@ describe('cleanupElementIds', () => {
       }
     })
 
-    it('cleanupElementIds', async () => {
+    it('cleanupElementMarkers', async () => {
       await page.goto(url)
       const elements = await page.$$('#scrollable,#static,#fixed')
-      const ids = ['aaa', 'bbb', 'ccc']
-      await page.evaluate(markElements, [elements, ids])
-      const selector =
-        '[data-eyes-selector="aaa"],[data-eyes-selector="bbb"],[data-eyes-selector="ccc"]'
+      const ids = ['1', '2', '3']
+      await page.evaluate(setElementMarkers, [elements, ids])
+      const selector = ids.map(id => `[data-applitools-marker="${id}"]`).join(', ')
       const markedElements = await page.$$(selector)
       assert.strictEqual(markedElements.length, 3)
-      await page.evaluate(cleanupElementIds, [elements])
+      await page.evaluate(cleanupElementMarkers, [elements])
       const markedElementsAfterCleanup = await page.$$(selector)
       assert.strictEqual(markedElementsAfterCleanup.length, 0)
     })
@@ -40,16 +39,15 @@ describe('cleanupElementIds', () => {
         }
       })
 
-      it('cleanupElementIds', async () => {
+      it('cleanupElementMarkers', async () => {
         await driver.url(url)
         const elements = await driver.$$('#scrollable,#static,#fixed')
-        const ids = ['aaa', 'bbb', 'ccc']
-        await driver.execute(markElements, [elements, ids])
-        const selector =
-          '[data-eyes-selector="aaa"],[data-eyes-selector="bbb"],[data-eyes-selector="ccc"]'
+        const ids = ['1', '2', '3']
+        await driver.execute(setElementMarkers, [elements, ids])
+        const selector = ids.map(id => `[data-applitools-marker="${id}"]`).join(', ')
         const markedElements = await driver.$$(selector)
         assert.strictEqual(markedElements.length, 3)
-        await driver.execute(cleanupElementIds, [elements])
+        await driver.execute(cleanupElementMarkers, [elements])
         const markedElementsAfterCleanup = await driver.$$(selector)
         assert.strictEqual(markedElementsAfterCleanup.length, 0)
       })

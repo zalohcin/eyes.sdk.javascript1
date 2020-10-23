@@ -370,14 +370,14 @@ async function getElementXpath(logger, context, element) {
   })
 }
 
-async function markElements(_logger, context, elementsById) {
+async function setElementMarkers(_logger, context, elementsById) {
   const elements = Object.values(elementsById)
   const ids = Object.keys(elementsById)
-  await context.execute(snippets.markElements, [elements, ids])
+  await context.execute(snippets.setElementMarkers, [elements, ids])
 }
 
-async function cleanupElementIds(_logger, context, elements) {
-  await context.execute(snippets.cleanupElementIds, [elements])
+async function cleanupElementMarkers(_logger, context, elements) {
+  await context.execute(snippets.cleanupElementMarkers, [elements])
 }
 
 /**
@@ -530,8 +530,8 @@ module.exports = {
   blurElement,
   focusElement,
   getElementXpath,
-  markElements,
-  cleanupElementIds,
+  setElementMarkers,
+  cleanupElementMarkers,
   getContextInfo,
   getChildFramesInfo,
   ensureRegionVisible,
