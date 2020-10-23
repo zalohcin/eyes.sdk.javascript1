@@ -155,7 +155,7 @@ describe('spec driver', () => {
       assert.deepStrictEqual(spec.getDriverInfo(driver).sessionId, sessionId)
     })
     it('getTitle()', async function(driver) {
-      const expected = await driver.getTitle()
+      const expected = 'Cross SDK test'
       assert.deepStrictEqual(await spec.getTitle(driver), expected)
     })
     it('getUrl()', async function(driver) {

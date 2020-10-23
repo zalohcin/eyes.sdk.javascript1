@@ -138,7 +138,8 @@ function getDriverInfo(driver, opts = {}) {
   }
 }
 async function getTitle(driver) {
-  return driver.title()
+  const result = await driver.title()
+  return result.value
 }
 async function getUrl(driver) {
   const result = await driver.url()
