@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix `setViewportSize` utility
 
 ## 12.5.2 - 2020/10/23
 
