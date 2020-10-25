@@ -1,9 +1,8 @@
 'use strict'
 
 const crypto = require('crypto')
-
-const {GeneralUtils, ArgumentGuard} = require('../..')
-
+const ArgumentGuard = require('../utils/ArgumentGuard')
+const GeneralUtils = require('../utils/GeneralUtils')
 const RGridResource = require('./RGridResource')
 
 class RGridDom {

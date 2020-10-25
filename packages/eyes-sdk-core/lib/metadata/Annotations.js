@@ -1,6 +1,8 @@
 'use strict'
 
-const {GeneralUtils, Region, FloatingMatchSettings} = require('../..')
+const GeneralUtils = require('../utils/GeneralUtils')
+const Region = require('../geometry/Region')
+const FloatingMatchSettings = require('../config/FloatingMatchSettings')
 
 class Annotations {
   /**

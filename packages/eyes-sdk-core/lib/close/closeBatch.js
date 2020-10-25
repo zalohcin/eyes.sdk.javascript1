@@ -1,11 +1,9 @@
 'use strict'
 
-const {
-  GeneralUtils: {presult},
-  ServerConnector,
-  Configuration,
-  Logger,
-} = require('../../')
+const Logger = require('../logging/Logger')
+const ServerConnector = require('../server/ServerConnector')
+const Configuration = require('../config/Configuration')
+const {presult} = require('../utils/GeneralUtils')
 
 async function closeBatch({batchIds, serverUrl, apiKey, proxy}) {
   if (!batchIds) throw new Error('no batchIds were set')

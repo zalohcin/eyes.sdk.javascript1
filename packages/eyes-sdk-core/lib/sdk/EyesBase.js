@@ -1,23 +1,23 @@
 'use strict'
 
-const {
-  Logger,
-  ArgumentGuard,
-  TypeUtils,
-  EyesError,
-  Region,
-  Location,
-  RectangleSize,
-  CoordinatesType,
-  ImageDeltaCompressor,
-  SimplePropertyHandler,
-  ReadOnlyPropertyHandler,
-  FileDebugScreenshotsProvider,
-  NullDebugScreenshotProvider,
-  SessionType,
-  Configuration,
-  GeneralUtils,
-} = require('../../')
+const Logger = require('../logging/Logger')
+const EyesError = require('../errors/EyesError')
+const Region = require('../geometry/Region')
+const Location = require('../geometry/Location')
+const RectangleSize = require('../geometry/RectangleSize')
+const CoordinatesType = require('../geometry/CoordinatesType')
+
+const GeneralUtils = require('../utils/GeneralUtils')
+const ArgumentGuard = require('../utils/ArgumentGuard')
+const TypeUtils = require('../utils/TypeUtils')
+
+const ImageDeltaCompressor = require('../images/ImageDeltaCompressor')
+const SimplePropertyHandler = require('../handler/SimplePropertyHandler')
+const ReadOnlyPropertyHandler = require('../handler/ReadOnlyPropertyHandler')
+const FileDebugScreenshotsProvider = require('../debug/FileDebugScreenshotsProvider')
+const NullDebugScreenshotProvider = require('../debug/NullDebugScreenshotProvider')
+const SessionType = require('../config/SessionType')
+const Configuration = require('../config/Configuration')
 
 const AppOutputProvider = require('../capture/AppOutputProvider')
 const AppOutputWithScreenshot = require('../capture/AppOutputWithScreenshot')
