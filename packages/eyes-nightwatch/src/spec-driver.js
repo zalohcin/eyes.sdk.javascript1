@@ -50,7 +50,7 @@ function isElement(element) {
 }
 function isSelector(selector) {
   if (!selector) return false
-  return TypeUtils.isString(selector)
+  return TypeUtils.isString(selector) || TypeUtils.has(selector, ['type', 'selector'])
 }
 function isStaleElementError(error) {
   if (!error) return false
