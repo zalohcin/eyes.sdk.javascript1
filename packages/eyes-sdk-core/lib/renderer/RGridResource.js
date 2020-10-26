@@ -1,8 +1,8 @@
 'use strict'
 
 const crypto = require('crypto')
-
-const {GeneralUtils, ArgumentGuard} = require('../..')
+const ArgumentGuard = require('../utils/ArgumentGuard')
+const GeneralUtils = require('../utils/GeneralUtils')
 
 const VISUAL_GRID_MAX_BUFFER_SIZE = 15 * 1000000
 

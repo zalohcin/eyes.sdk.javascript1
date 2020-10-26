@@ -3,6 +3,61 @@
 ## Unreleased
 
 
+## 12.5.4 - 2020/10/26
+
+- restore inner offset of the element in case one stitch full page screenshot ([Trello 528](https://trello.com/c/iu2Png9p))
+- updated to @applitools/dom-snapshot@4.2.3 (from 4.2.2)
+
+## 12.5.3 - 2020/10/24
+
+- fix `setViewportSize` utility
+
+## 12.5.2 - 2020/10/23
+
+- remove unused devDependencies
+- fix sending multiple region types by the same element in vg mode
+- fix sending `ignoreDisplacements` in vg mode
+- fix check settings when set `false` in `sendDom` using object notation
+- remove force hiding scrollbars during taking full page screenshot with css stitching
+- updated to @applitools/dom-capture@8.0.1 (from 8.0.0)
+- updated to @applitools/snippets@2.1.0 (from 2.0.3)
+
+## 12.5.1 - 2020/10/22
+
+- rename `_getSetBatchId` to `getBatchIdWithoutGenerating`
+
+## 12.5.0 - 2020/10/22
+
+- added ability to close batches using batch IDs
+
+## 12.4.4 - 2020/10/19
+
+- deprecate `saveDebugData`
+
+## 12.4.3 - 2020/10/18
+
+- use `enableMultipleResultsPerSelector` in render request
+- updated to @applitools/dom-snapshot@4.2.2 (from 4.2.1)
+
+## 12.4.2 - 2020/10/14
+
+- re-enable native app viewport screenshotting along with added support for checkRegion
+
+## 12.4.1 - 2020/10/13
+
+- disable native mobile app viewport screenshotting (until check region functionality is also supported)
+
+## 12.4.0 - 2020/10/13
+
+- improve screenshots on native mobile apps (with Appium) so just the application viewport is captured ([PR 135](https://github.com/applitools/eyes.sdk.javascript1/pull/135))
+=======
+
+## 12.3.2 - 2020/10/13
+
+- override cors frame's src after dom snapshot is taken
+- prevent taking a screenshot of the invisible part of the region ([Trello 544](https://trello.com/c/wJsUyBPE), [Trello 528](https://trello.com/c/iu2Png9p), [commit](https://github.com/applitools/eyes.sdk.javascript1/commit/c4adcdd74d479284075835e7a99489d8ba37825f))
+- updated to @applitools/dom-snapshot@4.2.1 (from 4.2.0)
+
 ## 12.3.1 - 2020/10/7
 
 - add support for proxy configurations that use a default port (e.g., port 80) with isHttpOnly ([Trello 539](https://trello.com/c/0RPLxkOo), [commit](https://github.com/applitools/eyes.sdk.javascript1/commit/f0225dd9d5d761f5941eea1fa145bfaea9170877))

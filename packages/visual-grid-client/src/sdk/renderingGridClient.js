@@ -5,7 +5,7 @@ const throatPkg = require('throat')
 const {
   BatchInfo,
   Logger,
-  GeneralUtils: {backwardCompatible},
+  GeneralUtils: {backwardCompatible, deprecationWarning},
   BatchStartEvent,
 } = require('@applitools/eyes-sdk-core')
 const {ptimeoutWithError, presult} = require('@applitools/functional-commons')
@@ -87,6 +87,10 @@ function makeRenderingGridClient({
   dontCloseBatches,
   visualGridOptions,
 }) {
+  if (saveDebugData) {
+    deprecationWarning({deprecatedThing: 'saveDebugData', isDead: true})
+  }
+
   const finalConcurrency = getFinalConcurrency({concurrency, testConcurrency})
 
   if (isNaN(finalConcurrency)) {
@@ -174,7 +178,6 @@ function makeRenderingGridClient({
     appName,
     browser,
     apiKey,
-    saveDebugData,
     batch,
     properties,
     baselineBranch,

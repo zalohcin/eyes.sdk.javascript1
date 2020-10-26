@@ -1,8 +1,6 @@
 'use strict'
 
-const {
-  GeneralUtils: {pexec, cachify, presult},
-} = require('..')
+const {pexec, cachify, presult} = require('../lib/utils/GeneralUtils')
 
 async function doGetScmInfo(branchName, parentBranchName, _opts) {
   const commitTimeCmd = `HASH=$(git merge-base ${branchName} ${parentBranchName}) && git show -q --format=%cI $HASH`

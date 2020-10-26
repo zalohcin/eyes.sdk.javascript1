@@ -2,6 +2,26 @@
 
 ## Unreleased
 
+
+## 3.15.3 - 2020/10/22
+
+- deprecate `saveDebugData`
+- updated to @applitools/eyes-sdk-core@12.5.1 (from 12.4.3)
+- updated to @applitools/visual-grid-client@15.0.13 (from 15.0.11)
+- fix closing batches ([Trello](https://trello.com/c/8zPehdmh))
+
+## 3.15.2 - 2020/10/18
+
+- updated to @applitools/dom-snapshot@4.2.2 (from 4.2.0)
+- updated to @applitools/eyes-sdk-core@12.4.3 (from 12.3.1)
+- updated to @applitools/visual-grid-client@15.0.11 (from 15.0.9)
+
+## 3.15.1 - 2020/10/14
+
+- add iosVersion to readme
+
+## 3.15.0 - 2020/10/12
+
 - remove yarn workspaces
 - updated to @applitools/dom-snapshot@4.2.0 (from 4.0.6)
 - updated to @applitools/eyes-sdk-core@12.3.1 (from 12.2.5)

@@ -89,6 +89,14 @@ class FullPageCaptureAlgorithm {
       `positionProvider: ${positionProvider.constructor.name}; Region: ${region}`,
     )
 
+    let entireSize
+    try {
+      entireSize = await positionProvider.getEntireSize()
+      this._logger.verbose(`Entire size of region context: ${entireSize}`)
+    } catch (err) {
+      this._logger.log(`Error: Failed to extract entire size of region context ${err}`)
+    }
+
     // Saving the original position (in case we were already in the outermost frame).
     const originalPosition = await this._originProvider.getState()
     // Saving the original position (in case we were already in the outermost frame).
@@ -100,6 +108,13 @@ class FullPageCaptureAlgorithm {
     this._logger.verbose('Getting top/left image...')
     let image = await this._imageProvider.getImage()
     await this._debugScreenshotsProvider.save(image, 'original')
+
+    if (!entireSize) {
+      this._logger.log(
+        `Using image size instead of entire size: ${image.getWidth()}x${image.getHeight()}`,
+      )
+      entireSize = new RectangleSize(image.getWidth(), image.getHeight())
+    }
 
     // FIXME - scaling should be refactored
     const scaleProvider = this._scaleProviderFactory.getScaleProvider(image.getWidth())
@@ -125,16 +140,6 @@ class FullPageCaptureAlgorithm {
       await this._debugScreenshotsProvider.save(image, 'scaled')
     }
 
-    let entireSize
-    try {
-      entireSize = await positionProvider.getEntireSize()
-      this._logger.verbose(`Entire size of region context: ${entireSize}`)
-    } catch (err) {
-      this._logger.log(`Error: Failed to extract entire size of region context ${err}`)
-      this._logger.log(`Using image size instead: ${image.getWidth()}x${image.getHeight()}`)
-      entireSize = new RectangleSize(image.getWidth(), image.getHeight())
-    }
-
     if (!fullArea || fullArea.isEmpty()) {
       // Notice that this might still happen even if we used "getImagePart", since "entirePageSize" might be that of a frame.
       if (
@@ -142,6 +147,7 @@ class FullPageCaptureAlgorithm {
         image.getHeight() >= entireSize.getHeight()
       ) {
         await this._originProvider.restoreState(originalPosition)
+        await positionProvider.restoreState(originalStitchedState)
         return image
       }
 

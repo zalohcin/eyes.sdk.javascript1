@@ -1,7 +1,6 @@
 'use strict'
 
-const {BrowserNames} = require('../..')
-
+const BrowserNames = require('../useragent/BrowserNames')
 const FirefoxRegionPositionCompensation = require('./FirefoxRegionPositionCompensation')
 const NullRegionPositionCompensation = require('./NullRegionPositionCompensation')
 const SafariRegionPositionCompensation = require('./SafariRegionPositionCompensation')

@@ -64,8 +64,6 @@ describe('testWindow', () => {
         {deviceName: 'iPhone X'},
       ],
       showLogs: process.env.APPLITOOLS_SHOW_LOGS,
-      saveDebugData: process.env.APPLITOOLS_SAVE_DEBUG_DATA,
-      saveNewTests: false,
     }
 
     const checkParams = {
@@ -96,7 +94,6 @@ describe('testWindow', () => {
         {deviceName: 'iPhone X'},
       ],
       showLogs: process.env.APPLITOOLS_SHOW_LOGS,
-      saveDebugData: process.env.APPLITOOLS_SAVE_DEBUG_DATA,
     }
 
     cdt.find(node => node.nodeValue === "hi, I'm red").nodeValue = 'WRONG TEXT'

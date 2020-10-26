@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- deprecate `saveDebugData`
+- updated to @applitools/eyes-sdk-core@12.5.2 (from 12.4.2)
+- updated to @applitools/visual-grid-client@15.0.14 (from 15.0.10)
+
+## 2.23.1 - 2020/10/15
+
+- add iosVersion to readme
+- updated to @applitools/eyes-sdk-core@12.4.2 (from 12.3.1)
+- updated to @applitools/visual-grid-client@15.0.10 (from 15.0.9)
+
 ## 2.23.0 - 2020/10/7
 
 - remove yarn workspaces

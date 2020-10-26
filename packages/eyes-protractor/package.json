@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-protractor",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "Applitools Eyes SDK for Protractor",
   "keywords": [
     "eyes-protractor",
@@ -36,14 +36,14 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "12.3.0",
-    "@applitools/visual-grid-client": "15.0.9"
+    "@applitools/eyes-sdk-core": "12.4.4",
+    "@applitools/visual-grid-client": "15.0.12"
   },
   "devDependencies": {
     "@applitools/sdk-coverage-tests": "^1.0.14",
     "@applitools/sdk-fake-eyes-server": "^2.0.0",
-    "@applitools/sdk-release-kit": "^0.3.1",
-    "@applitools/sdk-shared": "^0.1.5",
+    "@applitools/sdk-release-kit": "^0.4.1",
+    "@applitools/sdk-shared": "^0.3.0",
     "assert-rejects": "^1.0.0",
     "axios": "^0.19.0",
     "chai": "^4.2.0",
@@ -71,13 +71,13 @@
     "render": "node ../sdk-shared/scripts/render.js",
     "test": "yarn test:it",
     "test:it": "mocha --timeout 120000 './test/it/**/*.spec.js'",
-    "coverage:generate": "coverage-tests create-tests",
-    "coverage:sandbox": "yarn coverage:generate && yarn test:coverage && coverage-tests process-report",
-    "coverage:prod": "yarn coverage:generate && yarn test:coverage && coverage-tests process-report --send-report prod",
+    "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-protractor' APPLITOOLS_BATCH_ID=$(uuidgen) XUNIT_FILE=coverage-test-report.xml mocha --config .mocharc.cvg.js",
+    "coverage:generate": "coverage-tests generate ../sdk-shared/coverage-tests/generic/index.js --name 'eyes-protractor'",
+    "coverage:report": "coverage-tests report ../sdk-shared/coverage-tests/generic/index.js --name 'eyes-protractor'",
+    "coverage:sandbox": "yarn coverage:generate && yarn test:coverage && yarn coverage:report --sandbox",
+    "coverage:prod": "yarn coverage:generate && yarn test:coverage && yarn coverage:report",
     "docker:setup": "node ../sdk-shared/src/generate-docker-compose-config.js && docker-compose up -d",
     "docker:teardown": "docker-compose down",
-    "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-protractor' APPLITOOLS_BATCH_ID=$(uuidgen) XUNIT_FILE=coverage-test-report.xml mocha --config .mocharc.cvg.js",
-    "types:generate": "rm -rf ./typings && tsc --declaration --declarationDir ./typings --allowJs --emitDeclarationOnly ./index.js",
     "preversion": "bongo preversion && yarn test && yarn coverage:prod",
     "version": "bongo version",
     "postversion": "bongo postversion",

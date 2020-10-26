@@ -1,6 +1,6 @@
 'use strict'
 
-const {GeneralUtils} = require('../..')
+const GeneralUtils = require('../utils/GeneralUtils')
 const EyesRunner = require('./EyesRunner')
 
 /**

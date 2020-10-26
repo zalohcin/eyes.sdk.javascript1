@@ -1,23 +1,23 @@
 'use strict'
 
-const {
-  Logger,
-  ArgumentGuard,
-  TypeUtils,
-  EyesError,
-  Region,
-  Location,
-  RectangleSize,
-  CoordinatesType,
-  ImageDeltaCompressor,
-  SimplePropertyHandler,
-  ReadOnlyPropertyHandler,
-  FileDebugScreenshotsProvider,
-  NullDebugScreenshotProvider,
-  SessionType,
-  Configuration,
-  GeneralUtils,
-} = require('../../')
+const Logger = require('../logging/Logger')
+const EyesError = require('../errors/EyesError')
+const Region = require('../geometry/Region')
+const Location = require('../geometry/Location')
+const RectangleSize = require('../geometry/RectangleSize')
+const CoordinatesType = require('../geometry/CoordinatesType')
+
+const GeneralUtils = require('../utils/GeneralUtils')
+const ArgumentGuard = require('../utils/ArgumentGuard')
+const TypeUtils = require('../utils/TypeUtils')
+
+const ImageDeltaCompressor = require('../images/ImageDeltaCompressor')
+const SimplePropertyHandler = require('../handler/SimplePropertyHandler')
+const ReadOnlyPropertyHandler = require('../handler/ReadOnlyPropertyHandler')
+const FileDebugScreenshotsProvider = require('../debug/FileDebugScreenshotsProvider')
+const NullDebugScreenshotProvider = require('../debug/NullDebugScreenshotProvider')
+const SessionType = require('../config/SessionType')
+const Configuration = require('../config/Configuration')
 
 const AppOutputProvider = require('../capture/AppOutputProvider')
 const AppOutputWithScreenshot = require('../capture/AppOutputWithScreenshot')
@@ -2028,7 +2028,7 @@ class EyesBase {
 
     try {
       if (this._configuration._batch) {
-        const batchId = this._getSetBatchId()
+        const batchId = this.getBatchIdWithoutGenerating()
         await this._serverConnector.deleteBatchSessions(batchId)
       } else {
         this._logger.log('Failed to close batch: no batch found.')
@@ -2042,7 +2042,7 @@ class EyesBase {
     const isGeneratedId =
       this._configuration._batch && this._configuration._batch.getIsGeneratedId()
     if (!isGeneratedId) {
-      return this._getSetBatchId()
+      return this.getBatchIdWithoutGenerating()
     }
   }
 
@@ -2051,7 +2051,7 @@ class EyesBase {
    * do not do eyesInstance.getBatch().getId() because it would generate
    * a new id if called before open.
    */
-  _getSetBatchId() {
+  getBatchIdWithoutGenerating() {
     // TODO
     // we need the Configuration to check for default values like getEnvValue('BATCH_ID') instead of
     // it creating new Objects (with defaults) on demand, see Configuration#getBatch().

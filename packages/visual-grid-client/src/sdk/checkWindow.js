@@ -2,16 +2,14 @@
 
 const {Region} = require('@applitools/eyes-sdk-core')
 const {presult} = require('@applitools/functional-commons')
-const saveData = require('../troubleshoot/saveData')
 const createRenderRequest = require('./createRenderRequest')
 const createCheckSettings = require('./createCheckSettings')
-const calculateMatchRegions = require('./calculateMatchRegions')
 const isInvalidAccessibility = require('./isInvalidAccessibility')
+const calculateSelectorsToFindRegionsFor = require('./calculateSelectorsToFindRegionsFor')
 
 function makeCheckWindow({
   globalState,
   testController,
-  saveDebugData,
   createRGridDOMAndGetResourceMapping,
   putResources,
   render,
@@ -76,16 +74,16 @@ function makeCheckWindow({
       return
     }
 
-    if (typeof window === 'undefined') {
-      const handleBrowserDebugData = require('../troubleshoot/handleBrowserDebugData')
-      snapshots.forEach(snapshot => {
-        handleBrowserDebugData({
-          frame: snapshot,
-          metaData: {agentId: wrappers[0].getBaseAgentId()},
-          logger,
-        })
-      })
-    }
+    const {selectorsToFindRegionsFor, getMatchRegions} = calculateSelectorsToFindRegionsFor({
+      sizeMode,
+      selector,
+      ignore,
+      layout,
+      strict,
+      content,
+      accessibility,
+      floating,
+    })
 
     const renderRequestPromises = snapshots.map(async (snapshot, index) => {
       const {allResources, rGridDom} = await createRGridDOMAndGetResourceMapping({
@@ -106,27 +104,13 @@ function makeCheckWindow({
         renderInfo,
         sizeMode,
         selector,
+        selectorsToFindRegionsFor,
         region,
         scriptHooks,
-        noOffsetSelectors: noOffsetSelectors.all,
-        offsetSelectors: offsetSelectors.all,
         sendDom,
         visualGridOptions,
       })
     })
-
-    const noOffsetSelectors = {
-      all: [ignore, layout, strict, content, accessibility],
-      ignore: 0,
-      layout: 1,
-      strict: 2,
-      content: 3,
-      accessibility: 4,
-    }
-    const offsetSelectors = {
-      all: [floating],
-      floating: 0,
-    }
 
     setCheckWindowPromises(
       browsers.map((_browser, i) =>
@@ -150,15 +134,6 @@ function makeCheckWindow({
       const holder = new Promise(resolve => renderJobs.set(renderRequest, resolve))
       renderThroat(() => holder)
       globalState.setQueuedRendersCount(globalState.getQueuedRendersCount() - 1)
-
-      if (saveDebugData) {
-        await saveData({
-          renderId,
-          resources: renderRequest.resources,
-          url,
-          logger,
-        })
-      }
 
       return renderId
     }
@@ -254,7 +229,7 @@ function makeCheckWindow({
         return
       }
 
-      const imageLocationRegion = sizeMode === 'selector' ? selectorRegions[0] : undefined
+      const {imageLocationRegion, ...regions} = getMatchRegions({selectorRegions})
 
       let imageLocation = undefined
       if (sizeMode === 'selector' && imageLocationRegion) {
@@ -263,20 +238,8 @@ function makeCheckWindow({
         imageLocation = new Region(region).getLocation()
       }
 
-      const {noOffsetRegions, offsetRegions} = calculateMatchRegions({
-        noOffsetSelectors: noOffsetSelectors.all,
-        offsetSelectors: offsetSelectors.all,
-        selectorRegions,
-        imageLocationRegion,
-      })
-
       const checkSettings = createCheckSettings({
-        ignore: noOffsetRegions[noOffsetSelectors.ignore],
-        floating: offsetRegions[offsetSelectors.floating],
-        layout: noOffsetRegions[noOffsetSelectors.layout],
-        strict: noOffsetRegions[noOffsetSelectors.strict],
-        content: noOffsetRegions[noOffsetSelectors.content],
-        accessibility: noOffsetRegions[noOffsetSelectors.accessibility],
+        ...regions,
         useDom,
         enablePatterns,
         ignoreDisplacements,

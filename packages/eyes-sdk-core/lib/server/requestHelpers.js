@@ -1,6 +1,8 @@
 const getTunnelAgentFromProxy = require('./getTunnelAgentFromProxy')
 
-const {GeneralUtils, DateTimeUtils, TypeUtils} = require('../..')
+const DateTimeUtils = require('../utils/DateTimeUtils')
+const TypeUtils = require('../utils/TypeUtils')
+const GeneralUtils = require('../utils/GeneralUtils')
 
 const HTTP_STATUS_CODES = {
   CREATED: 201,

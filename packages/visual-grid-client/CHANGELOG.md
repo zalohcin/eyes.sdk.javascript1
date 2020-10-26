@@ -1,10 +1,41 @@
 # Change Log
 
 ## Unreleased
-- updated to @applitools/eyes-sdk-core@12.3.1 (from 12.3.0)
 
 - upload resources before render
 - changed concurrency model
+
+## 15.0.16 - 2020/10/26
+
+- updated to @applitools/eyes-sdk-core@12.5.4 (from 12.5.3)
+
+## 15.0.15 - 2020/10/24
+
+- updated to @applitools/eyes-sdk-core@12.5.3 (from 12.5.2)
+
+## 15.0.14 - 2020/10/23
+
+- updated to @applitools/eyes-sdk-core@12.5.2 (from 12.5.1)
+
+## 15.0.13 - 2020/10/22
+
+- updated to @applitools/eyes-sdk-core@12.5.1 (from 12.4.4)
+- fix closing batches ([Trello](https://trello.com/c/8zPehdmh))
+
+## 15.0.12 - 2020/10/19
+
+- deprecate `saveDebugData`
+- updated to @applitools/eyes-sdk-core@12.4.4 (from 12.4.3)
+
+## 15.0.11 - 2020/10/18
+
+- support multiple regions per selector
+- updated to @applitools/eyes-sdk-core@12.4.3 (from 12.3.2)
+
+## 15.0.10 - 2020/10/13
+
+- updated to @applitools/eyes-sdk-core@12.3.1 (from 12.3.0)
+- updated to @applitools/eyes-sdk-core@12.3.2 (from 12.3.1)
 
 ## 15.0.9 - 2020/10/6
 

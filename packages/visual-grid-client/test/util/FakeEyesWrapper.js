@@ -6,10 +6,10 @@ const {
   RenderStatus,
   Location,
   Region,
+  BatchInfo,
 } = require('@applitools/eyes-sdk-core')
 const {URL} = require('url')
 const {loadJsonFixture, loadFixtureBuffer} = require('./loadFixture')
-const SOME_BATCH = 'SOME_BATCH'
 const getSha256Hash = require('./getSha256Hash')
 const FakeRunningRender = require('./FakeRunningRender')
 const EventEmitter = require('events')
@@ -45,7 +45,7 @@ class FakeEyesWrapper extends EventEmitter {
     goodResources = [],
     closeErr = false,
     failRender,
-    batchId = '1',
+    batchId,
   }) {
     super()
     this._logger = {
@@ -56,8 +56,7 @@ class FakeEyesWrapper extends EventEmitter {
     this.goodResourceUrls = goodResourceUrls
     this.goodResources = goodResources
     this.goodTags = goodTags
-    this.batch
-    this.batchId = batchId
+    this.batch = new BatchInfo(batchId ? {id: batchId} : undefined)
     this.baseUrl = 'http://fake'
     this.resultsRoute = '/results_url'
     this.stitchingServiceUrl = '/stitching_service'
@@ -157,9 +156,9 @@ class FakeEyesWrapper extends EventEmitter {
         userAgent: browserName,
         deviceSize: deviceName && devices[deviceName],
         selectorRegions: selectorsToFindRegionsFor
-          ? selectorsToFindRegionsFor.map(
-              selector => selectorsToLocations[selector.selector || selector],
-            )
+          ? selectorsToFindRegionsFor.map(selector => [
+              selectorsToLocations[selector.selector || selector],
+            ])
           : undefined,
       })
     })
@@ -304,7 +303,7 @@ class FakeEyesWrapper extends EventEmitter {
   }
 
   getBatch() {
-    return this.batch || SOME_BATCH
+    return this.batch
   }
 
   setBatch(batch) {
@@ -455,8 +454,8 @@ class FakeEyesWrapper extends EventEmitter {
     return this.ignoreDisplacements
   }
 
-  getUserSetBatchId() {
-    return this.batchId
+  getBatchIdWithoutGenerating() {
+    return this.batch.getId()
   }
 
   getProxy() {
