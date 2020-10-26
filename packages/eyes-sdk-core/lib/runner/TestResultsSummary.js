@@ -1,6 +1,8 @@
 'use strict'
 
-const {ArgumentGuard, TypeUtils, GeneralUtils} = require('../..')
+const ArgumentGuard = require('../utils/ArgumentGuard')
+const TypeUtils = require('../utils/TypeUtils')
+const GeneralUtils = require('../utils/GeneralUtils')
 const TestFailedError = require('../errors/TestFailedError')
 const TestResultsStatus = require('../TestResultsStatus')
 const TestResultContainer = require('./TestResultContainer')

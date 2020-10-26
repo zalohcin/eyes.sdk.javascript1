@@ -1,6 +1,8 @@
 'use strict'
 
-const {GeneralUtils, RectangleSize, Region} = require('../..')
+const RectangleSize = require('../geometry/RectangleSize')
+const Region = require('../geometry/Region')
+const GeneralUtils = require('../utils/GeneralUtils')
 
 /**
  * Encapsulates data for the render currently running in the client.

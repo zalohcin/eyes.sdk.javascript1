@@ -1,6 +1,7 @@
 'use strict'
 
-const {GeneralUtils, Region} = require('../..')
+const Region = require('../geometry/Region')
+const GeneralUtils = require('../utils/GeneralUtils')
 
 const EmulationInfo = require('./EmulationInfo')
 
