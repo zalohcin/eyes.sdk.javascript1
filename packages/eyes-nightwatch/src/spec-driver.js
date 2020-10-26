@@ -7,6 +7,13 @@ function extractElementId(element) {
   const _element = element.value || element
   return _element[ELEMENT_ID] || _element[LEGACY_ELEMENT_ID]
 }
+function transformSelector(selector) {
+  if (TypeUtils.has(selector, ['type', 'selector'])) {
+    if (selector.type === 'css') return [`css selector`, selector.selector]
+    else if (selector.type === 'xpath') return ['xpath', selector.selector]
+  }
+  return ['css selector', selector]
+}
 function transformElement(element) {
   const elementId = extractElementId(element)
   return {[ELEMENT_ID]: elementId}
@@ -77,13 +84,13 @@ async function childContext(driver, element) {
 }
 async function findElement(driver, selector) {
   if (TypeUtils.isString(selector)) {
-    const element = await driver.element('css selector', selector)
+    const element = await driver.element(...transformSelector(selector))
     return element.value
   }
 }
 async function findElements(driver, selector) {
   if (TypeUtils.isString(selector)) {
-    const elements = await driver.elements('css selector', selector)
+    const elements = await driver.elements(...transformSelector(selector))
     return elements.value
   }
 }
