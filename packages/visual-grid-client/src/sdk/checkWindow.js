@@ -57,7 +57,7 @@ function makeCheckWindow({
     if (target === 'window' && !fully) {
       sizeMode = 'viewport'
     } else if (target === 'region' && selector) {
-      sizeMode = 'selector'
+      sizeMode = fully ? 'full-selector' : 'selector'
     } else if (target === 'region' && region) {
       sizeMode = 'region'
     }
@@ -207,7 +207,7 @@ function makeCheckWindow({
       const {imageLocationRegion, ...regions} = getMatchRegions({selectorRegions})
 
       let imageLocation = undefined
-      if (sizeMode === 'selector' && imageLocationRegion) {
+      if ((sizeMode === 'selector' || sizeMode === 'full-selector') && imageLocationRegion) {
         imageLocation = new Region(imageLocationRegion).getLocation()
       } else if (sizeMode === 'region' && region) {
         imageLocation = new Region(region).getLocation()
