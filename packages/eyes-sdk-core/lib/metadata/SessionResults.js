@@ -1,7 +1,6 @@
 'use strict'
 
-const {GeneralUtils} = require('../..')
-
+const GeneralUtils = require('../utils/GeneralUtils')
 const ActualAppOutput = require('./ActualAppOutput')
 const ExpectedAppOutput = require('./ExpectedAppOutput')
 const Branch = require('./Branch')

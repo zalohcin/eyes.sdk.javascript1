@@ -1,5 +1,6 @@
 'use strict'
-const {GeneralUtils} = require('../..')
+
+const GeneralUtils = require('../utils/GeneralUtils')
 const RenderingInfo = require('./RenderingInfo')
 
 /**

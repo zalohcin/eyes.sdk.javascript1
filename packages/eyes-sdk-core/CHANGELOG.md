@@ -3,6 +3,25 @@
 ## Unreleased
 
 
+## 12.5.4 - 2020/10/26
+
+- restore inner offset of the element in case one stitch full page screenshot ([Trello 528](https://trello.com/c/iu2Png9p))
+- updated to @applitools/dom-snapshot@4.2.3 (from 4.2.2)
+
+## 12.5.3 - 2020/10/24
+
+- fix `setViewportSize` utility
+
+## 12.5.2 - 2020/10/23
+
+- remove unused devDependencies
+- fix sending multiple region types by the same element in vg mode
+- fix sending `ignoreDisplacements` in vg mode
+- fix check settings when set `false` in `sendDom` using object notation
+- remove force hiding scrollbars during taking full page screenshot with css stitching
+- updated to @applitools/dom-capture@8.0.1 (from 8.0.0)
+- updated to @applitools/snippets@2.1.0 (from 2.0.3)
+
 ## 12.5.1 - 2020/10/22
 
 - rename `_getSetBatchId` to `getBatchIdWithoutGenerating`

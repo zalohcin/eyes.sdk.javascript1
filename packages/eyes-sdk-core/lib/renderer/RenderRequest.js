@@ -1,6 +1,6 @@
 'use strict'
 
-const {ArgumentGuard} = require('../..')
+const ArgumentGuard = require('../utils/ArgumentGuard')
 
 /**
  * Encapsulates data required to start render using the RenderingGrid API.

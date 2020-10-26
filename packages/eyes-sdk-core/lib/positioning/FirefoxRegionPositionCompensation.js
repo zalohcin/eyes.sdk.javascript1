@@ -1,6 +1,6 @@
 'use strict'
 
-const {Region} = require('../..')
+const Region = require('../geometry/Region')
 const RegionPositionCompensation = require('./RegionPositionCompensation')
 
 class FirefoxRegionPositionCompensation extends RegionPositionCompensation {
