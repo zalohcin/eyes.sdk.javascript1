@@ -1,47 +1,37 @@
 const {TypeUtils} = require('@applitools/eyes-sdk-core')
 
 //// #region HELPERS
+const LEGACY_ELEMENT_ID = 'ELEMENT'
+const ELEMENT_ID = 'element-6066-11e4-a52e-4f735466cecf'
 function extractElementId(element) {
-  const LEGACY_ELEMENT_ID = 'ELEMENT'
-  const ELEMENT_ID = 'element-6066-11e4-a52e-4f735466cecf'
   const _element = element.value || element
   return _element[ELEMENT_ID] || _element[LEGACY_ELEMENT_ID]
+}
+function transformElement(element) {
+  const elementId = extractElementId(element)
+  return {[ELEMENT_ID]: elementId}
 }
 function getCapabilities(driver, opts) {
   return opts.using ? opts.using : driver.capabilities
 }
-function transformSelectorType(type) {
-  return type === 'css' ? 'css selector' : type
-}
-async function findSpecializedElement(driver, arg) {
-  const selector = isSelector(arg._element) ? arg._element : arg._element.selector
-  return await driver.element(transformSelectorType(arg._element.type), selector)
-}
-async function prepareArgWithElement(driver, arg) {
-  const element = TypeUtils.instanceOf(arg, 'SpecializedElement')
-    ? await findSpecializedElement(driver, arg)
-    : arg
-  return isElement(element) && element.value ? element.value : element
-}
-async function prepareArgsWithElements(driver, args) {
+function prepareArgsWithElements(args) {
+  const getElementObject = el => (isElement(el) && el.value ? el.value : el)
   if (Array.isArray(args)) {
     const results = []
     for (const i in args) {
       let result
       if (Array.isArray(args[i])) {
-        result = await Promise.all(
-          args[i].map(async nestedArg => await prepareArgWithElement(driver, nestedArg)),
-        )
+        result = args[i].map(nestedArg => getElementObject(nestedArg))
       } else {
-        result = await prepareArgWithElement(driver, args[i])
+        result = getElementObject(args[i])
       }
       results.push(result)
     }
     return results
   }
-  return [await prepareArgWithElement(driver, args)]
+  return args
 }
-//// #endregion
+// #endregion
 
 //// #region UTILITY
 function isDriver(driver) {
@@ -69,7 +59,7 @@ function isEqualElements(_driver, element1, element2) {
 
 //// #region COMMANDS
 async function executeScript(driver, script, ...args) {
-  const preparedArgs = await prepareArgsWithElements(driver, args)
+  const preparedArgs = prepareArgsWithElements(args)
   const result = await driver.execute(script, preparedArgs)
   return result.value
 }
@@ -150,13 +140,11 @@ async function getUrl(driver) {
 async function visit(driver, url) {
   return driver.url(url)
 }
+// TODO: ask forum about how to track error handling
 async function takeScreenshot(driver) {
-  // NOTE: passing a callback is needed in order to return the screenshot
-  // simply awaiting on the result returns undefined
-  const fn = result => {
-    return Buffer.from(result.value, 'base64')
-  }
-  return await driver.screenshot(true, fn)
+  return new Promise(resolve => {
+    return driver.screenshot(false, result => resolve(Buffer.from(result.value, 'base64')))
+  })
 }
 async function click(driver, element) {
   if (isSelector(element)) {
@@ -216,6 +204,7 @@ exports.type = type
 exports.waitUntilDisplayed = waitUntilDisplayed
 exports.scrollIntoView = scrollIntoView
 exports.hover = hover
+exports.transformElement = transformElement
 // for tests
 exports.build = () => {
   return [{}, () => {}]
