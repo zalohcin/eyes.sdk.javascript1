@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-sdk-core",
-  "version": "12.5.3",
+  "version": "12.5.4",
   "description": "The core components of Eyes JavaScript SDK",
   "keywords": [
     "applitools",
@@ -33,7 +33,7 @@
   "typings": "./typings/index.d.ts",
   "dependencies": {
     "@applitools/dom-capture": "8.0.1",
-    "@applitools/dom-snapshot": "4.2.2",
+    "@applitools/dom-snapshot": "4.2.3",
     "@applitools/isomorphic-fetch": "3.0.0",
     "@applitools/snippets": "2.1.0",
     "axios": "0.19.2",
@@ -70,7 +70,7 @@
     "test": "mocha --no-timeouts --parallel --jobs 15 \"test/**/*.spec.js\"",
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
     "test:it": "mocha --no-timeouts \"test/it/**/*.spec.js\"",
-    "preversion": "bongo preversion && yarn test",
+    "preversion": "bongo preversion --skipVerifyInstalledVersions && yarn test",
     "version": "bongo version",
     "postversion": "bongo postversion --skip-release-notification",
     "deps": "bongo deps"

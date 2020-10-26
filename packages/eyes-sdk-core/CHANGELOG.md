@@ -2,7 +2,11 @@
 
 ## Unreleased
 
+
+## 12.5.4 - 2020/10/26
+
 - restore inner offset of the element in case one stitch full page screenshot ([Trello 528](https://trello.com/c/iu2Png9p))
+- updated to @applitools/dom-snapshot@4.2.3 (from 4.2.2)
 
 ## 12.5.3 - 2020/10/24
 
