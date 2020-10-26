@@ -16,27 +16,10 @@ function transformSelector(selector) {
 }
 function transformElement(element) {
   const elementId = extractElementId(element)
-  return {[ELEMENT_ID]: elementId}
+  return {[ELEMENT_ID]: elementId, [LEGACY_ELEMENT_ID]: elementId}
 }
 function getCapabilities(driver, opts) {
   return opts.using ? opts.using : driver.capabilities
-}
-function prepareArgsWithElements(args) {
-  const getElementObject = el => (isElement(el) && el.value ? el.value : el)
-  if (Array.isArray(args)) {
-    const results = []
-    for (const i in args) {
-      let result
-      if (Array.isArray(args[i])) {
-        result = args[i].map(nestedArg => getElementObject(nestedArg))
-      } else {
-        result = getElementObject(args[i])
-      }
-      results.push(result)
-    }
-    return results
-  }
-  return args
 }
 // #endregion
 
@@ -66,8 +49,7 @@ function isEqualElements(_driver, element1, element2) {
 
 //// #region COMMANDS
 async function executeScript(driver, script, ...args) {
-  const preparedArgs = prepareArgsWithElements(args)
-  const result = await driver.execute(script, preparedArgs)
+  const result = await driver.execute(script, args)
   return result.value
 }
 async function mainContext(driver) {
@@ -83,16 +65,12 @@ async function childContext(driver, element) {
   await driver.frame(element.value)
 }
 async function findElement(driver, selector) {
-  if (TypeUtils.isString(selector)) {
-    const element = await driver.element(...transformSelector(selector))
-    return element.value
-  }
+  const element = await driver.element(...transformSelector(selector))
+  return element.value
 }
 async function findElements(driver, selector) {
-  if (TypeUtils.isString(selector)) {
-    const elements = await driver.elements(...transformSelector(selector))
-    return elements.value
-  }
+  const elements = await driver.elements(...transformSelector(selector))
+  return elements.value
 }
 async function getElementRect(driver, element) {
   const location = await driver.elementIdLocation(extractElementId(element))

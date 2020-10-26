@@ -64,16 +64,16 @@ describe('spec driver', () => {
         return arguments
       }
       const result = await spec.executeScript(driver, script, element)
-      assert.deepStrictEqual(result[0], element.value)
+      assert.deepStrictEqual(result[0].value, element.value)
     })
     it('executeScript(element) use', async function(driver) {
       const element = await driver.element('css selector', 'html')
       const script = "return getComputedStyle(arguments[0]).getPropertyValue('overflow')"
-      assert.deepStrictEqual(await spec.executeScript(driver, script, element), 'visible')
+      assert.deepStrictEqual(await spec.executeScript(driver, script, element.value), 'visible')
     })
     it('executeScript(element) re-use', async function(driver) {
       const element = await driver.element('css selector', 'html')
-      const recycledElement = await spec.executeScript(driver, 'return arguments[0]', element)
+      const recycledElement = await spec.executeScript(driver, 'return arguments[0]', element.value)
       const script = "return getComputedStyle(arguments[0]).getPropertyValue('overflow')"
       const result = await spec.executeScript(driver, script, recycledElement)
       assert.deepStrictEqual(result, 'visible')
