@@ -147,6 +147,7 @@ class FullPageCaptureAlgorithm {
         image.getHeight() >= entireSize.getHeight()
       ) {
         await this._originProvider.restoreState(originalPosition)
+        await positionProvider.restoreState(originalStitchedState)
         return image
       }
 

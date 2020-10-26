@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- restore inner offset of the element in case one stitch full page screenshot ([Trello 528](https://trello.com/c/iu2Png9p))
 
 ## 12.5.3 - 2020/10/24
 
