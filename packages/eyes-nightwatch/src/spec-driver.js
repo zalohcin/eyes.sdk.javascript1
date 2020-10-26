@@ -2,8 +2,10 @@ const {TypeUtils} = require('@applitools/eyes-sdk-core')
 
 //// #region HELPERS
 function extractElementId(element) {
-  const _element = element.value ? element.value : element
-  return Object.values(_element)[0]
+  const LEGACY_ELEMENT_ID = 'ELEMENT'
+  const ELEMENT_ID = 'element-6066-11e4-a52e-4f735466cecf'
+  const _element = element.value || element
+  return _element[ELEMENT_ID] || _element[LEGACY_ELEMENT_ID]
 }
 function getCapabilities(driver, opts) {
   return opts.using ? opts.using : driver.capabilities
