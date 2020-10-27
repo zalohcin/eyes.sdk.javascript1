@@ -121,7 +121,7 @@ describe('render', () => {
     renders.push(render(new FakeRenderRequest('dom4', [])))
     await psetTimeout(5)
     renders.push(render(new FakeRenderRequest('dom5', [])))
-    await psetTimeout(10)
+    await psetTimeout(5)
     renders.push(render(new FakeRenderRequest('dom6', [])))
 
     await Promise.all(renders)

@@ -1,15 +1,15 @@
 'use strict'
 function makeGetRenderJobInfo({doGetRenderJobInfo, timeout = 100}) {
   let pendingRequests = new Map()
-
   let throttleTimer = false
+
   return function(renderRequest) {
     return new Promise((resolve, reject) => {
       pendingRequests.set(renderRequest, {resolve, reject})
       if (!throttleTimer) {
         throttleTimer = true
         setTimeout(() => {
-          getRenderJobInfoJob(pendingRequests)
+          getRenderJobInfo(pendingRequests)
           pendingRequests = new Map()
           throttleTimer = false
         }, timeout)
@@ -17,7 +17,7 @@ function makeGetRenderJobInfo({doGetRenderJobInfo, timeout = 100}) {
     })
   }
 
-  async function getRenderJobInfoJob(pendingRequests) {
+  async function getRenderJobInfo(pendingRequests) {
     try {
       const renderRequests = Array.from(pendingRequests.keys())
       const rendererInfos = await doGetRenderJobInfo(renderRequests)

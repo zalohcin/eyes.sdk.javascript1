@@ -3,8 +3,6 @@ const throat = require('throat')
 const toCacheEntry = require('./toCacheEntry')
 const resourceType = require('./resourceType')
 
-const DEFAULT_CONCURRENCY_LIMIT = 100
-
 function makePutResources({
   logger,
   doPutResource,
@@ -12,15 +10,14 @@ function makePutResources({
   resourceCache,
   fetchCache,
   timeout = 100,
-  concurrency = DEFAULT_CONCURRENCY_LIMIT,
+  concurrency = 100,
 }) {
   const putResource = throat(concurrency, doPutResource)
-
   const uploadedResources = new Set()
   const requestedResources = new Map()
   let pendingResources = new Map()
+  let throttleTimer = false
 
-  let debounceTimer
   return async function(resources = []) {
     const promises = resources.map(resource => {
       const hash = resource.getContent() ? resource.getSha256Hash() : null
@@ -46,11 +43,14 @@ function makePutResources({
         return promise
       }
     }, [])
-    clearTimeout(debounceTimer)
-    debounceTimer = setTimeout(() => {
-      putResourcesJob(pendingResources)
-      pendingResources = new Map()
-    }, timeout)
+    if (!throttleTimer) {
+      throttleTimer = true
+      setTimeout(() => {
+        putResources(pendingResources)
+        pendingResources = new Map()
+        throttleTimer = throttleTimer
+      }, timeout)
+    }
     const result = await Promise.all(promises)
     for (const resource of resources) {
       const url = resource.getUrl()
@@ -62,7 +62,7 @@ function makePutResources({
     return result
   }
 
-  async function putResourcesJob(requests) {
+  async function putResources(requests) {
     try {
       const resources = Array.from(requests.keys())
       const presentedResources = await doCheckResources(resources)

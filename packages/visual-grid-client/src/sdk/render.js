@@ -4,20 +4,23 @@ const {RenderStatus} = require('@applitools/eyes-sdk-core')
 
 function makeRender({logger, doRenderBatch, timeout = 300}) {
   let pendingRequests = new Map()
+  let throttleTimer = false
 
-  let debounceTimer
   return function(renderRequest) {
     return new Promise(async (resolve, reject) => {
-      clearTimeout(debounceTimer)
       pendingRequests.set(renderRequest, {resolve, reject})
-      debounceTimer = setTimeout(() => {
-        renderBatchJob(pendingRequests)
-        pendingRequests = new Map()
-      }, timeout)
+      if (!throttleTimer) {
+        throttleTimer = true
+        setTimeout(() => {
+          renderBatch(pendingRequests)
+          pendingRequests = new Map()
+          throttleTimer = false
+        }, timeout)
+      }
     })
   }
 
-  async function renderBatchJob(pendingRequests) {
+  async function renderBatch(pendingRequests) {
     try {
       const renderRequests = Array.from(pendingRequests.keys())
       const runningRenders = await doRenderBatch(renderRequests)
