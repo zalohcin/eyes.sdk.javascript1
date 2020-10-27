@@ -16,7 +16,7 @@ const createResourceCache = require('./createResourceCache')
 const makeWaitForRenderedStatus = require('./waitForRenderedStatus')
 const makeGetRenderStatus = require('./getRenderStatus')
 const makePutResources = require('./putResources')
-const makeGetRendererInfo = require('./getRendererInfo')
+const makeGetRenderJobInfo = require('./getRenderJobInfo')
 const makeRender = require('./render')
 const makeOpenEyes = require('./openEyes')
 const makeCreateRGridDOMAndGetResourceMapping = require('./createRGridDOMAndGetResourceMapping')
@@ -41,7 +41,7 @@ function makeRenderingGridClient({
   logger,
   showLogs,
   renderTimeout,
-  rendererInfoTimeout,
+  renderJobInfoTimeout,
   putResourcesTimeout,
   renderStatusTimeout,
   renderStatusInterval,
@@ -91,11 +91,8 @@ function makeRenderingGridClient({
     deprecationWarning({deprecatedThing: 'saveDebugData', isDead: true})
   }
 
-  const finalConcurrency = getFinalConcurrency({concurrency, testConcurrency})
+  const finalConcurrency = getFinalConcurrency({concurrency, testConcurrency}) || 5
 
-  if (isNaN(finalConcurrency)) {
-    throw new Error('concurrency is not a number')
-  }
   logger = logger || new Logger(showLogs, 'visual-grid-client')
   logger.verbose('vgc concurrency is', finalConcurrency)
   ;({batchSequence, baselineBranch, parentBranch, branch, batchNotify} = backwardCompatible(
@@ -126,7 +123,7 @@ function makeRenderingGridClient({
     doPutResource,
     doGetRenderStatus,
     setRenderingInfo,
-    doGetRendererInfo,
+    doGetRenderJobInfo,
     doLogEvents,
   } = getRenderMethods(renderWrapper)
   const resourceCache = createResourceCache()
@@ -144,7 +141,7 @@ function makeRenderingGridClient({
     timeout: putResourcesTimeout,
   })
   const render = makeRender({logger, doRenderBatch, timeout: renderTimeout})
-  const getRendererInfo = makeGetRendererInfo({doGetRendererInfo, timeout: rendererInfoTimeout})
+  const getRenderJobInfo = makeGetRenderJobInfo({doGetRenderJobInfo, timeout: renderJobInfoTimeout})
   const getRenderStatus = makeGetRenderStatus({
     logger,
     doGetRenderStatus,
@@ -201,7 +198,7 @@ function makeRenderingGridClient({
     serverUrl,
     logger,
     putResources,
-    getRendererInfo,
+    getRenderJobInfo,
     render,
     waitForRenderedStatus,
     renderThroat,

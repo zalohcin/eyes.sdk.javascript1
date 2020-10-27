@@ -46,7 +46,7 @@ describe('openEyes', () => {
     await browser.close()
   })
 
-  it('renders google font on IE correctly', async () => {
+  it.only('renders google font on IE correctly', async () => {
     await page.goto(`${baseUrl}/google-font.html`)
     const userAgent = await page.evaluate(() => navigator.userAgent)
 
@@ -62,11 +62,7 @@ describe('openEyes', () => {
 
     checkWindow({
       url,
-      snapshot: {
-        resourceUrls,
-        resourceContents,
-        cdt,
-      },
+      snapshot: {resourceUrls, resourceContents, cdt},
     })
 
     const results = await close(false)

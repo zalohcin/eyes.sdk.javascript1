@@ -12,6 +12,7 @@ function makeCheckWindow({
   testController,
   createRGridDOMAndGetResourceMapping,
   putResources,
+  getRenderJobInfo,
   render,
   waitForRenderedStatus,
   renderInfo,
@@ -85,8 +86,8 @@ function makeCheckWindow({
       floating,
     })
 
-    const renderRequestPromises = snapshots.map(async (snapshot, index) => {
-      const {allResources, rGridDom} = await createRGridDOMAndGetResourceMapping({
+    const resourcesPromises = snapshots.map(async snapshot => {
+      const {rGridDom: dom, allResources: resources} = await createRGridDOMAndGetResourceMapping({
         resourceUrls: snapshot.resourceUrls,
         resourceContents: snapshot.resourceContents,
         cdt: snapshot.cdt,
@@ -95,50 +96,21 @@ function makeCheckWindow({
         referer: url,
         proxySettings: wrappers[0].getProxy(),
       })
-      await putResources([rGridDom, ...Object.values(allResources)])
-      return createRenderRequest({
-        url,
-        dom: rGridDom,
-        resources: Object.values(allResources),
-        browser: browsers[index],
-        renderInfo,
-        sizeMode,
-        selector,
-        selectorsToFindRegionsFor,
-        region,
-        scriptHooks,
-        sendDom,
-        visualGridOptions,
-      })
+      await putResources([dom, ...Object.values(resources)])
+      return {dom, resources: Object.values(resources)}
     })
 
-    setCheckWindowPromises(
-      browsers.map((_browser, i) =>
-        checkWindowJob(getCheckWindowPromises()[i], i).catch(testController.setError.bind(null, i)),
+    const checkWindowRunningJobs = browsers.map((_browser, index) =>
+      checkWindowJob(index, getCheckWindowPromises()[index]).catch(
+        testController.setError.bind(null, index),
       ),
     )
 
+    setCheckWindowPromises(checkWindowRunningJobs)
+
     const renderJobs = new WeakMap()
 
-    async function renderJob(renderRequest) {
-      if (testController.shouldStopAllTests()) {
-        logger.log(`aborting renderJob because there was an error in getAllResources`)
-        return
-      }
-
-      globalState.setQueuedRendersCount(globalState.getQueuedRendersCount() + 1)
-      const renderId = await renderThroat(() => {
-        logger.log(`starting to render test ${testName}`)
-        return render(renderRequest)
-      })
-      const holder = new Promise(resolve => renderJobs.set(renderRequest, resolve))
-      renderThroat(() => holder)
-      globalState.setQueuedRendersCount(globalState.getQueuedRendersCount() - 1)
-
-      return renderId
-    }
-
-    async function checkWindowJob(prevJobPromise = presult(Promise.resolve()), index) {
+    async function checkWindowJob(index, prevJobPromise = presult(Promise.resolve())) {
       logger.verbose(
         `starting checkWindowJob. test=${testName} stepCount #${currStepCount} index=${index}`,
       )
@@ -157,11 +129,30 @@ function makeCheckWindow({
         return
       }
 
+      const renderRequest = createRenderRequest({
+        url,
+        browser: browsers[index],
+        renderInfo,
+        sizeMode,
+        selector,
+        selectorsToFindRegionsFor,
+        region,
+        scriptHooks,
+        sendDom,
+        visualGridOptions,
+      })
+
+      if (!wrapper.getAppEnvironment()) {
+        const info = await getRenderJobInfo(renderRequest)
+        wrapper.setRenderJobInfo(info)
+      }
+
       await wrapper.ensureRunningSession()
 
-      const renderRequest = await renderRequestPromises[index]
-
-      renderRequest.setRendererIdentifier(wrapper.getRendererIdentifier())
+      const {dom, resources} = await resourcesPromises[index]
+      renderRequest.setDom(dom)
+      renderRequest.setResources(resources)
+      renderRequest.setRenderer(wrapper.getRenderer())
 
       const [renderErr, renderId] = await presult(renderJob(renderRequest))
 
@@ -268,6 +259,24 @@ function makeCheckWindow({
       }
 
       return wrapper.checkWindow(checkArgs)
+    }
+
+    async function renderJob(renderRequest) {
+      if (testController.shouldStopAllTests()) {
+        logger.log(`aborting renderJob because there was an error in getAllResources`)
+        return
+      }
+
+      globalState.setQueuedRendersCount(globalState.getQueuedRendersCount() + 1)
+      const renderId = await renderThroat(() => {
+        logger.log(`starting to render test ${testName}`)
+        return render(renderRequest)
+      })
+      const holder = new Promise(resolve => renderJobs.set(renderRequest, resolve))
+      renderThroat(() => holder)
+      globalState.setQueuedRendersCount(globalState.getQueuedRendersCount() - 1)
+
+      return renderId
     }
   }
 }

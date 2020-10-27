@@ -67,8 +67,6 @@ function configureWrappers({
     validateAndAddProperties(wrapper, properties)
     wrapper.setBatch(batch)
 
-    wrapper.populateRendererInfo(browser)
-
     displayName !== undefined && wrapper.setDisplayName(displayName)
     baselineBranch !== undefined && wrapper.setBaselineBranchName(baselineBranch)
     baselineEnvName !== undefined && wrapper.setBaselineEnvName(baselineEnvName)

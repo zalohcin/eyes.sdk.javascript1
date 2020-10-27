@@ -49,16 +49,4 @@ describe('wrapperUtils', () => {
     })
     expect(wrapper._configuration.getBatch().getNotifyOnCompletion()).to.be.true
   })
-
-  it('sets inferred environment', () => {
-    let wrapper1 = new EyesWrapper()
-    let wrapper2 = new EyesWrapper()
-    configureWrappers({
-      wrappers: [wrapper1, wrapper2],
-      browsers: [{name: 'browser1'}, {name: 'browser2'}],
-      userAgents: {browser1: 'browser-1-ua', browser2: 'browser-2-ua'},
-    })
-    expect(wrapper1.inferredEnvironment).to.equal('useragent:browser-1-ua')
-    expect(wrapper2.inferredEnvironment).to.equal('useragent:browser-2-ua')
-  })
 })

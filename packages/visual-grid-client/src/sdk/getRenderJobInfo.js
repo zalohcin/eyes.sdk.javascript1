@@ -1,15 +1,15 @@
 'use strict'
-function makeGetRendererInfo({doGetRendererInfo, timeout = 100}) {
+function makeGetRenderJobInfo({doGetRenderJobInfo, timeout = 100}) {
   let pendingRequests = new Map()
 
   let throttleTimer = false
   return function(renderRequest) {
     return new Promise((resolve, reject) => {
       pendingRequests.set(renderRequest, {resolve, reject})
-      if (throttleTimer) {
+      if (!throttleTimer) {
         throttleTimer = true
         setTimeout(() => {
-          getRendererInfoJob(pendingRequests)
+          getRenderJobInfoJob(pendingRequests)
           pendingRequests = new Map()
           throttleTimer = false
         }, timeout)
@@ -17,10 +17,10 @@ function makeGetRendererInfo({doGetRendererInfo, timeout = 100}) {
     })
   }
 
-  async function getRendererInfoJob(pendingRequests) {
+  async function getRenderJobInfoJob(pendingRequests) {
     try {
       const renderRequests = Array.from(pendingRequests.keys())
-      const rendererInfos = await doGetRendererInfo(renderRequests)
+      const rendererInfos = await doGetRenderJobInfo(renderRequests)
       rendererInfos.forEach((rendererInfo, index) => {
         const {resolve} = pendingRequests.get(renderRequests[index])
         resolve(rendererInfo)
@@ -31,4 +31,4 @@ function makeGetRendererInfo({doGetRendererInfo, timeout = 100}) {
   }
 }
 
-module.exports = makeGetRendererInfo
+module.exports = makeGetRenderJobInfo

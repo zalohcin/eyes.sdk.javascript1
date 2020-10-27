@@ -7,7 +7,7 @@ function getRenderMethods(renderWrapper) {
   const doPutResource = renderWrapper.putResource.bind(renderWrapper)
   const doGetRenderStatus = renderWrapper.getRenderStatus.bind(renderWrapper)
   const setRenderingInfo = renderWrapper.setRenderingInfo.bind(renderWrapper)
-  const doGetRendererInfo = renderWrapper.getRendererInfo.bind(renderWrapper)
+  const doGetRenderJobInfo = renderWrapper.getRenderJobInfo.bind(renderWrapper)
   const doLogEvents = renderWrapper.logEvents.bind(renderWrapper)
   return {
     doGetRenderInfo,
@@ -16,7 +16,7 @@ function getRenderMethods(renderWrapper) {
     doPutResource,
     doGetRenderStatus,
     setRenderingInfo,
-    doGetRendererInfo,
+    doGetRenderJobInfo,
     doLogEvents,
   }
 }

@@ -554,15 +554,15 @@ class ServerConnector {
     throw new Error(`ServerConnector.render - unexpected status (${response.statusText})`)
   }
 
-  async renderGetRendererInfo(renderRequests) {
+  async renderGetRenderJobInfo(renderRequests) {
     ArgumentGuard.notNull(renderRequests, 'renderRequests')
-    this._logger.verbose(`ServerConnector.renderGetRendererInfo called with ${renderRequests}`)
+    this._logger.verbose(`ServerConnector.renderGetRenderJobInfo called with ${renderRequests}`)
 
     const config = {
-      name: 'renderGetRendererInfo',
+      name: 'renderGetRenderJobInfo',
       withApiKey: false,
       method: 'POST',
-      url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/renderer-info'),
+      url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/job-info'),
       headers: {
         'X-Auth-Token': this._renderingInfo.getAccessToken(),
       },
@@ -572,7 +572,7 @@ class ServerConnector {
     const response = await this._axios.request(config)
     const validStatusCodes = [HTTP_STATUS_CODES.OK]
     if (validStatusCodes.includes(response.status)) {
-      this._logger.verbose('ServerConnector.renderGetRendererInfo - post succeeded', response.data)
+      this._logger.verbose('ServerConnector.renderGetRenderJobInfo - post succeeded', response.data)
       return response.data
     }
 

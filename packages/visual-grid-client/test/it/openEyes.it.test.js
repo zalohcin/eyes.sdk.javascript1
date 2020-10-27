@@ -52,6 +52,7 @@ describe('openEyes', () => {
 
     wrapper = createFakeWrapper(baseUrl)
     openEyes = makeRenderingGridClient({
+      testConcurrency: 10,
       showLogs: APPLITOOLS_SHOW_LOGS,
       apiKey,
       renderWrapper: wrapper,
@@ -156,6 +157,7 @@ describe('openEyes', () => {
     const batchSequence = `batchSequence_${now}`
 
     openEyes = makeRenderingGridClient({
+      testConcurrency: 500,
       showLogs: APPLITOOLS_SHOW_LOGS,
       apiKey,
       renderWrapper: wrapper,
@@ -324,7 +326,7 @@ describe('openEyes', () => {
       url: `${baseUrl}/test.html`,
     })
     await close()
-    expect(await wrapper.getInferredEnvironment()).to.equal('useragent:firefox')
+    expect(await wrapper.getAppEnvironment().hostingApp).to.equal('firefox')
   })
 
   it('throws error on empty browser', async () => {
@@ -474,6 +476,7 @@ Received: 'firefox-1'.`,
     }
 
     openEyes = makeRenderingGridClient({
+      testConcurrency: 500,
       showLogs: APPLITOOLS_SHOW_LOGS,
       apiKey,
       renderWrapper: wrapper,
@@ -499,6 +502,7 @@ Received: 'firefox-1'.`,
     }
 
     openEyes = makeRenderingGridClient({
+      testConcurrency: 500,
       showLogs: APPLITOOLS_SHOW_LOGS,
       apiKey,
       renderWrapper: wrapper,
@@ -794,6 +798,7 @@ Received: 'firefox-1'.`,
 
       openEyes = makeRenderingGridClient({
         renderTimeout: 0,
+        renderJobInfoTimeout: 0,
         putResourcesTimeout: 0,
         testConcurrency: 1,
         apiKey,
@@ -857,7 +862,6 @@ Received: 'firefox-1'.`,
         return renderBatch.apply(this, arguments)
       }
       wrapper.getRenderStatus = async renderIds => {
-        // console.log('runningStatuses', runningStatuses, 'renderIds', renderIds);
         renderStatusCount++
         const statuses = runningStatuses
           .filter(x => !!x)
@@ -883,8 +887,9 @@ Received: 'firefox-1'.`,
 
     beforeEach(() => {
       openEyes = makeRenderingGridClient({
-        renderTimeout: 0,
+        renderJobInfoTimeout: 0,
         putResourcesTimeout: 0,
+        renderTimeout: 0,
         testConcurrency: 2,
         apiKey,
         showLogs: APPLITOOLS_SHOW_LOGS,
@@ -892,16 +897,13 @@ Received: 'firefox-1'.`,
       }).openEyes
     })
 
-    it.only('runs renders with max concurrency', async () => {
+    it('runs renders with max concurrency', async () => {
       const {checkWindow, close} = await openEyes({
         wrappers: [wrapper],
         appName,
       })
-      console.log('111')
       checkWindow({url: '', snapshot: {cdt: []}, target: null, sizeMode: null})
-      console.log('222')
       await psetTimeout(10)
-      console.log('333')
       expect(renderCount).to.equal(1)
       expect(renderStatusCount).to.equal(0) // still batching initial renderIds for /render-status request
 
@@ -1005,6 +1007,7 @@ Received: 'firefox-1'.`,
 
     it('resolves render job when error in getRenderStatus happens', async () => {
       openEyes = makeRenderingGridClient({
+        renderJobInfoTimeout: 0,
         putResourcesTimeout: 0,
         renderTimeout: 0,
         testConcurrency: 1,
@@ -1830,7 +1833,7 @@ Received: 'firefox-1'.`,
 
     checkWindow({url: '', snapshot: {cdt: []}})
     const [results] = await close()
-    expect(wrapper.getViewportSize()).to.eql(FakeEyesWrapper.devices['iPhone 4'])
+    expect(wrapper.getAppEnvironment().displaySize).to.eql(FakeEyesWrapper.devices['iPhone 4'])
     expect(wrapper.getDeviceInfo()).to.equal(`${deviceName} (Chrome emulation)`)
     expect(results.getStepsInfo()[0].result.getAsExpected()).to.equal(true)
   })
@@ -1851,7 +1854,7 @@ Received: 'firefox-1'.`,
     const [results] = await close()
     expect(wrapper.getDeviceInfo()).to.equal(deviceName)
     expect(wrapper.iosDeviceInfo).to.eql(iosDeviceInfo)
-    expect(wrapper.getViewportSize()).to.eql(FakeEyesWrapper.devices[deviceName])
+    expect(wrapper.getAppEnvironment().displaySize).to.eql(FakeEyesWrapper.devices[deviceName])
     expect(results.getStepsInfo()[0].result.getAsExpected()).to.equal(true)
   })
 
@@ -2056,6 +2059,7 @@ Received: 'firefox-1'.`,
 
   it('has correct values for useDom & enablePatterns', async () => {
     openEyes = makeRenderingGridClient({
+      testConcurrency: 500,
       apiKey,
       showLogs: APPLITOOLS_SHOW_LOGS,
       renderWrapper: wrapper,
@@ -2285,7 +2289,7 @@ Received: 'firefox-1'.`,
     })
     const [err] = await presult(close())
     expect(err[0].message).to.equal('renderBatch')
-    expect(wrapper.inferredEnvironment).to.equal('useragent:firefox-ua')
+    expect(wrapper.getAppEnvironment().inferred).to.equal('useragent:firefox')
   })
 
   it('sends the user agent even in case of render failure: when multiple browsers are sent', async () => {
@@ -2315,8 +2319,8 @@ Received: 'firefox-1'.`,
     })
     const [err] = await presult(close())
     expect(err[0].message).to.equal('renderBatch')
-    expect(wrapper1.inferredEnvironment).to.equal('useragent:firefox-ua')
-    expect(wrapper2.inferredEnvironment).to.equal('useragent:safari-1-ua')
+    expect(wrapper1.getAppEnvironment().inferred).to.equal('useragent:firefox')
+    expect(wrapper2.getAppEnvironment().inferred).to.equal('useragent:safari-1')
   })
 
   // TODO (amit): unskip this test once we implement getting the user agent from the render status result.It requires a refactor of waitForRenderedStatus which doesn't seem like a good ROI at the moment.
@@ -2380,6 +2384,6 @@ Received: 'firefox-1'.`,
     })
     const [err] = await presult(close())
     expect(err[0].message).to.contain('renderStatusError')
-    expect(wrapper.inferredEnvironment).to.equal('useragent:firefox-ua')
+    expect(wrapper.getAppEnvironment().inferred).to.equal('useragent:firefox')
   })
 })

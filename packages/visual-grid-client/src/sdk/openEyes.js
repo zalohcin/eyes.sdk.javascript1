@@ -53,7 +53,7 @@ function makeOpenEyes({
   serverUrl,
   logger,
   putResources,
-  getRendererInfo,
+  getRenderJobInfo,
   render,
   waitForRenderedStatus,
   renderThroat,
@@ -176,7 +176,6 @@ function makeOpenEyes({
         apiKey,
         logHandler: logger.getLogHandler(),
         getBatchInfoWithCache,
-        getRendererInfo,
       })
 
     const {renderInfo} = await getInitialData()
@@ -240,6 +239,7 @@ function makeOpenEyes({
       testController,
       createRGridDOMAndGetResourceMapping,
       putResources,
+      getRenderJobInfo,
       render,
       waitForRenderedStatus,
       renderInfo,

@@ -36,6 +36,7 @@ describe('closeEyes', () => {
     wrapper2 = createFakeWrapper(baseUrl)
 
     openEyes = makeRenderingGridClient({
+      testConcurrency: 500,
       showLogs: APPLITOOLS_SHOW_LOGS,
       apiKey,
       renderWrapper: wrapper,
@@ -168,6 +169,7 @@ describe('closeEyes', () => {
   it('rejectes and fails all tests on render error', async () => {
     const failRenderWrapper = createFakeWrapper(baseUrl, {failRender: true})
     const openEyesRenderFail = makeRenderingGridClient({
+      testConcurrency: 500,
       showLogs: APPLITOOLS_SHOW_LOGS,
       apiKey,
       renderWrapper: failRenderWrapper,
@@ -196,6 +198,7 @@ describe('closeEyes', () => {
   it('resolves and fails all tests on render error with throwEx=false', async () => {
     const failRenderWrapper = createFakeWrapper(baseUrl, {failRender: true})
     const openEyesRenderFail = makeRenderingGridClient({
+      testConcurrency: 500,
       showLogs: APPLITOOLS_SHOW_LOGS,
       apiKey,
       renderWrapper: failRenderWrapper,
@@ -244,6 +247,7 @@ describe('closeEyes', () => {
   it('sets the correct batchId on batches when closing', async () => {
     const globalState = makeGlobalState({logger: {log: () => {}}})
     const openEyes = makeRenderingGridClient({
+      testConcurrency: 500,
       showLogs: APPLITOOLS_SHOW_LOGS,
       apiKey,
       renderWrapper: wrapper,

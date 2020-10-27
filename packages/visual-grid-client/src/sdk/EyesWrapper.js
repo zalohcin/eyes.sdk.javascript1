@@ -1,16 +1,14 @@
 'use strict'
 const {EyesBase, NullRegionProvider} = require('@applitools/eyes-sdk-core')
 const {presult} = require('@applitools/functional-commons')
-const createEmulationInfo = require('./createEmulationInfo')
 const VERSION = require('../../package.json').version
 
 class EyesWrapper extends EyesBase {
-  constructor({apiKey, logHandler, getBatchInfoWithCache, getRendererInfo} = {}) {
+  constructor({apiKey, logHandler, getBatchInfoWithCache} = {}) {
     super()
     apiKey && this.setApiKey(apiKey)
     logHandler && this.setLogHandler(logHandler)
     this._getBatchInfoWithCache = getBatchInfoWithCache
-    this._getRendererInfo = getRendererInfo
   }
 
   async open({appName, testName, viewportSize, skipStartingSession}) {
@@ -26,7 +24,6 @@ class EyesWrapper extends EyesBase {
       if (!this._ensureRunningSessionPromise) {
         this._ensureRunningSessionPromise = this._ensureRunningSession()
       }
-      await this.populateRendererInfo()
       const [err] = await presult(this._ensureRunningSessionPromise)
       this._ensureRunningSessionPromise = null
       if (err) {
@@ -36,44 +33,6 @@ class EyesWrapper extends EyesBase {
         )
       }
     }
-  }
-
-  async populateRendererInfo(browser) {
-    if (!this._populateRendererInfoPromise) {
-      const {
-        width,
-        height,
-        name,
-        deviceName,
-        screenOrientation,
-        deviceScaleFactor,
-        mobile,
-        platform,
-        iosDeviceInfo,
-      } = browser
-      const emulationInfo = createEmulationInfo({
-        deviceName,
-        screenOrientation,
-        deviceScaleFactor,
-        mobile,
-        width,
-        height,
-      })
-      const filledBrowserName = iosDeviceInfo && !name ? 'safari' : name
-      const filledPlatform = iosDeviceInfo && !platform ? 'ios' : platform
-      this._populateRendererInfoPromise = this._getRendererInfo({
-        platform: {name: filledPlatform},
-        browser: {name: filledBrowserName},
-        renderInfo: {
-          emulationInfo,
-          iosDeviceInfo,
-        },
-      }).then(({eyesEnvironment, rendererIdentifier}) => {
-        this._appEnvironment = eyesEnvironment
-        this._rendererIdentifier = rendererIdentifier
-      })
-    }
-    return this._populateRendererInfoPromise
   }
 
   async ensureAborted() {
@@ -89,12 +48,17 @@ class EyesWrapper extends EyesBase {
     return this.screenshotUrl
   }
 
-  getRendererIdentifier() {
-    return this._rendererIdentifier
+  getRenderer() {
+    return this._renderer
   }
 
   getAppEnvironment() {
-    return this._appEnvironment
+    return this._eyesEnvironment
+  }
+
+  setRenderJobInfo({eyesEnvironment, renderer} = {}) {
+    this._eyesEnvironment = eyesEnvironment
+    this._renderer = renderer
   }
 
   async getInferredEnvironment() {
@@ -168,8 +132,8 @@ class EyesWrapper extends EyesBase {
     return this._serverConnector.renderCheckResources(resources)
   }
 
-  getRendererInfo(renderRequests) {
-    return this._serverConnector.renderGetRendererInfo(renderRequests)
+  getRenderJobInfo(renderRequests) {
+    return this._serverConnector.renderGetRenderJobInfo(renderRequests)
   }
 
   putResource(resource) {
@@ -197,10 +161,6 @@ class EyesWrapper extends EyesBase {
       proxy.url = proxy.uri // backward compatible
     }
     super.setProxy(proxy)
-  }
-
-  setInferredEnvironment(value) {
-    this.inferredEnvironment = value
   }
 
   async getAndSaveRenderingInfo() {

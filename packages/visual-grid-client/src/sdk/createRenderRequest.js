@@ -2,7 +2,6 @@
 
 const {RenderRequest, RenderInfo} = require('@applitools/eyes-sdk-core')
 const createEmulationInfo = require('./createEmulationInfo')
-const calculateSelectorsToFindRegionsFor = require('./calculateSelectorsToFindRegionsFor')
 
 function createRenderRequest({
   url,
@@ -12,20 +11,12 @@ function createRenderRequest({
   renderInfo,
   sizeMode,
   selector,
+  selectorsToFindRegionsFor,
   region,
   scriptHooks,
-  noOffsetSelectors = [],
-  offsetSelectors = [],
   sendDom,
   visualGridOptions,
 }) {
-  const selectorsToFindRegionsFor = calculateSelectorsToFindRegionsFor({
-    sizeMode,
-    selector,
-    noOffsetSelectors,
-    offsetSelectors,
-  })
-
   const {
     width,
     height,
@@ -54,6 +45,7 @@ function createRenderRequest({
     url,
     resources,
     dom,
+    enableMultipleResultsPerSelector: true,
     renderInfo: new RenderInfo({
       width,
       height,
