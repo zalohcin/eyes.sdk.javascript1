@@ -182,17 +182,27 @@ describe('spec driver', () => {
       const result = await spec.takeScreenshot(driver)
       assert.ok(Buffer.isBuffer(result))
     })
-    // TODO: revisit
-    it.skip('isStaleElementError(err)', async function(driver) {
+    it('isStaleElementError(err)', async function(driver) {
+      const axios = require('axios')
+      const port = driver.options.selenium.port || driver.options.webdriver.port
       const element = await driver.element('css selector', '#overflowing-div')
       const elementId = spec.extractElementId(element)
       await driver.refresh()
+      let errorMessage
       try {
-        await driver.elementIdClick(elementId) // breaks the promise chain when it throws (on w3c: false)
+        const result = await axios({
+          method: 'post',
+          url: `http://localhost:${port}/session/${driver.sessionId}/element/${elementId}/click`,
+          data: {},
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        errorMessage = result.data.value.message
       } catch (err) {
-        console.log('HEY') // <---- never reaches here
-        assert.ok(spec.isStaleElementError(err))
+        errorMessage = err.response.data.value.error
       }
+      assert.ok(spec.isStaleElementError(errorMessage))
     })
     it('getElementRect()', async function(driver) {
       const element = await driver.element('css selector', '#overflowing-div')
