@@ -35,8 +35,8 @@ function isSelector(selector) {
   if (!selector) return false
   return TypeUtils.isString(selector) || TypeUtils.has(selector, ['type', 'selector'])
 }
-function isStaleElementError(errorMessage = '') {
-  return errorMessage.includes('stale element reference')
+function isStaleElementError({error = ''}) {
+  return error.includes('stale element reference') || error.includes('is stale')
 }
 function isEqualElements(_driver, element1, element2) {
   if (!element1 || !element2) return false
