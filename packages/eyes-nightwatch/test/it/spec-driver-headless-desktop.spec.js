@@ -93,9 +93,13 @@ describe('spec driver', () => {
       const element = await spec.findElement(driver, '#overflowing-div')
       assert.ok(spec.isElement(element))
     })
-    it('findElement(non-existent)', async function(driver) {
-      const element = await spec.findElement(driver, 'blah')
-      assert.ok(!spec.isElement(element))
+    it('findElement(non-existentent)', async function(driver) {
+      try {
+        const element = await spec.findElement(driver, 'blah')
+        assert.ok(!spec.isElement(element))
+      } catch (error) {
+        assert.ok(!spec.isElement(error))
+      }
     })
     it('findElements(selector)', async function(driver) {
       const elements = await spec.findElements(driver, 'div')

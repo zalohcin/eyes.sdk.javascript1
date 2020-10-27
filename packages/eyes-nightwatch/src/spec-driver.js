@@ -35,7 +35,10 @@ function isSelector(selector) {
   if (!selector) return false
   return TypeUtils.isString(selector) || TypeUtils.has(selector, ['type', 'selector'])
 }
-function isStaleElementError({error = ''}) {
+function isStaleElementError({error} = {error: ''}) {
+  if (!error) {
+    return false
+  }
   return error.includes('stale element reference') || error.includes('is stale')
 }
 function isEqualElements(_driver, element1, element2) {
@@ -64,8 +67,13 @@ async function childContext(driver, element) {
   await driver.frame(element.value)
 }
 async function findElement(driver, selector) {
-  const element = await driver.element(...transformSelector(selector))
-  return element.value
+  const result = await new Promise(resolve => {
+    driver.element(...transformSelector(selector), result => {
+      resolve(result)
+    })
+  })
+  if (result.error) throw new Error(result.error)
+  return result.value
 }
 async function findElements(driver, selector) {
   const elements = await driver.elements(...transformSelector(selector))
