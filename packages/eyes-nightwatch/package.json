@@ -68,6 +68,7 @@
   },
   "scripts": {
     "nightwatch": "nightwatch --config test/nightwatch.conf.js",
+    "nw": "yarn nightwatch",
     "lint": "eslint . --ext .js",
     "render": "node ../sdk-shared/scripts/render.js",
     "test": "yarn test:it",
