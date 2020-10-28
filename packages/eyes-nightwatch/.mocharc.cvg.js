@@ -1,16 +1,16 @@
 const tags = [
   'webdriver',
-  'mobile',
+  // 'mobile',
   'chrome',
-  'firefox',
-  'ie',
-  'edge',
-  'safari',
+  // 'firefox',
+  // 'ie',
+  // 'edge',
+  // 'safari',
 ]
 module.exports = {
   spec: [
-    './test/coverage/generic/*.spec.js',
-    '../sdk-shared/coverage-tests/custom/**.spec.js',
+    './test/generic/*.spec.js',
+    '../sdk-shared/coverage-tests/custom/**/*.spec.js',
   ],
   parallel: true,
   jobs: 15,

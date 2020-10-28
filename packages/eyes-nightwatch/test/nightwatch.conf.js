@@ -39,9 +39,7 @@ module.exports = {
       desiredCapabilities: {
         browserName: 'chrome',
         'goog:chromeOptions': {
-          args: [
-            //'--headless'
-          ],
+          args: ['--headless'],
           w3c: false,
         },
       },

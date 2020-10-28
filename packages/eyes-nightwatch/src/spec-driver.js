@@ -35,11 +35,11 @@ function isSelector(selector) {
   if (!selector) return false
   return TypeUtils.isString(selector) || TypeUtils.has(selector, ['type', 'selector'])
 }
-function isStaleElementError({error} = {error: ''}) {
-  if (!error) {
-    return false
-  }
-  return error.includes('stale element reference') || error.includes('is stale')
+function isStaleElementError(errorObj) {
+  if (!errorObj) return false
+  const errOrResult = errorObj.originalError || errorObj
+  const error = errOrResult && errOrResult.error
+  return error && (error.includes('stale element reference') || error.includes('is stale'))
 }
 function isEqualElements(_driver, element1, element2) {
   if (!element1 || !element2) return false
@@ -204,7 +204,13 @@ exports.scrollIntoView = scrollIntoView
 exports.hover = hover
 exports.transformElement = transformElement
 // for tests
-exports.build = () => {
-  return [{}, () => {}]
+exports.build = async _env => {
+  const Nightwatch = require('nightwatch')
+  const Settings = require('nightwatch/lib/settings/settings')
+  const conf = require('../test/nightwatch.conf')
+  const client = Nightwatch.client(Settings.parse({}, conf, {}, 'default'))
+  client.isES6AsyncTestcase = true
+  await client.createSession()
+  return [client.api, () => client.session.close()]
 }
 exports.extractElementId = extractElementId
