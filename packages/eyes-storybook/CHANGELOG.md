@@ -3,6 +3,14 @@
 ## Unreleased
 
 
+
+## 3.10.1 - 2020/10/28
+
+- support indeterminate checkboxes
+- updated to @applitools/dom-snapshot@4.2.4 (from 4.2.2)
+- updated to @applitools/eyes-sdk-core@12.5.4 (from 12.4.4)
+- updated to @applitools/visual-grid-client@15.0.16 (from 15.0.12)
+
 ## 3.10.0 - 2020/10/19
 
 - deprecate `saveDebugData`
