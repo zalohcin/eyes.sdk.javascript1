@@ -51,7 +51,12 @@ function isEqualElements(_driver, element1, element2) {
 
 //// #region COMMANDS
 async function executeScript(driver, script, ...args) {
-  const result = await driver.execute(script, args)
+  const result = await new Promise((resolve, reject) => {
+    driver.execute(script, args, result => {
+      if (result.error) reject(result)
+      else resolve(result)
+    })
+  })
   return result.value
 }
 async function mainContext(driver) {
@@ -62,17 +67,17 @@ async function parentContext(driver) {
 }
 async function childContext(driver, element) {
   if (isSelector(element)) {
-    element = await driver.element('css selector', element)
+    element = await this.findElement(driver, element)
   }
   await driver.frame(element)
 }
 async function findElement(driver, selector) {
-  const result = await new Promise(resolve => {
+  const result = await new Promise((resolve, reject) => {
     driver.element(...transformSelector(selector), result => {
-      resolve(result)
+      if (result.error) reject(result)
+      else resolve(result)
     })
   })
-  if (result.error) throw new Error(result.error)
   return result.value
 }
 async function findElements(driver, selector) {
@@ -113,6 +118,7 @@ function getDriverInfo(driver, opts = {}) {
   const isMobile = ['android', 'ios'].includes(platformName && platformName.toLowerCase())
   const isNative = isMobile && !browserName
   return {
+    browserName,
     deviceName,
     isMobile,
     isNative,
