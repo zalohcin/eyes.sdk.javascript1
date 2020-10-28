@@ -23,6 +23,10 @@ module.exports = {
 
   test_settings: {
     default: {
+      // <parallel>
+      live_output: true,
+      test_workers: {enabled: true, workers: 'auto'},
+      // </ parallel>
       disable_error_log: false,
 
       screenshots: {
