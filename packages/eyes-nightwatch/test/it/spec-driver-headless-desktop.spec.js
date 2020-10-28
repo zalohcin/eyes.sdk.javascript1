@@ -5,8 +5,8 @@ describe('spec driver', () => {
   const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
 
   describe('headless desktop', async () => {
-    before(function(driver, done) {
-      driver.url(url)
+    before(async function(driver, done) {
+      await driver.url(url)
       done()
     })
     after(function(driver, done) {
@@ -121,6 +121,7 @@ describe('spec driver', () => {
         assert.ok(!(await spec.isEqualElements(driver, mainDocument, frameDocument)))
         await spec.mainContext(driver)
         const resultDocument = await driver.element('css selector', 'html')
+        debugger
         assert.ok(await spec.isEqualElements(driver, resultDocument, mainDocument))
       } finally {
         await driver.frame()
@@ -143,7 +144,7 @@ describe('spec driver', () => {
     it('childContext(element)', async function(driver) {
       try {
         const element = await driver.element('css selector', '[name="frame1"]')
-        await driver.frame(element.value)
+        await driver.frame(element)
         const expectedDocument = await driver.element('css selector', 'html')
         await driver.frame()
         const frameElement = await driver.element('css selector', '[name="frame1"]')
@@ -200,11 +201,14 @@ describe('spec driver', () => {
     it('getElementRect()', async function(driver) {
       const element = await driver.element('css selector', '#overflowing-div')
       const rect = await spec.getElementRect(driver, element)
+      const {browserName} = spec.getDriverInfo(driver)
+      const expectedYPosition = browserName === 'firefox' ? 79 : 80
+
       assert.deepStrictEqual(rect, {
         height: 184,
         width: 304,
         x: 8,
-        y: 80,
+        y: expectedYPosition,
       })
     })
     it.skip('click()')
