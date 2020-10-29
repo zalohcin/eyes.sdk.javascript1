@@ -9,7 +9,7 @@ function makePutResources({
   doCheckResources,
   resourceCache,
   fetchCache,
-  timeout = 100,
+  timeout = 300,
   concurrency = 100,
 }) {
   const putResource = throat(concurrency, doPutResource)
@@ -48,7 +48,7 @@ function makePutResources({
       setTimeout(() => {
         putResources(pendingResources)
         pendingResources = new Map()
-        throttleTimer = throttleTimer
+        throttleTimer = false
       }, timeout)
     }
     const result = await Promise.all(promises)

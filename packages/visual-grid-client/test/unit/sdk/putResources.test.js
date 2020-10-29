@@ -169,4 +169,75 @@ describe('putResources', () => {
       errorStatusCode: 404,
     })
   })
+
+  it('sends one request for sequence of put resources', async () => {
+    const resourceCache = createResourceCache()
+    const fetchCache = createResourceCache()
+    const r1 = new RGridResource()
+    r1.setUrl('url1')
+    r1.setContent('content1')
+    const r1key = getKey(r1)
+
+    const r2 = new RGridResource()
+    r2.setUrl('url2')
+    r2.setContent('content2')
+    const r2key = getKey(r2)
+
+    const r3 = new RGridResource()
+    r3.setUrl('url3')
+    r3.setContent('content3')
+    const r3key = getKey(r3)
+
+    const resources1 = [r1, r2]
+    const resources2 = [r1, r3]
+
+    const dom1 = new RGridDom()
+    dom1.setDomNodes({domNodes: 'domNodes1'})
+    dom1.setResources(resources1)
+    const dom1resource = dom1.asResource()
+    const dom1key = getKey(dom1resource)
+
+    const dom2 = new RGridDom()
+    dom2.setDomNodes({domNodes: 'domNodes2'})
+    dom2.setResources(resources2)
+    const dom2resource = dom2.asResource()
+    const dom2key = getKey(dom2resource)
+
+    const putCount = new Map()
+
+    putResources = makePutResources({
+      doCheckResources: async resources => {
+        await psetTimeout(0)
+        return Array(resources.length).fill(false)
+      },
+      doPutResource: async resource => {
+        const key = getKey(resource)
+        const date = Date.now()
+        if (putCount.has(date)) putCount.get(date).push(key)
+        else putCount.set(date, [key])
+        await psetTimeout(0)
+        return key
+      },
+      timeout: 10,
+      resourceCache,
+      fetchCache,
+      logger: testLogger,
+    })
+
+    const puts = []
+    puts.push(putResources([dom1.asResource(), r1]))
+    puts.push(putResources([dom2.asResource(), r2]))
+    await psetTimeout(10)
+    puts.push(putResources([dom2.asResource(), r3]))
+    await psetTimeout(5)
+    puts.push(putResources([dom1.asResource(), r1, r3]))
+
+    await Promise.all(puts)
+
+    const results = Array.from(putCount.values())
+
+    expect(results.length).to.be.eql(2)
+    expect(results[0]).to.be.eql([dom1key, r1key, dom2key, r2key])
+    expect(results[1]).to.be.eql([r3key])
+  })
 })
