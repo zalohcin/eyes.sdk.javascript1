@@ -72,13 +72,12 @@ async function childContext(driver, element) {
   await driver.frame(element)
 }
 async function findElement(driver, selector) {
-  const result = await new Promise((resolve, reject) => {
+  const result = await new Promise(resolve => {
     driver.element(...transformSelector(selector), result => {
-      if (result.error) reject(result)
-      else resolve(result)
+      resolve(result)
     })
   })
-  return result.value
+  return result.error ? null : result.value
 }
 async function findElements(driver, selector) {
   const elements = await driver.elements(...transformSelector(selector))
