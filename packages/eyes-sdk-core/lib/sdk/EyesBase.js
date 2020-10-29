@@ -1996,6 +1996,7 @@ class EyesBase {
       render: this._render,
       saveDiffs: this._configuration.getSaveDiffs(),
       properties: this._configuration.getProperties(),
+      agentSessionId: GeneralUtils.guid(),
     })
 
     this._logger.verbose('Starting server session...')

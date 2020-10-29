@@ -50,6 +50,7 @@ class SessionStartInfo {
     saveDiffs,
     render,
     properties,
+    agentSessionId,
   } = {}) {
     ArgumentGuard.notNullOrEmpty(agentId, 'agentId')
     ArgumentGuard.notNullOrEmpty(appIdOrName, 'appIdOrName')
@@ -79,6 +80,7 @@ class SessionStartInfo {
     this._render = render
     this._properties = properties
     this._concurrencyVersion = 1
+    this._agentSessionId = agentSessionId
   }
 
   /**

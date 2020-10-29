@@ -174,7 +174,6 @@ class ServerConnector {
       url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH, '/running'),
       data: {
         startInfo: sessionStartInfo,
-        agentSessionId: GeneralUtils.guid(),
       },
     }
 

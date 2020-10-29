@@ -56,7 +56,6 @@ describe('ServerConnector', () => {
   it('retry startSession if it blocked by concurrency', async () => {
     const serverConnector = getServerConnector()
     let retries = 0
-    let agentSessionId = null
     serverConnector._axios.defaults.adapter = async config => {
       retries += 1
       if (retries >= 3) {
@@ -77,13 +76,10 @@ describe('ServerConnector', () => {
       }
       const data = JSON.parse(config.data)
       assert.strictEqual(data.startInfo.concurrencyVersion, 1)
-      if (retries === 1) {
-        agentSessionId = data.agentSessionId
-      } else {
-        assert.strictEqual(agentSessionId, data.agentSessionId)
-      }
+      assert.strictEqual(data.startInfo.agentSessionId, guid)
       return {status: 503, config, data: {}, headers: {}, request: {}}
     }
+    const guid = GeneralUtils.guid()
     const runningSession = await serverConnector.startSession(
       new SessionStartInfo({
         agentId: 'agentId',
@@ -92,6 +88,7 @@ describe('ServerConnector', () => {
         environment: {displaySize: {width: 1, height: 2}},
         batchInfo: {id: 'batchId'},
         defaultMatchSettings: {},
+        agentSessionId: guid,
       }),
     )
     assert.strictEqual(retries, 3)
