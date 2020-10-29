@@ -8,18 +8,32 @@ const fs = require('fs')
 const STEPS = Number(process.env.MEASURE_STEPS)
 const CONCURRENCY = Number(process.env.MEASURE_CONCURRENCY)
 const BROWSERS = Number(process.env.MEASURE_BROWSERS)
+const ENFORCEMENT = Boolean(process.env.MEASURE_ENFORCEMENT)
 
 const configStr = `STEPS=${STEPS},CONCURRENCY=${CONCURRENCY},BROWSERS=${BROWSERS}`
 console.log('running with', configStr)
 
-const URLS = [
-  // 'https://news.ycombinator.com',
-  // 'https://www.amazon.com/s?k=amazonbasics&pf_rd_p=9349ffb9-3aaa-476f-8532-6a4a5c3da3e7&pf_rd_r=0K3HR260GNHTJ1KXZ5QD',
-  'https://www.nytimes.com/',
-  'https://edition.cnn.com/',
-  'https://www.foxnews.com/',
-  // 'https://www.booking.com/index.uk.html?aid=376445;label=bookings-naam-B9ObXm1VJOAq2ho0czzpIQS267754536176:pl:ta:p1:p22,563,000:ac:ap:neg:fi:tiaud-898142577969:kwd-65526620:lp1012866:li:dec:dm:ppccp=UmFuZG9tSVYkc2RlIyh9YTQUGSsRwx9_piJbnTYecvA;ws=&gclid=Cj0KCQjwqfz6BRD8ARIsAIXQCf3I2VfJ6miqKlG1VxkOsAO1lUbIoh5rE06C9tDyl6rtZLzDsCpFS0caApfjEALw_wcB',
-]
+const URLS = ENFORCEMENT
+  ? [
+      'https://applitools.github.io/demo/TestPages/SimpleTestPage/',
+      // 'https://applitools.github.io/demo/TestPages/SimpleTestPage/',
+      // 'https://applitools.github.io/demo/TestPages/SimpleTestPage/',
+      // 'https://applitools.github.io/demo/TestPages/SimpleTestPage/',
+      // 'https://applitools.github.io/demo/TestPages/SimpleTestPage/',
+      // 'https://applitools.github.io/demo/TestPages/SimpleTestPage/',
+      // 'https://applitools.github.io/demo/TestPages/SimpleTestPage/',
+      // 'https://applitools.github.io/demo/TestPages/SimpleTestPage/',
+      // 'https://applitools.github.io/demo/TestPages/SimpleTestPage/',
+      // 'https://applitools.github.io/demo/TestPages/SimpleTestPage/',
+    ]
+  : [
+      // 'https://news.ycombinator.com',
+      // 'https://www.amazon.com/s?k=amazonbasics&pf_rd_p=9349ffb9-3aaa-476f-8532-6a4a5c3da3e7&pf_rd_r=0K3HR260GNHTJ1KXZ5QD',
+      // 'https://www.nytimes.com/',
+      'https://edition.cnn.com/',
+      'https://www.foxnews.com/',
+      // 'https://www.booking.com/index.uk.html?aid=376445;label=bookings-naam-B9ObXm1VJOAq2ho0czzpIQS267754536176:pl:ta:p1:p22,563,000:ac:ap:neg:fi:tiaud-898142577969:kwd-65526620:lp1012866:li:dec:dm:ppccp=UmFuZG9tSVYkc2RlIyh9YTQUGSsRwx9_piJbnTYecvA;ws=&gclid=Cj0KCQjwqfz6BRD8ARIsAIXQCf3I2VfJ6miqKlG1VxkOsAO1lUbIoh5rE06C9tDyl6rtZLzDsCpFS0caApfjEALw_wcB',
+    ]
 
 describe('Measurements', () => {
   let driver, destroyDriver, eyes
@@ -66,12 +80,14 @@ describe('Measurements', () => {
     ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
     eyes = testSetup.getEyes({
       runner,
-      configuration: {
-        browsersInfo: new Array(BROWSERS)
-          .fill()
-          .map((_, i) => ({name: 'chrome', width: 600 + 25 * i, height: 600 + 25 * i})),
-        // browsersInfo: [{iosDeviceInfo: {deviceName: 'iPhone 11 Pro'}}],
-      },
+      browsersInfo: new Array(BROWSERS)
+        .fill()
+        .map((_, i) => ({name: 'chrome', width: 600 + 25 * i, height: 600 + 25 * i})),
+      // browsersInfo: [{iosDeviceInfo: {deviceName: 'iPhone 11 Pro'}}],
+      apiKey:
+        process.env.APPLITOOLS_SERVER_URL === 'https://testeyes.applitools.com'
+          ? process.env.APPLITOOLS_API_KEY_CONCURRENCY
+          : undefined,
     })
     eyes.setLogHandler(logHandler)
     logger = eyes.getLogger()
