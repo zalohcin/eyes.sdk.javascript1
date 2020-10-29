@@ -253,9 +253,9 @@ function makeRenderingGridClient({
     }
 
     setRenderingInfo(renderInfo)
-    await doLogEvents([BatchStartEvent({concurrency, testConcurrency})]).catch(err => {
-      logger.log('error when logging batchStart', err)
-    })
+    await doLogEvents([
+      BatchStartEvent({concurrency, testConcurrency, finalConcurrency}),
+    ]).catch(err => logger.log('error when logging batchStart', err))
     return {renderInfo}
   }
 }
