@@ -2,6 +2,7 @@
 
 const assert = require('assert')
 const assertRejects = require('assert-rejects')
+const settle = require('axios/lib/core/settle')
 const {startFakeEyesServer} = require('@applitools/sdk-fake-eyes-server')
 const {
   ServerConnector,
@@ -56,29 +57,30 @@ describe('ServerConnector', () => {
   it('retry startSession if it blocked by concurrency', async () => {
     const serverConnector = getServerConnector()
     let retries = 0
-    serverConnector._axios.defaults.adapter = async config => {
-      retries += 1
-      if (retries >= 3) {
-        return {
-          status: 200,
-          config,
-          data: {
-            id: 'id',
-            sessionId: 'sessionId',
-            batchId: 'batchId',
-            baselineId: 'baselineId',
-            isNew: true,
-            url: 'url',
-          },
-          headers: {},
-          request: {},
+    serverConnector._axios.defaults.adapter = async config =>
+      new Promise((resolve, reject) => {
+        retries += 1
+        if (retries >= 3) {
+          return settle(resolve, reject, {
+            status: 200,
+            config,
+            data: {
+              id: 'id',
+              sessionId: 'sessionId',
+              batchId: 'batchId',
+              baselineId: 'baselineId',
+              isNew: true,
+              url: 'url',
+            },
+            headers: {},
+            request: {},
+          })
         }
-      }
-      const data = JSON.parse(config.data)
-      assert.strictEqual(data.startInfo.concurrencyVersion, 1)
-      assert.strictEqual(data.startInfo.agentSessionId, guid)
-      return {status: 503, config, data: {}, headers: {}, request: {}}
-    }
+        const data = JSON.parse(config.data)
+        assert.strictEqual(data.startInfo.concurrencyVersion, 1)
+        assert.strictEqual(data.startInfo.agentSessionId, guid)
+        return settle(resolve, reject, {status: 503, config, data: {}, headers: {}, request: {}})
+      })
     const guid = GeneralUtils.guid()
     const runningSession = await serverConnector.startSession(
       new SessionStartInfo({

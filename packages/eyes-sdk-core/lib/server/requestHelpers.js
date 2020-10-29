@@ -106,14 +106,6 @@ async function handleRequestResponse({response, axios, logger}) {
     return startPollingRequest({url: response.headers.location, config, axios})
   }
 
-  if (isConcurrencyBlockedRequest(response)) {
-    config.repeat += 1
-    config.delay = TypeUtils.isArray(config.delayBeforePolling)
-      ? config.delayBeforePolling[Math.min(config.repeat, config.delayBeforePolling.length - 1)]
-      : config.delayBeforePolling
-    return axios.request(config)
-  }
-
   if (config.isPollingRequest) {
     if (response.status === HTTP_STATUS_CODES.OK) {
       config.repeat += 1
@@ -181,6 +173,14 @@ async function handleRequestError({err, axios, logger}) {
 
   if (response && response.data) {
     logger.verbose(`axios error interceptor - ${config.name} - failure body:\n${response.data}`)
+  }
+
+  if (response && isConcurrencyBlockedRequest(response)) {
+    config.repeat += 1
+    config.delay = TypeUtils.isArray(config.delayBeforePolling)
+      ? config.delayBeforePolling[Math.min(config.repeat, config.delayBeforePolling.length - 1)]
+      : config.delayBeforePolling
+    return axios.request(config)
   }
 
   if (
