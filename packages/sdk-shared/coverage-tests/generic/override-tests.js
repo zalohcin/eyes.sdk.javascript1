@@ -49,4 +49,5 @@ module.exports = {
    *  We should use screen.width/screen.height for cropping/scaling and innerWidth/innerHeight to understand element location related to the viewport
    */
   'check window fully on android chrome emulator on desktop page': {skip: true},
+  'should send accessibility regions by selector with vg': {config: {branchName: 'v1'}},
 }
