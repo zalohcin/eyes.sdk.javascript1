@@ -176,6 +176,45 @@ async function hover(driver, element, {x, y} = {}) {
 //
 //// #endregion
 //
+// #region TESTING
+function createBrowserOptions(browserName, argsArray = []) {
+  const browserOptionsNames = {
+    chrome: 'goog:chromeOptions',
+    firefox: 'moz:firefoxOptions',
+  }
+  const browserOption = browserOptionsNames[browserName]
+  if (!browserOption) return
+  return {
+    [browserOption]: {
+      w3c: browserName === 'firefox' ? true : false,
+      args: argsArray,
+    },
+  }
+}
+async function build(env) {
+  // config prep
+  const {testSetup} = require('@applitools/sdk-shared')
+  const testSetupConfig = testSetup.Env(env)
+  const nightwatchConfig = require('../test/nightwatch.conf')
+  const conf = {...nightwatchConfig}
+  conf.test_settings.default.desiredCapabilities = Object.assign(
+    {},
+    testSetupConfig.capabilities,
+    createBrowserOptions(testSetupConfig.browser, [
+      testSetupConfig.headless ? '--headless' : '//--headless',
+    ]),
+  )
+  conf.test_settings.default.selenium_host = testSetupConfig.url.host
+
+  // building
+  const Nightwatch = require('nightwatch')
+  const Settings = require('nightwatch/lib/settings/settings')
+  const client = Nightwatch.client(Settings.parse({}, conf, {}, 'default'))
+  client.isES6AsyncTestcase = true
+  await client.createSession()
+  return [client.api, () => client.session.close()]
+}
+//// #endregion
 exports.isDriver = isDriver
 exports.isElement = isElement
 exports.isSelector = isSelector
@@ -203,13 +242,5 @@ exports.scrollIntoView = scrollIntoView
 exports.hover = hover
 exports.transformElement = transformElement
 // for tests
-exports.build = async _env => {
-  const Nightwatch = require('nightwatch')
-  const Settings = require('nightwatch/lib/settings/settings')
-  const conf = require('../test/nightwatch.conf')
-  const client = Nightwatch.client(Settings.parse({}, conf, {}, 'default'))
-  client.isES6AsyncTestcase = true
-  await client.createSession()
-  return [client.api, () => client.session.close()]
-}
+exports.build = build
 exports.extractElementId = extractElementId
