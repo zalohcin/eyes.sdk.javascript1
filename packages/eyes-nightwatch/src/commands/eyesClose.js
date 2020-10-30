@@ -1,5 +1,7 @@
-module.exports = {
+const Events = require('events')
+
+module.exports = class EyesClose extends Events {
   async command(args) {
-    return global.__eyes.close(args)
-  },
+    await global.__eyes.close(args)
+  }
 }
