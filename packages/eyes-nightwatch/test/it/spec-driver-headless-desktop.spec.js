@@ -113,6 +113,10 @@ describe('spec driver', () => {
       assert.ok(Array.isArray(elements))
       assert.ok(!elements.length)
     })
+    it('findElement({selector, locateStrategy})', async function(driver) {
+      const el = await spec.findElement(driver, {selector: '//body', locateStrategy: 'xpath'})
+      assert.ok(spec.isElement(el))
+    })
     it('mainContext()', async function(driver) {
       try {
         const mainDocument = await driver.element('css selector', 'html')
