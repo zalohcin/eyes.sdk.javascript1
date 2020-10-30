@@ -213,6 +213,18 @@ async function build(env) {
       testSetupConfig.headless ? '--headless' : '//--headless',
     ]),
   )
+  // NOTE:
+  // `setWindowRect` leads to an "unknown command" error (in the Selenium server)
+  // when running on IE attempting to upgrade to newer versions of Selenium and
+  // IEDriver do not resolve it.
+  //
+  // Leaving here for reference:
+  //if (conf.test_settings.default.desiredCapabilities.browserName === 'internet explorer') {
+  //  conf.test_settings.default.desiredCapabilities.seleniumVersion = '3.141.59'
+  //  conf.test_settings.default.desiredCapabilities.iedriverVersion = '3.150.1'
+  //  conf.test_settings.default.desiredCapabilities.platformName = 'windows'
+  //  delete conf.test_settings.default.desiredCapabilities['sauce:options']
+  //}
   const host = testSetupConfig.url.host
   const port = testSetupConfig.url.port
   if (port) conf.test_settings.default.webdriver.port = port
