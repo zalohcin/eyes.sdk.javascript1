@@ -212,9 +212,12 @@ async function build(env) {
       testSetupConfig.headless ? '--headless' : '//--headless',
     ]),
   )
-  conf.test_settings.default.selenium_host = testSetupConfig.url.host
-  conf.test_settings.default.username = process.env.SAUCE_USERNAME
-  conf.test_settings.default.access_key = process.env.SAUCE_ACCESS_KEY
+  const host = testSetupConfig.url.host
+  if (!host.includes('localhost')) {
+    conf.test_settings.default.selenium_host = host
+    conf.test_settings.default.username = process.env.SAUCE_USERNAME
+    conf.test_settings.default.access_key = process.env.SAUCE_ACCESS_KEY
+  }
 
   // building
   const Nightwatch = require('nightwatch')
