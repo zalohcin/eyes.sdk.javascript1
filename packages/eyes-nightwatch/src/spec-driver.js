@@ -192,12 +192,13 @@ function createBrowserOptions(browserName, argsArray = []) {
   }
   const browserOption = browserOptionsNames[browserName]
   if (!browserOption) return
-  return {
+  const browserOptions = {
     [browserOption]: {
-      w3c: browserName === 'firefox' ? true : false,
+      w3c: browserName === 'chrome' ? false : undefined,
       args: argsArray,
     },
   }
+  return browserName === 'firefox' ? {alwaysMatch: browserOptions} : browserOptions
 }
 async function build(env) {
   // config prep
@@ -213,6 +214,8 @@ async function build(env) {
     ]),
   )
   const host = testSetupConfig.url.host
+  const port = testSetupConfig.url.port
+  if (port) conf.test_settings.default.webdriver.port = port
   if (!host.includes('localhost')) {
     conf.test_settings.default.selenium_host = host
     conf.test_settings.default.username = process.env.SAUCE_USERNAME
