@@ -7,13 +7,14 @@ function extractElementId(element) {
   const _element = element.value || element
   return _element[ELEMENT_ID] || _element[LEGACY_ELEMENT_ID]
 }
-function transformSelector(selector) {
+function transformSelector(selector, {isNative}) {
   if (TypeUtils.has(selector, ['type', 'selector'])) {
     if (selector.type === 'css') return [`css selector`, selector.selector]
     else if (selector.type === 'xpath') return ['xpath', selector.selector]
   } else if (selector.locateStrategy && selector.selector)
     return [selector.locateStrategy, selector.selector]
-  return ['css selector', selector]
+  else if (isNative) return ['id', selector]
+  else return ['css selector', selector]
 }
 function transformElement(element) {
   const elementId = extractElementId(element)
@@ -21,6 +22,10 @@ function transformElement(element) {
 }
 function getCapabilities(driver, opts) {
   return opts.using ? opts.using : driver.capabilities
+}
+function isNative(driver) {
+  const {isNative} = getDriverInfo(driver)
+  return isNative
 }
 // #endregion
 
@@ -74,14 +79,16 @@ async function childContext(driver, element) {
 }
 async function findElement(driver, selector) {
   const result = await new Promise(resolve => {
-    driver.element(...transformSelector(selector), result => {
+    driver.element(...transformSelector(selector, {isNative: isNative(driver)}), result => {
       resolve(result)
     })
   })
   return result.error ? null : result.value
 }
 async function findElements(driver, selector) {
-  const elements = await driver.elements(...transformSelector(selector))
+  const elements = await driver.elements(
+    ...transformSelector(selector, {isNative: isNative(driver)}),
+  )
   return elements.value
 }
 async function getElementRect(driver, element) {
@@ -206,6 +213,8 @@ async function build(env) {
     ]),
   )
   conf.test_settings.default.selenium_host = testSetupConfig.url.host
+  conf.test_settings.default.username = process.env.SAUCE_USERNAME
+  conf.test_settings.default.access_key = process.env.SAUCE_ACCESS_KEY
 
   // building
   const Nightwatch = require('nightwatch')
