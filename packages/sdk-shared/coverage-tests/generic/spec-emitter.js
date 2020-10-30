@@ -48,7 +48,7 @@ module.exports = function(tracker, test) {
 
   addHook(
     'beforeEach',
-    js`[driver, destroyDriver] = await spec.build(${test.env} || {browser: 'chrome'})`,
+    js`[driver, destroyDriver] = await spec.build(${test.env || {browser: 'chrome'}})`,
   )
   addHook(
     'beforeEach',
@@ -65,6 +65,9 @@ module.exports = function(tracker, test) {
     },
     visit(url) {
       addCommand(js`await spec.visit(driver, ${url})`)
+    },
+    getUrl() {
+      return addCommand(js`await spec.getUrl(driver)`)
     },
     executeScript(script, ...args) {
       return addCommand(js`await spec.executeScript(driver, ${script}, ...${args})`)
@@ -112,12 +115,13 @@ module.exports = function(tracker, test) {
         return addCommand(js`await eyes.getRunner().getAllTestResults(${throwEx})`)
       },
     },
-    open({appName, viewportSize}) {
+    open({appName, testName, viewportSize}) {
+      console.log(appName, testName)
       return addCommand(
         js`await eyes.open(
             driver,
             ${appName},
-            ${test.config.baselineName},
+            ${testName || test.config.baselineName},
             ${viewportSize},
           )`,
       )
@@ -210,6 +214,9 @@ module.exports = function(tracker, test) {
   }
 
   const helpers = {
+    delay(milliseconds) {
+      return addCommand(js`await new Promise(r => setTimeout(r, ${milliseconds}))`)
+    },
     getTestInfo(result) {
       return addCommand(js`await getTestInfo(${result})`).type('TestInfo')
     },

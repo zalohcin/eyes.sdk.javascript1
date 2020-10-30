@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const yargs = require('yargs')
-const generate = require('./generate')
+const generate = require('./generate/command')
 const report = require('./report')
 
 const cliName = 'SAT - SDK Agnostic Test-framework'
