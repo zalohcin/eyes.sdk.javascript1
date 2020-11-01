@@ -1,7 +1,7 @@
 'use strict'
 const {URL} = require('url')
 const cwd = process.cwd()
-const {BatchInfo, Configuration, Eyes, VisualGridRunner} = require(cwd)
+const {BatchInfo, Configuration, Eyes, VisualGridRunner, ConsoleLogHandler} = require(cwd)
 
 const SAUCE_SERVER_URL = 'https://ondemand.saucelabs.com:443/wd/hub'
 
@@ -262,9 +262,9 @@ function getEyes({vg, ...config} = {}) {
   }
   eyes.setConfiguration(new Configuration(conf))
 
-  // if (process.env.APPLITOOLS_SHOW_LOGS || showLogs) {
-  //   eyes.setLogHandler(new ConsoleLogHandler(true))
-  // }
+  if (process.env.APPLITOOLS_SHOW_LOGS) {
+    eyes.setLogHandler(new ConsoleLogHandler(true))
+  }
 
   return eyes
 }
