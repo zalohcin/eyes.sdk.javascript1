@@ -1,8 +1,8 @@
 <div align="center">
 
 ![Applitools Eyes](https://i.ibb.co/3hWJK68/applitools-eyes-logo.png)
-### Applitools Eyes SDK for [Protractor](https://www.protractortest.org/)
-[![npm](https://img.shields.io/npm/v/@applitools/eyes-protractor.svg?style=for-the-badge)](https://www.npmjs.com/package/@applitools/eyes-protractor)
+### Applitools Eyes SDK for [Nightwatch](https://nightwatchjs.org/)
+[![npm](https://img.shields.io/npm/v/@applitools/eyes-nightwatch.svg?style=for-the-badge)](https://www.npmjs.com/package/@applitools/eyes-nightwatch)
 
 </div>
 <br/>
@@ -18,9 +18,9 @@
     + [Visual tests and baselines](#visual-tests-and-baselines)
     + [Batches](#batches)
   * [check](#check)
-    + [Arguments to `eyes.check`](#arguments-to--eyescheck-)
-      - [`tag`](#-tag-)
-      - [`checkSettings`](#-checksettings-)
+    + [Arguments to `eyes.check`](#arguments-to-eyescheck)
+      - [`tag`](#tag)
+      - [`checkSettings`](#checksettings)
         * [Page screenshot](#page-screenshot)
         * [Region screenshot](#region-screenshot)
         * [Switching into frames](#switching-into-frames)
@@ -34,50 +34,52 @@
 - [Runners](#runners)
   * [Purpose of runners](#purpose-of-runners)
     + [1. Use the Ultrafast grid](#1-use-the-ultra-fast-grid)
-    + [2. Manage tests across multiple `Eyes` instances](#2-manage-tests-across-multiple--eyes--instances)
+    + [2. Manage tests across multiple `Eyes` instances](#2-manage-tests-across-multiple-eyes-instances)
 - [Recipes for common tasks](#recipes-for-common-tasks)
   * [Configure Server URL](#configure-server-url)
   * [Configure Proxy](#configure-proxy)
-  * [Make every visual test correspond to a Protractor test](#make-every-visual-test-correspond-to-a-protractor-test)
+  * [Make every visual test correspond to a functional test](#make-every-visual-test-correspond-to-a-functional-test)
   * [Organize tests in batches](#organize-tests-in-batches)
     + [Method 1: environment variable](#method-1--environment-variable)
-    + [Method 2: `eyes.setBatch`](#method-2---eyessetbatch-)
+    + [Method 2: `eyes.setBatch`](#method-2--eyessetbatch)
   * [Stitch mode](#stitch-mode)
     + [Background information](#background-information)
-      - [1. Stitch mode: Scroll](#1-stitch-mode--scroll)
-      - [2. Stitch mode: CSS](#2-stitch-mode--css)
+      - [1. Stitch mode: Scroll](#1-stitch-mode-scroll)
+      - [2. Stitch mode: CSS](#2-stitch-mode-css)
   * [Stitch overlap](#stitch-overlap)
   * [Match level](#match-level)
   * [Ignore displacements](#ignore-displacements)
   * [Test properties](#test-properties)
   * [Test results](#test-results)
   * [Logging](#logging)
+  * [Configuring browsers for the Ultrafast grid](#configuring-browsers-for-the-ultra-fast-grid)
+
 
 ## Installation
 
-Install Eyes-Protractor as a local dev dependency in your tested project:
+Install Eyes-Nightwatch as a local dev dependency in your tested project:
 
 ```bash
-npm i -D @applitools/eyes-protractor
+npm i -D @applitools/eyes-nightwatch
 ```
 
 ## Applitools API key
 
-In order to authenticate via the Applitools server, you need to supply the Eyes-Protractor SDK with the API key you got from Applitools. Read more about how to obtain the API key [here](https://applitools.com/docs/topics/overview/obtain-api-key.html).
+In order to authenticate via the Applitools server, you need to supply the Eyes-Nightwatch SDK with the API key you got from Applitools. Read more about how to obtain the API key [here](https://applitools.com/docs/topics/overview/obtain-api-key.html).
 
 To do this, set the environment variable `APPLITOOLS_API_KEY` to the API key before running your tests.
 For example, on Linux/Mac:
 
 ```bash
 export APPLITOOLS_API_KEY=<your_key>
-npx protractor protractor.conf.js
+npm test
 ```
 
 And on Windows:
 
 ```bash
 set APPLITOOLS_API_KEY=<your_key>
-npx protractor protractor.conf.js
+npx test
 ```
 
 It's also possible to set the API key programmatically like so:
@@ -88,21 +90,56 @@ eyes.setApiKey('<your API key>')
 
 ## Usage
 
-After defining the API key, you will be able to use commands from Eyes-Protractor in your protractor tests to take screenshots and use Applitools Eyes to manage them.
+After defining the API key, you will be able to use commands from Eyes-Nightwatch in your tests to take screenshots and use Applitools Eyes to manage them.
 
 For example:
 
 ```js
-const {Eyes, Target} = require('@applitools/eyes-protractor')
+const {Target} = require('@applitools/eyes-nightwatch')
+
+module.exports = {
+  'Check the Applitools website' : function(browser) {
+    browser
+      .url('https://applitools.com')
+      .eyesOpen('applitools.com website', 'My first Nightwatch test!')
+      .eyesCheck(Target.window().fully())
+      .eyesClose()
+      .end();
+  }
+};
+```
+
+### BDD Style
+
+```js
+const {Eyes, Target} = require('@applitools/eyes-nightwatch')
 
 describe('My first visual test', function() {
-  it('should check the angularjs website', async function() {
-    browser.get('https://angularjs.org');
+  it('should check the Applitools website', async function(browser) {
+    await browser.url('https://applitools.com');
 
     const eyes = new Eyes();
-    await eyes.open(browser, "Angular website", "My first Protractor test!")
-    await eyes.check('home page', Target.window().fully())
+    await eyes.open(browser, "applitools.com website", "My first Nightwatch test!")
+    await eyes.check(Target.window().fully())
     await eyes.close()
+  });
+});
+```
+
+
+### BDD Style - Async
+
+```js
+const {Eyes, Target} = require('@applitools/eyes-nightwatch')
+
+describe('My first visual test', function() {
+  it('should check the Applitools website', async function(browser) {
+    browser
+      .url('https://applitools.com')
+      .eyesOpen('applitools.com website', 'My first Nightwatch test!')
+      .eyesCheck(Target.window().fully())
+      .eyesClose()
+      .end();
   });
 });
 ```
@@ -157,136 +194,98 @@ https://applitools.com/docs/topics/working-with-test-batches/working-with-test-b
 Generates a screenshot of the current page and add it to the Applitools Test.
 
 ```js
-eyes.check(tag, checkSettings)
+eyes.check(checkSettings)
 ```
 
-#### Arguments to `eyes.check`
-
-##### `tag`
-
-Defines a name for the checkpoint in the Eyes Test Manager. The name may be any string and serves to identify the step to the user in the Test manager. You may change the tag value without impacting testing in any way since Eyes does not use the tag to identify the baseline step that corresponds to the checkpoint - Eyes matches steps based on their content and position in the sequences of images of the test. See [How Eyes compares checkpoints and baseline images](https://applitools.com/docs/topics/general-concepts/how-eyes-compares-checkpoints.html) for details.
-
-##### `checkSettings`
+#### `checkSettings`
 
 Holds the checkpoint's configuration. This is defined using a fluent API, starting with `Target`.
 
-###### Page screenshot
+##### Page screenshot
 
 - For taking a viewport screenshot, call `Target.window()`.
 - For a full page screenshot, call `Target.window().fully()`.
 
-###### Region screenshot
+##### Region screenshot
 
 To take an element screenshot, it's possible to specify either a locator or the element representation itself. For example:
 
 ```js
+// region by locator
 const locator = by.css('.banner')
-eyes.check('region by locator', Target.region(locator))
+eyes.check(Target.region(locator))
 
+// region by element
 const el = element(locator)
-eyes.check('region by element', Target.region(el))
+eyes.check(Target.region(el))
 ```
 
 Passing a string is interpreted as a css selector:
 
 ```js
-eyes.check('region by css selector', Target.region('.banner'))
+// region by css selector
+eyes.check(Target.region('.banner'))
 ```
 
 It's also possible to specify the absolute coordinates for the desired region:
 
 ```js
-eyes.check('region by coordinates', Target.region({
-  left: 10,
-  top: 20,
-  width: 200,
-  height: 80
-}))
+// region by coordinates
+eyes.check(
+  Target.region({left: 10, top: 20, width: 200, height: 80})
+)
 ```
 
 For all the above options, it's possible to specify `.fully()` in order to take the entire content of an element that can be scrolled.
 
-###### Switching into frames
+##### Switching into frames
 
 For taking screenshots of elements inside iframes, it's possible to specify the frame using the `Target.frame` fluent API. For example:
 
 ```js
-eyes.check('element inside frame', Target.frame('frame-1').region(by.css('.element-inside frame')))
+// element inside frame
+eyes.check(
+  Target.frame('frame-1').region(by.css('.element-inside frame')
+)
 ```
 
 It's possible to take a screenshot of the entire frame:
 
 ```js
-eyes.check('entire frame', Target.frame('frame-1').fully())
+// entire frame
+eyes.check(
+  Target.frame('frame-1').fully()
+)
 ```
 
 Multiple frame calls can be made, thus creating a "frame chain". For example:
 
 ```js
-eyes.check('element inside nested frames', Target.frame('frame-1').frame('frame-1-1').region(by.css('.nested-element')))
-```
-
-###### Ignore Regions
-
-<!-- TODO add explanation -->
-
-```js
-eyes.check('viewport screenshot with ignore region', Target.window().ignoreRegion('.dynamic-content-here'))
-```
-
-Possible input types are:
-
-- string (interpreted as css selector)
-- `by` locator
-- element
-- coordinates (`{left, top, width, height}`)
-
-###### Floating Regions
-
-<!-- TODO add explanation -->
-
-```js
+// element inside nested frames
 eyes.check(
-  'viewport screenshot with floating region',
-  Target.window().floatingRegion('.floating-area', 10, 10, 10, 10)) // up, down, left, right
+  Target.frame('frame-1').frame('frame-1-1').region(by.css('.nested-element'))
+)
 ```
 
-Possible input types are:
-
-- string (interpreted as css selector)
-- `by` locator
-- element
-- coordinates (`{left, top, width, height}`)
-
-###### Content/Strict/Layout Regions
+##### Ignore Regions
 
 <!-- TODO add explanation -->
 
 ```js
-eyes.check('viewport screenshot with content region', Target.window().contentRegion('.some-element'))
-
-eyes.check('viewport screenshot with strict region', Target.window().strictRegion('.some-element'))
-
-eyes.check('viewport screenshot with layout region', Target.window().layoutRegion('.some-element'))
-```
-
-Possible input types are:
-
-- string (interpreted as css selector)
-- `by` locator
-- element
-- coordinates (`{left, top, width, height}`)
-
-###### Accessiblity Regions
-
-<!-- TODO add explanation -->
-
-```js
-const {AccessibilityRegionType} = require('@applitools/eyes-protractor')
-
+// single region
 eyes.check(
-  'viewport screenshot with accessibility region',
-  Target.window().accessibilityRegion('.some-element', AccessibilityRegionType.LargeText)
+  'viewport screenshot with ignore region',
+  Target
+    .window()
+    .ignoreRegion('.dynamic-content-here')
+)
+
+// multiple regions
+eyes.check(
+  'viewport screenshot with ignore region',
+  Target
+    .window()
+    .ignoreRegions('.dynamic-content-here', someElement, someCoordinates)
 )
 ```
 
@@ -297,13 +296,95 @@ Possible input types are:
 - element
 - coordinates (`{left, top, width, height}`)
 
-###### Scroll root element
+##### Floating Regions
 
 <!-- TODO add explanation -->
 
 ```js
+// viewport screenshot with floating region
 eyes.check(
-  'full page with custom scroll root element',
+  Target
+    .window()
+    .floatingRegion('.floating-area', 10, 10, 10, 10) // up, down, left, right
+)
+
+// multiple regions
+eyes.check(
+  Target
+    .window()
+    .floatingRegions(10, '.floating-area', someElement, someCoordinates) // up, down, left, right all equal to 10
+)
+```
+
+Possible input types are:
+
+- string (interpreted as css selector)
+- `by` locator
+- element
+- coordinates (`{left, top, width, height}`)
+
+##### Content/Strict/Layout Regions
+
+<!-- TODO add explanation -->
+
+```js
+// viewport screenshot with content region
+eyes.check(Target.window().contentRegion('.some-element'))
+
+// viewport screenshot with strict region
+eyes.check(Target.window().strictRegion('.some-element'))
+
+// viewport screenshot with layout region
+eyes.check(Target.window().layoutRegion('.some-element'))
+
+// multiple regions
+Target.window().contentRegions(region1, region2, region3)
+Target.window().strictRegions(region1, region2, region3)
+Target.window().layoutRegions(region1, region2, region3)
+```
+
+Possible input types are:
+
+- string (interpreted as css selector)
+- `by` locator
+- element
+- coordinates (`{left, top, width, height}`)
+
+##### Accessiblity Regions
+
+<!-- TODO add explanation -->
+
+```js
+const {AccessibilityRegionType} = require('@applitools/eyes-nightwatch')
+
+// viewport screenshot with accessibility region
+eyes.check(
+  Target.window().accessibilityRegion('.some-element', AccessibilityRegionType.LargeText)
+)
+
+// multiple regions is done by chaining the same method
+eyes.check(
+  Target.window()
+    .accessibilityRegion('.element-1', AccessibilityRegionType.LargeText)
+    .accessibilityRegion('.element-2', AccessibilityRegionType.IgnoreContrast)
+    .accessibilityRegion('.element-3', AccessibilityRegionType.BoldText)
+)
+```
+
+Possible input types are:
+
+- string (interpreted as css selector)
+- `by` locator
+- element
+- coordinates (`{left, top, width, height}`)
+
+##### Scroll root element
+
+<!-- TODO add explanation -->
+
+```js
+// full page with custom scroll root element
+eyes.check(
   Target.window().fully().scrollRootElement('.main-content')
 )
 ```
@@ -314,6 +395,14 @@ Possible input types are:
 - `by` locator
 - element
 
+##### Tag (`withName`)
+
+Defines a name for the checkpoint in the Eyes Test Manager. The name may be any string and serves to identify the step to the user in the Test manager. You may change the tag value without impacting testing in any way since Eyes does not use the tag to identify the baseline step that corresponds to the checkpoint - Eyes matches steps based on their content and position in the sequences of images of the test. See [How Eyes compares checkpoints and baseline images](https://applitools.com/docs/topics/general-concepts/how-eyes-compares-checkpoints.html) for details.
+
+```js
+eyes.check(Target.window().withName('Main page'))
+```
+
 ###### Other checkSettings configuration
 
 <!-- TODO add explanation -->
@@ -323,7 +412,6 @@ Possible input types are:
 - `ignoreDisplacements`
 - `useDom`
 - `enablePatterns`
-- `withName`
 
 ### close
 
@@ -346,14 +434,14 @@ There are two types of runners: `ClassicRunner` and `VisualGridRunner`:
 1. `ClassicRunner` - used when the screenshot is taken by the SDK itself.
 
 ```js
-const {ClassicRunner} = require('@applitools/eyes-protractor')
+const {ClassicRunner} = require('@applitools/eyes-nightwatch')
 const runner = new ClassicRunner()
 ```
 
 2. `VisualGridRunner` - used when the screenshot is taken by the **Ultrafast grid**.
 
 ```js
-const {VisualGridRunner} = require('@applitools/eyes-protractor')
+const {VisualGridRunner} = require('@applitools/eyes-nightwatch')
 const runner = new VisualGridRunner(concurrentSessions)
 ```
 
@@ -368,7 +456,7 @@ There are two purposes for using runners:
 This is done simply by specifying the `VisualGridRunner`. Browsers are specified by using the [`Configuration`](#configuration) API. For example:
 
 ```js
-const {Eyes, VisualGridRunner, BrowserType, DeviceName} = require('@applitools/eyes-protractor')
+const {Eyes, VisualGridRunner, BrowserType, DeviceName} = require('@applitools/eyes-nightwatch')
 const eyes = new Eyes(new VisualGridRunner)
 const configuration = eyes.getConfiguration()
 
@@ -389,7 +477,7 @@ If you decide to create more than one instance of `Eyes` in your tests (for exam
 Consider the following:
 
 ```js
-const {Eyes, ClassicRunner, StitchMode} = require('applitools/eyes-protractor')
+const {Eyes, ClassicRunner, StitchMode} = require('applitools/eyes-selenium')
 const runner = new VisualGridRunner(10)
 
 async function runTest(url, ...browsers) {
@@ -478,7 +566,7 @@ add browsers
 
 ### Configure Server URL
 
-By default, Eyes-Protractor communicates with Applitools' public Eyes cloud server, located at `https://eyesapi.applitools.com`.
+By default, Eyes-Nightwatch communicates with Applitools' public Eyes cloud server, located at `https://eyesapi.applitools.com`.
 
 If you have a dedicated cloud or an on-premise server, configure a different Eyes server URL as follows:
 
@@ -509,14 +597,16 @@ eyes.setProxy({
 })
 ```
 
-### Make every visual test correspond to a Protractor test
+### Make every visual test correspond to a functional test
 
-Every call to `eyes.open` and `eyes.close` defines a test in Applitools Eyes, and all the calls to `eyes.check` between them are called "steps". In order to get a test structure in Applitools that corresponds to the test structure in Protractor, it's best to open/close tests in every `test` call. **You can use `afterEach` for calling `eyes.close()`**
+Every call to `eyes.open` and `eyes.close` defines a test in Applitools Eyes, and all the calls to `eyes.check` between them are called "steps". In order to get a test structure in Applitools that corresponds to the test structure in your functional test, it's best to open/close tests in every `test` call.
+
+For example, when running with Mocha as a test runner:
 
 ```js
 describe('My first visual test', function() {
   beforeEach(async () => {
-    await eyes.open(browser, "Angular website", "My first Protractor test!")
+    await eyes.open(browser, "applitools.com website", "My first Nightwatch test!")
   })
   afterEach(async () => {
     await eyes.close()
@@ -533,11 +623,14 @@ It's possible to manage how visual tests are aggregated into batches. Here are t
 
 #### Method 1: environment variable
 
-Run all the processes that execute Protractor with the same value for `APPLITOOLS_BATCH_ID`. For example, execute all Protractor files specified in the configuration file `protractor.conf.js` with the same randomly generated UUID:
+Run all the processes that execute Nightwatch with the same value for `APPLITOOLS_BATCH_ID`. For example, run tests with the same randomly generated UUID:
 
 ```sh
 #! Unix based machines:
-APPLITOOLS_BATCH_ID=`uuidgen` npx protractor protractor.conf.js
+APPLITOOLS_BATCH_ID=`uuidgen` npm test
+
+# Powershell on Windows:
+set APPLITOOLS_BATCH_ID = powershell -Command "[guid]::NewGuid().ToString()"
 ```
 
 It's also possible to control the batch name that shows up in Test Manager. For example:
@@ -564,7 +657,7 @@ eyes.setBatch({
 The default stitch mode is `Scroll`. In order to change it:
 
 ```js
-const {Eyes, StitchMode} = require('@applitools/eyes-protractor')
+const {Eyes, StitchMode} = require('@applitools/eyes-nightwatch')
 
 const eyes = new Eyes()
 eyes.setStitchMode(StitchMode.CSS)
@@ -575,15 +668,15 @@ eyes.setStitchMode(StitchMode.SCROLL)
 
 #### Background information
 
-Eyes-Protractor allows you to control if the checkpoint image should include only the viewport - i.e. what you see in the browser window when you first load a page, or if it should also include the full page - i.e. what you would see if you manually scrolled down, or across, a page that is larger than the viewport.
+Eyes-Nightwatch allows you to control if the checkpoint image should include only the viewport - i.e. what you see in the browser window when you first load a page, or if it should also include the full page - i.e. what you would see if you manually scrolled down, or across, a page that is larger than the viewport.
 
-When Eyes-Protractor takes a full page screenshot, it does so by taking multiple screenshots of the viewport at different locations of the page (via the Protractor browser driver), and then "stitching" them together. The output is one clear, potentially very large, screenshot of what can be revealed on the page when it is scrolled.
+When Eyes-Nightwatch takes a full page screenshot, it does so by taking multiple screenshots of the viewport at different locations of the page (via the Nightwatch browser driver), and then "stitching" them together. The output is one clear, potentially very large, screenshot of what can be revealed on the page when it is scrolled.
 
 There are two methods for creating the stitched screenshot, and they are both related to the way the page is moved relative to the viewport. Here they are:
 
 ##### 1. Stitch mode: Scroll
 
-Using this method, the page is scrolled, just as a user would scroll. Eyes-Protractor takes the viewport screenshot, then scrolls the page to calculated locations.
+Using this method, the page is scrolled, just as a user would scroll. Eyes-Nightwatch takes the viewport screenshot, then scrolls the page to calculated locations.
 The issue with this method is that the page might respond to scroll events, and change the way it appears visually between the screenshots.
 
 ##### 2. Stitch mode: CSS
@@ -611,7 +704,7 @@ The default match level is `Strict`. To change it:
 
 ```js
 // Option 1: For the rest of the execution
-const {MatchLevel} = require('@applitools/eyes-protractor')
+const {MatchLevel} = require('@applitools/eyes-nightwatch')
 eyes.setMatchLevel(MatchLevel.Layout)
 
 // Option 2: For a single checkpoint
@@ -646,7 +739,7 @@ It's possible to provide additional information about each test in custom fields
 This is done by calling `setProperties` on the configuration, and providing it with an array of properties with the structure `{name, value}`. For example:
 
 ```js
-const {Eyes, Target} = require('@applitools/eyes-protractor')
+const {Eyes, Target} = require('@applitools/eyes-nightwatch')
 
 const eyes = new Eyes()
 
@@ -692,14 +785,14 @@ function getStepStatus(step) {
 }
 ```
 
-_For the full list of methods, visit our documentation page: https://applitools.com/docs/api/eyes-sdk/index-gen/class-testresults-selenium4-javascript.html_ (This is for our Selenium SDK, but all methods are relevant for Eyes-Protractor as well)
+_For the full list of methods, visit our documentation page: https://applitools.com/docs/api/eyes-sdk/index-gen/class-testresults-selenium4-javascript.html_
 
 ### Logging
 
 To enable logging to the console, use the `ConsoleLogHandler` class:
 
 ```js
-const {Eyes, ConsoleLogHandler} = require('@applitools/eyes-protractor')
+const {Eyes, ConsoleLogHandler} = require('@applitools/eyes-nightwatch')
 
 const eyes = new Eyes()
 eyes.setLogHandler(new ConsoleLogHandler())
@@ -725,7 +818,7 @@ Default values are:
 For example:
 
 ```js
-const {Eyes, FileLogHandler} = require('@applitools/eyes-protractor')
+const {Eyes, FileLogHandler} = require('@applitools/eyes-nightwatch')
 const path = require('path')
 
 const eyes = new Eyes()
@@ -752,7 +845,7 @@ Here are examples for how to execute visual tests on different browsers and plat
 #### Desktop browsers
 
 ```js
-const {BrowserType} = require('@applitools/eyes-protractor')
+const {BrowserType} = require('@applitools/eyes-nightwatch')
 // ...
 const configuration = eyes.getConfiguration()
 configuration.addBrowsers(
@@ -775,7 +868,7 @@ eyes.setConfiguration(configuration)
 Predefined device:
 
 ```js
-const {ScreenOrientation, DeviceName} = require('@applitools/eyes-protractor')
+const {ScreenOrientation, DeviceName} = require('@applitools/eyes-nightwatch')
 // ...
 const configuration = eyes.getConfiguration()
 configuration.addBrowsers(
@@ -811,7 +904,7 @@ eyes.setConfiguration(configuration)
 #### iOS device
 
 ```js
-const {IosDeviceName, ScreenOrientation, IosVersion} = require('@applitools/eyes-protractor')
+const {IosDeviceName, ScreenOrientation, IosVersion} = require('@applitools/eyes-nightwatch')
 // ...
 const configuration = eyes.getConfiguration()
 configuration.addBrowser({
