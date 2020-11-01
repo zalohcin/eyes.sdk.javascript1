@@ -92,7 +92,10 @@ eyes.setApiKey('<your API key>')
 
 After defining the API key, you will be able to use commands from Eyes-Nightwatch in your tests to take screenshots and use Applitools Eyes to manage them.
 
-For example:
+### Using Nightwatch without async/await
+
+In its docs, Nightwatch's examples usually use the fluent API where commands are chained.
+Eyes-Nightwatch has built-in custom commands to allow working in this mode:
 
 ```js
 const {Target} = require('@applitools/eyes-nightwatch')
@@ -109,7 +112,62 @@ module.exports = {
 };
 ```
 
-### BDD Style
+#### BDD Style
+
+```js
+const {Target} = require('@applitools/eyes-nightwatch')
+
+describe('My first visual test', function() {
+  it('should check the Applitools website', async function(browser) {
+    browser
+      .url('https://applitools.com')
+      .eyesOpen('applitools.com website', 'My first Nightwatch test!')
+      .eyesCheck(Target.window().fully())
+      .eyesClose()
+      .end();
+  });
+});
+```
+
+#### Configuration
+
+In `nightwatch.conf.js` (or `nightwatch.json`), add an `eyes` section to configure `Eyes` globally:
+
+```js
+module.exports = {
+  src_folders: [...],
+  page_objects_path: [...],
+  // ...
+  eyes: {
+    appName: 'your app name',
+    enableEyesLogs: true, // this will enable the SDK's logs and write them to the console
+    useVisualGrid: true, // this will utilize the Ultrafast grid
+  }
+}
+```
+
+### Using async/await
+
+Nightwatch provides support for promise-based function calls (see the docs [here](https://nightwatchjs.org/guide/using-nightwatch/using-es6-async.html)).
+
+To use Eyes-Nightwatch in this mode, an instance of `Eyes` should be created and used:
+
+```js
+const {Eyes, Target} = require('@applitools/eyes-nightwatch')
+
+module.exports = {
+  'Check the Applitools website' : async function(browser) {
+    await browser.url('https://applitools.com');
+
+    const eyes = new Eyes();
+    await eyes.open(browser, "applitools.com website", "My first Nightwatch test!")
+    await eyes.check(Target.window().fully())
+    await eyes.close()
+  }
+};
+```
+
+#### BDD Style - Async
 
 ```js
 const {Eyes, Target} = require('@applitools/eyes-nightwatch')
@@ -122,24 +180,6 @@ describe('My first visual test', function() {
     await eyes.open(browser, "applitools.com website", "My first Nightwatch test!")
     await eyes.check(Target.window().fully())
     await eyes.close()
-  });
-});
-```
-
-
-### BDD Style - Async
-
-```js
-const {Eyes, Target} = require('@applitools/eyes-nightwatch')
-
-describe('My first visual test', function() {
-  it('should check the Applitools website', async function(browser) {
-    browser
-      .url('https://applitools.com')
-      .eyesOpen('applitools.com website', 'My first Nightwatch test!')
-      .eyesCheck(Target.window().fully())
-      .eyesClose()
-      .end();
   });
 });
 ```
@@ -447,6 +487,8 @@ const runner = new VisualGridRunner(concurrentSessions)
 
 - `concurrentSessions` - (Number) the number of visual tests that are allowed to run at the same time. Default: `1`.
 
+_Note: when configuring Eyes-Nightwatch via an `eyes` entry in  the `nightwatch.conf.js` file (when in non-async mode), the way to utilize `VisualGridRunner` is by setting `useVisualGrid` to `true`._
+
 ### Purpose of runners
 
 There are two purposes for using runners:
@@ -477,7 +519,7 @@ If you decide to create more than one instance of `Eyes` in your tests (for exam
 Consider the following:
 
 ```js
-const {Eyes, ClassicRunner, StitchMode} = require('applitools/eyes-selenium')
+const {Eyes, ClassicRunner, StitchMode} = require('applitools/eyes-nightwatch')
 const runner = new VisualGridRunner(10)
 
 async function runTest(url, ...browsers) {
