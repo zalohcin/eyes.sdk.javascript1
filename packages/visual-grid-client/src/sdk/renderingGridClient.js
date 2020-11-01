@@ -6,7 +6,7 @@ const {
   BatchInfo,
   Logger,
   GeneralUtils: {backwardCompatible, deprecationWarning},
-  BatchStartEvent,
+  RunnerStartedEvent,
 } = require('@applitools/eyes-sdk-core')
 const {ptimeoutWithError, presult} = require('@applitools/functional-commons')
 const makeGetAllResources = require('./getAllResources')
@@ -91,7 +91,11 @@ function makeRenderingGridClient({
     deprecationWarning({deprecatedThing: 'saveDebugData', isDead: true})
   }
 
-  const finalConcurrency = getFinalConcurrency({concurrency, testConcurrency}) || 5
+  let finalConcurrency = getFinalConcurrency({concurrency, testConcurrency})
+  let defaultConcurrency
+  if (!finalConcurrency) {
+    finalConcurrency = defaultConcurrency = 5
+  }
 
   logger = logger || new Logger(showLogs, 'visual-grid-client')
   logger.verbose('vgc concurrency is', finalConcurrency)
@@ -254,7 +258,7 @@ function makeRenderingGridClient({
 
     setRenderingInfo(renderInfo)
     await doLogEvents([
-      BatchStartEvent({concurrency, testConcurrency, finalConcurrency}),
+      RunnerStartedEvent({concurrency, testConcurrency, defaultConcurrency}),
     ]).catch(err => logger.log('error when logging batchStart', err))
     return {renderInfo}
   }

@@ -2,14 +2,15 @@
 
 const LogEvent = require('./LogEvent')
 
-function BatchStartEvent({concurrency, testConcurrency}) {
+function RunnerStartedEvent({concurrency, testConcurrency, defaultConcurrency}) {
   return LogEvent({
     level: 'Notice',
-    type: 'batchStart',
+    type: 'runnerStarted',
     concurrency,
     testConcurrency,
+    defaultConcurrency,
     node: {version: process.version, platform: process.platform, arch: process.arch},
   })
 }
 
-module.exports = BatchStartEvent
+module.exports = RunnerStartedEvent

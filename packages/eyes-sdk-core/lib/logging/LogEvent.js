@@ -15,7 +15,7 @@
  * @return {LogEvent}
  */
 function LogEvent({level = 'Info', type, ...data}) {
-  return {timestamp: new Date().toISOString(), level, event: JSON.stringify({type, ...data})}
+  return {timestamp: new Date().toISOString(), level, event: {type, ...data}}
 }
 
 module.exports = LogEvent
