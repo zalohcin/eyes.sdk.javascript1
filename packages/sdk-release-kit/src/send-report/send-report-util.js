@@ -34,6 +34,8 @@ function convertSdkNameToReportName(sdkName) {
       return 'js_protractor'
     case 'eyes-playwright':
       return 'playwright'
+    case 'eyes-nightwatch':
+      return 'nightwatch'
     default:
       throw new Error('Unsupported SDK')
   }
