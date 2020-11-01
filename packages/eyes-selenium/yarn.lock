@@ -141,7 +141,7 @@
     xml-js "^1.6.11"
     yargs "^15.0.2"
 
-"@applitools/sdk-coverage-tests@^1.0.14":
+"@applitools/sdk-coverage-tests@1.0.16", "@applitools/sdk-coverage-tests@^1.0.14":
   version "1.0.16"
   resolved "https://registry.yarnpkg.com/@applitools/sdk-coverage-tests/-/sdk-coverage-tests-1.0.16.tgz#26e07b10c1ef4f41a403c028829332963c8840b7"
   integrity sha512-h4K4sS+KuY+IaUhdNChqax2OjSlKWg5eLibLo3hw8Z6c/zbMmtOmTXLyZOAHpSTLo60isc/LbyhujUkVBH447A==
