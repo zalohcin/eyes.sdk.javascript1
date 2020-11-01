@@ -11,7 +11,7 @@ module.exports = {
   page_objects_path: '',
 
   // See https://nightwatchjs.org/guide/extending-nightwatch/#writing-custom-commands
-  custom_commands_path: 'src/commands',
+  custom_commands_path: './commands',
 
   // See https://nightwatchjs.org/guide/extending-nightwatch/#writing-custom-assertions
   custom_assertions_path: '',
@@ -20,6 +20,14 @@ module.exports = {
   globals_path: '',
 
   webdriver: {},
+
+  eyes: {
+    // enableEyesLogs: true,
+    // useVisualGrid: true,
+    appName: 'eyes-nightwatch',
+    testName: 'hello world',
+    viewportSize: {width: 800, height: 600},
+  },
 
   test_settings: {
     default: {

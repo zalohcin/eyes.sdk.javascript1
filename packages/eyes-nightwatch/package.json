@@ -77,7 +77,7 @@
     "test:it:headless:w3c": "yarn nightwatch --env firefox test/it/spec-driver-headless-desktop.spec.js",
     "test:it:headed": "yarn nightwatch --env firefox test/it/spec-driver-onscreen-desktop.spec.js",
     "test:it:mobile": "yarn nightwatch test/it/spec-driver-mobile.spec.js",
-    "test:e2e": "yarn nightwatch test/e2e/*.spec.js",
+    "test:e2e": "yarn nightwatch --eyes-config applitools.config.js test/e2e/*.spec.js",
     "coverage:generate": "coverage-tests generate ../sdk-shared/coverage-tests/generic/index.js --name 'eyes-nightwatch'",
     "coverage:sandbox": "yarn coverage:generate && yarn test:coverage && coverage-tests process-report",
     "coverage:prod": "yarn coverage:generate && yarn test:coverage && coverage-tests process-report --send-report prod",
