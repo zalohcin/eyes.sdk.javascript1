@@ -95,7 +95,11 @@ After defining the API key, you will be able to use commands from Eyes-Nightwatc
 ### Using Nightwatch without async/await
 
 In its docs, Nightwatch's examples usually use the fluent API where commands are chained.
-Eyes-Nightwatch has built-in custom commands to allow working in this mode:
+Eyes-Nightwatch has built-in custom commands to allow working in this mode.
+
+To set up these custom commands, add `custom_commands_path: ['node_modules/@applitools/eyes-nightwatch/commands']` to your Nightwatch configuration file.
+
+Here's how to use these commands:
 
 ```js
 const {Target} = require('@applitools/eyes-nightwatch')
