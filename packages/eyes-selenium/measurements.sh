@@ -1,7 +1,6 @@
 MEASURE_STEPS=1 MEASURE_CONCURRENCY=10 MEASURE_BROWSERS=5   yarn mocha --no-timeouts measurements.js
 MEASURE_STEPS=1 MEASURE_CONCURRENCY=10 MEASURE_BROWSERS=5   yarn mocha --no-timeouts measurements.js
 MEASURE_STEPS=1 MEASURE_CONCURRENCY=10 MEASURE_BROWSERS=5   yarn mocha --no-timeouts measurements.js
-MEASURE_STEPS=1 MEASURE_CONCURRENCY=10 MEASURE_BROWSERS=5   yarn mocha --no-timeouts measurements.js
 MEASURE_STEPS=1 MEASURE_CONCURRENCY=10 MEASURE_BROWSERS=15  yarn mocha --no-timeouts measurements.js
 MEASURE_STEPS=1 MEASURE_CONCURRENCY=10 MEASURE_BROWSERS=15  yarn mocha --no-timeouts measurements.js
 MEASURE_STEPS=1 MEASURE_CONCURRENCY=10 MEASURE_BROWSERS=15  yarn mocha --no-timeouts measurements.js 
