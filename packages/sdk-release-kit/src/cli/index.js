@@ -59,9 +59,9 @@ const command = args._[0]
       case 'release-pre-check':
         console.log('[bongo preversion] git pull')
         await gitPullWithRebase()
-        console.log('[bongo preversion] yarn install')
-        await yarnInstall()
         if (!args.skipDeps) {
+          console.log('[bongo preversion] yarn install')
+          await yarnInstall()
           console.log('[bongo preversion] yarn deps')
           await deps()
         }

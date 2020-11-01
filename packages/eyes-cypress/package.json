@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-cypress",
-  "version": "3.15.3",
+  "version": "3.15.4",
   "main": "index.js",
   "license": "SEE LICENSE IN LICENSE",
   "bin": {
@@ -49,8 +49,8 @@
     "lodash.flatten": "4.4.0"
   },
   "devDependencies": {
-    "@applitools/sdk-release-kit": "^0.3.1",
-    "@applitools/sdk-shared": "^0.1.0",
+    "@applitools/sdk-release-kit": "^0.5.1",
+    "@applitools/sdk-shared": "^0.4.0",
     "chai": "^4.2.0",
     "chai-spies": "^1.0.0",
     "cookie-parser": "^1.4.4",
