@@ -26,9 +26,12 @@ describe('Coverage Tests', () => {
   })
 
   afterEach(async () => {
-    await destroy()
-    await serverA.close()
-    await serverB.close()
+    try {
+      await destroy()
+    } finally {
+      await serverA.close()
+      await serverB.close()
+    }
   })
 
   it('TestCheckDomSnapshotCrossOriginFrames_VG', async () => {

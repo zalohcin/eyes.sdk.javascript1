@@ -21,6 +21,10 @@
 			"path": "packages/eyes-selenium"
 		},
 		{
+			"name": "nightwatch",
+			"path": "packages/eyes-nightwatch"
+		},
+		{
 			"name": "protractor",
 			"path": "packages/eyes-protractor"
 		},
