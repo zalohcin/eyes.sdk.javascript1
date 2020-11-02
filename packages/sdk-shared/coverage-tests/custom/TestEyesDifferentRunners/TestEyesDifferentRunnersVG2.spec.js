@@ -7,24 +7,25 @@ const {MatchLevel} = require(cwd)
 const {testSetup, getCheckSettings, validateVG2} = require('./EyesDifferentRunners')
 
 describe('TestEyesDifferentRunners VG2', () => {
-  afterEach(async function() {
-    await this.destroyDriver()
-    await this.eyes.abortIfNotClosed()
-  })
+  let driver, destroyDriver, eyes
 
   beforeEach(async function() {
-    ;[this.webDriver, this.destroyDriver] = await spec.build({browser: 'chrome'})
-    this.eyes = await getEyes({vg: true})
-    this.eyes.setSaveNewTests(false)
-    await this.eyes.open(this.webDriver, 'Top Sites', `Top Sites - ${this.currentTest.title}`, {
+    ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
+    eyes = await getEyes({vg: true})
+    eyes.setSaveNewTests(false)
+    await eyes.open(driver, 'Top Sites', `Top Sites - ${this.currentTest.title}`, {
       width: 800,
       height: 600,
     })
   })
 
-  let testCase = testSetup(getCheckSettings, validateVG2)
-  let cases = [['https://amazon.com', MatchLevel.Layout]]
-  cases.forEach(testData => {
-    it('TestEyesDifferentRunners', testCase(...testData))
+  afterEach(async function() {
+    await destroyDriver()
+    await eyes.abortIfNotClosed()
+  })
+
+  it('TestEyesDifferentRunners', () => {
+    const testCase = testSetup(getCheckSettings, validateVG2)
+    testCase('https://amazon.com', MatchLevel.Layout)
   })
 })

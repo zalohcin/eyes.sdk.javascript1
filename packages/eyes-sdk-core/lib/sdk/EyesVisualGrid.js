@@ -248,9 +248,9 @@ class EyesVisualGrid extends EyesCore {
     return this._checkPrepare(checkSettings, async () => {
       const elementsById = await resolveAllRegionElements({
         checkSettings,
-        context: this._driver,
+        context: this._context,
       })
-      await EyesUtils.setElementMarkers(this._logger, this._driver, elementsById)
+      await EyesUtils.setElementMarkers(this._logger, this._context, elementsById)
 
       this._logger.verbose(`elements marked: ${Object.keys(elementsById)}`)
 
@@ -282,7 +282,7 @@ class EyesVisualGrid extends EyesCore {
       } finally {
         await EyesUtils.cleanupElementMarkers(
           this._logger,
-          this._driver,
+          this._context,
           Object.values(elementsById),
         )
       }

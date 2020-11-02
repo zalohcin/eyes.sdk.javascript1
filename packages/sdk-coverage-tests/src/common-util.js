@@ -25,14 +25,16 @@ function isEmptyObject(value) {
   return isObject(value) && Object.keys(value).length === 0
 }
 
-function mergeObjects(base, other) {
-  return Object.entries(other).reduce((merged, [key, value]) => {
-    if (key in merged) {
-      merged[key] = isObject(value) ? mergeObjects(merged[key], value) : value
-    } else {
-      merged[key] = value
-    }
-    return merged
+function mergeObjects(base, ...other) {
+  return other.reduce((merged, other = {}) => {
+    return Object.entries(other).reduce((merged, [key, value]) => {
+      if (key in merged) {
+        merged[key] = isObject(value) ? mergeObjects(merged[key], value) : value
+      } else {
+        merged[key] = value
+      }
+      return merged
+    }, merged)
   }, Object.assign({}, base))
 }
 

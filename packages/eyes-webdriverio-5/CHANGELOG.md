@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix issue with element markers cleanup ([Trello](https://trello.com/c/H7I1Ofke)) ([commit](https://github.com/applitools/eyes.sdk.javascript1/commit/b643d01608512c3b30303149b0af7d1b03657225))
 - deprecate `saveDebugData`
 
 ## 5.25.1 - 2020/10/15

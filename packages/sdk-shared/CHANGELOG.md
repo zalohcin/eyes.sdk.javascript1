@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- ability to show logs in cvg tests
 
 ## 0.4.0 - 2020/10/23
 

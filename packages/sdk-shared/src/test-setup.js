@@ -1,7 +1,16 @@
 'use strict'
+const fs = require('fs')
+const path = require('path')
 const {URL} = require('url')
 const cwd = process.cwd()
-const {BatchInfo, Configuration, Eyes, VisualGridRunner} = require(cwd)
+const {
+  BatchInfo,
+  Configuration,
+  Eyes,
+  VisualGridRunner,
+  ConsoleLogHandler,
+  FileLogHandler,
+} = require(cwd)
 
 const SAUCE_SERVER_URL = 'https://ondemand.saucelabs.com:443/wd/hub'
 
@@ -248,7 +257,7 @@ function Env(
 const batchName = process.env.APPLITOOLS_BATCH_NAME || 'JS Coverage Tests'
 const batch = typeof BatchInfo === 'undefined' ? batchName : new BatchInfo(batchName)
 
-function getEyes({vg, runner, ...config} = {}) {
+function getEyes({vg, showLogs, saveLogs, saveDebugScreenshots, runner, ...config} = {}) {
   runner = runner || (vg ? new VisualGridRunner({testConcurrency: 500}) : undefined)
   const eyes = new Eyes(runner)
   const conf = {
@@ -263,9 +272,28 @@ function getEyes({vg, runner, ...config} = {}) {
   }
   eyes.setConfiguration(new Configuration(conf))
 
-  // if (process.env.APPLITOOLS_SHOW_LOGS || showLogs) {
-  //   eyes.setLogHandler(new ConsoleLogHandler(true))
-  // }
+  if (process.env.APPLITOOLS_SHOW_LOGS || showLogs) {
+    eyes.setLogHandler(new ConsoleLogHandler(true))
+  }
+
+  if (process.env.APPLITOOLS_SAVE_LOGS || saveLogs) {
+    const logsPath =
+      typeof saveLogs === 'string' ? saveLogs : `./logs/${new Date().toISOString()}.log`
+    const logHandler = new FileLogHandler(true, logsPath)
+    logHandler.open()
+    eyes.setLogHandler(logHandler)
+  }
+
+  if (process.env.APPLITOOLS_SAVE_DEBUG_SCREENSHOTS || saveDebugScreenshots) {
+    eyes.setSaveDebugScreenshots(true)
+    const screenshotsPath =
+      typeof saveDebugScreenshots === 'string'
+        ? saveDebugScreenshots
+        : `./logs/${new Date().toISOString()}`
+    const fullScreenshotsPath = path.resolve(cwd, screenshotsPath)
+    fs.mkdirSync(fullScreenshotsPath, {recursive: true})
+    eyes.setDebugScreenshotsPath(fullScreenshotsPath)
+  }
 
   return eyes
 }

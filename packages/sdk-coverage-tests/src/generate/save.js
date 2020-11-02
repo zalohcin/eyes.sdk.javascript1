@@ -1,16 +1,15 @@
 const fs = require('fs')
 const path = require('path')
 
-async function createTestFiles(tests, {outPath, ext, testFrameworkTemplate} = {}) {
+async function createTestFiles(tests, {outPath, ext}) {
   const targetDirectory = path.join(process.cwd(), outPath)
 
   fs.rmdirSync(targetDirectory, {recursive: true})
   fs.mkdirSync(targetDirectory, {recursive: true})
 
   tests.forEach(test => {
-    const payload = testFrameworkTemplate(test)
     const filePath = path.resolve(targetDirectory, `${test.key}${ext}`)
-    fs.writeFileSync(filePath, payload)
+    fs.writeFileSync(filePath, test.code)
   })
 }
 

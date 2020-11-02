@@ -224,7 +224,7 @@ class FakeEyesWrapper extends EventEmitter {
     } = JSON.parse(screenshotUrl)
 
     let expectedImageLocation = undefined
-    if (sizeMode === 'selector') {
+    if (sizeMode === 'selector' || sizeMode === 'full-selector') {
       expectedImageLocation = new Location(selectorsToLocations[selectorsToFindRegionsFor[0]])
     } else if (sizeMode === 'region') {
       expectedImageLocation = new Region(this.region).getLocation()

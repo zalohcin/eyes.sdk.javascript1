@@ -5,6 +5,11 @@
 - upload resources before render
 - changed concurrency model
 
+## 15.1.0 - 2020/11/1
+
+- updated to @applitools/eyes-sdk-core@12.5.5 (from 12.5.4)
+- support full selector
+
 ## 15.0.16 - 2020/10/26
 
 - updated to @applitools/eyes-sdk-core@12.5.4 (from 12.5.3)

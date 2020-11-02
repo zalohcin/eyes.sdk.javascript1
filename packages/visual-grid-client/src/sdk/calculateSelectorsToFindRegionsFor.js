@@ -14,7 +14,8 @@ function calculateSelectorsToFindRegionsFor({
   accessibility,
   floating,
 }) {
-  let selectorsToFindRegionsFor = sizeMode === 'selector' ? [selector] : undefined
+  let selectorsToFindRegionsFor =
+    sizeMode === 'selector' || sizeMode === 'full-selector' ? [selector] : undefined
   const userRegions = Object.entries({
     ignore,
     layout,
@@ -45,7 +46,8 @@ function calculateSelectorsToFindRegionsFor({
   }
 
   function getMatchRegions({selectorRegions}) {
-    const imageLocationRegion = sizeMode === 'selector' ? selectorRegions[0][0] : undefined
+    const imageLocationRegion =
+      sizeMode === 'selector' || sizeMode === 'full-selector' ? selectorRegions[0][0] : undefined
     let selectorRegionIndex = imageLocationRegion ? 1 : 0
     return Array.from(userRegions.entries()).reduce(
       (allRegions, [regionName, userInput]) => {

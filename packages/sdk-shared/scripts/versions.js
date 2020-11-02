@@ -10,6 +10,7 @@ const packages = [
   '@applitools/eyes-webdriverio4-service',
   '@applitools/eyes-protractor',
   '@applitools/eyes-playwright',
+  '@applitools/eyes-nightwatch',
   '@applitools/eyes-cypress',
   '@applitools/eyes-storybook',
   '@applitools/eyes-testcafe',
