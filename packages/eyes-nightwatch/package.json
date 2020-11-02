@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-nightwatch",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Applitools Eyes SDK for Nightwatch.js",
   "keywords": [
     "eyes-nightwatch",
@@ -41,7 +41,7 @@
   "devDependencies": {
     "@applitools/sdk-coverage-tests": "^2.0.0",
     "@applitools/sdk-fake-eyes-server": "^2.0.0",
-    "@applitools/sdk-release-kit": "^0.4.1",
+    "@applitools/sdk-release-kit": "^0.5.2",
     "@applitools/sdk-shared": "^0.4.0",
     "assert-rejects": "^1.0.0",
     "axios": "^0.19.0",
@@ -85,7 +85,6 @@
     "docker:teardown": "docker-compose down",
     "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-nightwatch' APPLITOOLS_BATCH_ID=$(uuidgen) XUNIT_FILE=coverage-test-report.xml mocha --config .mocharc.cvg.js",
     "types:generate": "rm -rf ./typings && tsc --declaration --declarationDir ./typings --allowJs --emitDeclarationOnly ./index.js",
-    "preversion": "bongo preversion && yarn test && yarn coverage:prod",
     "version": "bongo version",
     "postversion": "bongo postversion",
     "deps": "bongo deps"
