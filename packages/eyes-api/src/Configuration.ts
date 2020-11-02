@@ -1,4 +1,9 @@
 import RectangleSize, {PlainRectangleSize} from './RectangleSize'
+import SessionType from './enums/SessionType'
+
+type PlainConfiguration {
+  
+}
 
 export default class Configuration {
   #showLogs: boolean
@@ -29,7 +34,7 @@ export default class Configuration {
     return this.appName
   }
   setAppName(appName: string) : this {
-    this.#appName = appName
+    this.appName = appName
     return this
   }
 
@@ -45,7 +50,7 @@ export default class Configuration {
     return this.testName
   }
   setTestName(testName: string) : this {
-    this.#testName = testName
+    this.testName = testName
     return this
   }
 
@@ -61,17 +66,83 @@ export default class Configuration {
     return this.displayName
   }
   setDisplayName(displayName: string) : this {
-    this.#displayName = displayName
+    this.displayName = displayName
     return this
   }
 
   #isDisabled: boolean
+  get isDisabled() : boolean {
+    return this.#isDisabled
+  }
+  set isDisabled(isDisabled: boolean) {
+    // ArgumentGuard.isString(value, 'isDisabled', false)
+    this.#isDisabled = isDisabled
+  }
+  getIsDisabled() : boolean {
+    return this.isDisabled
+  }
+  setIsDisabled(isDisabled: boolean) : this {
+    this.isDisabled = isDisabled
+    return this
+  }
 
   #matchTimeout: number
+  get matchTimeout() : number {
+    return this.#matchTimeout
+  }
+  set matchTimeout(matchTimeout: number) {
+    // ArgumentGuard.isString(value, 'matchTimeout', false)
+    // if (value !== 0 && MIN_MATCH_TIMEOUT > value) {
+    //   throw new TypeError(
+    //     `Match timeout must be set in milliseconds, and must be > ${MIN_MATCH_TIMEOUT}`,
+    //   )
+    // }
+    this.#matchTimeout = matchTimeout
+  }
+  getMatchTimeout() : number {
+    return this.matchTimeout
+  }
+  setMatchTimeout(matchTimeout: number) : this {
+    this.matchTimeout = matchTimeout
+    return this
+  }
 
   #sessionType: SessionType
+  get sessionType() : SessionType {
+    return this.#sessionType
+  }
+  set sessionType(sessionType: SessionType) {
+    // ArgumentGuard.isString(value, 'sessionType', false)
+    // if (value !== 0 && MIN_MATCH_TIMEOUT > value) {
+    //   throw new TypeError(
+    //     `Match timeout must be set in milliseconds, and must be > ${MIN_MATCH_TIMEOUT}`,
+    //   )
+    // }
+    this.#sessionType = sessionType
+  }
+  getSessionType() : SessionType {
+    return this.sessionType
+  }
+  setSessionType(sessionType: SessionType) : this {
+    this.sessionType = sessionType
+    return this
+  }
 
   #viewportSize: RectangleSize
+  get viewportSize() : RectangleSize {
+    return this.#viewportSize
+  }
+  set viewportSize(viewportSize: RectangleSize) {
+    // ArgumentGuard.isString(value, 'viewportSize', false)
+    this.#viewportSize = viewportSize
+  }
+  getViewportSize() : RectangleSize {
+    return this.viewportSize
+  }
+  setViewportSize(viewportSize: RectangleSize|PlainRectangleSize) : this {
+    this.viewportSize = viewportSize
+    return this
+  }
 
   #agentId: string
 
