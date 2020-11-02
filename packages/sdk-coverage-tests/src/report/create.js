@@ -36,6 +36,8 @@ function convertSdkNameToReportName(sdkName) {
       return 'dotnet'
     case 'playwright':
       return 'playwright'
+    case 'eyes-nightwatch':
+      return 'nightwatch'
     default:
       throw new Error('Unsupported SDK')
   }
