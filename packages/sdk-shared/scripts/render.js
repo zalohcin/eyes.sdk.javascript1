@@ -85,6 +85,10 @@ const checkConfig = {
     describe: 'whether to check target fully',
     default: false,
   },
+  bcsHook: {
+    type: 'string',
+    describe: 'before capture screenshot hook',
+  }
 }
 
 const buildConfig = {
@@ -433,6 +437,7 @@ function argsToEyesConfig(args) {
     saveNewTests: true,
     saveLogs: args.saveLogs,
     saveDebugScreenshots: args.saveDebugScreenshots,
+    scriptHooks: args.bcsHook ? { beforeCaptureScreenshot: args.bcsHook } : undefined
   }
 }
 
