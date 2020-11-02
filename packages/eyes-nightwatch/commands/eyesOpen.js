@@ -3,7 +3,7 @@ const Events = require('events')
 const {Eyes, ConsoleLogHandler, VisualGridRunner, Configuration} = require('..')
 
 module.exports = class EyesOpen extends Events {
-  async command({appName, testName, viewportSize} = {}) {
+  async command(appName, testName, viewportSize) {
     const config = (this.client.options && this.client.options.eyes) || {}
 
     let eyes = this.client.api.globals.__eyes
