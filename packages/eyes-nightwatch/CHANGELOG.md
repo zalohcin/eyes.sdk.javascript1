@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix `eyesOpen` API
 
 ## 1.0.1 - 2020/11/2
 
