@@ -1,8 +1,7 @@
 const cwd = process.cwd()
 const path = require('path')
 const spec = require(path.resolve(cwd, 'src/spec-driver'))
-const {testSetup} = require('@applitools/sdk-shared')
-const {VisualGridRunner, FileLogHandler} = require(cwd)
+const {VisualGridRunner, FileLogHandler, BatchInfo, Eyes, Configuration} = require(cwd)
 const fs = require('fs')
 
 const STEPS = Number(process.env.MEASURE_STEPS)
@@ -76,16 +75,12 @@ describe('Measurements', () => {
 
   beforeEach(async () => {
     ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
-    eyes = testSetup.getEyes({
+    eyes = getEyes({
       runner,
       browsersInfo: new Array(BROWSERS)
         .fill()
         .map((_, i) => ({name: 'chrome', width: 600 + 25 * i, height: 600 + 25 * i})),
       // browsersInfo: [{iosDeviceInfo: {deviceName: 'iPhone 11 Pro'}}],
-      apiKey:
-        process.env.APPLITOOLS_SERVER_URL === 'https://testeyes.applitools.com'
-          ? process.env.APPLITOOLS_API_KEY_CONCURRENCY
-          : undefined,
     })
     eyes.setLogHandler(logHandler)
     logger = eyes.getLogger()
@@ -126,4 +121,18 @@ function initLog(filename) {
   const logHandler = new FileLogHandler(true, logFilePath)
   logHandler.open()
   return {logHandler, logFilePath}
+}
+
+const batch = new BatchInfo({name: 'JS SDK measurements'})
+
+function getEyes({runner, ...config} = {}) {
+  const eyes = new Eyes(runner)
+  const conf = {
+    batch,
+    matchTimeout: 0,
+    ...config,
+  }
+  eyes.setConfiguration(new Configuration(conf))
+
+  return eyes
 }
