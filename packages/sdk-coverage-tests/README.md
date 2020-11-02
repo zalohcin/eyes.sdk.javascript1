@@ -35,9 +35,11 @@ type Configuration = {
   outPath: string, // path to save generated tests files
   metaPath: string, // path to save metadata file
   ext: string, // extension for generated files (e.g. `.spec.js`)
-  initializeSdk: (tracker: Tracker, test: Test) => SDKEmitter, // skd constructor which returns all possible commands
+  initializeSdk: (tracker: Tracker, test: Test) => SDKEmitter, // sdk constructor which returns all possible commands
   testFrameworkTemplate: (test: Test) => string,
-  overrideTests: object
+  overrideTests: object,
+  strict: boolean, // if `true` will fail whole generation if at least one test emitting will fail, `false` will gracefully handle emitting errors
+  emitOnly: string[], // array of test names that should be generated, all others will not be generated
 }
 ```
 

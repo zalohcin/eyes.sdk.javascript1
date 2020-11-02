@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- add emitOnly config property to chose which test(s) need to be emitted
+- improve logging and error handling
 
 ## 2.0.0 - 2020/10/23
 
