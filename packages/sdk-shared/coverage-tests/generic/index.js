@@ -7,6 +7,5 @@ module.exports = {
   ext: '.spec.js',
   initializeSdk: makeEmitter,
   testFrameworkTemplate: makeTemplate,
-  overrideTests,
-  testsPath: '../../../sdk.coverage.tests/coverage-tests.js',
+  overrideTests
 }
