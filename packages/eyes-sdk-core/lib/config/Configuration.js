@@ -245,6 +245,9 @@ class Configuration {
     /** @type {boolean} */
     this._disableBrowserFetching = undefined
 
+    /** @type {number} */
+    this._abortIdleTestTimeout = undefined
+
     if (configuration) {
       this.mergeConfig(configuration)
     }
@@ -1326,6 +1329,16 @@ class Configuration {
 
   setDisableBrowserFetching(value) {
     this._disableBrowserFetching = value
+    return this
+  }
+
+  getAbortIdleTestTimeout() {
+    return this._abortIdleTestTimeout
+  }
+
+  setAbortIdleTestTimeout(value) {
+    ArgumentGuard.isNumber(value, 'abortIdleTestTimeout')
+    this._abortIdleTestTimeout = value
     return this
   }
 

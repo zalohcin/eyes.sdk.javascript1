@@ -114,7 +114,6 @@ class EyesBase {
     /** @type {boolean} */ this._isVisualGrid = false
 
     /** @type {boolean} */ this._useImageDeltaCompression = true
-    /** @type {boolean} */ this._render = false
 
     /**
      * Will be set for separately for each test.
@@ -1045,18 +1044,12 @@ class EyesBase {
     return this._scaleProviderHandler.get().getScaleRatio()
   }
 
-  /**
-   * @param {boolean} value - If true, createSession request will return renderingInfo properties
-   */
-  setRender(value) {
-    this._render = value
+  setRender(_value) {
+    GeneralUtils.deprecationWarning({deprecatedThing: 'setRender', isDead: true})
   }
 
-  /**
-   * @return {boolean}
-   */
   getRender() {
-    return this._render
+    GeneralUtils.deprecationWarning({deprecatedThing: 'getRender', isDead: true})
   }
 
   /**
@@ -1400,7 +1393,6 @@ class EyesBase {
       baselineBranchName: this._configuration.getBaselineBranchName(),
       compareWithParentBranch: this._configuration.getCompareWithParentBranch(),
       ignoreBaseline: this._configuration.getIgnoreBaseline(),
-      render: this._render,
       saveDiffs: this._configuration.getSaveDiffs(),
       properties: this._configuration.getProperties(),
     })
@@ -1993,10 +1985,10 @@ class EyesBase {
       baselineBranchName: this._configuration.getBaselineBranchName(),
       compareWithParentBranch: this._configuration.getCompareWithParentBranch(),
       ignoreBaseline: this._configuration.getIgnoreBaseline(),
-      render: this._render,
       saveDiffs: this._configuration.getSaveDiffs(),
       properties: this._configuration.getProperties(),
       agentSessionId: GeneralUtils.guid(),
+      timeout: this._configuration.getAbortIdleTestTimeout(),
     })
 
     this._logger.verbose('Starting server session...')

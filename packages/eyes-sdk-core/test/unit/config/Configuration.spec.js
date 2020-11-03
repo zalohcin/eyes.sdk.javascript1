@@ -61,6 +61,7 @@ const NUMBER_CONFIGS = [
   '_concurrentSessions',
   '_matchTimeout',
   '_connectionTimeout',
+  '_abortIdleTestTimeout',
 ]
 
 describe('Configuration', () => {
