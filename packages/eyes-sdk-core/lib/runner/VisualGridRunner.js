@@ -42,7 +42,7 @@ class VisualGridRunner extends EyesRunner {
 
   makeGetVisualGridClient(makeVisualGridClient) {
     if (!this._getVisualGridClient) {
-      this._getVisualGridClient = GeneralUtils.cachify(makeVisualGridClient)
+      this._getVisualGridClient = makeVisualGridClient
     }
   }
 
