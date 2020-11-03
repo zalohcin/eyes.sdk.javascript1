@@ -611,12 +611,7 @@ class EyesClassic extends EyesCore {
     )
 
     this._logger.verbose('Building screenshot object...')
-    return EyesScreenshot.fromFrameSize(
-      this._logger,
-      this,
-      fullRegionImage,
-      fullRegionImage.getSize(),
-    )
+    return EyesScreenshot.fromScreenshotType(this._logger, this, fullRegionImage)
   }
   /**
    * Create a full page screenshot
