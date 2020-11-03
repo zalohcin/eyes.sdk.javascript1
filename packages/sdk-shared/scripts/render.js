@@ -436,8 +436,7 @@ function argsToEyesConfig(args) {
     dontCloseBatches: false,
     saveNewTests: true,
     saveLogs: args.saveLogs,
-    saveDebugScreenshots: args.saveDebugScreenshots,
-    scriptHooks: args.bcsHook ? { beforeCaptureScreenshot: args.bcsHook } : undefined
+    saveDebugScreenshots: args.saveDebugScreenshots
   }
 }
 
@@ -453,6 +452,7 @@ function argsToCheckConfig(args) {
     ignoreDisplacements: args.ignoreDisplacements,
     timeout: args.matchTimeout,
     isFully: args.fully,
+    hooks: args.bcsHook ? { beforeCaptureScreenshot: ['beforeCaptureScreenshot', args.bcsHook] } : undefined
   }
 }
 
