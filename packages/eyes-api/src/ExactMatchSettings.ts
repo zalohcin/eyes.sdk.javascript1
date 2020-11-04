@@ -1,6 +1,6 @@
 import * as GeneralUtils from './utils/GeneralUtils'
 
-export type PlainExactSettings = {
+export type PlainExactMatchSettings = {
     minDiffIntensity: number;
     minDiffWidth: number;
     minDiffHeight: number;
@@ -8,7 +8,7 @@ export type PlainExactSettings = {
 }
 
 
-export default class ExactMatchSettings {
+export default class ExactMatchSettings implements PlainExactMatchSettings {
     private _minDiffIntensity: number;
     private _minDiffWidth: number;
     private _minDiffHeight: number;
