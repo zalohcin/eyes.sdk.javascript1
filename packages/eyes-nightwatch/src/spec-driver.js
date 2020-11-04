@@ -102,16 +102,35 @@ async function getElementRect(driver, element) {
   }
 }
 async function getWindowRect(driver) {
-  const result = await new Promise(resolve => {
-    driver.getWindowRect(resolve)
+  // NOTE:
+  // https://github.com/nightwatchjs/nightwatch/blob/fd4aff1e2cc3e691a82e61c7e550fb088ee47d5a/lib/transport/jsonwire/actions.js#L165-L167
+  // getWindowRect is implemented on JWP drivers even though it won't work
+  // So we need to catch and retry a window size command that will work on JWP
+  const result = await driver.getWindowRect()
+  if (!result.error) return result && result.value ? result.value : result
+  const size = await new Promise(resolve => {
+    driver.getWindowSize(result => resolve(result))
   })
-  if (result.error) throw result.error
-  return result && result.value ? result.value : result
+  const position = await new Promise(resolve => {
+    driver.getWindowPosition(result => resolve(result))
+  })
+  const rect = {...size, ...position}
+  return rect
 }
 async function setWindowRect(driver, rect = {}) {
-  return new Promise(resolve => {
+  // NOTE:
+  // Same deal as with getWindowRect. If running on JWP, need to catch and retry
+  // with a different command.
+  const result = await new Promise(resolve => {
     driver.setWindowRect(rect, resolve)
   })
+  if (result.error) {
+    if (rect.width && rect.height) {
+      await new Promise(resolve => {
+        driver.setWindowSize(rect.width, rect.height, result => resolve(result))
+      })
+    }
+  }
 }
 function getOrientation(driver, opts = {}) {
   const capabilities = getCapabilities(driver, opts)

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix `getWindowRect` and `setWindowRect` so they work on drivers running with the JSON Wire Protocol (e.g., non-W3C)
 
 ## 1.0.2 - 2020/11/2
 
