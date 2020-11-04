@@ -1,6 +1,6 @@
 import * as GeneralUtils from './utils/GeneralUtils'
 
-export type Settings = {
+export type PlainExactSettings = {
     minDiffIntensity: number;
     minDiffWidth: number;
     minDiffHeight: number;
@@ -14,7 +14,7 @@ export default class ExactMatchSettings {
     private _minDiffHeight: number;
     private _matchThreshold: number;
 
-    constructor({ minDiffIntensity, minDiffWidth, minDiffHeight, matchThreshold }: Settings) {
+    constructor({ minDiffIntensity, minDiffWidth, minDiffHeight, matchThreshold }: PlainExactSettings) {
         if (arguments.length > 1) {
             throw new TypeError('Please, use object as a parameter to the constructor!')
         }
