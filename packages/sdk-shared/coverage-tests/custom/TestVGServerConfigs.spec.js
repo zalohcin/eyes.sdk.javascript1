@@ -226,7 +226,7 @@ describe('Miscellaneous VG tests', () => {
       configuration.addBrowser(1000, 900, BrowserType.FIREFOX)
       eyes.setConfiguration(configuration)
       await eyes.open(driver, 'some app', 'some test', {width: 800, height: 600})
-      expect(logOutput).to.eql([edgeWarning])
+      expect(logOutput).to.include(edgeWarning)
     } finally {
       console.log = origConsoleLog
       console.log(logOutput)
