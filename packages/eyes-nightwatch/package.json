@@ -39,7 +39,7 @@
     "@applitools/visual-grid-client": "15.1.0"
   },
   "devDependencies": {
-    "@applitools/sdk-coverage-tests": "^2.0.0",
+    "@applitools/sdk-coverage-tests": "^2.0.1",
     "@applitools/sdk-fake-eyes-server": "^2.0.0",
     "@applitools/sdk-release-kit": "^0.5.2",
     "@applitools/sdk-shared": "^0.4.0",
