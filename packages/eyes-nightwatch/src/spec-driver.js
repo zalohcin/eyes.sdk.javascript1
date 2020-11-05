@@ -114,8 +114,7 @@ async function getWindowRect(driver) {
   const position = await new Promise(resolve => {
     driver.getWindowPosition(result => resolve(result))
   })
-  const rect = {...size, ...position}
-  return rect
+  return {...size, ...position}
 }
 async function setWindowRect(driver, rect = {}) {
   // NOTE:
@@ -125,9 +124,15 @@ async function setWindowRect(driver, rect = {}) {
     driver.setWindowRect(rect, resolve)
   })
   if (result.error) {
-    if (rect.width && rect.height) {
+    const {x = null, y = null, width = null, height = null} = rect
+    if (width !== null && height !== null) {
       await new Promise(resolve => {
-        driver.setWindowSize(rect.width, rect.height, result => resolve(result))
+        driver.setWindowSize(width, height, result => resolve(result))
+      })
+    }
+    if (x !== null && y !== null) {
+      await new Promise(resolve => {
+        driver.setWindowPosition(x, y, result => resolve(result))
       })
     }
   }
