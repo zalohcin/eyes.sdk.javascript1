@@ -235,7 +235,12 @@ async function build(env) {
   const testSetupConfig = testSetup.Env(env)
   const conf = {
     test_settings: {
-      default: {},
+      default: {
+        webdriver: {
+          port: 4444,
+          default_path_prefix: '/wd/hub',
+        },
+      },
     },
   }
   // NOTE: https://github.com/nightwatchjs/nightwatch/issues/2501
