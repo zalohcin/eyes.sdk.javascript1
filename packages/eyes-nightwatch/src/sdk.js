@@ -4,7 +4,7 @@ const spec = require('./spec-driver')
 const {version} = require('../package.json')
 
 module.exports = EyesSDK({
-  name: 'eyes-nightwatch',
+  name: 'eyes.nightwatch',
   version,
   spec,
   VisualGridClient,
