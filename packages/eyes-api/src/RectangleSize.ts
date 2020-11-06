@@ -1,20 +1,20 @@
 import * as TypeUtils from './utils/TypeUtils'
-import * as ArgumentGuard from './utils/TypeUtils'
+import * as ArgumentGuard from './utils/ArgumentGuard'
 
-export type PlainRectangleSize = {
+export type RectangleSize = {
   width: number,
   height: number,
 }
 
-export default class RectangleSize implements PlainRectangleSize {
+export default class RectangleSizeData implements RectangleSize {
   private _width: number
   private _height: number
 
-  constructor(size: PlainRectangleSize)
+  constructor(size: RectangleSize)
   constructor(width: number, height: number)
-  constructor(sizeOrWidth: PlainRectangleSize|number, height?: number) {
+  constructor(sizeOrWidth: RectangleSize|number, height?: number) {
     if (TypeUtils.isNumber(sizeOrWidth)) {
-      return new RectangleSize({width: sizeOrWidth, height})
+      return new RectangleSizeData({width: sizeOrWidth, height})
     }
     const size = sizeOrWidth
     ArgumentGuard.isNumber(size.width, {name: 'size.width', gte: 0})

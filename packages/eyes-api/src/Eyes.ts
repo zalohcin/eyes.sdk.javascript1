@@ -1,74 +1,101 @@
-import Configuration, {PlainConfiguration} from './Configuration'
-import CheckSettings, {PlainCheckSettings} from './CheckSettings'
-import RectangleSize, {PlainRectangleSize} from './RectangleSize'
-import Region, {PlainRegion} from './Region'
-import ClassicRunner from './ClassicRunner'
-import VisualGridRunner from './VisualGridRunner'
+import * as TypeUtils from './utils/TypeUtils'
+import SessionType from './enums/SessionType'
+import StitchMode from './enums/StitchMode'
+import CheckSettingsFluent, {CheckSettings} from './input/CheckSettings'
+import ProxySettingsData, {ProxySettings} from './input/ProxySettings'
+import ConfigurationData, {Configuration} from './input/Configuration'
+import RectangleSizeData, {RectangleSize} from './RectangleSize'
+import {Region} from './Region'
+import EyesRunner, {ClassicRunner, VisualGridRunner} from './Runners'
 
-export default class Eyes {
-  #config: Configuration
-  #runner: EyesRunner
-  #driver: any
+export default abstract class Eyes<TDriver, TContext, TElement, TSelector> {
+  private _config: ConfigurationData
+  private _runner: EyesRunner
 
-  static setViewportSize(driver: any, viewportSize: RectangleSize|PlainRectangleSize) {
+  static setViewportSize<TDriver>(driver: TDriver, viewportSize: RectangleSizeData|RectangleSize) {
 
   }
 
-  constructor(serverUrlOrRunner?: string|EyesRunner, isDisabled?: boolean, runner?: EyesRunner = new ClassicRunner()) {
-    if (serverUrlOrRunner instanceof EyesRunner) {
-      this.#runner = serverUrlOrRunner
+  constructor(runner?: EyesRunner, config?: Configuration|ConfigurationData)
+  constructor(config: Configuration|ConfigurationData, runner?: EyesRunner)
+  constructor(runnerOrConfig?: EyesRunner|Configuration|ConfigurationData, configOrRunner?: Configuration|ConfigurationData|EyesRunner) {
+    if (TypeUtils.instanceOf(runnerOrConfig, EyesRunner)) {
+      this._runner = runnerOrConfig
+      this._config = new ConfigurationData(configOrRunner)
+    } else if (TypeUtils.instanceOf(configOrRunner, EyesRunner)) {
+      this._runner = configOrRunner
+      this._config = new ConfigurationData(runnerOrConfig)
     } else {
-      this.#config.serverUrl = serverUrlOrRunner
-      this.#config.isDisabled = isDisabled
-      this.#runner = runner
+      this._runner = new EyesRunner()
+      this._config = new ConfigurationData()
     }
   }
-  async open(driver, appNameOrConfig?: string|Configuration|PlainConfiguration, testName?: string, viewportSize?: RectangleSize|PlainRectangleSize, sessionType?: SessionType) {
 
+  async open(driver: TDriver, config?: Configuration|ConfigurationData) : Promise<TDriver>
+  async open(driver: TDriver, appName?: string, testName?: string, viewportSize?: RectangleSize, sessionType?: SessionType) : Promise<TDriver>
+  async open(driver: TDriver, configOrAppName?: Configuration|ConfigurationData|string, testName?: string, viewportSize?: RectangleSize, sessionType?: SessionType) : Promise<TDriver> {
+    const config: Configuration = {...this._config}
+    if (TypeUtils.isObject(configOrAppName)) Object.assign(config, configOrAppName)
+    if (TypeUtils.isString(configOrAppName)) config.appName = configOrAppName
+    if (TypeUtils.isString(testName)) config.testName = testName
+    if (TypeUtils.isString(viewportSize)) config.viewportSize = viewportSize
+    if (TypeUtils.isString(sessionType)) config.sessionType = sessionType
+
+    // DO THE THING
+
+    return driver
   }
-  async check(nameOrCheckSettings?: string|CheckSettings|PlainCheckSettings, checkSettings?: CheckSettings|PlainCheckSettings) {
 
+  async check(name: string, checkSettings: CheckSettingsFluent<TElement, TSelector>) : Promise<void>
+  async check(checkSettings?: CheckSettings<TElement, TSelector>) : Promise<void>
+  async check(checkSettingsOrName?: CheckSettings<TElement, TSelector>|string, checkSettings?: CheckSettingsFluent<TElement, TSelector>) : Promise<void> {
+    if (TypeUtils.isString(checkSettingsOrName)) checkSettings.name(checkSettingsOrName)
+    // DO THE Thing
   }
   async checkWindow(name?: string, timeout?: number, isFully: boolean = true) {
     return this.check({name, timeout, isFully})
   }
-  async checkFrame(element: any, timeout?: number, name?: string) {
+  async checkFrame(element: TElement|TSelector|string|number, timeout?: number, name?: string) {
     return this.check({name, frames: [element], timeout, isFully: true})
   }
-  async checkElement(element: any, timeout?: number, name?: string) {
+  async checkElement(element: TElement, timeout?: number, name?: string) {
     return this.check({name, region: element, timeout, isFully: true})
   }
-  async checkElementBy(selector: any, timeout?: number, name?: string) {
+  async checkElementBy(selector: TSelector, timeout?: number, name?: string) {
     return this.check({name, region: selector, timeout, isFully: true})
-  }
-  async checkRegionByElement(element: any, name?: string, timeout?: number) {
-    return this.check({name, region: element, timeout})
   }
   async checkRegion(region?: Region, name?: string, timeout?: number) {
     return this.check({name, region, timeout})
   }
-  async checkRegionBy(selector: any, name?: string, timeout?: number, isFully: boolean = false) {
+  async checkRegionByElement(element: TElement, name?: string, timeout?: number) {
+    return this.check({name, region: element, timeout})
+  }
+  async checkRegionBy(selector: TSelector, name?: string, timeout?: number, isFully: boolean = false) {
     return this.check({name, region: selector, timeout, isFully})
   }
-  async checkRegionInFrame(frameReference: any, selector?: any, timeout?: number, name?: string, isFully: boolean = false) {
-    return this.check({name, region: selector, frames: [frameReference], timeout, isFully})
+  async checkRegionInFrame(frame: TElement|TSelector|string|number, selector: TSelector, timeout?: number, name?: string, isFully: boolean = false) {
+    return this.check({name, region: selector, frames: [frame], timeout, isFully})
   }
+
   async close(throwErr: boolean = true) {
-
+    // DO THE THING
   }
+
   async abort(throwErr: boolean = true) {
-
-  }
-  async locale(visualLocatorSettings: any) {
-
+    // Do THE THING
   }
 
-  async getViewportSize() : Promise<RectangleSize> {
+  async locate(visualLocatorSettings: any) {
 
   }
-  async setViewportSize() : Promise<void> {
+
+  async getViewportSize() : Promise<RectangleSizeData> {
 
   }
+  async setViewportSize(viewportSize: RectangleSize|RectangleSizeData) : Promise<void> {
+
+  }
+
   async getTitle() : Promise<string> {
 
   }
@@ -82,41 +109,114 @@ export default class Eyes {
 
   // #region CONFIG
 
+  setProxy(proxy: ProxySettings|ProxySettingsData) : void
+  setProxy(isDisabled: true) : void
+  setProxy(url: string, username?: string, password?: string, isHttpOnly?: boolean) : void
+  setProxy(proxyOrUrlOrIsDisabled: ProxySettings|ProxySettingsData|string|true, username?: string, password?: string, isHttpOnly?: boolean) {
+    this._config.setProxy(proxyOrUrlOrIsDisabled as string, username, password, isHttpOnly)
+    return this
+  }
+
+  getProxy() : ProxySettingsData {
+    return this._config.getProxy()
+  }
+
+  getRotation() : number {
+    return this._rotation
+  }
+  setRotation(rotation: number) {
+    this._rotation = rotation
+  }
+
+  getSaveDebugScreenshots() : boolean {
+    return this._saveDebugScreenshots
+  }
+  setSaveDebugScreenshots(saveDebugScreenshots: boolean) {
+    this._saveDebugScreenshots = saveDebugScreenshots
+  }
+
+  getSaveDiffs() : boolean {
+    return this._config.saveDiffs
+  }
+  setSaveDiffs(saveDiffs: boolean) {
+    this._config.saveDiffs = saveDiffs
+  }
+
+  getSaveNewTests() : boolean {
+    return this._config.saveNewTests
+  }
+  setSaveNewTests(saveNewTests: boolean) {
+    this._config.saveNewTests = saveNewTests
+  }
+
+  getScaleRatio() : number {
+    return this._scaleRatio
+  }
+  setScaleRatio(scaleRatio: number) {
+    this._scaleRatio = scaleRatio
+  }
+
+  getScrollRootElement() : TElement|TSelector {
+    return this._scrollRootElement
+  }
+  setScrollRootElement(scrollRootElement: TElement|TSelector) {
+    this._scrollRootElement = scrollRootElement
+  }
+
+  getServerUrl() : string {
+    return this._config.serverUrl
+  }
+  setServerUrl(serverUrl: string) {
+    this._config.serverUrl = serverUrl
+  }
+
+  getSendDom() : boolean {
+    return this._config.sendDom
+  }
+  setSendDom(sendDom: boolean) {
+    this._config.sendDom = sendDom
+  }
+
   getHideCaret() : boolean {
-    return this.#config.hideCaret
+    return this._config.hideCaret
   }
   setHideCaret(hideCaret: boolean) {
-    this.#config.hideCaret = hideCaret
+    this._config.hideCaret = hideCaret
   }
+
   getHideScrollbars() : boolean {
-    return this.#config.hideScrollbars
+    return this._config.hideScrollbars
   }
   setHideScrollbars(hideScrollbars: boolean) {
-    this.#config.hideScrollbars = hideScrollbars
+    this._config.hideScrollbars = hideScrollbars
   }
+
   getForceFullPageScreenshot() : boolean {
-    return this.#config.forceFullPageScreenshot
+    return this._config.forceFullPageScreenshot
   }
   setForceFullPageScreenshot(forceFullPageScreenshot: boolean) {
-    this.#config.forceFullPageScreenshot = forceFullPageScreenshot
+    this._config.forceFullPageScreenshot = forceFullPageScreenshot
   }
-  getWaitBeforeScreenshot() : number {
-    return this.#config.waitBeforeScreenshot
+
+  getWaitBeforeScreenshots() : number {
+    return this._config.waitBeforeScreenshots
   }
-  setWaitBeforeScreenshot(waitBeforeScreenshot: number) {
-    this.#config.waitBeforeScreenshot = waitBeforeScreenshot
+  setWaitBeforeScreenshots(waitBeforeScreenshots: number) {
+    this._config.waitBeforeScreenshots = waitBeforeScreenshots
   }
+
   getStitchMode() : StitchMode {
-    return this.#config.stitchMode
+    return this._config.stitchMode
   }
   setStitchMode(stitchMode: StitchMode) {
-    this.#config.stitchMode = stitchMode
+    this._config.stitchMode = stitchMode
   }
+
   getStitchOverlap() : number {
-    return this.#config.stitchOverlap
+    return this._config.stitchOverlap
   }
   setStitchOverlap(stitchOverlap: number) {
-    this.#config.stitchOverlap = stitchOverlap
+    this._config.stitchOverlap = stitchOverlap
   }
 
   // #endregion

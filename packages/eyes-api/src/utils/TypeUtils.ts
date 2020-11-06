@@ -19,3 +19,40 @@ export function isInteger(value: any) : value is number {
   return isNumber(value) && Number.isInteger(value)
 }
 
+export function isArray(value: any) : value is any[] {
+  return Array.isArray(value)
+}
+
+export function isObject(value: any) : value is object {
+  return typeof value === 'object' && value !== null
+}
+
+export function isPlainObject(value: any) : value is {[key: string]: any} {
+  if (!isObject(value) || toString.call(value) !== '[object Object]') {
+    return false
+  }
+
+  const prototype = Object.getPrototypeOf(value)
+  return prototype === null || prototype === Object.getPrototypeOf({})
+}
+
+export function isEnumValue<TEnum extends {[key: string]: any}, TValues extends TEnum[keyof TEnum]>(value: any, enumeration: TEnum) : value is TValues {
+  const values = new Set(Object.values(enumeration))
+  return values.has(value)
+}
+
+export function hasKeys<TKey extends PropertyKey>(value: any, keys: readonly TKey[]) : value is {[key in TKey]: any} {
+  if (!isObject(value)) return false
+
+  for (const key of keys) {
+    if (!Object.prototype.hasOwnProperty.call(value, key)) {
+      return false
+    }
+  }
+
+  return true
+}
+
+export function instanceOf<TCtor extends Function>(value: any, ctor: TCtor) : value is TCtor {
+  return value instanceof ctor
+}

@@ -1,24 +1,130 @@
-import RectangleSize, {PlainRectangleSize} from './RectangleSize'
-import ProxySettings, {PlainProxySettings} from './ProxySettings'
-import BatchInfo, {PlainBatchInfo} from './BatchInfo'
-import PropertyData, {PlainPropertyData} from './PropertyData'
-import ImageMatchSettings, {PlainImageMatchSettings} from './ImageMatchSettings'
-import SessionType from './enums/SessionType'
-import StitchMode from './enums/StitchMode'
-import {isBoolean, isInteger, isString, isArray} from './utils/ArgumentGuard'
-import * as TypeUtils from './utils/TypeUtils'
+import * as ArgumentGuard from '../utils/ArgumentGuard'
+import * as TypeUtils from '../utils/TypeUtils'
+import SessionType from '../enums/SessionType'
+import StitchMode from '../enums/StitchMode'
+import MatchLevel from '../enums/MatchLevel'
+import BrowserType from '../enums/BrowserType'
+import DeviceName from '../enums/DeviceName'
+import ScreenOrientation from '../enums/ScreenOrientation'
+import RectangleSizeData, {RectangleSize} from '../RectangleSize'
+import ProxySettingsData, {ProxySettings} from './ProxySettings'
+import BatchInfoData, {BatchInfo} from './BatchInfo'
+import PropertyData, {Property} from './Property'
+import ImageMatchSettingsData, {ImageMatchSettings} from './ImageMatchSettings'
+import {AccessibilitySettings} from './AccessibilitySettings'
+import {RenderInfo} from './RenderInfo'
 
-// type PlainConfiguration {
-  
-// }
+export type Configuration = {
+  showLogs?: boolean,
+  appName?: string,
+  testName?: string,
+  displayName?: string,
+  isDisabled?: boolean,
+  matchTimeout?: number,
+  sessionType?: SessionType,
+  viewportSize?: RectangleSize,
+  agentId?: string,
+  apiKey?: string,
+  serverUrl?: string,
+  proxy?: ProxySettings,
+  connectionTimeout?: number,
+  removeSession?: boolean,
+  batch?: BatchInfo,
+  properties?: Property[],
+  baselineEnvName?: string,
+  environmentName?: string,
+  branchName?: string,
+  parentBranchName?: string,
+  baselineBranchName?: string,
+  compareWithParentBranch?: boolean,
+  ignoreBaseline?: boolean,
+  saveFailedTests?: boolean,
+  saveNewTests?: boolean,
+  saveDiffs?: boolean,
+  sendDom?: boolean,
+  hostApp?: string,
+  hostOS?: string,
+  hostAppInfo?: string,
+  hostOSInfo?: string,
+  deviceInfo?: string,
+  defaultMatchSettings?: ImageMatchSettings,
+  forceFullPageScreenshot?: boolean,
+  waitBeforeScreenshots?: number,
+  stitchMode?: StitchMode,
+  hideScrollbars?: boolean,
+  hideCaret?: boolean,
+  stitchOverlap?: number,
+  concurrentSessions?: number,
+  isThrowExceptionOn?: boolean,
+  browsersInfo?: RenderInfo[],
+  visualGridOptions?: {[key: string]: any},
+  layoutBreakpoints?: boolean|number[],
+  disableBrowserFetching?: boolean,
+  dontCloseBatches?: boolean,
+}
 
-export default class Configuration {
+export default class ConfigurationData implements Required<Configuration> {
   private _showLogs: boolean
+  private _appName: string
+  private _testName: string
+  private _displayName: string
+  private _isDisabled: boolean
+  private _matchTimeout: number
+  private _sessionType: SessionType
+  private _viewportSize: RectangleSizeData
+  private _agentId: string
+  private _apiKey: string
+  private _serverUrl: string
+  private _proxy: ProxySettingsData
+  private _connectionTimeout: number
+  private _removeSession: boolean
+  private _batch: BatchInfoData
+  private _properties: PropertyData[]
+  private _baselineEnvName: string
+  private _environmentName: string
+  private _branchName: string
+  private _parentBranchName: string
+  private _baselineBranchName: string
+  private _compareWithParentBranch: boolean
+  private _ignoreBaseline: boolean
+  private _saveFailedTests: boolean
+  private _saveNewTests: boolean
+  private _saveDiffs: boolean
+  private _sendDom: boolean
+  private _hostApp: string
+  private _hostOS: string
+  private _hostAppInfo: string
+  private _hostOSInfo: string
+  private _deviceInfo: string
+  private _defaultMatchSettings: ImageMatchSettingsData
+  private _forceFullPageScreenshot: boolean
+  private _waitBeforeScreenshots: number
+  private _stitchMode: StitchMode
+  private _hideScrollbars: boolean
+  private _hideCaret: boolean
+  private _stitchOverlap: number
+  private _concurrentSessions: number
+  private _isThrowExceptionOn: boolean
+  private _browsersInfo: RenderInfo[]
+  private _visualGridOptions: {[key: string]: any}
+  private _layoutBreakpoints: boolean|number[]
+  private _disableBrowserFetching: boolean
+  private _dontCloseBatches: boolean
+
+  constructor(config?: Configuration) {
+    if (!config) return this
+    for (const [key, value] of Object.entries(config)) {
+      if (key in this && !key.startsWith('_')) {
+        (this as any)[key] = value
+      }
+    }
+  }
+
   get showLogs() : boolean {
     return this._showLogs
   }
   set showLogs(showLogs: boolean) {
-    isBoolean(showLogs, {name: 'showLogs'})
+    ArgumentGuard.isBoolean(showLogs, {name: 'showLogs'})
     this._showLogs = showLogs
   }
   getShowLogs() : boolean {
@@ -29,12 +135,11 @@ export default class Configuration {
     return this
   }
 
-  private _appName: string
   get appName() : string {
     return this._appName
   }
   set appName(appName: string) {
-    isString(appName, {name: 'appName', strict: false})
+    ArgumentGuard.isString(appName, {name: 'appName', strict: false})
     this._appName = appName
   }
   getAppName() : string {
@@ -45,12 +150,11 @@ export default class Configuration {
     return this
   }
 
-  private _testName: string
   get testName() : string {
     return this._testName
   }
   set testName(testName: string) {
-    isString(testName, {name: 'testName', strict: false})
+    ArgumentGuard.isString(testName, {name: 'testName', strict: false})
     this._testName = testName
   }
   getTestName() : string {
@@ -61,12 +165,11 @@ export default class Configuration {
     return this
   }
 
-  private _displayName: string
   get displayName() : string {
     return this._displayName
   }
   set displayName(displayName: string) {
-    isString(displayName, {name: 'displayName', strict: false})
+    ArgumentGuard.isString(displayName, {name: 'displayName', strict: false})
     this._displayName = displayName
   }
   getDisplayName() : string {
@@ -77,12 +180,11 @@ export default class Configuration {
     return this
   }
 
-  private _isDisabled: boolean
   get isDisabled() : boolean {
     return this._isDisabled
   }
   set isDisabled(isDisabled: boolean) {
-    isBoolean(isDisabled, {name: 'isDisabled', strict: false})
+    ArgumentGuard.isBoolean(isDisabled, {name: 'isDisabled', strict: false})
     this._isDisabled = isDisabled
   }
   getIsDisabled() : boolean {
@@ -93,12 +195,11 @@ export default class Configuration {
     return this
   }
 
-  private _matchTimeout: number
   get matchTimeout() : number {
     return this._matchTimeout
   }
   set matchTimeout(matchTimeout: number) {
-    isInteger(matchTimeout, {name: 'matchTimeout', gt: 500})
+    ArgumentGuard.isInteger(matchTimeout, {name: 'matchTimeout', gt: 500})
     this._matchTimeout = matchTimeout
   }
   getMatchTimeout() : number {
@@ -109,7 +210,6 @@ export default class Configuration {
     return this
   }
 
-  private _sessionType: SessionType
   get sessionType() : SessionType {
     return this._sessionType
   }
@@ -124,28 +224,26 @@ export default class Configuration {
     return this
   }
 
-  private _viewportSize: RectangleSize
-  get viewportSize() : PlainRectangleSize {
+  get viewportSize() : RectangleSize {
     return this._viewportSize
   }
-  set viewportSize(viewportSize: PlainRectangleSize) {
+  set viewportSize(viewportSize: RectangleSize) {
     if (!viewportSize) this._viewportSize = undefined
-    this._viewportSize = new RectangleSize(viewportSize)
+    this._viewportSize = new RectangleSizeData(viewportSize)
   }
   getViewportSize() : RectangleSize {
     return this._viewportSize
   }
-  setViewportSize(viewportSize: PlainRectangleSize|RectangleSize) : this {
+  setViewportSize(viewportSize: RectangleSize|RectangleSizeData) : this {
     this.viewportSize = viewportSize
     return this
   }
 
-  private _agentId: string
   get agentId() : string {
     return this._agentId
   }
   set agentId(agentId: string) {
-    isString(agentId, {name: 'agentId'})
+    ArgumentGuard.isString(agentId, {name: 'agentId'})
     this._agentId = agentId
   }
   getAgentId() : string {
@@ -156,12 +254,11 @@ export default class Configuration {
     return this
   }
 
-  private _apiKey: string
   get apiKey() : string {
     return this._apiKey
   }
   set apiKey(apiKey: string) {
-    isString(apiKey, {name: 'apiKey', alpha: true, numeric: true})
+    ArgumentGuard.isString(apiKey, {name: 'apiKey', alpha: true, numeric: true})
     this._apiKey = apiKey
   }
   getApiKey() : string {
@@ -172,12 +269,11 @@ export default class Configuration {
     return this
   }
 
-  private _serverUrl: string
   get serverUrl() : string {
     return this._serverUrl
   }
   set serverUrl(serverUrl: string) {
-    isString(serverUrl, {name: 'serverUrl', strict: false})
+    ArgumentGuard.isString(serverUrl, {name: 'serverUrl', strict: false})
     this._serverUrl = serverUrl
   }
   getServerUrl() : string {
@@ -188,28 +284,35 @@ export default class Configuration {
     return this
   }
 
-  private _proxy: ProxySettings
-  get proxy() : PlainProxySettings {
+  get proxy() : ProxySettings {
     return this._proxy
   }
-  set proxy(proxy: PlainProxySettings) {
+  set proxy(proxy: ProxySettings) {
     if (!proxy) this._proxy = undefined
-    this._proxy = new ProxySettings(proxy)
+    this._proxy = new ProxySettingsData(proxy)
   }
-  getProxy() : ProxySettings {
+  getProxy() : ProxySettingsData {
     return this._proxy
   }
-  setProxy(proxy: PlainProxySettings|ProxySettings) : this {
-    this.proxy = proxy
+  setProxy(proxy: ProxySettings|ProxySettingsData) : this
+  setProxy(isDisabled: true) : this
+  setProxy(url: string, username?: string, password?: string, isHttpOnly?: boolean) : this
+  setProxy(proxyOrUrlOrIsDisabled: ProxySettings|ProxySettingsData|string|true, username?: string, password?: string, isHttpOnly?: boolean) : this {
+    if (proxyOrUrlOrIsDisabled === true) {
+      this.proxy = undefined
+    } else if (TypeUtils.isString(proxyOrUrlOrIsDisabled)) {
+      this.proxy = {url: proxyOrUrlOrIsDisabled, username, password, isHttpOnly}
+    } else {
+      this.proxy = proxyOrUrlOrIsDisabled
+    }
     return this
   }
 
-  private _connectionTimeout: number
   get connectionTimeout() : number {
     return this._connectionTimeout
   }
   set connectionTimeout(connectionTimeout: number) {
-    isInteger(connectionTimeout, {name: 'connectionTimeout', gte: 0})
+    ArgumentGuard.isInteger(connectionTimeout, {name: 'connectionTimeout', gte: 0})
     this._connectionTimeout = connectionTimeout
   }
   getConnectionTimeout() : number {
@@ -220,12 +323,11 @@ export default class Configuration {
     return this
   }
 
-  private _removeSession: boolean
   get removeSession() : boolean {
     return this._removeSession
   }
   set removeSession(removeSession: boolean) {
-    isBoolean(removeSession, {name: 'removeSession'})
+    ArgumentGuard.isBoolean(removeSession, {name: 'removeSession'})
     this._removeSession = removeSession
   }
   getRemoveSession() : boolean {
@@ -236,40 +338,38 @@ export default class Configuration {
     return this
   }
 
-  private _batch: BatchInfo
-  get batch() : PlainBatchInfo {
+  get batch() : BatchInfo {
     return this._batch
   }
-  set batch(batch: PlainBatchInfo) {
+  set batch(batch: BatchInfo) {
     if (!batch) this._batch = undefined
-    this._batch = new BatchInfo(batch)
+    this._batch = new BatchInfoData(batch)
   }
-  getBatch() : BatchInfo {
+  getBatch() : BatchInfoData {
     return this._batch
   }
-  setBatch(batch: PlainBatchInfo|BatchInfo) : this {
+  setBatch(batch: BatchInfo|BatchInfoData) : this {
     this.batch = batch
     return this
   }
 
-  private _properties: PropertyData[]
-  get properties() : PlainPropertyData[] {
+  get properties() : Property[] {
     return this._properties
   }
-  set properties(properties: PlainPropertyData[]) {
-    isArray(properties, {name: 'properties'})
+  set properties(properties: Property[]) {
+    ArgumentGuard.isArray(properties, {name: 'properties'})
     this._properties = properties.map(prop => new PropertyData(prop))
   }
   getProperties() : PropertyData[] {
     return this._properties
   }
-  setProperties(properties: PlainPropertyData[]|PropertyData[]) : this {
+  setProperties(properties: Property[]|PropertyData[]) : this {
     this.properties = properties
     return this
   }
   addProperty(name: string, value: string) : this
-  addProperty(prop: PlainPropertyData|PropertyData) : this
-  addProperty(propOrName: PlainPropertyData|PropertyData|string, value?: string) : this {
+  addProperty(prop: Property|PropertyData) : this
+  addProperty(propOrName: Property|PropertyData|string, value?: string) : this {
     const prop = TypeUtils.isString(propOrName)
       ? new PropertyData({name: propOrName, value})
       : new PropertyData(propOrName)
@@ -277,12 +377,11 @@ export default class Configuration {
     return this
   }
 
-  private _baselineEnvName: string
   get baselineEnvName() : string {
     return this._baselineEnvName
   }
   set baselineEnvName(baselineEnvName: string) {
-    isString(baselineEnvName, {name: 'baselineEnvName', strict: false})
+    ArgumentGuard.isString(baselineEnvName, {name: 'baselineEnvName', strict: false})
     this._baselineEnvName = baselineEnvName ? baselineEnvName.trim() : undefined
   }
   getBaselineEnvName() : string {
@@ -293,12 +392,11 @@ export default class Configuration {
     return this
   }
 
-  private _environmentName: string
   get environmentName() : string {
     return this._environmentName
   }
   set environmentName(environmentName: string) {
-    isString(environmentName, {name: 'environmentName', strict: false})
+    ArgumentGuard.isString(environmentName, {name: 'environmentName', strict: false})
     this._environmentName = environmentName ? environmentName.trim() : undefined
   }
   getEnvironmentName() : string {
@@ -309,12 +407,11 @@ export default class Configuration {
     return this
   }
 
-  private _branchName: string
   get branchName() : string {
     return this._branchName
   }
   set branchName(branchName: string) {
-    isString(branchName, {name: 'branchName'})
+    ArgumentGuard.isString(branchName, {name: 'branchName'})
     this._branchName = branchName
   }
   getBranchName() : string {
@@ -325,12 +422,11 @@ export default class Configuration {
     return this
   }
 
-  private _parentBranchName: string
   get parentBranchName() : string {
     return this._parentBranchName
   }
   set parentBranchName(parentBranchName: string) {
-    isString(parentBranchName, {name: 'parentBranchName'})
+    ArgumentGuard.isString(parentBranchName, {name: 'parentBranchName'})
     this._parentBranchName = parentBranchName
   }
   getParentBranchName() : string {
@@ -341,12 +437,11 @@ export default class Configuration {
     return this
   }
 
-  private _baselineBranchName: string
   get baselineBranchName() : string {
     return this._baselineBranchName
   }
   set baselineBranchName(baselineBranchName: string) {
-    isString(baselineBranchName, {name: 'baselineBranchName'})
+    ArgumentGuard.isString(baselineBranchName, {name: 'baselineBranchName'})
     this._baselineBranchName = baselineBranchName
   }
   getBaselineBranchName() : string {
@@ -357,12 +452,11 @@ export default class Configuration {
     return this
   }
 
-  private _compareWithParentBranch: boolean
   get compareWithParentBranch() : boolean {
     return this._compareWithParentBranch
   }
   set compareWithParentBranch(compareWithParentBranch: boolean) {
-    isBoolean(compareWithParentBranch, {name: 'compareWithParentBranch'})
+    ArgumentGuard.isBoolean(compareWithParentBranch, {name: 'compareWithParentBranch'})
     this._compareWithParentBranch = compareWithParentBranch
   }
   getCompareWithParentBranch() : boolean {
@@ -373,12 +467,11 @@ export default class Configuration {
     return this
   }
 
-  private _ignoreBaseline: boolean
   get ignoreBaseline() : boolean {
     return this._ignoreBaseline
   }
   set ignoreBaseline(ignoreBaseline: boolean) {
-    isBoolean(ignoreBaseline, {name: 'ignoreBaseline'})
+    ArgumentGuard.isBoolean(ignoreBaseline, {name: 'ignoreBaseline'})
     this._ignoreBaseline = ignoreBaseline
   }
   getIgnoreBaseline() : boolean {
@@ -389,12 +482,11 @@ export default class Configuration {
     return this
   }
 
-  private _saveFailedTests: boolean
   get saveFailedTests() : boolean {
     return this._saveFailedTests
   }
   set saveFailedTests(saveFailedTests: boolean) {
-    isBoolean(saveFailedTests, {name: 'saveFailedTests'})
+    ArgumentGuard.isBoolean(saveFailedTests, {name: 'saveFailedTests'})
     this._saveFailedTests = saveFailedTests
   }
   getSaveFailedTests() : boolean {
@@ -405,12 +497,11 @@ export default class Configuration {
     return this
   }
 
-  private _saveNewTests: boolean
   get saveNewTests() : boolean {
     return this._saveNewTests
   }
   set saveNewTests(saveNewTests: boolean) {
-    isBoolean(saveNewTests, {name: 'saveNewTests'})
+    ArgumentGuard.isBoolean(saveNewTests, {name: 'saveNewTests'})
     this._saveNewTests = saveNewTests
   }
   getSaveNewTests() : boolean {
@@ -421,12 +512,11 @@ export default class Configuration {
     return this
   }
 
-  private _saveDiffs: boolean
   get saveDiffs() : boolean {
     return this._saveDiffs
   }
   set saveDiffs(saveDiffs: boolean) {
-    isBoolean(saveDiffs, {name: 'saveDiffs'})
+    ArgumentGuard.isBoolean(saveDiffs, {name: 'saveDiffs'})
     this._saveDiffs = saveDiffs
   }
   getSaveDiffs() : boolean {
@@ -437,12 +527,11 @@ export default class Configuration {
     return this
   }
 
-  private _sendDom: boolean
   get sendDom() : boolean {
     return this._sendDom
   }
   set sendDom(sendDom: boolean) {
-    isBoolean(sendDom, {name: 'sendDom'})
+    ArgumentGuard.isBoolean(sendDom, {name: 'sendDom'})
     this._sendDom = sendDom
   }
   getSendDom() : boolean {
@@ -453,7 +542,6 @@ export default class Configuration {
     return this
   }
 
-  private _hostApp: string
   get hostApp() : string {
     return this._hostApp
   }
@@ -468,7 +556,6 @@ export default class Configuration {
     return this
   }
 
-  private _hostOS: string
   get hostOS() : string {
     return this._hostOS
   }
@@ -483,7 +570,6 @@ export default class Configuration {
     return this
   }
 
-  private _hostAppInfo: string
   get hostAppInfo() : string {
     return this._hostAppInfo
   }
@@ -498,7 +584,6 @@ export default class Configuration {
     return this
   }
 
-  private _hostOSInfo: string
   get hostOSInfo() : string {
     return this._hostOSInfo
   }
@@ -513,7 +598,6 @@ export default class Configuration {
     return this
   }
 
-  private _deviceInfo: string
   get deviceInfo() : string {
     return this._deviceInfo
   }
@@ -528,157 +612,184 @@ export default class Configuration {
     return this
   }
 
-  private _defaultMatchSettings: ImageMatchSettings
-  get defaultMatchSettings() : PlainImageMatchSettings {
+  get defaultMatchSettings() : ImageMatchSettings {
     return this._defaultMatchSettings
   }
-  set defaultMatchSettings(defaultMatchSettings: PlainImageMatchSettings) {
-    // ArgumentGuard.isString(value, 'defaultMatchSettings', false)
-    this._defaultMatchSettings = defaultMatchSettings
+  set defaultMatchSettings(defaultMatchSettings: ImageMatchSettings) {
+    ArgumentGuard.notNull(defaultMatchSettings, {name: 'defaultMatchSettings'})
+    this._defaultMatchSettings = new ImageMatchSettingsData(defaultMatchSettings)
   }
   getDefaultMatchSettings() : ImageMatchSettings {
-    return this.defaultMatchSettings
+    return this._defaultMatchSettings
   }
-  setDefaultMatchSettings(defaultMatchSettings: PlainImageMatchSettings|ImageMatchSettings) : this {
+  setDefaultMatchSettings(defaultMatchSettings: ImageMatchSettings|ImageMatchSettingsData) : this {
     this.defaultMatchSettings = defaultMatchSettings
+    return this
+  }
+  getMatchLevel() : MatchLevel {
+    return this._defaultMatchSettings.matchLevel
+  }
+  setMatchLevel(matchLevel: MatchLevel) : this {
+    this._defaultMatchSettings.matchLevel = matchLevel
+    return this
+  }
+  getAccessibilityValidation() : AccessibilitySettings {
+    return this._defaultMatchSettings.accessibilitySettings
+  }
+  setAccessibilityValidation(accessibilityValidation: AccessibilitySettings) : this {
+    this._defaultMatchSettings.accessibilitySettings = accessibilityValidation
+    return this
+  }
+  getUseDom() : boolean {
+    return this._defaultMatchSettings.useDom
+  }
+  setUseDom(useDom: boolean) : this {
+    this._defaultMatchSettings.useDom = useDom
+    return this
+  }
+  getEnablePatterns() : boolean {
+    return this._defaultMatchSettings.enablePatterns
+  }
+  setEnablePatterns(enablePatterns: boolean) : this {
+    this._defaultMatchSettings.enablePatterns = enablePatterns
+    return this
+  }
+  getIgnoreDisplacements() : boolean {
+    return this._defaultMatchSettings.ignoreDisplacements
+  }
+  setIgnoreDisplacements(ignoreDisplacements: boolean) : this {
+    this._defaultMatchSettings.ignoreDisplacements = ignoreDisplacements
+    return this
+  }
+  getIgnoreCaret() : boolean {
+    return this._defaultMatchSettings.ignoreCaret
+  }
+  setIgnoreCaret(ignoreCaret: boolean) : this {
+    this._defaultMatchSettings.ignoreCaret = ignoreCaret
     return this
   }
 
 
-  private _forceFullPageScreenshot: boolean
   get forceFullPageScreenshot() : boolean {
     return this._forceFullPageScreenshot
   }
   set forceFullPageScreenshot(forceFullPageScreenshot: boolean) {
-    // ArgumentGuard.isString(value, 'forceFullPageScreenshot', false)
     this._forceFullPageScreenshot = forceFullPageScreenshot
   }
   getForceFullPageScreenshot() : boolean {
-    return this.forceFullPageScreenshot
+    return this._forceFullPageScreenshot
   }
   setForceFullPageScreenshot(forceFullPageScreenshot: boolean) : this {
     this.forceFullPageScreenshot = forceFullPageScreenshot
     return this
   }
 
-  private _waitBeforeScreenshots: number
   get waitBeforeScreenshots() : number {
     return this._waitBeforeScreenshots
   }
   set waitBeforeScreenshots(waitBeforeScreenshots: number) {
-    // ArgumentGuard.isString(value, 'waitBeforeScreenshots', false)
+    ArgumentGuard.isInteger(waitBeforeScreenshots, {name: 'waitBeforeScreenshots', gt: 0})
     this._waitBeforeScreenshots = waitBeforeScreenshots
   }
   getWaitBeforeScreenshots() : number {
-    return this.waitBeforeScreenshots
+    return this._waitBeforeScreenshots
   }
   setWaitBeforeScreenshots(waitBeforeScreenshots: number) : this {
     this.waitBeforeScreenshots = waitBeforeScreenshots
     return this
   }
 
-  private _stitchMode: StitchMode
   get stitchMode() : StitchMode {
     return this._stitchMode
   }
   set stitchMode(stitchMode: StitchMode) {
-    // ArgumentGuard.isString(value, 'stitchMode', false)
+    ArgumentGuard.isEnumValue(stitchMode, StitchMode, {name: 'stitchMode'})
     this._stitchMode = stitchMode
   }
   getStitchMode() : StitchMode {
-    return this.stitchMode
+    return this._stitchMode
   }
   setStitchMode(stitchMode: StitchMode) : this {
     this.stitchMode = stitchMode
     return this
   }
 
-  private _hideScrollbars: boolean
   get hideScrollbars() : boolean {
     return this._hideScrollbars
   }
   set hideScrollbars(hideScrollbars: boolean) {
-    // ArgumentGuard.isString(value, 'hideScrollbars', false)
     this._hideScrollbars = hideScrollbars
   }
   getHideScrollbars() : boolean {
-    return this.hideScrollbars
+    return this._hideScrollbars
   }
   setHideScrollbars(hideScrollbars: boolean) : this {
     this.hideScrollbars = hideScrollbars
     return this
   }
 
-  private _hideCaret: boolean
   get hideCaret() : boolean {
     return this._hideCaret
   }
   set hideCaret(hideCaret: boolean) {
-    // ArgumentGuard.isString(value, 'hideCaret', false)
     this._hideCaret = hideCaret
   }
   getHideCaret() : boolean {
-    return this.hideCaret
+    return this._hideCaret
   }
   setHideCaret(hideCaret: boolean) : this {
     this.hideCaret = hideCaret
     return this
   }
 
-  private _stitchOverlap: number
   get stitchOverlap() : number {
     return this._stitchOverlap
   }
   set stitchOverlap(stitchOverlap: number) {
-    // ArgumentGuard.isString(value, 'stitchOverlap', false)
+    ArgumentGuard.isInteger(stitchOverlap, {name: 'stitchOverlap', strict: false})
     this._stitchOverlap = stitchOverlap
   }
   getStitchOverlap() : number {
-    return this.stitchOverlap
+    return this._stitchOverlap
   }
   setStitchOverlap(stitchOverlap: number) : this {
     this.stitchOverlap = stitchOverlap
     return this
   }
 
-  private _concurrentSessions: number
   get concurrentSessions() : number {
     return this._concurrentSessions
   }
   set concurrentSessions(concurrentSessions: number) {
-    // ArgumentGuard.isString(value, 'concurrentSessions', false)
     this._concurrentSessions = concurrentSessions
   }
   getConcurrentSessions() : number {
-    return this.concurrentSessions
+    return this._concurrentSessions
   }
   setConcurrentSessions(concurrentSessions: number) : this {
     this.concurrentSessions = concurrentSessions
     return this
   }
 
-  private _isThrowExceptionOn: boolean
   get isThrowExceptionOn() : boolean {
     return this._isThrowExceptionOn
   }
   set isThrowExceptionOn(isThrowExceptionOn: boolean) {
-    // ArgumentGuard.isString(value, 'isThrowExceptionOn', false)
     this._isThrowExceptionOn = isThrowExceptionOn
   }
   getIsThrowExceptionOn() : boolean {
-    return this.isThrowExceptionOn
+    return this._isThrowExceptionOn
   }
   setIsThrowExceptionOn(isThrowExceptionOn: boolean) : this {
     this.isThrowExceptionOn = isThrowExceptionOn
     return this
   }
 
-  private _browsersInfo: RenderInfo[]
   get browsersInfo() : RenderInfo[] {
     return this._browsersInfo
   }
   set browsersInfo(browsersInfo: RenderInfo[]) {
-    // ArgumentGuard.isString(value, 'browsersInfo', false)
+    ArgumentGuard.isArray(browsersInfo, {name: 'browsersInfo'})
     this._browsersInfo = browsersInfo
   }
   getBrowsersInfo() : RenderInfo[] {
@@ -688,61 +799,94 @@ export default class Configuration {
     this.browsersInfo = browsersInfo
     return this
   }
-
-  private _visualGridOptions: object
-  get visualGridOptions() : object {
-    return this._visualGridOptions
+  addBrowsers(...browsersInfo: RenderInfo[]) {
+    for (const [index, browserInfo] of browsersInfo.entries()) {
+      ArgumentGuard.isPlainObject(browserInfo, {name: `addBrowsers( arg${index} )`})
+    }
+    if (!this._browsersInfo) {
+      this._browsersInfo = []
+    }
+    this._browsersInfo.push(...browsersInfo)
+    return this
   }
-  set visualGridOptions(visualGridOptions: object) {
-    // ArgumentGuard.isString(value, 'visualGridOptions', false)
-    this._visualGridOptions = visualGridOptions
+  addBrowser(browserInfo: RenderInfo) : this
+  addBrowser(width: number, height: number, name?: BrowserType) : this
+  addBrowser(browserInfoOrWidth: RenderInfo|number, height?: number, name: BrowserType = BrowserType.CHROME) {
+    if (TypeUtils.isPlainObject(browserInfoOrWidth)) {
+      return this.addBrowsers(browserInfoOrWidth)
+    } else {
+      return this.addBrowsers({width: browserInfoOrWidth, height, name})
+    }
   }
-  getVisualGridOptions() : object {
-    return this.visualGridOptions
-  }
-  setVisualGridOptions(visualGridOptions: object) : this {
-    this.visualGridOptions = visualGridOptions
+  addDeviceEmulation(deviceName: DeviceName, screenOrientation = ScreenOrientation.PORTRAIT) {
+    if (!this._browsersInfo) {
+      this._browsersInfo = []
+    }
+    this._browsersInfo.push({deviceName, screenOrientation})
     return this
   }
 
-  private _layoutBreakpoints: boolean|number[]
+  get visualGridOptions() : {[key: string]: any} {
+    return this._visualGridOptions
+  }
+  set visualGridOptions(visualGridOptions: {[key: string]: any}) {
+    this._visualGridOptions = visualGridOptions
+  }
+  getVisualGridOptions() : {[key: string]: any} {
+    return this._visualGridOptions
+  }
+  setVisualGridOptions(visualGridOptions: {[key: string]: any}) : this {
+    this.visualGridOptions = visualGridOptions
+    return this
+  }
+  setVisualGridOption(key: string, value: any) : this {
+    if (!this._visualGridOptions) {
+      this._visualGridOptions = {}
+    }
+    this._visualGridOptions[key] = value
+    return this
+  }
+
   get layoutBreakpoints() : boolean|number[] {
     return this._layoutBreakpoints
   }
   set layoutBreakpoints(layoutBreakpoints: boolean|number[]) {
-    // ArgumentGuard.isString(value, 'layoutBreakpoints', false)
+    ArgumentGuard.notNull(layoutBreakpoints, {name: 'layoutBreakpoints'})
+    if (!TypeUtils.isArray(layoutBreakpoints)) {
+      this._layoutBreakpoints = layoutBreakpoints
+    } else if (layoutBreakpoints.length === 0) {
+      this._layoutBreakpoints = false
+    } else {
+      this._layoutBreakpoints = Array.from(new Set(layoutBreakpoints)).sort((a, b) => (a < b ? 1 : -1))
+    }
     this._layoutBreakpoints = layoutBreakpoints
   }
   getLayoutBreakpoints() : boolean|number[] {
-    return this.layoutBreakpoints
+    return this._layoutBreakpoints
   }
   setLayoutBreakpoints(layoutBreakpoints: boolean|number[]) : this {
     this.layoutBreakpoints = layoutBreakpoints
     return this
   }
 
-  private _disableBrowserFetching: boolean
   get disableBrowserFetching() : boolean {
     return this._disableBrowserFetching
   }
   set disableBrowserFetching(disableBrowserFetching: boolean) {
-    // ArgumentGuard.isString(value, 'disableBrowserFetching', false)
     this._disableBrowserFetching = disableBrowserFetching
   }
   getDisableBrowserFetching() : boolean {
-    return this.disableBrowserFetching
+    return this._disableBrowserFetching
   }
   setDisableBrowserFetching(disableBrowserFetching: boolean) : this {
     this.disableBrowserFetching = disableBrowserFetching
     return this
   }
 
-  private _dontCloseBatches: boolean
   get dontCloseBatches() : boolean {
     return this._dontCloseBatches
   }
   set dontCloseBatches(dontCloseBatches: boolean) {
-    // ArgumentGuard.isString(value, 'dontCloseBatches', false)
     this._dontCloseBatches = dontCloseBatches
   }
   getDontCloseBatches() : boolean {
@@ -751,5 +895,13 @@ export default class Configuration {
   setDontCloseBatches(dontCloseBatches: boolean) : this {
     this.dontCloseBatches = dontCloseBatches
     return this
+  }
+
+  toString() : string {
+    return `Configuration ${this.toJSON()}`
+  }
+
+  toJSON() : Configuration {
+    return {}
   }
 }

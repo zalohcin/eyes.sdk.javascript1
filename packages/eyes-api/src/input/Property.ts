@@ -1,18 +1,18 @@
-import * as TypeUtils from './utils/TypeUtils'
-import * as ArgumentGuard from './utils/ArgumentGuard'
+import * as TypeUtils from '../utils/TypeUtils'
+import * as ArgumentGuard from '../utils/ArgumentGuard'
 
-export type PlainPropertyData = {
+export type Property = {
   name: string,
   value: string,
 }
 
-export default class PropertyData implements PlainPropertyData {
+export default class PropertyData implements Required<Property> {
   private _name: string
   private _value: string
 
-  constructor(prop: PlainPropertyData)
+  constructor(prop: Property)
   constructor(name: string, value: string)
-  constructor(propOrName: PlainPropertyData|string, value?: string) {
+  constructor(propOrName: Property|string, value?: string) {
     if (TypeUtils.isString(propOrName)) {
       return new PropertyData({name: propOrName, value})
     }

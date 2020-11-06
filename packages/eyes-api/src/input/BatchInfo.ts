@@ -1,8 +1,8 @@
-import * as TypeUtils from './utils/TypeUtils'
-import * as ArgumentGuard from './utils/ArgumentGuard'
+import * as TypeUtils from '../utils/TypeUtils'
+import * as ArgumentGuard from '../utils/ArgumentGuard'
 import * as GeneralUtils from './utils/GeneralUtils'
 
-export type PlainBatchInfo = {
+export type BatchInfo = {
   id?: string,
   name?: string,
   startedAt?: Date,
@@ -12,7 +12,7 @@ export type PlainBatchInfo = {
   isGeneratedId?: boolean
 }
 
-export default class BatchInfo implements PlainBatchInfo {
+export default class BatchInfoData implements Required<BatchInfo> {
   private _id: string
   private _name: string
   private _startedAt: Date
@@ -22,11 +22,11 @@ export default class BatchInfo implements PlainBatchInfo {
   private _isGeneratedId: boolean
 
   constructor()
-  constructor(batch: PlainBatchInfo)
+  constructor(batch: BatchInfo)
   constructor(name: string, startedAt?: Date|string, id?: string)
-  constructor(batchOrName?: PlainBatchInfo|string, startedAt?: Date|string, id?: string) {
+  constructor(batchOrName?: BatchInfo|string, startedAt?: Date|string, id?: string) {
     if (TypeUtils.isString(batchOrName)) {
-      return new BatchInfo({name: batchOrName, id, startedAt: new Date(startedAt)})
+      return new BatchInfoData({name: batchOrName, id, startedAt: new Date(startedAt)})
     }
     const batch = batchOrName || {}
     ArgumentGuard.isString(batch.id, {name: 'batch.id', strict: false})
