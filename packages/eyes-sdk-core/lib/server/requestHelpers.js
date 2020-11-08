@@ -159,7 +159,6 @@ async function startPollingRequest({url, config, axios}) {
 }
 
 async function handleRequestError({err, axios, logger}) {
-  debugger
   if (!err.config) {
     throw err
   }
