@@ -7,30 +7,13 @@ const fs = require('fs')
 const STEPS = Number(process.env.MEASURE_STEPS)
 const CONCURRENCY = Number(process.env.MEASURE_CONCURRENCY)
 const BROWSERS = Number(process.env.MEASURE_BROWSERS)
-const ENFORCEMENT = Boolean(process.env.MEASURE_ENFORCEMENT)
+const TESTS = Number(process.env.MEASURE_TESTS)
 
-const configStr = `STEPS=${STEPS},CONCURRENCY=${CONCURRENCY},BROWSERS=${BROWSERS}`
+const configStr = `TESTS=${TESTS},STEPS=${STEPS},CONCURRENCY=${CONCURRENCY},BROWSERS=${BROWSERS}`
 console.log('running with', configStr)
 
-const URLS = ENFORCEMENT
-  ? [
-      'https://applitools.github.io/demo/TestPages/SimpleTestPage/',
-      // 'https://applitools.github.io/demo/TestPages/SimpleTestPage/',
-      // 'https://applitools.github.io/demo/TestPages/SimpleTestPage/',
-      // 'https://applitools.github.io/demo/TestPages/SimpleTestPage/',
-      // 'https://applitools.github.io/demo/TestPages/SimpleTestPage/',
-      // 'https://applitools.github.io/demo/TestPages/SimpleTestPage/',
-      // 'https://applitools.github.io/demo/TestPages/SimpleTestPage/',
-      // 'https://applitools.github.io/demo/TestPages/SimpleTestPage/',
-      // 'https://applitools.github.io/demo/TestPages/SimpleTestPage/',
-      // 'https://applitools.github.io/demo/TestPages/SimpleTestPage/',
-    ]
-  : [
-      'https://www.booking.com/index.uk.html?aid=376445;label=bookings-naam-B9ObXm1VJOAq2ho0czzpIQS267754536176:pl:ta:p1:p22,563,000:ac:ap:neg:fi:tiaud-898142577969:kwd-65526620:lp1012866:li:dec:dm:ppccp=UmFuZG9tSVYkc2RlIyh9YTQUGSsRwx9_piJbnTYecvA;ws=&gclid=Cj0KCQjwqfz6BRD8ARIsAIXQCf3I2VfJ6miqKlG1VxkOsAO1lUbIoh5rE06C9tDyl6rtZLzDsCpFS0caApfjEALw_wcB',
-      'https://www.booking.com/index.uk.html?aid=376445;label=bookings-naam-B9ObXm1VJOAq2ho0czzpIQS267754536176:pl:ta:p1:p22,563,000:ac:ap:neg:fi:tiaud-898142577969:kwd-65526620:lp1012866:li:dec:dm:ppccp=UmFuZG9tSVYkc2RlIyh9YTQUGSsRwx9_piJbnTYecvA;ws=&gclid=Cj0KCQjwqfz6BRD8ARIsAIXQCf3I2VfJ6miqKlG1VxkOsAO1lUbIoh5rE06C9tDyl6rtZLzDsCpFS0caApfjEALw_wcB',
-      'https://www.booking.com/index.uk.html?aid=376445;label=bookings-naam-B9ObXm1VJOAq2ho0czzpIQS267754536176:pl:ta:p1:p22,563,000:ac:ap:neg:fi:tiaud-898142577969:kwd-65526620:lp1012866:li:dec:dm:ppccp=UmFuZG9tSVYkc2RlIyh9YTQUGSsRwx9_piJbnTYecvA;ws=&gclid=Cj0KCQjwqfz6BRD8ARIsAIXQCf3I2VfJ6miqKlG1VxkOsAO1lUbIoh5rE06C9tDyl6rtZLzDsCpFS0caApfjEALw_wcB',
-      'https://www.booking.com/index.uk.html?aid=376445;label=bookings-naam-B9ObXm1VJOAq2ho0czzpIQS267754536176:pl:ta:p1:p22,563,000:ac:ap:neg:fi:tiaud-898142577969:kwd-65526620:lp1012866:li:dec:dm:ppccp=UmFuZG9tSVYkc2RlIyh9YTQUGSsRwx9_piJbnTYecvA;ws=&gclid=Cj0KCQjwqfz6BRD8ARIsAIXQCf3I2VfJ6miqKlG1VxkOsAO1lUbIoh5rE06C9tDyl6rtZLzDsCpFS0caApfjEALw_wcB',
-    ]
+const URL =
+  'https://www.booking.com/index.uk.html?aid=376445;label=bookings-naam-B9ObXm1VJOAq2ho0czzpIQS267754536176:pl:ta:p1:p22,563,000:ac:ap:neg:fi:tiaud-898142577969:kwd-65526620:lp1012866:li:dec:dm:ppccp=UmFuZG9tSVYkc2RlIyh9YTQUGSsRwx9_piJbnTYecvA;ws=&gclid=Cj0KCQjwqfz6BRD8ARIsAIXQCf3I2VfJ6miqKlG1VxkOsAO1lUbIoh5rE06C9tDyl6rtZLzDsCpFS0caApfjEALw_wcB'
 
 describe('Measurements', () => {
   let driver, destroyDriver, eyes
@@ -90,16 +73,15 @@ describe('Measurements', () => {
     await destroyDriver()
   })
 
-  for (let t = 0, tt = URLS.length; t < tt; t++) {
+  for (let t = 0; t < TESTS; t++) {
     const index = t + 1
     it(`Measurements ${index}`, async () => {
       logger.log(`[Measurements] starting test ${index}`)
-      const url = URLS[t]
       const before = Date.now()
-      await spec.visit(driver, url)
+      await spec.visit(driver, URL)
       const visitTime = Date.now() - before
       visits.push(visitTime)
-      console.log(`[Measurements ${index}] visit ${url} - ${visitTime}`)
+      console.log(`[Measurements ${index}] visit ${URL} - ${visitTime}`)
       await eyes.open(driver, `Measurements`, `Measurements ${index} ${configStr}`)
       for (let i = 0, ii = STEPS; i < ii; i++) {
         await eyes.check({isFully: true})
