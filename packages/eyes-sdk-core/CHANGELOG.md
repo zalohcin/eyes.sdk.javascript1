@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- add 2020 ios devices
+- fix coded region calculation when running in target region ([Trello 538](https://trello.com/c/FQ8iJZdi))
 
 ## 12.5.5 - 2020/11/1
 
