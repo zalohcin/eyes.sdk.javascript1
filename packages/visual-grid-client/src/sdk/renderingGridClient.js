@@ -1,7 +1,6 @@
 /* global fetch */
 'use strict'
 
-const throatPkg = require('throat')
 const {
   BatchInfo,
   Logger,
@@ -86,6 +85,7 @@ function makeRenderingGridClient({
   globalState: _globalState,
   dontCloseBatches,
   visualGridOptions,
+  concurrentRendersPerTest = 1,
 }) {
   if (saveDebugData) {
     deprecationWarning({deprecatedThing: 'saveDebugData', isDead: true})
@@ -110,7 +110,6 @@ function makeRenderingGridClient({
 
   let initialDataPromise
   const eyesTransactionThroat = transactionThroat(finalConcurrency)
-  const renderThroat = throatPkg(finalConcurrency)
   renderWrapper =
     renderWrapper ||
     createRenderWrapper({
@@ -205,7 +204,7 @@ function makeRenderingGridClient({
     getRenderJobInfo,
     render,
     waitForRenderedStatus,
-    renderThroat,
+    concurrentRendersPerTest,
     getInitialData,
     createRGridDOMAndGetResourceMapping,
     eyesTransactionThroat,

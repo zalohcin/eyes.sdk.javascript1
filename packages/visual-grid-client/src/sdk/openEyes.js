@@ -12,6 +12,7 @@ const isEmulation = require('./isEmulation')
 const mapChromeEmulationInfo = require('./mapChromeEmulationInfo')
 const getSupportedBrowsers = require('./supportedBrowsers')
 const chalk = require('chalk')
+const throatPkg = require('throat')
 
 const {
   initWrappers,
@@ -56,13 +57,13 @@ function makeOpenEyes({
   getRenderJobInfo,
   render,
   waitForRenderedStatus,
-  renderThroat,
   eyesTransactionThroat,
   getInitialData,
   agentId,
   globalState,
   wrappers: _wrappers,
   visualGridOptions: _visualGridOptions,
+  concurrentRendersPerTest,
 }) {
   return async function openEyes({
     testName,
@@ -233,6 +234,8 @@ function makeOpenEyes({
       numOfTests: wrappers.length,
       logger,
     })
+
+    const renderThroat = throatPkg(concurrentRendersPerTest * browsers.length)
 
     const checkWindow = makeCheckWindow({
       globalState,

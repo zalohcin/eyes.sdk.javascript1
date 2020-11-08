@@ -267,18 +267,33 @@ function makeCheckWindow({
         return
       }
 
+      const renderRequestTask = new Task()
       globalState.setQueuedRendersCount(globalState.getQueuedRendersCount() + 1)
-      const renderId = await renderThroat(() => {
-        logger.log(`starting to render test ${testName}`)
-        return render(renderRequest)
+      const holder = new Promise(resolve => {
+        renderThroat(async () => {
+          logger.log(`starting to render test ${testName}`)
+          renderJobs.set(renderRequest, resolve)
+          const [renderIdErr, renderId] = await presult(render(renderRequest))
+          if (renderIdErr) {
+            renderRequestTask.reject(renderIdErr)
+          } else {
+            renderRequestTask.resolve(renderId)
+          }
+          globalState.setQueuedRendersCount(globalState.getQueuedRendersCount() - 1)
+          return holder
+        })
       })
-      const holder = new Promise(resolve => renderJobs.set(renderRequest, resolve))
-      renderThroat(() => holder)
-      globalState.setQueuedRendersCount(globalState.getQueuedRendersCount() - 1)
 
-      return renderId
+      return renderRequestTask.promise
     }
   }
 }
 
 module.exports = makeCheckWindow
+
+function Task() {
+  this.promise = new Promise((r, j) => {
+    this.resolve = r
+    this.reject = j
+  })
+}

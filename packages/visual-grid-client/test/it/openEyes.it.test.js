@@ -897,7 +897,7 @@ Received: 'firefox-1'.`,
       }).openEyes
     })
 
-    it('runs renders with max concurrency', async () => {
+    it('runs renders with concurrency', async () => {
       const {checkWindow, close} = await openEyes({
         wrappers: [wrapper],
         appName,
@@ -909,34 +909,34 @@ Received: 'firefox-1'.`,
 
       checkWindow({url: '', snapshot: {cdt: []}, target: null, sizeMode: null})
       await psetTimeout(10)
-      expect(renderCount).to.equal(2)
+      expect(renderCount).to.equal(1) // only after render status will be RENDERED, will the second render be sent
       expect(renderStatusCount).to.equal(0) // still batching initial renderIds for /render-status request
 
       checkWindow({url: '', snapshot: {cdt: []}, target: null, sizeMode: null})
       await psetTimeout(10)
-      expect(renderCount).to.equal(2) // concurrency is blocking this render
+      expect(renderCount).to.equal(1) // only after render status will be RENDERED, will the second render be sent
       expect(renderStatusCount).to.equal(0) // still batching initial renderIds for /render-status request
 
       await psetTimeout(150)
 
-      expect(renderCount).to.equal(2)
+      expect(renderCount).to.equal(1)
       expect(renderStatusCount).to.equal(1)
 
       runningStatuses[0] = RenderStatus.RENDERED
-
       await psetTimeout(600)
+      expect(renderCount).to.equal(2)
       expect(renderStatusCount).to.equal(2)
 
+      runningStatuses[1] = RenderStatus.RENDERED
       await psetTimeout(500)
       expect(renderCount).to.equal(3)
       expect(renderStatusCount).to.equal(3)
 
-      runningStatuses[1] = RenderStatus.RENDERED
       runningStatuses[2] = RenderStatus.RENDERED
       await close()
     })
 
-    it('runs renders with max concurrency for multiple browsers', async () => {
+    it('runs renders with concurrency for multiple browsers', async () => {
       const {checkWindow, close} = await openEyes({
         wrappers: [wrapper, wrapper],
         browser: [
@@ -946,27 +946,27 @@ Received: 'firefox-1'.`,
         appName,
       })
 
-      checkWindow({url: '', snapshot: {cdt: []}, sizeMode: null, target: null})
+      checkWindow({url: '', snapshot: {cdt: []}, sizeMode: 'aaa'})
       await psetTimeout(10)
-      checkWindow({url: '', snapshot: {cdt: []}, sizeMode: null, target: null})
-      await psetTimeout(10)
-      const expected1 = renderCount
+      checkWindow({url: '', snapshot: {cdt: []}, sizeMode: 'bbb'})
+      await psetTimeout(300)
+      expect(renderCount).to.equal(2)
+
       runningStatuses[0] = RenderStatus.RENDERED
-      await psetTimeout(600)
-      const expected2 = renderCount
+      await psetTimeout(500)
+      expect(renderCount).to.equal(3)
 
       runningStatuses[1] = RenderStatus.RENDERED
+      await psetTimeout(500)
+      expect(renderCount).to.equal(4)
+
       runningStatuses[2] = RenderStatus.RENDERED
       runningStatuses[3] = RenderStatus.RENDERED
-
       await close()
-      expect(expected1).to.equal(2)
-      expect(expected2).to.equal(4)
-      expect(renderCount).to.equal(4)
     })
 
     // TODO (amit): unskip
-    it.skip('runs renders with max concurrency between open/close', async () => {
+    it.skip('runs renders with concurrency between open/close', async () => {
       const {checkWindow, close} = await openEyes({
         wrappers: [wrapper],
         appName,
@@ -2101,7 +2101,7 @@ Received: 'firefox-1'.`,
   it('checkWindow overrides openEyes useDom & enablePatterns', async () => {
     openEyes = makeRenderingGridClient({
       apiKey,
-      showLogs: true,
+      showLogs: APPLITOOLS_SHOW_LOGS,
       renderWrapper: wrapper,
       useDom: false,
       enablePatterns: false,
@@ -2138,7 +2138,7 @@ Received: 'firefox-1'.`,
   it('checkWindow overrides openEyes useDom & enablePatterns with false', async () => {
     openEyes = makeRenderingGridClient({
       apiKey,
-      showLogs: true,
+      showLogs: APPLITOOLS_SHOW_LOGS,
       renderWrapper: wrapper,
       useDom: true,
       enablePatterns: true,
