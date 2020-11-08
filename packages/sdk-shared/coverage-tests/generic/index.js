@@ -7,5 +7,5 @@ module.exports = {
   ext: '.spec.js',
   initializeSdk: makeEmitter,
   testFrameworkTemplate: makeTemplate,
-  overrideTests,
+  overrideTests
 }

@@ -116,7 +116,6 @@ module.exports = function(tracker, test) {
       },
     },
     open({appName, testName, viewportSize}) {
-      console.log(appName, testName)
       return addCommand(
         js`await eyes.open(
             driver,

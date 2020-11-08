@@ -29,7 +29,13 @@ async function loadTests(testsPath) {
   }
 }
 
-async function prepareTests({testsPath, overrideTests = {}, ignoreSkip, emitSkipped}) {
+async function prepareTests({
+  testsPath,
+  overrideTests = {},
+  ignoreSkip,
+  emitSkipped,
+  emitOnly = [],
+}) {
   const {tests, testsConfig} = await loadTests(testsPath)
   const normalizedTests = Object.entries(tests).reduce((tests, [testName, {variants, ...test}]) => {
     test.key = test.key || toPascalCase(testName)
@@ -47,7 +53,18 @@ async function prepareTests({testsPath, overrideTests = {}, ignoreSkip, emitSkip
     return tests
   }, [])
 
-  const filteredTests = !emitSkipped ? normalizedTests.filter(test => !test.skip) : normalizedTests
+  let filteredTests = normalizedTests
+  if (!emitSkipped) filteredTests = filteredTests.filter(test => !test.skip)
+  if (emitOnly.length > 0)
+    filteredTests = filteredTests.filter(test => {
+      return emitOnly.some(pattern => {
+        if (pattern.startsWith('/') && pattern.endsWith('/')) {
+          const regexp = new RegExp(pattern.slice(1, -1), 'i')
+          return regexp.test(test.name)
+        }
+        return test === pattern
+      })
+    })
 
   return filteredTests
 

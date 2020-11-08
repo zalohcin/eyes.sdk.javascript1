@@ -1,11 +1,11 @@
 const tags = [
   'webdriver',
-  // 'mobile',
+  'mobile',
   'chrome',
-  // 'firefox',
-  // 'ie',
-  // 'edge',
-  // 'safari',
+  'firefox',
+  'ie',
+  'edge',
+  'safari',
 ]
 module.exports = {
   spec: [

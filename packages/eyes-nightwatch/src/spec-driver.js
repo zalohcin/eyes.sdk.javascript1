@@ -102,11 +102,40 @@ async function getElementRect(driver, element) {
   }
 }
 async function getWindowRect(driver) {
-  const result = await driver.getWindowRect()
-  return result && result.value ? result.value : result
+  // NOTE:
+  // https://github.com/nightwatchjs/nightwatch/blob/fd4aff1e2cc3e691a82e61c7e550fb088ee47d5a/lib/transport/jsonwire/actions.js#L165-L167
+  // getWindowRect is implemented on JWP drivers even though it won't work
+  // So we need to catch and retry a window size command that will work on JWP
+  const result = await new Promise(resolve => driver.getWindowRect(result => resolve(result)))
+  if (!result.error) return result && result.value ? result.value : result
+  const size = await new Promise(resolve => {
+    driver.getWindowSize(result => resolve(result))
+  })
+  const position = await new Promise(resolve => {
+    driver.getWindowPosition(result => resolve(result))
+  })
+  return {...size, ...position}
 }
 async function setWindowRect(driver, rect = {}) {
-  await driver.setWindowRect(rect)
+  // NOTE:
+  // Same deal as with getWindowRect. If running on JWP, need to catch and retry
+  // with a different command.
+  const result = await new Promise(resolve => {
+    driver.setWindowRect(rect, resolve)
+  })
+  if (result.error) {
+    const {x = null, y = null, width = null, height = null} = rect
+    if (width !== null && height !== null) {
+      await new Promise(resolve => {
+        driver.setWindowSize(width, height, resolve)
+      })
+    }
+    if (x !== null && y !== null) {
+      await new Promise(resolve => {
+        driver.setWindowPosition(x, y, resolve)
+      })
+    }
+  }
 }
 function getOrientation(driver, opts = {}) {
   const capabilities = getCapabilities(driver, opts)
@@ -204,8 +233,22 @@ async function build(env) {
   // config prep
   const {testSetup} = require('@applitools/sdk-shared')
   const testSetupConfig = testSetup.Env(env)
-  const nightwatchConfig = require('../test/nightwatch.conf')
-  const conf = {...nightwatchConfig}
+  const conf = {
+    test_settings: {
+      default: {
+        webdriver: {
+          port: 4444,
+          default_path_prefix: '/wd/hub',
+        },
+      },
+    },
+  }
+  // NOTE: https://github.com/nightwatchjs/nightwatch/issues/2501
+  //if (testSetupConfig.browser === 'ie-11') {
+  //  conf.test_settings.default.capabilities = testSetupConfig.capabilities
+  //  conf.test_settings.default.capabilities['sauce:options'].seleniumVersion = '3.141.59'
+  //  conf.test_settings.default.capabilities['sauce:options'].iedriverVersion = '3.150.1'
+  //}
   conf.test_settings.default.desiredCapabilities = Object.assign(
     {},
     testSetupConfig.capabilities,
@@ -213,18 +256,6 @@ async function build(env) {
       testSetupConfig.headless ? '--headless' : '//--headless',
     ]),
   )
-  // NOTE:
-  // `setWindowRect` leads to an "unknown command" error (in the Selenium server)
-  // when running on IE attempting to upgrade to newer versions of Selenium and
-  // IEDriver do not resolve it.
-  //
-  // Leaving here for reference:
-  //if (conf.test_settings.default.desiredCapabilities.browserName === 'internet explorer') {
-  //  conf.test_settings.default.desiredCapabilities.seleniumVersion = '3.141.59'
-  //  conf.test_settings.default.desiredCapabilities.iedriverVersion = '3.150.1'
-  //  conf.test_settings.default.desiredCapabilities.platformName = 'windows'
-  //  delete conf.test_settings.default.desiredCapabilities['sauce:options']
-  //}
   const host = testSetupConfig.url.host
   const port = testSetupConfig.url.port
   if (port) conf.test_settings.default.webdriver.port = port

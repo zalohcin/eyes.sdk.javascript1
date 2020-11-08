@@ -3,6 +3,11 @@
 ## Unreleased
 
 
+## 2.0.1 - 2020/11/2
+
+- add emitOnly config property to chose which test(s) need to be emitted
+- improve logging and error handling
+
 ## 2.0.0 - 2020/10/23
 
 - new test file format
