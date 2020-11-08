@@ -29,4 +29,29 @@ describe('init page', () => {
     expect(page.viewport()).to.eql(config.viewportSize);
     expect(page.url()).to.eql(iframeUrl);
   });
+
+  it('handles page error by removing errored page from page pool and replacing it with newly created page', async () => {
+    const initPage = makeInitPage({iframeUrl: 'about:blank', config: {}, browser, logger});
+    let counter = 0;
+    const pagePool = {
+      pages: [],
+      removePage(id) {
+        this.pages.splice(
+          this.pages.findIndex(x => x === id),
+          1,
+        );
+      },
+      async createPage() {
+        return {pageId: counter++};
+      },
+      addToPool(id) {
+        this.pages.push(id);
+      },
+    };
+    const page = await initPage({pageId: counter, pagePool});
+    pagePool.addToPool(counter++);
+    page.emit('error', new Error('bla'));
+    await new Promise(r => setTimeout(r, 200)); // TODO yuck! but I just didn't have time and energy to invest in wiring the promise-based pagePool with the event-based browser
+    expect(pagePool.pages).to.eql([1]);
+  });
 });
