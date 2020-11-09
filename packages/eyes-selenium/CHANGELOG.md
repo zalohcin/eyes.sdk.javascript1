@@ -3,6 +3,10 @@
 ## Unreleased
 
 
+## 4.48.0 - 2020/11/9
+
+- updated to @applitools/visual-grid-client@15.1.1 (from 15.1.0)
+
 ## 4.47.0 - 2020/11/9
 
 - fix firefox region compensation issue
