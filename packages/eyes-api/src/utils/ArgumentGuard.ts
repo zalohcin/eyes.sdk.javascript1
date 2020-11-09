@@ -133,13 +133,6 @@ export function isEnumValue(value: any, enumeration: Object, {name, strict = tru
   }
 }
 
-export function hasKeys(value: any, keys: string[], {name, strict = true}: StrictParam) {
-  if (strict) notNull(value, {name})
-  if (!TypeUtils.isPlainObject(value)) {
-    throw new Error(`IllegalType: ${name} is not an object`)
-  }
-}
-
 export function custom(value: any, check: (value: any) => boolean, {name, strict = true, message}: CustomParam) {
   if (strict) notNull(value, {name})
   if (!check(value)) {

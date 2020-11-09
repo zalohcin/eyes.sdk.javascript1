@@ -2,7 +2,7 @@ import * as ArgumentGuard from '../utils/ArgumentGuard'
 import * as TypeUtils from '../utils/TypeUtils'
 import AccessibilityRegionType from '../enums/AccessibilityRegionType'
 import MatchLevel from '../enums/MatchLevel'
-import {Region, isRegion} from '../Region'
+import {Region, isRegion} from './Region'
 
 type RegionReference<TElement, TSelector> = Region|ElementReference<TElement, TSelector>
 
@@ -54,7 +54,7 @@ export type CheckSettings<TElement, TSelector> = {
   timeout?: number
 }
 
-export default abstract class CheckSettingsFluent<TElement, TSelector> {
+export default abstract class CheckSettingsFluent<TElement = unknown, TSelector = unknown> {
   private _settings: CheckSettings<TElement, TSelector> = {}
 
   constructor(settings?: CheckSettings<TElement, TSelector>) {
@@ -64,7 +64,7 @@ export default abstract class CheckSettingsFluent<TElement, TSelector> {
     if (settings.frames) {
       settings.frames.forEach((reference) => {
         if (TypeUtils.isNull(reference)) return
-        if (TypeUtils.hasKeys(reference, ['frame'])) {
+        if (TypeUtils.has(reference, 'frame')) {
           this.frame(reference.frame, reference.scrollRootElement)
         } else {
           this.frame(reference)
@@ -143,7 +143,7 @@ export default abstract class CheckSettingsFluent<TElement, TSelector> {
   frame(context: ContextReference<TElement, TSelector>) : this
   frame(frame: FrameReference<TElement, TSelector>, scrollRootElement?: ElementReference<TElement, TSelector>) : this
   frame(contextOrFrame: ContextReference<TElement, TSelector>|FrameReference<TElement, TSelector>, scrollRootElement?: ElementReference<TElement, TSelector>) : this {
-    const context = TypeUtils.hasKeys(contextOrFrame, ['frame'])
+    const context = TypeUtils.has(contextOrFrame, 'frame')
       ? contextOrFrame
       : {frame: contextOrFrame, scrollRootElement}
     if (!this._settings.frames) this._settings.frames = []
@@ -202,7 +202,7 @@ export default abstract class CheckSettingsFluent<TElement, TSelector> {
   floatingRegion(region: FloatingRegionReference<TElement, TSelector>) : this
   floatingRegion(region: RegionReference<TElement, TSelector>, maxUpOffset?: number, maxDownOffset?: number, maxLeftOffset?: number, maxRightOffset?: number) : this
   floatingRegion(region: FloatingRegionReference<TElement, TSelector>|RegionReference<TElement, TSelector>, maxUpOffset?: number, maxDownOffset?: number, maxLeftOffset?: number, maxRightOffset?: number) : this {
-    const floatingRegion = TypeUtils.hasKeys(region, ['region'])
+    const floatingRegion = TypeUtils.has(region, 'region')
       ? region
       : {region, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset}
     ArgumentGuard.custom(floatingRegion.region, value => this.isRegionReference(value), {name: 'region'})
@@ -246,7 +246,7 @@ export default abstract class CheckSettingsFluent<TElement, TSelector> {
   accessibilityRegion(region: AccessibilityRegionReference<TElement, TSelector>) : this
   accessibilityRegion(region: RegionReference<TElement, TSelector>, type?: AccessibilityRegionType) : this
   accessibilityRegion(region: AccessibilityRegionReference<TElement, TSelector>|RegionReference<TElement, TSelector>, type?: AccessibilityRegionType) : this {
-    const accessibilityRegion = TypeUtils.hasKeys(region, ['region']) ? region : {region, type}
+    const accessibilityRegion = TypeUtils.has(region, 'region') ? region : {region, type}
     ArgumentGuard.custom(accessibilityRegion.region, value => this.isRegionReference(value), {name: 'region'})
     ArgumentGuard.isEnumValue(accessibilityRegion.type, AccessibilityRegionType, {name: 'type', strict: false})
     if(!this._settings.accessibilityRegions) this._settings.accessibilityRegions = []

@@ -41,8 +41,10 @@ export function isEnumValue<TEnum extends {[key: string]: any}, TValues extends 
   return values.has(value)
 }
 
-export function hasKeys<TKey extends PropertyKey>(value: any, keys: readonly TKey[]) : value is {[key in TKey]: any} {
+export function has<TKey extends PropertyKey>(value: any, keys: TKey|readonly TKey[]) : value is {[key in TKey]: any} {
   if (!isObject(value)) return false
+
+  if (!isArray(keys)) keys = [keys as TKey]
 
   for (const key of keys) {
     if (!Object.prototype.hasOwnProperty.call(value, key)) {
@@ -53,6 +55,6 @@ export function hasKeys<TKey extends PropertyKey>(value: any, keys: readonly TKe
   return true
 }
 
-export function instanceOf<TCtor extends Function>(value: any, ctor: TCtor) : value is TCtor {
+export function instanceOf<TCtor extends new (...args: any) => any>(value: any, ctor: TCtor) : value is InstanceType<TCtor> {
   return value instanceof ctor
 }

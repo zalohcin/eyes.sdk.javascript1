@@ -12,6 +12,7 @@ type SDKSpec<TDriver, TElement, TSelector> = {
 type SDK<TDriver, TElement, TSelector> = {
   open: (driver: TDriver, config?: Configuration) => SDKEyes<TElement, TSelector>
   close: () => Promise<void>
+  closeBatch: () => Promise<void>
 }
 
 type SDKEyes<TElement, TSelector> = {
