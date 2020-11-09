@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix firefox region compensation issue
 - add 2020 ios devices
 - fix coded region calculation when running in target region ([Trello 538](https://trello.com/c/FQ8iJZdi))
 - deprecate `saveDebugData`
