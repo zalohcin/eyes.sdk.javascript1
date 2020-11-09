@@ -119,11 +119,11 @@ describe('spec driver', async () => {
         return arguments
       }
       const result = await spec.executeScript(page, fn, {num, str, obj, arr, el})
-      assert.strictEqual(result[0][0], num)
-      assert.strictEqual(result[0][1], str)
-      assert.deepStrictEqual(result[0][2], obj)
-      assert.deepStrictEqual(result[0][3], arr)
-      assert.ok(await spec.isEqualElements(page, result[0][4], el))
+      assert.strictEqual(result[0].num, num)
+      assert.strictEqual(result[0].str, str)
+      assert.deepStrictEqual(result[0].obj, obj)
+      assert.deepStrictEqual(result[0].arr, arr)
+      assert.ok(await spec.isEqualElements(page, result[0].el, el))
     }
   }
   function executeScriptNestedArgs() {

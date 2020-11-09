@@ -28,41 +28,64 @@ function transformSelector(selector) {
   return selector
 }
 
-function serializeArgs(args = [], elements = []) {
-  args = Object.values(args)
-  const argsWithElementMarkers = args.map(arg => {
-    if (Array.isArray(arg)) {
-      const result = serializeArgs(arg, elements)
-      return result.argsWithElementMarkers
-    } else if (isElement(arg)) {
-      elements.push(arg)
-      return {isElement: true}
-    } else {
-      return arg
+function serializeArgs(args, elements = []) {
+  let argsWithElementMarkers
+  if (TypeUtils.isArray(args)) {
+    argsWithElementMarkers = args.map(arg => {
+      if (TypeUtils.isArray(arg)) {
+        const result = serializeArgs(arg, elements)
+        return result.argsWithElementMarkers
+      } else if (isElement(arg)) {
+        elements.push(arg)
+        return {isElement: true}
+      } else {
+        return arg
+      }
+    })
+  } else if (TypeUtils.isObject) {
+    argsWithElementMarkers = {...args}
+    for (const [key, value] of Object.entries(args)) {
+      if (isElement(value)) {
+        elements.push(value)
+        argsWithElementMarkers[key] = {isElement: true}
+      }
     }
-  })
+  }
   return {argsWithElementMarkers, elements}
 }
 
 // NOTE:
-// Evaluations in Puppeteer accept multiple arguments (not just one like in Playwright).
-// Also, an element reference (a.k.a. an ElementHandle) can only be sent as its
-// own argument. To account for this, we use a wrapper function to receive all
-// of the arguments and call the script, passing the structure it expects (an array).
+// A few things to note:
+//  - evaluations in Puppeteer accept multiple arguments (not just one like in Playwright)
+//  - an element reference (a.k.a. an ElementHandle) can only be sent as its
+//    own argument. To account for this, we use a wrapper function to receive all
+//    of the arguments in a serialized structure, deserialize them, and call the script,
+//    and pass the arguments as originally intended
+//  - this function runs inside of the browser process
+//  - apologies for the terrible things I have done to make this work - feedback welcome!
 async function scriptRunner() {
   function deserializeArgs(args, elements) {
-    const result = args.map(arg => {
-      if (Array.isArray(arg)) return deserializeArgs(arg, elements)
-      return arg && arg.isElement ? elements.shift() : arg
-    })
+    if (Array.isArray(args)) {
+      return args.map(arg => {
+        if (Array.isArray(arg)) return deserializeArgs(arg, elements)
+        return arg && arg.isElement ? elements.shift() : arg
+      })
+    } else if (typeof args === 'object') {
+      const deserializedArgs = {...args}
+      for (const [key, value] of Object.entries(args)) {
+        if (value.isElement) deserializedArgs[key] = elements.shift()
+      }
+      return deserializedArgs
+    }
     return result
   }
   const args = Array.from(arguments)
   const script = new Function(args[0].script.replace(/^function/, 'return function blah')) // needs a name and to be returned so it's usable
   const deserializedArgs = deserializeArgs(args[0].argsWithElementMarkers, args.slice(1))
-  return args[0].script.startsWith('function')
-    ? script()(deserializedArgs) // e.g., snippets
-    : script(deserializedArgs) // e.g., dom-snapshot can be invoked directly
+  const result = args[0].script.startsWith('function')
+    ? await script()(deserializedArgs) // e.g., snippets
+    : await script(deserializedArgs) // e.g., dom-snapshot can be invoked directly
+  return result
 }
 
 // #endregion
@@ -104,7 +127,7 @@ async function executeScript(frame, script, args = []) {
     {script, argsWithElementMarkers},
     ...elements,
   )
-  return handleToObject(result)
+  return await handleToObject(result)
 }
 async function mainContext(frame) {
   frame = extractContext(frame)
