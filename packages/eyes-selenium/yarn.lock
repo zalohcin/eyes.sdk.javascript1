@@ -44,10 +44,10 @@
     stack-trace "0.0.10"
     tunnel "0.0.6"
 
-"@applitools/eyes-sdk-core@12.5.6":
-  version "12.5.6"
-  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-12.5.6.tgz#f9c805b35cf327faf5daef65fe7110b9d6dc4186"
-  integrity sha512-CFKtQkEb8Q73jXYQd3JKnWWzbG7F/0DQc8QSI1iIHtKxjM9hP6z78o12936SaZiQebq1D4eUzjn2qK9g/TEcxw==
+"@applitools/eyes-sdk-core@12.5.7":
+  version "12.5.7"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-12.5.7.tgz#59bb1f8d018b33e8760427dbcd93c3aa7ef16379"
+  integrity sha512-uL8Pn1UeFYIIqyKvFnr5hHqXU8InplrVaS0R5YIlB9EBSsDtAGs/cSBxAJ5CKqCrK8gS+ZQKvGxXuimQ2o1Lrw==
   dependencies:
     "@applitools/dom-capture" "8.0.1"
     "@applitools/dom-snapshot" "4.2.5"
