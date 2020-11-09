@@ -38,7 +38,7 @@ describe('spec driver', async () => {
     )
     it('isStaleElementError(err)', isStaleElementError())
     it('executeScript(script, args)', executeScript())
-    it.skip('executeScript(script, nested args)', executeScriptNestedArgs())
+    it('executeScript(script, nested args)', executeScriptNestedArgs())
     it('mainContext()', mainContext())
     it('parentContext()', parentContext())
     it('childContext(element)', childContext())
@@ -135,8 +135,8 @@ describe('spec driver', async () => {
         return arguments
       }
       const result = await spec.executeScript(page, fn, args)
-      assert.ok(await spec.isEqualElements(page, result[0][0], el))
-      assert.strictEqual(result[0][1], str)
+      assert.ok(await spec.isEqualElements(page, result[0][0][0], el))
+      assert.strictEqual(result[0][1][0], str)
     }
   }
   function mainContext() {

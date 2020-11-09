@@ -28,6 +28,43 @@ function transformSelector(selector) {
   return selector
 }
 
+function serializeArgs(args = [], elements = []) {
+  args = Object.values(args)
+  const argsWithElementMarkers = args.map(arg => {
+    if (Array.isArray(arg)) {
+      const result = serializeArgs(arg, elements)
+      return result.argsWithElementMarkers
+    } else if (isElement(arg)) {
+      elements.push(arg)
+      return {isElement: true}
+    } else {
+      return arg
+    }
+  })
+  return {argsWithElementMarkers, elements}
+}
+
+// NOTE:
+// Evaluations in Puppeteer accept multiple arguments (not just one like in Playwright).
+// Also, an element reference (a.k.a. an ElementHandle) can only be sent as its
+// own argument. To account for this, we use a wrapper function to receive all
+// of the arguments and call the script, passing the structure it expects (an array).
+async function scriptRunner() {
+  function deserializeArgs(args, elements) {
+    const result = args.map(arg => {
+      if (Array.isArray(arg)) return deserializeArgs(arg, elements)
+      return arg && arg.isElement ? elements.shift() : arg
+    })
+    return result
+  }
+  const args = Array.from(arguments)
+  const script = new Function(args[0].script.replace(/^function/, 'return function blah')) // needs a name and to be returned so it's usable
+  const deserializedArgs = deserializeArgs(args[0].argsWithElementMarkers, args.slice(1))
+  return args[0].script.startsWith('function')
+    ? script()(deserializedArgs) // e.g., snippets
+    : script(deserializedArgs) // e.g., dom-snapshot can be invoked directly
+}
+
 // #endregion
 
 // #region UTILITY
@@ -59,26 +96,15 @@ async function isEqualElements(frame, element1, element2) {
 // #region COMMANDS
 
 async function executeScript(frame, script, args = []) {
-  try {
-    // NOTE:
-    // Evaluations in Puppeteer accept multiple arguments (not just one like in Playwright).
-    // Also, an element reference (a.k.a. an ElementHandle) can only be sent as its
-    // own argument. To account for this, we use a wrapper function to receive all
-    // of the arguments and call the script, passing the structure it expects (an array).
-    function scriptWrapper() {
-      const args = Array.from(arguments)
-      const fn = new Function(args[0].replace(/function/, 'return function blah')) // needs a name and to be returned so it's usable
-      const result = fn()(args.slice(1))
-      return result
-    }
-    // a function does is not serializable, so we pass it as a string instead
-    script = TypeUtils.isString(script) ? script : script.toString()
-    const result = await frame.evaluateHandle(scriptWrapper, script, ...Object.values(args))
-    return handleToObject(result)
-  } catch (error) {
-    debugger
-    throw error
-  }
+  // a function is not serializable, so we pass it as a string instead
+  script = TypeUtils.isString(script) ? script : script.toString()
+  const {argsWithElementMarkers, elements} = serializeArgs(args)
+  const result = await frame.evaluateHandle(
+    scriptRunner,
+    {script, argsWithElementMarkers},
+    ...elements,
+  )
+  return handleToObject(result)
 }
 async function mainContext(frame) {
   frame = extractContext(frame)
@@ -160,6 +186,10 @@ async function hover(frame, element, {x = 0, y = 0} = {}) {
 async function build(env) {
   const puppeteer = require('puppeteer')
   env = {...env, ignoreDefaultArgs: ['--hide-scrollbars']}
+  if (process.env.APPLITOOLS_DEBUG) {
+    env.headless = false
+    env.devtools = true
+  }
   const driver = await puppeteer.launch(env)
   const page = await driver.newPage()
   return [page, () => driver.close()]
