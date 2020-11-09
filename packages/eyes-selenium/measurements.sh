@@ -1,24 +1,6 @@
-MEASURE_STEPS=1 MEASURE_CONCURRENCY=10 MEASURE_BROWSERS=5   yarn mocha --no-timeouts measurements.js
-MEASURE_STEPS=1 MEASURE_CONCURRENCY=10 MEASURE_BROWSERS=5   yarn mocha --no-timeouts measurements.js
-MEASURE_STEPS=1 MEASURE_CONCURRENCY=10 MEASURE_BROWSERS=5   yarn mocha --no-timeouts measurements.js
-MEASURE_STEPS=1 MEASURE_CONCURRENCY=10 MEASURE_BROWSERS=15  yarn mocha --no-timeouts measurements.js
-MEASURE_STEPS=1 MEASURE_CONCURRENCY=10 MEASURE_BROWSERS=15  yarn mocha --no-timeouts measurements.js
-MEASURE_STEPS=1 MEASURE_CONCURRENCY=10 MEASURE_BROWSERS=15  yarn mocha --no-timeouts measurements.js 
-MEASURE_STEPS=3 MEASURE_CONCURRENCY=10 MEASURE_BROWSERS=15  yarn mocha --no-timeouts measurements.js
-MEASURE_STEPS=3 MEASURE_CONCURRENCY=10 MEASURE_BROWSERS=15  yarn mocha --no-timeouts measurements.js
-MEASURE_STEPS=3 MEASURE_CONCURRENCY=10 MEASURE_BROWSERS=15  yarn mocha --no-timeouts measurements.js
-MEASURE_STEPS=10 MEASURE_CONCURRENCY=10 MEASURE_BROWSERS=15 yarn mocha --no-timeouts measurements.js
-MEASURE_STEPS=10 MEASURE_CONCURRENCY=10 MEASURE_BROWSERS=15 yarn mocha --no-timeouts measurements.js
-MEASURE_STEPS=10 MEASURE_CONCURRENCY=10 MEASURE_BROWSERS=15 yarn mocha --no-timeouts measurements.js
-MEASURE_STEPS=3 MEASURE_CONCURRENCY=20 MEASURE_BROWSERS=15  yarn mocha --no-timeouts measurements.js
-MEASURE_STEPS=3 MEASURE_CONCURRENCY=20 MEASURE_BROWSERS=15  yarn mocha --no-timeouts measurements.js
-MEASURE_STEPS=3 MEASURE_CONCURRENCY=20 MEASURE_BROWSERS=15  yarn mocha --no-timeouts measurements.js
-MEASURE_STEPS=10 MEASURE_CONCURRENCY=20 MEASURE_BROWSERS=15 yarn mocha --no-timeouts measurements.js
-MEASURE_STEPS=10 MEASURE_CONCURRENCY=20 MEASURE_BROWSERS=15 yarn mocha --no-timeouts measurements.js
-MEASURE_STEPS=10 MEASURE_CONCURRENCY=20 MEASURE_BROWSERS=15 yarn mocha --no-timeouts measurements.js
-MEASURE_STEPS=3 MEASURE_CONCURRENCY=30 MEASURE_BROWSERS=15  yarn mocha --no-timeouts measurements.js
-MEASURE_STEPS=3 MEASURE_CONCURRENCY=30 MEASURE_BROWSERS=15  yarn mocha --no-timeouts measurements.js
-MEASURE_STEPS=3 MEASURE_CONCURRENCY=30 MEASURE_BROWSERS=15  yarn mocha --no-timeouts measurements.js
-MEASURE_STEPS=10 MEASURE_CONCURRENCY=30 MEASURE_BROWSERS=15 yarn mocha --no-timeouts measurements.js
-MEASURE_STEPS=10 MEASURE_CONCURRENCY=30 MEASURE_BROWSERS=15 yarn mocha --no-timeouts measurements.js
-MEASURE_STEPS=10 MEASURE_CONCURRENCY=30 MEASURE_BROWSERS=15 yarn mocha --no-timeouts measurements.js
+MEASURE_CONCURRENCY=5 MEASURE_TESTS=1 MEASURE_STEPS=1 MEASURE_BROWSERS=1   yarn mocha --no-timeouts measurements.js
+MEASURE_CONCURRENCY=5 MEASURE_TESTS=1 MEASURE_STEPS=5 MEASURE_BROWSERS=1   yarn mocha --no-timeouts measurements.js
+MEASURE_CONCURRENCY=5 MEASURE_TESTS=1 MEASURE_STEPS=5 MEASURE_BROWSERS=5   yarn mocha --no-timeouts measurements.js
+MEASURE_CONCURRENCY=5 MEASURE_TESTS=25 MEASURE_STEPS=1 MEASURE_BROWSERS=5   yarn mocha --no-timeouts measurements.js
+MEASURE_CONCURRENCY=5 MEASURE_TESTS=25 MEASURE_STEPS=5 MEASURE_BROWSERS=1   yarn mocha --no-timeouts measurements.js
+MEASURE_CONCURRENCY=5 MEASURE_TESTS=25 MEASURE_STEPS=5 MEASURE_BROWSERS=5   yarn mocha --no-timeouts measurements.js
