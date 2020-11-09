@@ -4,6 +4,8 @@
 
 - fix issue with element markers cleanup ([Trello](https://trello.com/c/H7I1Ofke)) ([commit](https://github.com/applitools/eyes.sdk.javascript1/commit/b643d01608512c3b30303149b0af7d1b03657225))
 - deprecate `saveDebugData`
+- updated to @applitools/eyes-sdk-core@12.5.7 (from 12.4.2)
+- updated to @applitools/visual-grid-client@15.1.0 (from 15.0.10)
 
 ## 5.25.1 - 2020/10/15
 
