@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix region compensation issue in firefox
 
 ## 12.5.6 - 2020/11/8
 
