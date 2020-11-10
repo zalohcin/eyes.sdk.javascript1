@@ -5,18 +5,18 @@ type NamedParam = {
 }
 
 type StrictParam = NamedParam & {
-  strict?: boolean,
+  strict?: boolean
 }
 
 type NumberParam = StrictParam & {
-  lt?: number,
-  lte?: number,
-  gt?: number,
-  gte?: number,
+  lt?: number
+  lte?: number
+  gt?: number
+  gte?: number
 }
 
 type StringParam = StrictParam & {
-  alpha?: boolean,
+  alpha?: boolean
   numeric?: boolean
 }
 
@@ -113,23 +113,32 @@ export function isNumeric(value: any, {name}: NamedParam) {
 
 export function isArray(value: any, {name, strict = true}: StrictParam) {
   if (strict) notNull(value, {name})
-  if (!Array.isArray(value)) {
+  if (!TypeUtils.isArray(value)) {
     throw new Error(`IllegalArgument: ${name} is not an array`)
   }
 }
 
-export function isPlainObject(value: any, {name, strict = true}: StrictParam) {
+export function isObject(value: any, {name, strict = true}: StrictParam) {
   if (strict) notNull(value, {name})
-  if (!TypeUtils.isPlainObject(value)) {
-    throw new Error(`IllegalType: ${name} is not an object`)
+  if (!TypeUtils.isObject(value)) {
+    throw new Error(`IllegalArgument: ${name} is not an object`)
   }
 }
 
-export function isEnumValue(value: any, enumeration: Object, {name, strict = true}: StrictParam) {
+export function isEnumValue(value: any, enumeration: {[key: string]: any}, {name, strict = true}: StrictParam) {
   if (strict) notNull(value, {name})
   const values = new Set(Object.values(enumeration))
   if (!values.has(value)) {
-    throw new Error(`IllegalArgument: ${name} should be one of [${Array.from(values, value => JSON.stringify(value)).join(', ')}]`)
+    throw new Error(
+      `IllegalArgument: ${name} should be one of [${Array.from(values, (value) => JSON.stringify(value)).join(', ')}]`,
+    )
+  }
+}
+
+export function instanceOf(value: any, ctor: new (...args: any) => any, {name, strict = true}: StrictParam) {
+  if (strict) notNull(value, {name})
+  if (!TypeUtils.instanceOf(value, ctor)) {
+    throw new Error(`IllegalType: ${name} is not an instance of ${ctor.name}`)
   }
 }
 

@@ -1,4 +1,4 @@
-enum BrowserType {
+enum BrowserName {
   CHROME = 'chrome',
   FIREFOX = 'firefox',
   IE_11 = 'ie',
@@ -17,4 +17,4 @@ enum BrowserType {
   EDGE_CHROMIUM_TWO_VERSIONS_BACK = 'edgechromium-two-versions-back',
 }
 
-export default BrowserType
+export default BrowserName

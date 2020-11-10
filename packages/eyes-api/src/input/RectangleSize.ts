@@ -2,8 +2,8 @@ import * as TypeUtils from '../utils/TypeUtils'
 import * as ArgumentGuard from '../utils/ArgumentGuard'
 
 export type RectangleSize = {
-  width: number,
-  height: number,
+  width: number
+  height: number
 }
 
 export default class RectangleSizeData implements Required<RectangleSize> {
@@ -12,7 +12,7 @@ export default class RectangleSizeData implements Required<RectangleSize> {
 
   constructor(size: RectangleSize)
   constructor(width: number, height: number)
-  constructor(sizeOrWidth: RectangleSize|number, height?: number) {
+  constructor(sizeOrWidth: RectangleSize | number, height?: number) {
     if (TypeUtils.isNumber(sizeOrWidth)) {
       return new RectangleSizeData({width: sizeOrWidth, height})
     }
@@ -21,7 +21,7 @@ export default class RectangleSizeData implements Required<RectangleSize> {
     this.height = size.height
   }
 
-  get width() : number {
+  get width(): number {
     return this._width
   }
   set width(width: number) {
@@ -35,7 +35,7 @@ export default class RectangleSizeData implements Required<RectangleSize> {
     this.width = width
   }
 
-  get height() : number {
+  get height(): number {
     return this._height
   }
   set height(height: number) {

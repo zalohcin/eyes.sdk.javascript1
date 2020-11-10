@@ -120,4 +120,4 @@ function deserialize(message) {
   return JSON.parse(message)
 }
 
-module.export = socket
+module.exports = socket

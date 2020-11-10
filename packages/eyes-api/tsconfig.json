@@ -1,12 +1,14 @@
 {
   "compilerOptions": {
-    "target": "ES5",
+    "outDir": "dist",
+    "declaration": true,
+    "sourceMap": true,
+
+    "target": "ES2015",
     "module": "commonjs",
     "noImplicitAny": true,
     "removeComments": true,
     "preserveConstEnums": true,
-    "sourceMap": true,
-    "experimentalDecorators": true,
-    "downlevelIteration": true
+    "downlevelIteration": true,
   },
 }

@@ -1,39 +1,25 @@
 {
-  "env": {
-    "commonjs": true,
-    "es6": true,
-    "node": true,
-    "mocha": true
-  },
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "ecmaVersion": 2018,
+    "ecmaVersion": 2020,
     "sourceType": "module"
   },
-  "extends": ["plugin:node/recommended"],
-  "plugins": ["prettier", "mocha-no-only", "node"],
+  "extends": ["plugin:@typescript-eslint/recommended"],
+  "plugins": ["prettier", "@typescript-eslint", "mocha-no-only"],
   "ignorePatterns": [
     "node_modules/",
     "dist/",
     "screenshots/",
     "applitools.config.js",
     "logs",
-    "tmp/",
-    "**/test/coverage/generic/"
+    "tmp/"
   ],
   "rules": {
-    "prettier/prettier": ["error", {"allowParens": "avoid"}],
-    "no-process-exit": "off",
-    "no-const-assign": "error",
-    "no-this-before-super": "error",
-    "no-undef": "warn",
-    "no-unreachable": "warn",
-    "no-unused-vars": [
-      1,
-      {"varsIgnorePattern": "^_", "args": "all", "argsIgnorePattern": "^_"}
-    ],
-    "constructor-super": "warn",
-    "valid-typeof": "warn",
-    "mocha-no-only/mocha-no-only": "error",
-    "node/no-unpublished-require": ["off"]
+    "prettier/prettier": ["error", {
+      "allowParens": "avoid",
+      "printWidth": 120
+    }],
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-explicit-any": "off"
   }
 }

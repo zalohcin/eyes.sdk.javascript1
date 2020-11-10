@@ -12,7 +12,7 @@ export default class LocationData implements Required<Location> {
 
   constructor(location: Location)
   constructor(x: number, y: number)
-  constructor(locationOrX: Location|number, y?: number) {
+  constructor(locationOrX: Location | number, y?: number) {
     if (TypeUtils.isNumber(locationOrX)) {
       return new LocationData({x: locationOrX, y})
     }
@@ -20,28 +20,28 @@ export default class LocationData implements Required<Location> {
     this.y = locationOrX.y
   }
 
-  get x() : number {
+  get x(): number {
     return this._x
   }
   set x(x: number) {
     ArgumentGuard.isNumber(x, {name: 'x'})
     this._x = x
   }
-  getX() : number {
+  getX(): number {
     return this._x
   }
   setX(x: number) {
     this.x = x
   }
 
-  get y() : number {
+  get y(): number {
     return this._y
   }
   set y(y: number) {
     ArgumentGuard.isNumber(y, {name: 'y'})
     this._y = y
   }
-  getY() : number {
+  getY(): number {
     return this._y
   }
   setY(y: number) {

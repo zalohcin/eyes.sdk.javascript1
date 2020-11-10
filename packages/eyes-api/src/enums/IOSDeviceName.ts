@@ -1,5 +1,3 @@
-const Enum = require('../utils/Enum')
-
 enum IOSDeviceName {
   iPhone_11_Pro = 'iPhone 11 Pro',
   iPhone_11_Pro_Max = 'iPhone 11 Pro Max',

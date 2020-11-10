@@ -1,12 +1,12 @@
 import * as TypeUtils from '../utils/TypeUtils'
 import * as ArgumentGuard from '../utils/ArgumentGuard'
-import * as GeneralUtils from './utils/GeneralUtils'
+import * as GeneralUtils from '../utils/GeneralUtils'
 
 export type BatchInfo = {
-  id?: string,
-  name?: string,
-  startedAt?: Date,
-  sequenceName?: string,
+  id?: string
+  name?: string
+  startedAt?: Date
+  sequenceName?: string
   notifyOnCompletion?: boolean
   isCompleted?: boolean
   isGeneratedId?: boolean
@@ -23,8 +23,8 @@ export default class BatchInfoData implements Required<BatchInfo> {
 
   constructor()
   constructor(batch: BatchInfo)
-  constructor(name: string, startedAt?: Date|string, id?: string)
-  constructor(batchOrName?: BatchInfo|string, startedAt?: Date|string, id?: string) {
+  constructor(name: string, startedAt?: Date | string, id?: string)
+  constructor(batchOrName?: BatchInfo | string, startedAt?: Date | string, id?: string) {
     if (TypeUtils.isString(batchOrName)) {
       return new BatchInfoData({name: batchOrName, id, startedAt: new Date(startedAt)})
     }
@@ -32,7 +32,10 @@ export default class BatchInfoData implements Required<BatchInfo> {
     ArgumentGuard.isString(batch.id, {name: 'batch.id', strict: false})
     ArgumentGuard.isString(batch.name, {name: 'batch.batchName', strict: false})
     ArgumentGuard.isString(batch.sequenceName, {name: 'batch.sequenceName', strict: false})
-    ArgumentGuard.isBoolean(batch.notifyOnCompletion, {name: 'batch.notifyOnCompletion', strict: false})
+    ArgumentGuard.isBoolean(batch.notifyOnCompletion, {
+      name: 'batch.notifyOnCompletion',
+      strict: false,
+    })
     ArgumentGuard.isBoolean(batch.isCompleted, {name: 'batch.isCompleted', strict: false})
     ArgumentGuard.isBoolean(batch.isGeneratedId, {name: 'batch.isGeneratedId', strict: false})
 
@@ -53,32 +56,31 @@ export default class BatchInfoData implements Required<BatchInfo> {
       this._startedAt = batch.startedAt || new Date()
     }
 
-    this._sequenceName = batch.sequenceName || GeneralUtils.getEnvValue('BATCH_SEQUENCE')
+    this._sequenceName = batch.sequenceName || GeneralUtils.getEnvValue('BATCH_SEQUENCE', 'number')
     this._notifyOnCompletion = batch.notifyOnCompletion || GeneralUtils.getEnvValue('BATCH_NOTIFY', true) || false
     this._isCompleted = Boolean(batch.isCompleted)
   }
-
 
   /**
    * A unique identifier for the batch. Sessions with batch info which includes the same ID will be grouped
    * together.
    */
-  get id() : string{
+  get id(): string {
     return this._id
   }
   set id(id: string) {
     ArgumentGuard.notNull(id, {name: 'id'})
     this._id = id
   }
-  getId() : string {
+  getId(): string {
     return this._id
   }
-  setId(id: string) : this {
+  setId(id: string): this {
     this.id = id
     return this
   }
 
-  get isGeneratedId() : boolean {
+  get isGeneratedId(): boolean {
     return this._isGeneratedId
   }
   set isGeneratedId(isGeneratedId: boolean) {
@@ -87,7 +89,7 @@ export default class BatchInfoData implements Required<BatchInfo> {
   getIsGeneratedId() {
     return this._isGeneratedId
   }
-  setIsGeneratedId(isGeneratedId: boolean) : this {
+  setIsGeneratedId(isGeneratedId: boolean): this {
     this.isGeneratedId = isGeneratedId
     return this
   }
@@ -95,16 +97,16 @@ export default class BatchInfoData implements Required<BatchInfo> {
   /**
    * The name of the batch or {@code null} if anonymous.
    */
-  get name() : string {
+  get name(): string {
     return this._name
   }
   set name(name: string) {
     this._name = name
   }
-  getName() : string{
+  getName(): string {
     return this._name
   }
-  setName(name: string) : this {
+  setName(name: string): this {
     this.name = name
     return this
   }
@@ -112,7 +114,7 @@ export default class BatchInfoData implements Required<BatchInfo> {
   /**
    * The batch start date.
    */
-  get startedAt() : Date {
+  get startedAt(): Date {
     return this._startedAt
   }
   set startedAt(startedAt: Date) {
@@ -121,25 +123,24 @@ export default class BatchInfoData implements Required<BatchInfo> {
   getStartedAt() {
     return this._startedAt
   }
-  setStartedAt(startedAt: Date|string) : this {
+  setStartedAt(startedAt: Date | string): this {
     this.startedAt = new Date(startedAt)
     return this
   }
 
-
   /**
    * The name of the sequence.
    */
-  get sequenceName() : string {
+  get sequenceName(): string {
     return this._sequenceName
   }
   set sequenceName(sequenceName: string) {
     this._sequenceName = sequenceName
   }
-  getSequenceName() : string{
+  getSequenceName(): string {
     return this._sequenceName
   }
-  setSequenceName(sequenceName: string) : this {
+  setSequenceName(sequenceName: string): this {
     this.sequenceName = sequenceName
     return this
   }
@@ -147,30 +148,30 @@ export default class BatchInfoData implements Required<BatchInfo> {
   /**
    * Indicate whether notification should be sent on this batch completion.
    */
-  get notifyOnCompletion() : boolean {
+  get notifyOnCompletion(): boolean {
     return this._notifyOnCompletion
   }
   set notifyOnCompletion(notifyOnCompletion: boolean) {
     this._notifyOnCompletion = notifyOnCompletion
   }
-  getNotifyOnCompletion() : boolean {
+  getNotifyOnCompletion(): boolean {
     return this._notifyOnCompletion
   }
-  setNotifyOnCompletion(notifyOnCompletion: boolean) : this {
+  setNotifyOnCompletion(notifyOnCompletion: boolean): this {
     this.notifyOnCompletion = notifyOnCompletion
     return this
   }
 
-  get isCompleted() : boolean {
+  get isCompleted(): boolean {
     return this._isCompleted
   }
   set isCompleted(isCompleted: boolean) {
     this._isCompleted = isCompleted
   }
-  getIsCompleted() : boolean {
+  getIsCompleted(): boolean {
     return this._isCompleted
   }
-  setIsCompleted(isCompleted: boolean) : this {
+  setIsCompleted(isCompleted: boolean): this {
     this.isCompleted = isCompleted
     return this
   }

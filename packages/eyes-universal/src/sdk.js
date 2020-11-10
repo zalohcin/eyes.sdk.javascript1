@@ -7,7 +7,7 @@ function makeSDK(socket, config) {
   return EyesSDK({
     name: `eyes-universal/${config.name}`,
     version: `${version}/${config.name}`,
-    spec: makeSpecDriver(socket, config.supportedMethods),
+    spec: makeSpecDriver(socket, config.supportedCommands),
     VisualGridClient,
   })
 }

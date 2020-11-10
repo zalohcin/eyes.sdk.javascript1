@@ -1,5 +1,5 @@
 import * as TypeUtils from './utils/TypeUtils'
-import Eyes from './Eyes';
+import Eyes from './Eyes'
 
 export default class EyesRunner {
   private _eyes: Eyes[] = []
@@ -8,25 +8,27 @@ export default class EyesRunner {
     this._eyes.push(eyes)
   }
 
-  async getAllTestResults(throwErr: boolean) : Promise<any> {
+  async getAllTestResults(throwErr: boolean): Promise<any> {
     if (this._eyes.length > 0) {
-      const results = await Promise.all(this._eyes.map(eyes => {
-        return eyes.closeBatch().then(() => eyes.close())
-      }))
+      const results = await Promise.all(
+        this._eyes.map((eyes) => {
+          return eyes.closeBatch().then(() => eyes.close())
+        }),
+      )
 
       return results
     }
   }
 }
 
-export class VisualGridRunner extends EyesRunner{
+export class VisualGridRunner extends EyesRunner {
   private _legacyConcurrency: number
   private _testConcurrency: number
 
   constructor(options: {testConcurrency: number})
   /** @deprecated */
   constructor(legacyConcurrency: number)
-  constructor(optionsOrLegacyConcurrency: {testConcurrency: number}|number) {
+  constructor(optionsOrLegacyConcurrency: {testConcurrency: number} | number) {
     super()
     if (TypeUtils.isNumber(optionsOrLegacyConcurrency)) {
       this._legacyConcurrency = optionsOrLegacyConcurrency
@@ -44,4 +46,4 @@ export class VisualGridRunner extends EyesRunner{
   }
 }
 
-export class ClassicRunner extends EyesRunner{}
+export class ClassicRunner extends EyesRunner {}

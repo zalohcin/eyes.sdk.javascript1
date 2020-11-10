@@ -1,20 +1,20 @@
 import * as TypeUtils from '../utils/TypeUtils'
 import * as ArgumentGuard from '../utils/ArgumentGuard'
 
-export type Property = {
-  name: string,
-  value: string,
+export type CustomProperty = {
+  name: string
+  value: string
 }
 
-export default class PropertyData implements Required<Property> {
+export default class CustomPropertyData implements Required<CustomProperty> {
   private _name: string
   private _value: string
 
-  constructor(prop: Property)
+  constructor(prop: CustomProperty)
   constructor(name: string, value: string)
-  constructor(propOrName: Property|string, value?: string) {
+  constructor(propOrName: CustomProperty | string, value?: string) {
     if (TypeUtils.isString(propOrName)) {
-      return new PropertyData({name: propOrName, value})
+      return new CustomPropertyData({name: propOrName, value})
     }
     const prop = propOrName
     ArgumentGuard.isString(prop.name, {name: 'prop.name'})
@@ -24,17 +24,17 @@ export default class PropertyData implements Required<Property> {
     this._value = prop.value
   }
 
-  get name() : string {
+  get name(): string {
     return this._name
   }
-  getName() : string {
+  getName(): string {
     return this._name
   }
   setName(name: string) {
     this._name = name
   }
 
-  get value() : string {
+  get value(): string {
     return this._value
   }
   getValue(): string {

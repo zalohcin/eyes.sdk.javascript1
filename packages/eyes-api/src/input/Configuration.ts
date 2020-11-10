@@ -3,64 +3,64 @@ import * as TypeUtils from '../utils/TypeUtils'
 import SessionType from '../enums/SessionType'
 import StitchMode from '../enums/StitchMode'
 import MatchLevel from '../enums/MatchLevel'
-import BrowserType from '../enums/BrowserType'
+import BrowserName from '../enums/BrowserName'
 import DeviceName from '../enums/DeviceName'
 import ScreenOrientation from '../enums/ScreenOrientation'
 import RectangleSizeData, {RectangleSize} from './RectangleSize'
 import ProxySettingsData, {ProxySettings} from './ProxySettings'
 import BatchInfoData, {BatchInfo} from './BatchInfo'
-import PropertyData, {Property} from './Property'
+import CustomPropertyData, {CustomProperty} from './CustomProperty'
 import ImageMatchSettingsData, {ImageMatchSettings} from './ImageMatchSettings'
 import {AccessibilitySettings} from './AccessibilitySettings'
 import {RenderInfo} from './RenderInfo'
 
 export type Configuration = {
-  showLogs?: boolean,
-  appName?: string,
-  testName?: string,
-  displayName?: string,
-  isDisabled?: boolean,
-  matchTimeout?: number,
-  sessionType?: SessionType,
-  viewportSize?: RectangleSize,
-  agentId?: string,
-  apiKey?: string,
-  serverUrl?: string,
-  proxy?: ProxySettings,
-  connectionTimeout?: number,
-  removeSession?: boolean,
-  batch?: BatchInfo,
-  properties?: Property[],
-  baselineEnvName?: string,
-  environmentName?: string,
-  branchName?: string,
-  parentBranchName?: string,
-  baselineBranchName?: string,
-  compareWithParentBranch?: boolean,
-  ignoreBaseline?: boolean,
-  saveFailedTests?: boolean,
-  saveNewTests?: boolean,
-  saveDiffs?: boolean,
-  sendDom?: boolean,
-  hostApp?: string,
-  hostOS?: string,
-  hostAppInfo?: string,
-  hostOSInfo?: string,
-  deviceInfo?: string,
-  defaultMatchSettings?: ImageMatchSettings,
-  forceFullPageScreenshot?: boolean,
-  waitBeforeScreenshots?: number,
-  stitchMode?: StitchMode,
-  hideScrollbars?: boolean,
-  hideCaret?: boolean,
-  stitchOverlap?: number,
-  concurrentSessions?: number,
-  isThrowExceptionOn?: boolean,
-  browsersInfo?: RenderInfo[],
-  visualGridOptions?: {[key: string]: any},
-  layoutBreakpoints?: boolean|number[],
-  disableBrowserFetching?: boolean,
-  dontCloseBatches?: boolean,
+  showLogs?: boolean
+  appName?: string
+  testName?: string
+  displayName?: string
+  isDisabled?: boolean
+  matchTimeout?: number
+  sessionType?: SessionType
+  viewportSize?: RectangleSize
+  agentId?: string
+  apiKey?: string
+  serverUrl?: string
+  proxy?: ProxySettings
+  connectionTimeout?: number
+  removeSession?: boolean
+  batch?: BatchInfo
+  properties?: CustomProperty[]
+  baselineEnvName?: string
+  environmentName?: string
+  branchName?: string
+  parentBranchName?: string
+  baselineBranchName?: string
+  compareWithParentBranch?: boolean
+  ignoreBaseline?: boolean
+  saveFailedTests?: boolean
+  saveNewTests?: boolean
+  saveDiffs?: boolean
+  sendDom?: boolean
+  hostApp?: string
+  hostOS?: string
+  hostAppInfo?: string
+  hostOSInfo?: string
+  deviceInfo?: string
+  defaultMatchSettings?: ImageMatchSettings
+  forceFullPageScreenshot?: boolean
+  waitBeforeScreenshots?: number
+  stitchMode?: StitchMode
+  hideScrollbars?: boolean
+  hideCaret?: boolean
+  stitchOverlap?: number
+  concurrentSessions?: number
+  isThrowExceptionOn?: boolean
+  browsersInfo?: RenderInfo[]
+  visualGridOptions?: {[key: string]: any}
+  layoutBreakpoints?: boolean | number[]
+  disableBrowserFetching?: boolean
+  dontCloseBatches?: boolean
 }
 
 export default class ConfigurationData implements Required<Configuration> {
@@ -79,7 +79,7 @@ export default class ConfigurationData implements Required<Configuration> {
   private _connectionTimeout: number
   private _removeSession: boolean
   private _batch: BatchInfoData
-  private _properties: PropertyData[]
+  private _properties: CustomPropertyData[]
   private _baselineEnvName: string
   private _environmentName: string
   private _branchName: string
@@ -107,197 +107,203 @@ export default class ConfigurationData implements Required<Configuration> {
   private _isThrowExceptionOn: boolean
   private _browsersInfo: RenderInfo[]
   private _visualGridOptions: {[key: string]: any}
-  private _layoutBreakpoints: boolean|number[]
+  private _layoutBreakpoints: boolean | number[]
   private _disableBrowserFetching: boolean
   private _dontCloseBatches: boolean
 
   constructor(config?: Configuration) {
     if (!config) return this
+    const self = this as any
     for (const [key, value] of Object.entries(config)) {
       if (key in this && !key.startsWith('_')) {
-        (this as any)[key] = value
+        self[key] = value
       }
     }
   }
 
-  get showLogs() : boolean {
+  get showLogs(): boolean {
     return this._showLogs
   }
   set showLogs(showLogs: boolean) {
     ArgumentGuard.isBoolean(showLogs, {name: 'showLogs'})
     this._showLogs = showLogs
   }
-  getShowLogs() : boolean {
+  getShowLogs(): boolean {
     return this._showLogs
   }
-  setShowLogs(showLogs: boolean) : this {
+  setShowLogs(showLogs: boolean): this {
     this.showLogs = showLogs
     return this
   }
 
-  get appName() : string {
+  get appName(): string {
     return this._appName
   }
   set appName(appName: string) {
     ArgumentGuard.isString(appName, {name: 'appName', strict: false})
     this._appName = appName
   }
-  getAppName() : string {
+  getAppName(): string {
     return this._appName
   }
-  setAppName(appName: string) : this {
+  setAppName(appName: string): this {
     this.appName = appName
     return this
   }
 
-  get testName() : string {
+  get testName(): string {
     return this._testName
   }
   set testName(testName: string) {
     ArgumentGuard.isString(testName, {name: 'testName', strict: false})
     this._testName = testName
   }
-  getTestName() : string {
+  getTestName(): string {
     return this._testName
   }
-  setTestName(testName: string) : this {
+  setTestName(testName: string): this {
     this.testName = testName
     return this
   }
 
-  get displayName() : string {
+  get displayName(): string {
     return this._displayName
   }
   set displayName(displayName: string) {
     ArgumentGuard.isString(displayName, {name: 'displayName', strict: false})
     this._displayName = displayName
   }
-  getDisplayName() : string {
+  getDisplayName(): string {
     return this._displayName
   }
-  setDisplayName(displayName: string) : this {
+  setDisplayName(displayName: string): this {
     this.displayName = displayName
     return this
   }
 
-  get isDisabled() : boolean {
+  get isDisabled(): boolean {
     return this._isDisabled
   }
   set isDisabled(isDisabled: boolean) {
     ArgumentGuard.isBoolean(isDisabled, {name: 'isDisabled', strict: false})
     this._isDisabled = isDisabled
   }
-  getIsDisabled() : boolean {
+  getIsDisabled(): boolean {
     return this._isDisabled
   }
-  setIsDisabled(isDisabled: boolean) : this {
+  setIsDisabled(isDisabled: boolean): this {
     this.isDisabled = isDisabled
     return this
   }
 
-  get matchTimeout() : number {
+  get matchTimeout(): number {
     return this._matchTimeout
   }
   set matchTimeout(matchTimeout: number) {
     ArgumentGuard.isInteger(matchTimeout, {name: 'matchTimeout', gt: 500})
     this._matchTimeout = matchTimeout
   }
-  getMatchTimeout() : number {
+  getMatchTimeout(): number {
     return this._matchTimeout
   }
-  setMatchTimeout(matchTimeout: number) : this {
+  setMatchTimeout(matchTimeout: number): this {
     this.matchTimeout = matchTimeout
     return this
   }
 
-  get sessionType() : SessionType {
+  get sessionType(): SessionType {
     return this._sessionType
   }
   set sessionType(sessionType: SessionType) {
     this._sessionType = sessionType
   }
-  getSessionType() : SessionType {
+  getSessionType(): SessionType {
     return this._sessionType
   }
-  setSessionType(sessionType: SessionType) : this {
+  setSessionType(sessionType: SessionType): this {
     this.sessionType = sessionType
     return this
   }
 
-  get viewportSize() : RectangleSize {
+  get viewportSize(): RectangleSize {
     return this._viewportSize
   }
   set viewportSize(viewportSize: RectangleSize) {
     if (!viewportSize) this._viewportSize = undefined
     this._viewportSize = new RectangleSizeData(viewportSize)
   }
-  getViewportSize() : RectangleSize {
+  getViewportSize(): RectangleSize {
     return this._viewportSize
   }
-  setViewportSize(viewportSize: RectangleSize|RectangleSizeData) : this {
+  setViewportSize(viewportSize: RectangleSize | RectangleSizeData): this {
     this.viewportSize = viewportSize
     return this
   }
 
-  get agentId() : string {
+  get agentId(): string {
     return this._agentId
   }
   set agentId(agentId: string) {
     ArgumentGuard.isString(agentId, {name: 'agentId'})
     this._agentId = agentId
   }
-  getAgentId() : string {
+  getAgentId(): string {
     return this._agentId
   }
-  setAgentId(agentId: string) : this {
+  setAgentId(agentId: string): this {
     this.agentId = agentId
     return this
   }
 
-  get apiKey() : string {
+  get apiKey(): string {
     return this._apiKey
   }
   set apiKey(apiKey: string) {
     ArgumentGuard.isString(apiKey, {name: 'apiKey', alpha: true, numeric: true})
     this._apiKey = apiKey
   }
-  getApiKey() : string {
+  getApiKey(): string {
     return this._apiKey
   }
-  setApiKey(apiKey: string) : this {
+  setApiKey(apiKey: string): this {
     this.apiKey = apiKey
     return this
   }
 
-  get serverUrl() : string {
+  get serverUrl(): string {
     return this._serverUrl
   }
   set serverUrl(serverUrl: string) {
     ArgumentGuard.isString(serverUrl, {name: 'serverUrl', strict: false})
     this._serverUrl = serverUrl
   }
-  getServerUrl() : string {
+  getServerUrl(): string {
     return this._serverUrl
   }
-  setServerUrl(serverUrl: string) : this {
+  setServerUrl(serverUrl: string): this {
     this.serverUrl = serverUrl
     return this
   }
 
-  get proxy() : ProxySettings {
+  get proxy(): ProxySettings {
     return this._proxy
   }
   set proxy(proxy: ProxySettings) {
     if (!proxy) this._proxy = undefined
     this._proxy = new ProxySettingsData(proxy)
   }
-  getProxy() : ProxySettingsData {
+  getProxy(): ProxySettingsData {
     return this._proxy
   }
-  setProxy(proxy: ProxySettings|ProxySettingsData) : this
-  setProxy(isDisabled: true) : this
-  setProxy(url: string, username?: string, password?: string, isHttpOnly?: boolean) : this
-  setProxy(proxyOrUrlOrIsDisabled: ProxySettings|ProxySettingsData|string|true, username?: string, password?: string, isHttpOnly?: boolean) : this {
+  setProxy(proxy: ProxySettings | ProxySettingsData): this
+  setProxy(isDisabled: true): this
+  setProxy(url: string, username?: string, password?: string, isHttpOnly?: boolean): this
+  setProxy(
+    proxyOrUrlOrIsDisabled: ProxySettings | ProxySettingsData | string | true,
+    username?: string,
+    password?: string,
+    isHttpOnly?: boolean,
+  ): this {
     if (proxyOrUrlOrIsDisabled === true) {
       this.proxy = undefined
     } else if (TypeUtils.isString(proxyOrUrlOrIsDisabled)) {
@@ -308,500 +314,499 @@ export default class ConfigurationData implements Required<Configuration> {
     return this
   }
 
-  get connectionTimeout() : number {
+  get connectionTimeout(): number {
     return this._connectionTimeout
   }
   set connectionTimeout(connectionTimeout: number) {
     ArgumentGuard.isInteger(connectionTimeout, {name: 'connectionTimeout', gte: 0})
     this._connectionTimeout = connectionTimeout
   }
-  getConnectionTimeout() : number {
+  getConnectionTimeout(): number {
     return this._connectionTimeout
   }
-  setConnectionTimeout(connectionTimeout: number) : this {
+  setConnectionTimeout(connectionTimeout: number): this {
     this.connectionTimeout = connectionTimeout
     return this
   }
 
-  get removeSession() : boolean {
+  get removeSession(): boolean {
     return this._removeSession
   }
   set removeSession(removeSession: boolean) {
     ArgumentGuard.isBoolean(removeSession, {name: 'removeSession'})
     this._removeSession = removeSession
   }
-  getRemoveSession() : boolean {
+  getRemoveSession(): boolean {
     return this._removeSession
   }
-  setRemoveSession(removeSession: boolean) : this {
+  setRemoveSession(removeSession: boolean): this {
     this.removeSession = removeSession
     return this
   }
 
-  get batch() : BatchInfo {
+  get batch(): BatchInfo {
     return this._batch
   }
   set batch(batch: BatchInfo) {
     if (!batch) this._batch = undefined
     this._batch = new BatchInfoData(batch)
   }
-  getBatch() : BatchInfoData {
+  getBatch(): BatchInfoData {
     return this._batch
   }
-  setBatch(batch: BatchInfo|BatchInfoData) : this {
+  setBatch(batch: BatchInfo | BatchInfoData): this {
     this.batch = batch
     return this
   }
 
-  get properties() : Property[] {
+  get properties(): CustomProperty[] {
     return this._properties
   }
-  set properties(properties: Property[]) {
+  set properties(properties: CustomProperty[]) {
     ArgumentGuard.isArray(properties, {name: 'properties'})
-    this._properties = properties.map(prop => new PropertyData(prop))
+    this._properties = properties.map((prop) => new CustomPropertyData(prop))
   }
-  getProperties() : PropertyData[] {
+  getProperties(): CustomPropertyData[] {
     return this._properties
   }
-  setProperties(properties: Property[]|PropertyData[]) : this {
+  setProperties(properties: CustomProperty[] | CustomPropertyData[]): this {
     this.properties = properties
     return this
   }
-  addProperty(name: string, value: string) : this
-  addProperty(prop: Property|PropertyData) : this
-  addProperty(propOrName: Property|PropertyData|string, value?: string) : this {
+  addProperty(name: string, value: string): this
+  addProperty(prop: CustomProperty | CustomPropertyData): this
+  addProperty(propOrName: CustomProperty | CustomPropertyData | string, value?: string): this {
     const prop = TypeUtils.isString(propOrName)
-      ? new PropertyData({name: propOrName, value})
-      : new PropertyData(propOrName)
+      ? new CustomPropertyData({name: propOrName, value})
+      : new CustomPropertyData(propOrName)
     this._properties.push(prop)
     return this
   }
 
-  get baselineEnvName() : string {
+  get baselineEnvName(): string {
     return this._baselineEnvName
   }
   set baselineEnvName(baselineEnvName: string) {
     ArgumentGuard.isString(baselineEnvName, {name: 'baselineEnvName', strict: false})
     this._baselineEnvName = baselineEnvName ? baselineEnvName.trim() : undefined
   }
-  getBaselineEnvName() : string {
+  getBaselineEnvName(): string {
     return this._baselineEnvName
   }
-  setBaselineEnvName(baselineEnvName: string) : this {
+  setBaselineEnvName(baselineEnvName: string): this {
     this.baselineEnvName = baselineEnvName
     return this
   }
 
-  get environmentName() : string {
+  get environmentName(): string {
     return this._environmentName
   }
   set environmentName(environmentName: string) {
     ArgumentGuard.isString(environmentName, {name: 'environmentName', strict: false})
     this._environmentName = environmentName ? environmentName.trim() : undefined
   }
-  getEnvironmentName() : string {
+  getEnvironmentName(): string {
     return this._environmentName
   }
-  setEnvironmentName(environmentName: string) : this {
+  setEnvironmentName(environmentName: string): this {
     this.environmentName = environmentName
     return this
   }
 
-  get branchName() : string {
+  get branchName(): string {
     return this._branchName
   }
   set branchName(branchName: string) {
     ArgumentGuard.isString(branchName, {name: 'branchName'})
     this._branchName = branchName
   }
-  getBranchName() : string {
+  getBranchName(): string {
     return this._branchName
   }
-  setBranchName(branchName: string) : this {
+  setBranchName(branchName: string): this {
     this.branchName = branchName
     return this
   }
 
-  get parentBranchName() : string {
+  get parentBranchName(): string {
     return this._parentBranchName
   }
   set parentBranchName(parentBranchName: string) {
     ArgumentGuard.isString(parentBranchName, {name: 'parentBranchName'})
     this._parentBranchName = parentBranchName
   }
-  getParentBranchName() : string {
+  getParentBranchName(): string {
     return this._parentBranchName
   }
-  setParentBranchName(parentBranchName: string) : this {
+  setParentBranchName(parentBranchName: string): this {
     this.parentBranchName = parentBranchName
     return this
   }
 
-  get baselineBranchName() : string {
+  get baselineBranchName(): string {
     return this._baselineBranchName
   }
   set baselineBranchName(baselineBranchName: string) {
     ArgumentGuard.isString(baselineBranchName, {name: 'baselineBranchName'})
     this._baselineBranchName = baselineBranchName
   }
-  getBaselineBranchName() : string {
+  getBaselineBranchName(): string {
     return this._baselineBranchName
   }
-  setBaselineBranchName(baselineBranchName: string) : this {
+  setBaselineBranchName(baselineBranchName: string): this {
     this.baselineBranchName = baselineBranchName
     return this
   }
 
-  get compareWithParentBranch() : boolean {
+  get compareWithParentBranch(): boolean {
     return this._compareWithParentBranch
   }
   set compareWithParentBranch(compareWithParentBranch: boolean) {
     ArgumentGuard.isBoolean(compareWithParentBranch, {name: 'compareWithParentBranch'})
     this._compareWithParentBranch = compareWithParentBranch
   }
-  getCompareWithParentBranch() : boolean {
+  getCompareWithParentBranch(): boolean {
     return this._compareWithParentBranch
   }
-  setCompareWithParentBranch(compareWithParentBranch: boolean) : this {
+  setCompareWithParentBranch(compareWithParentBranch: boolean): this {
     this.compareWithParentBranch = compareWithParentBranch
     return this
   }
 
-  get ignoreBaseline() : boolean {
+  get ignoreBaseline(): boolean {
     return this._ignoreBaseline
   }
   set ignoreBaseline(ignoreBaseline: boolean) {
     ArgumentGuard.isBoolean(ignoreBaseline, {name: 'ignoreBaseline'})
     this._ignoreBaseline = ignoreBaseline
   }
-  getIgnoreBaseline() : boolean {
+  getIgnoreBaseline(): boolean {
     return this._ignoreBaseline
   }
-  setIgnoreBaseline(ignoreBaseline: boolean) : this {
+  setIgnoreBaseline(ignoreBaseline: boolean): this {
     this.ignoreBaseline = ignoreBaseline
     return this
   }
 
-  get saveFailedTests() : boolean {
+  get saveFailedTests(): boolean {
     return this._saveFailedTests
   }
   set saveFailedTests(saveFailedTests: boolean) {
     ArgumentGuard.isBoolean(saveFailedTests, {name: 'saveFailedTests'})
     this._saveFailedTests = saveFailedTests
   }
-  getSaveFailedTests() : boolean {
+  getSaveFailedTests(): boolean {
     return this._saveFailedTests
   }
-  setSaveFailedTests(saveFailedTests: boolean) : this {
+  setSaveFailedTests(saveFailedTests: boolean): this {
     this.saveFailedTests = saveFailedTests
     return this
   }
 
-  get saveNewTests() : boolean {
+  get saveNewTests(): boolean {
     return this._saveNewTests
   }
   set saveNewTests(saveNewTests: boolean) {
     ArgumentGuard.isBoolean(saveNewTests, {name: 'saveNewTests'})
     this._saveNewTests = saveNewTests
   }
-  getSaveNewTests() : boolean {
+  getSaveNewTests(): boolean {
     return this._saveNewTests
   }
-  setSaveNewTests(saveNewTests: boolean) : this {
+  setSaveNewTests(saveNewTests: boolean): this {
     this.saveNewTests = saveNewTests
     return this
   }
 
-  get saveDiffs() : boolean {
+  get saveDiffs(): boolean {
     return this._saveDiffs
   }
   set saveDiffs(saveDiffs: boolean) {
     ArgumentGuard.isBoolean(saveDiffs, {name: 'saveDiffs'})
     this._saveDiffs = saveDiffs
   }
-  getSaveDiffs() : boolean {
+  getSaveDiffs(): boolean {
     return this._saveDiffs
   }
-  setSaveDiffs(saveDiffs: boolean) : this {
+  setSaveDiffs(saveDiffs: boolean): this {
     this.saveDiffs = saveDiffs
     return this
   }
 
-  get sendDom() : boolean {
+  get sendDom(): boolean {
     return this._sendDom
   }
   set sendDom(sendDom: boolean) {
     ArgumentGuard.isBoolean(sendDom, {name: 'sendDom'})
     this._sendDom = sendDom
   }
-  getSendDom() : boolean {
+  getSendDom(): boolean {
     return this._sendDom
   }
-  setSendDom(sendDom: boolean) : this {
+  setSendDom(sendDom: boolean): this {
     this.sendDom = sendDom
     return this
   }
 
-  get hostApp() : string {
+  get hostApp(): string {
     return this._hostApp
   }
   set hostApp(hostApp: string) {
     this._hostApp = hostApp ? hostApp.trim() : undefined
   }
-  getHostApp() : string {
+  getHostApp(): string {
     return this._hostApp
   }
-  setHostApp(hostApp: string) : this {
+  setHostApp(hostApp: string): this {
     this.hostApp = hostApp
     return this
   }
 
-  get hostOS() : string {
+  get hostOS(): string {
     return this._hostOS
   }
   set hostOS(hostOS: string) {
     this._hostOS = hostOS ? hostOS.trim() : undefined
   }
-  getHostOS() : string {
+  getHostOS(): string {
     return this._hostOS
   }
-  setHostOS(hostOS: string) : this {
+  setHostOS(hostOS: string): this {
     this.hostOS = hostOS
     return this
   }
 
-  get hostAppInfo() : string {
+  get hostAppInfo(): string {
     return this._hostAppInfo
   }
   set hostAppInfo(hostAppInfo: string) {
     this._hostAppInfo = hostAppInfo ? hostAppInfo.trim() : undefined
   }
-  getHostAppInfo() : string {
+  getHostAppInfo(): string {
     return this._hostAppInfo
   }
-  setHostAppInfo(hostAppInfo: string) : this {
+  setHostAppInfo(hostAppInfo: string): this {
     this.hostAppInfo = hostAppInfo
     return this
   }
 
-  get hostOSInfo() : string {
+  get hostOSInfo(): string {
     return this._hostOSInfo
   }
   set hostOSInfo(hostOSInfo: string) {
     this._hostOSInfo = hostOSInfo ? hostOSInfo.trim() : undefined
   }
-  getHostOSInfo() : string {
+  getHostOSInfo(): string {
     return this.hostOSInfo
   }
-  setHostOSInfo(hostOSInfo: string) : this {
+  setHostOSInfo(hostOSInfo: string): this {
     this.hostOSInfo = hostOSInfo
     return this
   }
 
-  get deviceInfo() : string {
+  get deviceInfo(): string {
     return this._deviceInfo
   }
   set deviceInfo(deviceInfo: string) {
     this._deviceInfo = deviceInfo ? deviceInfo.trim() : undefined
   }
-  getDeviceInfo() : string {
+  getDeviceInfo(): string {
     return this._deviceInfo
   }
-  setDeviceInfo(deviceInfo: string) : this {
+  setDeviceInfo(deviceInfo: string): this {
     this.deviceInfo = deviceInfo
     return this
   }
 
-  get defaultMatchSettings() : ImageMatchSettings {
+  get defaultMatchSettings(): ImageMatchSettings {
     return this._defaultMatchSettings
   }
   set defaultMatchSettings(defaultMatchSettings: ImageMatchSettings) {
     ArgumentGuard.notNull(defaultMatchSettings, {name: 'defaultMatchSettings'})
     this._defaultMatchSettings = new ImageMatchSettingsData(defaultMatchSettings)
   }
-  getDefaultMatchSettings() : ImageMatchSettings {
+  getDefaultMatchSettings(): ImageMatchSettings {
     return this._defaultMatchSettings
   }
-  setDefaultMatchSettings(defaultMatchSettings: ImageMatchSettings|ImageMatchSettingsData) : this {
+  setDefaultMatchSettings(defaultMatchSettings: ImageMatchSettings | ImageMatchSettingsData): this {
     this.defaultMatchSettings = defaultMatchSettings
     return this
   }
-  getMatchLevel() : MatchLevel {
+  getMatchLevel(): MatchLevel {
     return this._defaultMatchSettings.matchLevel
   }
-  setMatchLevel(matchLevel: MatchLevel) : this {
+  setMatchLevel(matchLevel: MatchLevel): this {
     this._defaultMatchSettings.matchLevel = matchLevel
     return this
   }
-  getAccessibilityValidation() : AccessibilitySettings {
+  getAccessibilityValidation(): AccessibilitySettings {
     return this._defaultMatchSettings.accessibilitySettings
   }
-  setAccessibilityValidation(accessibilityValidation: AccessibilitySettings) : this {
+  setAccessibilityValidation(accessibilityValidation: AccessibilitySettings): this {
     this._defaultMatchSettings.accessibilitySettings = accessibilityValidation
     return this
   }
-  getUseDom() : boolean {
+  getUseDom(): boolean {
     return this._defaultMatchSettings.useDom
   }
-  setUseDom(useDom: boolean) : this {
+  setUseDom(useDom: boolean): this {
     this._defaultMatchSettings.useDom = useDom
     return this
   }
-  getEnablePatterns() : boolean {
+  getEnablePatterns(): boolean {
     return this._defaultMatchSettings.enablePatterns
   }
-  setEnablePatterns(enablePatterns: boolean) : this {
+  setEnablePatterns(enablePatterns: boolean): this {
     this._defaultMatchSettings.enablePatterns = enablePatterns
     return this
   }
-  getIgnoreDisplacements() : boolean {
+  getIgnoreDisplacements(): boolean {
     return this._defaultMatchSettings.ignoreDisplacements
   }
-  setIgnoreDisplacements(ignoreDisplacements: boolean) : this {
+  setIgnoreDisplacements(ignoreDisplacements: boolean): this {
     this._defaultMatchSettings.ignoreDisplacements = ignoreDisplacements
     return this
   }
-  getIgnoreCaret() : boolean {
+  getIgnoreCaret(): boolean {
     return this._defaultMatchSettings.ignoreCaret
   }
-  setIgnoreCaret(ignoreCaret: boolean) : this {
+  setIgnoreCaret(ignoreCaret: boolean): this {
     this._defaultMatchSettings.ignoreCaret = ignoreCaret
     return this
   }
 
-
-  get forceFullPageScreenshot() : boolean {
+  get forceFullPageScreenshot(): boolean {
     return this._forceFullPageScreenshot
   }
   set forceFullPageScreenshot(forceFullPageScreenshot: boolean) {
     this._forceFullPageScreenshot = forceFullPageScreenshot
   }
-  getForceFullPageScreenshot() : boolean {
+  getForceFullPageScreenshot(): boolean {
     return this._forceFullPageScreenshot
   }
-  setForceFullPageScreenshot(forceFullPageScreenshot: boolean) : this {
+  setForceFullPageScreenshot(forceFullPageScreenshot: boolean): this {
     this.forceFullPageScreenshot = forceFullPageScreenshot
     return this
   }
 
-  get waitBeforeScreenshots() : number {
+  get waitBeforeScreenshots(): number {
     return this._waitBeforeScreenshots
   }
   set waitBeforeScreenshots(waitBeforeScreenshots: number) {
     ArgumentGuard.isInteger(waitBeforeScreenshots, {name: 'waitBeforeScreenshots', gt: 0})
     this._waitBeforeScreenshots = waitBeforeScreenshots
   }
-  getWaitBeforeScreenshots() : number {
+  getWaitBeforeScreenshots(): number {
     return this._waitBeforeScreenshots
   }
-  setWaitBeforeScreenshots(waitBeforeScreenshots: number) : this {
+  setWaitBeforeScreenshots(waitBeforeScreenshots: number): this {
     this.waitBeforeScreenshots = waitBeforeScreenshots
     return this
   }
 
-  get stitchMode() : StitchMode {
+  get stitchMode(): StitchMode {
     return this._stitchMode
   }
   set stitchMode(stitchMode: StitchMode) {
     ArgumentGuard.isEnumValue(stitchMode, StitchMode, {name: 'stitchMode'})
     this._stitchMode = stitchMode
   }
-  getStitchMode() : StitchMode {
+  getStitchMode(): StitchMode {
     return this._stitchMode
   }
-  setStitchMode(stitchMode: StitchMode) : this {
+  setStitchMode(stitchMode: StitchMode): this {
     this.stitchMode = stitchMode
     return this
   }
 
-  get hideScrollbars() : boolean {
+  get hideScrollbars(): boolean {
     return this._hideScrollbars
   }
   set hideScrollbars(hideScrollbars: boolean) {
     this._hideScrollbars = hideScrollbars
   }
-  getHideScrollbars() : boolean {
+  getHideScrollbars(): boolean {
     return this._hideScrollbars
   }
-  setHideScrollbars(hideScrollbars: boolean) : this {
+  setHideScrollbars(hideScrollbars: boolean): this {
     this.hideScrollbars = hideScrollbars
     return this
   }
 
-  get hideCaret() : boolean {
+  get hideCaret(): boolean {
     return this._hideCaret
   }
   set hideCaret(hideCaret: boolean) {
     this._hideCaret = hideCaret
   }
-  getHideCaret() : boolean {
+  getHideCaret(): boolean {
     return this._hideCaret
   }
-  setHideCaret(hideCaret: boolean) : this {
+  setHideCaret(hideCaret: boolean): this {
     this.hideCaret = hideCaret
     return this
   }
 
-  get stitchOverlap() : number {
+  get stitchOverlap(): number {
     return this._stitchOverlap
   }
   set stitchOverlap(stitchOverlap: number) {
     ArgumentGuard.isInteger(stitchOverlap, {name: 'stitchOverlap', strict: false})
     this._stitchOverlap = stitchOverlap
   }
-  getStitchOverlap() : number {
+  getStitchOverlap(): number {
     return this._stitchOverlap
   }
-  setStitchOverlap(stitchOverlap: number) : this {
+  setStitchOverlap(stitchOverlap: number): this {
     this.stitchOverlap = stitchOverlap
     return this
   }
 
-  get concurrentSessions() : number {
+  get concurrentSessions(): number {
     return this._concurrentSessions
   }
   set concurrentSessions(concurrentSessions: number) {
     this._concurrentSessions = concurrentSessions
   }
-  getConcurrentSessions() : number {
+  getConcurrentSessions(): number {
     return this._concurrentSessions
   }
-  setConcurrentSessions(concurrentSessions: number) : this {
+  setConcurrentSessions(concurrentSessions: number): this {
     this.concurrentSessions = concurrentSessions
     return this
   }
 
-  get isThrowExceptionOn() : boolean {
+  get isThrowExceptionOn(): boolean {
     return this._isThrowExceptionOn
   }
   set isThrowExceptionOn(isThrowExceptionOn: boolean) {
     this._isThrowExceptionOn = isThrowExceptionOn
   }
-  getIsThrowExceptionOn() : boolean {
+  getIsThrowExceptionOn(): boolean {
     return this._isThrowExceptionOn
   }
-  setIsThrowExceptionOn(isThrowExceptionOn: boolean) : this {
+  setIsThrowExceptionOn(isThrowExceptionOn: boolean): this {
     this.isThrowExceptionOn = isThrowExceptionOn
     return this
   }
 
-  get browsersInfo() : RenderInfo[] {
+  get browsersInfo(): RenderInfo[] {
     return this._browsersInfo
   }
   set browsersInfo(browsersInfo: RenderInfo[]) {
     ArgumentGuard.isArray(browsersInfo, {name: 'browsersInfo'})
     this._browsersInfo = browsersInfo
   }
-  getBrowsersInfo() : RenderInfo[] {
+  getBrowsersInfo(): RenderInfo[] {
     return this.browsersInfo
   }
-  setBrowsersInfo(browsersInfo: RenderInfo[]) : this {
+  setBrowsersInfo(browsersInfo: RenderInfo[]): this {
     this.browsersInfo = browsersInfo
     return this
   }
   addBrowsers(...browsersInfo: RenderInfo[]) {
     for (const [index, browserInfo] of browsersInfo.entries()) {
-      ArgumentGuard.isPlainObject(browserInfo, {name: `addBrowsers( arg${index} )`})
+      ArgumentGuard.isObject(browserInfo, {name: `addBrowsers( arg${index} )`})
     }
     if (!this._browsersInfo) {
       this._browsersInfo = []
@@ -809,10 +814,14 @@ export default class ConfigurationData implements Required<Configuration> {
     this._browsersInfo.push(...browsersInfo)
     return this
   }
-  addBrowser(browserInfo: RenderInfo) : this
-  addBrowser(width: number, height: number, name?: BrowserType) : this
-  addBrowser(browserInfoOrWidth: RenderInfo|number, height?: number, name: BrowserType = BrowserType.CHROME) {
-    if (TypeUtils.isPlainObject(browserInfoOrWidth)) {
+  addBrowser(browserInfo: RenderInfo): this
+  addBrowser(width: number, height: number, name?: BrowserName): this
+  addBrowser(
+    browserInfoOrWidth: RenderInfo | number,
+    height?: number,
+    name: BrowserName = BrowserName.CHROME,
+  ) {
+    if (TypeUtils.isObject(browserInfoOrWidth)) {
       return this.addBrowsers(browserInfoOrWidth)
     } else {
       return this.addBrowsers({width: browserInfoOrWidth, height, name})
@@ -826,20 +835,20 @@ export default class ConfigurationData implements Required<Configuration> {
     return this
   }
 
-  get visualGridOptions() : {[key: string]: any} {
+  get visualGridOptions(): {[key: string]: any} {
     return this._visualGridOptions
   }
   set visualGridOptions(visualGridOptions: {[key: string]: any}) {
     this._visualGridOptions = visualGridOptions
   }
-  getVisualGridOptions() : {[key: string]: any} {
+  getVisualGridOptions(): {[key: string]: any} {
     return this._visualGridOptions
   }
-  setVisualGridOptions(visualGridOptions: {[key: string]: any}) : this {
+  setVisualGridOptions(visualGridOptions: {[key: string]: any}): this {
     this.visualGridOptions = visualGridOptions
     return this
   }
-  setVisualGridOption(key: string, value: any) : this {
+  setVisualGridOption(key: string, value: any): this {
     if (!this._visualGridOptions) {
       this._visualGridOptions = {}
     }
@@ -847,61 +856,63 @@ export default class ConfigurationData implements Required<Configuration> {
     return this
   }
 
-  get layoutBreakpoints() : boolean|number[] {
+  get layoutBreakpoints(): boolean | number[] {
     return this._layoutBreakpoints
   }
-  set layoutBreakpoints(layoutBreakpoints: boolean|number[]) {
+  set layoutBreakpoints(layoutBreakpoints: boolean | number[]) {
     ArgumentGuard.notNull(layoutBreakpoints, {name: 'layoutBreakpoints'})
     if (!TypeUtils.isArray(layoutBreakpoints)) {
       this._layoutBreakpoints = layoutBreakpoints
     } else if (layoutBreakpoints.length === 0) {
       this._layoutBreakpoints = false
     } else {
-      this._layoutBreakpoints = Array.from(new Set(layoutBreakpoints)).sort((a, b) => (a < b ? 1 : -1))
+      this._layoutBreakpoints = Array.from(new Set(layoutBreakpoints)).sort((a, b) =>
+        a < b ? 1 : -1,
+      )
     }
     this._layoutBreakpoints = layoutBreakpoints
   }
-  getLayoutBreakpoints() : boolean|number[] {
+  getLayoutBreakpoints(): boolean | number[] {
     return this._layoutBreakpoints
   }
-  setLayoutBreakpoints(layoutBreakpoints: boolean|number[]) : this {
+  setLayoutBreakpoints(layoutBreakpoints: boolean | number[]): this {
     this.layoutBreakpoints = layoutBreakpoints
     return this
   }
 
-  get disableBrowserFetching() : boolean {
+  get disableBrowserFetching(): boolean {
     return this._disableBrowserFetching
   }
   set disableBrowserFetching(disableBrowserFetching: boolean) {
     this._disableBrowserFetching = disableBrowserFetching
   }
-  getDisableBrowserFetching() : boolean {
+  getDisableBrowserFetching(): boolean {
     return this._disableBrowserFetching
   }
-  setDisableBrowserFetching(disableBrowserFetching: boolean) : this {
+  setDisableBrowserFetching(disableBrowserFetching: boolean): this {
     this.disableBrowserFetching = disableBrowserFetching
     return this
   }
 
-  get dontCloseBatches() : boolean {
+  get dontCloseBatches(): boolean {
     return this._dontCloseBatches
   }
   set dontCloseBatches(dontCloseBatches: boolean) {
     this._dontCloseBatches = dontCloseBatches
   }
-  getDontCloseBatches() : boolean {
+  getDontCloseBatches(): boolean {
     return this.dontCloseBatches
   }
-  setDontCloseBatches(dontCloseBatches: boolean) : this {
+  setDontCloseBatches(dontCloseBatches: boolean): this {
     this.dontCloseBatches = dontCloseBatches
     return this
   }
 
-  toString() : string {
+  toString(): string {
     return `Configuration ${this.toJSON()}`
   }
 
-  toJSON() : Configuration {
+  toJSON(): Configuration {
     return {}
   }
 }

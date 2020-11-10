@@ -8,7 +8,7 @@ type Offset = {
   top: number
 }
 
-export type Region = (Location|Offset) & RectangleSize
+export type Region = (Location | Offset) & RectangleSize
 
 export default class RegionData implements Required<Offset & Location & RectangleSize> {
   private _x: number
@@ -17,15 +17,22 @@ export default class RegionData implements Required<Offset & Location & Rectangl
   private _height: number
 
   constructor(region: Region)
-  constructor(location: Location|Offset, size: RectangleSize)
+  constructor(location: Location | Offset, size: RectangleSize)
   constructor(x: number, y: number, width: number, height: number)
-  constructor(regionOrLocationOrX: Region|Location|Offset|number, sizeOrY?: RectangleSize|number, width?: number, height?: number) {
+  constructor(
+    regionOrLocationOrX: Region | Location | Offset | number,
+    sizeOrY?: RectangleSize | number,
+    width?: number,
+    height?: number,
+  ) {
     if (TypeUtils.isNumber(regionOrLocationOrX)) {
-      const x = regionOrLocationOrX
+      const x: number = regionOrLocationOrX
       const y = sizeOrY as number
       return new RegionData({x, y, width, height})
     } else if (!TypeUtils.has(regionOrLocationOrX, 'width')) {
-      const {x, y} = TypeUtils.has(regionOrLocationOrX, 'left') ? {x: regionOrLocationOrX.left, y: regionOrLocationOrX.top} : regionOrLocationOrX
+      const {x, y} = TypeUtils.has(regionOrLocationOrX, 'left')
+        ? {x: regionOrLocationOrX.left, y: regionOrLocationOrX.top}
+        : regionOrLocationOrX
       const {width, height} = sizeOrY as RectangleSize
       return new RegionData({x, y, width, height})
     }
@@ -41,61 +48,61 @@ export default class RegionData implements Required<Offset & Location & Rectangl
     this.height = region.height
   }
 
-  get x() : number {
+  get x(): number {
     return this._x
   }
   set x(x: number) {
     ArgumentGuard.isNumber(x, {name: 'x'})
     this._x = x
   }
-  getX() : number {
+  getX(): number {
     return this._x
   }
   setX(x: number) {
     this.x = x
   }
 
-  get y() : number {
+  get y(): number {
     return this._y
   }
   set y(y: number) {
     ArgumentGuard.isNumber(y, {name: 'y'})
     this._y = y
   }
-  getY() : number {
+  getY(): number {
     return this._y
   }
   setY(y: number) {
     this.y = y
   }
 
-  get left() : number {
+  get left(): number {
     return this.x
   }
   set left(left: number) {
     this.x = left
   }
-  getLeft() : number {
+  getLeft(): number {
     return this.x
   }
   setLeft(left: number) {
     this.x = left
   }
 
-  get top() : number {
+  get top(): number {
     return this.y
   }
   set top(top: number) {
     this.y = top
   }
-  getTop() : number {
+  getTop(): number {
     return this.y
   }
   setTop(top: number) {
     this.y = top
   }
 
-  get width() : number {
+  get width(): number {
     return this._width
   }
   set width(width: number) {
@@ -109,7 +116,7 @@ export default class RegionData implements Required<Offset & Location & Rectangl
     this.width = width
   }
 
-  get height() : number {
+  get height(): number {
     return this._height
   }
   set height(height: number) {

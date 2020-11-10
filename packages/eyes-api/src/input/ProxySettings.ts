@@ -2,10 +2,10 @@ import * as ArgumentGuard from '../utils/ArgumentGuard'
 import * as TypeUtils from '../utils/TypeUtils'
 
 export type ProxySettings = {
-  url: string,
-  username?: string,
-  password?: string,
-  isHttpOnly?: boolean,
+  url: string
+  username?: string
+  password?: string
+  isHttpOnly?: boolean
 }
 
 export default class ProxySettingsData implements Required<ProxySettings> {
@@ -18,7 +18,12 @@ export default class ProxySettingsData implements Required<ProxySettings> {
   constructor(proxy: ProxySettings)
   constructor(url: string, username?: string, password?: string, isHttpOnly?: boolean)
   constructor(isDisabled: true)
-  constructor(proxyOrUrlOrIsDisabled: ProxySettings|string|true, username?: string, password?: string, isHttpOnly?: boolean) {
+  constructor(
+    proxyOrUrlOrIsDisabled: ProxySettings | string | true,
+    username?: string,
+    password?: string,
+    isHttpOnly?: boolean,
+  ) {
     ArgumentGuard.notNull(proxyOrUrlOrIsDisabled, {name: 'proxyOrUrlOrIsDisabled'})
 
     if (proxyOrUrlOrIsDisabled === true) {
@@ -35,7 +40,7 @@ export default class ProxySettingsData implements Required<ProxySettings> {
     }
   }
 
-  get url () {
+  get url() {
     return this._url
   }
   getUri() {
