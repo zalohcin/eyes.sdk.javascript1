@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 5.26.0 - 2020/11/10
+
 -- fix firefox region compensation issue
 - add 2020 ios devices
 - fix coded region calculation when running in target region ([Trello 538](https://trello.com/c/FQ8iJZdi))
