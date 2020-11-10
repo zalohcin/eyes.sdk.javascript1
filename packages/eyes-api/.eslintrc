@@ -16,7 +16,7 @@
   ],
   "rules": {
     "prettier/prettier": ["error", {
-      "allowParens": "avoid",
+      "arrowParens": "avoid",
       "printWidth": 120
     }],
     "@typescript-eslint/explicit-module-boundary-types": "off",

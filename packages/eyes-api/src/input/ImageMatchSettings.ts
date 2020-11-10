@@ -143,7 +143,7 @@ export default class ImageMatchSettingsData implements Required<ImageMatchSettin
   }
   set ignoreRegions(ignoreRegions: Region[]) {
     ArgumentGuard.isArray(ignoreRegions, {name: 'ignoreRegions', strict: false})
-    this._ignoreRegions = ignoreRegions ? ignoreRegions.map((region) => new RegionData(region)) : []
+    this._ignoreRegions = ignoreRegions ? ignoreRegions.map(region => new RegionData(region)) : []
   }
   get ignore(): Region[] {
     return this.ignoreRegions
@@ -163,7 +163,7 @@ export default class ImageMatchSettingsData implements Required<ImageMatchSettin
   }
   set layoutRegions(layoutRegions: Region[]) {
     ArgumentGuard.isArray(layoutRegions, {name: 'layoutRegions', strict: false})
-    this._layoutRegions = layoutRegions ? layoutRegions.map((region) => new RegionData(region)) : []
+    this._layoutRegions = layoutRegions ? layoutRegions.map(region => new RegionData(region)) : []
   }
   get layout(): Region[] {
     return this.layoutRegions
@@ -183,7 +183,7 @@ export default class ImageMatchSettingsData implements Required<ImageMatchSettin
   }
   set strictRegions(strictRegions: Region[]) {
     ArgumentGuard.isArray(strictRegions, {name: 'strictRegions', strict: false})
-    this._strictRegions = strictRegions ? strictRegions.map((region) => new RegionData(region)) : []
+    this._strictRegions = strictRegions ? strictRegions.map(region => new RegionData(region)) : []
   }
   get strict(): Region[] {
     return this.strictRegions
@@ -203,7 +203,7 @@ export default class ImageMatchSettingsData implements Required<ImageMatchSettin
   }
   set contentRegions(contentRegions: Region[]) {
     ArgumentGuard.isArray(contentRegions, {name: 'contentRegions', strict: false})
-    this._contentRegions = contentRegions ? contentRegions.map((region) => new RegionData(region)) : []
+    this._contentRegions = contentRegions ? contentRegions.map(region => new RegionData(region)) : []
   }
   get content(): Region[] {
     return this.contentRegions
@@ -223,12 +223,12 @@ export default class ImageMatchSettingsData implements Required<ImageMatchSettin
   }
   set floatingRegions(floatingRegions: FloatingRegion[]) {
     ArgumentGuard.isArray(floatingRegions, {name: 'floatingRegions', strict: false})
-    this._floatingRegions = floatingRegions ? floatingRegions.map((region) => new RegionData(region)) : []
+    this._floatingRegions = floatingRegions ? floatingRegions.map(region => new FloatingRegionData(region)) : []
   }
-  get floating(): Region[] {
+  get floating(): FloatingRegion[] {
     return this.floatingRegions
   }
-  set floating(floatingRegions: Region[]) {
+  set floating(floatingRegions: FloatingRegion[]) {
     this.floatingRegions = floatingRegions
   }
   getFloatingRegions(): FloatingRegionData[] {
@@ -244,7 +244,7 @@ export default class ImageMatchSettingsData implements Required<ImageMatchSettin
   set accessibilityRegions(accessibilityRegions: AccessibilityRegion[]) {
     ArgumentGuard.isArray(accessibilityRegions, {name: 'accessibilityRegions', strict: false})
     this._accessibilityRegions = accessibilityRegions
-      ? accessibilityRegions.map((region) => new AccessibilityRegionData(region))
+      ? accessibilityRegions.map(region => new AccessibilityRegionData(region))
       : []
   }
   get accessibility(): AccessibilityRegion[] {

@@ -56,8 +56,8 @@ export default class BatchInfoData implements Required<BatchInfo> {
       this._startedAt = batch.startedAt || new Date()
     }
 
-    this._sequenceName = batch.sequenceName || GeneralUtils.getEnvValue('BATCH_SEQUENCE', 'number')
-    this._notifyOnCompletion = batch.notifyOnCompletion || GeneralUtils.getEnvValue('BATCH_NOTIFY', true) || false
+    this._sequenceName = batch.sequenceName || GeneralUtils.getEnvValue('BATCH_SEQUENCE', 'string')
+    this._notifyOnCompletion = batch.notifyOnCompletion || GeneralUtils.getEnvValue('BATCH_NOTIFY', 'boolean') || false
     this._isCompleted = Boolean(batch.isCompleted)
   }
 
