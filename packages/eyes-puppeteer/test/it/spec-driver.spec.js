@@ -53,7 +53,7 @@ describe('spec driver', async () => {
 
   describe('onscreen desktop', async () => {
     before(async () => {
-      ;[page, destroyPage] = await spec.build({headless: false})
+      ;[page, destroyPage] = await spec.build({headless: true})
     })
 
     after(async () => {

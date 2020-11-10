@@ -122,12 +122,20 @@ async function executeScript(frame, script, args = []) {
   // a function is not serializable, so we pass it as a string instead
   script = TypeUtils.isString(script) ? script : script.toString()
   const {argsWithElementMarkers, elements} = serializeArgs(args)
-  const result = await frame.evaluateHandle(
-    scriptRunner,
-    {script, argsWithElementMarkers},
-    ...elements,
-  )
-  return await handleToObject(result)
+  try {
+    const result = await frame.evaluateHandle(
+      scriptRunner,
+      {script, argsWithElementMarkers},
+      ...elements,
+    )
+    return await handleToObject(result)
+  } catch (error) {
+    if (/JSHandles can be evaluated only in the context they were created/.test(error)) {
+      // https://github.com/puppeteer/puppeteer/issues/3568
+      debugger
+    }
+    throw error
+  }
 }
 async function mainContext(frame) {
   frame = extractContext(frame)
@@ -208,7 +216,12 @@ async function hover(frame, element, {x = 0, y = 0} = {}) {
 
 async function build(env) {
   const puppeteer = require('puppeteer')
-  env = {...env, ignoreDefaultArgs: ['--hide-scrollbars']}
+  env = {
+    ...env,
+    ignoreDefaultArgs: ['--hide-scrollbars'],
+    executablePath: 'google-chrome-stable',
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+  }
   if (process.env.APPLITOOLS_DEBUG) {
     env.headless = false
     env.devtools = true
