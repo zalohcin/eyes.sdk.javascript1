@@ -6,10 +6,8 @@
   "scripts": {
     "lint": "eslint '**/*.js'",
     "render": "node ../sdk-shared/scripts/render.js",
-    "test": "yarn test:unit && yarn test:it && yarn test:e2e",
-    "test:e2e": "mocha --no-timeouts \"test/e2e/*.js\"",
+    "test": "yarn test:it",
     "test:it": "mocha --no-timeouts \"test/it/**/*.js\"",
-    "test:unit": "mocha \"test/unit/**/*.js\"",
     "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-webdriverio-4' APPLITOOLS_BATCH_ID=$(uuidgen) XUNIT_FILE=coverage-test-report.xml mocha --config .mocharc.cvg.js",
     "coverage:generate": "coverage-tests generate ../sdk-shared/coverage-tests/generic/index.js --name 'eyes.webdriverio.javascript4'",
     "coverage:report": "coverage-tests report ../sdk-shared/coverage-tests/generic/index.js --name 'eyes.webdriverio.javascript4'",
@@ -29,14 +27,14 @@
   "license": "SEE LICENSE IN LICENSE",
   "repository": "https://github.com/applitools/eyes.sdk.javascript1",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "12.5.2",
-    "@applitools/visual-grid-client": "15.0.14"
+    "@applitools/eyes-sdk-core": "12.5.7",
+    "@applitools/visual-grid-client": "15.1.1"
   },
   "peerDependencies": {
     "webdriverio": "~4.14.4"
   },
   "devDependencies": {
-    "@applitools/sdk-coverage-tests": "^1.0.13",
+    "@applitools/sdk-coverage-tests": "^2.0.1",
     "@applitools/sdk-fake-eyes-server": "^2.0.0",
     "@applitools/sdk-release-kit": "^0.3.1",
     "@applitools/sdk-shared": "^0.1.0",
