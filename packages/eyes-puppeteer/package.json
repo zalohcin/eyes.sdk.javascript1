@@ -56,8 +56,8 @@
     "lint": "eslint '**/*.js'",
     "render": "node ../sdk-shared/scripts/render.js",
     "test": "yarn test:it",
-    "test:it": "yarn docker:run npx mocha --no-timeouts ./test/it/*.spec.js",
-    "test:coverage": "yarn docker:run npx mocha --config .mocharc.cvg.js",
+    "test:it": "yarn run:docker yarn run mocha --no-timeouts ./test/it/*.spec.js",
+    "test:coverage": "yarn run:docker yarn run mocha --config .mocharc.cvg.js",
     "coverage:generate": "coverage-tests generate ../sdk-shared/coverage-tests/generic/index.js --name 'eyes-puppeteer'",
     "coverage:report": "coverage-tests report ../sdk-shared/coverage-tests/generic/index.js --name 'eyes-puppeteer'",
     "coverage:sandbox": "yarn coverage:generate && yarn test:coverage && yarn coverage:report --sandbox",
@@ -66,8 +66,8 @@
     "version": "bongo version",
     "postversion": "bongo postversion",
     "deps": "bongo deps",
-    "docker:build": "docker build -t applitools/puppeteer-chrome .",
-    "docker:run": "docker run --env APPLITOOLS_API_KEY=$APPLITOOLS_API_KEY_SDK --env APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-puppeteer' --env APPLITOOLS_BATCH_ID=$(uuidgen) --env XUNIT_FILE=coverage-test-report.xml -it --init --rm -v $(pwd):/sandbox applitools/puppeteer-chrome"
+    "build": "docker build -t applitools/puppeteer-chrome .",
+    "run:docker": "docker run --env APPLITOOLS_API_KEY=$APPLITOOLS_API_KEY_SDK --env APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-puppeteer' --env APPLITOOLS_BATCH_ID=$(uuidgen) --env XUNIT_FILE=coverage-test-report.xml -it --init --rm -v $(pwd):/sandbox applitools/puppeteer-chrome"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

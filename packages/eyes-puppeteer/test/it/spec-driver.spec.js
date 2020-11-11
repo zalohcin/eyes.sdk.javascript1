@@ -7,8 +7,7 @@ describe('spec driver', async () => {
 
   describe('headless desktop', async () => {
     before(async () => {
-      ;[page, destroyPage] = await spec.build({headless: true, devtools: false})
-      //;[page, destroyPage] = await spec.build({headless: false, devtools: true})
+      ;[page, destroyPage] = await spec.build({headless: true})
       await page.goto(url)
     })
 
@@ -49,17 +48,6 @@ describe('spec driver', async () => {
     it('getTitle()', getTitle())
     it('getUrl()', getUrl())
     it('visit()', visit())
-  })
-
-  describe('onscreen desktop', async () => {
-    before(async () => {
-      ;[page, destroyPage] = await spec.build({headless: true})
-    })
-
-    after(async () => {
-      await destroyPage()
-    })
-
     it('getViewportSize()', getViewportSize())
     it(
       'setViewportSize({width, height})',

@@ -220,7 +220,7 @@ async function build(env) {
     ...env,
     ignoreDefaultArgs: ['--hide-scrollbars'],
     executablePath: 'google-chrome-stable',
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'],
   }
   if (process.env.APPLITOOLS_DEBUG) {
     env.headless = false
