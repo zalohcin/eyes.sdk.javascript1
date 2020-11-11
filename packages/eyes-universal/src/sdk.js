@@ -61,6 +61,7 @@ function makeSDK(listening) {
       // TODO
     })
     ws.command('Eyes.close', ({eyes}) => {
+      refer.destroy(driver)
       return refer.deref(eyes).close(false)
     })
     ws.command('Eyes.abort', ({eyes}) => {

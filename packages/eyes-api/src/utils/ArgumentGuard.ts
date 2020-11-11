@@ -54,9 +54,9 @@ export function isInteger(value: any, {name, strict = true, lt, lte, gt, gte}: N
     throw new Error(`IllegalArgument: ${name} is not an integer`)
   }
   if (!TypeUtils.isNull(lt)) isLessThen(value, lt, {name})
-  else if (!TypeUtils.isNull(lte)) isLessThenOrEqual(value, lt, {name})
-  else if (!TypeUtils.isNull(gt)) isGreaterThenOrEqual(value, lt, {name})
-  else if (!TypeUtils.isNull(gte)) isGreaterThen(value, lt, {name})
+  else if (!TypeUtils.isNull(lte)) isLessThenOrEqual(value, lte, {name})
+  else if (!TypeUtils.isNull(gt)) isGreaterThen(value, gt, {name})
+  else if (!TypeUtils.isNull(gte)) isGreaterThenOrEqual(value, gte, {name})
 }
 
 export function isLessThen(value: any, limit: number, {name}: NamedParam) {

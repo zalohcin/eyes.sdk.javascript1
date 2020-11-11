@@ -31,7 +31,9 @@ function makeSpecDriver({ref, deref}) {
       .catch(() => false)
   }
   async function executeScript(frame, script, arg) {
-    script = new Function(script.startsWith('return') ? script : `return (${script}).apply(null, arguments)`)
+    script = new Function(
+      script.startsWith('return') ? script : `return (${script}).apply(null, arguments)`,
+    )
     const result = await deref(frame).evaluateHandle(script, deserialize(arg))
     return serialize(result)
 

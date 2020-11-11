@@ -62,6 +62,7 @@ function makeSDK() {
       return ws.request('Eyes.check', {eyes, checkSettings})
     }
     function close() {
+      refer.destroy(driver)
       return ws.request('Eyes.close', {eyes})
     }
     function abort() {

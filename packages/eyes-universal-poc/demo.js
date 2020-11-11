@@ -8,8 +8,9 @@ async function main() {
     const page = await context.newPage()
     await page.goto('https://applitools.com/')
     const eyes = new Eyes()
+    eyes.setMatchTimeout(0)
     await eyes.open(page, 'Universal SDK', 'Universal SDK')
-    await eyes.check({isFully: true})
+    await eyes.check({isFully: false})
     await eyes.close()
   } catch (err) {
     console.log(err)

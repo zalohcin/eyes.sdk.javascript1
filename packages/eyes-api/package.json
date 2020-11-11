@@ -44,7 +44,7 @@
   },
   "scripts": {
     "lint": "eslint '**/*.ts'",
-    "doc": "typedoc ./index.ts --out ./doc",
+    "docs": "typedoc ./index.ts --out ./docs",
     "build": "tsc"
   },
   "license": "SEE LICENSE IN LICENSE",

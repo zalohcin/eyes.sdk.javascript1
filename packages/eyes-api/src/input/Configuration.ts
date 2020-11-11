@@ -200,7 +200,7 @@ export default class ConfigurationData implements Required<Configuration> {
     return this._matchTimeout
   }
   set matchTimeout(matchTimeout: number) {
-    ArgumentGuard.isInteger(matchTimeout, {name: 'matchTimeout', gt: 500})
+    ArgumentGuard.isInteger(matchTimeout, {name: 'matchTimeout'})
     this._matchTimeout = matchTimeout
   }
   getMatchTimeout(): number {
