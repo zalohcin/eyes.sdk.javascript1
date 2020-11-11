@@ -30,4 +30,4 @@ export {default as Region} from './src/input/Region'
 // #endregion
 
 export {default as EyesRunner, ClassicRunner, VisualGridRunner} from './src/Runners'
-export {default as Eyes} from './src/Runners'
+export {default as Eyes} from './src/Eyes'

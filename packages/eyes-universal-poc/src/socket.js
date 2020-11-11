@@ -1,21 +1,39 @@
+const WebSocket = require('ws')
 const uuid = require('uuid')
+const chalk = require('chalk')
 
-function socket(ws) {
+function makeSocket(ws) {
   const listeners = new Map()
-
-  ws.on('message', message => {
-    const {name, requestId, payload} = deserialize(message)
-    const fns = listeners(toKey({name, requestId}))
-    fns.forEach(fn => fn(payload, requestId))
+  const state = {}
+  const ready = new Promise((resolve, reject) => {
+    state.resolve = resolve
+    state.reject = reject
   })
 
-  return {
-    on,
-    once,
-    off,
-    emit,
-    request,
-    command,
+  async function init(ws) {
+    if (!ws) return
+    if (ws.readyState === WebSocket.CONNECTING) {
+      ws.on('open', state.resolve)
+      ws.on('error', state.reject)
+    } else if (ws.readyState === WebSocket.CONNECTING) {
+      state.resolve()
+    } else {
+      state.reject()
+    }
+    ws.on('message', message => {
+      const {name, requestId, payload} = deserialize(message)
+      const fns = listeners.get(name)
+      fns.forEach(fn => fn(payload, requestId))
+    })
+  }
+
+  function open(address) {
+    ws = new WebSocket(address)
+    init(ws)
+  }
+
+  function close() {
+    ws.terminate()
   }
 
   /**
@@ -24,14 +42,17 @@ function socket(ws) {
    * @return {() => void} event off function
    */
   function on(type, fn) {
-    const key = toKey(type)
-    let fns = listeners.get(key)
+    type = typeof type === 'string' ? {name: type} : {name: type.name, requestId: type.requestId}
+    let fns = listeners.get(type.name)
     if (!fns) {
       fns = new Set()
-      listeners.set(key, fns)
+      listeners.set(type.name, fns)
     }
-    fns.add(fn)
-    return () => off(type, fn)
+    const handler = type.requestId
+      ? (payload, requestId) => requestId === type.requestId && fn(payload, requestId)
+      : fn
+    fns.add(handler)
+    return () => off(type.name, handler)
   }
 
   /**
@@ -40,7 +61,7 @@ function socket(ws) {
    * @return {() => void} event off function
    */
   function once(type, fn) {
-    const off = on(type, () => (fn(), off()))
+    const off = on(type, (...args) => (fn(...args), off()))
     return off
   }
 
@@ -49,13 +70,12 @@ function socket(ws) {
    * @param {(payload, requestId?: string) => void} fn - event callback
    * @return {boolean} true if an event existed and has been removed, or false if the event does not exist.
    */
-  function off(type, fn) {
-    const key = toKey(type)
-    if (!fn) return listeners.delete(key)
-    const fns = listeners.get(key)
+  function off(name, fn) {
+    if (!fn) return listeners.delete(name)
+    const fns = listeners.get(name)
     if (!fns) return false
     const existed = fns.delete(fn)
-    if (!fns.size) listeners.delete(key)
+    if (!fns.size) listeners.delete(name)
     return existed
   }
 
@@ -65,7 +85,7 @@ function socket(ws) {
    */
   function emit(type, payload) {
     const message = serialize(type, payload)
-    ws.send(message)
+    ready.then(() => ws.send(message))
   }
 
   /**
@@ -77,8 +97,10 @@ function socket(ws) {
   function request(name, payload) {
     return new Promise((resolve, reject) => {
       const requestId = uuid.v4()
+      console.log(chalk.blue('[CLIENT REQUEST]'), name, payload)
       emit({name, requestId}, payload)
       once({name, requestId}, response => {
+        // console.log(chalk.blue('[CLIENT RESPONSE]'), name, response)
         if (response.error) return reject(response.error)
         return resolve(response.result)
       })
@@ -100,12 +122,17 @@ function socket(ws) {
       }
     })
   }
-}
 
-function toKey(type) {
-  if (typeof type === 'string') return type
-  if (type.requestId) return `${type.name}/${type.requestId}`
-  return type.name
+  return {
+    open,
+    close,
+    on,
+    once,
+    off,
+    emit,
+    request,
+    command,
+  }
 }
 
 function serialize(type, payload) {
@@ -120,4 +147,4 @@ function deserialize(message) {
   return JSON.parse(message)
 }
 
-module.export = socket
+module.exports = makeSocket

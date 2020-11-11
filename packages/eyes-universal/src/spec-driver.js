@@ -1,95 +1,98 @@
 const {TypeUtils} = require('@applitools/eyes-sdk-core')
 
-// #region HELPERS
-
-const DRIVER_ID = 'applitools-driver'
-const ELEMENT_ID = 'applitools-element'
-
-// #endregion
-
-// #region UTILITY
-
-const utility = {
-  isDriver(driver) {
-    return Boolean(driver) && Boolean(driver[DRIVER_ID])
-  },
-  isElement(element) {
-    return Boolean(element) && Boolean(element[ELEMENT_ID])
-  },
-  isSelector(selector) {
+function makeSpecDriver(ws) {
+  // #region UTILITY
+  function isDriver(driver) {
+    return true
+  }
+  function isElement(element) {
+    return Boolean(element && element['element-ref-id'])
+  }
+  function isSelector(selector) {
     return TypeUtils.isString(selector) || TypeUtils.has(selector, ['type', 'selector'])
-  },
-  extractSelector(element) {
+  }
+  function extractSelector(element) {
     return element.selector
-  },
-  isStaleElementError(error) {
+  }
+  function isStaleElementError(error) {
     // error
-  },
-}
+  }
+  // #endregion
 
-// #endregion
-
-// #region COMMANDS
-
-const commands = {
-  isEqualElements: ws => (context, element1, element2) => {
+  // #region COMMANDS
+  async function isEqualElements(context, element1, element2) {
     return ws.request('Driver.isEqualElements', {context, element1, element2})
-  },
-  executeScript: ws => (context, script, ...args) => {
-    return ws.request('Driver.executeScript', {context, script, args})
-  },
-  mainContext: ws => context => {
+  }
+  async function executeScript(context, script, ...args) {
+    return ws.request('Driver.executeScript', {context, script: script.toString(), args})
+  }
+  async function mainContext(context) {
     return ws.request('Driver.mainContext', {context})
-  },
-  parentContext: async ws => context => {
+  }
+  async function parentContext(context) {
     return ws.request('Driver.parentContext', {context})
-  },
-  childContext: ws => (context, element) => {
+  }
+  async function childContext(context, element) {
     return ws.request('Driver.childContext', {context, element})
-  },
-  findElement: ws => (context, selector) => {
+  }
+  async function findElement(context, selector) {
     return ws.request('Driver.findElement', {context, selector})
-  },
-  findElements: ws => (context, selector) => {
+  }
+  async function findElements(context, selector) {
     return ws.request('Driver.findElements', {context, selector})
-  },
-  getWindowRect: ws => driver => {
+  }
+  async function getWindowRect(driver) {
     return ws.request('Driver.getWindowRect', {driver})
-  },
-  setWindowRect: ws => (driver, rect) => {
+  }
+  async function setWindowRect(driver, rect) {
     return ws.request('Driver.setWindowRect', {driver, rect})
-  },
-  getViewportSize: ws => driver => {
+  }
+  async function getViewportSize(driver) {
     return ws.request('Driver.getViewportSize', {driver})
-  },
-  setViewportSize: ws => (driver, size) => {
+  }
+  async function setViewportSize(driver, size) {
     return ws.request('Driver.setViewportSize', {driver, size})
-  },
-  getOrientation: ws => driver => {
+  }
+  async function getOrientation(driver) {
     return ws.request('Driver.getOrientation', {driver})
-  },
-  getTitle: ws => driver => {
+  }
+  async function getTitle(driver) {
     return ws.request('Driver.getTitle', {driver})
-  },
-  getUrl: ws => driver => {
+  }
+  async function getUrl(driver) {
     return ws.request('Driver.getUrl', {driver})
-  },
-  getDriverInfo: ws => driver => {
+  }
+  async function getDriverInfo(driver) {
     return ws.request('Driver.getDriverInfo', {driver})
-  },
-  takeScreenshot: ws => driver => {
-    return ws.request('Driver.takeScreenshot', {driver})
-  },
-}
+  }
+  async function takeScreenshot(driver) {
+    const buffer = await ws.request('Driver.takeScreenshot', {driver})
+    return Buffer.from(buffer.data)
+  }
+  // #endregion
 
-// #endregion
-
-function makeSpecDriver(ws, {supportedCommands}) {
   return {
-    ...utility,
-    ...supportedCommands.reduce((supported, name) => {
-      return Object.assign(supported, {[name]: commands[name](ws)})
-    }, {}),
+    isDriver,
+    isElement,
+    isSelector,
+    extractSelector,
+    isStaleElementError,
+    isEqualElements,
+    executeScript,
+    mainContext,
+    parentContext,
+    childContext,
+    findElement,
+    findElements,
+    getWindowRect,
+    setWindowRect,
+    getViewportSize,
+    setViewportSize,
+    getOrientation,
+    getTitle,
+    getUrl,
+    getDriverInfo,
+    takeScreenshot,
   }
 }
 
