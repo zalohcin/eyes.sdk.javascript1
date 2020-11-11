@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 2.0.2 - 2020/11/11
+
 - fix bug when build crashes in case addCommand callback returns void
 
 ## 2.0.1 - 2020/11/2
