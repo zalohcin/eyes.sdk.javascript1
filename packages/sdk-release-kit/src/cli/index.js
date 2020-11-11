@@ -144,7 +144,6 @@ async function deps({shouldCommit} = {}) {
   await yarnUpgrade({
     folder: cwd,
     upgradeAll: args.upgradeAll,
-    skipDev: args.skipDev,
   })
   if (shouldCommit) {
     await gitAdd('package.json')

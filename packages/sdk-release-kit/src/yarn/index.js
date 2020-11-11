@@ -10,11 +10,14 @@ async function yarnInstall() {
   await sh(`yarn install`)
 }
 
-async function yarnUpgrade({folder, upgradeAll, skipDev}) {
+async function yarnUpgrade({folder, upgradeAll}) {
   const pkgJson = JSON.parse(fs.readFileSync(path.resolve(folder, 'package.json')))
   const {dependencies, devDependencies} = pkgJson
   const applitoolsDeps = pickby(dependencies, (_, pkg) => pkg.startsWith('@applitools/'))
-  const depsToUpgrade = upgradeAll ? dependencies : applitoolsDeps
+  const applitoolsDevDeps = pickby(devDependencies, (_, pkg) => pkg.startsWith('@applitools/'))
+  const depsToUpgrade = upgradeAll
+    ? Object.assign(dependencies, devDependencies)
+    : Object.assign(applitoolsDeps, applitoolsDevDeps)
   if (Object.keys(depsToUpgrade).length) {
     const depsStr = Object.keys(depsToUpgrade).join(' ')
     const cmd = `yarn upgrade --exact --latest ${depsStr}`
@@ -27,12 +30,6 @@ async function yarnUpgrade({folder, upgradeAll, skipDev}) {
       const changelogEntry = `- updated to ${dep}@${newVersion} (from ${oldVersion})`
       writeUnreleasedItemToChangelog({targetFolder: folder, entry: changelogEntry})
     }
-  }
-
-  if (!skipDev) {
-    const cmdDev = `yarn upgrade ${Object.keys(devDependencies).join(' ')}`
-    console.log('\n' + chalk.cyan(cmdDev))
-    await sh(cmdDev)
   }
 }
 
