@@ -67,7 +67,7 @@ function useEmitter() {
       const [result] = command.map(command => {
         if (typeof command === 'function') {
           const result = command()
-          if (result.isRef) {
+          if (result && result.isRef) {
             addCommand(syntax.return({value: result.ref(), type: result.type()}))
           }
         } else {
