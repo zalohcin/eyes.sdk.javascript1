@@ -34,7 +34,7 @@ digraph {
 ```
 
 ### Network layer
-The network layer could be implemented through WebSocket communication or HTTP polling. The implementation requires two-ways communication this is why the WebSocket implementation looks as a superior tech.
+The network layer could be implemented through WebSocket communication or HTTP polling. The implementation requires two-ways communication this is why the WebSocket implementation looks like a superior-tech.
 
 #### Consumer abstractions
 Not primitive objects which need to be sent to the Universal SDK.
@@ -63,7 +63,23 @@ Message should be a string formatted as json string with next structure
 ```ts
 type Message = {
   name: string, // name of the command to perform (e.g. Driver.executeScript or Eyes.open)
+  requestId: string // request id, needed to be able to group request and response
   payload: object, // commands payload
+}
+```
+
+#### Response format
+Responses should be a string formatted as json string with next structure
+```ts
+type Response = {
+  name: string, // name of the command to perform (e.g. Driver.executeScript or Eyes.open)
+  requestId: string // request id, needed to be able to group request and response
+  payload: {
+    result: ResultPayload
+    error: {
+      message: string
+    }
+  },
 }
 ```
 
@@ -72,13 +88,13 @@ type Message = {
   <summary>Driver.executeScript</summary>
 
   ```ts
-  type RequestObject = {
+  type RequestPayload = {
     contextId: string, // id of the context to execute script in
     script: // script to execute
     args: Array<any>, // an array of arguments which need to be passed to execute script function.
   }
 
-  type ResponseObject = {
+  type ResultPayload = {
     error: string, // message of the error which happened during script execution
     result: any, // the value returned from the script
   }
@@ -89,11 +105,11 @@ type Message = {
   <summary>Driver.mainContext</summary>
 
   ```ts
-  type RequestObject = {
+  type RequestPayload = {
     context: Context, // id of the context to return main context for
   }
 
-  type ResponseObject = {
+  type ResultPayload = {
     context: Context, // id of the main context. Might be the same as one passed if context if already main
   }
   ```
@@ -103,11 +119,11 @@ type Message = {
   <summary>Driver.parentContext</summary>
 
   ```ts
-  type RequestObject = {
+  type RequestPayload = {
     context: Context, // id of the context to return parent context for
   }
 
-  type ResponseObject = {
+  type ResultPayload = {
     context: Context, // id of the parent context. Might be the same as one passed if context is main
   }
   ```
@@ -117,12 +133,12 @@ type Message = {
   <summary>Driver.childContext</summary>
 
   ```ts
-  type RequestObject = {
+  type RequestPayload = {
     context: Context, // id of the context to return parent context for
     element: Element, // frame element
   }
 
-  type ResponseObject = {
+  type ResultPayload = {
     error: string, // message of the error which happened during executing child context
     context: Context, // id of the child context. Might be the same as one passed if context is main
   }
@@ -133,7 +149,7 @@ type Message = {
   <summary>Driver.findElement</summary>
 
   ```ts
-  type RequestObject = {
+  type RequestPayload = {
     context: Context, // id of the context to find an element in
     selector: {
       type: string, // selector type (e.g. css, xpath, etc.)
@@ -141,7 +157,7 @@ type Message = {
     },
   }
 
-  type ResponseObject = {
+  type ResultPayload = {
     element: string | null, // id of the element or null if element is not found
   }
   ```
@@ -151,7 +167,7 @@ type Message = {
   <summary>Driver.findElements</summary>
 
   ```ts
-  type RequestObject = {
+  type RequestPayload = {
     context: Context, // id of the context to find an elements in
     selector: {
       type: string, // selector type (e.g. css, xpath, etc.)
@@ -159,7 +175,7 @@ type Message = {
     },
   }
 
-  type ResponseObject = {
+  type ResultPayload = {
     elements: Array<Element>, // elements found for specific selector in specific context
   }
   ```
@@ -169,11 +185,11 @@ type Message = {
   <summary>Driver.getWindowRect</summary>
 
   ```ts
-  type RequestObject = {
+  type RequestPayload = {
     driver: Driver, // driver to get window rect for
   }
 
-  type ResponseObject = {
+  type ResultPayload = {
     rect: {
       x: number, // offset relative to the left edge of the screen
       y: number, // offset relative to the top edge of the screen
@@ -188,7 +204,7 @@ type Message = {
   <summary>Driver.setWindowRect</summary>
 
   ```ts
-  type RequestObject = {
+  type RequestPayload = {
     driver: Driver, // driver to set window rect for
     rect: {
       x: number, // window offset relative to the left edge of the screen
@@ -198,7 +214,7 @@ type Message = {
     },
   }
 
-  type ResponseObject = {}
+  type ResultPayload = {}
   ```
 </details>
 
@@ -206,11 +222,11 @@ type Message = {
   <summary>Driver.getViewportSize</summary>
 
   ```ts
-  type RequestObject = {
+  type RequestPayload = {
     driver: Driver, // driver to get viewport size for
   }
 
-  type ResponseObject = {
+  type ResultPayload = {
     size: {
       width: number, // viewport width
       height: number, // viewport height
@@ -223,7 +239,7 @@ type Message = {
   <summary>Driver.setViewportSize</summary>
 
   ```ts
-  type RequestObject = {
+  type RequestPayload = {
     driver: Driver, // driver to set viewport size for
     size: {
       width: number, // viewport width
@@ -231,7 +247,7 @@ type Message = {
     },
   }
 
-  type ResponseObject = {}
+  type ResultPayload = {}
   ```
 </details>
 
@@ -239,11 +255,11 @@ type Message = {
   <summary>Driver.getOrientation</summary>
 
   ```ts
-  type RequestObject = {
+  type RequestPayload = {
     driver: Driver, // driver to get orientation of
   }
 
-  type ResponseObject = {
+  type ResultPayload = {
     orientation: 'portrait'|'portrait-upside-down'|'landscape'|'landscape-right'|'landscape-left' // device orientation
   }
   ```
@@ -253,11 +269,11 @@ type Message = {
   <summary>Driver.getUrl</summary>
 
   ```ts
-  type RequestObject = {
+  type RequestPayload = {
     driver: Driver, // driver to get orientation of
   }
 
-  type ResponseObject = {
+  type ResultPayload = {
     url: string, // url of the current page
   }
   ```
@@ -267,11 +283,11 @@ type Message = {
   <summary>Driver.getTitle</summary>
 
   ```ts
-  type RequestObject = {
+  type RequestPayload = {
     driver: Driver, // driver to get orientation of
   }
 
-  type ResponseObject = {
+  type ResultPayload = {
     title: string, // title of the current page
   }
   ```
@@ -281,11 +297,11 @@ type Message = {
   <summary>Driver.getOrientation</summary>
 
   ```ts
-  type RequestObject = {
+  type RequestPayload = {
     driver: Driver, // driver to get orientation of
   }
 
-  type ResponseObject = {
+  type ResultPayload = {
     orientation: 'portrait'|'portrait-upside-down'|'landscape'|'landscape-right'|'landscape-left'
   }
   ```
@@ -295,11 +311,11 @@ type Message = {
   <summary>Driver.getDriverInfo</summary>
 
   ```ts
-  type RequestObject = {
+  type RequestPayload = {
     driver: Driver, // driver to get information about
   }
 
-  type ResponseObject = {
+  type ResultPayload = {
     info: {
       sessionId?: string, // webdriver session id
       isMobile?: boolean, // true if running on mobile device
@@ -318,44 +334,30 @@ type Message = {
   <summary>Driver.takeScreenshot</summary>
 
   ```ts
-  type RequestObject = {
+  type RequestPayload = {
     driver: Driver, // driver to take screenshot of
   }
 
-  type ResponseObject = {
+  type ResultPayload = {
     image: Buffer | ArrayBuffer | string // image data, if sent as a string should be base64 encoded
   }
   ```
 </details>
 
+
+
 #### Eyes commands
-<details>
-  <summary>Eyes.new</summary>
-
-  ```ts
-  type RequestObject = {
-    vg: boolean,
-    config: EyesConfiguration,
-  }
-
-  type ResponseObject = {
-    eyes: Eyes,
-  }
-  ```
-</details>
-
 <details>
   <summary>Eyes.open</summary>
 
   ```ts
-  type RequestObject = {
+  type RequestPayload = {
     driver: Driver,
     config: EyesConfiguration,
+    runner?: Runner
   }
 
-  type ResponseObject = {
-    eyes: Eyes,
-  }
+  type ResultPayload = Eyes
   ```
 </details>
 
@@ -363,12 +365,12 @@ type Message = {
   <summary>Eyes.check</summary>
 
   ```ts
-  type RequestObject = {
+  type RequestPayload = {
     eyes: Eyes,
     checkSettings: CheckSettings,
   }
 
-  type ResponseObject = {}
+  type ResultPayload = {}
   ```
 </details>
 
@@ -376,10 +378,58 @@ type Message = {
   <summary>Eyes.close</summary>
 
   ```ts
-  type RequestObject = {
+  type RequestPayload = {
     eyes: Eyes,
   }
 
-  type ResponseObject = {}
+  type ResultPayload = {}
+  ```
+</details>
+
+#### Runner commands
+<details>
+  <summary>Runner.new</summary>
+
+  ```ts
+  type RequestPayload = unknown
+
+  type ResultPayload = Runner
+  ```
+</details>
+<details>
+  <summary>Runner.close</summary>
+
+  ```ts
+  type RequestPayload = unknown
+
+  type ResultPayload = TestResults[]
+  ```
+</details>
+
+#### Batch commands
+<details>
+  <summary>Batch.close</summary>
+
+  ```ts
+  type RequestPayload = unknown
+
+  type ResultPayload = unknow
+  ```
+</details>
+
+#### Utils commands
+<details>
+  <summary>Utils.setViewportSize</summary>
+
+  ```ts
+  type RequestPayload = {
+    driver: Driver,
+    size: {
+      width: number,
+      height: number,
+    },
+  }
+
+  type ResultPayload = unknow
   ```
 </details>
