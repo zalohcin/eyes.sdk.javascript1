@@ -2,7 +2,12 @@
 
 ## Unreleased
 
+- fix firefox region compensation issue
+- add 2020 ios devices
+- fix coded region calculation when running in target region ([Trello 538](https://trello.com/c/FQ8iJZdi))
 - deprecate `saveDebugData`
+- updated to @applitools/eyes-sdk-core@12.5.7 (from 12.4.2)
+- updated to @applitools/visual-grid-client@15.1.1 (from 15.0.10)
 
 ## 1.2.2 - 2020/10/15
 
