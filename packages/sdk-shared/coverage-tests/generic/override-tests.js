@@ -16,8 +16,6 @@ module.exports = {
   'check window fully and frame in frame fully with scroll stitching': {config: {branchName: 'v2'}},
   'check window fully and frame in frame fully with vg': {config: {branchName: 'v2'}},
   'check region by selector with vg classic': {config: {branchName: 'no-fully-by-default'}},
-  'check region by selector fully with vg': {config: {branchName: 'no-full-selector'}},
-  'check fixed region by selector fully with vg': {config: {branchName: 'no-full-selector'}},
   'check overflowed region by coordinates with css stitching': {skip: true},
   'check overflowed region by coordinates with scroll stitching': {skip: true},
   'check region by selector after manual scroll with scroll stitching': {skip: true},
@@ -38,9 +36,6 @@ module.exports = {
   'should send ignore region by selector with vg': {skip: true},
   'should send ignore region by coordinates with css stitched': {skip: true},
   'should send ignore region by coordinates with vg': {skip: true},
-
-  'should hide and restore scrollbars with vg': {config: {branchName: 'no-full-selector'}},
-
   'should send floating region by coordinates with vg': {skip: true},
   'check frame after manual switch to frame with css stitching classic': {skip: true},
   'check frame after manual switch to frame with vg classic': {
@@ -54,4 +49,5 @@ module.exports = {
    *  We should use screen.width/screen.height for cropping/scaling and innerWidth/innerHeight to understand element location related to the viewport
    */
   'check window fully on android chrome emulator on desktop page': {skip: true},
+  'should send accessibility regions by selector with vg': {config: {branchName: 'v1'}},
 }

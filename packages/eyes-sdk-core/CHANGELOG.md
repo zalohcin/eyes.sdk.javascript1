@@ -3,6 +3,19 @@
 ## Unreleased
 
 
+## 12.5.7 - 2020/11/9
+
+- fix region compensation issue in firefox
+
+## 12.5.6 - 2020/11/8
+
+- add 2020 ios devices
+- fix coded region calculation when running in target region ([Trello 538](https://trello.com/c/FQ8iJZdi))
+
+## 12.5.5 - 2020/11/1
+
+- updated to @applitools/dom-snapshot@4.2.5 (from 4.2.3)
+
 ## 12.5.4 - 2020/10/26
 
 - restore inner offset of the element in case one stitch full page screenshot ([Trello 528](https://trello.com/c/iu2Png9p))

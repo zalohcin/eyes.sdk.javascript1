@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const yargs = require('yargs')
-const generate = require('./generate')
+const generate = require('./generate/command')
 const report = require('./report')
 
 const cliName = 'SAT - SDK Agnostic Test-framework'
@@ -37,9 +37,18 @@ const cli = yargs
           type: 'boolean',
           default: true,
         },
+        emitOnly: {
+          description: 'name of the test to emit',
+          type: 'array',
+        },
         ignoreSkip: {
           description: 'ignore skip flag',
           type: 'boolean',
+        },
+        strict: {
+          description: 'whether to throw an error if test emitting is failed',
+          type: 'boolean',
+          default: false,
         },
         name: {
           alias: 'n',

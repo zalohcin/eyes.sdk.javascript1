@@ -1,3 +1,5 @@
+const prettier = require('prettier')
+
 function makeMochaTestTemplate({name, skip, output, meta}) {
   const tags = []
   if (meta.features) tags.push(...meta.features.map(feature => `@${feature}`))
@@ -7,7 +9,7 @@ function makeMochaTestTemplate({name, skip, output, meta}) {
     tags.push(`@${meta.browser.replace(/-[\d.]+$/, '')}`)
   }
 
-  return `// ${name}
+  const code = `// ${name}
 ${output.hooks.deps.join('\n')}
 
 describe${skip ? '.skip' : ''}('Coverage Tests', () => {
@@ -22,6 +24,14 @@ describe${skip ? '.skip' : ''}('Coverage Tests', () => {
     ${output.commands.join('\n    ')}
   })
 })`
+
+  return prettier.format(code, {
+    parser: 'babel',
+    singleQuote: true,
+    semi: false,
+    bracketSpacing: false,
+    trailingComma: 'es5',
+  })
 }
 
 module.exports = makeMochaTestTemplate

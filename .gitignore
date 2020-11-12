@@ -25,6 +25,7 @@ typings
 
 # sdk-coverage-tests
 **/test/generic/
+**/generated/
 coverage-test-report.xml
 coverage-tests-metadata.json
 

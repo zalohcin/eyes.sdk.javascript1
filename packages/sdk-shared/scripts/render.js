@@ -5,23 +5,18 @@ const path = require('path')
 const util = require('util')
 const yargs = require('yargs')
 const {URL} = require('url')
+const {emitTest} = require('@applitools/sdk-coverage-tests')
+const makeSdk = require('../coverage-tests/generic/spec-emitter')
+const fileTemplate = require('../coverage-tests/generic/mocha-template')
 const utils = require('../src/cli-utils')
 const cwd = process.cwd()
 const spec = require(path.resolve(cwd, 'src/spec-driver'))
-const {
-  Eyes,
-  ClassicRunner,
-  VisualGridRunner,
-  FileLogHandler,
-  DeviceName,
-  ScreenOrientation,
-  MatchLevel,
-} = require(cwd)
+const {DeviceName, ScreenOrientation, MatchLevel} = require(cwd)
+const {getEyes} = require('../src/test-setup')
 const scrollPage = require('../src/scroll-page')
-
 const delay = util.promisify(setTimeout)
 
-const checkOptions = {
+const checkConfig = {
   name: {
     describe: 'tag for checkpoint',
     type: 'string',
@@ -90,9 +85,13 @@ const checkOptions = {
     describe: 'whether to check target fully',
     default: false,
   },
+  bcsHook: {
+    type: 'string',
+    describe: 'before capture screenshot hook',
+  },
 }
 
-const buildOptions = {
+const buildConfig = {
   browser: {
     describe: 'preset name of browser. (e.g. "edge-18", "ie-11", "safari-11", "firefox")',
     type: 'string',
@@ -242,8 +241,43 @@ const eyesConfig = {
   },
 }
 
-const {argv: args} = yargs
-  .usage('yarn render <url> [options]')
+const testConfig = {
+  url: {
+    description: 'url to check',
+    type: 'string',
+  },
+  delay: {
+    describe: 'delay in seconds before capturing page',
+    type: 'number',
+    default: 0,
+  },
+  scrollPage: {
+    describe: 'before taking the screenshot, scroll page to the bottom and up',
+    type: 'boolean',
+  },
+  runBefore: {
+    describe:
+      'path to JavaScript file which exports an async function which should be run before the visual check. The function receives the driver as a parameter so is can perform page interactions.',
+    type: 'string',
+    coerce(str) {
+      if (str.charAt(0) !== '/') str = `./${str}`
+      return path.resolve(cwd, str)
+    },
+  },
+}
+
+const saveConfig = {
+  save: {
+    description: 'save test to file instead of running it',
+    type: 'string',
+    coerce(str) {
+      return ['', 'true'].includes(str) || str
+    },
+  },
+}
+
+yargs
+  .usage('yarn render [url] [options]')
   .example(
     'yarn render http://example.org --viewport-size 800x600 --css',
     'classic viewport screenshot, browser width 800 pixels, browser height 600 pixels, css stitching',
@@ -256,32 +290,24 @@ const {argv: args} = yargs
     'yarn render http://example.org --ignore-regions "#ignore-this,.dynamic-element" --fully',
     'classic full page screenshot, 2 ignore regions',
   )
-  .options(checkOptions)
-  .options(buildOptions)
-  .options(eyesConfig)
-  .option('delay', {
-    describe: 'delay in seconds before capturing page',
-    type: 'number',
-    default: 0,
+  .command({
+    command: '* [url]',
+    builder: yargs =>
+      yargs.options({...buildConfig, ...eyesConfig, ...checkConfig, ...testConfig, ...saveConfig}),
+    handler: async args => {
+      console.log(`Options:\n ${formatArgs(args)}\n`)
+      try {
+        if (args.save) await saver(args)
+        else await runner(args)
+      } catch (err) {
+        console.log(err)
+        process.exit(1)
+      }
+    },
   })
-  .option('scroll-page', {
-    describe: 'before taking the screenshot, scroll page to the bottom and up',
-    type: 'boolean',
-  })
-  .option('run-before', {
-    describe:
-      'path to JavaScript file which exports an async function which should be run before the visual check. The function receives the driver as a parameter so is can perform page interactions.',
-    type: 'string',
-    coerce: processRunBefore,
-  })
-  .help()
+  .help().argv
 
-let [url] = args._
-if (!url && !args.attach) {
-  throw new Error('missing url argument!')
-}
-
-;(async function() {
+async function runner(args) {
   let runBeforeFunc
   if (args.runBefore !== undefined) {
     if (!fs.existsSync(args.runBefore)) {
@@ -293,103 +319,42 @@ if (!url && !args.attach) {
     }
   }
 
-  const [driver, destroyDriver] = await spec.build({
-    browser: args.browser,
-    device: args.device,
-    orientation: args.deviceOrientation,
-    capabilities: args.capabilities,
-    url: args.driverUrl,
-    attach: args.attach,
-    headless: args.headless,
-  })
-
-  if (args.attach) {
-    url = await spec.getUrl(driver)
-  }
-
-  console.log('Running render script for', url)
-  console.log(
-    'Options:\n ',
-    Object.entries(args)
-      .map(argToString)
-      .filter(x => x)
-      .join('\n  '),
-  )
-
-  const runner = args.vg ? new VisualGridRunner() : new ClassicRunner()
-
-  const eyes = new Eyes(runner)
-  eyes.setConfiguration({
-    apiKey: args.apiKey,
-    serverUrl: args.serverUrl,
-    viewportSize: args.viewportSize || (!args.device ? {width: 1024, height: 768} : undefined),
-    browsersInfo:
-      args.renderBrowsers || args.renderEmulations
-        ? [...(args.renderBrowsers || []), ...(args.renderEmulations || [])]
-        : undefined,
-    proxy: args.proxy,
-    accessibilityValidation: args.accessibilityValidation,
-    matchLevel: args.matchLevel,
-    stitchMode: args.css ? 'CSS' : 'Scroll',
-    stitchOverlap: args.stitchOverlap,
-    displayName: args.displayName,
-    baselineEnvName: args.envName, // determines the baseline
-    environmentName: args.envName, // shows up in the Environment column in the dashboard
-    batch:
-      args.batchId || args.batchName || args.notifyOnCompletion
-        ? {id: args.batchId, name: args.batchName, notifyOnCompletion: args.notifyOnCompletion}
-        : undefined,
-  })
-
-  const {logger, logFilePath} = initLog(eyes, new URL(url).hostname.replace(/\./g, '-'))
-  logger.log('[render script] Running Selenium render for', url)
-  logger.log(`[render script] process versions: ${JSON.stringify(process.versions)}`)
-  console.log('log file at:', logFilePath)
-
-  if (args.saveDebugScreenshots) {
-    eyes.setSaveDebugScreenshots(true)
-    const debugScreenshotsPath = logFilePath.replace('.log', '')
-    console.log('debug screenshots at:', debugScreenshotsPath)
-    fs.mkdirSync(debugScreenshotsPath)
-    eyes.setDebugScreenshotsPath(debugScreenshotsPath)
-  }
-
-  if (!args.attach) {
-    await spec.visit(driver, url)
-  }
+  const [driver, destroyDriver] = await spec.build(argsToBuildConfig(args))
 
   try {
-    if (runBeforeFunc) {
-      await runBeforeFunc(driver)
-    }
+    args.url = args.attach ? await spec.getUrl(driver) : args.url
+    if (!args.attach) await spec.visit(driver, args.url)
+    console.log('Running render script for', args.url)
 
-    await eyes.open(driver, args.appName, url)
+    args.saveLogs = path.resolve(cwd, `./logs/${formatUrl(args.url)}-${formatDate(new Date())}.log`)
+    args.saveDebugScreenshots = args.saveDebugScreenshots && args.saveLogs.replace('.log', '')
+    console.log('log file at:', args.saveLogs)
+    if (args.saveDebugScreenshots) console.log('debug screenshots at:', args.saveDebugScreenshots)
+
+    const eyes = getEyes(argsToEyesConfig(args))
+    const logger = eyes.getLogger()
+    const runner = eyes.getRunner()
+
+    logger.log('[render script] Running render script for', args.url)
+    logger.log(`[render script] process versions: ${JSON.stringify(process.versions)}`)
+
+    if (runBeforeFunc) await runBeforeFunc(driver)
+
+    await eyes.open(driver, args.appName, args.url)
 
     logger.log(`[render script] awaiting delay... ${args.delay}s`)
     await delay(args.delay * 1000)
     logger.log('[render script] awaiting delay... DONE')
 
-    if (args.scrollPage) {
-      await spec.executeScript(driver, scrollPage)
-    }
+    if (args.scrollPage) await spec.executeScript(driver, scrollPage)
 
-    await eyes.check({
-      name: args.name,
-      region: args.region,
-      frames: args.frames,
-      scrollRootElement: args.scrollRootElement,
-      ignoreRegions: args.ignoreRegions,
-      layoutRegions: args.layoutRegions,
-      layoutBreakpoints: args.layoutBreakpoints,
-      ignoreDisplacements: args.ignoreDisplacements,
-      timeout: args.matchTimeout,
-      isFully: args.fully,
-    })
+    await eyes.check(argsToCheckConfig(args))
 
     await eyes.close(false)
-    eyes._logger._logHandler.open()
+
+    logger.getLogHandler().open()
     const testResultsSummary = await runner.getAllTestResults(false)
-    eyes._logger._logHandler.close()
+    logger.getLogHandler().close()
     const resultsStr = testResultsSummary
       .getAllResults()
       .map(testResultContainer => {
@@ -402,17 +367,120 @@ if (!url && !args.attach) {
   } finally {
     await destroyDriver()
   }
-})().catch(ex => {
-  console.log(ex)
-  process.exit(1)
-})
+}
 
-function initLog(eyes, filename) {
-  const logFilePath = path.resolve(__dirname, `../logs/${filename}-${formatDate(new Date())}.log`)
-  const logHandler = new FileLogHandler(true, logFilePath)
-  logHandler.open()
-  eyes.setLogHandler(logHandler)
-  return {logger: eyes.getLogger(), logFilePath}
+async function saver(args) {
+  const test = {
+    name: `render-script-${formatUrl(args.url) || 'running-browser'}-${formatDate(new Date())}`,
+    features: ['render-script'],
+    env: argsToBuildConfig(args),
+    config: argsToEyesConfig(args),
+    test: ({driver, eyes, helpers}) => {
+      const url = args.attach ? eyes.getUrl().ref('url') : args.url
+      driver.visit(url)
+      eyes.open({appName: args.appName, testName: url})
+      if (args.delay) helpers.delay(args.delay * 1000)
+      if (args.scrollPage) driver.executeScript(scrollPage.toString())
+      eyes.check(argsToCheckConfig(args))
+      eyes.close()
+    },
+  }
+  const {name, code} = emitTest(test, {makeSdk, fileTemplate})
+  const testPath = typeof args.save === 'string' ? args.save : `./generated/${name}.spec.js`
+  fs.mkdirSync(path.dirname(testPath), {recursive: true})
+  fs.writeFileSync(testPath, code)
+  console.log(`test file at: ${testPath}`)
+}
+
+function parseRegionReferences(str) {
+  return utils.parseList(str).map(frame => {
+    const region = utils.parseRegion(frame)
+    if (region) return region
+    return utils.parseSelector(frame)
+  })
+}
+
+function argsToBuildConfig(args) {
+  return {
+    browser: args.browser,
+    device: args.device,
+    orientation: args.deviceOrientation,
+    capabilities: args.capabilities,
+    url: args.driverUrl,
+    attach: args.attach,
+    headless: args.headless,
+  }
+}
+
+function argsToEyesConfig(args) {
+  return {
+    vg: args.vg,
+    apiKey: args.apiKey,
+    serverUrl: args.serverUrl,
+    viewportSize: args.viewportSize || (!args.device ? {width: 1024, height: 768} : undefined),
+    browsersInfo: [...(args.renderBrowsers || []), ...(args.renderEmulations || [])],
+    proxy: args.proxy,
+    accessibilityValidation: args.accessibilityValidation,
+    matchLevel: args.matchLevel,
+    stitchMode: args.css ? 'CSS' : 'Scroll',
+    stitchOverlap: args.stitchOverlap,
+    parentBranchName: 'default',
+    branchName: 'default',
+    displayName: args.displayName,
+    baselineEnvName: args.envName, // determines the baseline
+    environmentName: args.envName, // shows up in the Environment column in the dashboard
+    batch:
+      args.batchId || args.batchName || args.notifyOnCompletion
+        ? {id: args.batchId, name: args.batchName, notifyOnCompletion: args.notifyOnCompletion}
+        : undefined,
+    dontCloseBatches: false,
+    saveNewTests: true,
+    saveLogs: args.saveLogs,
+    saveDebugScreenshots: args.saveDebugScreenshots,
+  }
+}
+
+function argsToCheckConfig(args) {
+  return {
+    name: args.name,
+    region: args.region,
+    frames: args.frames,
+    scrollRootElement: args.scrollRootElement,
+    ignoreRegions: args.ignoreRegions,
+    layoutRegions: args.layoutRegions,
+    layoutBreakpoints: args.layoutBreakpoints,
+    ignoreDisplacements: args.ignoreDisplacements,
+    timeout: args.matchTimeout,
+    isFully: args.fully,
+    hooks: args.bcsHook
+      ? {beforeCaptureScreenshot: ['beforeCaptureScreenshot', args.bcsHook]}
+      : undefined,
+  }
+}
+
+function formatDate(d) {
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const date = String(d.getDate()).padStart(2, '0')
+  const hours = String(d.getHours()).padStart(2, '0')
+  const minutes = String(d.getMinutes()).padStart(2, '0')
+  const seconds = String(d.getSeconds()).padStart(2, '0')
+  return `${d.getFullYear()}-${month}-${date}-${hours}-${minutes}-${seconds}`
+}
+
+function formatUrl(url) {
+  return new URL(url).hostname.replace(/\./g, '-')
+}
+
+function formatArgs(args) {
+  return Object.entries(args)
+    .reduce((lines, [key, value]) => {
+      // don't show the entire cli, and show only the camelCase version of each arg
+      if (!['_', '$0'].includes(key) && !key.includes('-')) {
+        lines.push(`* ${key}: ${JSON.stringify(value)}`)
+      }
+      return lines
+    }, [])
+    .join('\n ')
 }
 
 function formatResults(testResults) {
@@ -432,44 +500,16 @@ ${testResults
     return `  ${step.getName()} - ${getStepStatus(step)}`
   })
   .join('\n')}`
-}
 
-function getStepStatus(step) {
-  if (step.getIsDifferent()) {
-    return 'Diff'
-  } else if (!step.getHasBaselineImage()) {
-    return 'New'
-  } else if (!step.getHasCurrentImage()) {
-    return 'Missing'
-  } else {
-    return 'Passed'
+  function getStepStatus(step) {
+    if (step.getIsDifferent()) {
+      return 'Diff'
+    } else if (!step.getHasBaselineImage()) {
+      return 'New'
+    } else if (!step.getHasCurrentImage()) {
+      return 'Missing'
+    } else {
+      return 'Passed'
+    }
   }
-}
-
-function formatDate(d) {
-  const month = String(d.getMonth() + 1).padStart(2, '0')
-  const date = String(d.getDate()).padStart(2, '0')
-  const hours = String(d.getHours()).padStart(2, '0')
-  const minutes = String(d.getMinutes()).padStart(2, '0')
-  const seconds = String(d.getSeconds()).padStart(2, '0')
-  return `${d.getFullYear()}-${month}-${date}-${hours}-${minutes}-${seconds}`
-}
-
-function argToString([key, value]) {
-  const valueStr = typeof value === 'object' ? JSON.stringify(value) : value
-  const shouldShow = !['_', '$0'].includes(key) && key.indexOf('-') === -1 // don't show the entire cli, and show only the camelCase version of each arg
-  return shouldShow && `* ${key}: ${valueStr}`
-}
-
-function processRunBefore(str) {
-  if (str.charAt(0) !== '/') str = `./${str}`
-  return path.resolve(cwd, str)
-}
-
-function parseRegionReferences(str) {
-  return utils.parseList(str).map(frame => {
-    const region = utils.parseRegion(frame)
-    if (region) return region
-    return utils.parseSelector(frame)
-  })
 }
