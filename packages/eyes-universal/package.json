@@ -29,48 +29,41 @@
     "test": "./test"
   },
   "main": "./index.js",
+  "bin": {
+    "eyes-universal-linux": "./bin/app-linux",
+    "eyes-universal-macos": "./bin/app-macos",
+    "eyes-universal-windows": "./bin/app-win.exe"
+  },
   "dependencies": {
     "@applitools/eyes-sdk-core": "12.4.2",
     "@applitools/visual-grid-client": "15.0.10",
     "chalk": "^4.1.0",
     "uuid": "^8.3.1",
-    "ws": "^7.3.1"
-  },
-  "peerDependencies": {
-    "playwright": ">=1.0.0"
+    "ws": "^7.3.1",
+    "yargs": "^16.1.0"
   },
   "devDependencies": {
     "@applitools/sdk-coverage-tests": "^1.0.15",
     "@applitools/sdk-fake-eyes-server": "^2.0.0",
     "@applitools/sdk-release-kit": "^0.4.2",
     "@applitools/sdk-shared": "^0.3.0",
-    "eslint": "^7.9.0",
+    "eslint": "^7.13.0",
     "eslint-plugin-mocha-no-only": "^1.1.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.1.4",
-    "mocha": "^8.0.1",
     "pkg": "^4.4.9",
-    "playwright": "1.4.2",
-    "prettier": "1.19.0",
-    "spec-xunit-file": "0.0.1-3"
+    "prettier": "1.19.0"
   },
   "scripts": {
     "lint": "eslint '**/*.js'",
-    "render": "node ../sdk-shared/scripts/render.js",
-    "test": "yarn test:it",
-    "test:it": "mocha --no-timeouts ./test/it/*.spec.js",
-    "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-playwright' APPLITOOLS_BATCH_ID=$(uuidgen) XUNIT_FILE=coverage-test-report.xml mocha --config .mocharc.cvg.js",
-    "coverage:generate": "coverage-tests generate ../sdk-shared/coverage-tests/generic/index.js --name 'eyes-playwright'",
-    "coverage:report": "coverage-tests report ../sdk-shared/coverage-tests/generic/index.js --name 'eyes-playwright'",
-    "coverage:sandbox": "yarn coverage:generate && yarn test:coverage && yarn coverage:report --sandbox",
-    "coverage:prod": "yarn coverage:generate && yarn test:coverage && yarn coverage:report",
-    "preversion": "bongo preversion && yarn coverage:prod",
+    "build": "pkg app.js --targets node14-linux-x64,node14-macos-x64,node14-win-x64 --out-path ./bin",
+    "preversion": "bongo preversion && yarn build",
     "version": "bongo version",
     "postversion": "bongo postversion",
     "deps": "bongo deps"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
-    "node": ">=8.9.0"
+    "node": ">=14.15.0"
   }
 }

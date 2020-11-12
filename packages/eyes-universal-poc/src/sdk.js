@@ -1,11 +1,15 @@
-const makeServer = require('@applitools/eyes-universal')
+const {spawn} = require('child_process')
 const makeAPI = require('./api')
 const makeRefer = require('./refer')
 const makeSocket = require('./socket')
 const makeSpec = require('./spec-driver')
 
 function makeSDK() {
-  makeServer(({port}) => ws.open(`ws://localhost:${port}`))
+  const child = spawn('./node_modules/.bin/eyes-universal-macos', {
+    detached: true,
+    stdio: ['inherit', 'inherit', 'inherit'],
+  })
+  child.unref()
   const ws = makeSocket()
   const refer = makeRefer()
   const spec = makeSpec(refer)

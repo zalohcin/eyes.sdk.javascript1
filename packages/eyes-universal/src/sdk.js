@@ -2,15 +2,24 @@ const WebSocket = require('ws')
 const {ClassicRunner, VisualGridRunner} = require('@applitools/eyes-sdk-core')
 const {EyesSDK} = require('@applitools/eyes-sdk-core')
 const VisualGridClient = require('@applitools/visual-grid-client')
-const makeSpec = require('./spec-driver')
+const makeServer = require('./server')
 const makeSocket = require('./socket')
+const makeSpec = require('./spec-driver')
 const makeRefer = require('./refer')
 const {version} = require('../package.json')
 
-function makeSDK(listening) {
-  const server = new WebSocket.Server({port: 0})
+async function makeSDK(config) {
+  const {server, port} = await makeServer(config)
+  console.log(port) // NOTE: this is a part of the protocol
+  if (!server) {
+    console.log(
+      `You trying to spawn a duplicated server, please use server on port ${port} instead`,
+    )
+    return null
+  }
 
-  server.on('connection', client => {
+  const wss = new WebSocket.Server({server, path: '/eyes'})
+  wss.on('connection', client => {
     const ws = makeSocket(client)
     const refer = makeRefer()
 
@@ -69,15 +78,7 @@ function makeSDK(listening) {
     })
   })
 
-  return new Promise((resolve, reject) => {
-    server.on('listening', () => {
-      const address = server.address()
-      console.log(address)
-      resolve(address)
-      listening(address)
-    })
-    server.on('error', err => reject(err))
-  })
+  return {port, close: () => server.close()}
 }
 
 module.exports = makeSDK
