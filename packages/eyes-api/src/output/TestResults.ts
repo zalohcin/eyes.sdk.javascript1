@@ -1,10 +1,9 @@
 
 import RectangleSizeData, { RectangleSize } from '../input/RectangleSize';
-import { TestResultsStatus } from '../enums/TestResultsStatus';
+import { TestResultsStatuses } from '../enums/TestResultsStatuses';
 import SessionUrlsData, { SessionUrls } from './SessionUrls';
 import StepInfoData, { StepInfo } from './StepInfo';
 import { fromISO8601DateTime } from '../utils/DateUtils';
-import { AppUrls } from './AppUrls';
 import { toPlain, toString } from '../utils/GeneralUtils';
 
 export type SessionAccessibilityStatus = {
@@ -17,7 +16,7 @@ export type TestResults = {
     id?: string,
     name?: string,
     secretToken?: string,
-    status?: TestResultsStatus,
+    status?: TestResultsStatuses,
     appName?: string,
     batchName?: string,
     batchId?: string,
@@ -52,7 +51,7 @@ export default class TestResultsData implements Required<TestResults>{
     private _id: string;
     private _name: string;
     private _secretToken: string;
-    private _status: TestResultsStatus;
+    private _status: TestResultsStatuses;
     private _appName: string;
     private _batchName: string;
     private _batchId: string;
@@ -216,19 +215,19 @@ export default class TestResultsData implements Required<TestResults>{
         this._secretToken = value;
     }
 
-    getStatus(): TestResultsStatus {
+    getStatus(): TestResultsStatuses {
         return this._status;
     }
 
-    setStatus(value: TestResultsStatus): void {
+    setStatus(value: TestResultsStatuses): void {
         this._status = value;
     }
 
-    get status(): TestResultsStatus {
+    get status(): TestResultsStatuses {
         return this._status;
     }
 
-    set status(value: TestResultsStatus) {
+    set status(value: TestResultsStatuses) {
         this._status = value;
     }
 
@@ -440,35 +439,35 @@ export default class TestResultsData implements Required<TestResults>{
         this._isAborted = value;
     }
 
-    getAppUrls(): AppUrls | object {
+    getAppUrls(): SessionUrlsData | object {
         return this._appUrls;
     }
 
-    setAppUrls(value: AppUrls | object): void {
+    setAppUrls(value: SessionUrlsData | object): void {
         this._appUrls = value;
     }
 
-    get appUrls(): SessionUrls | object {
+    get appUrls(): SessionUrlsData | object {
         return this._appUrls;
     }
 
-    set appUrls(value: SessionUrls | object) {
+    set appUrls(value: SessionUrlsData | object) {
         this._appUrls = value;
     }
 
-    getApiUrls(): SessionUrls | object {
+    getApiUrls(): SessionUrlsData | object {
         return this._apiUrls
     }
 
-    setApiUrls(value: SessionUrls | object): void {
+    setApiUrls(value: SessionUrlsData | object): void {
         this._apiUrls = value;
     }
 
-    get apiUrls(): SessionUrls | object {
+    get apiUrls(): SessionUrlsData | object {
         return this._apiUrls;
     }
 
-    set apiUrls(value: SessionUrls | object) {
+    set apiUrls(value: SessionUrlsData | object) {
         this._apiUrls = value;
     }
 
@@ -662,6 +661,10 @@ export default class TestResultsData implements Required<TestResults>{
 
     set serverConnector(value: unknown) {
         this._serverConnector = value;
+    }
+
+    isPassed(): boolean {
+        return this._status === TestResultsStatuses.Passed;
     }
 
     toJSON() {

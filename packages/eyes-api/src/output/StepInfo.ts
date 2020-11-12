@@ -111,19 +111,19 @@ export default class StepInfoData implements Required<StepInfo> {
         this._hasCurrentImage = value;
     }
 
-    getAppUrls(): AppUrls {
-        return this._appUrls
+    getAppUrls(): AppUrlsData {
+        return this._appUrls as AppUrlsData;
     }
 
-    setAppUrls(value: AppUrls): void {
+    setAppUrls(value: AppUrlsData): void {
         this._appUrls = value
     }
 
-    get appUrls(): AppUrls {
-        return this._appUrls;
+    get appUrls(): AppUrlsData {
+        return this._appUrls as AppUrlsData;
     }
 
-    set appUrls(value: AppUrls) {
+    set appUrls(value: AppUrlsData) {
         this._appUrls = value;
     }
 
