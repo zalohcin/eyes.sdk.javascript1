@@ -1,6 +1,6 @@
 
 import RectangleSizeData, { RectangleSize } from '../input/RectangleSize';
-import { TestResultsStatuses } from '../enums/TestResultsStatuses';
+import TestResultsStatus from '../enums/TestResultsStatus';
 import SessionUrlsData, { SessionUrls } from './SessionUrls';
 import StepInfoData, { StepInfo } from './StepInfo';
 import { fromISO8601DateTime } from '../utils/DateUtils';
@@ -16,7 +16,7 @@ export type TestResults = {
     id?: string,
     name?: string,
     secretToken?: string,
-    status?: TestResultsStatuses,
+    status?: TestResultsStatus,
     appName?: string,
     batchName?: string,
     batchId?: string,
@@ -51,7 +51,7 @@ export default class TestResultsData implements Required<TestResults>{
     private _id: string;
     private _name: string;
     private _secretToken: string;
-    private _status: TestResultsStatuses;
+    private _status: TestResultsStatus;
     private _appName: string;
     private _batchName: string;
     private _batchId: string;
@@ -215,19 +215,19 @@ export default class TestResultsData implements Required<TestResults>{
         this._secretToken = value;
     }
 
-    getStatus(): TestResultsStatuses {
+    getStatus(): TestResultsStatus {
         return this._status;
     }
 
-    setStatus(value: TestResultsStatuses): void {
+    setStatus(value: TestResultsStatus): void {
         this._status = value;
     }
 
-    get status(): TestResultsStatuses {
+    get status(): TestResultsStatus {
         return this._status;
     }
 
-    set status(value: TestResultsStatuses) {
+    set status(value: TestResultsStatus) {
         this._status = value;
     }
 
@@ -664,7 +664,7 @@ export default class TestResultsData implements Required<TestResults>{
     }
 
     isPassed(): boolean {
-        return this._status === TestResultsStatuses.Passed;
+        return this._status === TestResultsStatus.Passed;
     }
 
     toJSON() {
