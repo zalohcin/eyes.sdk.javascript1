@@ -5,6 +5,10 @@
 
 
 
+## 4.16.0 - 2020/11/12
+
+- updated to @applitools/eyes-sdk-core@12.5.7 (from 12.5.0)
+
 ## 4.15.0 - 2020/10/22
 
 - adding ability to close batches using batch IDs
