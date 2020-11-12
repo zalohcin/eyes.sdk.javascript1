@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 2.0.3 - 2020/11/12
+
 - add a possibility to provide a nested type annotation
 - fix strict emitOnly
 
