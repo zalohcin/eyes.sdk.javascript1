@@ -3,6 +3,10 @@
 ## Unreleased
 
 
+## 0.4.2 - 2020/11/12
+
+- updated to @applitools/sdk-coverage-tests@2.0.3 (from 2.0.1)
+
 ## 0.4.1 - 2020/11/10
 
 - ability to show logs in cvg tests
