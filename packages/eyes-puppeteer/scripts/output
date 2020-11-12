@@ -1,0 +1,522 @@
+  81 passing (6m)
+  22 pending
+  65 failing
+
+  1) Coverage Tests
+       check frame fully with scroll stitching:
+     DiffsFoundError: Test 'TestCheckFrameFully_Fluent_Scroll' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265158627?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckFrameFullyWithScrollStitching.spec.js:33:5)
+
+  2) Coverage Tests
+       check frame with css stitching classic:
+     DiffsFoundError: Test 'TestCheckFrame' of 'Eyes Selenium SDK - Classic API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265151205?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckFrameWithCssStitchingClassic.spec.js:32:5)
+
+  3) Coverage Tests
+       check frame with scroll stitching:
+     DiffsFoundError: Test 'TestCheckFrame_Fluent_Scroll' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265148677?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckFrameWithScrollStitching.spec.js:33:5)
+
+  4) Coverage Tests
+       check frame with scroll stitching classic:
+     DiffsFoundError: Test 'TestCheckFrame_Scroll' of 'Eyes Selenium SDK - Classic API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265148886?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckFrameWithScrollStitchingClassic.spec.js:32:5)
+
+  5) Coverage Tests
+       check modal region by selector with scroll stitching:
+     DiffsFoundError: Test 'TestSimpleModal_Scroll' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265141464?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckModalRegionBySelectorWithScrollStitching.spec.js:34:5)
+
+  6) Coverage Tests
+       check modal region by selector with css stitching:
+     DiffsFoundError: Test 'TestSimpleModal' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265141472?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckModalRegionBySelectorWithCssStitching.spec.js:34:5)
+
+  7) Coverage Tests
+       check modal region by selector fully with css stitching:
+     DiffsFoundError: Test 'TestScrollableContentInModal_Fully' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265141577?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckModalRegionBySelectorFullyWithCssStitching.spec.js:38:5)
+
+  8) Coverage Tests
+       check modal region by selector fully with scroll stitching:
+     DiffsFoundError: Test 'TestScrollableContentInModal_Fully_Scroll' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265141644?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckModalRegionBySelectorFullyWithScrollStitching.spec.js:38:5)
+
+  9) Coverage Tests
+       check region by coordinates in frame fully with scroll stitching:
+     DiffsFoundError: Test 'TestCheckRegionByCoordinateInFrameFully_Fluent_Scroll' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265140129?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckRegionByCoordinatesInFrameFullyWithScrollStitching.spec.js:38:5)
+
+  10) Coverage Tests
+       check region by coordinates with css stitching:
+     DiffsFoundError: Test 'TestCheckRegionByCoordinates_Fluent' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265137377?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckRegionByCoordinatesWithCssStitching.spec.js:33:5)
+
+  11) Coverage Tests
+       check region by coordinates with scroll stitching:
+     DiffsFoundError: Test 'TestCheckRegionByCoordinates_Fluent_Scroll' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265134354?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckRegionByCoordinatesWithScrollStitching.spec.js:33:5)
+
+  12) Coverage Tests
+       check region by selector in frame fully with css stitching classic:
+     DiffsFoundError: Test 'TestCheckRegionInFrame' of 'Eyes Selenium SDK - Classic API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265129792?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckRegionBySelectorInFrameFullyWithCssStitchingClassic.spec.js:40:5)
+
+  13) Coverage Tests
+       check region by selector in frame fully with css stitching:
+     DiffsFoundError: Test 'TestCheckRegionInFrame' of 'Eyes Selenium SDK - Classic API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265130394?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckRegionBySelectorInFrameFullyWithCssStitching.spec.js:37:5)
+
+  14) Coverage Tests
+       check region by selector in frame fully with scroll stitching:
+     DiffsFoundError: Test 'TestCheckRegionInFrame_Scroll' of 'Eyes Selenium SDK - Classic API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265126457?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckRegionBySelectorInFrameFullyWithScrollStitching.spec.js:38:5)
+
+  15) Coverage Tests
+       check region by selector in frame fully with scroll stitching classic:
+     DiffsFoundError: Test 'TestCheckRegionInFrame_Scroll' of 'Eyes Selenium SDK - Classic API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265125207?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckRegionBySelectorInFrameFullyWithScrollStitchingClassic.spec.js:40:5)
+
+  16) Coverage Tests
+       check region by selector on page with sticky header with css stitching:
+     DiffsFoundError: Test 'TestCheckPageWithHeader_Region' of 'Eyes Selenium SDK - Page With Header' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265114829?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckRegionBySelectorOnPageWithStickyHeaderWithCssStitching.spec.js:34:5)
+
+  17) Coverage Tests
+       check region by selector on page with sticky header with scroll stitching:
+     DiffsFoundError: Test 'TestCheckPageWithHeader_Region_Scroll' of 'Eyes Selenium SDK - Page With Header' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265112610?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckRegionBySelectorOnPageWithStickyHeaderWithScrollStitching.spec.js:34:5)
+
+  18) Coverage Tests
+       check region by selector in overflowed frame fully with css stitching:
+     DiffsFoundError: Test 'CheckRegionInFrameLargerThenViewport' of 'Applitools Eyes SDK' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265118913?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckRegionBySelectorInOverflowedFrameFullyWithCssStitching.spec.js:39:5)
+
+  19) Coverage Tests
+       check region by selector in overflowed frame fully with scroll stitching:
+     DiffsFoundError: Test 'CheckRegionInFrameLargerThenViewport_Scroll' of 'Applitools Eyes SDK' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265118860?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckRegionBySelectorInOverflowedFrameFullyWithScrollStitching.spec.js:39:5)
+
+  20) Coverage Tests
+       check region by selector with css stitching classic:
+     DiffsFoundError: Test 'TestCheckRegion' of 'Eyes Selenium SDK - Classic API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265109253?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckRegionBySelectorWithCssStitchingClassic.spec.js:38:5)
+
+  21) Coverage Tests
+       check region by selector with scroll stitching classic:
+     DiffsFoundError: Test 'TestCheckRegion_Scroll' of 'Eyes Selenium SDK - Classic API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265108294?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckRegionBySelectorWithScrollStitchingClassic.spec.js:38:5)
+
+  22) Coverage Tests
+       check scrollable modal region by selector fully with css stitching:
+     DiffsFoundError: Test 'TestCheckScrollableModal' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265097170?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckScrollableModalRegionBySelectorFullyWithCssStitching.spec.js:39:5)
+
+  23) Coverage Tests
+       check scrollable modal region by selector fully with scroll stitching:
+     DiffsFoundError: Test 'TestCheckScrollableModal_Scroll' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265090411?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckScrollableModalRegionBySelectorFullyWithScrollStitching.spec.js:39:5)
+
+  24) Coverage Tests
+       check window after manual scroll with css stitching:
+     DiffsFoundError: Test 'TestCheckWindowAfterScroll' of 'Eyes Selenium SDK - Classic API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265079448?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckWindowAfterManualScrollWithCssStitching.spec.js:34:5)
+
+  25) Coverage Tests
+       check window after manual scroll with scroll stitching:
+     DiffsFoundError: Test 'TestCheckWindowAfterScroll_Scroll' of 'Eyes Selenium SDK - Classic API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265078036?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckWindowAfterManualScrollWithScrollStitching.spec.js:34:5)
+
+  26) Coverage Tests
+       check region by selector in frame multiple times with scroll stitching:
+     DiffsFoundError: Test 'TestCheckRegionInFrame2_Fluent_Scroll' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265118981?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckRegionBySelectorInFrameMultipleTimesWithScrollStitching.spec.js:65:5)
+
+  27) Coverage Tests
+       check region by selector in frame multiple times with css stitching:
+     DiffsFoundError: Test 'TestCheckRegionInFrame2_Fluent' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265119373?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckRegionBySelectorInFrameMultipleTimesWithCssStitching.spec.js:65:5)
+
+  28) Coverage Tests
+       check window fully on page with burger menu:
+     DiffsFoundError: Test 'CheckPageWithBurgerMenuFully' of 'Applitools Eyes SDK' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265066901?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckWindowFullyOnPageWithBurgerMenu.spec.js:33:5)
+
+  29) Coverage Tests
+       check window fully and frame in frame fully with css stitching:
+     DiffsFoundError: Test 'TestCheckFrameInFrame_Fully_Fluent2' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265073257?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckWindowFullyAndFrameInFrameFullyWithCssStitching.spec.js:39:5)
+
+  30) Coverage Tests
+       check window fully on page with sticky header with css stitching:
+     DiffsFoundError: Test 'TestCheckPageWithHeader_Window_Fully' of 'Eyes Selenium SDK - Page With Header' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265063740?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckWindowFullyOnPageWithStickyHeaderWithCssStitching.spec.js:34:5)
+
+  31) Coverage Tests
+       check window fully and frame in frame fully with scroll stitching:
+     DiffsFoundError: Test 'TestCheckFrameInFrame_Fully_Fluent2_Scroll' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265068354?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckWindowFullyAndFrameInFrameFullyWithScrollStitching.spec.js:39:5)
+
+  32) Coverage Tests
+       check window fully with css stitching:
+     DiffsFoundError: Test 'TestCheckWindowFully' of 'Eyes Selenium SDK - Classic API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265054600?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckWindowFullyWithCssStitching.spec.js:33:5)
+
+  33) Coverage Tests
+       check window fully with fixed scroll root element:
+     DiffsFoundError: Test 'TestWindowWithModal_Fully_Scroll' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265048520?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckWindowFullyWithFixedScrollRootElement.spec.js:33:5)
+
+  34) Coverage Tests
+       check window fully with scroll stitching:
+     DiffsFoundError: Test 'TestCheckWindowFully_Scroll' of 'Eyes Selenium SDK - Classic API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265044955?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckWindowFullyWithScrollStitching.spec.js:33:5)
+
+  35) Coverage Tests
+       check window on page with sticky header with css stitching:
+     DiffsFoundError: Test 'TestCheckPageWithHeader_Window' of 'Eyes Selenium SDK - Page With Header' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265032867?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckWindowOnPageWithStickyHeaderWithCssStitching.spec.js:33:5)
+
+  36) Coverage Tests
+       check window on page with sticky header with scroll stitching:
+     DiffsFoundError: Test 'TestCheckPageWithHeader_Window_Scroll' of 'Eyes Selenium SDK - Page With Header' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265029319?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckWindowOnPageWithStickyHeaderWithScrollStitching.spec.js:34:5)
+
+  37) Coverage Tests
+       check window with css stitching:
+     DiffsFoundError: Test 'TestCheckWindow' of 'Eyes Selenium SDK - Classic API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265024718?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckWindowWithCssStitching.spec.js:33:5)
+
+  38) Coverage Tests
+       check window two times with css stitching classic:
+     DiffsFoundError: Test 'TestDoubleCheckWindow' of 'Eyes Selenium SDK - Classic API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265028230?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckWindowTwoTimesWithCssStitchingClassic.spec.js:34:5)
+
+  39) Coverage Tests
+       check window two times with scroll stitching classic:
+     DiffsFoundError: Test 'TestDoubleCheckWindow_Scroll' of 'Eyes Selenium SDK - Classic API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265027206?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckWindowTwoTimesWithScrollStitchingClassic.spec.js:34:5)
+
+  40) Coverage Tests
+       check window with css stitching classic:
+     DiffsFoundError: Test 'TestCheckWindow' of 'Eyes Selenium SDK - Classic API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265023814?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckWindowWithCssStitchingClassic.spec.js:33:5)
+
+  41) Coverage Tests
+       check window with scroll stitching classic:
+     DiffsFoundError: Test 'TestCheckWindow_Scroll' of 'Eyes Selenium SDK - Classic API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265015101?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckWindowWithScrollStitchingClassic.spec.js:33:5)
+
+  42) Coverage Tests
+       check window with scroll stitching:
+     DiffsFoundError: Test 'TestCheckWindow_Scroll' of 'Eyes Selenium SDK - Classic API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265014323?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckWindowWithScrollStitching.spec.js:33:5)
+
+  43) Coverage Tests
+       should not fail if scroll root is stale:
+     Failed to set overflow: JSHandles can be evaluated only in the context they were created!
+  Error: JSHandles can be evaluated only in the context they were created!
+      at ExecutionContext.convertArgument (node_modules/puppeteer/lib/cjs/puppeteer/common/ExecutionContext.js:241:27)
+      at Array.map (<anonymous>)
+      at ExecutionContext._evaluateInternal (node_modules/puppeteer/lib/cjs/puppeteer/common/ExecutionContext.js:203:33)
+      at ExecutionContext.evaluateHandle (node_modules/puppeteer/lib/cjs/puppeteer/common/ExecutionContext.js:151:21)
+      at DOMWorld.evaluateHandle (node_modules/puppeteer/lib/cjs/puppeteer/common/DOMWorld.js:75:24)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+
+  44) Coverage Tests
+       "before each" hook for "should return actual viewport size (@chrome)":
+     Error: Failed to launch the browser process!
+Fontconfig warning: "/etc/fonts/fonts.conf", line 100: unknown element "blank"
+[6666:6666:1110/191643.123290:ERROR:browser_main_loop.cc(1426)] Unable to open X display.
+
+
+TROUBLESHOOTING: https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md
+
+      at onClose (node_modules/puppeteer/lib/cjs/puppeteer/node/BrowserRunner.js:193:20)
+      at ChildProcess.<anonymous> (node_modules/puppeteer/lib/cjs/puppeteer/node/BrowserRunner.js:184:79)
+      at Process.ChildProcess._handle.onexit (internal/child_process.js:275:12)
+
+  45) Coverage Tests
+       "after each" hook for "should return actual viewport size (@chrome)":
+     TypeError: destroyDriver is not a function
+      at Context.<anonymous> (test/generic/ShouldReturnActualViewportSize.spec.js:21:11)
+      at processImmediate (internal/timers.js:461:21)
+
+  46) Coverage Tests
+       should send accessibility regions by selector with css stitching:
+     DiffsFoundError: Test 'TestAccessibilityRegions' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797264986577?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/ShouldSendAccessibilityRegionsBySelectorWithCssStitching.spec.js:39:21)
+
+  47) Coverage Tests
+       should send accessibility regions by selector with scroll stitching:
+     DiffsFoundError: Test 'TestAccessibilityRegions_Scroll' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797264982799?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/ShouldSendAccessibilityRegionsBySelectorWithScrollStitching.spec.js:39:21)
+
+  48) Coverage Tests
+       should hide and restore scrollbars with scroll stitching:
+     DiffsFoundError: Test 'TestScrollbarsHiddenAndReturned_Fluent_Scroll' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265004492?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/ShouldHideAndRestoreScrollbarsWithScrollStitching.spec.js:39:5)
+
+  49) Coverage Tests
+       should hide and restore scrollbars with css stitching:
+     DiffsFoundError: Test 'TestScrollbarsHiddenAndReturned_Fluent' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265005443?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/ShouldHideAndRestoreScrollbarsWithCssStitching.spec.js:39:5)
+
+  50) Coverage Tests
+       should send floating region by coordinates with css stitching:
+     DiffsFoundError: Test 'TestCheckWindowWithFloatingByRegion_Fluent' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797264969046?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/ShouldSendFloatingRegionByCoordinatesWithCssStitching.spec.js:44:20)
+
+  51) Coverage Tests
+       should send correct region coordinates in target region with css stitching fully:
+
+      AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
+  {
+    height: 679,
++   left: 8,
++   top: 188,
+-   left: 0,
+-   top: 65,
+    width: 1084
+  }
+      + expected - actual
+
+       {
+         "height": 679
+      -  "left": 8
+      -  "top": 188
+      +  "left": 0
+      +  "top": 65
+         "width": 1084
+       }
+
+      at Context.<anonymous> (test/generic/ShouldSendCorrectRegionCoordinatesInTargetRegionWithCssStitchingFully.spec.js:40:12)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+
+  52) Coverage Tests
+       should send floating region by coordinates with scroll stitching:
+     DiffsFoundError: Test 'TestCheckWindowWithFloatingByRegion_Fluent_Scroll' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797264966649?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/ShouldSendFloatingRegionByCoordinatesWithScrollStitching.spec.js:44:20)
+
+  53) Coverage Tests
+       should send floating region by selector with css stitching:
+     DiffsFoundError: Test 'TestCheckWindowWithFloatingBySelector_Fluent' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797264959280?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/ShouldSendFloatingRegionBySelectorWithCssStitching.spec.js:43:20)
+
+  54) Coverage Tests
+       should send floating region by selector with scroll stitching:
+     DiffsFoundError: Test 'TestCheckWindowWithFloatingBySelector_Fluent_Scroll' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797264959203?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/ShouldSendFloatingRegionBySelectorWithScrollStitching.spec.js:44:20)
+
+  55) Coverage Tests
+       should send ignore region by coordinates in target region with css stitching:
+     DiffsFoundError: Test 'TestCheckRegionWithIgnoreRegion_Fluent' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797264958386?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/ShouldSendIgnoreRegionByCoordinatesInTargetRegionWithCssStitching.spec.js:37:20)
+
+  56) Coverage Tests
+       should send ignore region by coordinates in target region with scroll stitching:
+     DiffsFoundError: Test 'TestCheckRegionWithIgnoreRegion_Fluent_Scroll' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797264956961?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/ShouldSendIgnoreRegionByCoordinatesInTargetRegionWithScrollStitching.spec.js:37:20)
+
+  57) Coverage Tests
+       should send ignore displacements :
+     DiffsFoundError: Test 'TestIgnoreDisplacements' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797264958714?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/ShouldSendIgnoreDisplacements.spec.js:32:20)
+
+  58) Coverage Tests
+       should send ignore region by coordinates with scroll stitching:
+     DiffsFoundError: Test 'TestCheckWindowWithIgnoreRegion_Fluent_Scroll' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797264948450?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/ShouldSendIgnoreRegionByCoordinatesWithScrollStitching.spec.js:39:20)
+
+  59) Coverage Tests
+       should send ignore region by coordinates with css stitching:
+     DiffsFoundError: Test 'TestCheckWindowWithIgnoreRegion_Fluent' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797264948425?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/ShouldSendIgnoreRegionByCoordinatesWithCssStitching.spec.js:39:20)
+
+  60) Coverage Tests
+       should send ignore regions by selector with css stitching:
+     DiffsFoundError: Test 'TestCheckFullWindowWithMultipleIgnoreRegionsBySelector_Fluent' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797264930011?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/ShouldSendIgnoreRegionsBySelectorWithCssStitching.spec.js:34:20)
+
+  61) Coverage Tests
+       should send ignore regions by selector with scroll stitching:
+     DiffsFoundError: Test 'TestCheckFullWindowWithMultipleIgnoreRegionsBySelector_Fluent_Scroll' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797264924820?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/ShouldSendIgnoreRegionsBySelectorWithScrollStitching.spec.js:35:20)
+
+  62) Coverage Tests
+       check regions by coordinates in frame with css stitching:
+     DiffsFoundError: Test 'TestCheckLongIFrameModal' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265106333?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckRegionsByCoordinatesInFrameWithCssStitching.spec.js:70:5)
+
+  63) Coverage Tests
+       check regions by coordinates in overflowed frame with css stitching:
+     DiffsFoundError: Test 'TestCheckLongOutOfBoundsIFrameModal' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265103395?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckRegionsByCoordinatesInOverflowedFrameWithCssStitching.spec.js:71:5)
+
+  64) Coverage Tests
+       check regions by coordinates in overflowed frame with scroll stitching:
+     DiffsFoundError: Test 'TestCheckLongOutOfBoundsIFrameModal_Scroll' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265101069?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckRegionsByCoordinatesInOverflowedFrameWithScrollStitching.spec.js:72:5)
+
+  65) Coverage Tests
+       check regions by coordinates in frame with scroll stitching:
+     DiffsFoundError: Test 'TestCheckLongIFrameModal_Scroll' of 'Eyes Selenium SDK - Fluent API' detected differences!. See details at: https://eyes.applitools.com/app/batches/00000251797265159353/00000251797265105030?accountId=xIpd7EWjhU6cjJzDGrMcUw~~
+      at Object.close (node_modules/@applitools/eyes-sdk-core/lib/sdk/EyesBase.js:1196:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:97:5)
+      at async Context.<anonymous> (test/generic/CheckRegionsByCoordinatesInFrameWithScrollStitching.spec.js:71:5)

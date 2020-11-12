@@ -3,6 +3,11 @@
 ## Unreleased
 
 
+## 2.0.3 - 2020/11/12
+
+- add a possibility to provide a nested type annotation
+- fix strict emitOnly
+
 ## 2.0.2 - 2020/11/11
 
 - fix bug when build crashes in case addCommand callback returns void
