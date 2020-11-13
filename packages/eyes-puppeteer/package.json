@@ -32,8 +32,8 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "12.5.5",
-    "@applitools/visual-grid-client": "15.1.0"
+    "@applitools/eyes-sdk-core": "12.5.7",
+    "@applitools/visual-grid-client": "15.1.1"
   },
   "peerDependencies": {
     "puppeteer": ">=5.3.0"
