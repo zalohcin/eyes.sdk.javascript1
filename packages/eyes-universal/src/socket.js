@@ -1,22 +1,45 @@
+const WebSocket = require('ws')
 const uuid = require('uuid')
 const chalk = require('chalk')
 
 function makeSocket(ws) {
   const listeners = new Map()
-
-  ws.on('message', message => {
-    const {name, requestId, payload} = deserialize(message)
-    const fns = listeners.get(name)
-    fns.forEach(fn => fn(payload, requestId))
+  const state = {}
+  const ready = new Promise((resolve, reject) => {
+    state.resolve = resolve
+    state.reject = reject
   })
 
-  return {
-    on,
-    once,
-    off,
-    emit,
-    request,
-    command,
+  init(ws)
+
+  async function init(ws) {
+    if (!ws) return
+    if (ws.readyState === WebSocket.CONNECTING) {
+      ws.on('open', state.resolve)
+      ws.on('error', state.reject)
+    } else if (ws.readyState === WebSocket.OPEN) {
+      state.resolve()
+    } else {
+      state.reject()
+    }
+    ws.on('message', message => {
+      const {name, requestId, payload} = deserialize(message)
+      const fns = listeners.get(name)
+      fns.forEach(fn => fn(payload, requestId))
+    })
+    ws.on('close', () => {
+      const fns = listeners.get('close')
+      if (fns) fns.forEach(fn => fn())
+    })
+  }
+
+  function open(address) {
+    ws = new WebSocket(address)
+    init(ws)
+  }
+
+  function close() {
+    ws.terminate()
   }
 
   /**
@@ -68,7 +91,7 @@ function makeSocket(ws) {
    */
   function emit(type, payload) {
     const message = serialize(type, payload)
-    ws.send(message)
+    ready.then(() => ws.send(message))
   }
 
   /**
@@ -80,10 +103,8 @@ function makeSocket(ws) {
   function request(name, payload) {
     return new Promise((resolve, reject) => {
       const requestId = uuid.v4()
-      console.log(chalk.yellow('[SERVER REQUEST]'), name, payload)
       emit({name, requestId}, payload)
       once({name, requestId}, response => {
-        // console.log(chalk.yellow('[SERVER RESPONSE]'), name, response)
         if (response.error) return reject(response.error)
         return resolve(response.result)
       })
@@ -96,7 +117,7 @@ function makeSocket(ws) {
    * @param {(payload) => any} fn - command body
    */
   function command(name, fn) {
-    on(name, async (payload, requestId) => {
+    return on(name, async (payload, requestId) => {
       try {
         const result = await fn(payload)
         emit({name, requestId}, {result})
@@ -104,6 +125,17 @@ function makeSocket(ws) {
         emit({name, requestId}, {error})
       }
     })
+  }
+
+  return {
+    open,
+    close,
+    on,
+    once,
+    off,
+    emit,
+    request,
+    command,
   }
 }
 

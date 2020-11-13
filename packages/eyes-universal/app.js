@@ -8,7 +8,7 @@ const {argv} = yargs
     ['$ eyes-universal --no-singleton', 'Run Eyes Universal server in non-singleton mode'],
   ])
   .option('port', {
-    description: 'run server on a specific port',
+    description: 'run server on a specific port.',
     alias: 'p',
     type: 'number',
     default: 2107,
@@ -19,6 +19,14 @@ const {argv} = yargs
     alias: 's',
     type: 'boolean',
     default: true,
+  })
+  .option('idle-timeout', {
+    description: 'time in minutes for server to stay responsible in case of idle.',
+    type: 'boolean',
+    default: 15,
+    coerce(value) {
+      return value * 60 * 1000
+    },
   })
 
 makeSDK(argv)

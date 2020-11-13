@@ -1,4 +1,3 @@
-const WebSocket = require('ws')
 const {ClassicRunner, VisualGridRunner} = require('@applitools/eyes-sdk-core')
 const {EyesSDK} = require('@applitools/eyes-sdk-core')
 const VisualGridClient = require('@applitools/visual-grid-client')
@@ -8,8 +7,10 @@ const makeSpec = require('./spec-driver')
 const makeRefer = require('./refer')
 const {version} = require('../package.json')
 
-async function makeSDK(config) {
-  const {server, port} = await makeServer(config)
+const IDLE_TIMEOUT = 900000 // 15min
+
+async function makeSDK({idleTimeout = IDLE_TIMEOUT, ...serverConfig} = {}) {
+  const {server, port} = await makeServer(serverConfig)
   console.log(port) // NOTE: this is a part of the protocol
   if (!server) {
     console.log(
@@ -17,14 +18,21 @@ async function makeSDK(config) {
     )
     return null
   }
+  server.idle = setTimeout(() => server.close(), idleTimeout)
 
-  const wss = new WebSocket.Server({server, path: '/eyes'})
-  wss.on('connection', client => {
-    const ws = makeSocket(client)
+  server.on('connection', client => {
+    clearTimeout(server.idle)
+    const socket = makeSocket(client)
     const refer = makeRefer()
 
-    ws.once('Session.init', config => {
-      const spec = makeSpec(ws)
+    socket.on('close', () => {
+      if (server.clients.size === 0) {
+        server.idle = setTimeout(() => server.close(), idleTimeout)
+      }
+    })
+
+    socket.once('Session.init', config => {
+      const spec = makeSpec(socket)
       const commands = [
         'isDriver',
         'isElement',
@@ -34,7 +42,7 @@ async function makeSDK(config) {
         ...config.commands,
       ]
 
-      ws.sdk = EyesSDK({
+      socket.sdk = EyesSDK({
         name: `eyes-universal/${config.name}`,
         version: `${version}/${config.name}`,
         spec: commands.reduce(
@@ -45,14 +53,14 @@ async function makeSDK(config) {
       })
     })
 
-    ws.command('Util.setViewportSize', async ({driver, viewportSize}) => {
-      return ws.sdk.Eyes.setViewportSize(driver, viewportSize)
+    socket.command('Util.setViewportSize', async ({driver, viewportSize}) => {
+      return socket.sdk.Eyes.setViewportSize(driver, viewportSize)
     })
-    ws.command('Batch.close', () => {
+    socket.command('Batch.close', () => {
       // TODO
     })
-    ws.command('Eyes.open', async ({driver, config}) => {
-      const eyes = new ws.sdk.EyesFactory(config.vg ? new VisualGridRunner() : new ClassicRunner())
+    socket.command('Eyes.open', async ({driver, config}) => {
+      const eyes = new socket.sdk.EyesFactory(config.vg ? new VisualGridRunner() : new ClassicRunner())
       eyes.setConfiguration(config)
       await eyes.open(
         driver,
@@ -63,17 +71,16 @@ async function makeSDK(config) {
       )
       return refer.ref(eyes)
     })
-    ws.command('Eyes.check', async ({eyes, checkSettings}) => {
+    socket.command('Eyes.check', async ({eyes, checkSettings}) => {
       return refer.deref(eyes).check(checkSettings)
     })
-    ws.command('Eyes.locate', async ({eyes}) => {
+    socket.command('Eyes.locate', async ({eyes}) => {
       // TODO
     })
-    ws.command('Eyes.close', ({eyes}) => {
-      refer.destroy(driver)
+    socket.command('Eyes.close', ({eyes}) => {
       return refer.deref(eyes).close(false)
     })
-    ws.command('Eyes.abort', ({eyes}) => {
+    socket.command('Eyes.abort', ({eyes}) => {
       return refer.deref(eyes).abort(false)
     })
   })

@@ -5,16 +5,19 @@ const makeSocket = require('./socket')
 const makeSpec = require('./spec-driver')
 
 function makeSDK() {
-  const child = spawn('./node_modules/.bin/eyes-universal-macos', {
+  let port
+  const server = spawn('./node_modules/.bin/eyes-universal-macos', {
     detached: true,
-    stdio: ['inherit', 'inherit', 'inherit'],
+    stdio: ['ignore', 'pipe', 'ignore'],
   })
-  child.unref()
+  server.unref()
+  server.stdout.once('data', data => {
+    ;[port] = String(data).split('\n', 1)
+    server.stdout.destroy()
+  })
   const ws = makeSocket()
   const refer = makeRefer()
   const spec = makeSpec(refer)
-
-  ws.emit('Session.init', {commands: Object.keys(spec)})
 
   ws.command('Driver.isEqualElements', ({context, element1, element2}) => {
     return spec.isEqualElements(context, element1, element2)
@@ -58,19 +61,28 @@ function makeSDK() {
   })
 
   async function openEyes(driver, config) {
-    const eyes = await ws.request('Eyes.open', {driver: refer.ref(driver), config})
+    console.log(port)
+    ws.open(`http://localhost:${port}/eyes`)
+    ws.emit('Session.init', {commands: Object.keys(spec)})
+    const driverRef = refer.ref(driver)
+    const eyes = await ws.request('Eyes.open', {driver: driverRef, config})
 
     return {check, close, abort}
 
-    function check(checkSettings) {
+    async function check(checkSettings) {
       return ws.request('Eyes.check', {eyes, checkSettings})
     }
-    function close() {
-      refer.destroy(driver)
-      return ws.request('Eyes.close', {eyes})
+    async function close() {
+      const result = await ws.request('Eyes.close', {eyes})
+      ws.close()
+      refer.destroy(driverRef)
+      return result
     }
-    function abort() {
-      return ws.request('Eyes.abort', {eyes})
+    async function abort() {
+      const result = await ws.request('Eyes.abort', {eyes})
+      ws.close()
+      refer.destroy(driverRef)
+      return result
     }
   }
 

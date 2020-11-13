@@ -1,4 +1,5 @@
 {
+  "exclude": ["./src/output"],
   "compilerOptions": {
     "outDir": "dist",
     "declarationDir": "types",
@@ -13,5 +14,6 @@
     "preserveConstEnums": true,
     "downlevelIteration": true,
     "stripInternal": true,
+    
   },
 }

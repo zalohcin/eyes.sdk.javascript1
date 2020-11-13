@@ -1,13 +1,5 @@
-function makeSpecDriver({ref, deref}) {
+function makeSpecDriver({ref, deref, isRef}) {
   // #region HELPERS
-  const ELEMENT_ID = 'element-ref-id'
-
-  function refElement(element, parentRef) {
-    return {[ELEMENT_ID]: ref(element, parentRef)}
-  }
-  function derefElement(elementRef) {
-    return deref(elementRef[ELEMENT_ID])
-  }
   function transformSelector(selector) {
     // if (TypeUtils.has(selector, ['type', 'selector'])) {
     if (typeof selector === 'object' && 'type' in selector) {
@@ -24,10 +16,7 @@ function makeSpecDriver({ref, deref}) {
   // #region COMMANDS
   async function isEqualElements(frame, element1, element2) {
     return deref(frame)
-      .evaluate(([element1, element2]) => element1 === element2, [
-        derefElement(element1),
-        derefElement(element2),
-      ])
+      .evaluate(([element1, element2]) => element1 === element2, [deref(element1), deref(element2)])
       .catch(() => false)
   }
   async function executeScript(frame, script, arg) {
@@ -49,16 +38,17 @@ function makeSpecDriver({ref, deref}) {
         )
         return Object.assign(...chunks)
       } else if (type === 'node') {
-        return refElement(result.asElement(), frame)
+        return ref(result.asElement(), frame)
       } else {
         return result.jsonValue()
       }
     }
 
     function deserialize(arg) {
-      if (!arg) return arg
-      if (arg[ELEMENT_ID]) {
-        return derefElement(arg)
+      if (!arg) {
+        return arg
+      } else if (isRef(arg)) {
+        return deref(arg)
       } else if (Array.isArray(arg)) {
         return arg.map(deserialize)
       } else if (typeof arg === 'object') {
@@ -72,8 +62,7 @@ function makeSpecDriver({ref, deref}) {
     }
   }
   async function mainContext(frame) {
-    frame = extractContext(deref(frame))
-    let mainFrame = frame
+    let mainFrame = extractContext(deref(frame))
     while (mainFrame.parentFrame()) {
       mainFrame = mainFrame.parentFrame()
     }
@@ -85,16 +74,16 @@ function makeSpecDriver({ref, deref}) {
     return ref(parentFrame, frame)
   }
   async function childContext(_frame, element) {
-    const childFrame = derefElement(element).contentFrame()
+    const childFrame = deref(element).contentFrame()
     return ref(childFrame, element)
   }
   async function findElement(frame, selector) {
     const element = await deref(frame).$(transformSelector(selector))
-    return element ? refElement(element, frame) : null
+    return element ? ref(element, frame) : null
   }
   async function findElements(frame, selector) {
     const elements = await deref(frame).$$(transformSelector(selector))
-    return elements.map(element => refElement(element, frame))
+    return elements.map(element => ref(element, frame))
   }
   async function getViewportSize(page) {
     return deref(page).viewportSize()

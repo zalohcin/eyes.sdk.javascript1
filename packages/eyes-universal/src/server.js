@@ -1,4 +1,5 @@
 const http = require('http')
+const ws = require('ws')
 const {name, version} = require('../package.json')
 
 const TOKEN_HEADER = 'x-eyes-universal-token'
@@ -33,7 +34,12 @@ async function makeServer({port = 2107, singleton = true} = {}) {
   server.listen(port, 'localhost')
 
   return new Promise((resolve, reject) => {
-    server.on('listening', () => resolve({server, port}))
+    server.on('listening', () => {
+      const wss = new ws.Server({server, path: '/eyes'})
+      wss.on('close', () => server.close())
+      resolve({server: wss, port})
+    })
+
     server.on('error', async err => {
       if (err.code === 'EADDRINUSE') {
         if (singleton && (await isHandshakable(port))) {

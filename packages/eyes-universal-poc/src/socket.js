@@ -10,12 +10,12 @@ function makeSocket(ws) {
     state.reject = reject
   })
 
-  async function init(ws) {
+  function init(ws) {
     if (!ws) return
     if (ws.readyState === WebSocket.CONNECTING) {
       ws.on('open', state.resolve)
       ws.on('error', state.reject)
-    } else if (ws.readyState === WebSocket.CONNECTING) {
+    } else if (ws.readyState === WebSocket.OPEN) {
       state.resolve()
     } else {
       state.reject()
@@ -100,7 +100,6 @@ function makeSocket(ws) {
       console.log(chalk.blue('[CLIENT REQUEST]'), name, payload)
       emit({name, requestId}, payload)
       once({name, requestId}, response => {
-        // console.log(chalk.blue('[CLIENT RESPONSE]'), name, response)
         if (response.error) return reject(response.error)
         return resolve(response.result)
       })

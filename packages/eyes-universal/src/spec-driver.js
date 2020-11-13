@@ -6,7 +6,7 @@ function makeSpecDriver(ws) {
     return true
   }
   function isElement(element) {
-    return Boolean(element && element['element-ref-id'])
+    return Boolean(element && element['applitools-ref-id'])
   }
   function isSelector(selector) {
     return TypeUtils.isString(selector) || TypeUtils.has(selector, ['type', 'selector'])
