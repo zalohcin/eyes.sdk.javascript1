@@ -1,8 +1,8 @@
 <div align="center">
 
 ![Applitools Eyes](https://i.ibb.co/3hWJK68/applitools-eyes-logo.png)
-### Applitools Eyes SDK for [Playwright](https://playwright.dev/)
-[![npm](https://img.shields.io/npm/v/@applitools/eyes-playwright.svg?style=for-the-badge)](https://www.npmjs.com/package/@applitools/eyes-playwright)
+### Applitools Eyes SDK for [Puppeteer](https://developers.google.com/web/tools/puppeteer)
+[![npm](https://img.shields.io/npm/v/@applitools/eyes-puppeteer.svg?style=for-the-badge)](https://www.npmjs.com/package/@applitools/eyes-puppeteer)
 
 </div>
 <br/>
@@ -57,15 +57,15 @@
 
 ## Installation
 
-Install Eyes-Playwright as a local dev dependency in your tested project:
+Install eyes-puppeteer as a local dev dependency in your tested project:
 
 ```bash
-npm i -D @applitools/eyes-playwright
+npm i -D @applitools/eyes-puppeteer
 ```
 
 ## Applitools API key
 
-In order to authenticate via the Applitools server, you need to supply the Eyes-Playwright SDK with the API key you got from Applitools. Read more about how to obtain the API key [here](https://applitools.com/docs/topics/overview/obtain-api-key.html).
+In order to authenticate via the Applitools server, you need to supply the eyes-puppeteer SDK with the API key you got from Applitools. Read more about how to obtain the API key [here](https://applitools.com/docs/topics/overview/obtain-api-key.html).
 
 To do this, set the environment variable `APPLITOOLS_API_KEY` to the API key before running your tests.
 For example, on Linux/Mac:
@@ -90,21 +90,21 @@ eyes.setApiKey('<your API key>')
 
 ## Usage
 
-After defining the API key, you will be able to use commands from Eyes-Playwright in your tests to take screenshots and use Applitools Eyes to manage them.
+After defining the API key, you will be able to use commands from eyes-puppeteer in your tests to take screenshots and use Applitools Eyes to manage them.
 
 For example:
 
 ```js
-const {Eyes, Target} = require('@applitools/eyes-playwright')
+const {Eyes, Target} = require('@applitools/eyes-puppeteer')
 
 (async () => {
-  const browser = await playwright.firefox.launch();
+  const browser = await puppeteer.firefox.launch();
   const context = await browser.newContext();
   const page = await context.newPage();
   await page.goto('https://applitools.com');
 
   const eyes = new Eyes();
-  await eyes.open(page, "applitools.com website", "My first Playwright test!")
+  await eyes.open(page, "applitools.com website", "My first Puppeteer test!")
   await eyes.check('home page', Target.window().fully())
   await eyes.close()
 })();
@@ -310,7 +310,7 @@ Possible input types are:
 <!-- TODO add explanation -->
 
 ```js
-const {AccessibilityRegionType} = require('@applitools/eyes-playwright')
+const {AccessibilityRegionType} = require('@applitools/eyes-puppeteer')
 
 // viewport screenshot with accessibility region
 eyes.check(
@@ -387,14 +387,14 @@ There are two types of runners: `ClassicRunner` and `VisualGridRunner`:
 1. `ClassicRunner` - used when the screenshot is taken by the SDK itself.
 
 ```js
-const {ClassicRunner} = require('@applitools/eyes-playwright')
+const {ClassicRunner} = require('@applitools/eyes-puppeteer')
 const runner = new ClassicRunner()
 ```
 
 2. `VisualGridRunner` - used when the screenshot is taken by the **Ultrafast grid**.
 
 ```js
-const {VisualGridRunner} = require('@applitools/eyes-playwright')
+const {VisualGridRunner} = require('@applitools/eyes-puppeteer')
 const runner = new VisualGridRunner(concurrentSessions)
 ```
 
@@ -409,7 +409,7 @@ There are two purposes for using runners:
 This is done simply by specifying the `VisualGridRunner`. Browsers are specified by using the [`Configuration`](#configuration) API. For example:
 
 ```js
-const {Eyes, VisualGridRunner, BrowserType, DeviceName} = require('@applitools/eyes-playwright')
+const {Eyes, VisualGridRunner, BrowserType, DeviceName} = require('@applitools/eyes-puppeteer')
 const eyes = new Eyes(new VisualGridRunner)
 const configuration = eyes.getConfiguration()
 
@@ -430,7 +430,7 @@ If you decide to create more than one instance of `Eyes` in your tests (for exam
 Consider the following:
 
 ```js
-const {Eyes, ClassicRunner, StitchMode} = require('applitools/eyes-playwright')
+const {Eyes, ClassicRunner, StitchMode} = require('applitools/eyes-puppeteer')
 const runner = new VisualGridRunner(10)
 
 async function runTest(url, ...browsers) {
@@ -519,7 +519,7 @@ add browsers
 
 ### Configure Server URL
 
-By default, Eyes-Playwright communicates with Applitools' public Eyes cloud server, located at `https://eyesapi.applitools.com`.
+By default, eyes-puppeteer communicates with Applitools' public Eyes cloud server, located at `https://eyesapi.applitools.com`.
 
 If you have a dedicated cloud or an on-premise server, configure a different Eyes server URL as follows:
 
@@ -559,7 +559,7 @@ For example, when running with Mocha as a test runner:
 ```js
 describe('My first visual test', function() {
   beforeEach(async () => {
-    await eyes.open(page, "applitools.com website", "My first Playwright test!")
+    await eyes.open(page, "applitools.com website", "My first puppeteer test!")
   })
   afterEach(async () => {
     await eyes.close()
@@ -576,7 +576,7 @@ It's possible to manage how visual tests are aggregated into batches. Here are t
 
 #### Method 1: environment variable
 
-Run all the processes that execute Playwright with the same value for `APPLITOOLS_BATCH_ID`. For example, run tests with the same randomly generated UUID:
+Run all the processes that execute Puppeteer with the same value for `APPLITOOLS_BATCH_ID`. For example, run tests with the same randomly generated UUID:
 
 ```sh
 #! Unix based machines:
@@ -607,7 +607,7 @@ eyes.setBatch({
 The default stitch mode is `Scroll`. In order to change it:
 
 ```js
-const {Eyes, StitchMode} = require('@applitools/eyes-playwright')
+const {Eyes, StitchMode} = require('@applitools/eyes-puppeteer')
 
 const eyes = new Eyes()
 eyes.setStitchMode(StitchMode.CSS)
@@ -618,15 +618,15 @@ eyes.setStitchMode(StitchMode.SCROLL)
 
 #### Background information
 
-Eyes-Playwright allows you to control if the checkpoint image should include only the viewport - i.e. what you see in the browser window when you first load a page, or if it should also include the full page - i.e. what you would see if you manually scrolled down, or across, a page that is larger than the viewport.
+eyes-puppeteer allows you to control if the checkpoint image should include only the viewport - i.e. what you see in the browser window when you first load a page, or if it should also include the full page - i.e. what you would see if you manually scrolled down, or across, a page that is larger than the viewport.
 
-When Eyes-Playwright takes a full page screenshot, it does so by taking multiple screenshots of the viewport at different locations of the page (via Playwright's API), and then "stitching" them together. The output is one clear, potentially very large, screenshot of what can be revealed on the page when it is scrolled.
+When eyes-puppeteer takes a full page screenshot, it does so by taking multiple screenshots of the viewport at different locations of the page (via Puppeteer's API), and then "stitching" them together. The output is one clear, potentially very large, screenshot of what can be revealed on the page when it is scrolled.
 
 There are two methods for creating the stitched screenshot, and they are both related to the way the page is moved relative to the viewport. Here they are:
 
 ##### 1. Stitch mode: Scroll
 
-Using this method, the page is scrolled, just as a user would scroll. Eyes-Playwright takes the viewport screenshot, then scrolls the page to calculated locations.
+Using this method, the page is scrolled, just as a user would scroll. eyes-puppeteer takes the viewport screenshot, then scrolls the page to calculated locations.
 The issue with this method is that the page might respond to scroll events, and change the way it appears visually between the screenshots.
 
 ##### 2. Stitch mode: CSS
@@ -654,7 +654,7 @@ The default match level is `Strict`. To change it:
 
 ```js
 // Option 1: For the rest of the execution
-const {MatchLevel} = require('@applitools/eyes-playwright')
+const {MatchLevel} = require('@applitools/eyes-puppeteer')
 eyes.setMatchLevel(MatchLevel.Layout)
 
 // Option 2: For a single checkpoint
@@ -689,7 +689,7 @@ It's possible to provide additional information about each test in custom fields
 This is done by calling `setProperties` on the configuration, and providing it with an array of properties with the structure `{name, value}`. For example:
 
 ```js
-const {Eyes, Target} = require('@applitools/eyes-playwright')
+const {Eyes, Target} = require('@applitools/eyes-puppeteer')
 
 const eyes = new Eyes()
 
@@ -735,14 +735,14 @@ function getStepStatus(step) {
 }
 ```
 
-_For the full list of methods, visit our documentation page: https://applitools.com/docs/api/eyes-sdk/index-gen/class-testresults-selenium4-javascript.html_ (This is for our Selenium SDK, but all methods are relevant for Eyes-Playwright as well)
+_For the full list of methods, visit our documentation page: https://applitools.com/docs/api/eyes-sdk/index-gen/class-testresults-selenium4-javascript.html_ (This is for our Selenium SDK, but all methods are relevant for eyes-puppeteer as well)
 
 ### Logging
 
 To enable logging to the console, use the `ConsoleLogHandler` class:
 
 ```js
-import {Eyes, ConsoleLogHandler} from '@applitools/eyes-playwright'
+import {Eyes, ConsoleLogHandler} from '@applitools/eyes-puppeteer'
 
 const eyes = new Eyes()
 eyes.setLogHandler(new ConsoleLogHandler())
@@ -768,7 +768,7 @@ Default values are:
 For example:
 
 ```js
-const {Eyes, FileLogHandler} = require('@applitools/eyes-playwright')
+const {Eyes, FileLogHandler} = require('@applitools/eyes-puppeteer')
 const path = require('path')
 
 const eyes = new Eyes()
@@ -795,7 +795,7 @@ Here are examples for how to execute visual tests on different browsers and plat
 #### Desktop browsers
 
 ```js
-const {BrowserType} = require('@applitools/eyes-playwright')
+const {BrowserType} = require('@applitools/eyes-puppeteer')
 // ...
 const configuration = eyes.getConfiguration()
 configuration.addBrowsers(
@@ -818,7 +818,7 @@ eyes.setConfiguration(configuration)
 Predefined device:
 
 ```js
-const {ScreenOrientation, DeviceName} = require('@applitools/eyes-playwright')
+const {ScreenOrientation, DeviceName} = require('@applitools/eyes-puppeteer')
 // ...
 const configuration = eyes.getConfiguration()
 configuration.addBrowsers(
@@ -854,7 +854,7 @@ eyes.setConfiguration(configuration)
 #### iOS device
 
 ```js
-const {IosDeviceName, ScreenOrientation, IosVersion} = require('@applitools/eyes-playwright')
+const {IosDeviceName, ScreenOrientation, IosVersion} = require('@applitools/eyes-puppeteer')
 // ...
 const configuration = eyes.getConfiguration()
 configuration.addBrowser({
