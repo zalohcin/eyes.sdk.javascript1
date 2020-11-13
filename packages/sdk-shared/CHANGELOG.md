@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- update cors test server page to use a web font
 
 ## 0.4.2 - 2020/11/12
 
