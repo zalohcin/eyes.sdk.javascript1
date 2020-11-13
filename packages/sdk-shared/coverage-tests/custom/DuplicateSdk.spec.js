@@ -43,7 +43,10 @@ async function createCopyOfSdk(pathToExistingSdk) {
   const targetCorePath = path.resolve(pathToExistingSdk, 'eyes-sdk-core')
   fs.rmdirSync(targetCorePath, {recursive: true})
   // copy core into here
-  await pncp(path.resolve(pathToExistingSdk, '../eyes-sdk-core'), targetCorePath)
+  await pncp(
+    path.resolve(pathToExistingSdk, 'node_modules', '@applitools', 'eyes-sdk-core'),
+    targetCorePath,
+  )
 
   // create copy of src folder
   const targetSrcPath = path.resolve(pathToExistingSdk, 'src2')
