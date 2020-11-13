@@ -106,7 +106,12 @@ function extractContext(page) {
   return page.constructor.name === 'Page' ? page.mainFrame() : page
 }
 function isStaleElementError(err) {
-  return err && err.message && err.message.includes('Execution context was destroyed')
+  return (
+    err &&
+    err.message &&
+    (err.message.includes('Execution context was destroyed') ||
+      err.message.includes('JSHandles can be evaluated only in the context they were created'))
+  )
 }
 async function isEqualElements(frame, element1, element2) {
   return frame
@@ -222,6 +227,9 @@ async function build(env) {
     executablePath: 'google-chrome-stable',
     args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'],
   }
+  // forcing headlesss since all funcitonality works headlessly
+  // to re-enable, need to work out some performance issues with xvfb & coverage-tests
+  delete env.headless
   if (process.env.APPLITOOLS_DEBUG) {
     env.headless = false
     env.devtools = true
