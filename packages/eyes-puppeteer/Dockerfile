@@ -29,8 +29,10 @@ COPY package*.json .
 # install project deps
 RUN yarn
 
-# install xvfb
-RUN apt-get install -y xvfb xauth
-
-# NOTE: to run, use the following when calling docker run:
-# xvfb-run --server-args='-screen 0 1024x768x24' your-command-goes-here
+# install xvfb (leaving commented out since we don't need headed browser execution in the container - yet)
+# RUN apt-get install -y xvfb xauth
+#
+# NOTE:
+# - to run, use the following when calling docker run:
+#   xvfb-run --server-args='-screen 0 1024x768x24' your-command-goes-here
+#   e.g., xvfb-run --server-args='-screen 0 1024x768x24' echo 'blah'
