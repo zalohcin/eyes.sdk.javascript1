@@ -21,3 +21,5 @@ jobs:
     env:
       CVG_TESTS_REMOTE: http://localhost:4444/wd/hub
       APPLITOOLS_API_KEY_SDK: ${{secrets.APPLITOOLS_API_KEY_SDK}}
+      SAUCE_ACCESS_KEY: ${{secrets.SAUCE_ACCESS_KEY}}
+      SAUCE_USERNAME: ${{secrets.SAUCE_USERNAME}}
