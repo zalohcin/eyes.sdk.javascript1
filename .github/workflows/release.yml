@@ -1,0 +1,19 @@
+on:
+  workflow_dispatch:
+    inputs:
+      sdkName:
+        description: "SDK name"
+        required: true
+jobs:
+  coverage_sandbox:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - run: |
+          cd "packages/${{ github.event.inputs.sdkName }}"
+          yarn
+          yarn docker:setup
+          yarn coverage:sandbox
