@@ -3,6 +3,10 @@
 ## Unreleased
 
 
+## 0.5.2 - 2020/11/14
+
+- missed publishing index.js
+
 ## 0.5.1 - 2020/11/14
 
 - move prettier to depdendencies

@@ -1,6 +1,6 @@
 {
   "name": "@applitools/sdk-shared",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "engines": {
     "node": ">=10.0.0"
   },
@@ -17,7 +17,8 @@
   "files": [
     "coverage-tests",
     "scripts",
-    "src"
+    "src",
+    "index.js"
   ],
   "description": "General place for shared SDK things for development purposes",
   "author": "Applitools team <team@applitools.com>",
