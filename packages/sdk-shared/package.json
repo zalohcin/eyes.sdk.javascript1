@@ -14,6 +14,11 @@
   "bin": {
     "render": "./scripts/render.js"
   },
+  "files": [
+    "coverage-tests",
+    "scripts",
+    "src"
+  ],
   "description": "General place for shared SDK things for development purposes",
   "author": "Applitools team <team@applitools.com>",
   "homepage": "https://github.com/applitools/eyes.sdk.javascript1#readme",
