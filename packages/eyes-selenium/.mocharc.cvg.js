@@ -11,7 +11,7 @@ const tags = [
 module.exports = {
   spec: [
     './test/generic/*.spec.js',
-    '../sdk-shared/coverage-tests/custom/**/*.spec.js',
+    'node_modules/@applitools/sdk-shared/coverage-tests/custom/**/*.spec.js',
   ],
   parallel: true,
   jobs: 5,
