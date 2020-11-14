@@ -20,4 +20,4 @@ jobs:
           yarn coverage:sandbox
     env:
       CVG_TESTS_REMOTE: http://localhost:4444/wd/hub
-      APPLITOOLS_API_KEY_SDK: {{secrets.APPLITOOLS_API_KEY_SDK}}
+      APPLITOOLS_API_KEY_SDK: ${{secrets.APPLITOOLS_API_KEY_SDK}}
