@@ -18,3 +18,5 @@ jobs:
           yarn
           yarn docker:setup
           yarn coverage:sandbox
+    env:
+      CVG_TESTS_REMOTE: http://localhost:4444/wd/hub
