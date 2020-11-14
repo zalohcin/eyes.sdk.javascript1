@@ -1,3 +1,4 @@
+name: Coverage tests sandbox
 on:
   workflow_dispatch:
     inputs:
