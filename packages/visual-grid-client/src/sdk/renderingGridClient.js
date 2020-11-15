@@ -237,7 +237,12 @@ function makeRenderingGridClient({
       renderWrapper.setApiKey(apiKey)
     }
 
-    const [err, renderInfo] = await presult(doGetRenderInfo())
+    const [[err, renderInfo]] = await Promise.all([
+      presult(doGetRenderInfo()),
+      doLogEvents([
+        RunnerStartedEvent({concurrency, testConcurrency, defaultConcurrency}),
+      ]).catch(err => logger.log('error when logging batchStart', err)),
+    ])
 
     if (err) {
       if (err.response) {
@@ -256,9 +261,6 @@ function makeRenderingGridClient({
     }
 
     setRenderingInfo(renderInfo)
-    await doLogEvents([
-      RunnerStartedEvent({concurrency, testConcurrency, defaultConcurrency}),
-    ]).catch(err => logger.log('error when logging batchStart', err))
     return {renderInfo}
   }
 }
