@@ -65,6 +65,7 @@ async function setViewportSize(logger, context, requiredViewportSize) {
 
   let actualWindowSize = await context.driver.getWindowRect()
   actualViewportSize = await getViewportSize(logger, context)
+  logger.verbose(`actualWindowSize: ${actualWindowSize}, actualViewportSize: ${actualViewportSize}`)
 
   const sleep = 3000
   let retries = 3
