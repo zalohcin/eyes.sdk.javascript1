@@ -29,7 +29,11 @@ function getConfig({
 
   const envConfig = {}
   for (const p of configParams) {
-    envConfig[p] = GeneralUtils.getEnvValue(toEnvVarName(p))
+    if (defaultConfig[p]) {
+      envConfig[p] = defaultConfig[p]
+    } else {
+      envConfig[p] = GeneralUtils.getEnvValue(toEnvVarName(p))
+    }
     if (envConfig[p] === 'true') {
       envConfig[p] = true
     } else if (envConfig[p] === 'false') {

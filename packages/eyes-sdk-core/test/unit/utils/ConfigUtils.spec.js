@@ -5,7 +5,7 @@ const assert = require('assert')
 
 const {ConfigUtils, Logger} = require('../../../index')
 
-describe('ConfigUtils', () => {
+describe.only('ConfigUtils', () => {
   describe('getConfig()', () => {
     let prevEnv
     const logger = new Logger()
@@ -34,10 +34,10 @@ describe('ConfigUtils', () => {
       assert.deepStrictEqual(config, expectedConfig)
     })
 
-    it('loads config with env variables', () => {
-      process.env.APPLITOOLS_BLA = 'env kuku'
-      const config = getConfigAtConfigPath({configParams: ['bla']})
-      const expectedConfig = {bla: 'env kuku', it: 'works'}
+    it('loads config with env variables if no config property provided', () => {
+      process.env.APPLITOOLS_OVERRIDE = 'HELLO'
+      const config = getConfigAtConfigPath({configParams: ['override']})
+      const expectedConfig = {bla: 'kuku', it: 'works', override: 'HELLO'}
       assert.deepStrictEqual(config, expectedConfig)
     })
 
@@ -76,10 +76,10 @@ describe('ConfigUtils', () => {
       }
     })
 
-    it('loads config with bamboo prefix variable', () => {
-      process.env.bamboo_APPLITOOLS_BLA = 'env kuku bamboo'
-      const config = getConfigAtConfigPath({configParams: ['bla']})
-      const expectedConfig = {bla: 'env kuku bamboo', it: 'works'}
+    it('loads config with bamboo prefix variable if no config property provided', () => {
+      process.env.bamboo_APPLITOOLS_BRO = 'env kuku bamboo'
+      const config = getConfigAtConfigPath({configParams: ['bro']})
+      const expectedConfig = {bro: 'env kuku bamboo', it: 'works', bla: 'kuku'}
       assert.deepStrictEqual(config, expectedConfig)
     })
 
