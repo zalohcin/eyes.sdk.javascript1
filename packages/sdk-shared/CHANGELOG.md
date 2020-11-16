@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- add eyes.abort to the afterEach for all generic coverage tests for better session cleanup
 
 ## 0.5.3 - 2020/11/16
 
