@@ -1,7 +1,7 @@
 # Changelog
 
 ## Unreleased
-
+- update duplicate sdk test to work out of node_modules
 
 ## 0.5.2 - 2020/11/14
 
