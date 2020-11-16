@@ -110,7 +110,7 @@ function useEmitter() {
   }
 
   function parseType(type) {
-    const match = type.match(/(?<name>[A-Za-z][A-Za-z0-9_]*)(<(?<generic>.*?)>)?/)
+    const match = type.match(/(?<name>[A-Za-z][A-Za-z0-9_]*)(<(?<generic>.*)>)?/)
     if (!match) {
       throw new Error(
         'Type format is incorrect. Please follow the convention (e.g. TypeName or Type1<Type2, Type3>)',
