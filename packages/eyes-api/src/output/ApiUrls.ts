@@ -1,116 +1,105 @@
-import { toPlain } from '../utils/GeneralUtils';
+import * as GeneralUtils from '../utils/GeneralUtils'
 
 export type ApiUrls = {
-    baselineImage?: string,
-    currentImage?: string,
-    checkpointImage?: string,
-    checkpointImageThumbnail?: string,
-    diffImage?: string
+  baselineImage?: string
+  currentImage?: string
+  checkpointImage?: string
+  checkpointImageThumbnail?: string
+  diffImage?: string
 }
 
-
 export default class ApiUrlsData implements Required<ApiUrls> {
-    private _baselineImage: string;
-    private _currentImage: string;
-    private _checkpointImage: string;
-    private _checkpointImageThumbnail: string;
-    private _diffImage: string;
+  private _baselineImage: string
+  private _currentImage: string
+  private _checkpointImage: string
+  private _checkpointImageThumbnail: string
+  private _diffImage: string
 
-    constructor({
-        baselineImage,
-        currentImage,
-        checkpointImage,
-        checkpointImageThumbnail,
-        diffImage,
-    }: ApiUrls = {}) {
-        this._baselineImage = baselineImage
-        this._currentImage = currentImage
-        this._checkpointImage = checkpointImage
-        this._checkpointImageThumbnail = checkpointImageThumbnail
-        this._diffImage = diffImage
-    }
+  constructor(appUrls?: ApiUrls) {
+    if (appUrls) return this
+    this.baselineImage = appUrls.baselineImage
+    this.currentImage = appUrls.currentImage
+    this.checkpointImage = appUrls.checkpointImage
+    this.checkpointImageThumbnail = appUrls.checkpointImageThumbnail
+    this.diffImage = appUrls.diffImage
+  }
 
-    getBaselineImage(): string {
-        return this._baselineImage
-    }
+  get baselineImage(): string {
+    return this._baselineImage
+  }
+  set baselineImage(value: string) {
+    this._baselineImage = value
+  }
+  getBaselineImage(): string {
+    return this._baselineImage
+  }
+  setBaselineImage(value: string) {
+    this._baselineImage = value
+  }
 
-    setBaselineImage(value: string): void {
-        this._baselineImage = value
-    }
+  get currentImage(): string {
+    return this._currentImage
+  }
+  set currentImage(currentImage: string) {
+    this._currentImage = currentImage
+  }
+  getCurrentImage(): string {
+    return this._currentImage
+  }
+  setCurrentImage(currentImage: string) {
+    this._currentImage = currentImage
+  }
 
-    get baselineImage(): string {
-        return this._baselineImage;
-    }
+  get checkpointImage(): string {
+    return this._checkpointImage
+  }
+  set checkpointImage(checkpointImage: string) {
+    this._checkpointImage = checkpointImage
+  }
+  getCheckpointImage(): string {
+    return this._checkpointImage
+  }
+  setCheckpointImage(checkpointImage: string) {
+    this._checkpointImage = checkpointImage
+  }
 
-    set baselineImage(value: string) {
-        this._baselineImage = value;
-    }
+  get checkpointImageThumbnail(): string {
+    return this._checkpointImageThumbnail
+  }
+  set checkpointImageThumbnail(checkpointImageThumbnail: string) {
+    this._checkpointImageThumbnail = checkpointImageThumbnail
+  }
+  getCheckpointImageThumbnail(): string {
+    return this._checkpointImageThumbnail
+  }
+  setCheckpointImageThumbnail(checkpointImageThumbnail: string) {
+    this.checkpointImageThumbnail = checkpointImageThumbnail
+  }
 
-    getCurrentImage(): string {
-        return this._currentImage
-    }
+  get diffImage(): string {
+    return this._diffImage
+  }
+  set diffImage(diffImage: string) {
+    this._diffImage = diffImage
+  }
+  getDiffImage(): string {
+    return this._diffImage
+  }
+  setDiffImage(diffImage: string) {
+    this.diffImage = diffImage
+  }
 
-    setCurrentImage(value: string): void {
-        this._currentImage = value
-    }
+  toJSON(): ApiUrls {
+    return GeneralUtils.toJSON(this, [
+      'baselineImage',
+      'currentImage',
+      'checkpointImage',
+      'checkpointImageThumbnail',
+      'diffImage',
+    ])
+  }
 
-    get currentImage(): string {
-        return this._currentImage;
-    }
-
-    set currentImage(value: string) {
-        this._currentImage = value;
-    }
-
-    getCheckpointImage(): string {
-        return this._checkpointImage
-    }
-
-    setCheckpointImage(value: string): void {
-        this._checkpointImage = value
-    }
-
-    get checkpointImage(): string {
-        return this._checkpointImage;
-    }
-
-    set checkpointImage(value: string) {
-        this._checkpointImage = value;
-    }
-
-    getCheckpointImageThumbnail(): string {
-        return this._checkpointImageThumbnail
-    }
-
-    setCheckpointImageThumbnail(value: string): void {
-        this._checkpointImageThumbnail = value
-    }
-
-    get checkpointImageThumbnail(): string {
-        return this._checkpointImageThumbnail;
-    }
-
-    set checkpointImageThumbnail(value: string) {
-        this._checkpointImageThumbnail = value;
-    }
-
-    getDiffImage(): string {
-        return this._diffImage
-    }
-
-    setDiffImage(value: string): void {
-        this._diffImage = value
-    }
-
-    get diffImage(): string {
-        return this._diffImage;
-    }
-
-    set diffImage(value: string) {
-        this._diffImage = value;
-    }
-
-    toJSON(): object {
-        return toPlain(this)
-    }
+  toString(): string {
+    return `${this.constructor.name} ${JSON.stringify(this.toJSON(), null, 2)}`
+  }
 }

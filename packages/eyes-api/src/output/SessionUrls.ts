@@ -1,53 +1,51 @@
-import { toPlain } from '../utils/GeneralUtils';
+import * as GeneralUtils from '../utils/GeneralUtils'
 
 export type SessionUrls = {
-    batch?: string,
-    session?: string
+  batch?: string
+  session?: string
 }
 
 export default class SessionUrlsData implements Required<SessionUrls> {
-    private _batch: string;
-    private _session: string;
+  private _batch: string
+  private _session: string
 
-    constructor({ batch, session }: SessionUrls = {}) {
-        this._batch = batch;
-        this._session = session;
-    }
+  constructor(sessionUrls?: SessionUrls) {
+    if (!sessionUrls) return this
+    this.batch = sessionUrls.batch
+    this.session = sessionUrls.session
+  }
 
-    getBatch(): string {
-        return this._batch;
-    }
+  get batch(): string {
+    return this._batch
+  }
+  set batch(batch: string) {
+    this._batch = batch
+  }
+  getBatch(): string {
+    return this._batch
+  }
+  setBatch(batch: string) {
+    this.batch = batch
+  }
 
-    setBatch(value: string): void {
-        this._batch = value;
-    }
+  get session(): string {
+    return this._session
+  }
+  set session(session: string) {
+    this._session = session
+  }
+  getSession(): string {
+    return this._session
+  }
+  setSession(session: string) {
+    this.session = session
+  }
 
-    get batch(): string {
-        return this._batch;
-    }
+  toJSON(): SessionUrls {
+    return GeneralUtils.toJSON(this, ['batch', 'session'])
+  }
 
-    set batch(value: string) {
-        this._batch = value;
-    }
-
-    getSession(): string {
-        return this._session;
-    }
-
-    setSession(value: string): void {
-        this._session = value;
-    }
-
-    get session(): string {
-        return this._session;
-    }
-
-    set session(value: string) {
-        this._session = value;
-    }
-
-    toJSON(): object {
-        return toPlain(this)
-    }
-
+  toString(): string {
+    return `${this.constructor.name} ${JSON.stringify(this.toJSON(), null, 2)}`
+  }
 }

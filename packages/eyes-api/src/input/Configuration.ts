@@ -364,7 +364,7 @@ export default class ConfigurationData implements Required<Configuration> {
   }
   set properties(properties: CustomProperty[]) {
     ArgumentGuard.isArray(properties, {name: 'properties'})
-    this._properties = properties.map((prop) => new CustomPropertyData(prop))
+    this._properties = properties.map(prop => new CustomPropertyData(prop))
   }
   getProperties(): CustomPropertyData[] {
     return this._properties
@@ -816,11 +816,7 @@ export default class ConfigurationData implements Required<Configuration> {
   }
   addBrowser(browserInfo: RenderInfo): this
   addBrowser(width: number, height: number, name?: BrowserName): this
-  addBrowser(
-    browserInfoOrWidth: RenderInfo | number,
-    height?: number,
-    name: BrowserName = BrowserName.CHROME,
-  ) {
+  addBrowser(browserInfoOrWidth: RenderInfo | number, height?: number, name: BrowserName = BrowserName.CHROME) {
     if (TypeUtils.isObject(browserInfoOrWidth)) {
       return this.addBrowsers(browserInfoOrWidth)
     } else {
@@ -866,9 +862,7 @@ export default class ConfigurationData implements Required<Configuration> {
     } else if (layoutBreakpoints.length === 0) {
       this._layoutBreakpoints = false
     } else {
-      this._layoutBreakpoints = Array.from(new Set(layoutBreakpoints)).sort((a, b) =>
-        a < b ? 1 : -1,
-      )
+      this._layoutBreakpoints = Array.from(new Set(layoutBreakpoints)).sort((a, b) => (a < b ? 1 : -1))
     }
     this._layoutBreakpoints = layoutBreakpoints
   }

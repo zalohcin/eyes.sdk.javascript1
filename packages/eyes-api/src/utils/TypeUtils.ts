@@ -26,6 +26,10 @@ export function isObject(value: any): value is Record<PropertyKey, any> {
   return typeof value === 'object' && value !== null
 }
 
+export function isFunction(value: any): value is (...args: any[]) => any {
+  return typeof value === 'function'
+}
+
 export function isEnumValue<TEnum extends Record<string, string | number>, TValues extends TEnum[keyof TEnum]>(
   value: any,
   enumeration: TEnum,

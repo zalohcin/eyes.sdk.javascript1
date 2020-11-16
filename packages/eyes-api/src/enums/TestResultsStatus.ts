@@ -1,7 +1,7 @@
 enum TestResultsStatus {
-    Passed = 'Passed',
-    Unresolved = 'Unresolved',
-    Failed = 'Failed',
+  Passed = 'Passed',
+  Unresolved = 'Unresolved',
+  Failed = 'Failed',
 }
 
-export default TestResultsStatus;
+export default TestResultsStatus

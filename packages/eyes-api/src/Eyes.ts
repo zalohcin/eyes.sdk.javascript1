@@ -18,6 +18,7 @@ type EyesCommands<TElement, TSelector> = {
   abort: () => Promise<void>
 }
 
+/** @internal */
 export type EyesSpec<TDriver, TElement, TSelector> = {
   isDriver(value: any): value is TDriver
   isElement(value: any): value is TElement

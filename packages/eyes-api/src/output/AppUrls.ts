@@ -1,53 +1,51 @@
-
-import { toPlain } from '../utils/GeneralUtils';
+import * as GeneralUtils from '../utils/GeneralUtils'
 
 export type AppUrls = {
-    step?: string,
-    stepEditor?: string
+  step?: string
+  stepEditor?: string
 }
 
 export default class AppUrlsData implements Required<AppUrls> {
-    private _step: string;
-    private _stepEditor: string;
+  private _step: string
+  private _stepEditor: string
 
-    constructor({ step, stepEditor }: AppUrls = {}) {
-        this._step = step
-        this._stepEditor = stepEditor
-    }
+  constructor(appUrls?: AppUrls) {
+    if (!appUrls) return this
+    this.step = appUrls.step
+    this.stepEditor = appUrls.stepEditor
+  }
 
-    getStep(): string {
-        return this._step
-    }
+  get step(): string {
+    return this._step
+  }
+  set step(step: string) {
+    this._step = step
+  }
+  getStep(): string {
+    return this._step
+  }
+  setStep(step: string) {
+    this.step = step
+  }
 
-    setStep(value: string): void {
-        this._step = value
-    }
+  get stepEditor(): string {
+    return this._stepEditor
+  }
+  set stepEditor(stepEditor: string) {
+    this._stepEditor = stepEditor
+  }
+  getStepEditor(): string {
+    return this._stepEditor
+  }
+  setStepEditor(stepEditor: string) {
+    this.stepEditor = stepEditor
+  }
 
-    get step(): string {
-        return this._step;
-    }
+  toJSON(): AppUrls {
+    return GeneralUtils.toJSON(this, ['step', 'stepEditor'])
+  }
 
-    set step(value: string) {
-        this._step = value;
-    }
-
-    getStepEditor(): string {
-        return this._stepEditor
-    }
-
-    setStepEditor(value: string): void {
-        this._stepEditor = value
-    }
-
-    get stepEditor(): string {
-        return this._stepEditor;
-    }
-
-    set stepEditor(value: string) {
-        this._stepEditor = value;
-    }
-
-    toJSON(): object {
-        return toPlain(this);
-    }
+  toString(): string {
+    return `${this.constructor.name} ${JSON.stringify(this.toJSON(), null, 2)}`
+  }
 }

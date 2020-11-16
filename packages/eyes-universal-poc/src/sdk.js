@@ -5,15 +5,18 @@ const makeSocket = require('./socket')
 const makeSpec = require('./spec-driver')
 
 function makeSDK() {
-  let port
-  const server = spawn('./node_modules/.bin/eyes-universal-macos', {
-    detached: true,
-    stdio: ['ignore', 'pipe', 'ignore'],
-  })
-  server.unref()
-  server.stdout.once('data', data => {
-    ;[port] = String(data).split('\n', 1)
-    server.stdout.destroy()
+  const port = new Promise((resolve, reject) => {
+    const server = spawn('./node_modules/.bin/eyes-universal-macos', {
+      detached: true,
+      stdio: ['ignore', 'pipe', 'ignore'],
+    })
+    server.stdout.once('data', data => {
+      const [port] = String(data).split('\n', 1)
+      server.stdout.destroy()
+      resolve(port)
+    })
+    server.on('error', reject)
+    server.unref()
   })
   const ws = makeSocket()
   const refer = makeRefer()
@@ -56,13 +59,11 @@ function makeSDK() {
     return spec.getDriverInfo(driver)
   })
   ws.command('Driver.takeScreenshot', async ({driver}) => {
-    const img = await spec.takeScreenshot(driver)
-    return img
+    return spec.takeScreenshot(driver)
   })
 
   async function openEyes(driver, config) {
-    console.log(port)
-    ws.open(`http://localhost:${port}/eyes`)
+    ws.open(`http://localhost:${await port}/eyes`)
     ws.emit('Session.init', {commands: Object.keys(spec)})
     const driverRef = refer.ref(driver)
     const eyes = await ws.request('Eyes.open', {driver: driverRef, config})

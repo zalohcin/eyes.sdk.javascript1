@@ -1,165 +1,140 @@
-import { toPlain } from '../utils/GeneralUtils';
-import AppUrlsData, { AppUrls } from './AppUrls';
-import ApiUrlsData, { ApiUrls } from './ApiUrls';
+import * as GeneralUtils from '../utils/GeneralUtils'
+import AppUrlsData, {AppUrls} from './AppUrls'
+import ApiUrlsData, {ApiUrls} from './ApiUrls'
 
 export type StepInfo = {
-    name?: string,
-    isDifferent?: boolean,
-    hasBaselineImage?: boolean,
-    hasCurrentImage?: boolean,
-    appUrls?: AppUrls | object,
-    apiUrls?: ApiUrls | object,
-    renderId?: string[]
+  name?: string
+  isDifferent?: boolean
+  hasBaselineImage?: boolean
+  hasCurrentImage?: boolean
+  appUrls?: AppUrls
+  apiUrls?: ApiUrls
+  renderId?: string[]
 }
 
 export default class StepInfoData implements Required<StepInfo> {
-    private _name: string;
-    private _isDifferent: boolean;
-    private _hasBaselineImage: boolean;
-    private _hasCurrentImage: boolean;
-    private _appUrls: AppUrls | object;
-    private _apiUrls: ApiUrls | object;
-    private _renderId: string[]
+  private _name: string
+  private _isDifferent: boolean
+  private _hasBaselineImage: boolean
+  private _hasCurrentImage: boolean
+  private _appUrls: AppUrlsData
+  private _apiUrls: ApiUrlsData
+  private _renderId: string[]
 
-    constructor({
-        name,
-        isDifferent,
-        hasBaselineImage,
-        hasCurrentImage,
-        appUrls,
-        apiUrls,
-        renderId,
-    }: StepInfo = {}) {
-        if (appUrls && !(appUrls instanceof AppUrlsData)) {
-            appUrls = new AppUrlsData(appUrls)
-        }
-
-        if (apiUrls && !(apiUrls instanceof ApiUrlsData)) {
-            apiUrls = new ApiUrlsData(apiUrls)
-        }
-
-        this._name = name
-        this._isDifferent = isDifferent
-        this._hasBaselineImage = hasBaselineImage
-        this._hasCurrentImage = hasCurrentImage
-        this._appUrls = appUrls
-        this._apiUrls = apiUrls
-        this._renderId = renderId
+  constructor(stepInfo?: StepInfo) {
+    if (!stepInfo) return this
+    const self = this as any
+    for (const [key, value] of Object.entries(stepInfo)) {
+      if (key in this && !key.startsWith('_')) {
+        self[key] = value
+      }
     }
+  }
 
-    getName(): string {
-        return this._name
-    }
+  get name(): string {
+    return this._name
+  }
+  set name(value: string) {
+    this._name = value
+  }
+  getName(): string {
+    return this._name
+  }
+  setName(value: string) {
+    this.name = value
+  }
 
-    setName(value: string): void {
-        this._name = value
-    }
+  get isDifferent(): boolean {
+    return this._isDifferent
+  }
+  set isDifferent(value: boolean) {
+    this._isDifferent = value
+  }
+  getIsDifferent(): boolean {
+    return this._isDifferent
+  }
+  setIsDifferent(value: boolean) {
+    this.isDifferent = value
+  }
 
-    get name(): string {
-        return this._name;
-    }
+  get hasBaselineImage(): boolean {
+    return this._hasBaselineImage
+  }
+  set hasBaselineImage(value: boolean) {
+    this._hasBaselineImage = value
+  }
+  getHasBaselineImage(): boolean {
+    return this._hasBaselineImage
+  }
+  setHasBaselineImage(value: boolean) {
+    this.hasBaselineImage = value
+  }
 
-    set name(value: string) {
-        this._name = value;
-    }
+  get hasCurrentImage(): boolean {
+    return this._hasCurrentImage
+  }
+  set hasCurrentImage(hasCurrentImage: boolean) {
+    this._hasCurrentImage = hasCurrentImage
+  }
+  getHasCurrentImage(): boolean {
+    return this._hasCurrentImage
+  }
+  setHasCurrentImage(hasCurrentImage: boolean) {
+    this.hasCurrentImage = hasCurrentImage
+  }
 
-    getIsDifferent(): boolean {
-        return this._isDifferent
-    }
+  get appUrls(): AppUrls {
+    return this._appUrls
+  }
+  set appUrls(appUrls: AppUrls) {
+    this._appUrls = new AppUrlsData(appUrls)
+  }
+  getAppUrls(): AppUrlsData {
+    return this._appUrls
+  }
+  setAppUrls(appUrls: AppUrls | AppUrlsData) {
+    this.appUrls = appUrls
+  }
 
-    setIsDifferent(value: boolean): void {
-        this._isDifferent = value
-    }
+  get apiUrls(): ApiUrls {
+    return this._apiUrls
+  }
+  set apiUrls(apiUrls: ApiUrls) {
+    this._apiUrls = new ApiUrlsData(apiUrls)
+  }
+  getApiUrls(): ApiUrlsData {
+    return this._apiUrls
+  }
+  setApiUrls(apiUrls: ApiUrls | ApiUrlsData) {
+    this.apiUrls = apiUrls
+  }
 
-    get isDifferent(): boolean {
-        return this._isDifferent;
-    }
+  get renderId(): string[] {
+    return this._renderId
+  }
+  set renderId(renderId: string[]) {
+    this._renderId = renderId
+  }
+  getRenderId(): string[] {
+    return this._renderId
+  }
+  setRenderId(renderId: string[]) {
+    this.renderId = renderId
+  }
 
-    set isDifferent(value: boolean) {
-        this._isDifferent = value;
-    }
+  toJSON(): StepInfo {
+    return GeneralUtils.toJSON(this, [
+      'name',
+      'isDifferent',
+      'hasBaselineImage',
+      'hasCurrentImage',
+      'appUrls',
+      'apiUrls',
+      'renderId',
+    ])
+  }
 
-    getHasBaselineImage(): boolean {
-        return this._hasBaselineImage
-    }
-
-    setHasBaselineImage(value: boolean): void {
-        this._hasBaselineImage = value
-    }
-
-    get hasBaselineImage(): boolean {
-        return this._hasBaselineImage;
-    }
-
-    set hasBaselineImage(value: boolean) {
-        this._hasBaselineImage = value;
-    }
-
-    getHasCurrentImage(): boolean {
-        return this._hasCurrentImage
-    }
-
-    setHasCurrentImage(value: boolean): void {
-        this._hasCurrentImage = value
-    }
-
-    get hasCurrentImage(): boolean {
-        return this._hasCurrentImage;
-    }
-
-    set hasCurrentImage(value: boolean) {
-        this._hasCurrentImage = value;
-    }
-
-    getAppUrls(): AppUrlsData {
-        return this._appUrls as AppUrlsData;
-    }
-
-    setAppUrls(value: AppUrlsData): void {
-        this._appUrls = value
-    }
-
-    get appUrls(): AppUrlsData {
-        return this._appUrls as AppUrlsData;
-    }
-
-    set appUrls(value: AppUrlsData) {
-        this._appUrls = value;
-    }
-
-    getApiUrls(): ApiUrls {
-        return this._apiUrls
-    }
-
-    setApiUrls(value: ApiUrls): void {
-        this._apiUrls = value
-    }
-
-    get apiUrls(): ApiUrls {
-        return this._apiUrls;
-    }
-
-    set apiUrls(value: ApiUrls) {
-        this._apiUrls = value;
-    }
-
-    getRenderId(): string[] {
-        return this._renderId
-    }
-
-    setRenderId(value: string[]): void {
-        this._renderId = value
-    }
-
-    get renderId(): string[] {
-        return this._renderId;
-    }
-
-    set renderId(value: string[]) {
-        this._renderId = value;
-    }
-
-    toJSON(): object {
-        return toPlain(this)
-    }
+  toString(): string {
+    return `${this.constructor.name} ${JSON.stringify(this.toJSON(), null, 2)}`
+  }
 }

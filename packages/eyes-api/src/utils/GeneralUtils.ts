@@ -21,39 +21,31 @@ export function guid(): string {
   })
 }
 
-export function toPlain(object: Record<any, any>, exclude: Array<string> = [], rename: Record<string, string> = {}): object {
-  if (object == null) {
-    throw new TypeError('Cannot make null plain.')
-  }
-
-  const plainObject: Record<string, string> = {}
-  Object.keys(object).forEach((objectKey: string) => {
-    let publicKey: string = objectKey.replace('_', '')
-    if (rename[publicKey]) {
-      publicKey = rename[publicKey]
-    }
-
-    if (Object.prototype.hasOwnProperty.call(object, objectKey) && !exclude.includes(objectKey)) {
-      if (object[objectKey] instanceof Object && typeof object[objectKey].toJSON === 'function') {
-        plainObject[publicKey] = object[objectKey].toJSON()
-      } else {
-        plainObject[publicKey] = object[objectKey]
-      }
-    }
-  })
-
-  return plainObject;
+export function toJSON<TObject extends Record<PropertyKey, any>, TKey extends string, TProps extends Readonly<TKey[]>>(
+  object: TObject,
+  props: TProps,
+): {
+  [key in TProps[number]]: TObject[key] extends {toJSON(): any} ? ReturnType<TObject[key]['toJSON']> : TObject[key]
 }
-
-export function toString(object: object, exclude: string[] = []): string {
-  if (!TypeUtils.isPlainObject(object)) {
-    object = toPlain(object, exclude)
-  }
-
-  try {
-    return JSON.stringify(object);
-  } catch (err) {
-    console.warn("Error on converting to string:", err);
-    return undefined;
-  }
+export function toJSON<
+  TObject extends Record<PropertyKey, any>,
+  TKey extends string,
+  TProps extends Readonly<Record<TKey, PropertyKey>>
+>(
+  object: TObject,
+  props: TProps,
+): {
+  [key in keyof TProps]: TObject[TProps[key]] extends {toJSON(): any}
+    ? ReturnType<TObject[TProps[key]]['toJSON']>
+    : TObject[TProps[key]]
+}
+export function toJSON(object: Record<PropertyKey, any>, props: string[] | Record<string, PropertyKey>) {
+  if (!TypeUtils.isObject(object)) return null
+  const original = Object.values(props)
+  const keys = TypeUtils.isArray(props) ? original : Object.keys(props)
+  return keys.reduce((plain: any, key, index) => {
+    const value = object[original[index] as string]
+    plain[key] = value && TypeUtils.isFunction(value.toJSON) ? value.toJSON() : value
+    return plain
+  }, {})
 }
