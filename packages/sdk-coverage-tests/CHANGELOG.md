@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 2.0.4 - 2020/11/16
+
 - fix nested generic type parsing
 - send reports to the dashboards by default
 
