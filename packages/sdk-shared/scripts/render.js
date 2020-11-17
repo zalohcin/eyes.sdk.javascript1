@@ -88,7 +88,7 @@ const checkConfig = {
   bcsHook: {
     type: 'string',
     describe: 'before capture screenshot hook',
-  }
+  },
 }
 
 const buildConfig = {
@@ -436,7 +436,7 @@ function argsToEyesConfig(args) {
     dontCloseBatches: false,
     saveNewTests: true,
     saveLogs: args.saveLogs,
-    saveDebugScreenshots: args.saveDebugScreenshots
+    saveDebugScreenshots: args.saveDebugScreenshots,
   }
 }
 
@@ -452,7 +452,9 @@ function argsToCheckConfig(args) {
     ignoreDisplacements: args.ignoreDisplacements,
     timeout: args.matchTimeout,
     isFully: args.fully,
-    hooks: args.bcsHook ? { beforeCaptureScreenshot: ['beforeCaptureScreenshot', args.bcsHook] } : undefined
+    hooks: args.bcsHook
+      ? {beforeCaptureScreenshot: ['beforeCaptureScreenshot', args.bcsHook]}
+      : undefined,
   }
 }
 

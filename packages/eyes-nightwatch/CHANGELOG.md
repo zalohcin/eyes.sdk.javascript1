@@ -3,6 +3,16 @@
 ## Unreleased
 
 
+
+## 1.1.0 - 2020/11/12
+
+- fix firefox region compensation issue
+- add 2020 ios devices
+- fix coded region calculation when running in target region ([Trello 538](https://trello.com/c/FQ8iJZdi))
+- deprecate `saveDebugData`
+- updated to @applitools/eyes-sdk-core@12.5.7 (from 12.5.5)
+- updated to @applitools/visual-grid-client@15.1.1 (from 15.1.0)`
+
 ## 1.0.3 - 2020/11/5
 
 - fix `getWindowRect` and `setWindowRect` so they work on drivers running with the JSON Wire Protocol (e.g., non-W3C)

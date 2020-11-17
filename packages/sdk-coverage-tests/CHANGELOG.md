@@ -3,6 +3,20 @@
 ## Unreleased
 
 
+## 2.0.4 - 2020/11/16
+
+- fix nested generic type parsing
+- send reports to the dashboards by default
+
+## 2.0.3 - 2020/11/12
+
+- add a possibility to provide a nested type annotation
+- fix strict emitOnly
+
+## 2.0.2 - 2020/11/11
+
+- fix bug when build crashes in case addCommand callback returns void
+
 ## 2.0.1 - 2020/11/2
 
 - add emitOnly config property to chose which test(s) need to be emitted

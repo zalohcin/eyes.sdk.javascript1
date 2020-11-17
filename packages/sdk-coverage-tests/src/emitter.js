@@ -37,7 +37,12 @@ function useEmitter() {
     }
     ref.type = function(type) {
       if (type) {
-        ref._type = parseType(type)
+        const parsed = typeof type === 'string' ? parseType(type) : parseType(type.type)
+        ref._type = {
+          ...parsed,
+          items: type.items,
+          schema: type.schema,
+        }
         return this
       } else {
         return ref._type
@@ -46,7 +51,13 @@ function useEmitter() {
     return new Proxy(ref, {
       get(ref, key) {
         if (key in ref) return Reflect.get(ref, key)
-        return useRef(() => syntax.getter({type: ref.type(), target: ref.ref(), key}))
+        const type = ref.type()
+        const result = useRef(() => syntax.getter({type, target: ref.ref(), key}))
+        if (type) {
+          if (type.items) result.type(type.items)
+          else if (type.schema && type.schema[key]) result.type(type.schema[key])
+        }
+        return result
       },
       apply(ref, _, args) {
         return useRef(() => syntax.call({target: ref.ref(), args: Array.from(args)}))
@@ -67,7 +78,7 @@ function useEmitter() {
       const [result] = command.map(command => {
         if (typeof command === 'function') {
           const result = command()
-          if (result.isRef) {
+          if (result && result.isRef) {
             addCommand(syntax.return({value: result.ref(), type: result.type()}))
           }
         } else {
@@ -99,7 +110,7 @@ function useEmitter() {
   }
 
   function parseType(type) {
-    const match = type.match(/(?<name>[A-Za-z][A-Za-z0-9_]*)(<(?<generic>.*?)>)?/)
+    const match = type.match(/(?<name>[A-Za-z][A-Za-z0-9_]*)(<(?<generic>.*)>)?/)
     if (!match) {
       throw new Error(
         'Type format is incorrect. Please follow the convention (e.g. TypeName or Type1<Type2, Type3>)',

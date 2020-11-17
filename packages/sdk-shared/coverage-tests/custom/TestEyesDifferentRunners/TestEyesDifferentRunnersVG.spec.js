@@ -35,6 +35,6 @@ describe('TestEyesDifferentRunners VG', () => {
     ['https://docs.microsoft.com/en-us/', MatchLevel.Strict],
   ]
   cases.forEach(testData => {
-    it('TestEyesDifferentRunners', testCase(...testData))
+    it(`TestEyesDifferentRunners - ${testData[0]}`, testCase(...testData))
   })
 })

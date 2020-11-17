@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-nightwatch",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "Applitools Eyes SDK for Nightwatch.js",
   "keywords": [
     "eyes-nightwatch",
@@ -35,8 +35,8 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "12.5.5",
-    "@applitools/visual-grid-client": "15.1.0"
+    "@applitools/eyes-sdk-core": "12.5.7",
+    "@applitools/visual-grid-client": "15.1.1"
   },
   "devDependencies": {
     "@applitools/sdk-coverage-tests": "^2.0.1",
