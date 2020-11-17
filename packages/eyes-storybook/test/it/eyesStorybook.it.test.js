@@ -41,7 +41,7 @@ describe('eyesStorybook', () => {
     await closeEyesServer();
   });
 
-  it('renders test storybook with fake eyes and visual grid', async () => {
+  it.only('renders test storybook with fake eyes and visual grid', async () => {
     const {stream, getEvents} = testStream();
     const configPath = path.resolve(__dirname, '../fixtures/applitools.config.js');
     const globalConfig = require(configPath);

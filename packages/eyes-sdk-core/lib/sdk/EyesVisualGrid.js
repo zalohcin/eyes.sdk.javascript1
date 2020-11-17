@@ -223,7 +223,7 @@ class EyesVisualGrid extends EyesCore {
    * @param {CheckSettings<TElement, TSelector>} [checkSettings] - check settings for the described test case
    * @returns {Promise<MatchResult>}
    */
-  async _check(checkSettings, closeAfterMatch = false) {
+  async _check(checkSettings, closeAfterMatch = false, throwEx = true) {
     this._logger.verbose(
       `check started with tag "${checkSettings.getName()}" for test "${this._configuration.getTestName()}"`,
     )
@@ -260,6 +260,7 @@ class EyesVisualGrid extends EyesCore {
         return await this._checkWindowCommand({
           ...config,
           closeAfterMatch,
+          throwEx,
           snapshot: snapshots,
           url,
         })

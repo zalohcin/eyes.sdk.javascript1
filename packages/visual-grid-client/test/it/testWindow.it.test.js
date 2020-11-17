@@ -125,6 +125,8 @@ describe('testWindow', () => {
           _timeout: 0,
           _useDom: undefined,
         },
+        closeAfterMatch: true,
+        throwEx: true,
         domUrl: undefined,
         imageLocation: undefined,
         screenshotUrl: '{"isGood":true,"sizeMode":"full-page"}',

@@ -258,6 +258,7 @@ function makeOpenEyes({
       matchLevel,
       userAgent,
       visualGridOptions,
+      resolveTests,
     })
 
     const close = makeClose({

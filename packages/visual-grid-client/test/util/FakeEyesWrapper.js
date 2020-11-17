@@ -206,7 +206,7 @@ class FakeEyesWrapper extends EventEmitter {
 
   async logEvents() {}
 
-  async checkWindow({screenshotUrl, tag, domUrl, checkSettings, imageLocation}) {
+  async checkWindow({screenshotUrl, tag, domUrl, checkSettings, imageLocation, closeAfterMatch}) {
     if (tag && this.goodTags && !this.goodTags.includes(tag))
       throw new Error(`Tag ${tag} should be one of the good tags ${this.goodTags}`)
 
@@ -252,7 +252,8 @@ class FakeEyesWrapper extends EventEmitter {
     return new Promise(res =>
       setTimeout(() => {
         this.emit('checkWindowEnd', Array.from(arguments))
-        res(result)
+        if (closeAfterMatch) res(this.close())
+        else res(result)
       }, 100),
     )
   }

@@ -6,7 +6,7 @@ function makeTestWindow(openConfig) {
   const openEyes = makeOpenEyes(openConfig)
   return async ({openParams, checkParams, throwEx = true}) => {
     const {checkWindow} = await openEyes(openParams)
-    return checkWindow({checkParams, closeAfterMatch: true})
+    return checkWindow({...checkParams, closeAfterMatch: true, throwEx})
   }
 }
 

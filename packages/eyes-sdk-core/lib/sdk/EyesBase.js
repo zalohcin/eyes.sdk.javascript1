@@ -1296,6 +1296,7 @@ class EyesBase {
     checkSettings = new CheckSettings(USE_DEFAULT_TIMEOUT),
     source,
     closeAfterMatch,
+    throwEx,
   ) {
     if (closeAfterMatch) {
       return this.checkWindowAndCloseBase(
@@ -1304,6 +1305,7 @@ class EyesBase {
         ignoreMismatch,
         checkSettings,
         source,
+        throwEx,
       )
     }
     if (this._configuration.getIsDisabled()) {
@@ -1388,6 +1390,7 @@ class EyesBase {
     ignoreMismatch = false,
     checkSettings = new CheckSettings(USE_DEFAULT_TIMEOUT),
     source,
+    throwEx = true,
   ) {
     if (this._configuration.getIsDisabled()) {
       this._logger.verbose('checkWindowAndCloseBase Ignored')
@@ -1419,7 +1422,7 @@ class EyesBase {
       this._configuration.getSaveNewTests(),
     )
 
-    const testResult = await EyesBase.matchWindow(
+    const results = await EyesBase.matchWindow(
       regionProvider,
       tag,
       ignoreMismatch,
@@ -1429,19 +1432,73 @@ class EyesBase {
     )
     await this.afterMatchWindow()
 
-    this._logger.verbose('MatchSingleWindow Done!')
+    try {
+      if (!ignoreMismatch) {
+        this.clearUserInputs()
+      }
 
-    if (!ignoreMismatch) {
-      this.clearUserInputs()
+      const isNewSession = this._runningSession.getIsNew()
+      const sessionResultsUrl = this._runningSession.getUrl()
+
+      const matchResult = new MatchResult()
+      matchResult.setAsExpected(!results.getIsDifferent())
+      this._validateResult(tag, matchResult)
+
+      this._logger.verbose('Done!')
+
+      results.setIsNew(isNewSession)
+      results.setUrl(sessionResultsUrl)
+
+      // for backwards compatibility with outdated servers
+      if (!results.getStatus()) {
+        if (results.getMissing() === 0 && results.getMismatches() === 0) {
+          results.setStatus(TestResultsStatus.Passed)
+        } else {
+          results.setStatus(TestResultsStatus.Unresolved)
+        }
+      }
+
+      this._logger.verbose(`Results: ${results}`)
+
+      const status = results.getStatus()
+      await this._sessionEventHandlers.testEnded(await this.getAUTSessionId(), results)
+
+      if (status === TestResultsStatus.Unresolved) {
+        if (results.getIsNew()) {
+          this._logger.log(
+            `--- New test ended. Please approve the new baseline at ${sessionResultsUrl}`,
+          )
+          if (throwEx) {
+            throw new NewTestError(results, this._sessionStartInfo)
+          }
+        } else {
+          this._logger.log(`--- Failed test ended. See details at ${sessionResultsUrl}`)
+          if (throwEx) {
+            throw new DiffsFoundError(results, this._sessionStartInfo)
+          }
+        }
+      } else if (status === TestResultsStatus.Failed) {
+        this._logger.log(`--- Failed test ended. See details at ${sessionResultsUrl}`)
+        if (throwEx) {
+          throw new TestFailedError(results, this._sessionStartInfo)
+        }
+      } else {
+        this._logger.log(`--- Test passed. See details at ${sessionResultsUrl}`)
+      }
+
+      results.setServerConnector(this._serverConnector)
+      return results
+    } catch (err) {
+      this._logger.log(`Failed to abort server session: ${err.message}`)
+      throw err
+    } finally {
+      // Making sure that we reset the running session even if an exception was thrown during close.
+      this._matchWindowTask = null
+      this._autSessionId = undefined
+      this._runningSession = null
+      this._currentAppName = undefined
+      this._logger.getLogHandler().close()
     }
-
-    const matchResult = new MatchResult()
-    matchResult.setAsExpected(!testResult.getIsDifferent())
-    this._validateResult(tag, matchResult)
-
-    this._logger.verbose('Done!')
-
-    return testResult
   }
 
   /**

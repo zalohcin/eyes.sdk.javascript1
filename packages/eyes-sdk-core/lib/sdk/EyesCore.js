@@ -102,7 +102,7 @@ class EyesCore extends EyesBase {
     return this._check(checkSettings)
   }
 
-  async checkAndClose(checkSettings) {
+  async checkAndClose(checkSettings, throwEx) {
     if (this._configuration.getIsDisabled()) {
       this._logger.log(`checkAndClose(${checkSettings}): Ignored`)
       return new TestResults()
@@ -113,7 +113,7 @@ class EyesCore extends EyesBase {
 
     this._logger.verbose(`checkAndClose(checkSettings) - begin`)
 
-    return this._check(checkSettings, true)
+    return this._check(checkSettings, true, throwEx)
   }
 
   /* ------------ Classic API ------------ */

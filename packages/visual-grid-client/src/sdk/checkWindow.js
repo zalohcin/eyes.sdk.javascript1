@@ -6,6 +6,7 @@ const createRenderRequest = require('./createRenderRequest')
 const createCheckSettings = require('./createCheckSettings')
 const isInvalidAccessibility = require('./isInvalidAccessibility')
 const calculateSelectorsToFindRegionsFor = require('./calculateSelectorsToFindRegionsFor')
+const makeWaitForTestEnd = require('./makeWaitForTestEnd')
 
 function makeCheckWindow({
   globalState,
@@ -28,6 +29,7 @@ function makeCheckWindow({
   userAgent,
   matchLevel: _matchLevel,
   visualGridOptions: _visualGridOptions,
+  resolveTests,
 }) {
   return function checkWindow({
     snapshot,
@@ -52,6 +54,7 @@ function makeCheckWindow({
     ignoreDisplacements,
     visualGridOptions = _visualGridOptions,
     closeAfterMatch,
+    throwEx = true,
   }) {
     const snapshots = Array.isArray(snapshot) ? snapshot : Array(browsers.length).fill(snapshot)
 
@@ -106,13 +109,44 @@ function makeCheckWindow({
         testController.setError.bind(null, index),
       ),
     )
+    setCheckWindowPromises(checkWindowRunningJobs)
 
     const renderJobs = new WeakMap()
 
     if (closeAfterMatch) {
-      return Promise.all(checkWindowRunningJobs)
-    } else {
-      setCheckWindowPromises(checkWindowRunningJobs)
+      const waitAndResolveTests = makeWaitForTestEnd({
+        getCheckWindowPromises,
+        openEyesPromises,
+        logger,
+      })
+
+      let error, didError
+      const settleError = (throwEx ? Promise.reject : Promise.resolve).bind(Promise)
+
+      const batchId = wrappers[0].getBatchIdWithoutGenerating()
+      globalState.batchStore.addId(batchId)
+
+      return waitAndResolveTests(async (testIndex, result) => {
+        resolveTests[testIndex]()
+
+        if ((error = testController.getFatalError())) {
+          await wrappers[testIndex].ensureAborted()
+          return (didError = true), error
+        }
+        if ((error = testController.getError(testIndex))) {
+          return (didError = true), error
+        }
+
+        const [closeError, closeResult] = await [null, result]
+        if (!closeError) {
+          return closeResult
+        } else {
+          didError = true
+          return closeError
+        }
+      }).then(results => {
+        return didError ? settleError(results) : results
+      })
     }
 
     async function checkWindowJob(index, prevJobPromise = presult(Promise.resolve())) {
@@ -262,6 +296,7 @@ function makeCheckWindow({
         imageLocation,
         url,
         closeAfterMatch,
+        throwEx,
       }
 
       return wrapper.checkWindow(checkArgs)
