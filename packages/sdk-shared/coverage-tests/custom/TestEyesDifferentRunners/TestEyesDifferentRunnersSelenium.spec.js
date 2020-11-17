@@ -37,6 +37,6 @@ describe('TestEyesDifferentRunners Selenium', () => {
     ['https://wikipedia.org', MatchLevel.Strict],
   ]
   cases.forEach(testData => {
-    it('TestEyesDifferentRunners', testCase(...testData))
+    it(`TestEyesDifferentRunners - ${testData[0]}`, testCase(...testData))
   })
 })
