@@ -383,44 +383,59 @@ class ServerConnector {
     throw new Error(`ServerConnector.matchWindow - unexpected status (${response.statusText})`)
   }
 
-  /**
-   * Matches the current window in single request.
-   *
-   * @param {MatchSingleWindowData} matchSingleWindowData - Encapsulation of a capture taken from the application.
-   * @return {Promise<TestResults>} - The results of the window matching.
-   */
-  async matchSingleWindow(matchSingleWindowData) {
-    ArgumentGuard.notNull(matchSingleWindowData, 'matchSingleWindowData')
-    this._logger.verbose(`ServerConnector.matchSingleWindow called with ${matchSingleWindowData}`)
+  async matchWindowAndClose(runningSession, matchWindowData) {
+    if (this._matchWindowAndCloseFallback) {
+      this._logger.verbose(
+        'ServerConnector.matchWindowAndClose was not found in the previous call. Fallback is used',
+      )
+      await this.matchWindow(runningSession, matchWindowData)
+      return this.stopSession(runningSession, false, matchWindowData.getUpdateBaselineIfNew())
+    }
+    ArgumentGuard.notNull(runningSession, 'runningSession')
+    ArgumentGuard.notNull(matchWindowData, 'matchWindowData')
+    this._logger.verbose(
+      `ServerConnector.matchWindowAndClose called with ${matchWindowData} for session: ${runningSession}`,
+    )
 
     const config = {
-      name: 'matchSingleWindow',
+      name: 'matchWindow',
       method: 'POST',
-      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH),
+      url: GeneralUtils.urlConcat(
+        this._configuration.getServerUrl(),
+        EYES_API_PATH,
+        '/running',
+        encodeURIComponent(runningSession.getId()),
+        '/matchandend',
+      ),
       headers: {},
-      data: matchSingleWindowData,
+      data: matchWindowData,
     }
 
-    if (matchSingleWindowData.getAppOutput().getScreenshot64()) {
+    if (matchWindowData.getAppOutput().getScreenshot64()) {
       // if there is screenshot64, then we will send application/octet-stream body instead of application/json
-      const screenshot64 = matchSingleWindowData.getAppOutput().getScreenshot64()
-      matchSingleWindowData.getAppOutput().setScreenshot64(null) // remove screenshot64 from json
+      const screenshot64 = matchWindowData.getAppOutput().getScreenshot64()
+      matchWindowData.getAppOutput().setScreenshot64(null) // remove screenshot64 from json
       config.headers['Content-Type'] = 'application/octet-stream'
 
-      config.data = Buffer.concat([createDataBytes(matchSingleWindowData), screenshot64])
-      matchSingleWindowData.getAppOutput().setScreenshot64(screenshot64)
+      config.data = Buffer.concat([createDataBytes(matchWindowData), screenshot64])
+      matchWindowData.getAppOutput().setScreenshot64(screenshot64)
     }
 
     const response = await this._axios.request(config)
     const validStatusCodes = [HTTP_STATUS_CODES.OK]
     if (validStatusCodes.includes(response.status)) {
       const testResults = new TestResults(response.data)
-      this._logger.verbose('ServerConnector.matchSingleWindow - post succeeded', testResults)
+      this._logger.verbose('ServerConnector.matchWindowAndClose - post succeeded', testResults)
       return testResults
+    } else if (response.status === HTTP_STATUS_CODES.NOT_FOUND) {
+      this._matchWindowAndCloseFallback = true
+      this._logger.verbose('ServerConnector.matchWindowAndClose was not found. Fallback is used')
+      await this.matchWindow(runningSession, matchWindowData)
+      return this.stopSession(runningSession, false, matchWindowData.getUpdateBaselineIfNew())
     }
 
     throw new Error(
-      `ServerConnector.matchSingleWindow - unexpected status (${response.statusText})`,
+      `ServerConnector.matchWindowAndClose - unexpected status (${response.statusText})`,
     )
   }
 

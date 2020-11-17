@@ -51,6 +51,7 @@ function makeCheckWindow({
     enablePatterns,
     ignoreDisplacements,
     visualGridOptions = _visualGridOptions,
+    closeAfterMatch,
   }) {
     const snapshots = Array.isArray(snapshot) ? snapshot : Array(browsers.length).fill(snapshot)
 
@@ -106,9 +107,13 @@ function makeCheckWindow({
       ),
     )
 
-    setCheckWindowPromises(checkWindowRunningJobs)
-
     const renderJobs = new WeakMap()
+
+    if (closeAfterMatch) {
+      return Promise.all(checkWindowRunningJobs)
+    } else {
+      setCheckWindowPromises(checkWindowRunningJobs)
+    }
 
     async function checkWindowJob(index, prevJobPromise = presult(Promise.resolve())) {
       logger.verbose(
@@ -256,6 +261,7 @@ function makeCheckWindow({
         checkSettings,
         imageLocation,
         url,
+        closeAfterMatch,
       }
 
       return wrapper.checkWindow(checkArgs)

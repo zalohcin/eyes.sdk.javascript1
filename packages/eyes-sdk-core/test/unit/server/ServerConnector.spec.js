@@ -10,6 +10,10 @@ const {
   Configuration,
   GeneralUtils,
   SessionStartInfo,
+  MatchWindowAndCloseData,
+  AppOutput,
+  Location,
+  TestResults,
 } = require('../../../')
 const {presult} = require('../../../lib/troubleshoot/utils')
 const logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS)
@@ -397,5 +401,63 @@ describe('ServerConnector', () => {
       }
     }
     await serverConnector.logEvents(events)
+  })
+
+  it('matchWindowAndClose works', async () => {
+    const serverConnector = getServerConnector()
+    serverConnector._axios.defaults.adapter = async config => {
+      if (config.url === 'https://eyesapi.applitools.com/api/sessions/running/id/matchandend') {
+        return {
+          status: 200,
+          config,
+          data: {name: 'result'},
+          headers: {},
+          request: {},
+        }
+      }
+      throw new Error()
+    }
+    const appOutput = new AppOutput({
+      title: 'Dummy',
+      screenshotUrl: 'bla',
+      imageLocation: new Location(20, 40),
+    })
+    const data = new MatchWindowAndCloseData({appOutput, tag: 'mytag'})
+    const results = await serverConnector.matchWindowAndClose({getId: () => 'id'}, data)
+    assert.ok(results instanceof TestResults)
+    assert.strictEqual(results.getName(), 'result')
+  })
+
+  it('matchWindowAndClose should fallback', async () => {
+    const serverConnector = getServerConnector()
+    serverConnector._axios.defaults.adapter = async config => {
+      if (config.url === 'https://eyesapi.applitools.com/api/sessions/running/id/matchandend') {
+        return {
+          status: 404,
+          config,
+          data: {},
+          headers: {},
+          request: {},
+        }
+      } else if (config.url === 'https://eyesapi.applitools.com/api/sessions/running/id') {
+        return {
+          status: 200,
+          config,
+          data: {name: 'fallback result'},
+          headers: {},
+          request: {},
+        }
+      }
+      throw new Error()
+    }
+    const appOutput = new AppOutput({
+      title: 'Dummy',
+      screenshotUrl: 'bla',
+      imageLocation: new Location(20, 40),
+    })
+    const data = new MatchWindowAndCloseData({appOutput, tag: 'mytag'})
+    const results = await serverConnector.matchWindowAndClose({getId: () => 'id'}, data)
+    assert.ok(results instanceof TestResults)
+    assert.strictEqual(results.getName(), 'fallback result')
   })
 })

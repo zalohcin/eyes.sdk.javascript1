@@ -148,10 +148,9 @@ exports.TargetRegionByElement = require('./lib/fluent/TargetRegionByElement')
 
 exports.AppOutput = require('./lib/match/AppOutput')
 exports.MatchResult = require('./lib/match/MatchResult')
-exports.MatchSingleWindowData = require('./lib/match/MatchSingleWindowData')
+exports.MatchWindowAndCloseData = require('./lib/match/MatchWindowAndCloseData')
 exports.MatchWindowData = require('./lib/match/MatchWindowData')
 exports.ImageMatchOptions = require('./lib/match/ImageMatchOptions')
-exports.MatchWindowDataWithScreenshot = require('./lib/match/MatchWindowDataWithScreenshot')
 
 exports.metadata = {
   ActualAppOutput: require('./lib/metadata/ActualAppOutput'),
@@ -211,7 +210,6 @@ exports.Trigger = require('./lib/triggers/Trigger')
 
 exports.AppEnvironment = require('./lib/AppEnvironment')
 exports.FailureReports = require('./lib/FailureReports')
-exports.MatchSingleWindowTask = require('./lib/MatchSingleWindowTask')
 exports.MatchWindowTask = require('./lib/MatchWindowTask')
 exports.TestResults = require('./lib/TestResults')
 exports.TestResultsError = require('./lib/TestResultsError')

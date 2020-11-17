@@ -223,24 +223,7 @@ class EyesVisualGrid extends EyesCore {
    * @param {CheckSettings<TElement, TSelector>} [checkSettings] - check settings for the described test case
    * @returns {Promise<MatchResult>}
    */
-  async check(nameOrCheckSettings, checkSettings) {
-    if (this._configuration.getIsDisabled()) {
-      this._logger.log(`check(${nameOrCheckSettings}, ${checkSettings}): Ignored`)
-      return new MatchResult()
-    }
-    ArgumentGuard.isValidState(this._isOpen, 'Eyes not open')
-
-    if (TypeUtils.isNull(checkSettings) && !TypeUtils.isString(nameOrCheckSettings)) {
-      checkSettings = nameOrCheckSettings
-      nameOrCheckSettings = null
-    }
-
-    checkSettings = this.spec.newCheckSettings(checkSettings)
-
-    if (TypeUtils.isString(nameOrCheckSettings)) {
-      checkSettings.withName(nameOrCheckSettings)
-    }
-
+  async _check(checkSettings, closeAfterMatch = false) {
     this._logger.verbose(
       `check started with tag "${checkSettings.getName()}" for test "${this._configuration.getTestName()}"`,
     )
@@ -274,8 +257,9 @@ class EyesVisualGrid extends EyesCore {
           configuration: this._configuration,
         })
 
-        await this._checkWindowCommand({
+        return await this._checkWindowCommand({
           ...config,
+          closeAfterMatch,
           snapshot: snapshots,
           url,
         })

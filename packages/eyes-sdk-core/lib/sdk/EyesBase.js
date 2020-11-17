@@ -55,7 +55,7 @@ const ServerConnector = require('../server/ServerConnector')
 const FailureReports = require('../FailureReports')
 const AppEnvironment = require('../AppEnvironment')
 const MatchWindowTask = require('../MatchWindowTask')
-const MatchSingleWindowTask = require('../MatchSingleWindowTask')
+const MatchWindowAndCloseTask = require('../MatchWindowAndCloseTask')
 const getScmInfo = require('../getScmInfo')
 
 const USE_DEFAULT_TIMEOUT = -1
@@ -1295,7 +1295,17 @@ class EyesBase {
     ignoreMismatch = false,
     checkSettings = new CheckSettings(USE_DEFAULT_TIMEOUT),
     source,
+    closeAfterMatch,
   ) {
+    if (closeAfterMatch) {
+      return this.checkWindowAndCloseBase(
+        regionProvider,
+        tag,
+        ignoreMismatch,
+        checkSettings,
+        source,
+      )
+    }
     if (this._configuration.getIsDisabled()) {
       this._logger.verbose('Ignored')
       const result = new MatchResult()
@@ -1318,13 +1328,28 @@ class EyesBase {
 
     await this.beforeMatchWindow()
     await this._sessionEventHandlers.validationWillStart(this._autSessionId, validationInfo)
+
+    await this._ensureRunningSession()
+    const outputProvider = new AppOutputProvider()
+    // A callback which will call getAppOutput
+    outputProvider.getAppOutput = (region, lastScreenshot, checkSettingsLocal) =>
+      this._getAppOutputWithScreenshot(region, lastScreenshot, checkSettingsLocal)
+
+    this._matchWindowTask = new MatchWindowTask(
+      this._logger,
+      this._serverConnector,
+      this._runningSession,
+      this._configuration.getMatchTimeout(),
+      this,
+      outputProvider,
+    )
+
     const matchResult = await EyesBase.matchWindow(
       regionProvider,
       tag,
       ignoreMismatch,
       checkSettings,
       this,
-      undefined,
       source,
     )
     await this.afterMatchWindow()
@@ -1357,14 +1382,15 @@ class EyesBase {
    * @param {CheckSettings} [checkSettings] - The settings to use.
    * @return {Promise<TestResults>} - The result of matching the output with the expected output.
    */
-  async checkSingleWindowBase(
+  async checkWindowAndCloseBase(
     regionProvider,
     tag = '',
     ignoreMismatch = false,
     checkSettings = new CheckSettings(USE_DEFAULT_TIMEOUT),
+    source,
   ) {
     if (this._configuration.getIsDisabled()) {
-      this._logger.verbose('checkSingleWindowBase Ignored')
+      this._logger.verbose('checkWindowAndCloseBase Ignored')
       const result = new TestResults()
       result.setStatus(TestResultsStatus.Passed)
       return result
@@ -1373,30 +1399,9 @@ class EyesBase {
     ArgumentGuard.isValidState(this._isOpen, 'Eyes not open')
     ArgumentGuard.notNull(regionProvider, 'regionProvider')
 
-    await this._ensureViewportSize()
+    await this.beforeMatchWindow()
 
-    const appEnvironment = await this.getAppEnvironment()
-    this._sessionStartInfo = new SessionStartInfo({
-      agentId: this.getFullAgentId(),
-      sessionType: this._configuration.getSessionType(),
-      appIdOrName: this.getAppName(),
-      verId: undefined,
-      scenarioIdOrName: this._configuration.getTestName(),
-      displayName: this._configuration.getDisplayName(),
-      batchInfo: this._configuration.getBatch(),
-      baselineEnvName: this._configuration.getBaselineEnvName(),
-      environmentName: this._configuration.getEnvironmentName(),
-      environment: appEnvironment,
-      defaultMatchSettings: this._configuration.getDefaultMatchSettings(),
-      branchName: this._configuration.getBranchName(),
-      parentBranchName: this._configuration.getParentBranchName(),
-      baselineBranchName: this._configuration.getBaselineBranchName(),
-      compareWithParentBranch: this._configuration.getCompareWithParentBranch(),
-      ignoreBaseline: this._configuration.getIgnoreBaseline(),
-      saveDiffs: this._configuration.getSaveDiffs(),
-      properties: this._configuration.getProperties(),
-    })
-
+    await this._ensureRunningSession()
     const outputProvider = new AppOutputProvider()
     // A callback which will call getAppOutput
 
@@ -1404,24 +1409,23 @@ class EyesBase {
       this._getAppOutputWithScreenshot(region, lastScreenshot, checkSettingsLocal)
 
     this._shouldMatchWindowRunOnceOnTimeout = true
-    this._matchWindowTask = new MatchSingleWindowTask(
+    this._matchWindowTask = new MatchWindowAndCloseTask(
       this._logger,
       this._serverConnector,
+      this._runningSession,
       this._configuration.getMatchTimeout(),
       this,
       outputProvider,
-      this._sessionStartInfo,
       this._configuration.getSaveNewTests(),
     )
 
-    await this.beforeMatchWindow()
     const testResult = await EyesBase.matchWindow(
       regionProvider,
       tag,
       ignoreMismatch,
       checkSettings,
       this,
-      true,
+      source,
     )
     await this.afterMatchWindow()
 
@@ -1518,19 +1522,10 @@ class EyesBase {
    * @param {boolean} ignoreMismatch
    * @param {CheckSettings} checkSettings
    * @param {EyesBase} self
-   * @param {boolean} [skipStartingSession=false]
    * @param {string} [source]
    * @return {Promise<MatchResult>}
    */
-  static async matchWindow(
-    regionProvider,
-    tag,
-    ignoreMismatch,
-    checkSettings,
-    self,
-    skipStartingSession = false,
-    source,
-  ) {
+  static async matchWindow(regionProvider, tag, ignoreMismatch, checkSettings, self, source) {
     let retryTimeout = -1
 
     if (checkSettings) {
@@ -1540,10 +1535,6 @@ class EyesBase {
     self._logger.verbose(
       `CheckWindowBase(${regionProvider.constructor.name}, '${tag}', ${ignoreMismatch}, ${retryTimeout})`,
     )
-
-    if (!skipStartingSession) {
-      await self._ensureRunningSession()
-    }
 
     const region = await regionProvider.getRegion()
     self._logger.verbose('Calling match window...')
@@ -1703,20 +1694,6 @@ class EyesBase {
     await this.startSession()
     this._logger.setSessionId(this._runningSession.getSessionId())
     this._logger.verbose('Done!')
-
-    const outputProvider = new AppOutputProvider()
-    // A callback which will call getAppOutput
-    outputProvider.getAppOutput = (region, lastScreenshot, checkSettingsLocal) =>
-      this._getAppOutputWithScreenshot(region, lastScreenshot, checkSettingsLocal)
-
-    this._matchWindowTask = new MatchWindowTask(
-      this._logger,
-      this._serverConnector,
-      this._runningSession,
-      this._configuration.getMatchTimeout(),
-      this,
-      outputProvider,
-    )
   }
 
   /**

@@ -148,12 +148,14 @@ class EyesWrapper extends EyesBase {
     return this._serverConnector.logEvents(events)
   }
 
-  checkWindow({screenshotUrl, tag, domUrl, checkSettings, imageLocation, url}) {
+  checkWindow({screenshotUrl, tag, domUrl, checkSettings, imageLocation, url, closeAfterMatch}) {
     const regionProvider = new NullRegionProvider()
     this.screenshotUrl = screenshotUrl
     this.domUrl = domUrl
     this.imageLocation = imageLocation
-    return this.checkWindowBase(regionProvider, tag, false, checkSettings, url)
+    return closeAfterMatch
+      ? this.checkWindowAndCloseBase(regionProvider, tag, false, checkSettings, url)
+      : this.checkWindowBase(regionProvider, tag, false, checkSettings, url)
   }
 
   setProxy(proxy) {
