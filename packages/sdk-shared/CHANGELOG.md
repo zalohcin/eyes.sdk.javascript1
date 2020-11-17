@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- update Mocha test names for TestEyesDifferentRunners for better traceability in test output
+
 ## 0.5.4 - 2020/11/16
 
 - add eyes.abort to the afterEach for all generic coverage tests for better session cleanup

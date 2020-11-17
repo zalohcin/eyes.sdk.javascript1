@@ -38,6 +38,6 @@ describe('TestEyesDifferentRunners VG', () => {
     // ['https://youtube.com', MatchLevel.Layout],
   ]
   cases.forEach(testData => {
-    it('TestEyesDifferentRunners', testCase(...testData))
+    it(`TestEyesDifferentRunners - ${testData[0]}`, testCase(...testData))
   })
 })
