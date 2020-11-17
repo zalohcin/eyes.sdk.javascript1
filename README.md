@@ -12,3 +12,27 @@
 - [eyes-cypress](packages/eyes-cypress) (Cypress)
 - [eyes-storybook](packages/eyes-storybook) (Storybook)
 - [eyes.leanft](packages/eyes-leanft) (LeanFT)
+
+## Tutorials
+
+- https://github.com/applitools/tutorial-selenium-javascript-basic
+- https://github.com/applitools/tutorial-selenium-javascript-ultrafastgrid
+- https://github.com/applitools/tutorial-selenium3-javascript-basic
+- https://github.com/applitools/tutorial-selenium3-javascript-ultrafastgrid
+- https://github.com/applitools/tutorial-webdriverio5-basic
+- https://github.com/applitools/tutorial-webdriverio5-ultrafastgrid
+- https://github.com/applitools/tutorial-webdriverio-basic
+- https://github.com/applitools/tutorial-webdriverio-ultrafastgrid
+- https://github.com/applitools/tutorial-nightwatch-basic
+- https://github.com/applitools/tutorial-nightwatch-ultrafastgrid
+- https://github.com/applitools/tutorial-protractor-basic
+- https://github.com/applitools/tutorial-protractor-ultrafastgrid
+- https://github.com/applitools/tutorial-playwright-basic
+- https://github.com/applitools/tutorial-playwright-ultrafastgrid
+- https://github.com/applitools/tutorial-webdriverio4-applitools-service
+- https://github.com/applitools/tutorial-webdriverio5-applitools-service
+- https://github.com/applitools/tutorial-cypress
+- https://github.com/applitools/tutorial-testcafe
+- https://github.com/applitools/tutorial-storybook-vue
+- https://github.com/applitools/tutorial-storybook-react
+- 
