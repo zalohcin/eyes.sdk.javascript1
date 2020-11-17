@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-puppeteer",
-  "version": "1.2.2",
+  "version": "0.1.0",
   "description": "Applitools Eyes SDK for Puppeteer",
   "keywords": [
     "eyes-puppeteer",
