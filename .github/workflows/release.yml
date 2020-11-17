@@ -16,8 +16,8 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 14
+          registry-url: 'https://registry.npmjs.org'
       - run: |
-          yarn config set registry "https://registry.npmjs.org/:_authToken=${{secrets.NPM_TOKEN}}"
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           cd "packages/${{github.event.inputs.sdkName}}"
