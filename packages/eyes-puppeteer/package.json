@@ -39,7 +39,7 @@
     "puppeteer": ">=5.3.0"
   },
   "devDependencies": {
-    "@applitools/sdk-coverage-tests": "^2.0.4",
+    "@applitools/sdk-coverage-tests": "^2.1.0",
     "@applitools/sdk-fake-eyes-server": "^2.0.0",
     "@applitools/sdk-release-kit": "^0.4.2",
     "@applitools/sdk-shared": "^0.5.5",
