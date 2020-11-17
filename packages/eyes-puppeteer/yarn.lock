@@ -182,10 +182,10 @@
     ncp "2.0.0"
     yargs "15.3.1"
 
-"@applitools/sdk-shared@^0.5.4":
-  version "0.5.4"
-  resolved "https://registry.yarnpkg.com/@applitools/sdk-shared/-/sdk-shared-0.5.4.tgz#433325c30a8d8222591a74c64d4ad5fe5435a1f1"
-  integrity sha512-cWMAnSzkJSmgAOetKB/aYS7ITVrL+nj/P8yWt9ASqJwOdXJ1Pl6YwJxOSEfQ9xCy/AyTpbLYEV462ux/KtrvAQ==
+"@applitools/sdk-shared@^0.5.5":
+  version "0.5.5"
+  resolved "https://registry.yarnpkg.com/@applitools/sdk-shared/-/sdk-shared-0.5.5.tgz#11fa86e21cad25a707e84385576f65f8095d7e73"
+  integrity sha512-xdJxcxuC4XryyGPDLDvMBzrX3hfhWBHa3VqCboZXC6A/00XaXTtVvskHCoWLPlOLjxaiWYb44yyao/r1lm8M7Q==
   dependencies:
     "@applitools/functional-commons" "1.6.0"
     "@applitools/sdk-coverage-tests" "2.0.4"
