@@ -1,7 +1,7 @@
 # Changelog
 
 ## Unreleased
-
+- add eyes-puppeteer as a supported SDK
 
 ## 2.0.3 - 2020/11/12
 
