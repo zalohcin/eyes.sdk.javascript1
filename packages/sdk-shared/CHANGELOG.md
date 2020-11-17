@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 0.5.5 - 2020/11/16
+
 - update Mocha test names for TestEyesDifferentRunners for better traceability in test output
 
 ## 0.5.4 - 2020/11/16
