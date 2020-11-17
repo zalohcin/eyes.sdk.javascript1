@@ -160,7 +160,7 @@ describe('Report', () => {
     assert.deepStrictEqual(createReport({name: 'eyes-selenium', metadata, junit}), {
       sdk: 'js_selenium_4',
       group: 'selenium',
-      sandbox: true,
+      sandbox: false,
       results: [
         {
           test_name: 'TestCheckWindow',
@@ -200,7 +200,7 @@ describe('Report', () => {
       {
         sdk: 'js_selenium_4',
         group: 'selenium',
-        sandbox: true,
+        sandbox: false,
         results: [
           {
             test_name: 'TestCheckWindow',

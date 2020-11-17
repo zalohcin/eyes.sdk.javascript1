@@ -56,6 +56,7 @@ module.exports = function(tracker, test) {
   )
 
   addHook('afterEach', js`await destroyDriver(driver)`)
+  addHook('afterEach', js`await eyes.abort()`)
 
   const driver = {
     constructor: {

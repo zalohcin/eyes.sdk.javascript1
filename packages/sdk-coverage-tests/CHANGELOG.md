@@ -3,6 +3,11 @@
 ## Unreleased
 - add eyes-puppeteer as a supported SDK
 
+## 2.0.4 - 2020/11/16
+
+- fix nested generic type parsing
+- send reports to the dashboards by default
+
 ## 2.0.3 - 2020/11/12
 
 - add a possibility to provide a nested type annotation

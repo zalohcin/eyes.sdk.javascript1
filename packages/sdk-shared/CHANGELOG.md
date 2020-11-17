@@ -3,6 +3,27 @@
 ## Unreleased
 
 
+## 0.5.5 - 2020/11/16
+
+- update Mocha test names for TestEyesDifferentRunners for better traceability in test output
+
+## 0.5.4 - 2020/11/16
+
+- add eyes.abort to the afterEach for all generic coverage tests for better session cleanup
+
+## 0.5.3 - 2020/11/16
+
+- update duplicate sdk test to work out of node_modules
+- updated to @applitools/sdk-coverage-tests@2.0.4 (from 2.0.3)
+
+## 0.5.2 - 2020/11/14
+
+- missed publishing index.js
+
+## 0.5.1 - 2020/11/14
+
+- move prettier to depdendencies
+
 ## 0.5.0 - 2020/11/13
 
 - update cors test server page to use a web font

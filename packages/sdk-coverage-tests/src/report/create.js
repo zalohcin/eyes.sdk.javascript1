@@ -1,6 +1,6 @@
 const {convertJunitXmlToResultSchema} = require('./xml')
 
-function createReport({reportId, name, group, junit, metadata, sandbox = true}) {
+function createReport({reportId, name, group, junit, metadata, sandbox = false}) {
   return {
     id: reportId,
     sdk: convertSdkNameToReportName(name),
