@@ -130,7 +130,7 @@ export function isEnumValue(value: any, enumeration: {[key: string]: any}, {name
   const values = new Set(Object.values(enumeration))
   if (!values.has(value)) {
     throw new Error(
-      `IllegalArgument: ${name} should be one of [${Array.from(values, (value) => JSON.stringify(value)).join(', ')}]`,
+      `IllegalArgument: ${name} should be one of [${Array.from(values, value => JSON.stringify(value)).join(', ')}]`,
     )
   }
 }

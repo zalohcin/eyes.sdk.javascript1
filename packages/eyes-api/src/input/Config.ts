@@ -1,3 +1,4 @@
+import * as GeneralUtils from '../utils/GeneralUtils'
 import * as ArgumentGuard from '../utils/ArgumentGuard'
 import * as TypeUtils from '../utils/TypeUtils'
 import SessionType from '../enums/SessionType'
@@ -14,23 +15,31 @@ import ImageMatchSettingsData, {ImageMatchSettings} from './ImageMatchSettings'
 import {AccessibilitySettings} from './AccessibilitySettings'
 import {RenderInfo} from './RenderInfo'
 
-export type Configuration = {
+export type GeneralConfig = {
   showLogs?: boolean
-  appName?: string
-  testName?: string
-  displayName?: string
-  isDisabled?: boolean
-  matchTimeout?: number
-  sessionType?: SessionType
-  viewportSize?: RectangleSize
   agentId?: string
   apiKey?: string
   serverUrl?: string
   proxy?: ProxySettings
   connectionTimeout?: number
   removeSession?: boolean
-  batch?: BatchInfo
+  isDisabled?: boolean
+}
+
+export type OpenConfig = {
+  appName?: string
+  testName?: string
+  displayName?: string
+  viewportSize?: RectangleSize
+  sessionType?: SessionType
   properties?: CustomProperty[]
+  batch?: BatchInfo
+  defaultMatchSettings?: ImageMatchSettings
+  hostApp?: string
+  hostOS?: string
+  hostAppInfo?: string
+  hostOSInfo?: string
+  deviceInfo?: string
   baselineEnvName?: string
   environmentName?: string
   branchName?: string
@@ -41,29 +50,34 @@ export type Configuration = {
   saveFailedTests?: boolean
   saveNewTests?: boolean
   saveDiffs?: boolean
+  dontCloseBatches?: boolean
+}
+
+export type CheckConfig = {
   sendDom?: boolean
-  hostApp?: string
-  hostOS?: string
-  hostAppInfo?: string
-  hostOSInfo?: string
-  deviceInfo?: string
-  defaultMatchSettings?: ImageMatchSettings
+  matchTimeout?: number
   forceFullPageScreenshot?: boolean
+}
+
+export type ClassicConfig = {
   waitBeforeScreenshots?: number
   stitchMode?: StitchMode
   hideScrollbars?: boolean
   hideCaret?: boolean
   stitchOverlap?: number
-  concurrentSessions?: number
-  isThrowExceptionOn?: boolean
-  browsersInfo?: RenderInfo[]
-  visualGridOptions?: {[key: string]: any}
-  layoutBreakpoints?: boolean | number[]
-  disableBrowserFetching?: boolean
-  dontCloseBatches?: boolean
 }
 
-export default class ConfigurationData implements Required<Configuration> {
+export type VGConfig = {
+  concurrentSessions?: number
+  browsersInfo?: RenderInfo[]
+  visualGridOptions?: Record<string, any>
+  layoutBreakpoints?: boolean | number[]
+  disableBrowserFetching?: boolean
+}
+
+export type Config = GeneralConfig & OpenConfig & CheckConfig & ClassicConfig & VGConfig
+
+export default class ConfigData implements Required<Config> {
   private _showLogs: boolean
   private _appName: string
   private _testName: string
@@ -104,14 +118,13 @@ export default class ConfigurationData implements Required<Configuration> {
   private _hideCaret: boolean
   private _stitchOverlap: number
   private _concurrentSessions: number
-  private _isThrowExceptionOn: boolean
   private _browsersInfo: RenderInfo[]
   private _visualGridOptions: {[key: string]: any}
   private _layoutBreakpoints: boolean | number[]
   private _disableBrowserFetching: boolean
   private _dontCloseBatches: boolean
 
-  constructor(config?: Configuration) {
+  constructor(config?: Config) {
     if (!config) return this
     const self = this as any
     for (const [key, value] of Object.entries(config)) {
@@ -119,6 +132,72 @@ export default class ConfigurationData implements Required<Configuration> {
         self[key] = value
       }
     }
+  }
+
+  get general(): GeneralConfig {
+    return GeneralUtils.toJSON(this, [
+      'showLogs',
+      'agentId',
+      'apiKey',
+      'serverUrl',
+      'proxy',
+      'connectionTimeout',
+      'removeSession',
+      'isDisabled',
+    ])
+  }
+
+  get open(): OpenConfig {
+    return GeneralUtils.toJSON(this, [
+      'appName',
+      'testName',
+      'displayName',
+      'viewportSize',
+      'sessionType',
+      'properties',
+      'batch',
+      'defaultMatchSettings',
+      'hostApp',
+      'hostOS',
+      'hostAppInfo',
+      'hostOSInfo',
+      'deviceInfo',
+      'baselineEnvName',
+      'environmentName',
+      'branchName',
+      'parentBranchName',
+      'baselineBranchName',
+      'compareWithParentBranch',
+      'ignoreBaseline',
+      'saveFailedTests',
+      'saveNewTests',
+      'saveDiffs',
+      'dontCloseBatches',
+    ])
+  }
+
+  get check(): CheckConfig {
+    return GeneralUtils.toJSON(this, ['sendDom', 'matchTimeout', 'forceFullPageScreenshot'])
+  }
+
+  get classic(): ClassicConfig {
+    return GeneralUtils.toJSON(this, [
+      'waitBeforeScreenshots',
+      'stitchMode',
+      'hideScrollbars',
+      'hideCaret',
+      'stitchOverlap',
+    ])
+  }
+
+  get vg(): VGConfig {
+    return GeneralUtils.toJSON(this, [
+      'concurrentSessions',
+      'browsersInfo',
+      'visualGridOptions',
+      'layoutBreakpoints',
+      'disableBrowserFetching',
+    ])
   }
 
   get showLogs(): boolean {
@@ -776,20 +855,6 @@ export default class ConfigurationData implements Required<Configuration> {
     return this
   }
 
-  get isThrowExceptionOn(): boolean {
-    return this._isThrowExceptionOn
-  }
-  set isThrowExceptionOn(isThrowExceptionOn: boolean) {
-    this._isThrowExceptionOn = isThrowExceptionOn
-  }
-  getIsThrowExceptionOn(): boolean {
-    return this._isThrowExceptionOn
-  }
-  setIsThrowExceptionOn(isThrowExceptionOn: boolean): this {
-    this.isThrowExceptionOn = isThrowExceptionOn
-    return this
-  }
-
   get browsersInfo(): RenderInfo[] {
     return this._browsersInfo
   }
@@ -903,10 +968,56 @@ export default class ConfigurationData implements Required<Configuration> {
   }
 
   toString(): string {
-    return `Configuration ${this.toJSON()}`
+    return `${this.constructor.name} ${this.toJSON()}`
   }
 
-  toJSON(): Configuration {
-    return {}
+  toJSON(): Config {
+    return GeneralUtils.toJSON(this, [
+      'showLogs',
+      'appName',
+      'testName',
+      'displayName',
+      'isDisabled',
+      'matchTimeout',
+      'sessionType',
+      'viewportSize',
+      'agentId',
+      'apiKey',
+      'serverUrl',
+      'proxy',
+      'connectionTimeout',
+      'removeSession',
+      'batch',
+      'properties',
+      'baselineEnvName',
+      'environmentName',
+      'branchName',
+      'parentBranchName',
+      'baselineBranchName',
+      'compareWithParentBranch',
+      'ignoreBaseline',
+      'saveFailedTests',
+      'saveNewTests',
+      'saveDiffs',
+      'sendDom',
+      'hostApp',
+      'hostOS',
+      'hostAppInfo',
+      'hostOSInfo',
+      'deviceInfo',
+      'defaultMatchSettings',
+      'forceFullPageScreenshot',
+      'waitBeforeScreenshots',
+      'stitchMode',
+      'hideScrollbars',
+      'hideCaret',
+      'stitchOverlap',
+      'concurrentSessions',
+      'browsersInfo',
+      'visualGridOptions',
+      'layoutBreakpoints',
+      'disableBrowserFetching',
+      'dontCloseBatches',
+    ])
   }
 }

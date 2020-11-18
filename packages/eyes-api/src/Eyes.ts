@@ -5,7 +5,7 @@ import StitchMode from './enums/StitchMode'
 import MatchLevel from './enums/MatchLevel'
 import CheckSettingsFluent, {CheckSettings} from './input/CheckSettings'
 import ProxySettingsData, {ProxySettings} from './input/ProxySettings'
-import ConfigurationData, {Configuration} from './input/Configuration'
+import ConfigData, {Config, GeneralConfig, OpenConfig} from './input/Config'
 import BatchInfoData, {BatchInfo} from './input/BatchInfo'
 import RectangleSizeData, {RectangleSize} from './input/RectangleSize'
 import RegionData, {Region} from './input/Region'
@@ -23,7 +23,7 @@ export type EyesSpec<TDriver, TElement, TSelector> = {
   isDriver(value: any): value is TDriver
   isElement(value: any): value is TElement
   isSelector(value: any): value is TSelector
-  openEyes(driver: TDriver, config?: Configuration): EyesCommands<TElement, TSelector>
+  openEyes(driver: TDriver, config?: Config): EyesCommands<TElement, TSelector>
   closeBatch(...args: any[]): Promise<any>
   setViewportSize(driver: TDriver, viewportSize: RectangleSize): Promise<void>
 }
@@ -31,7 +31,7 @@ export type EyesSpec<TDriver, TElement, TSelector> = {
 export default abstract class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
   protected abstract readonly _spec: EyesSpec<TDriver, TElement, TSelector>
 
-  private _config: ConfigurationData
+  private _config: ConfigData
   private _runner: EyesRunner
   private _driver: TDriver
   private _commands: EyesCommands<TElement, TSelector>
@@ -40,21 +40,18 @@ export default abstract class Eyes<TDriver = unknown, TElement = unknown, TSelec
     await this.prototype._spec.setViewportSize(driver, viewportSize)
   }
 
-  constructor(runner?: EyesRunner, config?: Configuration | ConfigurationData)
-  constructor(config: Configuration | ConfigurationData, runner?: EyesRunner)
-  constructor(
-    runnerOrConfig?: EyesRunner | Configuration | ConfigurationData,
-    configOrRunner?: Configuration | ConfigurationData | EyesRunner,
-  ) {
+  constructor(runner?: EyesRunner, config?: Config | ConfigData)
+  constructor(config: Config | ConfigData, runner?: EyesRunner)
+  constructor(runnerOrConfig?: EyesRunner | Config | ConfigData, configOrRunner?: Config | ConfigData | EyesRunner) {
     if (TypeUtils.instanceOf(runnerOrConfig, EyesRunner)) {
       this._runner = runnerOrConfig
-      this._config = new ConfigurationData(configOrRunner as Configuration | ConfigurationData)
+      this._config = new ConfigData(configOrRunner as Config | ConfigData)
     } else if (TypeUtils.instanceOf(configOrRunner, EyesRunner)) {
       this._runner = configOrRunner
-      this._config = new ConfigurationData(runnerOrConfig as Configuration | ConfigurationData)
+      this._config = new ConfigData(runnerOrConfig as Config | ConfigData)
     } else {
       this._runner = new ClassicRunner()
-      this._config = new ConfigurationData()
+      this._config = new ConfigData()
     }
     this._runner.attach(this)
   }
@@ -73,20 +70,20 @@ export default abstract class Eyes<TDriver = unknown, TElement = unknown, TSelec
     return this._driver
   }
 
-  get config(): Configuration {
+  get config(): Config {
     return this._config
   }
-  set config(config: Configuration) {
-    this._config = new ConfigurationData(config)
+  set config(config: Config) {
+    this._config = new ConfigData(config)
   }
-  getConfiguration(): ConfigurationData {
+  getConfig(): ConfigData {
     return this._config
   }
-  setConfiguration(config: Configuration | ConfigurationData) {
-    this._config = new ConfigurationData(config)
+  setConfig(config: Config | ConfigData) {
+    this._config = new ConfigData(config)
   }
 
-  async open(driver: TDriver, config?: Configuration | ConfigurationData): Promise<TDriver>
+  async open(driver: TDriver, config?: OpenConfig | ConfigData): Promise<TDriver>
   async open(
     driver: TDriver,
     appName?: string,
@@ -96,14 +93,23 @@ export default abstract class Eyes<TDriver = unknown, TElement = unknown, TSelec
   ): Promise<TDriver>
   async open(
     driver: TDriver,
-    configOrAppName?: Configuration | ConfigurationData | string,
+    configOrAppName?: OpenConfig | ConfigData | string,
     testName?: string,
     viewportSize?: RectangleSize,
     sessionType?: SessionType,
   ): Promise<TDriver> {
-    const config: Configuration = {...this._config}
-    if (TypeUtils.isObject(configOrAppName)) Object.assign(config, configOrAppName)
-    else config.appName = configOrAppName
+    const config = {
+      ...this._config.general,
+      ...this._config.open,
+      vg: TypeUtils.instanceOf(this._runner, VisualGridRunner),
+    }
+    if (TypeUtils.instanceOf(configOrAppName, ConfigData)) {
+      Object.assign(config, configOrAppName.open)
+    } else if (TypeUtils.isObject(configOrAppName)) {
+      Object.assign(config, configOrAppName)
+    } else if (TypeUtils.isString(configOrAppName)) {
+      config.appName = configOrAppName
+    }
     if (TypeUtils.isString(testName)) config.testName = testName
     if (TypeUtils.isString(viewportSize)) config.viewportSize = viewportSize
     if (TypeUtils.isString(sessionType)) config.sessionType = sessionType
@@ -117,15 +123,19 @@ export default abstract class Eyes<TDriver = unknown, TElement = unknown, TSelec
   async check(name: string, checkSettings: CheckSettingsFluent<TElement, TSelector>): Promise<void>
   async check(checkSettings?: CheckSettings<TElement, TSelector>): Promise<void>
   async check(
-    checkSettingsOrName?: CheckSettings<TElement, TSelector> | string,
-    checkSettings?: CheckSettingsFluent<TElement, TSelector>,
+    checkSettingsOrName?: CheckSettings<TElement, TSelector> | CheckSettingsFluent<TElement, TSelector> | string,
+    checkSettings?: CheckSettings<TElement, TSelector> | CheckSettingsFluent<TElement, TSelector>,
   ): Promise<void> {
     let settings
     if (TypeUtils.isString(checkSettingsOrName)) {
       ArgumentGuard.notNull(checkSettings, {name: 'checkSettings'})
-      settings = checkSettings.name(checkSettingsOrName).toJSON()
+      settings = TypeUtils.instanceOf(checkSettings, CheckSettingsFluent)
+        ? checkSettings.name(checkSettingsOrName).toJSON()
+        : {...checkSettings, name: checkSettingsOrName}
     } else {
-      settings = checkSettingsOrName
+      settings = TypeUtils.instanceOf(checkSettingsOrName, CheckSettingsFluent)
+        ? checkSettingsOrName.toJSON()
+        : {...checkSettingsOrName}
     }
 
     // TODO wrap/transform response to user output interface

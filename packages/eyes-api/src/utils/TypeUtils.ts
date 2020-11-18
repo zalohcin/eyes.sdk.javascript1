@@ -55,9 +55,7 @@ export function has<TKey extends PropertyKey>(
   return true
 }
 
-export function instanceOf<TCtor extends new (...args: any) => any>(
-  value: any,
-  ctor: TCtor,
-): value is InstanceType<TCtor> {
+// eslint-disable-next-line @typescript-eslint/ban-types
+export function instanceOf<TCtor extends Function>(value: any, ctor: TCtor): value is TCtor['prototype'] {
   return value instanceof ctor
 }

@@ -228,6 +228,7 @@ exports.EyesDriver = require('./lib/sdk/EyesDriver')
 exports.EyesContext = require('./lib/sdk/EyesContext')
 exports.EyesElement = require('./lib/sdk/EyesElement')
 exports.EyesSDK = require('./lib/sdk/EyesSDK')
+exports.makeSDK = require('./lib/sdk/makeSDK')
 
 exports.takeDomCapture = require('./lib/utils/takeDomCapture')
 

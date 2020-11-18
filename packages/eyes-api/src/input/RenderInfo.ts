@@ -3,22 +3,22 @@ import DeviceName from '../enums/DeviceName'
 import IOSDeviceName from '../enums/IOSDeviceName'
 import ScreenOrientation from '../enums/ScreenOrientation'
 
-type DesktopBrowserInfo = {
+export type DesktopBrowserInfo = {
   name?: BrowserName
   width: number
   height: number
 }
 
-type EmulationInfo<TDeviceName> = {
+export type EmulationInfo<TDeviceName> = {
   deviceName: TDeviceName
   screenOrientation?: ScreenOrientation
 }
 
-type ChromeEmulationInfo = {
+export type ChromeEmulationInfo = {
   chromeEmulationInfo: EmulationInfo<DeviceName>
 }
 
-type IOSEmulationInfo = {
+export type IOSEmulationInfo = {
   iosEmulationInfo: EmulationInfo<IOSDeviceName>
 }
 
