@@ -1,5 +1,4 @@
-const {ClassicRunner, VisualGridRunner} = require('@applitools/eyes-sdk-core')
-const {EyesSDK} = require('@applitools/eyes-sdk-core')
+const core = require('@applitools/eyes-sdk-core')
 const VisualGridClient = require('@applitools/visual-grid-client')
 const makeServer = require('./server')
 const makeSocket = require('./socket')
@@ -42,46 +41,37 @@ async function makeSDK({idleTimeout = IDLE_TIMEOUT, ...serverConfig} = {}) {
         ...config.commands,
       ]
 
-      socket.sdk = EyesSDK({
+      socket.sdk = core.makeSDK({
         name: `eyes-universal/${config.name}`,
         version: `${version}/${config.name}`,
-        spec: commands.reduce(
-          (commands, name) => Object.assign(commands, {[name]: spec[name]}),
-          {},
-        ),
+        spec: commands.reduce((commands, name) => {
+          return Object.assign(commands, {[name]: spec[name]})
+        }, {}),
         VisualGridClient,
       })
     })
 
     socket.command('Util.setViewportSize', async ({driver, viewportSize}) => {
-      return socket.sdk.Eyes.setViewportSize(driver, viewportSize)
+      return socket.sdk.setViewportSize(driver, viewportSize)
     })
-    socket.command('Batch.close', () => {
+    socket.command('Util.closeBatch', () => {
       // TODO
-    })
-    socket.command('Eyes.open', async ({driver, config}) => {
-      const eyes = new socket.sdk.EyesFactory(config.vg ? new VisualGridRunner() : new ClassicRunner())
-      eyes.setConfiguration(config)
-      await eyes.open(
-        driver,
-        config.appName,
-        config.testName,
-        config.viewportSize,
-        config.sessionType,
-      )
-      return refer.ref(eyes)
-    })
-    socket.command('Eyes.check', async ({eyes, checkSettings}) => {
-      return refer.deref(eyes).check(checkSettings)
     })
     socket.command('Eyes.locate', async ({eyes}) => {
       // TODO
     })
+    socket.command('Eyes.open', async ({driver, config}) => {
+      const commands = socket.sdk.openEyes(driver, config)
+      return refer.ref(commands)
+    })
+    socket.command('Eyes.check', async ({eyes, checkSettings}) => {
+      return refer.deref(eyes).check(checkSettings)
+    })
     socket.command('Eyes.close', ({eyes}) => {
-      return refer.deref(eyes).close(false)
+      return refer.deref(eyes).close()
     })
     socket.command('Eyes.abort', ({eyes}) => {
-      return refer.deref(eyes).abort(false)
+      return refer.deref(eyes).abort()
     })
   })
 

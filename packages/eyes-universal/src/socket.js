@@ -1,52 +1,67 @@
 const WebSocket = require('ws')
 const uuid = require('uuid')
-const chalk = require('chalk')
 
 function makeSocket(ws) {
+  let socket = null
   const listeners = new Map()
-  const state = {}
-  const ready = new Promise((resolve, reject) => {
-    state.resolve = resolve
-    state.reject = reject
-  })
+  const queue = new Set()
 
-  init(ws)
+  attach(ws)
 
-  async function init(ws) {
+  function connect(url) {
+    const ws = new WebSocket(url)
+    attach(ws)
+  }
+
+  function attach(ws) {
     if (!ws) return
-    if (ws.readyState === WebSocket.CONNECTING) {
-      ws.on('open', state.resolve)
-      ws.on('error', state.reject)
-    } else if (ws.readyState === WebSocket.OPEN) {
-      state.resolve()
-    } else {
-      state.reject()
+
+    if (ws.readyState === WebSocket.CONNECTING) ws.on('open', () => attach(ws))
+    else if (ws.readyState === WebSocket.OPEN) {
+      socket = ws
+      queue.forEach(command => command())
+      queue.clear()
+
+      socket.on('message', message => {
+        const {name, requestId, payload} = deserialize(message)
+        const fns = listeners.get(name)
+        if (fns) fns.forEach(fn => fn(payload, requestId))
+      })
+      socket.on('close', () => {
+        const fns = listeners.get('close')
+        if (fns) fns.forEach(fn => fn())
+      })
     }
-    ws.on('message', message => {
-      const {name, requestId, payload} = deserialize(message)
-      const fns = listeners.get(name)
-      fns.forEach(fn => fn(payload, requestId))
+  }
+
+  function disconnect() {
+    if (!socket) return
+    socket.terminate()
+    socket = null
+  }
+
+  function request(name, payload) {
+    return new Promise((resolve, reject) => {
+      const requestId = uuid.v4()
+      emit({name, requestId}, payload)
+      once({name, requestId}, response => {
+        if (response.error) return reject(response.error)
+        return resolve(response.result)
+      })
     })
-    ws.on('close', () => {
-      const fns = listeners.get('close')
-      if (fns) fns.forEach(fn => fn())
+  }
+
+  function command(name, fn) {
+    on(name, async (payload, requestId) => {
+      try {
+        const result = await fn(payload)
+        emit({name, requestId}, {result})
+      } catch (error) {
+        emit({name, requestId}, {error})
+      }
     })
   }
 
-  function open(address) {
-    ws = new WebSocket(address)
-    init(ws)
-  }
-
-  function close() {
-    ws.terminate()
-  }
-
-  /**
-   * @param {string|{name: string, requestId: string}} type - event type
-   * @param {(payload, requestId?: string) => void} fn - event callback
-   * @return {() => void} event off function
-   */
   function on(type, fn) {
     type = typeof type === 'string' ? {name: type} : {name: type.name, requestId: type.requestId}
     let fns = listeners.get(type.name)
@@ -61,21 +76,11 @@ function makeSocket(ws) {
     return () => off(type.name, handler)
   }
 
-  /**
-   * @param {string|{name: string, requestId: string}} type - event type
-   * @param {(payload, requestId?: string) => void} fn - event callback
-   * @return {() => void} event off function
-   */
   function once(type, fn) {
     const off = on(type, (...args) => (fn(...args), off()))
     return off
   }
 
-  /**
-   * @param {string|{name: string, requestId: string}} type - event type
-   * @param {(payload, requestId?: string) => void} fn - event callback
-   * @return {boolean} true if an event existed and has been removed, or false if the event does not exist.
-   */
   function off(name, fn) {
     if (!fn) return listeners.delete(name)
     const fns = listeners.get(name)
@@ -85,57 +90,38 @@ function makeSocket(ws) {
     return existed
   }
 
-  /**
-   * @param {string|{name: string, requestId: string}} type - event type
-   * @param {any} payload - event payload
-   */
   function emit(type, payload) {
-    const message = serialize(type, payload)
-    ready.then(() => ws.send(message))
+    const command = () => socket.send(serialize(type, payload))
+    if (socket) command()
+    else queue.add(command)
+    return () => queue.delete(command)
   }
 
-  /**
-   * Send request with given name and waits for response
-   * @param {string} name - request name
-   * @param {any} payload - request payload
-   * @return {Promise<any>} request response
-   */
-  function request(name, payload) {
-    return new Promise((resolve, reject) => {
-      const requestId = uuid.v4()
-      emit({name, requestId}, payload)
-      once({name, requestId}, response => {
-        if (response.error) return reject(response.error)
-        return resolve(response.result)
-      })
-    })
+  function ref() {
+    const command = () => socket._socket.ref()
+    if (socket) command()
+    else queue.add(command)
+    return () => queue.delete(command)
   }
 
-  /**
-   * Register command with given name to process requests and send responses
-   * @param {string} name - command name
-   * @param {(payload) => any} fn - command body
-   */
-  function command(name, fn) {
-    return on(name, async (payload, requestId) => {
-      try {
-        const result = await fn(payload)
-        emit({name, requestId}, {result})
-      } catch (error) {
-        emit({name, requestId}, {error})
-      }
-    })
+  function unref() {
+    const command = () => socket._socket.unref()
+    if (socket) command()
+    else queue.add(command)
+    return () => queue.delete(command)
   }
 
   return {
-    open,
-    close,
     on,
     once,
     off,
     emit,
     request,
     command,
+    connect,
+    disconnect,
+    ref,
+    unref,
   }
 }
 
