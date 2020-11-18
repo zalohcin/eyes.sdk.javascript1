@@ -14,7 +14,7 @@ function makeWaitForBatch({
     logger.log(`Waiting for test results of ${runningTests.length} tests.`);
 
     const testResultsArr = flatten(await processCloseAndAbort({runningTests, closeBatch, logger}));
-    const {failed, diffs, passed, empty} = getErrorsAndDiffs(testResultsArr);
+    const {failed, diffs, passed} = getErrorsAndDiffs(testResultsArr);
     await handleBatchResultsFile(testResultsArr);
 
     if (concurrency == 1) {
@@ -22,7 +22,7 @@ function makeWaitForBatch({
     }
 
     if (failed.length || diffs.length) {
-      throw new Error(errorDigest({passed, failed, diffs, empty, logger}));
+      throw new Error(errorDigest({passed, failed, diffs, logger}));
     }
 
     return passed.length;

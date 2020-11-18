@@ -5,9 +5,7 @@ function getErrorsAndDiffs(testResultsArr) {
     ({failed, diffs, passed}, testResults) => {
       if (testResults instanceof Error || testResults.error) {
         failed.push(testResults);
-      } else if (testResults.isEmpty) {
-        empty.push(testResults);
-      }else {
+      } else {
         if (testResults.getStatus() === 'Unresolved') {
           if (testResults.getIsNew()) {
             testResults.error = new Error(
@@ -24,13 +22,12 @@ function getErrorsAndDiffs(testResultsArr) {
         }
       }
 
-      return {failed, diffs, passed, empty};
+      return {failed, diffs, passed};
     },
     {
       failed: [],
       diffs: [],
-      passed: [],
-      empty: []
+      passed: []
     },
   );
 }
