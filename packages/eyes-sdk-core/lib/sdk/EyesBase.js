@@ -1150,7 +1150,9 @@ class EyesBase {
       if (!this._runningSession) {
         this._logger.verbose('Server session was not started')
         this._logger.log('--- Empty test ended.')
-        return new TestResults()
+        const result = new TestResults({name: this._configuration._testName, status: 'Empty'});
+        result.isEmpty = true
+        return result
       }
 
       const isNewSession = this._runningSession.getIsNew()
