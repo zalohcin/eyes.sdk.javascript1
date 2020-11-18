@@ -22,9 +22,10 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           cd "packages/${{github.event.inputs.sdkName}}"
-          yarn
-          yarn docker:setup
-          yarn publish "--${{github.event.inputs.version}}" --access public
+          npm i
+          npm run docker:setup
+          npm version "${{github.event.inputs.version}}"
+          npm publish --access public
     env:
       CVG_TESTS_REMOTE: http://localhost:4444/wd/hub
       APPLITOOLS_API_KEY_SDK: ${{secrets.APPLITOOLS_API_KEY_SDK}}
