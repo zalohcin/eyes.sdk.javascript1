@@ -17,7 +17,8 @@ jobs:
         with:
           node-version: 14
       - run: |
-          echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}\nregistry=https://registry.npmjs.org/\nalways-auth=true" >> .npmrc
+          echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}\nregistry=https://registry.npmjs.org/\nalways-auth=true" > .npmrc
+          cat .npmrc
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           cd "packages/${{github.event.inputs.sdkName}}"
