@@ -28,7 +28,8 @@
   "scripts": {
     "preversion": "",
     "version": "",
-    "postversion": ""
+    "postversion": "",
+    "docker:setup":""
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
