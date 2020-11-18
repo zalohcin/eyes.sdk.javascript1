@@ -1,4 +1,4 @@
-import * as TypeUtils from './TypeUtils'
+import * as types from './type'
 
 export function getEnvValue<T extends 'boolean' | 'number' | 'string' = 'string'>(
   name: string,
@@ -7,7 +7,7 @@ export function getEnvValue<T extends 'boolean' | 'number' | 'string' = 'string'
   if (!process) return
   const value = process.env[`APPLITOOLS_${name}`]
   if (value === undefined || value === 'null') return
-  if (type === 'boolean' && TypeUtils.isBoolean(value)) return (value === 'true') as any
+  if (type === 'boolean' && types.isBoolean(value)) return (value === 'true') as any
   if (type === 'number') return Number(value) as any
   return value as any
 }
@@ -40,12 +40,16 @@ export function toJSON<
     : TObject[TProps[key]]
 }
 export function toJSON(object: Record<PropertyKey, any>, props: string[] | Record<string, PropertyKey>) {
-  if (!TypeUtils.isObject(object)) return null
+  if (!types.isObject(object)) return null
   const original = Object.values(props)
-  const keys = TypeUtils.isArray(props) ? original : Object.keys(props)
+  const keys = types.isArray(props) ? original : Object.keys(props)
   return keys.reduce((plain: any, key, index) => {
     const value = object[original[index] as string]
-    plain[key] = value && TypeUtils.isFunction(value.toJSON) ? value.toJSON() : value
+    plain[key] = value && types.isFunction(value.toJSON) ? value.toJSON() : value
     return plain
   }, {})
+}
+
+export function toString(object: Record<PropertyKey, any>): string {
+  return `${this.constructor.name} ${JSON.stringify(object, null, 2)}`
 }

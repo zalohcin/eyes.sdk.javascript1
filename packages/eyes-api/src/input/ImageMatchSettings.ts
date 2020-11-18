@@ -1,3 +1,4 @@
+import * as utils from '@applitools/utils'
 import ExactMatchSettingsData, {ExactMatchSettings} from './ExactMatchSettings'
 import RegionData, {Region} from './Region'
 import FloatingRegionData, {FloatingRegion} from './FloatingRegion'
@@ -6,7 +7,6 @@ import {AccessibilitySettings} from './AccessibilitySettings'
 import MatchLevel from '../enums/MatchLevel'
 import AccessibilityLevel from '../enums/AccessibilityLevel'
 import AccessibilityGuidelinesVersion from '../enums/AccessibilityGuidelinesVersion'
-import * as ArgumentGuard from '../utils/ArgumentGuard'
 
 export type ImageMatchSettings = {
   exact?: ExactMatchSettings
@@ -72,7 +72,7 @@ export default class ImageMatchSettingsData implements Required<ImageMatchSettin
     return this._matchLevel
   }
   set matchLevel(matchLevel: MatchLevel) {
-    ArgumentGuard.isEnumValue(matchLevel, MatchLevel, {name: 'matchLevel'})
+    utils.guard.isEnumValue(matchLevel, MatchLevel, {name: 'matchLevel'})
     this._matchLevel = matchLevel
   }
   getMatchLevel(): MatchLevel {
@@ -86,7 +86,7 @@ export default class ImageMatchSettingsData implements Required<ImageMatchSettin
     return this._ignoreCaret
   }
   set ignoreCaret(ignoreCaret: boolean) {
-    ArgumentGuard.isBoolean(ignoreCaret, {name: 'ignoreCaret', strict: false})
+    utils.guard.isBoolean(ignoreCaret, {name: 'ignoreCaret', strict: false})
     this._ignoreCaret = ignoreCaret
   }
   getIgnoreCaret(): boolean {
@@ -100,7 +100,7 @@ export default class ImageMatchSettingsData implements Required<ImageMatchSettin
     return this._useDom
   }
   set useDom(useDom: boolean) {
-    ArgumentGuard.isBoolean(useDom, {name: 'useDom', strict: false})
+    utils.guard.isBoolean(useDom, {name: 'useDom', strict: false})
     this._useDom = useDom
   }
   getUseDom(): boolean {
@@ -114,7 +114,7 @@ export default class ImageMatchSettingsData implements Required<ImageMatchSettin
     return this._enablePatterns
   }
   set enablePatterns(enablePatterns: boolean) {
-    ArgumentGuard.isBoolean(enablePatterns, {name: 'enablePatterns', strict: false})
+    utils.guard.isBoolean(enablePatterns, {name: 'enablePatterns', strict: false})
     this._enablePatterns = enablePatterns
   }
   getEnablePatterns(): boolean {
@@ -128,7 +128,7 @@ export default class ImageMatchSettingsData implements Required<ImageMatchSettin
     return this._ignoreDisplacements
   }
   set ignoreDisplacements(ignoreDisplacements: boolean) {
-    ArgumentGuard.isBoolean(ignoreDisplacements, {name: 'ignoreDisplacements', strict: false})
+    utils.guard.isBoolean(ignoreDisplacements, {name: 'ignoreDisplacements', strict: false})
     this._ignoreDisplacements = ignoreDisplacements
   }
   getIgnoreDisplacements(): boolean {
@@ -142,7 +142,7 @@ export default class ImageMatchSettingsData implements Required<ImageMatchSettin
     return this._ignoreRegions
   }
   set ignoreRegions(ignoreRegions: Region[]) {
-    ArgumentGuard.isArray(ignoreRegions, {name: 'ignoreRegions', strict: false})
+    utils.guard.isArray(ignoreRegions, {name: 'ignoreRegions', strict: false})
     this._ignoreRegions = ignoreRegions ? ignoreRegions.map(region => new RegionData(region)) : []
   }
   get ignore(): Region[] {
@@ -162,7 +162,7 @@ export default class ImageMatchSettingsData implements Required<ImageMatchSettin
     return this._layoutRegions
   }
   set layoutRegions(layoutRegions: Region[]) {
-    ArgumentGuard.isArray(layoutRegions, {name: 'layoutRegions', strict: false})
+    utils.guard.isArray(layoutRegions, {name: 'layoutRegions', strict: false})
     this._layoutRegions = layoutRegions ? layoutRegions.map(region => new RegionData(region)) : []
   }
   get layout(): Region[] {
@@ -182,7 +182,7 @@ export default class ImageMatchSettingsData implements Required<ImageMatchSettin
     return this._strictRegions
   }
   set strictRegions(strictRegions: Region[]) {
-    ArgumentGuard.isArray(strictRegions, {name: 'strictRegions', strict: false})
+    utils.guard.isArray(strictRegions, {name: 'strictRegions', strict: false})
     this._strictRegions = strictRegions ? strictRegions.map(region => new RegionData(region)) : []
   }
   get strict(): Region[] {
@@ -202,7 +202,7 @@ export default class ImageMatchSettingsData implements Required<ImageMatchSettin
     return this._contentRegions
   }
   set contentRegions(contentRegions: Region[]) {
-    ArgumentGuard.isArray(contentRegions, {name: 'contentRegions', strict: false})
+    utils.guard.isArray(contentRegions, {name: 'contentRegions', strict: false})
     this._contentRegions = contentRegions ? contentRegions.map(region => new RegionData(region)) : []
   }
   get content(): Region[] {
@@ -222,7 +222,7 @@ export default class ImageMatchSettingsData implements Required<ImageMatchSettin
     return this._floatingRegions
   }
   set floatingRegions(floatingRegions: FloatingRegion[]) {
-    ArgumentGuard.isArray(floatingRegions, {name: 'floatingRegions', strict: false})
+    utils.guard.isArray(floatingRegions, {name: 'floatingRegions', strict: false})
     this._floatingRegions = floatingRegions ? floatingRegions.map(region => new FloatingRegionData(region)) : []
   }
   get floating(): FloatingRegion[] {
@@ -242,7 +242,7 @@ export default class ImageMatchSettingsData implements Required<ImageMatchSettin
     return this._accessibilityRegions
   }
   set accessibilityRegions(accessibilityRegions: AccessibilityRegion[]) {
-    ArgumentGuard.isArray(accessibilityRegions, {name: 'accessibilityRegions', strict: false})
+    utils.guard.isArray(accessibilityRegions, {name: 'accessibilityRegions', strict: false})
     this._accessibilityRegions = accessibilityRegions
       ? accessibilityRegions.map(region => new AccessibilityRegionData(region))
       : []
@@ -266,8 +266,8 @@ export default class ImageMatchSettingsData implements Required<ImageMatchSettin
   set accessibilitySettings(accessibilitySettings: AccessibilitySettings) {
     if (accessibilitySettings) {
       const {level, guidelinesVersion} = accessibilitySettings
-      ArgumentGuard.isEnumValue(level, AccessibilityLevel, {name: 'accessibilitySettings.level'})
-      ArgumentGuard.isEnumValue(guidelinesVersion, AccessibilityGuidelinesVersion, {
+      utils.guard.isEnumValue(level, AccessibilityLevel, {name: 'accessibilitySettings.level'})
+      utils.guard.isEnumValue(guidelinesVersion, AccessibilityGuidelinesVersion, {
         name: 'accessibilitySettings.guidelinesVersion',
       })
     }

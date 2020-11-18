@@ -1,5 +1,4 @@
-import * as TypeUtils from '../utils/TypeUtils'
-import * as ArgumentGuard from '../utils/ArgumentGuard'
+import * as utils from '@applitools/utils'
 
 export type Location = {
   x: number
@@ -13,7 +12,7 @@ export default class LocationData implements Required<Location> {
   constructor(location: Location)
   constructor(x: number, y: number)
   constructor(locationOrX: Location | number, y?: number) {
-    if (TypeUtils.isNumber(locationOrX)) {
+    if (utils.type.isNumber(locationOrX)) {
       return new LocationData({x: locationOrX, y})
     }
     this.x = locationOrX.x
@@ -24,7 +23,7 @@ export default class LocationData implements Required<Location> {
     return this._x
   }
   set x(x: number) {
-    ArgumentGuard.isNumber(x, {name: 'x'})
+    utils.guard.isNumber(x, {name: 'x'})
     this._x = x
   }
   getX(): number {
@@ -38,7 +37,7 @@ export default class LocationData implements Required<Location> {
     return this._y
   }
   set y(y: number) {
-    ArgumentGuard.isNumber(y, {name: 'y'})
+    utils.guard.isNumber(y, {name: 'y'})
     this._y = y
   }
   getY(): number {

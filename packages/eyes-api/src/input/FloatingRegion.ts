@@ -1,5 +1,4 @@
-import * as TypeUtils from '../utils/TypeUtils'
-import * as ArgumentGuard from '../utils/ArgumentGuard'
+import * as utils from '@applitools/utils'
 import RegionData, {Region} from './Region'
 
 export type FloatingRegion = {
@@ -38,7 +37,7 @@ export default class FloatingRegionData implements Required<FloatingRegion> {
     maxLeftOffset?: number,
     maxRightOffset?: number,
   ) {
-    if (TypeUtils.isNumber(floatingRegionOrX)) {
+    if (utils.type.isNumber(floatingRegionOrX)) {
       return new FloatingRegionData({
         region: {x: floatingRegionOrX, y, width, height},
         maxUpOffset,
@@ -58,7 +57,7 @@ export default class FloatingRegionData implements Required<FloatingRegion> {
     return this._region
   }
   set region(region: Region) {
-    ArgumentGuard.isObject(region, {name: 'region'})
+    utils.guard.isObject(region, {name: 'region'})
     this._region = new RegionData(region)
   }
   getRegion(): RegionData {
@@ -96,7 +95,7 @@ export default class FloatingRegionData implements Required<FloatingRegion> {
     return this._maxUpOffset
   }
   set maxUpOffset(maxUpOffset: number) {
-    ArgumentGuard.isNumber(maxUpOffset, {name: 'maxUpOffset'})
+    utils.guard.isNumber(maxUpOffset, {name: 'maxUpOffset'})
     this._maxUpOffset = maxUpOffset
   }
   getMaxUpOffset(): number {
@@ -110,7 +109,7 @@ export default class FloatingRegionData implements Required<FloatingRegion> {
     return this._maxDownOffset
   }
   set maxDownOffset(maxDownOffset: number) {
-    ArgumentGuard.isNumber(maxDownOffset, {name: 'maxDownOffset'})
+    utils.guard.isNumber(maxDownOffset, {name: 'maxDownOffset'})
     this._maxDownOffset = maxDownOffset
   }
   getMaxDownOffset(): number {
@@ -124,7 +123,7 @@ export default class FloatingRegionData implements Required<FloatingRegion> {
     return this._maxLeftOffset
   }
   set maxLeftOffset(maxLeftOffset: number) {
-    ArgumentGuard.isNumber(maxLeftOffset, {name: 'maxLeftOffset'})
+    utils.guard.isNumber(maxLeftOffset, {name: 'maxLeftOffset'})
     this._maxLeftOffset = maxLeftOffset
   }
   getMaxLeftOffset(): number {
@@ -138,7 +137,7 @@ export default class FloatingRegionData implements Required<FloatingRegion> {
     return this._maxRightOffset
   }
   set maxRightOffset(maxRightOffset: number) {
-    ArgumentGuard.isNumber(maxRightOffset, {name: 'maxRightOffset'})
+    utils.guard.isNumber(maxRightOffset, {name: 'maxRightOffset'})
     this._maxRightOffset = maxRightOffset
   }
   getMaxRightOffset(): number {

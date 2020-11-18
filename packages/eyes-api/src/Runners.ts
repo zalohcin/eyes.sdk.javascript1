@@ -1,4 +1,4 @@
-import * as TypeUtils from './utils/TypeUtils'
+import * as utils from '@applitools/utils'
 import Eyes from './Eyes'
 
 export default class EyesRunner {
@@ -11,7 +11,7 @@ export default class EyesRunner {
   async getAllTestResults(throwErr: boolean): Promise<any> {
     if (this._eyes.length > 0) {
       const results = await Promise.all(
-        this._eyes.map((eyes) => {
+        this._eyes.map(eyes => {
           return eyes.closeBatch().then(() => eyes.close())
         }),
       )
@@ -30,7 +30,7 @@ export class VisualGridRunner extends EyesRunner {
   constructor(legacyConcurrency: number)
   constructor(optionsOrLegacyConcurrency: {testConcurrency: number} | number) {
     super()
-    if (TypeUtils.isNumber(optionsOrLegacyConcurrency)) {
+    if (utils.type.isNumber(optionsOrLegacyConcurrency)) {
       this._legacyConcurrency = optionsOrLegacyConcurrency
     } else {
       this._legacyConcurrency = optionsOrLegacyConcurrency.testConcurrency

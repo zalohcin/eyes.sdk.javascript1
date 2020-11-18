@@ -1,5 +1,4 @@
-import * as TypeUtils from '../utils/TypeUtils'
-import * as ArgumentGuard from '../utils/ArgumentGuard'
+import * as utils from '@applitools/utils'
 
 export type RectangleSize = {
   width: number
@@ -13,7 +12,7 @@ export default class RectangleSizeData implements Required<RectangleSize> {
   constructor(size: RectangleSize)
   constructor(width: number, height: number)
   constructor(sizeOrWidth: RectangleSize | number, height?: number) {
-    if (TypeUtils.isNumber(sizeOrWidth)) {
+    if (utils.type.isNumber(sizeOrWidth)) {
       return new RectangleSizeData({width: sizeOrWidth, height})
     }
     const size = sizeOrWidth
@@ -25,7 +24,7 @@ export default class RectangleSizeData implements Required<RectangleSize> {
     return this._width
   }
   set width(width: number) {
-    ArgumentGuard.isNumber(width, {name: 'width', gte: 0})
+    utils.guard.isNumber(width, {name: 'width', gte: 0})
     this._width = width
   }
   getWidth() {
@@ -39,7 +38,7 @@ export default class RectangleSizeData implements Required<RectangleSize> {
     return this._height
   }
   set height(height: number) {
-    ArgumentGuard.isNumber(height, {name: 'height', gte: 0})
+    utils.guard.isNumber(height, {name: 'height', gte: 0})
     this._height = height
   }
   getHeight() {

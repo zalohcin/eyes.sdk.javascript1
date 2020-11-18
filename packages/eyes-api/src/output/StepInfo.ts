@@ -1,4 +1,4 @@
-import * as GeneralUtils from '../utils/GeneralUtils'
+import * as utils from '@applitools/utils'
 import AppUrlsData, {AppUrls} from './AppUrls'
 import ApiUrlsData, {ApiUrls} from './ApiUrls'
 
@@ -123,7 +123,7 @@ export default class StepInfoData implements Required<StepInfo> {
   }
 
   toJSON(): StepInfo {
-    return GeneralUtils.toJSON(this, [
+    return utils.general.toJSON(this, [
       'name',
       'isDifferent',
       'hasBaselineImage',
@@ -134,7 +134,7 @@ export default class StepInfoData implements Required<StepInfo> {
     ])
   }
 
-  toString(): string {
-    return `${this.constructor.name} ${JSON.stringify(this.toJSON(), null, 2)}`
+  toString() {
+    return utils.general.toString(this)
   }
 }

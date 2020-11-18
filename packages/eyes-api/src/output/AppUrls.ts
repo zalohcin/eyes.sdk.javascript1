@@ -1,4 +1,4 @@
-import * as GeneralUtils from '../utils/GeneralUtils'
+import * as utils from '@applitools/utils'
 
 export type AppUrls = {
   step?: string
@@ -42,10 +42,10 @@ export default class AppUrlsData implements Required<AppUrls> {
   }
 
   toJSON(): AppUrls {
-    return GeneralUtils.toJSON(this, ['step', 'stepEditor'])
+    return utils.general.toJSON(this, ['step', 'stepEditor'])
   }
 
-  toString(): string {
-    return `${this.constructor.name} ${JSON.stringify(this.toJSON(), null, 2)}`
+  toString() {
+    return utils.general.toString(this)
   }
 }

@@ -1,5 +1,4 @@
-import * as ArgumentGuard from '../utils/ArgumentGuard'
-import * as TypeUtils from '../utils/TypeUtils'
+import * as utils from '@applitools/utils'
 
 export type ProxySettings = {
   url: string
@@ -24,12 +23,12 @@ export default class ProxySettingsData implements Required<ProxySettings> {
     password?: string,
     isHttpOnly?: boolean,
   ) {
-    ArgumentGuard.notNull(proxyOrUrlOrIsDisabled, {name: 'proxyOrUrlOrIsDisabled'})
+    utils.guard.notNull(proxyOrUrlOrIsDisabled, {name: 'proxyOrUrlOrIsDisabled'})
 
     if (proxyOrUrlOrIsDisabled === true) {
       this._isDisabled = true
     } else {
-      if (TypeUtils.isString(proxyOrUrlOrIsDisabled)) {
+      if (utils.type.isString(proxyOrUrlOrIsDisabled)) {
         return new ProxySettingsData({url: proxyOrUrlOrIsDisabled, username, password, isHttpOnly})
       }
       this._url = proxyOrUrlOrIsDisabled.url

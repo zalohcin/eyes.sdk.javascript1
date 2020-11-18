@@ -1,5 +1,4 @@
-import * as TypeUtils from '../utils/TypeUtils'
-import * as ArgumentGuard from '../utils/ArgumentGuard'
+import * as utils from '@applitools/utils'
 import AccessibilityRegionType from '../enums/AccessibilityRegionType'
 import RegionData, {Region} from './Region'
 
@@ -21,7 +20,7 @@ export default class AccessibilityRegionData implements Required<AccessibilityRe
     height?: number,
     type?: AccessibilityRegionType,
   ) {
-    if (TypeUtils.isNumber(accessibilityRegionOrX)) {
+    if (utils.type.isNumber(accessibilityRegionOrX)) {
       return new AccessibilityRegionData({region: {x: accessibilityRegionOrX, y, width, height}, type})
     }
     this.region = accessibilityRegionOrX.region
@@ -32,7 +31,7 @@ export default class AccessibilityRegionData implements Required<AccessibilityRe
     return this._region
   }
   set region(region: Region) {
-    ArgumentGuard.isObject(region, {name: 'region'})
+    utils.guard.isObject(region, {name: 'region'})
     this._region = new RegionData(region)
   }
   getRegion(): RegionData {
@@ -70,7 +69,7 @@ export default class AccessibilityRegionData implements Required<AccessibilityRe
     return this._type
   }
   set type(type: AccessibilityRegionType) {
-    ArgumentGuard.isEnumValue(type, AccessibilityRegionType, {name: 'type', strict: false})
+    utils.guard.isEnumValue(type, AccessibilityRegionType, {name: 'type', strict: false})
     this._type = type
   }
   getType(): AccessibilityRegionType {

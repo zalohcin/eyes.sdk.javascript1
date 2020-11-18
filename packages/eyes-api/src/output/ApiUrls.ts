@@ -1,4 +1,4 @@
-import * as GeneralUtils from '../utils/GeneralUtils'
+import * as utils from '@applitools/utils'
 
 export type ApiUrls = {
   baselineImage?: string
@@ -90,7 +90,7 @@ export default class ApiUrlsData implements Required<ApiUrls> {
   }
 
   toJSON(): ApiUrls {
-    return GeneralUtils.toJSON(this, [
+    return utils.general.toJSON(this, [
       'baselineImage',
       'currentImage',
       'checkpointImage',
@@ -99,7 +99,7 @@ export default class ApiUrlsData implements Required<ApiUrls> {
     ])
   }
 
-  toString(): string {
-    return `${this.constructor.name} ${JSON.stringify(this.toJSON(), null, 2)}`
+  toString() {
+    return utils.general.toString(this)
   }
 }

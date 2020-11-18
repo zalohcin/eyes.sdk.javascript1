@@ -1,5 +1,4 @@
-import * as TypeUtils from '../utils/TypeUtils'
-import * as ArgumentGuard from '../utils/ArgumentGuard'
+import * as utils from '@applitools/utils'
 import {Location} from './Location'
 import {RectangleSize} from './RectangleSize'
 
@@ -25,19 +24,19 @@ export default class RegionData implements Required<Offset & Location & Rectangl
     width?: number,
     height?: number,
   ) {
-    if (TypeUtils.isNumber(regionOrLocationOrX)) {
+    if (utils.type.isNumber(regionOrLocationOrX)) {
       const x: number = regionOrLocationOrX
       const y = sizeOrY as number
       return new RegionData({x, y, width, height})
-    } else if (!TypeUtils.has(regionOrLocationOrX, 'width')) {
-      const {x, y} = TypeUtils.has(regionOrLocationOrX, 'left')
+    } else if (!utils.type.has(regionOrLocationOrX, 'width')) {
+      const {x, y} = utils.type.has(regionOrLocationOrX, 'left')
         ? {x: regionOrLocationOrX.left, y: regionOrLocationOrX.top}
         : regionOrLocationOrX
       const {width, height} = sizeOrY as RectangleSize
       return new RegionData({x, y, width, height})
     }
     const region = regionOrLocationOrX
-    if (TypeUtils.has(region, 'x')) {
+    if (utils.type.has(region, 'x')) {
       this.x = region.x
       this.y = region.y
     } else {
@@ -52,7 +51,7 @@ export default class RegionData implements Required<Offset & Location & Rectangl
     return this._x
   }
   set x(x: number) {
-    ArgumentGuard.isNumber(x, {name: 'x'})
+    utils.guard.isNumber(x, {name: 'x'})
     this._x = x
   }
   getX(): number {
@@ -66,7 +65,7 @@ export default class RegionData implements Required<Offset & Location & Rectangl
     return this._y
   }
   set y(y: number) {
-    ArgumentGuard.isNumber(y, {name: 'y'})
+    utils.guard.isNumber(y, {name: 'y'})
     this._y = y
   }
   getY(): number {
@@ -106,7 +105,7 @@ export default class RegionData implements Required<Offset & Location & Rectangl
     return this._width
   }
   set width(width: number) {
-    ArgumentGuard.isNumber(width, {name: 'width', gte: 0})
+    utils.guard.isNumber(width, {name: 'width', gte: 0})
     this._width = width
   }
   getWidth() {
@@ -120,7 +119,7 @@ export default class RegionData implements Required<Offset & Location & Rectangl
     return this._height
   }
   set height(height: number) {
-    ArgumentGuard.isNumber(height, {name: 'height', gte: 0})
+    utils.guard.isNumber(height, {name: 'height', gte: 0})
     this._height = height
   }
   getHeight() {

@@ -1,6 +1,4 @@
-import * as GeneralUtils from '../utils/GeneralUtils'
-import * as ArgumentGuard from '../utils/ArgumentGuard'
-import * as TypeUtils from '../utils/TypeUtils'
+import * as utils from '@applitools/utils'
 import SessionType from '../enums/SessionType'
 import StitchMode from '../enums/StitchMode'
 import MatchLevel from '../enums/MatchLevel'
@@ -135,7 +133,7 @@ export default class ConfigData implements Required<Config> {
   }
 
   get general(): GeneralConfig {
-    return GeneralUtils.toJSON(this, [
+    return utils.general.toJSON(this, [
       'showLogs',
       'agentId',
       'apiKey',
@@ -148,7 +146,7 @@ export default class ConfigData implements Required<Config> {
   }
 
   get open(): OpenConfig {
-    return GeneralUtils.toJSON(this, [
+    return utils.general.toJSON(this, [
       'appName',
       'testName',
       'displayName',
@@ -177,11 +175,11 @@ export default class ConfigData implements Required<Config> {
   }
 
   get check(): CheckConfig {
-    return GeneralUtils.toJSON(this, ['sendDom', 'matchTimeout', 'forceFullPageScreenshot'])
+    return utils.general.toJSON(this, ['sendDom', 'matchTimeout', 'forceFullPageScreenshot'])
   }
 
   get classic(): ClassicConfig {
-    return GeneralUtils.toJSON(this, [
+    return utils.general.toJSON(this, [
       'waitBeforeScreenshots',
       'stitchMode',
       'hideScrollbars',
@@ -191,7 +189,7 @@ export default class ConfigData implements Required<Config> {
   }
 
   get vg(): VGConfig {
-    return GeneralUtils.toJSON(this, [
+    return utils.general.toJSON(this, [
       'concurrentSessions',
       'browsersInfo',
       'visualGridOptions',
@@ -204,7 +202,7 @@ export default class ConfigData implements Required<Config> {
     return this._showLogs
   }
   set showLogs(showLogs: boolean) {
-    ArgumentGuard.isBoolean(showLogs, {name: 'showLogs'})
+    utils.guard.isBoolean(showLogs, {name: 'showLogs'})
     this._showLogs = showLogs
   }
   getShowLogs(): boolean {
@@ -219,7 +217,7 @@ export default class ConfigData implements Required<Config> {
     return this._appName
   }
   set appName(appName: string) {
-    ArgumentGuard.isString(appName, {name: 'appName', strict: false})
+    utils.guard.isString(appName, {name: 'appName', strict: false})
     this._appName = appName
   }
   getAppName(): string {
@@ -234,7 +232,7 @@ export default class ConfigData implements Required<Config> {
     return this._testName
   }
   set testName(testName: string) {
-    ArgumentGuard.isString(testName, {name: 'testName', strict: false})
+    utils.guard.isString(testName, {name: 'testName', strict: false})
     this._testName = testName
   }
   getTestName(): string {
@@ -249,7 +247,7 @@ export default class ConfigData implements Required<Config> {
     return this._displayName
   }
   set displayName(displayName: string) {
-    ArgumentGuard.isString(displayName, {name: 'displayName', strict: false})
+    utils.guard.isString(displayName, {name: 'displayName', strict: false})
     this._displayName = displayName
   }
   getDisplayName(): string {
@@ -264,7 +262,7 @@ export default class ConfigData implements Required<Config> {
     return this._isDisabled
   }
   set isDisabled(isDisabled: boolean) {
-    ArgumentGuard.isBoolean(isDisabled, {name: 'isDisabled', strict: false})
+    utils.guard.isBoolean(isDisabled, {name: 'isDisabled', strict: false})
     this._isDisabled = isDisabled
   }
   getIsDisabled(): boolean {
@@ -279,7 +277,7 @@ export default class ConfigData implements Required<Config> {
     return this._matchTimeout
   }
   set matchTimeout(matchTimeout: number) {
-    ArgumentGuard.isInteger(matchTimeout, {name: 'matchTimeout'})
+    utils.guard.isInteger(matchTimeout, {name: 'matchTimeout'})
     this._matchTimeout = matchTimeout
   }
   getMatchTimeout(): number {
@@ -323,7 +321,7 @@ export default class ConfigData implements Required<Config> {
     return this._agentId
   }
   set agentId(agentId: string) {
-    ArgumentGuard.isString(agentId, {name: 'agentId'})
+    utils.guard.isString(agentId, {name: 'agentId'})
     this._agentId = agentId
   }
   getAgentId(): string {
@@ -338,7 +336,7 @@ export default class ConfigData implements Required<Config> {
     return this._apiKey
   }
   set apiKey(apiKey: string) {
-    ArgumentGuard.isString(apiKey, {name: 'apiKey', alpha: true, numeric: true})
+    utils.guard.isString(apiKey, {name: 'apiKey', alpha: true, numeric: true})
     this._apiKey = apiKey
   }
   getApiKey(): string {
@@ -353,7 +351,7 @@ export default class ConfigData implements Required<Config> {
     return this._serverUrl
   }
   set serverUrl(serverUrl: string) {
-    ArgumentGuard.isString(serverUrl, {name: 'serverUrl', strict: false})
+    utils.guard.isString(serverUrl, {name: 'serverUrl', strict: false})
     this._serverUrl = serverUrl
   }
   getServerUrl(): string {
@@ -385,7 +383,7 @@ export default class ConfigData implements Required<Config> {
   ): this {
     if (proxyOrUrlOrIsDisabled === true) {
       this.proxy = undefined
-    } else if (TypeUtils.isString(proxyOrUrlOrIsDisabled)) {
+    } else if (utils.type.isString(proxyOrUrlOrIsDisabled)) {
       this.proxy = {url: proxyOrUrlOrIsDisabled, username, password, isHttpOnly}
     } else {
       this.proxy = proxyOrUrlOrIsDisabled
@@ -397,7 +395,7 @@ export default class ConfigData implements Required<Config> {
     return this._connectionTimeout
   }
   set connectionTimeout(connectionTimeout: number) {
-    ArgumentGuard.isInteger(connectionTimeout, {name: 'connectionTimeout', gte: 0})
+    utils.guard.isInteger(connectionTimeout, {name: 'connectionTimeout', gte: 0})
     this._connectionTimeout = connectionTimeout
   }
   getConnectionTimeout(): number {
@@ -412,7 +410,7 @@ export default class ConfigData implements Required<Config> {
     return this._removeSession
   }
   set removeSession(removeSession: boolean) {
-    ArgumentGuard.isBoolean(removeSession, {name: 'removeSession'})
+    utils.guard.isBoolean(removeSession, {name: 'removeSession'})
     this._removeSession = removeSession
   }
   getRemoveSession(): boolean {
@@ -442,7 +440,7 @@ export default class ConfigData implements Required<Config> {
     return this._properties
   }
   set properties(properties: CustomProperty[]) {
-    ArgumentGuard.isArray(properties, {name: 'properties'})
+    utils.guard.isArray(properties, {name: 'properties'})
     this._properties = properties.map(prop => new CustomPropertyData(prop))
   }
   getProperties(): CustomPropertyData[] {
@@ -455,7 +453,7 @@ export default class ConfigData implements Required<Config> {
   addProperty(name: string, value: string): this
   addProperty(prop: CustomProperty | CustomPropertyData): this
   addProperty(propOrName: CustomProperty | CustomPropertyData | string, value?: string): this {
-    const prop = TypeUtils.isString(propOrName)
+    const prop = utils.type.isString(propOrName)
       ? new CustomPropertyData({name: propOrName, value})
       : new CustomPropertyData(propOrName)
     this._properties.push(prop)
@@ -466,7 +464,7 @@ export default class ConfigData implements Required<Config> {
     return this._baselineEnvName
   }
   set baselineEnvName(baselineEnvName: string) {
-    ArgumentGuard.isString(baselineEnvName, {name: 'baselineEnvName', strict: false})
+    utils.guard.isString(baselineEnvName, {name: 'baselineEnvName', strict: false})
     this._baselineEnvName = baselineEnvName ? baselineEnvName.trim() : undefined
   }
   getBaselineEnvName(): string {
@@ -481,7 +479,7 @@ export default class ConfigData implements Required<Config> {
     return this._environmentName
   }
   set environmentName(environmentName: string) {
-    ArgumentGuard.isString(environmentName, {name: 'environmentName', strict: false})
+    utils.guard.isString(environmentName, {name: 'environmentName', strict: false})
     this._environmentName = environmentName ? environmentName.trim() : undefined
   }
   getEnvironmentName(): string {
@@ -496,7 +494,7 @@ export default class ConfigData implements Required<Config> {
     return this._branchName
   }
   set branchName(branchName: string) {
-    ArgumentGuard.isString(branchName, {name: 'branchName'})
+    utils.guard.isString(branchName, {name: 'branchName'})
     this._branchName = branchName
   }
   getBranchName(): string {
@@ -511,7 +509,7 @@ export default class ConfigData implements Required<Config> {
     return this._parentBranchName
   }
   set parentBranchName(parentBranchName: string) {
-    ArgumentGuard.isString(parentBranchName, {name: 'parentBranchName'})
+    utils.guard.isString(parentBranchName, {name: 'parentBranchName'})
     this._parentBranchName = parentBranchName
   }
   getParentBranchName(): string {
@@ -526,7 +524,7 @@ export default class ConfigData implements Required<Config> {
     return this._baselineBranchName
   }
   set baselineBranchName(baselineBranchName: string) {
-    ArgumentGuard.isString(baselineBranchName, {name: 'baselineBranchName'})
+    utils.guard.isString(baselineBranchName, {name: 'baselineBranchName'})
     this._baselineBranchName = baselineBranchName
   }
   getBaselineBranchName(): string {
@@ -541,7 +539,7 @@ export default class ConfigData implements Required<Config> {
     return this._compareWithParentBranch
   }
   set compareWithParentBranch(compareWithParentBranch: boolean) {
-    ArgumentGuard.isBoolean(compareWithParentBranch, {name: 'compareWithParentBranch'})
+    utils.guard.isBoolean(compareWithParentBranch, {name: 'compareWithParentBranch'})
     this._compareWithParentBranch = compareWithParentBranch
   }
   getCompareWithParentBranch(): boolean {
@@ -556,7 +554,7 @@ export default class ConfigData implements Required<Config> {
     return this._ignoreBaseline
   }
   set ignoreBaseline(ignoreBaseline: boolean) {
-    ArgumentGuard.isBoolean(ignoreBaseline, {name: 'ignoreBaseline'})
+    utils.guard.isBoolean(ignoreBaseline, {name: 'ignoreBaseline'})
     this._ignoreBaseline = ignoreBaseline
   }
   getIgnoreBaseline(): boolean {
@@ -571,7 +569,7 @@ export default class ConfigData implements Required<Config> {
     return this._saveFailedTests
   }
   set saveFailedTests(saveFailedTests: boolean) {
-    ArgumentGuard.isBoolean(saveFailedTests, {name: 'saveFailedTests'})
+    utils.guard.isBoolean(saveFailedTests, {name: 'saveFailedTests'})
     this._saveFailedTests = saveFailedTests
   }
   getSaveFailedTests(): boolean {
@@ -586,7 +584,7 @@ export default class ConfigData implements Required<Config> {
     return this._saveNewTests
   }
   set saveNewTests(saveNewTests: boolean) {
-    ArgumentGuard.isBoolean(saveNewTests, {name: 'saveNewTests'})
+    utils.guard.isBoolean(saveNewTests, {name: 'saveNewTests'})
     this._saveNewTests = saveNewTests
   }
   getSaveNewTests(): boolean {
@@ -601,7 +599,7 @@ export default class ConfigData implements Required<Config> {
     return this._saveDiffs
   }
   set saveDiffs(saveDiffs: boolean) {
-    ArgumentGuard.isBoolean(saveDiffs, {name: 'saveDiffs'})
+    utils.guard.isBoolean(saveDiffs, {name: 'saveDiffs'})
     this._saveDiffs = saveDiffs
   }
   getSaveDiffs(): boolean {
@@ -616,7 +614,7 @@ export default class ConfigData implements Required<Config> {
     return this._sendDom
   }
   set sendDom(sendDom: boolean) {
-    ArgumentGuard.isBoolean(sendDom, {name: 'sendDom'})
+    utils.guard.isBoolean(sendDom, {name: 'sendDom'})
     this._sendDom = sendDom
   }
   getSendDom(): boolean {
@@ -701,7 +699,7 @@ export default class ConfigData implements Required<Config> {
     return this._defaultMatchSettings
   }
   set defaultMatchSettings(defaultMatchSettings: ImageMatchSettings) {
-    ArgumentGuard.notNull(defaultMatchSettings, {name: 'defaultMatchSettings'})
+    utils.guard.notNull(defaultMatchSettings, {name: 'defaultMatchSettings'})
     this._defaultMatchSettings = new ImageMatchSettingsData(defaultMatchSettings)
   }
   getDefaultMatchSettings(): ImageMatchSettings {
@@ -772,7 +770,7 @@ export default class ConfigData implements Required<Config> {
     return this._waitBeforeScreenshots
   }
   set waitBeforeScreenshots(waitBeforeScreenshots: number) {
-    ArgumentGuard.isInteger(waitBeforeScreenshots, {name: 'waitBeforeScreenshots', gt: 0})
+    utils.guard.isInteger(waitBeforeScreenshots, {name: 'waitBeforeScreenshots', gt: 0})
     this._waitBeforeScreenshots = waitBeforeScreenshots
   }
   getWaitBeforeScreenshots(): number {
@@ -787,7 +785,7 @@ export default class ConfigData implements Required<Config> {
     return this._stitchMode
   }
   set stitchMode(stitchMode: StitchMode) {
-    ArgumentGuard.isEnumValue(stitchMode, StitchMode, {name: 'stitchMode'})
+    utils.guard.isEnumValue(stitchMode, StitchMode, {name: 'stitchMode'})
     this._stitchMode = stitchMode
   }
   getStitchMode(): StitchMode {
@@ -830,7 +828,7 @@ export default class ConfigData implements Required<Config> {
     return this._stitchOverlap
   }
   set stitchOverlap(stitchOverlap: number) {
-    ArgumentGuard.isInteger(stitchOverlap, {name: 'stitchOverlap', strict: false})
+    utils.guard.isInteger(stitchOverlap, {name: 'stitchOverlap', strict: false})
     this._stitchOverlap = stitchOverlap
   }
   getStitchOverlap(): number {
@@ -859,7 +857,7 @@ export default class ConfigData implements Required<Config> {
     return this._browsersInfo
   }
   set browsersInfo(browsersInfo: RenderInfo[]) {
-    ArgumentGuard.isArray(browsersInfo, {name: 'browsersInfo'})
+    utils.guard.isArray(browsersInfo, {name: 'browsersInfo'})
     this._browsersInfo = browsersInfo
   }
   getBrowsersInfo(): RenderInfo[] {
@@ -871,7 +869,7 @@ export default class ConfigData implements Required<Config> {
   }
   addBrowsers(...browsersInfo: RenderInfo[]) {
     for (const [index, browserInfo] of browsersInfo.entries()) {
-      ArgumentGuard.isObject(browserInfo, {name: `addBrowsers( arg${index} )`})
+      utils.guard.isObject(browserInfo, {name: `addBrowsers( arg${index} )`})
     }
     if (!this._browsersInfo) {
       this._browsersInfo = []
@@ -882,7 +880,7 @@ export default class ConfigData implements Required<Config> {
   addBrowser(browserInfo: RenderInfo): this
   addBrowser(width: number, height: number, name?: BrowserName): this
   addBrowser(browserInfoOrWidth: RenderInfo | number, height?: number, name: BrowserName = BrowserName.CHROME) {
-    if (TypeUtils.isObject(browserInfoOrWidth)) {
+    if (utils.type.isObject(browserInfoOrWidth)) {
       return this.addBrowsers(browserInfoOrWidth)
     } else {
       return this.addBrowsers({width: browserInfoOrWidth, height, name})
@@ -921,8 +919,8 @@ export default class ConfigData implements Required<Config> {
     return this._layoutBreakpoints
   }
   set layoutBreakpoints(layoutBreakpoints: boolean | number[]) {
-    ArgumentGuard.notNull(layoutBreakpoints, {name: 'layoutBreakpoints'})
-    if (!TypeUtils.isArray(layoutBreakpoints)) {
+    utils.guard.notNull(layoutBreakpoints, {name: 'layoutBreakpoints'})
+    if (!utils.type.isArray(layoutBreakpoints)) {
       this._layoutBreakpoints = layoutBreakpoints
     } else if (layoutBreakpoints.length === 0) {
       this._layoutBreakpoints = false
@@ -967,12 +965,8 @@ export default class ConfigData implements Required<Config> {
     return this
   }
 
-  toString(): string {
-    return `${this.constructor.name} ${this.toJSON()}`
-  }
-
   toJSON(): Config {
-    return GeneralUtils.toJSON(this, [
+    return utils.general.toJSON(this, [
       'showLogs',
       'appName',
       'testName',
@@ -1019,5 +1013,9 @@ export default class ConfigData implements Required<Config> {
       'disableBrowserFetching',
       'dontCloseBatches',
     ])
+  }
+
+  toString() {
+    return utils.general.toString(this)
   }
 }

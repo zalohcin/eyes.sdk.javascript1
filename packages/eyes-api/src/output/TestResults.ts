@@ -1,4 +1,4 @@
-import * as GeneralUtils from '../utils/GeneralUtils'
+import * as utils from '@applitools/utils'
 import TestResultsStatus from '../enums/TestResultsStatus'
 import AccessibilityLevel from '../enums/AccessibilityLevel'
 import AccessibilityGuidelinesVersion from '../enums/AccessibilityGuidelinesVersion'
@@ -483,7 +483,7 @@ export default class TestResultsData implements Required<TestResults> {
   }
 
   toJSON(): TestResults {
-    return GeneralUtils.toJSON(this, [
+    return utils.general.toJSON(this, [
       'id',
       'name',
       'status',
@@ -517,6 +517,6 @@ export default class TestResultsData implements Required<TestResults> {
   }
 
   toString() {
-    return `TestResults of ${this._isNew ? 'new test' : 'existing test'} ${JSON.stringify(this, null, 2)}`
+    return utils.general.toString(this)
   }
 }

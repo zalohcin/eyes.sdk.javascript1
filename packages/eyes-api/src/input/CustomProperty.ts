@@ -1,5 +1,4 @@
-import * as TypeUtils from '../utils/TypeUtils'
-import * as ArgumentGuard from '../utils/ArgumentGuard'
+import * as utils from '@applitools/utils'
 
 export type CustomProperty = {
   name: string
@@ -13,12 +12,12 @@ export default class CustomPropertyData implements Required<CustomProperty> {
   constructor(prop: CustomProperty)
   constructor(name: string, value: string)
   constructor(propOrName: CustomProperty | string, value?: string) {
-    if (TypeUtils.isString(propOrName)) {
+    if (utils.type.isString(propOrName)) {
       return new CustomPropertyData({name: propOrName, value})
     }
     const prop = propOrName
-    ArgumentGuard.isString(prop.name, {name: 'prop.name'})
-    ArgumentGuard.notNull(prop.value, {name: 'prop.value'})
+    utils.guard.isString(prop.name, {name: 'prop.name'})
+    utils.guard.notNull(prop.value, {name: 'prop.value'})
 
     this._name = prop.name
     this._value = prop.value

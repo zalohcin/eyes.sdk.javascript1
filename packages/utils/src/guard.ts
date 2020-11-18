@@ -1,4 +1,4 @@
-import * as TypeUtils from './TypeUtils'
+import * as types from './type'
 
 type NamedParam = {
   name: string
@@ -25,38 +25,38 @@ type CustomParam = StrictParam & {
 }
 
 export function notNull(value: any, {name}: NamedParam) {
-  if (TypeUtils.isNull(value)) {
+  if (types.isNull(value)) {
     throw new Error(`IllegalArgument: ${name} is null or undefined`)
   }
 }
 
 export function isBoolean(value: boolean, {name, strict = true}: StrictParam) {
   if (strict) notNull(value, {name})
-  if (!TypeUtils.isBoolean(value)) {
+  if (!types.isBoolean(value)) {
     throw new Error(`IllegalType: ${name} is not a boolean`)
   }
 }
 
 export function isNumber(value: any, {name, strict = true, lt, lte, gt, gte}: NumberParam) {
   if (strict) notNull(value, {name})
-  if (!TypeUtils.isNumber(value)) {
+  if (!types.isNumber(value)) {
     throw new Error(`IllegalArgument: ${name} is not a number`)
   }
-  if (!TypeUtils.isNull(lt)) isLessThen(value, lt, {name})
-  else if (!TypeUtils.isNull(lte)) isLessThenOrEqual(value, lt, {name})
-  else if (!TypeUtils.isNull(gt)) isGreaterThenOrEqual(value, lt, {name})
-  else if (!TypeUtils.isNull(gte)) isGreaterThen(value, lt, {name})
+  if (!types.isNull(lt)) isLessThen(value, lt, {name})
+  else if (!types.isNull(lte)) isLessThenOrEqual(value, lt, {name})
+  else if (!types.isNull(gt)) isGreaterThenOrEqual(value, lt, {name})
+  else if (!types.isNull(gte)) isGreaterThen(value, lt, {name})
 }
 
 export function isInteger(value: any, {name, strict = true, lt, lte, gt, gte}: NumberParam) {
   if (strict) notNull(value, {name})
-  if (!TypeUtils.isInteger(value)) {
+  if (!types.isInteger(value)) {
     throw new Error(`IllegalArgument: ${name} is not an integer`)
   }
-  if (!TypeUtils.isNull(lt)) isLessThen(value, lt, {name})
-  else if (!TypeUtils.isNull(lte)) isLessThenOrEqual(value, lte, {name})
-  else if (!TypeUtils.isNull(gt)) isGreaterThen(value, gt, {name})
-  else if (!TypeUtils.isNull(gte)) isGreaterThenOrEqual(value, gte, {name})
+  if (!types.isNull(lt)) isLessThen(value, lt, {name})
+  else if (!types.isNull(lte)) isLessThenOrEqual(value, lte, {name})
+  else if (!types.isNull(gt)) isGreaterThen(value, gt, {name})
+  else if (!types.isNull(gte)) isGreaterThenOrEqual(value, gte, {name})
 }
 
 export function isLessThen(value: any, limit: number, {name}: NamedParam) {
@@ -85,7 +85,7 @@ export function isGreaterThenOrEqual(value: any, limit: number, {name}: NamedPar
 
 export function isString(value: any, {name, strict = true, alpha, numeric}: StringParam) {
   if (strict) notNull(value, {name})
-  if (!TypeUtils.isString(value)) {
+  if (!types.isString(value)) {
     throw new Error(`IllegalArgument: ${name} is not a string`)
   }
   if (alpha && numeric) isAlphanumeric(value, {name})
@@ -113,19 +113,19 @@ export function isNumeric(value: any, {name}: NamedParam) {
 
 export function isArray(value: any, {name, strict = true}: StrictParam) {
   if (strict) notNull(value, {name})
-  if (!TypeUtils.isArray(value)) {
+  if (!types.isArray(value)) {
     throw new Error(`IllegalArgument: ${name} is not an array`)
   }
 }
 
 export function isObject(value: any, {name, strict = true}: StrictParam) {
   if (strict) notNull(value, {name})
-  if (!TypeUtils.isObject(value)) {
+  if (!types.isObject(value)) {
     throw new Error(`IllegalArgument: ${name} is not an object`)
   }
 }
 
-export function isEnumValue(value: any, enumeration: {[key: string]: any}, {name, strict = true}: StrictParam) {
+export function isEnumValue(value: any, enumeration: Record<string, any>, {name, strict = true}: StrictParam) {
   if (strict) notNull(value, {name})
   const values = new Set(Object.values(enumeration))
   if (!values.has(value)) {
@@ -137,7 +137,7 @@ export function isEnumValue(value: any, enumeration: {[key: string]: any}, {name
 
 export function instanceOf(value: any, ctor: new (...args: any) => any, {name, strict = true}: StrictParam) {
   if (strict) notNull(value, {name})
-  if (!TypeUtils.instanceOf(value, ctor)) {
+  if (!types.instanceOf(value, ctor)) {
     throw new Error(`IllegalType: ${name} is not an instance of ${ctor.name}`)
   }
 }

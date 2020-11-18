@@ -1,4 +1,4 @@
-import * as GeneralUtils from '../utils/GeneralUtils'
+import * as utils from '@applitools/utils'
 
 export type SessionUrls = {
   batch?: string
@@ -42,10 +42,10 @@ export default class SessionUrlsData implements Required<SessionUrls> {
   }
 
   toJSON(): SessionUrls {
-    return GeneralUtils.toJSON(this, ['batch', 'session'])
+    return utils.general.toJSON(this, ['batch', 'session'])
   }
 
-  toString(): string {
-    return `${this.constructor.name} ${JSON.stringify(this.toJSON(), null, 2)}`
+  toString() {
+    return utils.general.toString(this)
   }
 }

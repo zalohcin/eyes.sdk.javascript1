@@ -61,6 +61,7 @@ export {AppUrls as AppUrlsPlain, default as AppUrls} from './src/output/AppUrls'
 export {SessionUrls as SessionUrlsPlain, default as SessionUrls} from './src/output/SessionUrls'
 export {StepInfo as StepInfoPlain, default as StepInfo} from './src/output/StepInfo'
 export {TestResults as TestResultsPlain, default as TestResults} from './src/output/TestResults'
+export {MatchResult as MatchResultPlain, default as MatchResult} from './src/output/MatchResult'
 
 // #endregion
 

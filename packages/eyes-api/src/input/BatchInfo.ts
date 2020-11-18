@@ -1,6 +1,4 @@
-import * as TypeUtils from '../utils/TypeUtils'
-import * as ArgumentGuard from '../utils/ArgumentGuard'
-import * as GeneralUtils from '../utils/GeneralUtils'
+import * as utils from '@applitools/utils'
 
 export type BatchInfo = {
   id?: string
@@ -25,39 +23,39 @@ export default class BatchInfoData implements Required<BatchInfo> {
   constructor(batch: BatchInfo)
   constructor(name: string, startedAt?: Date | string, id?: string)
   constructor(batchOrName?: BatchInfo | string, startedAt?: Date | string, id?: string) {
-    if (TypeUtils.isString(batchOrName)) {
+    if (utils.type.isString(batchOrName)) {
       return new BatchInfoData({name: batchOrName, id, startedAt: new Date(startedAt)})
     }
     const batch = batchOrName || {}
-    ArgumentGuard.isString(batch.id, {name: 'batch.id', strict: false})
-    ArgumentGuard.isString(batch.name, {name: 'batch.batchName', strict: false})
-    ArgumentGuard.isString(batch.sequenceName, {name: 'batch.sequenceName', strict: false})
-    ArgumentGuard.isBoolean(batch.notifyOnCompletion, {
+    utils.guard.isString(batch.id, {name: 'batch.id', strict: false})
+    utils.guard.isString(batch.name, {name: 'batch.batchName', strict: false})
+    utils.guard.isString(batch.sequenceName, {name: 'batch.sequenceName', strict: false})
+    utils.guard.isBoolean(batch.notifyOnCompletion, {
       name: 'batch.notifyOnCompletion',
       strict: false,
     })
-    ArgumentGuard.isBoolean(batch.isCompleted, {name: 'batch.isCompleted', strict: false})
-    ArgumentGuard.isBoolean(batch.isGeneratedId, {name: 'batch.isGeneratedId', strict: false})
+    utils.guard.isBoolean(batch.isCompleted, {name: 'batch.isCompleted', strict: false})
+    utils.guard.isBoolean(batch.isGeneratedId, {name: 'batch.isGeneratedId', strict: false})
 
-    this._id = id || GeneralUtils.getEnvValue('BATCH_ID')
+    this._id = id || utils.general.getEnvValue('BATCH_ID')
     if (this._id) {
       this._isGeneratedId = Boolean(batch.isGeneratedId)
     } else {
       this._isGeneratedId = true
-      this._id = GeneralUtils.guid()
+      this._id = utils.general.guid()
     }
 
-    this._name = name || GeneralUtils.getEnvValue('BATCH_NAME')
+    this._name = name || utils.general.getEnvValue('BATCH_NAME')
 
     if (batch.startedAt && !(batch.startedAt instanceof Date)) {
-      ArgumentGuard.isString(startedAt, {name: 'batch.startedAt', strict: false})
+      utils.guard.isString(startedAt, {name: 'batch.startedAt', strict: false})
       this._startedAt = new Date(startedAt)
     } else {
       this._startedAt = batch.startedAt || new Date()
     }
 
-    this._sequenceName = batch.sequenceName || GeneralUtils.getEnvValue('BATCH_SEQUENCE', 'string')
-    this._notifyOnCompletion = batch.notifyOnCompletion || GeneralUtils.getEnvValue('BATCH_NOTIFY', 'boolean') || false
+    this._sequenceName = batch.sequenceName || utils.general.getEnvValue('BATCH_SEQUENCE', 'string')
+    this._notifyOnCompletion = batch.notifyOnCompletion || utils.general.getEnvValue('BATCH_NOTIFY', 'boolean') || false
     this._isCompleted = Boolean(batch.isCompleted)
   }
 
@@ -69,7 +67,7 @@ export default class BatchInfoData implements Required<BatchInfo> {
     return this._id
   }
   set id(id: string) {
-    ArgumentGuard.notNull(id, {name: 'id'})
+    utils.guard.notNull(id, {name: 'id'})
     this._id = id
   }
   getId(): string {
