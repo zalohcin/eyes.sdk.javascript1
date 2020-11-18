@@ -9,7 +9,6 @@ const TestResultsStatuses = Enum('TestResultsStatus', {
   Passed: 'Passed',
   Unresolved: 'Unresolved',
   Failed: 'Failed',
-  Empty: 'Empty'
 })
 
 module.exports = TestResultsStatuses
