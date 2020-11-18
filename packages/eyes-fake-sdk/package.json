@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-fake-sdk",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Applitools Eyes SDK for test publish",
   "keywords": [
     "fake-sdk",
@@ -24,8 +24,7 @@
     "test": "./test"
   },
   "main": "./index.js",
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "scripts": {
     "preversion": "",
     "version": "",
