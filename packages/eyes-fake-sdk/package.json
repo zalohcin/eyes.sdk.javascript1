@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-fake-sdk",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Applitools Eyes SDK for test publish",
   "keywords": [
     "fake-sdk",
@@ -29,7 +29,7 @@
     "preversion": "echo 'no-op'",
     "version": "echo 'no-op'",
     "postversion": "echo 'no-op'",
-    "docker:setup":"echo 'no-op'"
+    "docker:setup": "echo 'no-op'"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
