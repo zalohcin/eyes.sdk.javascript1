@@ -2,8 +2,12 @@
 
 ## Unreleased
 
+
+## 15.2.0 - 2020/11/19
+
 - upload resources before render
 - changed concurrency model
+- updated to @applitools/eyes-sdk-core@12.6.0 (from 12.5.7)
 
 ## 15.1.1 - 2020/11/9
 
