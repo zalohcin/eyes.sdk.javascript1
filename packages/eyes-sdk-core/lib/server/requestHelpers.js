@@ -177,6 +177,10 @@ async function handleRequestError({err, axios, logger}) {
     logger.verbose(`axios error interceptor - ${config.name} - failure body:\n${response.data}`)
   }
 
+  if (response && response.status === HTTP_STATUS_CODES.NOT_FOUND && config.dontRetryOn404) {
+    throw err
+  }
+
   if (response && isConcurrencyBlockedRequest(response)) {
     let backoffIndex, repeat
     if (config.isConcurrencyPolling) {

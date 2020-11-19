@@ -430,26 +430,27 @@ describe('ServerConnector', () => {
 
   it('matchWindowAndClose should fallback', async () => {
     const serverConnector = getServerConnector()
-    serverConnector._axios.defaults.adapter = async config => {
-      if (config.url === 'https://eyesapi.applitools.com/api/sessions/running/id/matchandend') {
-        return {
-          status: 404,
-          config,
-          data: {},
-          headers: {},
-          request: {},
+    serverConnector._axios.defaults.adapter = async config =>
+      new Promise((resolve, reject) => {
+        if (config.url === 'https://eyesapi.applitools.com/api/sessions/running/id/matchandend') {
+          return settle(resolve, reject, {
+            status: 404,
+            config,
+            data: {},
+            headers: {},
+            request: {},
+          })
+        } else if (config.url === 'https://eyesapi.applitools.com/api/sessions/running/id') {
+          return settle(resolve, reject, {
+            status: 200,
+            config,
+            data: {name: 'fallback result'},
+            headers: {},
+            request: {},
+          })
         }
-      } else if (config.url === 'https://eyesapi.applitools.com/api/sessions/running/id') {
-        return {
-          status: 200,
-          config,
-          data: {name: 'fallback result'},
-          headers: {},
-          request: {},
-        }
-      }
-      throw new Error()
-    }
+        throw new Error()
+      })
     const appOutput = new AppOutput({
       title: 'Dummy',
       screenshotUrl: 'bla',

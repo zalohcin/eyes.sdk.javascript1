@@ -409,6 +409,7 @@ class ServerConnector {
       ),
       headers: {},
       data: matchWindowData,
+      dontRetryOn404: true,
     }
 
     if (matchWindowData.getAppOutput().getScreenshot64()) {
@@ -421,7 +422,12 @@ class ServerConnector {
       matchWindowData.getAppOutput().setScreenshot64(screenshot64)
     }
 
-    const response = await this._axios.request(config)
+    let response
+    try {
+      response = await this._axios.request(config)
+    } catch (err) {
+      response = err.response || {}
+    }
     const validStatusCodes = [HTTP_STATUS_CODES.OK]
     if (validStatusCodes.includes(response.status)) {
       const testResults = new TestResults(response.data)
