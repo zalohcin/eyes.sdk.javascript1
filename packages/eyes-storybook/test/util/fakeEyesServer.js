@@ -74,6 +74,11 @@ function fakeEyesServer({expectedFolder, updateFixtures, port, hangUp: _hangUp} 
     res.send({success: true});
   });
 
+  app.post('/job-info', (req, res) => {
+    const requests = req.body;
+    res.send(new Array(requests.length).fill().map(() => ({eyesEnvironment: {}, renderer: ''})));
+  });
+
   app.get('/user-agents', (_req, res) => {
     res.send({
       chrome: 'chrome-ua',
@@ -97,6 +102,18 @@ function fakeEyesServer({expectedFolder, updateFixtures, port, hangUp: _hangUp} 
     const runningSession = createRunningSessionFromStartInfo(startInfo);
     runningSession.steps = [{asExpected: true, appOutput, options}]; // TODO
     runningSessions[runningSession.id] = runningSession;
+    res.set(
+      'location',
+      `${serverUrl}/api/tasks/matchsingle/${encodeURIComponent(runningSession.id)}`,
+    );
+    res.status(202).send({success: true});
+  });
+
+  // matchWindowAndClose
+  app.post('/api/sessions/running/:id/matchandend', async (req, res) => {
+    const {appOutput, options} = req.body;
+    const runningSession = runningSessions[req.params.id];
+    runningSession.steps = [{asExpected: true, appOutput, options}]; // TODO
     res.set(
       'location',
       `${serverUrl}/api/tasks/matchsingle/${encodeURIComponent(runningSession.id)}`,
