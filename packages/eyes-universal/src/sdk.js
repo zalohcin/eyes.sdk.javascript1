@@ -43,7 +43,7 @@ async function makeSDK({idleTimeout = IDLE_TIMEOUT, ...serverConfig} = {}) {
 
       socket.sdk = core.makeSDK({
         name: `eyes-universal/${config.name}`,
-        version: `${version}/${config.name}`,
+        version: `${version}/${config.version}`,
         spec: commands.reduce((commands, name) => {
           return Object.assign(commands, {[name]: spec[name]})
         }, {}),
@@ -54,24 +54,45 @@ async function makeSDK({idleTimeout = IDLE_TIMEOUT, ...serverConfig} = {}) {
     socket.command('Util.setViewportSize', async ({driver, viewportSize}) => {
       return socket.sdk.setViewportSize(driver, viewportSize)
     })
-    socket.command('Util.closeBatch', () => {
-      // TODO
+    socket.command('Util.closeBatch', config => {
+      return socket.sdk.closeBatch(config)
+    })
+    socket.command('Util.deleteResults', config => {
+      return socket.sdk.deleteResults(config)
+    })
+    socket.command('Runner.new', async () => {
+      const runner = new Set()
+      return refer.ref(runner)
+    })
+    socket.command('Runner.close', async ({runner}) => {
+      const commands = Array.from(refer.deref(runner))
+      const results = await Promise.all(commands.map(commands => commands.close()))
+      refer.destroy(runner)
+      return results.flat()
+    })
+    socket.command('Eyes.open', async ({driver, config, runner}) => {
+      const commands = socket.sdk.openEyes(driver, config)
+      if (runner) {
+        socket.runners.get(runner)
+      }
+      return refer.ref(commands, runner)
     })
     socket.command('Eyes.locate', async ({eyes}) => {
       // TODO
     })
-    socket.command('Eyes.open', async ({driver, config}) => {
-      const commands = socket.sdk.openEyes(driver, config)
-      return refer.ref(commands)
-    })
     socket.command('Eyes.check', async ({eyes, checkSettings}) => {
-      return refer.deref(eyes).check(checkSettings)
+      const commands = refer.deref(eyes)
+      return commands.check(checkSettings)
     })
     socket.command('Eyes.close', ({eyes}) => {
-      return refer.deref(eyes).close()
+      const commands = refer.deref(eyes)
+      refer.destroy(eyes)
+      return commands.close()
     })
     socket.command('Eyes.abort', ({eyes}) => {
-      return refer.deref(eyes).abort()
+      const commands = refer.deref(eyes)
+      refer.destroy(eyes)
+      return commands.abort()
     })
   })
 

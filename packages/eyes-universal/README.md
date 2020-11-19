@@ -40,13 +40,13 @@ The network layer could be implemented through WebSocket communication or HTTP p
 Not primitive objects which need to be sent to the Universal SDK.
 ```ts
 type Driver = {
-  'applitools-driver-id': string, // driver id
+  'applitools-ref-id': string, // driver id
 }
 type Context = {
-  'applitools-context-id': string, // context id
+  'applitools-ref-id': string, // context id
 }
 type Element = {
-  'applitools-element-id': string, // element id
+  'applitools-ref-id': string, // element id
 }
 ```
 
@@ -54,7 +54,10 @@ type Element = {
 Not primitive objects which need to be sent to the Universal SDK.
 ```ts
 type Eyes = {
-  'applitools-eyes-id': string, // eyes id
+  'applitools-ref-id': string, // eyes id
+}
+type Runner = {
+  'applitools-ref-id': string, // eyes id
 }
 ```
 
@@ -94,10 +97,7 @@ type Response = {
     args: Array<any>, // an array of arguments which need to be passed to execute script function.
   }
 
-  type ResultPayload = {
-    error: string, // message of the error which happened during script execution
-    result: any, // the value returned from the script
-  }
+  type ResultPayload = any, // the value returned from the script
   ```
 </details>
 
@@ -109,9 +109,7 @@ type Response = {
     context: Context, // id of the context to return main context for
   }
 
-  type ResultPayload = {
-    context: Context, // id of the main context. Might be the same as one passed if context if already main
-  }
+  type ResultPayload = Context, // id of the main context. Might be the same as one passed if context if already main
   ```
 </details>
 
@@ -123,9 +121,7 @@ type Response = {
     context: Context, // id of the context to return parent context for
   }
 
-  type ResultPayload = {
-    context: Context, // id of the parent context. Might be the same as one passed if context is main
-  }
+  type ResultPayload = Context, // id of the parent context. Might be the same as one passed if context is main
   ```
 </details>
 
@@ -138,10 +134,7 @@ type Response = {
     element: Element, // frame element
   }
 
-  type ResultPayload = {
-    error: string, // message of the error which happened during executing child context
-    context: Context, // id of the child context. Might be the same as one passed if context is main
-  }
+  type ResultPayload = Context, // id of the child context. Might be the same as one passed if context is main
   ```
 </details>
 
@@ -157,9 +150,7 @@ type Response = {
     },
   }
 
-  type ResultPayload = {
-    element: string | null, // id of the element or null if element is not found
-  }
+  type ResultPayload = Element | null, // id of the element or null if element is not found
   ```
 </details> 
 
@@ -175,9 +166,7 @@ type Response = {
     },
   }
 
-  type ResultPayload = {
-    elements: Array<Element>, // elements found for specific selector in specific context
-  }
+  type ResultPayload = Array<Element>, // elements found for specific selector in specific context
   ```
 </details>
 
@@ -190,12 +179,10 @@ type Response = {
   }
 
   type ResultPayload = {
-    rect: {
-      x: number, // offset relative to the left edge of the screen
-      y: number, // offset relative to the top edge of the screen
-      width: number, // width of the window
-      height: number, // height of the window
-    },
+    x: number, // offset relative to the left edge of the screen
+    y: number, // offset relative to the top edge of the screen
+    width: number, // width of the window
+    height: number, // height of the window
   }
   ```
 </details>
@@ -214,7 +201,7 @@ type Response = {
     },
   }
 
-  type ResultPayload = {}
+  type ResultPayload = null
   ```
 </details>
 
@@ -227,10 +214,8 @@ type Response = {
   }
 
   type ResultPayload = {
-    size: {
-      width: number, // viewport width
-      height: number, // viewport height
-    },
+    width: number, // viewport width
+    height: number, // viewport height
   }
   ```
 </details>
@@ -247,7 +232,7 @@ type Response = {
     },
   }
 
-  type ResultPayload = {}
+  type ResultPayload = null
   ```
 </details>
 
@@ -259,9 +244,7 @@ type Response = {
     driver: Driver, // driver to get orientation of
   }
 
-  type ResultPayload = {
-    orientation: 'portrait'|'portrait-upside-down'|'landscape'|'landscape-right'|'landscape-left' // device orientation
-  }
+  type ResultPayload = 'portrait'|'portrait-upside-down'|'landscape'|'landscape-right'|'landscape-left' // device orientation
   ```
 </details>
 
@@ -273,9 +256,7 @@ type Response = {
     driver: Driver, // driver to get orientation of
   }
 
-  type ResultPayload = {
-    url: string, // url of the current page
-  }
+  type ResultPayload = string // url of the current page
   ```
 </details>
 
@@ -287,23 +268,7 @@ type Response = {
     driver: Driver, // driver to get orientation of
   }
 
-  type ResultPayload = {
-    title: string, // title of the current page
-  }
-  ```
-</details>
-
-<details>
-  <summary>Driver.getOrientation</summary>
-
-  ```ts
-  type RequestPayload = {
-    driver: Driver, // driver to get orientation of
-  }
-
-  type ResultPayload = {
-    orientation: 'portrait'|'portrait-upside-down'|'landscape'|'landscape-right'|'landscape-left'
-  }
+  type ResultPayload = string // title of the current page
   ```
 </details>
 
@@ -316,16 +281,14 @@ type Response = {
   }
 
   type ResultPayload = {
-    info: {
-      sessionId?: string, // webdriver session id
-      isMobile?: boolean, // true if running on mobile device
-      isNative?: boolean, // true if running a native app instead of browser,
-      deviceName?: string, // device name if possible to extract
-      platformName?: string, // platform name if possible to extract,
-      platformVersion?: string, // platform version if possible to extract,
-      browserName?: // browser name if possible to extract,
-      browserVersion?: // browser version if possible to extract,
-    }
+    sessionId?: string, // webdriver session id
+    isMobile?: boolean, // true if running on mobile device
+    isNative?: boolean, // true if running a native app instead of browser,
+    deviceName?: string, // device name if possible to extract
+    platformName?: string, // platform name if possible to extract,
+    platformVersion?: string, // platform version if possible to extract,
+    browserName?: // browser name if possible to extract,
+    browserVersion?: // browser version if possible to extract,
   }
   ```
 </details>
@@ -338,9 +301,7 @@ type Response = {
     driver: Driver, // driver to take screenshot of
   }
 
-  type ResultPayload = {
-    image: Buffer | ArrayBuffer | string // image data, if sent as a string should be base64 encoded
-  }
+  type ResultPayload = Buffer | ArrayBuffer | string // image data, if sent as a string should be base64 encoded
   ```
 </details>
 
@@ -370,7 +331,7 @@ type Response = {
     checkSettings: CheckSettings,
   }
 
-  type ResultPayload = {}
+  type ResultPayload = MatchResult
   ```
 </details>
 
@@ -382,7 +343,19 @@ type Response = {
     eyes: Eyes,
   }
 
-  type ResultPayload = {}
+  type ResultPayload = TestResults
+  ```
+</details>
+
+<details>
+  <summary>Eyes.abort</summary>
+
+  ```ts
+  type RequestPayload = {
+    eyes: Eyes,
+  }
+
+  type ResultPayload = TestResults
   ```
 </details>
 
@@ -391,24 +364,25 @@ type Response = {
   <summary>Runner.new</summary>
 
   ```ts
-  type RequestPayload = unknown
+  type RequestPayload = null
 
   type ResultPayload = Runner
   ```
 </details>
+
 <details>
   <summary>Runner.close</summary>
 
   ```ts
-  type RequestPayload = unknown
+  type RequestPayload = {runner: Runner}
 
   type ResultPayload = TestResults[]
   ```
 </details>
 
-#### Batch commands
+#### Utils commands
 <details>
-  <summary>Batch.close</summary>
+  <summary>Util.closeBatch</summary>
 
   ```ts
   type RequestPayload = unknown
@@ -417,7 +391,16 @@ type Response = {
   ```
 </details>
 
-#### Utils commands
+<details>
+  <summary>Util.deleteResults</summary>
+
+  ```ts
+  type RequestPayload = unknown
+
+  type ResultPayload = unknow
+  ```
+</details>
+
 <details>
   <summary>Utils.setViewportSize</summary>
 
