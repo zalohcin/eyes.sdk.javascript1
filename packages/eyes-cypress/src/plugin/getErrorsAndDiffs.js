@@ -1,12 +1,14 @@
 'use strict';
 
-function getErrorsAndDiffs(testResultsArr) {
-  return testResultsArr.reduce(
-    ({failed, diffs, passed}, testResults) => {
+function getErrorsAndDiffs(testResultsArr) {  
+  return testResultsArr.reduce(({failed, diffs, passed}, testResults) => {
+      const testStatus = testResults.getStatus();
       if (testResults instanceof Error || testResults.error) {
         failed.push(testResults);
+      } else if (testStatus === 'Passed') {
+        passed.push(testResults);
       } else {
-        if (testResults.getStatus() === 'Unresolved') {
+        if (testStatus === 'Unresolved') {
           if (testResults.getIsNew()) {
             testResults.error = new Error(
               `${testResults.getName()}. Please approve the new baseline at ${testResults.getUrl()}`,
@@ -15,10 +17,8 @@ function getErrorsAndDiffs(testResultsArr) {
           } else {
             diffs.push(testResults);
           }
-        } else if (testResults.getStatus() === 'Failed') {
+        } else if (testStatus === 'Failed') {
           failed.push(testResults);
-        } else {
-          passed.push(testResults);
         }
       }
 
