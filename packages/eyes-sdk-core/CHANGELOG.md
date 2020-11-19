@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- new concurrency model
 
 ## 12.5.7 - 2020/11/9
 
