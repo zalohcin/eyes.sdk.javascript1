@@ -66,6 +66,10 @@ function makeSDK() {
     const driverRef = refer.ref(driver)
     const eyes = await socket.request('Eyes.open', {driver: driverRef, config})
 
+    socket.subscribe('Logger.log', eyes, ({level, message}) => {
+      console.log(`[${level}] ${message}`)
+    })
+
     return {check, close, abort}
 
     async function check(checkSettings) {

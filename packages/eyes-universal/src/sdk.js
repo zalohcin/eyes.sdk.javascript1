@@ -51,6 +51,10 @@ async function makeSDK({idleTimeout = IDLE_TIMEOUT, ...serverConfig} = {}) {
       })
     })
 
+    socket.on('Logger.log', ({publisher, subscription}) => {
+      socket.emit({name: 'Logger.log', key: subscription})
+    })
+
     socket.command('Util.setViewportSize', async ({driver, viewportSize}) => {
       return socket.sdk.setViewportSize(driver, viewportSize)
     })
