@@ -56,6 +56,7 @@ module.exports = function(tracker, test) {
   )
 
   addHook('afterEach', js`await destroyDriver(driver)`)
+  addHook('afterEach', js`await eyes.abort()`)
 
   const driver = {
     constructor: {
@@ -175,16 +176,10 @@ module.exports = function(tracker, test) {
   }
 
   const assert = {
-    strictEqual(actual, expected, message) {
-      addCommand(js`assert.strictEqual(${actual}, ${expected}, ${message})`)
-    },
-    notStrictEqual(actual, expected, message) {
-      addCommand(js`assert.notStrictEqual(${actual}, ${expected}, ${message})`)
-    },
-    deepStrictEqual(actual, expected, message) {
+    equal(actual, expected, message) {
       addCommand(js`assert.deepStrictEqual(${actual}, ${expected}, ${message})`)
     },
-    notDeepStrictEqual(actual, expected, message) {
+    notEqual(actual, expected, message) {
       addCommand(js`assert.notDeepStrictEqual(${actual}, ${expected}, ${message})`)
     },
     ok(value, message) {

@@ -2,9 +2,14 @@
 
 ## Unreleased
 
+
+## 1.10.0 - 2020/11/13
+
 - deprecate `saveDebugData`
 - updated to @applitools/eyes-sdk-core@12.4.4 (from 12.4.2)
 - updated to @applitools/visual-grid-client@15.0.12 (from 15.0.10)
+- updated to @applitools/eyes-sdk-core@12.5.7 (from 12.4.4)
+- updated to @applitools/visual-grid-client@15.1.1 (from 15.0.12)
 
 ## 1.9.1 - 2020/10/15
 

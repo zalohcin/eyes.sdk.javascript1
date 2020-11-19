@@ -21,10 +21,10 @@
     xml-js "^1.6.11"
     yargs "^15.0.2"
 
-"@applitools/sdk-coverage-tests@2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@applitools/sdk-coverage-tests/-/sdk-coverage-tests-2.0.1.tgz#19bc26c742fa4ab8161bd5c3347285ce74bccc41"
-  integrity sha512-F5vi5Arj+NlsiDBs5hSl5bTPbscK6c3uN5BcI+Vetc1jqRYgNrPmB5tEQE8q4g0tFCZAKHkrOdGZsgcNl6Z/Qg==
+"@applitools/sdk-coverage-tests@2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@applitools/sdk-coverage-tests/-/sdk-coverage-tests-2.1.0.tgz#b056b4084894445260d45ea31d9d2ce362611a07"
+  integrity sha512-mLO2wjn6zvCqA+WDskBghRYqWuvIeWf/2ADDfhWJ8vSGEn/9tAtXHgw6HEgThiuzQTrHJeuBZiVf3hh/i0faBA==
   dependencies:
     "@azure/storage-blob" "12.2.0-preview.1"
     axios "0.20.0"
@@ -36,10 +36,10 @@
     xml-js "1.6.11"
     yargs "16.0.3"
 
-"@applitools/sdk-release-kit@^0.3.1":
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/@applitools/sdk-release-kit/-/sdk-release-kit-0.3.4.tgz#c340f6bc4fd65d464312e54bd9f7c3a6e6f208c1"
-  integrity sha512-fEBR9v68TigW66U2bOx+fe7VToHVYh4qgyIdKmIE4tyBUhtol2Kcp1YTRh3nCoE3/ETF645/qJRx5N9Lue1D9g==
+"@applitools/sdk-release-kit@0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@applitools/sdk-release-kit/-/sdk-release-kit-0.6.0.tgz#aedfe1182313b07ebdd60e60799d440a62f9762f"
+  integrity sha512-lTxdiPk6VEdV20qnu03AJA3yb93cMBCvJl9z3tfZ2vhniOgFS2nDF/2QdXygF5670fXookKYDDKuXl2QcZu5SQ==
   dependencies:
     "@applitools/sdk-shared" "0.1.3"
     chalk "3.0.0"
@@ -2295,10 +2295,10 @@ prettier-linter-helpers@^1.0.0:
   dependencies:
     fast-diff "^1.1.2"
 
-prettier@^1.18.2:
-  version "1.19.1"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.19.1.tgz#f7d7f5ff8a9cd872a7be4ca142095956a60797cb"
-  integrity sha512-s7PoyDv/II1ObgQunCbB9PdLmUcBZcnWOcxDh7O0N/UwDEsHyqkW+Qh28jW+mVuCdx7gLB0BotYI1Y6uI9iyew==
+prettier@1.18.2:
+  version "1.18.2"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.18.2.tgz#6823e7c5900017b4bd3acf46fe9ac4b4d7bda9ea"
+  integrity sha512-OeHeMc0JhFE9idD4ZdtNibzY0+TPHSpSSb9h8FqtP+YnoZZ1sl8Vc9b1sasjfymH3SonAF4QcA2+mzHPhMvIiw==
 
 process@^0.11.10:
   version "0.11.10"

@@ -8,6 +8,7 @@ const {testSetup, getCheckSettings, validateVG2} = require('./EyesDifferentRunne
 
 describe('TestEyesDifferentRunners VG2', () => {
   let driver, destroyDriver, eyes
+  const url = 'https://amazon.com'
 
   beforeEach(async function() {
     ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
@@ -24,8 +25,8 @@ describe('TestEyesDifferentRunners VG2', () => {
     await eyes.abortIfNotClosed()
   })
 
-  it('TestEyesDifferentRunners', () => {
+  it(`TestEyesDifferentRunners - ${url}`, () => {
     const testCase = testSetup(getCheckSettings, validateVG2)
-    testCase('https://amazon.com', MatchLevel.Layout)
+    testCase(url, MatchLevel.Layout)
   })
 })

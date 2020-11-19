@@ -1,0 +1,32 @@
+name: Publish SDK
+on:
+  workflow_dispatch:
+    inputs:
+      sdkName:
+        description: "SDK name"
+        required: true
+      version:
+        description: "version type (specify 'major', 'minor, or 'patch')"
+        required: true
+jobs:
+  publish_sdk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          cd "packages/${{github.event.inputs.sdkName}}"
+          yarn
+          yarn docker:setup
+          yarn publish "--${{github.event.inputs.version}}" --access public
+    env:
+      CVG_TESTS_REMOTE: http://localhost:4444/wd/hub
+      APPLITOOLS_API_KEY_SDK: ${{secrets.APPLITOOLS_API_KEY_SDK}}
+      SAUCE_ACCESS_KEY: ${{secrets.SAUCE_ACCESS_KEY}}
+      SAUCE_USERNAME: ${{secrets.SAUCE_USERNAME}}
+      NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}

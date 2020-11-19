@@ -62,7 +62,7 @@ async function prepareTests({
           const regexp = new RegExp(pattern.slice(1, -1), 'i')
           return regexp.test(test.name)
         }
-        return test === pattern
+        return test.name === pattern
       })
     })
 

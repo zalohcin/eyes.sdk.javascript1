@@ -1,6 +1,6 @@
 const {convertJunitXmlToResultSchema} = require('./xml')
 
-function createReport({reportId, name, group, junit, metadata, sandbox = true}) {
+function createReport({reportId, name, group, junit, metadata, sandbox = false}) {
   return {
     id: reportId,
     sdk: convertSdkNameToReportName(name),
@@ -38,6 +38,8 @@ function convertSdkNameToReportName(sdkName) {
       return 'playwright'
     case 'eyes-nightwatch':
       return 'nightwatch'
+    case 'eyes-puppeteer':
+      return 'puppeteer'
     default:
       throw new Error('Unsupported SDK')
   }
