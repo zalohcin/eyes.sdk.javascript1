@@ -24,11 +24,6 @@ describe('errorDigest', () => {
       url: 'url0',
     });
     err2.error = new Error('bloo');
-    // const err3 = new TestResults({
-    //   name: 'test0',
-    //   hostDisplaySize: {width: 6, height: 7},
-    //   url: 'url0',
-    // });
     const err3 = new Error('kuku');
     const failed = [err1, err2, err3];
     const diffs = [
@@ -81,7 +76,51 @@ describe('errorDigest', () => {
        See details at: url1`;
 
     // console.log(_wrap(output)); // debugging
-    console.log(output)
     expect(output).to.deep.equal(expectedOutput);
   });
+
+  it('should only print existing results', () => {
+    const passed = [
+      new TestResults({
+        name: 'test3',
+        hostDisplaySize: {width: 1, height: 2},
+        status: 'Passed'
+      }),
+    ];
+    const failed = [];
+    const diffs = [];
+    const output = errorDigest({
+      passed,
+      failed,
+      diffs,
+      logger: {log: () => {}},
+    });
+
+    const expectedOutput = `Eyes-Cypress detected diffs or errors during execution of visual tests:
+       ${chalk.green('Passed - 1 tests')}
+         ${chalk.green('\u2713')} ${chalk.reset('test3 [1x2]')}`;
+
+    expect(output).to.deep.equal(expectedOutput);
+  });
+
+  it('should handle error results', () => {
+    const failure = new Error('i failed you');
+    const passed = [];
+    const failed = [failure];
+    const diffs = [];
+    const output = errorDigest({
+      passed,
+      failed,
+      diffs,
+      logger: {log: () => {}},
+    });
+
+    const expectedOutput = `Eyes-Cypress detected diffs or errors during execution of visual tests:
+       ${chalk.red('Errors - 1 tests')}
+         ${chalk.red('\u2716')} ${chalk.reset('[Eyes test not started] : Error: i failed you')}`;
+
+    expect(output).to.deep.equal(expectedOutput);
+  });
+
+
 });
