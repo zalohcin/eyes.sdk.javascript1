@@ -1,6 +1,5 @@
 'use strict';
 const chalk = require('chalk');
-const CutProvider = require('../../../eyes-sdk-core/lib/cropping/CutProvider');
 
 const formatByStatus = {
   Passed: {
@@ -36,7 +35,8 @@ function formatTestResults(results, name, color) {
 function stringifyTestResults(testResults) {
   const hostDisplaySize = testResults.getHostDisplaySize();
   const viewport = hostDisplaySize ? `[${hostDisplaySize}]` : '';
-  return `${testResults.getName()} ${viewport}${testResults.error ? ` : ${testResults.error}` : ''}`;
+  const testName = `${testResults.getName()} ${viewport}`;
+  return testName + (testResults.error ? ` : ${testResults.error}` : '');
 }
 
 function stringifyError(testResults) {
