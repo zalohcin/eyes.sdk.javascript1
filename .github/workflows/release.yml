@@ -1,4 +1,4 @@
-name: Coverage tests sandbox
+name: Publish SDK
 on:
   workflow_dispatch:
     inputs:
@@ -9,7 +9,7 @@ on:
         description: "version type (specify 'major', 'minor, or 'patch')"
         required: true
 jobs:
-  coverage_sandbox:
+  publish_sdk:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
