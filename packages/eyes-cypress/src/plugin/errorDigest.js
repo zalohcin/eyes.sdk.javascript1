@@ -28,8 +28,14 @@ function errorDigest({passed, failed, diffs, logger}) {
 + `${testLink}`;
 }
 
+function colorify(msg, color) {
+  return chalk[color](msg);
+}
+
 function formatTestResults(results, name, color) {
-  return results.length ? `\n${indent(2)}${chalk[color](`${name} - ${results.length} tests`)}${testResultsToString(results)}`: ''
+  const title = `${name} - ${results.length} tests`;
+  const coloredTitle = colorify(title, color);
+  return results.length ? `\n${indent(2)}${coloredTitle}${testResultsToString(results)}`: ''
 }
 
 function stringifyTestResults(testResults) {
@@ -65,7 +71,7 @@ function getColoredSymbol(testResult, error) {
   }
   const status = error ? 'Failed' : testResult.getStatus();
   const { color, symbol } = formatByStatus[status];
-  return chalk[color](symbol);
+  return colorify(symbol, color);
 }
 
 function indent(count) {
