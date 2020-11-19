@@ -28,10 +28,6 @@ function errorDigest({passed, failed, diffs, logger}) {
 + `${testLink}`;
 }
 
-function colorify(msg, color) {
-  return chalk[color](msg);
-}
-
 function formatTestResults(results, name, color) {
   const title = `${name} - ${results.length} tests`;
   const coloredTitle = colorify(title, color);
@@ -45,37 +41,38 @@ function stringifyTestResults(testResults) {
   return testName + (testResults.error ? ` : ${testResults.error}` : '');
 }
 
-function stringifyError(testResults) {
-  return testResults.error ? `${stringifyTestResults(testResults)}` : `[Eyes test not started] : ${testResults}`;
-}
-
 function testResultsToString(testResultsArr) {
   const resultString = testResultsArr.reduce((results, testResults) => {
     const error = hasError(testResults) ? stringifyError(testResults) : undefined;
-    const formattedSymbol = getColoredSymbol(testResults, error);
-    if (formattedSymbol) {      
-      results.push(`${formattedSymbol} ${chalk.reset(error || stringifyTestResults(testResults))}`);
+    const symbol = getColoredSymbol(testResults, error);
+    if (!testResults.isEmpty) {      
+      results.push(`${symbol} ${chalk.reset(error || stringifyTestResults(testResults))}`);
     }
     return results;
   }, [])
   return testResultsArr.length ? `\n${indent(3)}${resultString.join(`\n${indent(3)}`)}` : '';
 }
 
-function hasError(testResult) {
-  return testResult.error || testResult instanceof Error;
-}
-
 function getColoredSymbol(testResult, error) {
-  if (testResult.isEmpty) {
-    return undefined;
-  }
   const status = error ? 'Failed' : testResult.getStatus();
   const { color, symbol } = formatByStatus[status];
   return colorify(symbol, color);
 }
 
+function stringifyError(testResults) {
+  return testResults.error ? `${stringifyTestResults(testResults)}` : `[Eyes test not started] : ${testResults}`;
+}
+
 function indent(count) {
   return `   ${'  '.repeat(count)}`;
+}
+
+function hasError(testResult) {
+  return testResult.error || testResult instanceof Error;
+}
+
+function colorify(msg, color) {
+  return chalk[color](msg);
 }
 
 module.exports = errorDigest;
