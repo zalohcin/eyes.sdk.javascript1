@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- upload resources before render
+- changed concurrency model
 
 ## 15.1.1 - 2020/11/9
 
