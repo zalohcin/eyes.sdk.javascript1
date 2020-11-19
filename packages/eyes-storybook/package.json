@@ -34,7 +34,8 @@
     "preversion": "bongo preversion && yarn test",
     "version": "bongo version",
     "postversion": "bongo postversion --skip-release-notification",
-    "deps": "bongo deps"
+    "deps": "bongo deps",
+    "docker:setup": "echo 'docker:setup is a no-op. Move along, nothing to see here.'"
   },
   "keywords": [
     "applitools",
