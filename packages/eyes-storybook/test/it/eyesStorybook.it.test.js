@@ -152,7 +152,7 @@ describe('eyesStorybook', () => {
         {name: 'some prop', value: 'some value'},
       ]);
 
-      const {imageMatchSettings} = session.steps[0].matchWindowData.options;
+      const {imageMatchSettings} = session.steps[0].options;
       expect(imageMatchSettings.strict).to.eql([
         {
           ...strict[0],
