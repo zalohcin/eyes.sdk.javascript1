@@ -21,7 +21,7 @@
     "deps": "bongo deps",
     "start-chromedriver": "node scripts/start-chromedriver.js",
     "stop-chromedriver": "ps ax | grep chromedriver | grep port=4444 | awk '{print $1}' | xargs kill -9",
-    "blah": "echo $BLAH"
+    "prepublish:setup": "yarn docker:setup"
   },
   "author": "Applitools Team <team@applitools.com> (http://www.applitools.com/)",
   "license": "SEE LICENSE IN LICENSE",

@@ -34,7 +34,8 @@
     "preversion": "bongo preversion",
     "version": "bongo version",
     "postversion": "bongo postversion --skip-release-notification",
-    "deps": "bongo deps"
+    "deps": "bongo deps",
+    "prepublish:setup": "echo 'no setup'"
   },
   "engines": {
     "node": ">=8.9.0"

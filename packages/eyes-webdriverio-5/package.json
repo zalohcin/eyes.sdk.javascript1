@@ -85,7 +85,8 @@
     "preversion": "bongo preversion && yarn test && yarn coverage:prod",
     "version": "bongo version",
     "postversion": "bongo postversion",
-    "deps": "bongo deps"
+    "deps": "bongo deps",
+    "prepublish:setup": "yarn docker:setup"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
