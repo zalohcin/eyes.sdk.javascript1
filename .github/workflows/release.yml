@@ -45,10 +45,10 @@ jobs:
 
 
           echo "::group::update master"
+          git fetch
           git checkout master
           echo $BRANCH
           git merge $BRANCH
-          echo 'before push'
           git push origin master
           echo "::endgroup::"
     env:
