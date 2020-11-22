@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 0.5.11 - 2020/11/22
+
 - github actions release
 
 ## 0.5.6 - 2020/11/19
