@@ -79,7 +79,8 @@
     "typings": "tsc --declaration",
     "preversion": "bongo preversion && yarn test",
     "version": "bongo version",
-    "postversion": "bongo postversion --skip-release-notification"
+    "postversion": "bongo postversion --skip-release-notification",
+    "setup": "echo 'no setup'"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

@@ -88,6 +88,9 @@ const command = args._[0]
             installedDirectory: path.join('.bongo', 'dry-run'),
           })
         }
+        if (!args.skipDeps) {
+          await commitFiles(!args.skipCommit)
+        }
         console.log('[bongo preversion] done!')
         return
       case 'send-release-notification':
@@ -122,7 +125,8 @@ const command = args._[0]
         writeReleaseEntryToChangelog(cwd)
         return await gitAdd('CHANGELOG.md')
       case 'deps':
-        return deps({shouldCommit: !args.skipCommit})
+        await deps()
+        return await commitFiles(!args.skipCommit)
       default:
         throw new Error('Invalid option provided')
     }
@@ -137,12 +141,15 @@ const command = args._[0]
   }
 })()
 
-async function deps({shouldCommit} = {}) {
+async function deps() {
   verifyUnfixedDeps(cwd)
   await yarnUpgrade({
     folder: cwd,
     upgradeAll: args.upgradeAll,
   })
+}
+
+async function commitFiles(shouldCommit = true) {
   if (shouldCommit) {
     await gitAdd('package.json')
     await gitAdd('CHANGELOG.md')

@@ -20,7 +20,8 @@
     "preversion": "bongo preversion --skip-deps && yarn test",
     "version": "bongo version",
     "postversion": "bongo postversion --skip-release-notification",
-    "deps": "bongo deps"
+    "deps": "bongo deps",
+    "setup": "echo 'no setup'"
   },
   "files": [
     "src",

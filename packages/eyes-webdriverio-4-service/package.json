@@ -11,7 +11,8 @@
     "test": "wdio test/wdio.conf.js",
     "preversion": "bongo preversion && yarn test",
     "version": "bongo version",
-    "postversion": "bongo postversion --skip-release-notification"
+    "postversion": "bongo postversion --skip-release-notification",
+    "setup": "echo 'no setup'"
   },
   "author": "",
   "license": "SEE LICENSE IN LICENSE",

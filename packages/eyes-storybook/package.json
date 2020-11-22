@@ -35,7 +35,7 @@
     "version": "bongo version",
     "postversion": "bongo postversion --skip-release-notification",
     "deps": "bongo deps",
-    "docker:setup": "echo 'docker:setup is a no-op. Move along, nothing to see here.'"
+    "setup": "echo 'setup is a no-op. Move along, nothing to see here.'"
   },
   "keywords": [
     "applitools",

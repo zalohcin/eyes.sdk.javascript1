@@ -9,6 +9,7 @@
     "build": "yarn build:page && webpack",
     "build:prod": "rm -rf build && env NODE_ENV=production yarn build",
     "build:page": "webpack --config webpack.config.page.babel.js",
+    "setup": "yarn build:prod",
     "test": "jest",
     "test:code-export:csharp": "node tests/e2e/code-export/run-tests.js csharp-nunit",
     "test:code-export:csharp:vg": "node tests/e2e/code-export/run-tests.js csharp-nunit true",
