@@ -10,12 +10,12 @@ const tags = [
 module.exports = {
   spec: [
     './test/generic/*.spec.js',
-    '../sdk-shared/coverage-tests/custom/**/*.spec.js',
+    'node_modules/@applitools/sdk-shared/coverage-tests/custom/**/*.spec.js',
   ],
   parallel: true,
   jobs: 15,
   timeout: 0,
   reporter: 'spec-xunit-file',
-  require: ['../sdk-shared/coverage-tests/util/mocha-hooks.js'],
+  require: ['node_modules/@applitools/sdk-shared/coverage-tests/util/mocha-hooks.js'],
   grep: new RegExp(`^[\\w\\s]*?(\\((?:@(${tags.join('|')}) ?)+\\))?$`),
 }
