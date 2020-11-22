@@ -28,7 +28,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           
-          DATE=$(date +%F)
+          DATE=$(date +%F_%X)
           BRANCH="${{github.event.inputs.name}}_$DATE"
           git checkout -b $BRANCH
           git push -u origin $BRANCH
