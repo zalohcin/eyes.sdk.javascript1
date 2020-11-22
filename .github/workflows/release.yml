@@ -41,9 +41,8 @@ jobs:
           yarn publish "--${{github.event.inputs.version}}" --access public
           echo "::endgroup::"
 
-          echo "::group::update master"
+          echo "::group::update master from $BRANCH"
           git checkout master
-          echo $BRANCH
           git merge $BRANCH
           git push origin master
           echo "::endgroup::"
