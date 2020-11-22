@@ -33,7 +33,7 @@ const {lint} = require('../lint')
 const sendReleaseNotification = require('../send-report')
 const {createDotFolder} = require('../setup')
 const {verifyCommits, verifyInstalledVersions, verifyVersions} = require('../versions')
-const {gitAdd, gitCommit, gitPushWithTags, isChanged} = require('../git')
+const {gitAdd, gitCommit, gitPushWithTags, isStagedForCommit} = require('../git')
 const {yarnInstall, yarnUpgrade, verifyUnfixedDeps} = require('../yarn')
 
 const command = args._[0]
@@ -88,9 +88,6 @@ const command = args._[0]
             installedDirectory: path.join('.bongo', 'dry-run'),
           })
         }
-        if (!args.skipDeps) {
-          await commitFiles(!args.skipCommit)
-        }
         console.log('[bongo preversion] done!')
         return
       case 'send-release-notification':
@@ -125,8 +122,7 @@ const command = args._[0]
         writeReleaseEntryToChangelog(cwd)
         return await gitAdd('CHANGELOG.md')
       case 'deps':
-        await deps()
-        return await commitFiles(!args.skipCommit)
+        return deps({shouldCommit: !args.skipCommit})
       default:
         throw new Error('Invalid option provided')
     }
@@ -141,24 +137,17 @@ const command = args._[0]
   }
 })()
 
-async function deps() {
+async function deps({shouldCommit} = {}) {
   verifyUnfixedDeps(cwd)
   await yarnUpgrade({
     folder: cwd,
     upgradeAll: args.upgradeAll,
   })
-}
-
-async function commitFiles(shouldCommit = true) {
   if (shouldCommit) {
-    const files = ['package.json', 'CHANGELOG.md', 'yarn.lock']
-    for (const file of files) {
-      if (await isChanged(file)) {
-        await gitAdd(file)
-      }
-    }
-    const anythingChanged = await isChanged(files)
-    if (anythingChanged) {
+    await gitAdd('package.json')
+    await gitAdd('CHANGELOG.md')
+    await gitAdd('yarn.lock')
+    if (await isStagedForCommit('package.json', 'CHANGELOG.md', 'yarn.lock')) {
       const pkgName = JSON.parse(fs.readFileSync(path.resolve(cwd, 'package.json'))).name
       await gitCommit(`[auto commit] ${pkgName}: upgrade deps`)
     }
