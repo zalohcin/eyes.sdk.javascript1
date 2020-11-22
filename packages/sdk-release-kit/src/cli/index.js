@@ -157,8 +157,10 @@ async function commitFiles(shouldCommit = true) {
         await gitAdd(file)
       }
     }
-
-    const pkgName = JSON.parse(fs.readFileSync(path.resolve(cwd, 'package.json'))).name
-    await gitCommit(`[auto commit] ${pkgName}: upgrade deps`)
+    const anythingChanged = isChanged(files)
+    if (anythingChanged) {
+      const pkgName = JSON.parse(fs.readFileSync(path.resolve(cwd, 'package.json'))).name
+      await gitCommit(`[auto commit] ${pkgName}: upgrade deps`)
+    }
   }
 }
