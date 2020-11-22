@@ -82,7 +82,7 @@
     "version": "bongo version",
     "postversion": "bongo postversion",
     "deps": "bongo deps",
-    "setup": "yarn docker:setup"
+    "prepublish:setup": "yarn docker:setup"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

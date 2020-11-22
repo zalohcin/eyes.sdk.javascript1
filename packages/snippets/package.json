@@ -9,7 +9,7 @@
     "test:chrome": "mocha --no-timeouts --require test/util/hook.js --grep chrome ./test/*.spec.js",
     "test:ie": "mocha --no-timeouts --require test/util/hook.js --grep 'internet explorer' ./test/*.spec.js",
     "test:ios": "mocha --no-timeouts --require test/util/hook.js --grep 'ios safari' ./test/*.spec.js",
-    "setup": "yarn build",
+    "prepublish:setup": "yarn build",
     "build": "node ./rollup/cli bundle --format json --format snippet",
     "build:watch": "node ./rollup/cli watch --format json --format snippet",
     "preversion": "yarn build && bongo preversion && yarn test",

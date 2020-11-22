@@ -64,7 +64,7 @@
     "preversion": "bongo preversion",
     "version": "bongo version",
     "postversion": "bongo postversion --skip-release-notification",
-    "setup": "yarn build"
+    "prepublish:setup": "yarn build"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

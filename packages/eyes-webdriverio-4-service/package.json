@@ -12,7 +12,7 @@
     "preversion": "bongo preversion && yarn test",
     "version": "bongo version",
     "postversion": "bongo postversion --skip-release-notification",
-    "setup": "echo 'no setup'"
+    "prepublish:setup": "echo 'no setup'"
   },
   "author": "",
   "license": "SEE LICENSE IN LICENSE",

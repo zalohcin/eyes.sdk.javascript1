@@ -66,7 +66,7 @@
     "version": "bongo version",
     "postversion": "bongo postversion",
     "deps": "bongo deps",
-    "setup": "echo 'no setup'"
+    "prepublish:setup": "echo 'no setup'"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
