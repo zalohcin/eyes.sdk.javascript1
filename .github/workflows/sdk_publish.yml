@@ -1,4 +1,5 @@
 name: Publish SDK
+
 on:
   workflow_dispatch:
     inputs:
@@ -8,8 +9,12 @@ on:
       version:
         description: "version type (specify 'major', 'minor, or 'patch')"
         required: true
+      docker:
+        description: "use docker"
+        default: "true"
+        required: true
 jobs:
-  publish_sdk:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -23,8 +28,8 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           cd "packages/${{github.event.inputs.sdkName}}"
-          yarn
-          yarn docker:setup
+          yarn && yarn deps
+          if [ ${{github.event.inputs.docker}} == true ]; then yarn docker:setup; fi
           yarn publish "--${{github.event.inputs.version}}" --access public
     env:
       CVG_TESTS_REMOTE: http://localhost:4444/wd/hub
