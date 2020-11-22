@@ -33,7 +33,7 @@ const {lint} = require('../lint')
 const sendReleaseNotification = require('../send-report')
 const {createDotFolder} = require('../setup')
 const {verifyCommits, verifyInstalledVersions, verifyVersions} = require('../versions')
-const {gitAdd, gitCommit, gitPushWithTags, isStagedForCommit} = require('../git')
+const {gitAdd, gitCommit, gitPushWithTags, isChanged} = require('../git')
 const {yarnInstall, yarnUpgrade, verifyUnfixedDeps} = require('../yarn')
 
 const command = args._[0]
@@ -151,12 +151,14 @@ async function deps() {
 
 async function commitFiles(shouldCommit = true) {
   if (shouldCommit) {
-    await gitAdd('package.json')
-    await gitAdd('CHANGELOG.md')
-    await gitAdd('yarn.lock')
-    if (await isStagedForCommit('package.json', 'CHANGELOG.md', 'yarn.lock')) {
-      const pkgName = JSON.parse(fs.readFileSync(path.resolve(cwd, 'package.json'))).name
-      await gitCommit(`[auto commit] ${pkgName}: upgrade deps`)
+    const files = ['package.json', 'CHANGELOG.md', 'yarn.lock']
+    for (const file of files) {
+      if (await isChanged(file)) {
+        await gitAdd(file)
+      }
     }
+
+    const pkgName = JSON.parse(fs.readFileSync(path.resolve(cwd, 'package.json'))).name
+    await gitCommit(`[auto commit] ${pkgName}: upgrade deps`)
   }
 }
