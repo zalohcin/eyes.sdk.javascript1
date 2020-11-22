@@ -33,7 +33,7 @@ const {lint} = require('../lint')
 const sendReleaseNotification = require('../send-report')
 const {createDotFolder} = require('../setup')
 const {verifyCommits, verifyInstalledVersions, verifyVersions} = require('../versions')
-const {gitAdd, gitCommit, gitPullWithRebase, gitPushWithTags, isStagedForCommit} = require('../git')
+const {gitAdd, gitCommit, gitPushWithTags, isStagedForCommit} = require('../git')
 const {yarnInstall, yarnUpgrade, verifyUnfixedDeps} = require('../yarn')
 
 const command = args._[0]
@@ -57,8 +57,6 @@ const command = args._[0]
       case 'preversion':
       case 'pre-version':
       case 'release-pre-check':
-        console.log('[bongo preversion] git pull')
-        await gitPullWithRebase()
         if (!args.skipDeps) {
           console.log('[bongo preversion] yarn install')
           await yarnInstall()

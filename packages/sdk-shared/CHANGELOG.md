@@ -3,6 +3,10 @@
 ## Unreleased
 
 
+## 0.5.12 - 2020/11/22
+
+- github actions release
+
 ## 0.5.6 - 2020/11/19
 
 - updated to @applitools/sdk-coverage-tests@2.1.0 (from 2.0.4)

@@ -36,10 +36,10 @@
     xml-js "1.6.11"
     yargs "16.0.3"
 
-"@applitools/sdk-release-kit@0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@applitools/sdk-release-kit/-/sdk-release-kit-0.6.0.tgz#aedfe1182313b07ebdd60e60799d440a62f9762f"
-  integrity sha512-lTxdiPk6VEdV20qnu03AJA3yb93cMBCvJl9z3tfZ2vhniOgFS2nDF/2QdXygF5670fXookKYDDKuXl2QcZu5SQ==
+"@applitools/sdk-release-kit@0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@applitools/sdk-release-kit/-/sdk-release-kit-0.7.0.tgz#ab04bc2a198560bcdc0cd687a0aa0586411ce43d"
+  integrity sha512-DQQDXtIyT7lhDJodfOMqBG6RQK3K1pdjmXL041De5LU+Gnjp/izMQP/z47HBUml+tG53YQSvf8a8wzs95ftCtQ==
   dependencies:
     "@applitools/sdk-shared" "0.1.3"
     chalk "3.0.0"
