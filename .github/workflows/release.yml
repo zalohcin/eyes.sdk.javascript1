@@ -22,13 +22,12 @@ jobs:
         with:
           node-version: 14
       - run: |
-          echo "::group::setup git and npm"
+
           echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > .npmrc
           echo "registry=https://registry.npmjs.org/" >> .npmrc
           echo "always-auth=true" >> .npmrc
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          echo "::endgroup::"
 
           echo "::group::temp branch"
           DATE=$(date +%F_%H-%M)
