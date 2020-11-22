@@ -22,25 +22,36 @@ jobs:
         with:
           node-version: 14
       - run: |
+          echo "::group::setup git and npm"
           echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > .npmrc
           echo "registry=https://registry.npmjs.org/" >> .npmrc
           echo "always-auth=true" >> .npmrc
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          
+          echo "::endgroup::"
+
+          echo "::group::temp branch"
           DATE=$(date +%F_%H-%M)
           BRANCH="${{github.event.inputs.name}}_$DATE"
           git checkout -b $BRANCH
           git push -u origin $BRANCH
+          echo "::endgroup::"
 
+          echo "::group::publish ${{github.event.inputs.name}}"
           cd "packages/${{github.event.inputs.name}}"
           yarn && yarn deps
           if [ ${{github.event.inputs.docker}} == true ]; then yarn docker:setup; fi
           yarn publish "--${{github.event.inputs.version}}" --access public
+          echo "::endgroup::"
 
+
+          echo "::group::update master"
           git checkout master
+          echo $BRANCH
           git merge $BRANCH
+          echo 'before push'
           git push origin master
+          echo "::endgroup::"
     env:
       CVG_TESTS_REMOTE: http://localhost:4444/wd/hub
       APPLITOOLS_API_KEY_SDK: ${{secrets.APPLITOOLS_API_KEY_SDK}}
