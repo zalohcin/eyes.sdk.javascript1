@@ -3,7 +3,7 @@ name: Publish SDK
 on:
   workflow_dispatch:
     inputs:
-      sdkName:
+      name:
         description: "SDK name"
         required: true
       version:
@@ -27,10 +27,20 @@ jobs:
           echo "always-auth=true" >> .npmrc
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          cd "packages/${{github.event.inputs.sdkName}}"
+          
+          DATE=$(date +%F)
+          BRANCH="${{github.event.inputs.name}}_$DATE"
+          git checkout -b $BRANCH
+          git push -u origin $BRANCH
+
+          cd "packages/${{github.event.inputs.name}}"
           yarn && yarn deps
           if [ ${{github.event.inputs.docker}} == true ]; then yarn docker:setup; fi
           yarn publish "--${{github.event.inputs.version}}" --access public
+
+          git checkout master
+          git merge $BRANCH
+          git push origin master
     env:
       CVG_TESTS_REMOTE: http://localhost:4444/wd/hub
       APPLITOOLS_API_KEY_SDK: ${{secrets.APPLITOOLS_API_KEY_SDK}}
