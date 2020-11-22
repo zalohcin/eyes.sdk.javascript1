@@ -49,7 +49,7 @@ jobs:
           echo "::group::update master"
           git checkout master
           echo $BRANCH
-          git merge $BRANCH
+          git merge -X theirs $BRANCH
           git push origin master
           echo "::endgroup::"
     env:
