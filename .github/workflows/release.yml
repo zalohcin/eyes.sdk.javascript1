@@ -1,20 +1,16 @@
-name: Publish SDK
+name: Publish
 
 on:
   workflow_dispatch:
     inputs:
       name:
-        description: "SDK name"
+        description: "name"
         required: true
       version:
         description: "version type (specify 'major', 'minor, or 'patch')"
         required: true
-      docker:
-        description: "use docker"
-        default: "true"
-        required: true
 jobs:
-  publish_sdk:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -41,7 +37,7 @@ jobs:
           echo "::group::publish ${{github.event.inputs.name}}"
           cd "packages/${{github.event.inputs.name}}"
           yarn
-          if [ ${{github.event.inputs.docker}} == true ]; then yarn docker:setup; fi
+          yarn setup
           yarn publish "--${{github.event.inputs.version}}" --access public
           echo "::endgroup::"
 
