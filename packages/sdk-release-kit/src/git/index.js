@@ -24,8 +24,8 @@ async function gitStatus() {
 
 async function isStagedForCommit(...files) {
   const {stdout} = await gitStatus()
-  const modifiedFiles = stdout.split('\n')
-  return files.some(file => modifiedFiles.includes(`M  ${file}`))
+  const modifiedFiles = stdout.split('\n').map(line => line.trim())
+  return files.some(file => modifiedFiles.includes(`M ${file}`))
 }
 
 module.exports = {
