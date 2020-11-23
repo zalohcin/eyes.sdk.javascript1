@@ -20,7 +20,7 @@ function makeSDK({name, version, spec, VisualGridClient}) {
     }
 
     async function close() {
-      return eyes.check(false)
+      return eyes.close(false)
     }
 
     async function abort() {

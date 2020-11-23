@@ -1,5 +1,6 @@
 const WebSocket = require('ws')
 const uuid = require('uuid')
+const chalk = require('chalk')
 
 function makeSocket(ws) {
   let socket = null
@@ -18,11 +19,13 @@ function makeSocket(ws) {
       queue.clear()
 
       socket.on('message', message => {
-        console.log('message')
-
         const {name, key, payload} = deserialize(message)
-        const fns = listeners.get(key ? `${name}/${key}` : name)
+        const fns = listeners.get(name)
         if (fns) fns.forEach(fn => fn(payload, key))
+        if (key) {
+          const fns = listeners.get(`${name}/${key}`)
+          if (fns) fns.forEach(fn => fn(payload, key))
+        }
       })
       socket.on('close', () => {
         const fns = listeners.get('close')
@@ -45,6 +48,7 @@ function makeSocket(ws) {
   function request(name, payload) {
     return new Promise((resolve, reject) => {
       const key = uuid.v4()
+      console.log(`${chalk.blue('[REQUEST]')} ${name}, ${key}, ${JSON.stringify(payload, null, 2)}`)
       emit({name, key}, payload)
       once({name, key}, response => {
         if (response.error) return reject(response.error)
@@ -56,8 +60,10 @@ function makeSocket(ws) {
   function command(name, fn) {
     on(name, async (payload, key) => {
       try {
+        console.log(
+          `${chalk.yellow('[COMMAND]')} ${name}, ${key}, ${JSON.stringify(payload, null, 2)}`,
+        )
         const result = await fn(payload)
-        console.log(result)
         emit({name, key}, {result})
       } catch (error) {
         emit({name, key}, {error})
