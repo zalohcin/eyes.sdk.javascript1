@@ -22,7 +22,7 @@ async function gitStatus() {
   return await pexec(`git status --short`)
 }
 
-async function isChanged(...files) {
+async function isStagedForCommit(...files) {
   const {stdout} = await gitStatus()
   const modifiedFiles = stdout.split('\n')
   return files.some(file => modifiedFiles.includes(`M  ${file}`))
@@ -34,5 +34,5 @@ module.exports = {
   gitPullWithRebase,
   gitPushWithTags,
   gitStatus,
-  isChanged,
+  isStagedForCommit,
 }
