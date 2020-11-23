@@ -12,6 +12,7 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    name: publish ${{github.event.inputs.name}}
     steps:
       - uses: actions/checkout@v2
         with:
