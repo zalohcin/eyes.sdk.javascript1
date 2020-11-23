@@ -25,7 +25,7 @@ async function gitStatus() {
 async function isChanged(...files) {
   const {stdout} = await gitStatus()
   const modifiedFiles = stdout.split('\n')
-  return files.some(file => modifiedFiles.includes(`M  ${file}`))
+  return files.some(file => modifiedFiles.includes(`M ${file}`))
 }
 
 module.exports = {
