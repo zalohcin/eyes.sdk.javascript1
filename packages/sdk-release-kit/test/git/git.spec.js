@@ -5,14 +5,11 @@ const path = require('path')
 const fs = require('fs').promises
 
 describe('git', () => {
-  afterEach(async () => {
-    // await fs.unlink(path.join(__dirname + '/hello.txt'))
-  })
-
   it('should get changed files', async () => {
-    await fs.writeFile(path.join(__dirname + '/hello.txt'), 'test')
-    const files = ['hello.txt']
-    const changed = await isChanged(files)
+    const json = require('./fixtures/changed.json')
+    json.change = 'new value'
+    await fs.writeFile(path.join(__dirname, 'fixtures/changed.json'), JSON.stringify(json, null, 2))
+    const changed = await isChanged('packages/sdk-release-kit/test/git/fixtures/changed.json')
     assert.strictEqual(changed, true)
   })
 })
