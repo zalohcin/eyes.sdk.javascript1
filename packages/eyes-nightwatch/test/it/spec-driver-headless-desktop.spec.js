@@ -216,14 +216,12 @@ describe('spec driver', () => {
     it('getElementRect()', async function(driver) {
       const element = await driver.element('css selector', '#overflowing-div')
       const rect = await spec.getElementRect(driver, element)
-      const {browserName} = spec.getDriverInfo(driver)
-      const expectedYPosition = browserName === 'firefox' ? 79 : 80
 
       assert.deepStrictEqual(rect, {
         height: 184,
         width: 304,
         x: 8,
-        y: expectedYPosition,
+        y: 81,
       })
     })
     it.skip('click()')
