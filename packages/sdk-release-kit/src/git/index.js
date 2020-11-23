@@ -24,7 +24,7 @@ async function gitStatus() {
 
 async function isChanged(...files) {
   const {stdout} = await gitStatus()
-  const modifiedFiles = stdout.split('\n')
+  const modifiedFiles = stdout.split('\n').map(line => line.trim())
   return files.some(file => modifiedFiles.includes(`M ${file}`))
 }
 
