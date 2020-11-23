@@ -196,9 +196,9 @@ class EyesClassic extends EyesCore {
         }
       } else if (checkSettings.getContext()) {
         if (this._stitchContent) {
-          return this._checkFullFrame(checkSettings, throwEx)
+          return this._checkFullFrame(checkSettings, closeAfterMatch, throwEx)
         } else {
-          return this._checkFrame(checkSettings, throwEx)
+          return this._checkFrame(checkSettings, closeAfterMatch, throwEx)
         }
       } else {
         const source = await this._driver.getUrl()
