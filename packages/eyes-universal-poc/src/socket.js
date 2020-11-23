@@ -18,8 +18,10 @@ function makeSocket(ws) {
       queue.clear()
 
       socket.on('message', message => {
+        console.log('message')
+
         const {name, key, payload} = deserialize(message)
-        const fns = listeners.get(name)
+        const fns = listeners.get(key ? `${name}/${key}` : name)
         if (fns) fns.forEach(fn => fn(payload, key))
       })
       socket.on('close', () => {
@@ -55,6 +57,7 @@ function makeSocket(ws) {
     on(name, async (payload, key) => {
       try {
         const result = await fn(payload)
+        console.log(result)
         emit({name, key}, {result})
       } catch (error) {
         emit({name, key}, {error})

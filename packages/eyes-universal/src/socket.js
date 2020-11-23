@@ -8,11 +8,6 @@ function makeSocket(ws) {
 
   attach(ws)
 
-  function connect(url) {
-    const ws = new WebSocket(url)
-    attach(ws)
-  }
-
   function attach(ws) {
     if (!ws) return
 
@@ -23,15 +18,21 @@ function makeSocket(ws) {
       queue.clear()
 
       socket.on('message', message => {
-        const {name, requestId, payload} = deserialize(message)
-        const fns = listeners.get(name)
-        if (fns) fns.forEach(fn => fn(payload, requestId))
+        console.log(message)
+        const {name, key, payload} = deserialize(message)
+        const fns = listeners.get(key ? `${name}/${key}` : name)
+        if (fns) fns.forEach(fn => fn(payload, key))
       })
       socket.on('close', () => {
         const fns = listeners.get('close')
         if (fns) fns.forEach(fn => fn())
       })
     }
+  }
+
+  function connect(url) {
+    const ws = new WebSocket(url)
+    attach(ws)
   }
 
   function disconnect() {
@@ -42,9 +43,9 @@ function makeSocket(ws) {
 
   function request(name, payload) {
     return new Promise((resolve, reject) => {
-      const requestId = uuid.v4()
-      emit({name, requestId}, payload)
-      once({name, requestId}, response => {
+      const key = uuid.v4()
+      emit({name, key}, payload)
+      once({name, key}, response => {
         if (response.error) return reject(response.error)
         return resolve(response.result)
       })
@@ -52,28 +53,33 @@ function makeSocket(ws) {
   }
 
   function command(name, fn) {
-    on(name, async (payload, requestId) => {
+    on(name, async (payload, key) => {
       try {
         const result = await fn(payload)
-        emit({name, requestId}, {result})
+        console.log(result)
+        emit({name, key}, {result})
       } catch (error) {
-        emit({name, requestId}, {error})
+        emit({name, key}, {error})
       }
     })
   }
 
+  function subscribe(name, publisher, fn) {
+    const subscription = uuid.v4()
+    emit(name, {publisher, subscription})
+    const off = on({name, key: subscription}, fn)
+    return () => (emit({name, key: subscription}), off())
+  }
+
   function on(type, fn) {
-    type = typeof type === 'string' ? {name: type} : {name: type.name, requestId: type.requestId}
-    let fns = listeners.get(type.name)
+    const name = typeof type === 'string' ? type : `${type.name}/${type.key}`
+    let fns = listeners.get(name)
     if (!fns) {
       fns = new Set()
-      listeners.set(type.name, fns)
+      listeners.set(name, fns)
     }
-    const handler = type.requestId
-      ? (payload, requestId) => requestId === type.requestId && fn(payload, requestId)
-      : fn
-    fns.add(handler)
-    return () => off(type.name, handler)
+    fns.add(fn)
+    return () => off(name, fn)
   }
 
   function once(type, fn) {
@@ -118,6 +124,7 @@ function makeSocket(ws) {
     emit,
     request,
     command,
+    subscribe,
     connect,
     disconnect,
     ref,
@@ -127,9 +134,7 @@ function makeSocket(ws) {
 
 function serialize(type, payload) {
   const message =
-    typeof type === 'string'
-      ? {name: type, payload}
-      : {name: type.name, requestId: type.requestId, payload}
+    typeof type === 'string' ? {name: type, payload} : {name: type.name, key: type.key, payload}
   return JSON.stringify(message)
 }
 

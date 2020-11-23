@@ -17,6 +17,7 @@ function makeSDK() {
   server.stdout.once('data', data => {
     server.stdout.destroy()
     const [port] = String(data).split('\n', 1)
+    console.log(port)
     socket.connect(`http://localhost:${port}/eyes`)
     socket.unref()
     socket.emit('Session.init', {commands: Object.keys(spec)})
@@ -63,6 +64,7 @@ function makeSDK() {
   })
 
   async function openEyes(driver, config) {
+    console.log('open.eyes')
     const driverRef = refer.ref(driver)
     const eyes = await socket.request('Eyes.open', {driver: driverRef, config})
 

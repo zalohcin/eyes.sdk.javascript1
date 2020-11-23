@@ -75,7 +75,7 @@ async function makeSDK({idleTimeout = IDLE_TIMEOUT, ...serverConfig} = {}) {
       return results.flat()
     })
     socket.command('Eyes.open', async ({driver, config, runner}) => {
-      const commands = socket.sdk.openEyes(driver, config)
+      const commands = await socket.sdk.openEyes(driver, config)
       if (runner) {
         socket.runners.get(runner)
       }
