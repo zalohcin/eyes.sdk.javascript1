@@ -1,0 +1,16 @@
+name: temp => ${{github.event.inputs.name}}
+
+on: [push]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    name: publish ${{github.event.inputs.name}}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - run: echo 'cool'
