@@ -370,6 +370,12 @@ function startFakeEyesServer({
     })
   })
 
+  app.post('/resources/query/resources-exist', (req, res) => {
+    const length = req.body ? req.body.length : 0
+    const response = Array.from({length}, () => true)
+    res.status(200).send(response)
+  })
+
   function createTestResultFromRunningSession(runningSession) {
     const status = runningSession.steps.every(x => !!x.asExpected)
       ? 'Passed' // TestResultsStatus.Passed
