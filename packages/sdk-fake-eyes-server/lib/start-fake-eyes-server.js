@@ -370,9 +370,8 @@ function startFakeEyesServer({
     })
   })
 
-  app.post('/resources/query/resources-exist', (req, res) => {
-    const length = req.body ? req.body.length : 0
-    const response = Array.from({length}, () => true)
+  app.post('/resources/query/resources-exist', jsonMiddleware, (req, res) => {
+    const response = new Array(req.body ? req.body.length : 0).fill(true)
     res.status(200).send(response)
   })
 
