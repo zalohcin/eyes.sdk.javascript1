@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 2.1.1 - 2020/11/24
+
 - add `/resources/query/resources-exist` endpoint
 
 ## 2.1.0 - 2020/11/19
