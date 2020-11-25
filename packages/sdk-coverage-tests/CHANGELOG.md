@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 2.1.2 - 2020/11/25
+
 - fix metadata names
 
 ## 2.1.1 - 2020/11/25
