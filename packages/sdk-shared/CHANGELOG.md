@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 0.5.14 - 2020/11/25
+
 - skipping headfull tests in CI
 
 ## 0.5.13 - 2020/11/23
