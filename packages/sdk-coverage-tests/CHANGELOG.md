@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- skipping heafull tests in CI
+
 ## 2.1.0 - 2020/11/17
 
 - add eyes-puppeteer as a supported SDK
