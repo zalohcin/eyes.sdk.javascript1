@@ -44,7 +44,7 @@
     stack-trace "0.0.10"
     tunnel "0.0.6"
 
-"@applitools/eyes-sdk-core@^12.6.1":
+"@applitools/eyes-sdk-core@12.6.1":
   version "12.6.1"
   resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-12.6.1.tgz#9bfc75bff2ccd8a23b4ca157310636c045cd0d6b"
   integrity sha512-A308gee1usIm3rx/vra6Ju9yLohjLqVU+f0H7iYmk9NXNQBGhabIOcpfQFzADg0ZSvStfyhCPZwJfEdMdGeygw==
