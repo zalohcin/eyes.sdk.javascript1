@@ -166,6 +166,21 @@
     xml-js "1.6.11"
     yargs "16.0.3"
 
+"@applitools/sdk-coverage-tests@2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@applitools/sdk-coverage-tests/-/sdk-coverage-tests-2.1.1.tgz#fd7b26fda758a43073c79faa783c3cbf7513d36f"
+  integrity sha512-xK6fmA3+dSRgu2akhZ2YcMYiR2QIlw3zp2Ag2fs1F76TGjkIU5lD7ozaq/02Zq8CO3Lssaf1/B19Yd0NTdOodg==
+  dependencies:
+    "@azure/storage-blob" "12.2.0-preview.1"
+    axios "0.20.0"
+    chai "4.2.0"
+    chai-as-promised "7.1.1"
+    chalk "4.1.0"
+    micromatch "4.0.2"
+    node-fetch "2.6.1"
+    xml-js "1.6.11"
+    yargs "16.0.3"
+
 "@applitools/sdk-fake-eyes-server@2.1.1":
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/@applitools/sdk-fake-eyes-server/-/sdk-fake-eyes-server-2.1.1.tgz#a0c5d270a57f8ea97f974565a4273d3066fc6529"
@@ -211,10 +226,10 @@
     ncp "2.0.0"
     yargs "15.3.1"
 
-"@applitools/sdk-shared@0.5.13":
-  version "0.5.13"
-  resolved "https://registry.yarnpkg.com/@applitools/sdk-shared/-/sdk-shared-0.5.13.tgz#f3dc126149967df57cf1af6a70ae649deb8f64d4"
-  integrity sha512-tf6x+fgWkRrxwfK9YeCE+6dvCmWYIvXm3Db/PqfYHmIcut2gR6ZIEpfvcwqEivNwS6xkRxKSA46tJ7Ci8iQLOw==
+"@applitools/sdk-shared@0.5.16":
+  version "0.5.16"
+  resolved "https://registry.yarnpkg.com/@applitools/sdk-shared/-/sdk-shared-0.5.16.tgz#469f9ac2f99c9171fc673a7697fcafe2b6f3964f"
+  integrity sha512-s286xzwB30u+lj63Acw7Ff1DEW2nBN5mPopQqOGy/iXBMIlNYawvuBlD5Iwam3i1gAwPqikbuuDyCFrRS/9jnA==
   dependencies:
     "@applitools/functional-commons" "1.6.0"
     "@applitools/sdk-coverage-tests" "2.1.0"
