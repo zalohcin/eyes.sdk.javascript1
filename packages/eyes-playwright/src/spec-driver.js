@@ -112,7 +112,7 @@ async function takeScreenshot(page) {
   return page.screenshot()
 }
 async function click(frame, selector) {
-  await frame.click(selector)
+  await frame.click(transformSelector(selector))
 }
 async function type(_frame, element, keys) {
   return element.type(keys)
