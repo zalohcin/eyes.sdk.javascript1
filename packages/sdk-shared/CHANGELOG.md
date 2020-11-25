@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- remove browser version from tags in generic tests
 
 ## 0.5.14 - 2020/11/25
 
