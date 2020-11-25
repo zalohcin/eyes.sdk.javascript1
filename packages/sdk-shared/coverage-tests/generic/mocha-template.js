@@ -7,7 +7,7 @@ function makeMochaTestTemplate({name, skip, output, meta}) {
   if (meta.mobile) tags.push('@mobile')
   if (meta.headfull) tags.push('@headfull')
   if (meta.browser) {
-    tags.push(`@${meta.browser}`)
+    tags.push(`@${meta.browser.replace(/-[\d.]+$/, '')}`)
   }
 
   const code = `// ${name}
