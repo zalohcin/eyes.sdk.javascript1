@@ -274,7 +274,7 @@ describe('spec driver', async () => {
       ;[browser, destroyBrowser] = await spec.build({
         browser: 'chrome',
         protocol: 'cdp',
-        headless: false,
+        headless: true,
       })
     })
 
