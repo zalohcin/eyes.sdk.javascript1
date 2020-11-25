@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 1.3.0 - 2020/11/25
+
 - using the new concurrency model
 - fix firefox region compensation issue
 - add 2020 ios devices
