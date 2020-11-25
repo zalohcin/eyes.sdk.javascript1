@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 2.1.1 - 2020/11/25
+
 - skipping heafull tests in CI
 
 ## 2.1.0 - 2020/11/17
