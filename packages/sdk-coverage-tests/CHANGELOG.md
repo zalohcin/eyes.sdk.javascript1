@@ -3,6 +3,10 @@
 ## Unreleased
 
 
+## 2.1.3 - 2020/11/25
+
+- fix playwright report sdk name
+
 ## 2.1.2 - 2020/11/25
 
 - fix metadata names
