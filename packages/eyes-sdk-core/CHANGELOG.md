@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix concurrency bug with 503 responses
 
 ## 12.6.1 - 2020/11/24
 
