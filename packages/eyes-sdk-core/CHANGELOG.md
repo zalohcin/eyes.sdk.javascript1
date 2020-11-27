@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+
+## 12.6.2 - 2020/11/26
+
+- fix concurrency bug with 503 responses
+
+## 12.6.1 - 2020/11/24
+
 - fix check frame logic by passing closeAfterMatch flag
 
 ## 12.6.0 - 2020/11/19
