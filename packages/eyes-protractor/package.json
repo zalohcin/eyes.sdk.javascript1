@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-protractor",
-  "version": "1.10.0",
+  "version": "1.11.0",
   "description": "Applitools Eyes SDK for Protractor",
   "keywords": [
     "eyes-protractor",
@@ -37,13 +37,13 @@
   "main": "./index.js",
   "dependencies": {
     "@applitools/eyes-sdk-core": "12.5.7",
-    "@applitools/visual-grid-client": "15.1.1"
+    "@applitools/visual-grid-client": "15.2.0"
   },
   "devDependencies": {
-    "@applitools/sdk-coverage-tests": "^2.0.3",
-    "@applitools/sdk-fake-eyes-server": "^2.0.0",
-    "@applitools/sdk-release-kit": "^0.4.1",
-    "@applitools/sdk-shared": "^0.4.2",
+    "@applitools/sdk-coverage-tests": "2.1.1",
+    "@applitools/sdk-fake-eyes-server": "2.1.1",
+    "@applitools/sdk-release-kit": "0.10.5",
+    "@applitools/sdk-shared": "0.5.16",
     "assert-rejects": "^1.0.0",
     "axios": "^0.19.0",
     "chai": "^4.2.0",
@@ -72,8 +72,8 @@
     "test": "yarn test:it",
     "test:it": "mocha --timeout 120000 './test/it/**/*.spec.js'",
     "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-protractor' APPLITOOLS_BATCH_ID=$(uuidgen) XUNIT_FILE=coverage-test-report.xml mocha --config .mocharc.cvg.js",
-    "coverage:generate": "coverage-tests generate ../sdk-shared/coverage-tests/generic/index.js --name 'eyes-protractor'",
-    "coverage:report": "coverage-tests report ../sdk-shared/coverage-tests/generic/index.js --name 'eyes-protractor'",
+    "coverage:generate": "coverage-tests generate node_modules/@applitools/sdk-shared/coverage-tests/generic/index.js --name 'eyes-protractor'",
+    "coverage:report": "coverage-tests report node_modules/@applitools/sdk-shared/coverage-tests/generic/index.js --name 'eyes-protractor'",
     "coverage:sandbox": "yarn coverage:generate && yarn test:coverage && yarn coverage:report --sandbox",
     "coverage:prod": "yarn coverage:generate && yarn test:coverage && yarn coverage:report",
     "docker:setup": "node ../sdk-shared/src/generate-docker-compose-config.js && docker-compose up -d",
@@ -81,7 +81,8 @@
     "preversion": "bongo preversion && yarn test && yarn coverage:prod",
     "version": "bongo version",
     "postversion": "bongo postversion",
-    "deps": "bongo deps"
+    "deps": "bongo deps",
+    "prepublish:setup": "yarn docker:setup"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

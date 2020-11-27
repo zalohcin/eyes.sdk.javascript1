@@ -1,34 +1,58 @@
-name: Publish SDK
+name: Publish
+
 on:
   workflow_dispatch:
     inputs:
-      sdkName:
-        description: "SDK name"
+      name:
+        description: "name"
         required: true
       version:
         description: "version type (specify 'major', 'minor, or 'patch')"
         required: true
 jobs:
-  publish_sdk:
+  publish:
     runs-on: ubuntu-latest
+    name: publish ${{github.event.inputs.name}}
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v1
         with:
           node-version: 14
       - run: |
+
           echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > .npmrc
           echo "registry=https://registry.npmjs.org/" >> .npmrc
           echo "always-auth=true" >> .npmrc
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          cd "packages/${{github.event.inputs.sdkName}}"
+
+          echo "::group::create temp branch"
+          DATE=$(date +%F_%H-%M)
+          BRANCH="${{github.event.inputs.name}}_$DATE"
+          git checkout -b $BRANCH
+          git push -u origin $BRANCH
+          echo "::endgroup::"
+
+          echo "::group::publish ${{github.event.inputs.name}}"
+          cd "packages/${{github.event.inputs.name}}"
           yarn
-          yarn docker:setup
+          yarn deps
+          yarn prepublish:setup
           yarn publish "--${{github.event.inputs.version}}" --access public
+          echo "::endgroup::"
+
+          echo "::group::update master from $BRANCH"
+          git checkout master
+          git pull origin master --rebase
+          git merge $BRANCH
+          git push origin master
+          echo "::endgroup::"
     env:
       CVG_TESTS_REMOTE: http://localhost:4444/wd/hub
       APPLITOOLS_API_KEY_SDK: ${{secrets.APPLITOOLS_API_KEY_SDK}}
+      APPLITOOLS_API_KEY: ${{secrets.APPLITOOLS_API_KEY}}
       SAUCE_ACCESS_KEY: ${{secrets.SAUCE_ACCESS_KEY}}
       SAUCE_USERNAME: ${{secrets.SAUCE_USERNAME}}
       NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
