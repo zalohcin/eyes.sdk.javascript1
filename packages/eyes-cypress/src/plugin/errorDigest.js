@@ -4,34 +4,31 @@ const chalk = require('chalk');
 const formatByStatus = {
   Passed: {
     color: 'green',
-    symbol: '\u2713'
+    symbol: '\u2713',
+    title: (tests) => `Passed - ${tests} tests`
   },
   Failed: {
     color: 'red',
-    symbol: '\u2716'
+    symbol: '\u2716',
+    title: (tests) => `Errors - ${tests} tests`
   },
   Unresolved: {
     color: 'yellow',
-    symbol: '\u26A0'
+    symbol: '\u26A0',
+    title: (tests) => `Diffs detected - ${tests} tests`
   }
 };
 
-function errorDigest({passed, failed, diffs, logger}) {
+function errorDigest({ passed, failed, diffs, logger }) {
   logger.log('errorDigest: diff errors', diffs);
   logger.log('errorDigest: test errors', failed);
 
-  const testLink = diffs.length ? `\n\n${indent(2)}See details at: ${diffs[0].getUrl()}` : '';
-  return 'Eyes-Cypress detected diffs or errors during execution of visual tests:' + 
-  formatTestResults(passed, 'Passed', 'green')
-+ formatTestResults(diffs, 'Diffs detected', 'yellow')
-+ formatTestResults(failed, 'Errors', 'red')
-+ `${testLink}`;
-}
-
-function formatTestResults(results, name, color) {
-  const title = `${name} - ${results.length} tests`;
-  const coloredTitle = colorify(title, color);
-  return results.length ? `\n${indent(2)}${coloredTitle}${testResultsToString(results)}`: ''
+  const testLink = diffs.length ? `\n${indent(2)}See details at: ${diffs[0].getUrl()}` : '';
+  return 'Eyes-Cypress detected diffs or errors during execution of visual tests:'
+    + testResultsToString(passed, 'Passed')
+    + testResultsToString(diffs, 'Unresolved')
+    + testResultsToString(failed, 'Failed')
+    + `${testLink}`;
 }
 
 function stringifyTestResults(testResults) {
@@ -41,22 +38,22 @@ function stringifyTestResults(testResults) {
   return testName + (testResults.error ? ` : ${testResults.error}` : '');
 }
 
-function testResultsToString(testResultsArr) {
-  const resultString = testResultsArr.reduce((results, testResults) => {
-    const error = hasError(testResults) ? stringifyError(testResults) : undefined;
-    const symbol = getColoredSymbol(testResults, error);
-    if (!testResults.isEmpty) {      
-      results.push(`${symbol} ${chalk.reset(error || stringifyTestResults(testResults))}`);
+function testResultsToString(testResultsArr, category) {
+  const { color, title, symbol } = formatByStatus[category];
+  const results = testResultsArr.reduce((acc, testResults) => {
+    if (!testResults.isEmpty) {
+      const error = hasError(testResults) ? stringifyError(testResults) : undefined;
+      acc.push(`${colorify(symbol, color)} ${chalk.reset(error || stringifyTestResults(testResults))}`);
     }
-    return results;
-  }, [])
-  return testResultsArr.length ? `\n${indent(3)}${resultString.join(`\n${indent(3)}`)}` : '';
+    return acc;
+  }, []);
+
+  const coloredTitle = results.length ? colorify(title(results.length), color) : '';
+  return testResultSection(coloredTitle, results);
 }
 
-function getColoredSymbol(testResult, error) {
-  const status = error ? 'Failed' : testResult.getStatus();
-  const { color, symbol } = formatByStatus[status];
-  return colorify(symbol, color);
+function testResultSection(title, results) {
+  return results.length ? `${indent(2)}${title}${indent(3)}${results.join(`${indent(3)}`)}` : '';
 }
 
 function stringifyError(testResults) {
@@ -64,7 +61,7 @@ function stringifyError(testResults) {
 }
 
 function indent(count) {
-  return `   ${'  '.repeat(count)}`;
+  return `\n   ${'  '.repeat(count)}`;
 }
 
 function hasError(testResult) {
