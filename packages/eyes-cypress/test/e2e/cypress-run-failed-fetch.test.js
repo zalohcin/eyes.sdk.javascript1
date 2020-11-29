@@ -30,7 +30,7 @@ describe('cypress run', () => {
   it('works for failed-fetch.js', async () => {
     try {
       await pexec(
-        './node_modules/.bin/cypress run --config testFiles=failed-fetch.js,integrationFolder=cypress/integration-run,pluginsFile=cypress/plugins/index-run.js,supportFile=cypress/support/index-run.js',
+        './node_modules/.bin/cypress run --headless --config testFiles=failed-fetch.js,integrationFolder=cypress/integration-run,pluginsFile=cypress/plugins/index-run.js,supportFile=cypress/support/index-run.js',
         {
           maxBuffer: 10000000,
         },
