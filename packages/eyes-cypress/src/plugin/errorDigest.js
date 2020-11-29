@@ -23,7 +23,7 @@ function errorDigest({ passed, failed, diffs, logger }) {
   logger.log('errorDigest: diff errors', diffs);
   logger.log('errorDigest: test errors', failed);
 
-  const testLink = diffs.length ? `\n${indent(2)}See details at: ${diffs[0].getUrl()}` : '';
+  const testLink = diffs.length ? `\n${indent()}See details at: ${diffs[0].getUrl()}` : '';
   return 'Eyes-Cypress detected diffs or errors during execution of visual tests:'
     + testResultsToString(passed, 'Passed')
     + testResultsToString(diffs, 'Unresolved')
@@ -49,19 +49,19 @@ function testResultsToString(testResultsArr, category) {
   }, []);
 
   const coloredTitle = results.length ? colorify(title(results.length), color) : '';
-  return testResultSection(coloredTitle, results);
+  return testResultsSection(coloredTitle, results);
 }
 
-function testResultSection(title, results) {
-  return results.length ? `${indent(2)}${title}${indent(3)}${results.join(`${indent(3)}`)}` : '';
+function testResultsSection(title, results) {
+  return results.length ? `${indent()}${title}${indent(3)}${results.join(indent(3))}` : '';
 }
 
 function stringifyError(testResults) {
-  return testResults.error ? `${stringifyTestResults(testResults)}` : `[Eyes test not started] : ${testResults}`;
+  return testResults.error ? stringifyTestResults(testResults) : `[Eyes test not started] : ${testResults}`;
 }
 
-function indent(count) {
-  return `\n   ${'  '.repeat(count)}`;
+function indent(spaces = 2) {
+  return `\n   ${'  '.repeat(spaces)}`;
 }
 
 function hasError(testResult) {
