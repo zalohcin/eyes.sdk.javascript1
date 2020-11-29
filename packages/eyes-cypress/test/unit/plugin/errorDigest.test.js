@@ -1,5 +1,5 @@
 'use strict';
-const {describe, it} = require('mocha');
+const {describe, it, Test} = require('mocha');
 const {expect} = require('chai');
 const chalk = require('chalk');
 const errorDigest = require('../../../src/plugin/errorDigest');
@@ -80,12 +80,15 @@ describe('errorDigest', () => {
   });
 
   it('should only print existing results', () => {
+    const emptyResult = new TestResults();
+    emptyResult.isEmpty = true;
     const passed = [
       new TestResults({
         name: 'test3',
         hostDisplaySize: {width: 1, height: 2},
         status: 'Passed'
       }),
+      emptyResult
     ];
     const failed = [];
     const diffs = [];

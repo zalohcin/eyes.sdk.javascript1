@@ -1,11 +1,12 @@
 'use strict';
 
-function getErrorsAndDiffs(testResultsArr) {  
-  return testResultsArr.reduce(({failed, diffs, passed}, testResults) => {
+function getErrorsAndDiffs(testResultsArr) {
+  return testResultsArr.reduce(({ failed, diffs, passed }, testResults) => {
+    if (testResults instanceof Error || testResults.error) {
+      failed.push(testResults);
+    } else {
       const testStatus = testResults.getStatus();
-      if (testResults instanceof Error || testResults.error) {
-        failed.push(testResults);
-      } else if (testStatus === 'Passed') {
+      if (testStatus === 'Passed') {
         passed.push(testResults);
       } else {
         if (testStatus === 'Unresolved') {
@@ -21,15 +22,10 @@ function getErrorsAndDiffs(testResultsArr) {
           failed.push(testResults);
         }
       }
+    }
 
-      return {failed, diffs, passed};
-    },
-    {
-      failed: [],
-      diffs: [],
-      passed: []
-    },
-  );
+    return { failed, diffs, passed };
+  }, { failed: [], diffs: [], passed: [] });
 }
 
 module.exports = getErrorsAndDiffs;
