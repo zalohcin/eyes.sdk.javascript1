@@ -1,5 +1,5 @@
 'use strict';
-const {describe, it, Test} = require('mocha');
+const {describe, it} = require('mocha');
 const {expect} = require('chai');
 const chalk = require('chalk');
 const errorDigest = require('../../../src/plugin/errorDigest');
@@ -31,20 +31,20 @@ describe('errorDigest', () => {
         name: 'test1',
         hostDisplaySize: {width: 100, height: 200},
         url: 'url1',
-        status: 'Unresolved'
+        status: 'Unresolved',
       }),
       new TestResults({
         name: 'test2',
         hostDisplaySize: {width: 300, height: 400},
         url: 'url2',
-        status: 'Unresolved'
+        status: 'Unresolved',
       }),
     ];
     const passed = [
       new TestResults({
         name: 'test3',
         hostDisplaySize: {width: 1, height: 2},
-        status: 'Passed'
+        status: 'Passed',
       }),
     ];
 
@@ -86,9 +86,9 @@ describe('errorDigest', () => {
       new TestResults({
         name: 'test3',
         hostDisplaySize: {width: 1, height: 2},
-        status: 'Passed'
+        status: 'Passed',
       }),
-      emptyResult
+      emptyResult,
     ];
     const failed = [];
     const diffs = [];
@@ -124,6 +124,4 @@ describe('errorDigest', () => {
 
     expect(output).to.deep.equal(expectedOutput);
   });
-
-
 });
