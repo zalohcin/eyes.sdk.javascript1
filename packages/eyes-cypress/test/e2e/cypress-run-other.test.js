@@ -21,7 +21,7 @@ describe('cypress run --headless', () => {
     if (fs.existsSync(targetTestAppPath)) {
       fs.rmdirSync(targetTestAppPath, {recursive: true});
     }
-    await pncp(sourceTestAppPath, targetTestAppPath);
+    await pexec(`cp -r ${sourceTestAppPath}/. ${targetTestAppPath}`);
     process.chdir(targetTestAppPath);
     await pexec(`npm install`, {
       maxBuffer: 1000000,
