@@ -30,7 +30,7 @@ describe('cypress run', () => {
   it('works for simple.js', async () => {
     try {
       await pexec(
-        './node_modules/.bin/cypress run --headless --config testFiles=simple.js,integrationFolder=cypress/integration-run,pluginsFile=cypress/plugins/index-run.js,supportFile=cypress/support/index-run.js',
+        './node_modules/.bin/cypress run --config testFiles=simple.js,integrationFolder=cypress/integration-run,pluginsFile=cypress/plugins/index-run.js,supportFile=cypress/support/index-run.js',
         {
           maxBuffer: 10000000,
         },

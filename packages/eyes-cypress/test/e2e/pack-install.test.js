@@ -44,7 +44,7 @@ describe('package and install', () => {
   it('runs properly on installed package', async () => {
     try {
       await pexec(
-        './node_modules/.bin/cypress run --headless --config integrationFolder=cypress/integration-pack,pluginsFile=cypress/plugins/index-pack.js,supportFile=cypress/support/index-pack.js',
+        './node_modules/.bin/cypress run --config integrationFolder=cypress/integration-pack,pluginsFile=cypress/plugins/index-pack.js,supportFile=cypress/support/index-pack.js',
         {maxBuffer: 10000000},
       );
     } catch (ex) {

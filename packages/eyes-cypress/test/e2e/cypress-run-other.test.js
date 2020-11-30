@@ -35,7 +35,7 @@ describe('cypress run', () => {
   it('considers timeout passed to close', async () => {
     try {
       await pexec(
-        './node_modules/.bin/cypress run --headless --config integrationFolder=cypress/integration-timeout,pluginsFile=cypress/plugins/index-run.js,supportFile=cypress/support/index-run.js',
+        './node_modules/.bin/cypress run --config integrationFolder=cypress/integration-timeout,pluginsFile=cypress/plugins/index-run.js,supportFile=cypress/support/index-run.js',
         {
           maxBuffer: 10000000,
         },
