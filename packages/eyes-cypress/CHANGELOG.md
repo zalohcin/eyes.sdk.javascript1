@@ -2,9 +2,6 @@
 
 ## Unreleased
 
-
-## 3.16.0 - 2020/11/30
-
 - fix output with empty tests
 - using new concurrency model
 - updated to @applitools/eyes-sdk-core@12.6.2 (from 12.6.1)
