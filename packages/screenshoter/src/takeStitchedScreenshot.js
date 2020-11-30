@@ -42,14 +42,7 @@ async function takeStitchedImage({
   await image.crop(cropRegion)
   await saveScreenshot(image, {path: debug.path, name: 'initial', suffix: 'region'})
 
-  if (!region) {
-    // Notice that this might still happen even if we used "getImagePart", since "entirePageSize" might be that of a frame.
-    // if (image.width >= entireSize.width && image.height >= entireSize.height) {
-    //   await scroller.restoreState(originalPosition)
-    //   return image
-    // }
-    region = {x: 0, y: 0, width: scrollerSize.width, height: scrollerSize.height}
-  }
+  if (!region) region = {x: 0, y: 0, width: scrollerSize.width, height: scrollerSize.height}
 
   const partSize = {width: image.width, height: Math.max(image.height - overlap, 10)}
   logger.verbose(`Image part size: ${partSize}`)

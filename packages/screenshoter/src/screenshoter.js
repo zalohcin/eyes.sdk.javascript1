@@ -22,7 +22,7 @@ async function screenshoter({
   const originalContext = driver.currentContext
   const defaultScroller = makeScroller({logger, scrollingMode})
 
-  const targetContext = await originalContext.context(context)
+  const targetContext = context ? await originalContext.context(context) : originalContext
   const scrollingStates = []
   for (const currentContext of targetContext.path) {
     const scrollingElement = await currentContext.getScrollRootElement()
@@ -31,7 +31,13 @@ async function screenshoter({
     scrollingStates.push(scrollingState)
   }
 
-  const {region, scroller} = await getTargetArea({logger, context: targetContext, target, isFully})
+  const {region, scroller} = await getTargetArea({
+    logger,
+    context: targetContext,
+    target,
+    isFully,
+    scrollingMode,
+  })
   const options = {logger, context: targetContext, region, scroller, rotate, crop, scale, debug}
 
   const activeElement = hideCaret && !driver.isNative ? await targetContext.blurElement() : null
@@ -45,40 +51,40 @@ async function screenshoter({
   }
 }
 
-async function getTargetArea({logger, context, target, isFully}) {
-  let region
-  let scrollingElement
-
+async function getTargetArea({logger, context, target, isFully, scrollingMode}) {
   if (target) {
     if (utils.types.has(target, ['x', 'y', 'width', 'height'])) {
-      region = target
-      scrollingElement = await context.getScrollRootElement()
+      const scrollingElement = await context.getScrollRootElement()
+      const scroller = makeScroller({logger, element: scrollingElement, scrollingMode})
+      return {region: target, scroller}
     } else {
       const element = await context.element(target)
       if (!element) throw new Error('Element not found!')
 
       if (isFully) {
         const isScrollable = await element.isScrollable()
-        region = isScrollable ? null : await element.getRect()
-        scrollingElement = isScrollable ? element : await context.getScrollRootElement()
+        const scrollingElement = isScrollable ? element : await context.getScrollRootElement()
+        const scroller = makeScroller({logger, element: scrollingElement, scrollingMode})
+        const region = isScrollable ? null : await element.getRect()
+        return {region, scroller}
       } else {
-        region = await element.getRect()
-        scrollingElement = await context.getScrollRootElement()
+        const scrollingElement = await context.getScrollRootElement()
+        const scroller = makeScroller({logger, element: scrollingElement, scrollingMode})
+        const region = await element.getRect()
+        return {region, scroller}
       }
     }
-  } else if (!context.isMain) {
-    if (isFully) {
-      scrollingElement = await context.getScrollRootElement()
-    } else {
-      const element = await context.getFrameElement()
-      region = await element.getClientRect()
-      scrollingElement = await context.parent.getScrollRootElement()
-    }
+  } else if (!context.isMain && !isFully) {
+    const scrollingElement = await context.parent.getScrollRootElement()
+    const scroller = makeScroller({logger, element: scrollingElement, scrollingMode})
+    const element = await context.getFrameElement()
+    const region = await element.getClientRect()
+    return {region, scroller}
   } else {
-    scrollingElement = await context.getScrollRootElement()
+    const scrollingElement = await context.getScrollRootElement()
+    const scroller = makeScroller({logger, element: scrollingElement, scrollingMode})
+    return {scroller}
   }
-
-  return {region, scrollingElement}
 }
 
 module.exports = screenshoter
