@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- export `RunnerOptions`
 
 ## 4.49.1 - 2020/11/29
 
