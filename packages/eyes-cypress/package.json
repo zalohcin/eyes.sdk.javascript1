@@ -20,7 +20,7 @@
     "version": "bongo version",
     "postversion": "bongo postversion --skip-release-notification",
     "deps": "bongo deps",
-    "prepublish:setup": "apt-get install xvfb"
+    "prepublish:setup": "sudo apt-get install xvfb"
   },
   "files": [
     "src",
