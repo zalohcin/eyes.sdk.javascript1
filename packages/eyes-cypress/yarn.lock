@@ -3432,10 +3432,10 @@ slice-ansi@^2.1.0:
     astral-regex "^1.0.0"
     is-fullwidth-code-point "^2.0.0"
 
-snaptdout@^1.3.3:
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/snaptdout/-/snaptdout-1.3.3.tgz#bc6b5ba577646191869d856a73b6f1287eae22ec"
-  integrity sha512-S0Fr7o8WwzDKOgOTd1fTHojRu/0SZuTWCc6wRY2jgfxq5rfHrX3s3przf8vz/o2JWTD8cyJmCEVEWGbKGuquzw==
+snaptdout@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/snaptdout/-/snaptdout-1.4.0.tgz#1847b33798bee06f41eeb269d66e2bfc5c788108"
+  integrity sha512-unET3eH5iN8aK5rkn/bHMA/OtcqcSWUGc36Mr5uWlzsT52G+U/aywaqOE26b0lFQMXVrHYFOvivtS/bN87utrg==
 
 source-map@^0.6.1, source-map@~0.6.1:
   version "0.6.1"
