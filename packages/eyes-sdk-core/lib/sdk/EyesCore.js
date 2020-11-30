@@ -1,4 +1,6 @@
 'use strict'
+const {makeDriver} = require('@applitools/driver')
+const screenshoter = require('@applitools/screenshoter')
 const ArgumentGuard = require('../utils/ArgumentGuard')
 const Region = require('../geometry/Region')
 const Location = require('../geometry/Location')
@@ -20,6 +22,8 @@ const ImageProviderFactory = require('../capture/ImageProviderFactory')
 const TypeUtils = require('../utils/TypeUtils')
 const MatchResult = require('../match/MatchResult')
 const TestResults = require('../TestResults')
+const NullDebugScreenshotProvider = require('../debug/NullDebugScreenshotProvider')
+const takeDomCapture = require('../utils/takeDomCapture')
 
 const UNKNOWN_DEVICE_PIXEL_RATIO = 0
 const DEFAULT_DEVICE_PIXEL_RATIO = 1
@@ -408,6 +412,56 @@ class EyesCore extends EyesBase {
       locatorNames: visualLocatorSettings.locatorNames,
       firstOnly: visualLocatorSettings.firstOnly,
     })
+  }
+
+  async extractText(regions, hint) {
+    if (!TypeUtils.isArray(regions)) regions = [regions]
+
+    const driver = makeDriver(this._driver.spec, this._logger, this._driver.unwrapped)
+
+    for (let region of regions) {
+      if (!Region.isRegionCompatible(region)) {
+        const element = await this._context.element(region)
+        if (!element) throw new Error('Element not found')
+        region = await element.getRect()
+      }
+      const image = await screenshoter({
+        logger: this._logger,
+        driver,
+        isFully: true,
+        hideScrollbars: this._configuration.getHideScrollbars(),
+        hideCaret: this._configuration.getHideCaret(),
+        scrollingMore: this._configuration.getStitchMode(),
+        overlap: this._configuration.getStitchOverlap(),
+        wait: this._configuration.getWaitBeforeScreenshots(),
+        crop:
+          this._cutProviderHandler.get() instanceof NullCutProvider
+            ? null
+            : this._cutProviderHandler.get().toObject(),
+        scale:
+          this._scaleProviderHandler.get() instanceof NullScaleProvider
+            ? null
+            : this._scaleProviderHandler.get().getScaleRatio(),
+        debug: {
+          path:
+            this._debugScreenshotsProvider instanceof NullDebugScreenshotProvider
+              ? null
+              : this._debugScreenshotsProvider.getPath(),
+        },
+      })
+      const domCapture = await takeDomCapture(this._logger, this._driver).catch(() => null)
+      await this.getAndSaveRenderingInfo()
+      const guid = GeneralUtils.guid()
+      const [imageUrl, domUrl] = await Promise.all([
+        this._serverConnector.uploadScreenshot(guid, await image.toPng()),
+        domCapture ? this._serverConnector.postDomSnapshot(guid, domCapture) : null,
+      ])
+      return this._serverConnector.extractText({
+        domUrl,
+        imageUrl,
+        region: {let: 0, top: 0, width: image.width, height: image.height, hint},
+      })
+    }
   }
 
   /**

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- add `extractText` function to the Eyes class
 
 ## 12.6.2 - 2020/11/26
 
