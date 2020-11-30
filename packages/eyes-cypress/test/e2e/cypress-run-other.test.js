@@ -23,7 +23,7 @@ describe('cypress run', () => {
     }
     await pncp(sourceTestAppPath, targetTestAppPath);
     process.chdir(targetTestAppPath);
-    await pexec(`yarn`, {
+    await pexec(`npm install`, {
       maxBuffer: 1000000,
     });
   });

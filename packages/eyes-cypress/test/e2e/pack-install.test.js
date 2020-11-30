@@ -32,8 +32,8 @@ describe('package and install', () => {
     await pncp(sourceTestAppPath, targetTestAppPath);
     process.chdir(targetTestAppPath);
 
-    await pexec(`yarn`);
-    await pexec(`yarn ${packageFilePath}`);
+    await pexec(`npm install`);
+    await pexec(`npm install ${packageFilePath}`);
   });
 
   after(async () => {
