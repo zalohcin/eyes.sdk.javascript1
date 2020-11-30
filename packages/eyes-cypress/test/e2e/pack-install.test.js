@@ -9,8 +9,6 @@ const path = require('path');
 const rootPath = resolve(__dirname, '../..');
 const rootPackageJson = require(resolve(rootPath, 'package.json'));
 const pexec = p(exec);
-const ncp = require('ncp');
-const pncp = p(ncp);
 
 const sourceTestAppPath = path.resolve(__dirname, '../fixtures/testApp');
 const targetTestAppPath = path.resolve(__dirname, '../fixtures/testAppCopies/testApp-pack-install');
@@ -23,8 +21,9 @@ describe('package and install', () => {
       .split('/')
       .map(x => x.replace('@', ''))
       .join('-');
+    process.chdir(rootPath);
     packageFilePath = resolve(rootPath, `${packageName}-${version}.tgz`);
-    await pexec(`npm pack ${rootPath}`);
+    await pexec(`npm pack`);
 
     if (fs.existsSync(targetTestAppPath)) {
       fs.rmdirSync(targetTestAppPath, {recursive: true});
