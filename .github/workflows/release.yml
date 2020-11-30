@@ -40,15 +40,16 @@ jobs:
           yarn
           yarn deps
           yarn prepublish:setup
-          yarn publish "--${{github.event.inputs.version}}" --access public
+          yarn test
+          # yarn publish "--${{github.event.inputs.version}}" --access public
           echo "::endgroup::"
 
-          echo "::group::update master from $BRANCH"
-          git checkout master
-          git pull origin master --rebase
-          git merge $BRANCH
-          git push origin master
-          echo "::endgroup::"
+          # echo "::group::update master from $BRANCH"
+          # git checkout master
+          # git pull origin master --rebase
+          # git merge $BRANCH
+          # git push origin master
+          # echo "::endgroup::"
     env:
       CVG_TESTS_REMOTE: http://localhost:4444/wd/hub
       APPLITOOLS_API_KEY_SDK: ${{secrets.APPLITOOLS_API_KEY_SDK}}
