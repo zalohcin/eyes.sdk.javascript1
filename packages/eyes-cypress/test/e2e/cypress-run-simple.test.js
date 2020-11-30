@@ -4,14 +4,12 @@ const {exec} = require('child_process');
 const {promisify: p} = require('util');
 const path = require('path');
 const pexec = p(exec);
-const ncp = require('ncp');
-const pncp = p(ncp);
 const fs = require('fs');
 
 const sourceTestAppPath = path.resolve(__dirname, '../fixtures/testApp');
 const targetTestAppPath = path.resolve(__dirname, '../fixtures/testAppCopies/testApp-simple');
 
-describe('cypress run --headless', () => {
+describe('simple', () => {
   before(async () => {
     if (fs.existsSync(targetTestAppPath)) {
       fs.rmdirSync(targetTestAppPath, {recursive: true});

@@ -4,10 +4,7 @@ const {exec} = require('child_process');
 const {promisify: p} = require('util');
 const path = require('path');
 const pexec = p(exec);
-const ncp = require('ncp');
-const pncp = p(ncp);
 const fs = require('fs');
-
 const {expect} = require('chai');
 const {TIMEOUT_MSG} = require('../../src/plugin/handlers');
 const {msgText} = require('../../src/plugin/concurrencyMsg');
@@ -16,7 +13,7 @@ const concurrencyMsg = msgText.substr(0, 100);
 const sourceTestAppPath = path.resolve(__dirname, '../fixtures/testApp');
 const targetTestAppPath = path.resolve(__dirname, '../fixtures/testAppCopies/testApp-other');
 
-describe('cypress run --headless', () => {
+describe('eyes configurations', () => {
   before(async () => {
     if (fs.existsSync(targetTestAppPath)) {
       fs.rmdirSync(targetTestAppPath, {recursive: true});

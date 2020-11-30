@@ -4,8 +4,6 @@ const {exec} = require('child_process');
 const {promisify: p} = require('util');
 const path = require('path');
 const pexec = p(exec);
-const ncp = require('ncp');
-const pncp = p(ncp);
 const fs = require('fs');
 
 const sourceTestAppPath = path.resolve(__dirname, '../fixtures/testApp');
@@ -14,7 +12,7 @@ const targetTestAppPath = path.resolve(
   '../fixtures/testAppCopies/testApp-multi-browser-version',
 );
 
-describe('cypress run --headless', () => {
+describe('multi-browser version', () => {
   before(async () => {
     if (fs.existsSync(targetTestAppPath)) {
       fs.rmdirSync(targetTestAppPath, {recursive: true});
