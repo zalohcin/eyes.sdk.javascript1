@@ -21,10 +21,10 @@
     xml-js "^1.6.11"
     yargs "^15.0.2"
 
-"@applitools/sdk-coverage-tests@2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@applitools/sdk-coverage-tests/-/sdk-coverage-tests-2.1.0.tgz#b056b4084894445260d45ea31d9d2ce362611a07"
-  integrity sha512-mLO2wjn6zvCqA+WDskBghRYqWuvIeWf/2ADDfhWJ8vSGEn/9tAtXHgw6HEgThiuzQTrHJeuBZiVf3hh/i0faBA==
+"@applitools/sdk-coverage-tests@2.1.3":
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/@applitools/sdk-coverage-tests/-/sdk-coverage-tests-2.1.3.tgz#447f53de1a9cc3c00fa1cadbe6cae319151afced"
+  integrity sha512-Z49Bdsz6r5hVpGPnVd59+mti6PpK3x/npubOWk0Q73fG3C2J1MBsW8k+CLGf5+bzYdqDD9ZZmwMLcU4jX3fFAw==
   dependencies:
     "@azure/storage-blob" "12.2.0-preview.1"
     axios "0.20.0"

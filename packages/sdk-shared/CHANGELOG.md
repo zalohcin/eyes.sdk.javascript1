@@ -2,7 +2,11 @@
 
 ## Unreleased
 
+
+## 0.5.17 - 2020/12/1
+
 - add extractText to the spec-emitted
+- updated to @applitools/sdk-coverage-tests@2.1.3 (from 2.1.0)
 
 ## 0.5.16 - 2020/11/25
 
