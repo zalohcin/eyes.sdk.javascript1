@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- add `extractText` to `Eyes`
 
 ## 4.49.2 - 2020/12/1
 
