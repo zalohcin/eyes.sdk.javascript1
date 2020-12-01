@@ -68,7 +68,12 @@ async function fromBuffer(buffer) {
 
 async function fromSize(size) {
   return sharp({
-    create: {width: size.width, height: size.height, channels: 4, background: {r: 0, g: 0, b: 0}},
+    create: {
+      width: Math.round(size.width),
+      height: Math.round(size.height),
+      channels: 4,
+      background: {r: 0, g: 0, b: 0},
+    },
   })
     .raw()
     .toBuffer({resolveWithObject: true})

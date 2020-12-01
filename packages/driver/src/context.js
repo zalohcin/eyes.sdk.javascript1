@@ -387,6 +387,14 @@ class Context {
 
     return regionInViewport
   }
+
+  async blurElement(element) {
+    return scripts.blurElement(this._logger, this, element)
+  }
+
+  async focusElement(element) {
+    return scripts.focusElement(this._logger, this, element)
+  }
 }
 
 module.exports = Context

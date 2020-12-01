@@ -45,6 +45,13 @@ async function takeStitchedImage({
   if (region) region = utils.geometry.intersect(region, scrollerRegion)
   else region = scrollerRegion
 
+  region = {
+    x: Math.round(region.x),
+    y: Math.round(region.y),
+    width: Math.round(region.width),
+    height: Math.round(region.height),
+  }
+
   const partSize = {width: image.width, height: Math.max(image.height - overlap, 10)}
   logger.verbose(`Image part size: ${partSize}`)
 

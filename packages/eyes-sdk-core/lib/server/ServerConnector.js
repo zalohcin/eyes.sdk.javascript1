@@ -843,6 +843,38 @@ class ServerConnector {
     throw new Error(`ServerConnector.postLocators - unexpected status (${response.statusText})`)
   }
 
+  async extractText({screenshotUrl, domUrl, location, region, minMatch, language}) {
+    ArgumentGuard.notNull(screenshotUrl, 'screenshotUrl')
+    this._logger.verbose(
+      `ServerConnector.extractText called with ${JSON.stringify({screenshotUrl, domUrl, region})}`,
+    )
+
+    const config = {
+      name: 'extractText',
+      method: 'POST',
+      url: GeneralUtils.urlConcat(
+        this._configuration.getServerUrl(),
+        EYES_API_PATH,
+        '/running/images/text',
+      ),
+      data: {
+        appOutput: {screenshotUrl, domUrl, location},
+        regions: [region],
+        minMatch,
+        language,
+      },
+    }
+
+    const response = await this._axios.request(config)
+    const validStatusCodes = [HTTP_STATUS_CODES.OK]
+    if (validStatusCodes.includes(response.status)) {
+      this._logger.verbose('ServerConnector.extractText - post succeeded', response.data)
+      return response.data
+    }
+
+    throw new Error(`ServerConnector.extractText - unexpected status (${response.statusText})`)
+  }
+
   async getEmulatedDevicesSizes() {
     this._logger.verbose(`ServerConnector.getEmulatedDevicesSizes`)
 
