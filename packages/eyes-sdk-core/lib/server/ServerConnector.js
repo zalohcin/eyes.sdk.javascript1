@@ -843,7 +843,7 @@ class ServerConnector {
     throw new Error(`ServerConnector.postLocators - unexpected status (${response.statusText})`)
   }
 
-  async extractText({screenshotUrl, domUrl, region}) {
+  async extractText({screenshotUrl, domUrl, location, region, minMatch, language}) {
     ArgumentGuard.notNull(screenshotUrl, 'screenshotUrl')
     this._logger.verbose(
       `ServerConnector.extractText called with ${JSON.stringify({screenshotUrl, domUrl, region})}`,
@@ -858,8 +858,10 @@ class ServerConnector {
         '/running/images/text',
       ),
       data: {
-        appOutput: {screenshotUrl, domUrl},
-        region: {region},
+        appOutput: {screenshotUrl, domUrl, location},
+        regions: [region],
+        minMatch,
+        language,
       },
     }
 

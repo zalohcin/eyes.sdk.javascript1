@@ -173,6 +173,9 @@ module.exports = function(tracker, test) {
     locate(visualLocatorSettings) {
       return addCommand(js`await eyes.locate(${visualLocatorSettings})`)
     },
+    extractText(regions) {
+      return addCommand(js`await eyes.extractText(${regions})`)
+    },
   }
 
   const assert = {

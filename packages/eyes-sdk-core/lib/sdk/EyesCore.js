@@ -414,20 +414,27 @@ class EyesCore extends EyesBase {
     })
   }
 
-  async extractText(regions, hint) {
+  async extractText(regions) {
     if (!TypeUtils.isArray(regions)) regions = [regions]
 
-    const driver = makeDriver(this._driver.spec, this._logger, this._driver.unwrapped)
+    const driver = makeDriver(this._driver.spec, this._logger, this._driver.wrapper)
 
-    for (let region of regions) {
-      if (!Region.isRegionCompatible(region)) {
-        const element = await this._context.element(region)
-        if (!element) throw new Error('Element not found')
-        region = await element.getRect()
-      }
-      const image = await screenshoter({
+    const extractTextInputs = []
+
+    for (const userRegion of regions) {
+      const region = {...userRegion}
+
+      const screenshot = await screenshoter({
         logger: this._logger,
         driver,
+        target: Region.isRegionCompatible(region.target)
+          ? {
+              x: region.target.left,
+              y: region.target.top,
+              width: region.target.width,
+              height: region.target.height,
+            }
+          : region.target,
         isFully: true,
         hideScrollbars: this._configuration.getHideScrollbars(),
         hideCaret: this._configuration.getHideCaret(),
@@ -445,23 +452,47 @@ class EyesCore extends EyesBase {
         debug: {
           path:
             this._debugScreenshotsProvider instanceof NullDebugScreenshotProvider
-              ? null
+              ? './'
               : this._debugScreenshotsProvider.getPath(),
         },
       })
+
+      if (region.hint === undefined && !Region.isRegionCompatible(region.target)) {
+        const element = await this._context.element(region.target)
+        if (!element) {
+          throw new Error(`Unable to find element using provided selector - "${region.target}"`)
+        }
+        // TODO create a separate snippet with more sophisticated logic
+        region.hint = await this._context.execute('return arguments[0].innerText', element)
+      }
+
       const domCapture = await takeDomCapture(this._logger, this._driver).catch(() => null)
       await this.getAndSaveRenderingInfo()
-      const guid = GeneralUtils.guid()
-      const [imageUrl, domUrl] = await Promise.all([
-        this._serverConnector.uploadScreenshot(guid, await image.toPng()),
-        domCapture ? this._serverConnector.postDomSnapshot(guid, domCapture) : null,
+      const [screenshotUrl, domUrl] = await Promise.all([
+        this._serverConnector.uploadScreenshot(GeneralUtils.guid(), await screenshot.image.toPng()),
+        domCapture ? this._serverConnector.postDomSnapshot(GeneralUtils.guid(), domCapture) : null,
       ])
-      return this._serverConnector.extractText({
+      extractTextInputs.push({
         domUrl,
-        imageUrl,
-        region: {let: 0, top: 0, width: image.width, height: image.height, hint},
+        screenshotUrl,
+        location: {x: Math.round(screenshot.region.x), y: Math.round(screenshot.region.y)},
+        region: {
+          left: 0,
+          top: 0,
+          width: screenshot.image.width,
+          height: screenshot.image.height,
+          expected: region.hint,
+        },
+        minMatch: region.minMatch,
+        language: region.language,
       })
     }
+
+    const results = await Promise.all(
+      extractTextInputs.map(input => this._serverConnector.extractText(input)),
+    )
+
+    return results.reduce((strs, result) => strs.concat(result), [])
   }
 
   /**

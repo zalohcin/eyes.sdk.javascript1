@@ -36,9 +36,11 @@ async function screenshoter({
   const area = await getTargetArea({logger, context: targetContext, target, isFully, scrollingMode})
 
   try {
-    return isFully
+    const image = isFully
       ? await takeStitchedScreenshot({...area, logger, rotate, crop, scale, wait, overlap, debug})
       : await takeViewportScreenshot({...area, logger, rotate, crop, scale, debug})
+
+    return {image, region: area.region || (await area.scroller.getClientRect())}
   } finally {
     if (hideCaret && activeElement) await targetContext.focusElement(activeElement)
   }
