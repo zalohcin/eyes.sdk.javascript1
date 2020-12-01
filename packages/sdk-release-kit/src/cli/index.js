@@ -156,7 +156,7 @@ async function commitFiles(shouldCommit = true) {
     }
 
     // git commit fails when trying to commit files that weren't changed
-    if (await isChanged(files)) {
+    if (await isChanged(...files)) {
       const pkgName = JSON.parse(fs.readFileSync(path.resolve(cwd, 'package.json'))).name
       await gitCommit(`[auto commit] ${pkgName}: upgrade deps`)
     }
