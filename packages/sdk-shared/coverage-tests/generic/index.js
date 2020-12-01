@@ -8,5 +8,4 @@ module.exports = {
   initializeSdk: makeEmitter,
   testFrameworkTemplate: makeTemplate,
   overrideTests,
-  testsPath: '/Users/ep/Documents/applitools/sdk.coverage.tests/coverage-tests.js',
 }
