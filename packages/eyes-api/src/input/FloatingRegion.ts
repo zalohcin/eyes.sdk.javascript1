@@ -37,7 +37,7 @@ export default class FloatingRegionData implements Required<FloatingRegion> {
     maxLeftOffset?: number,
     maxRightOffset?: number,
   ) {
-    if (utils.type.isNumber(floatingRegionOrX)) {
+    if (utils.types.isNumber(floatingRegionOrX)) {
       return new FloatingRegionData({
         region: {x: floatingRegionOrX, y, width, height},
         maxUpOffset,

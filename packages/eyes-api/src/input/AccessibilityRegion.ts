@@ -20,7 +20,7 @@ export default class AccessibilityRegionData implements Required<AccessibilityRe
     height?: number,
     type?: AccessibilityRegionType,
   ) {
-    if (utils.type.isNumber(accessibilityRegionOrX)) {
+    if (utils.types.isNumber(accessibilityRegionOrX)) {
       return new AccessibilityRegionData({region: {x: accessibilityRegionOrX, y, width, height}, type})
     }
     this.region = accessibilityRegionOrX.region

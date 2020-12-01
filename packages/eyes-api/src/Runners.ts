@@ -30,7 +30,7 @@ export class VisualGridRunner extends EyesRunner {
   constructor(legacyConcurrency: number)
   constructor(optionsOrLegacyConcurrency: {testConcurrency: number} | number) {
     super()
-    if (utils.type.isNumber(optionsOrLegacyConcurrency)) {
+    if (utils.types.isNumber(optionsOrLegacyConcurrency)) {
       this._legacyConcurrency = optionsOrLegacyConcurrency
     } else {
       this._legacyConcurrency = optionsOrLegacyConcurrency.testConcurrency

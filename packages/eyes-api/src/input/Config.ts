@@ -383,7 +383,7 @@ export default class ConfigData implements Required<Config> {
   ): this {
     if (proxyOrUrlOrIsDisabled === true) {
       this.proxy = undefined
-    } else if (utils.type.isString(proxyOrUrlOrIsDisabled)) {
+    } else if (utils.types.isString(proxyOrUrlOrIsDisabled)) {
       this.proxy = {url: proxyOrUrlOrIsDisabled, username, password, isHttpOnly}
     } else {
       this.proxy = proxyOrUrlOrIsDisabled
@@ -453,7 +453,7 @@ export default class ConfigData implements Required<Config> {
   addProperty(name: string, value: string): this
   addProperty(prop: CustomProperty | CustomPropertyData): this
   addProperty(propOrName: CustomProperty | CustomPropertyData | string, value?: string): this {
-    const prop = utils.type.isString(propOrName)
+    const prop = utils.types.isString(propOrName)
       ? new CustomPropertyData({name: propOrName, value})
       : new CustomPropertyData(propOrName)
     this._properties.push(prop)
@@ -880,7 +880,7 @@ export default class ConfigData implements Required<Config> {
   addBrowser(browserInfo: RenderInfo): this
   addBrowser(width: number, height: number, name?: BrowserName): this
   addBrowser(browserInfoOrWidth: RenderInfo | number, height?: number, name: BrowserName = BrowserName.CHROME) {
-    if (utils.type.isObject(browserInfoOrWidth)) {
+    if (utils.types.isObject(browserInfoOrWidth)) {
       return this.addBrowsers(browserInfoOrWidth)
     } else {
       return this.addBrowsers({width: browserInfoOrWidth, height, name})
@@ -920,7 +920,7 @@ export default class ConfigData implements Required<Config> {
   }
   set layoutBreakpoints(layoutBreakpoints: boolean | number[]) {
     utils.guard.notNull(layoutBreakpoints, {name: 'layoutBreakpoints'})
-    if (!utils.type.isArray(layoutBreakpoints)) {
+    if (!utils.types.isArray(layoutBreakpoints)) {
       this._layoutBreakpoints = layoutBreakpoints
     } else if (layoutBreakpoints.length === 0) {
       this._layoutBreakpoints = false

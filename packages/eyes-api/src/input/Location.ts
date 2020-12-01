@@ -12,7 +12,7 @@ export default class LocationData implements Required<Location> {
   constructor(location: Location)
   constructor(x: number, y: number)
   constructor(locationOrX: Location | number, y?: number) {
-    if (utils.type.isNumber(locationOrX)) {
+    if (utils.types.isNumber(locationOrX)) {
       return new LocationData({x: locationOrX, y})
     }
     this.x = locationOrX.x

@@ -28,7 +28,7 @@ export default class ProxySettingsData implements Required<ProxySettings> {
     if (proxyOrUrlOrIsDisabled === true) {
       this._isDisabled = true
     } else {
-      if (utils.type.isString(proxyOrUrlOrIsDisabled)) {
+      if (utils.types.isString(proxyOrUrlOrIsDisabled)) {
         return new ProxySettingsData({url: proxyOrUrlOrIsDisabled, username, password, isHttpOnly})
       }
       this._url = proxyOrUrlOrIsDisabled.url

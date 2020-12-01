@@ -42,10 +42,10 @@ export default abstract class Eyes<TDriver = unknown, TElement = unknown, TSelec
   constructor(runner?: EyesRunner, config?: Config | ConfigData)
   constructor(config: Config | ConfigData, runner?: EyesRunner)
   constructor(runnerOrConfig?: EyesRunner | Config | ConfigData, configOrRunner?: Config | ConfigData | EyesRunner) {
-    if (utils.type.instanceOf(runnerOrConfig, EyesRunner)) {
+    if (utils.types.instanceOf(runnerOrConfig, EyesRunner)) {
       this._runner = runnerOrConfig
       this._config = new ConfigData(configOrRunner as Config | ConfigData)
-    } else if (utils.type.instanceOf(configOrRunner, EyesRunner)) {
+    } else if (utils.types.instanceOf(configOrRunner, EyesRunner)) {
       this._runner = configOrRunner
       this._config = new ConfigData(runnerOrConfig as Config | ConfigData)
     } else {
@@ -100,18 +100,18 @@ export default abstract class Eyes<TDriver = unknown, TElement = unknown, TSelec
     const config = {
       ...this._config.general,
       ...this._config.open,
-      vg: utils.type.instanceOf(this._runner, VisualGridRunner),
+      vg: utils.types.instanceOf(this._runner, VisualGridRunner),
     }
-    if (utils.type.instanceOf(configOrAppName, ConfigData)) {
+    if (utils.types.instanceOf(configOrAppName, ConfigData)) {
       Object.assign(config, configOrAppName.open)
-    } else if (utils.type.isObject(configOrAppName)) {
+    } else if (utils.types.isObject(configOrAppName)) {
       Object.assign(config, configOrAppName)
-    } else if (utils.type.isString(configOrAppName)) {
+    } else if (utils.types.isString(configOrAppName)) {
       config.appName = configOrAppName
     }
-    if (utils.type.isString(testName)) config.testName = testName
-    if (utils.type.isString(viewportSize)) config.viewportSize = viewportSize
-    if (utils.type.isString(sessionType)) config.sessionType = sessionType
+    if (utils.types.isString(testName)) config.testName = testName
+    if (utils.types.isString(viewportSize)) config.viewportSize = viewportSize
+    if (utils.types.isString(sessionType)) config.sessionType = sessionType
 
     this._driver = driver
     this._commands = await this._spec.openEyes(driver, config)
@@ -126,13 +126,13 @@ export default abstract class Eyes<TDriver = unknown, TElement = unknown, TSelec
     checkSettings?: CheckSettings<TElement, TSelector> | CheckSettingsFluent<TElement, TSelector>,
   ): Promise<void> {
     let settings
-    if (utils.type.isString(checkSettingsOrName)) {
+    if (utils.types.isString(checkSettingsOrName)) {
       utils.guard.notNull(checkSettings, {name: 'checkSettings'})
-      settings = utils.type.instanceOf(checkSettings, CheckSettingsFluent)
+      settings = utils.types.instanceOf(checkSettings, CheckSettingsFluent)
         ? checkSettings.name(checkSettingsOrName).toJSON()
         : {...checkSettings, name: checkSettingsOrName}
     } else {
-      settings = utils.type.instanceOf(checkSettingsOrName, CheckSettingsFluent)
+      settings = utils.types.instanceOf(checkSettingsOrName, CheckSettingsFluent)
         ? checkSettingsOrName.toJSON()
         : {...checkSettingsOrName}
     }
@@ -258,7 +258,7 @@ export default abstract class Eyes<TDriver = unknown, TElement = unknown, TSelec
   setBatch(batch: BatchInfo | BatchInfoData): void
   setBatch(name: string, id?: string, startedAt?: Date | string): void
   setBatch(batchOrName: BatchInfo | BatchInfoData | string, id?: string, startedAt?: Date | string) {
-    if (utils.type.isString(batchOrName)) {
+    if (utils.types.isString(batchOrName)) {
       this._config.setBatch({name: batchOrName, id, startedAt: new Date(startedAt)})
     } else {
       this._config.setBatch(batchOrName)
