@@ -1,5 +1,5 @@
 # Change Log
 
-## 1.0.0
+## Unreleased
 
 - Provide a framework-agnostic way to work with webdriver/cdp drivers
