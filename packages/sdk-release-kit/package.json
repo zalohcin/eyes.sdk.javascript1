@@ -25,7 +25,7 @@
   "scripts": {
     "test": "mocha test/**/*.spec.js",
     "lint": "eslint . --ext .js",
-    "deps": "bongo deps",
+    "deps": "src/cli/index.js deps",
     "prepublish:setup": "echo 'no setup'",
     "preversion": "src/cli/index.js preversion && yarn test",
     "version": "src/cli/index.js version",  
