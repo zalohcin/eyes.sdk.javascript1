@@ -123,6 +123,10 @@ class Element {
     return this.withRefresh(() => scripts.getTranslateOffset(this._logger, this._context, this))
   }
 
+  async getTransforms() {
+    return this.withRefresh(() => scripts.getTransforms(this._logger, this._context, this))
+  }
+
   async hideScrollbars() {
     return this.withRefresh(async () => {
       this._originalOverflow = await scripts.setOverflow(
