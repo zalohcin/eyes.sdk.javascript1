@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+
+## 1.0.1 - 2020/12/1
+
 - round coordinate and size before image operations
 
 ## 1.0.0 - 2020/12/1

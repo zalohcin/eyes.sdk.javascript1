@@ -1,6 +1,6 @@
 {
   "name": "@applitools/screenshoter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Applitools universal screenshoter for web and native applications",
   "keywords": [
     "applitools",
