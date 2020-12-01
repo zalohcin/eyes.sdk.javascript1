@@ -438,7 +438,7 @@ class EyesCore extends EyesBase {
         isFully: true,
         hideScrollbars: this._configuration.getHideScrollbars(),
         hideCaret: this._configuration.getHideCaret(),
-        scrollingMore: this._configuration.getStitchMode(),
+        scrollingMode: this._configuration.getStitchMode(),
         overlap: this._configuration.getStitchOverlap(),
         wait: this._configuration.getWaitBeforeScreenshots(),
         crop:
@@ -452,7 +452,7 @@ class EyesCore extends EyesBase {
         debug: {
           path:
             this._debugScreenshotsProvider instanceof NullDebugScreenshotProvider
-              ? './'
+              ? null
               : this._debugScreenshotsProvider.getPath(),
         },
       })
