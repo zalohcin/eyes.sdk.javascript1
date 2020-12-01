@@ -39,6 +39,7 @@ jobs:
           cd "packages/${{github.event.inputs.name}}"
           yarn
           yarn deps
+          yarn list
           yarn prepublish:setup
           yarn publish "--${{github.event.inputs.version}}" --access public
           echo "::endgroup::"
