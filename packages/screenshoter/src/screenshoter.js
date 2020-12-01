@@ -43,6 +43,15 @@ async function screenshoter({
     return {image, region: area.region || (await area.scroller.getClientRect())}
   } finally {
     if (hideCaret && activeElement) await targetContext.focusElement(activeElement)
+
+    for (const prevContext of targetContext.path.reverse()) {
+      const scrollingElement = await prevContext.getScrollRootElement()
+      if (hideScrollbars) await scrollingElement.restoreScrollbars()
+      const scrollingState = scrollingStates.shift()
+      await defaultScroller.restoreState(scrollingState, scrollingElement)
+    }
+
+    await originalContext.focus()
   }
 }
 
@@ -68,7 +77,7 @@ async function getTargetArea({logger, context, target, isFully, scrollingMode}) 
           scroller: makeScroller({
             logger,
             element: scrollingElement,
-            scrollingMode: isScrollable && scrollingMode === 'css' ? 'mixed' : 'scroll',
+            scrollingMode: isScrollable && scrollingMode === 'css' ? 'mixed' : scrollingMode,
           }),
         }
       } else {

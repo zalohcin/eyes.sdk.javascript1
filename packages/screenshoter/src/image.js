@@ -124,7 +124,9 @@ async function rotate(image, degree) {
 
 async function copy(image1, image2, offset) {
   return sharp(image1.data, {raw: image1.info})
-    .composite([{input: image2.data, raw: image2.info, left: offset.x, top: offset.y}])
+    .composite([
+      {input: image2.data, raw: image2.info, left: Math.round(offset.x), top: Math.round(offset.y)},
+    ])
     .raw()
     .toBuffer({resolveWithObject: true})
 }
