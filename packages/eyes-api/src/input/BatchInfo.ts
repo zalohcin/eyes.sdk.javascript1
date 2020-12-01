@@ -23,7 +23,7 @@ export default class BatchInfoData implements Required<BatchInfo> {
   constructor(batch: BatchInfo)
   constructor(name: string, startedAt?: Date | string, id?: string)
   constructor(batchOrName?: BatchInfo | string, startedAt?: Date | string, id?: string) {
-    if (utils.type.isString(batchOrName)) {
+    if (utils.types.isString(batchOrName)) {
       return new BatchInfoData({name: batchOrName, id, startedAt: new Date(startedAt)})
     }
     const batch = batchOrName || {}

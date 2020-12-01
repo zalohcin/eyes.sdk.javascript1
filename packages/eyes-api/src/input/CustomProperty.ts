@@ -12,7 +12,7 @@ export default class CustomPropertyData implements Required<CustomProperty> {
   constructor(prop: CustomProperty)
   constructor(name: string, value: string)
   constructor(propOrName: CustomProperty | string, value?: string) {
-    if (utils.type.isString(propOrName)) {
+    if (utils.types.isString(propOrName)) {
       return new CustomPropertyData({name: propOrName, value})
     }
     const prop = propOrName

@@ -24,19 +24,19 @@ export default class RegionData implements Required<Offset & Location & Rectangl
     width?: number,
     height?: number,
   ) {
-    if (utils.type.isNumber(regionOrLocationOrX)) {
+    if (utils.types.isNumber(regionOrLocationOrX)) {
       const x: number = regionOrLocationOrX
       const y = sizeOrY as number
       return new RegionData({x, y, width, height})
-    } else if (!utils.type.has(regionOrLocationOrX, 'width')) {
-      const {x, y} = utils.type.has(regionOrLocationOrX, 'left')
+    } else if (!utils.types.has(regionOrLocationOrX, 'width')) {
+      const {x, y} = utils.types.has(regionOrLocationOrX, 'left')
         ? {x: regionOrLocationOrX.left, y: regionOrLocationOrX.top}
         : regionOrLocationOrX
       const {width, height} = sizeOrY as RectangleSize
       return new RegionData({x, y, width, height})
     }
     const region = regionOrLocationOrX
-    if (utils.type.has(region, 'x')) {
+    if (utils.types.has(region, 'x')) {
       this.x = region.x
       this.y = region.y
     } else {

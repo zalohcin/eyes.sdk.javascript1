@@ -12,7 +12,7 @@ export default class RectangleSizeData implements Required<RectangleSize> {
   constructor(size: RectangleSize)
   constructor(width: number, height: number)
   constructor(sizeOrWidth: RectangleSize | number, height?: number) {
-    if (utils.type.isNumber(sizeOrWidth)) {
+    if (utils.types.isNumber(sizeOrWidth)) {
       return new RectangleSizeData({width: sizeOrWidth, height})
     }
     const size = sizeOrWidth
