@@ -1,6 +1,6 @@
 {
   "name": "@applitools/screenshoter",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Applitools universal screenshoter for web and native applications",
   "keywords": [
     "applitools",
@@ -30,7 +30,7 @@
   "main": "./index.js",
   "dependencies": {
     "@applitools/utils": "1.0.0",
-    "sharp": "^0.26.3"
+    "sharp": "0.26.3"
   },
   "devDependencies": {
     "@applitools/driver": "1.0.0",
