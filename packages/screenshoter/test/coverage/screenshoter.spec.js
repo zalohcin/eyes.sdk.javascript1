@@ -1,7 +1,6 @@
 const assert = require('assert')
 const pixelmatch = require('pixelmatch')
 const makeDriver = require('../util/driver')
-const saveScreenshot = require('../../src/saveScreenshot')
 const screenshoter = require('../../index')
 const makeImage = require('../../src/image')
 
@@ -22,225 +21,312 @@ describe('screenshoter', () => {
     await destroyDriver()
   })
 
-  it('take viewport screenshot', viewport)
+  it('take viewport screenshot', () => {
+    return viewport()
+  })
 
-  it('take full page screenshot', fullPage)
+  it('take full page screenshot with "scroll" scrolling', () => {
+    return fullPage({scrollingMode: 'scroll'})
+  })
+  it('take full page screenshot with "css" scrolling', () => {
+    return fullPage({scrollingMode: 'css'})
+  })
 
-  it('take context screenshot', context)
+  it('take context screenshot with "scroll" scrolling', () => {
+    context({scrollingMode: 'scroll'})
+  })
+  it('take context screenshot with "css" scrolling', () => {
+    context({scrollingMode: 'css'})
+  })
 
-  it('take full context screenshot', fullContext)
+  it('take full context screenshot with "scroll" scrolling', () => {
+    return fullContext({scrollingMode: 'scroll'})
+  })
+  it('take full context screenshot with "css" scrolling', () => {
+    return fullContext({scrollingMode: 'css'})
+  })
 
-  it('take region screenshot', region)
+  it('take region screenshot with "scroll" scrolling', () => {
+    region({scrollingMode: 'scroll'})
+  })
+  it('take region screenshot with "css" scrolling', () => {
+    region({scrollingMode: 'css'})
+  })
 
-  it('take full region screenshot', fullRegion)
+  it('take full region screenshot with "scroll" scrolling', () => {
+    return fullRegion({scrollingMode: 'scroll'})
+  })
+  it('take full region screenshot with "css" scrolling', () => {
+    return fullRegion({scrollingMode: 'css'})
+  })
 
-  it('take element screenshot', element)
+  it('take element screenshot with "scroll" scrolling', () => {
+    return element({scrollingMode: 'scroll'})
+  })
+  it('take element screenshot with "css" scrolling', () => {
+    return element({scrollingMode: 'css'})
+  })
 
-  it('take full element screenshot', fullElement)
+  it('take full element screenshot with "scroll" scrolling', () => {
+    return fullElement({scrollingMode: 'scroll'})
+  })
+  it('take full element screenshot with "css" scrolling', () => {
+    return fullElement({scrollingMode: 'css', debug: {path: './'}})
+  })
 
-  it('take region in context screenshot', regionInContext)
+  it('take region in context screenshot with "scroll" scrolling', () => {
+    return regionInContext({scrollingMode: 'scroll'})
+  })
+  it('take region in context screenshot with "css" scrolling', () => {
+    return regionInContext({scrollingMode: 'css'})
+  })
 
-  it('take full region in context screenshot', fullRegionInContext)
+  it('take full region in context screenshot with "scroll" scrolling', () => {
+    return fullRegionInContext({scrollingMode: 'scroll'})
+  })
+  it('take full region in context screenshot with "css" scrolling', () => {
+    return fullRegionInContext({scrollingMode: 'css'})
+  })
 
-  it('take element in context screenshot', elementInContext)
+  it('take element in context screenshot with "scroll" scrolling', () => {
+    return elementInContext({scrollingMode: 'scroll'})
+  })
+  it('take element in context screenshot with "css" scrolling', () => {
+    return elementInContext({scrollingMode: 'css'})
+  })
 
-  it('take full element in context screenshot', fullElementInContext)
+  it('take full element in context screenshot with "scroll" scrolling', () => {
+    return fullElementInContext({scrollingMode: 'scroll'})
+  })
+  it('take full element in context screenshot with "css" scrolling', () => {
+    return fullElementInContext({scrollingMode: 'css'})
+  })
 
-  it('take context in context screenshot', contextInContext)
+  it('take context in context screenshot with "scroll" scrolling', () => {
+    return contextInContext({scrollingMode: 'scroll'})
+  })
+  it('take context in context screenshot with "css" scrolling', () => {
+    return contextInContext({scrollingMode: 'css'})
+  })
 
-  it('take full context in context screenshot', fullContextInContext)
+  it('take full context in context screenshot with "scroll" scrolling', () => {
+    return fullContextInContext({scrollingMode: 'scroll'})
+  })
+  it('take full context in context screenshot with "css" scrolling', () => {
+    return fullContextInContext({scrollingMode: 'css'})
+  })
 
-  async function viewport() {
-    const screenshot = await screenshoter({logger, driver})
+  async function viewport(options) {
+    const screenshot = await screenshoter({logger, driver, ...options})
     const actual = await screenshot.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/page.png').toObject()
-    assert.ok(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height) === 0,
+    assert.strictEqual(
+      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
+      0,
     )
   }
-  async function fullPage() {
+  async function fullPage(options) {
     const screenshot = await screenshoter({
       logger,
       driver,
       isFully: true,
-      scrollingMode: 'scroll',
+      ...options,
     })
     const actual = await screenshot.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/page-fully.png').toObject()
-    assert.ok(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height) === 0,
+    assert.strictEqual(
+      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
+      0,
     )
   }
-  async function context() {
+  async function context(options) {
     const screenshot = await screenshoter({
       logger,
       driver,
       context: {reference: 'iframe[name="frame1"]'},
-      scrollingMode: 'scroll',
+      ...options,
     })
     const actual = await screenshot.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/context.png').toObject()
-    assert.ok(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height) === 0,
+    assert.strictEqual(
+      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
+      0,
     )
   }
-  async function fullContext() {
+  async function fullContext(options) {
     const screenshot = await screenshoter({
       logger,
       driver,
       context: {reference: 'iframe[name="frame1"]'},
       isFully: true,
-      scrollingMode: 'scroll',
+      ...options,
     })
     const actual = await screenshot.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/context-fully.png').toObject()
-    assert.ok(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height) === 0,
+    assert.strictEqual(
+      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
+      0,
     )
   }
-  async function region() {
+  async function region(options) {
     const screenshot = await screenshoter({
       logger,
       driver,
       target: {x: 30, y: 500, height: 100, width: 200},
-      scrollingMode: 'scroll',
+      ...options,
     })
     const actual = await screenshot.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/region.png').toObject()
-    assert.ok(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height) === 0,
+    assert.strictEqual(
+      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
+      0,
     )
   }
-  async function fullRegion() {
+  async function fullRegion(options) {
     const screenshot = await screenshoter({
       logger,
       driver,
       target: {x: 30, y: 500, height: 700, width: 200},
       isFully: true,
-      scrollingMode: 'scroll',
+      ...options,
     })
     const actual = await screenshot.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/region-fully.png').toObject()
-    assert.ok(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height) === 0,
+    assert.strictEqual(
+      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
+      0,
     )
   }
-  async function element() {
+  async function element(options) {
     const screenshot = await screenshoter({
       logger,
       driver,
       target: '#overflowing-div-image',
-      scrollingMode: 'scroll',
+      ...options,
     })
     const actual = await screenshot.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/element.png').toObject()
-    assert.ok(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height) === 0,
+    assert.strictEqual(
+      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
+      0,
     )
   }
-  async function fullElement() {
+  async function fullElement(options) {
     const screenshot = await screenshoter({
       logger,
       driver,
       target: '#overflowing-div-image',
       isFully: true,
-      scrollingMode: 'scroll',
+      ...options,
     })
     const actual = await screenshot.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/element-fully.png').toObject()
-    assert.ok(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height) === 0,
+    assert.strictEqual(
+      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
+      0,
     )
   }
-  async function regionInContext() {
+  async function regionInContext(options) {
     const screenshot = await screenshoter({
       logger,
       driver,
       context: {reference: 'iframe[name="frame1"]'},
       target: {x: 10, y: 20, width: 110, height: 120},
-      scrollingMode: 'scroll',
+      ...options,
     })
     const actual = await screenshot.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/inner-region.png').toObject()
-    assert.ok(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height) === 0,
+    assert.strictEqual(
+      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
+      0,
     )
   }
-  async function fullRegionInContext() {
+  async function fullRegionInContext(options) {
     const screenshot = await screenshoter({
       logger,
       driver,
       context: {reference: 'iframe[name="frame1"]'},
       target: {x: 10, y: 100, width: 1000, height: 120},
       isFully: true,
-      scrollingMode: 'scroll',
+      ...options,
     })
     const actual = await screenshot.toObject()
     const expected = await makeImage(
       './test/fixtures/screenshoter/inner-region-fully.png',
     ).toObject()
-    assert.ok(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height) === 0,
+    assert.strictEqual(
+      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
+      0,
     )
   }
-  async function elementInContext() {
+  async function elementInContext(options) {
     const screenshot = await screenshoter({
       logger,
       driver,
       context: {reference: 'iframe[name="frame1"]'},
       target: '#inner-frame-div',
-      scrollingMode: 'scroll',
+      ...options,
     })
     const actual = await screenshot.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/inner-element.png').toObject()
-    assert.ok(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height) === 0,
+    assert.strictEqual(
+      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
+      0,
     )
   }
-  async function fullElementInContext() {
+  async function fullElementInContext(options) {
     const screenshot = await screenshoter({
       logger,
       driver,
       context: {reference: 'iframe[name="frame1"]'},
       target: '#inner-frame-div',
       isFully: true,
-      scrollingMode: 'scroll',
+      ...options,
     })
     const actual = await screenshot.toObject()
     const expected = await makeImage(
       './test/fixtures/screenshoter/inner-element-fully.png',
     ).toObject()
-    assert.ok(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height) === 0,
+    assert.strictEqual(
+      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
+      0,
     )
   }
-  async function contextInContext() {
+  async function contextInContext(options) {
     const screenshot = await screenshoter({
       logger,
       driver,
-      context: {reference: 'iframe[name="frame1-1"]', parent: {reference: 'iframe[name="frame1"]'}},
-      scrollingMode: 'scroll',
+      context: {
+        reference: 'iframe[name="frame1-1"]',
+        parent: {reference: 'iframe[name="frame1"]'},
+      },
+      ...options,
     })
     const actual = await screenshot.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/inner-context.png').toObject()
-    assert.ok(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height) === 0,
+    assert.strictEqual(
+      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
+      0,
     )
   }
-  async function fullContextInContext() {
+  async function fullContextInContext(options) {
     const screenshot = await screenshoter({
       logger,
       driver,
-      context: {reference: 'iframe[name="frame1-1"]', parent: {reference: 'iframe[name="frame1"]'}},
+      context: {
+        reference: 'iframe[name="frame1-1"]',
+        parent: {reference: 'iframe[name="frame1"]'},
+      },
       isFully: true,
-      scrollingMode: 'scroll',
+      ...options,
     })
     const actual = await screenshot.toObject()
     const expected = await makeImage(
       './test/fixtures/screenshoter/inner-context-fully.png',
     ).toObject()
-    assert.ok(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height) === 0,
+    assert.strictEqual(
+      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
+      0,
     )
   }
 })

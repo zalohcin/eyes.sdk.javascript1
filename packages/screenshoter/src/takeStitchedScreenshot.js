@@ -18,14 +18,14 @@ async function takeStitchedImage({
 }) {
   logger.verbose('Taking full image of...')
 
+  const scrollerState = await scroller.getState()
+  const scrollerRegion = utils.geometry.region({x: 0, y: 0}, await scroller.getSize())
+  logger.verbose(`Scroller size: ${scrollerRegion}`)
+
   await scrollIntoViewport({logger, context, scroller, region})
 
   const driver = context.driver
   const takeScreenshot = makeTakeScreenshot({logger, driver, rotate, crop, scale, debug})
-
-  const scrollerState = await scroller.getState()
-  const scrollerRegion = utils.geometry.region({x: 0, y: 0}, await scroller.getSize())
-  logger.verbose(`Scroller size: ${scrollerRegion}`)
 
   const initialOffset = region ? utils.geometry.location(region) : {x: 0, y: 0}
   const actualOffset = await scroller.moveTo(initialOffset)
@@ -94,7 +94,7 @@ async function takeStitchedImage({
 
       await composition.copy(
         await image.toObject(),
-        utils.geometry.offsetNegative(partOffset, region),
+        utils.geometry.offsetNegative(partOffset, initialOffset),
       )
 
       stitchedSize = {width: partOffset.x + image.width, height: partOffset.y + image.height}

@@ -63,7 +63,11 @@ async function getTargetArea({logger, context, target, isFully, scrollingMode}) 
         return {
           context,
           region: isScrollable ? null : await element.getRect(),
-          scroller: makeScroller({logger, element: scrollingElement, scrollingMode}),
+          scroller: makeScroller({
+            logger,
+            element: scrollingElement,
+            scrollingMode: isScrollable && scrollingMode === 'css' ? 'mixed' : 'scroll',
+          }),
         }
       } else {
         const scrollingElement = await context.getScrollRootElement()
