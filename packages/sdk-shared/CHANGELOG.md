@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- add extractText to the spec-emitted
 
 ## 0.5.16 - 2020/11/25
 
