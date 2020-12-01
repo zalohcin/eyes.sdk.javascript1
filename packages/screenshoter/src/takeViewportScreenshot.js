@@ -12,7 +12,7 @@ async function takeViewportScreenshot({
   crop,
   scale,
   wait,
-  debug,
+  debug = {},
 }) {
   logger.verbose('Taking image of...')
 

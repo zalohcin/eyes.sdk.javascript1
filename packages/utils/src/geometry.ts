@@ -5,6 +5,19 @@ type Location = {x: number, y: number}
 type RectangleSize = {width: number, height: number}
 type Region = Location & RectangleSize
 
+export function location(region: Region): Location {
+  return {x: region.x, y: region.y}
+}
+
+export function size(region: Region): RectangleSize {
+  return {width: region.width, height: region.height}
+}
+
+export function region(location: Location, size: RectangleSize) {
+  if (!location) location = {x: 0, y: 0}
+  return {x: location.x, y: location.y, width: size.width, height: size.height}
+}
+
 export function isEmpty(size: RectangleSize): boolean
 export function isEmpty(region: Region): boolean
 export function isEmpty(sizeOrRegion: RectangleSize | Region): boolean {
@@ -27,31 +40,21 @@ export function scale(target: Location | RectangleSize | Region, scaleRatio: num
   return result
 }
 
-export function offset(location: Location, x: number, y: number): Location
 export function offset(location: Location, offset: Location): Location
-export function offset(region: Region, x: number, y: number): Region
 export function offset(region: Region, offset: Location): Region
-export function offset(target: Location | Region, offsetOrX: Location | number, y?: number): typeof target {
-  if (types.isNumber(offsetOrX)) {
-    return offset(target, {x: offsetOrX, y})
-  }
+export function offset(target: Location | Region, offset: Location): typeof target {
   const result = {...target}
-  result.x += offsetOrX.x
-  result.y += offsetOrX.y
+  result.x += offset.x
+  result.y += offset.y
   return result
 }
 
-export function offsetNegative(location: Location, x: number, y: number): Location
 export function offsetNegative(location: Location, offset: Location): Location
-export function offsetNegative(region: Region, x: number, y: number): Region
 export function offsetNegative(region: Region, offset: Location): Region
-export function offsetNegative(target: Location | Region, offsetOrX: Location | number, y?: number): typeof target {
-  if (types.isNumber(offsetOrX)) {
-    return offset(target, {x: offsetOrX, y})
-  }
+export function offsetNegative(target: Location | Region, offset: Location): typeof target {
   const result = {...target}
-  result.x -= offsetOrX.x
-  result.y -= offsetOrX.y
+  result.x -= offset.x
+  result.y -= offset.y
   return result
 }
 

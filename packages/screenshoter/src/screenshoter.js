@@ -24,28 +24,21 @@ async function screenshoter({
 
   const targetContext = context ? await originalContext.context(context) : originalContext
   const scrollingStates = []
-  for (const currentContext of targetContext.path) {
-    const scrollingElement = await currentContext.getScrollRootElement()
+  for (const nextContext of targetContext.path) {
+    const scrollingElement = await nextContext.getScrollRootElement()
     if (hideScrollbars) await scrollingElement.hideScrollbars()
     const scrollingState = await defaultScroller.getState(scrollingElement)
     scrollingStates.push(scrollingState)
   }
 
-  const {region, scroller} = await getTargetArea({
-    logger,
-    context: targetContext,
-    target,
-    isFully,
-    scrollingMode,
-  })
-  const options = {logger, context: targetContext, region, scroller, rotate, crop, scale, debug}
-
   const activeElement = hideCaret && !driver.isNative ? await targetContext.blurElement() : null
+
+  const area = await getTargetArea({logger, context: targetContext, target, isFully, scrollingMode})
 
   try {
     return isFully
-      ? await takeStitchedScreenshot({...options, wait, overlap})
-      : await takeViewportScreenshot({...options})
+      ? await takeStitchedScreenshot({...area, logger, rotate, crop, scale, wait, overlap, debug})
+      : await takeViewportScreenshot({...area, logger, rotate, crop, scale, debug})
   } finally {
     if (hideCaret && activeElement) await targetContext.focusElement(activeElement)
   }
@@ -55,8 +48,11 @@ async function getTargetArea({logger, context, target, isFully, scrollingMode}) 
   if (target) {
     if (utils.types.has(target, ['x', 'y', 'width', 'height'])) {
       const scrollingElement = await context.getScrollRootElement()
-      const scroller = makeScroller({logger, element: scrollingElement, scrollingMode})
-      return {region: target, scroller}
+      return {
+        context,
+        region: target,
+        scroller: makeScroller({logger, element: scrollingElement, scrollingMode}),
+      }
     } else {
       const element = await context.element(target)
       if (!element) throw new Error('Element not found!')
@@ -64,26 +60,34 @@ async function getTargetArea({logger, context, target, isFully, scrollingMode}) 
       if (isFully) {
         const isScrollable = await element.isScrollable()
         const scrollingElement = isScrollable ? element : await context.getScrollRootElement()
-        const scroller = makeScroller({logger, element: scrollingElement, scrollingMode})
-        const region = isScrollable ? null : await element.getRect()
-        return {region, scroller}
+        return {
+          context,
+          region: isScrollable ? null : await element.getRect(),
+          scroller: makeScroller({logger, element: scrollingElement, scrollingMode}),
+        }
       } else {
         const scrollingElement = await context.getScrollRootElement()
-        const scroller = makeScroller({logger, element: scrollingElement, scrollingMode})
-        const region = await element.getRect()
-        return {region, scroller}
+        return {
+          context,
+          region: await element.getRect(),
+          scroller: makeScroller({logger, element: scrollingElement, scrollingMode}),
+        }
       }
     }
   } else if (!context.isMain && !isFully) {
     const scrollingElement = await context.parent.getScrollRootElement()
-    const scroller = makeScroller({logger, element: scrollingElement, scrollingMode})
     const element = await context.getFrameElement()
-    const region = await element.getClientRect()
-    return {region, scroller}
+    return {
+      context: context.parent,
+      region: await element.getClientRect(),
+      scroller: makeScroller({logger, element: scrollingElement, scrollingMode}),
+    }
   } else {
     const scrollingElement = await context.getScrollRootElement()
-    const scroller = makeScroller({logger, element: scrollingElement, scrollingMode})
-    return {scroller}
+    return {
+      context,
+      scroller: makeScroller({logger, element: scrollingElement, scrollingMode}),
+    }
   }
 }
 

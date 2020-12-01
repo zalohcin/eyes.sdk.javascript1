@@ -241,6 +241,10 @@ class Context {
     }
   }
 
+  async click(element) {
+    await this.spec.click(this._context, element)
+  }
+
   async cacheInnerOffset() {
     this._innerOffset = await this.getInnerOffset()
   }
@@ -364,32 +368,24 @@ class Context {
       width: region.width,
       height: region.height,
     }
-    // if (region.isSizeEmpty()) return region
-
     const contextLocationInViewport = await this.getLocationInViewport()
     const scrollRootElement = await this.getScrollRootElement()
     const contextSize = await scrollRootElement.getClientRect()
-
-    const contextRegion = {
-      ...contextLocationInViewport,
-      width: contextSize.width,
-      height: contextSize.height,
-    }
-
-    // // if (contextRegion.isSizeEmpty()) {
-    // //   throw new Error('Got empty frame window for screenshot!')
-    // // }
 
     await this.focus()
 
     const contextInnerOffset = await this.getInnerOffset().catch(() => ({x: 0, y: 0}))
 
-    const regionInContext = utils.geometry.offsetNegative(region, contextInnerOffset)
+    const regionInContext = utils.geometry.intersect(
+      {x: 0, y: 0, ...contextSize},
+      utils.geometry.offsetNegative(region, contextInnerOffset),
+    )
+
     const regionInViewport = !this.isMain
       ? utils.geometry.offset(regionInContext, contextLocationInViewport)
       : regionInContext
 
-    return utils.geometry.intersect(regionInViewport, contextRegion)
+    return regionInViewport
   }
 }
 
