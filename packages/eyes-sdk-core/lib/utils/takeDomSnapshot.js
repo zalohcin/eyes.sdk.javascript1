@@ -23,6 +23,8 @@ async function takeDomSnapshot(logger, driver, options = {}) {
     chunkByteLength = DEFAULT_CHUNK_BYTE_LENGTH,
     pollTimeout = POLL_TIMEOUT,
     executionTimeout = EXECUTION_TIMEOUT,
+    useSessionCache,
+    showLogs,
   } = options
   const isLegacyBrowser = driver.isIE || driver.isEdgeLegacy
   const arg = {
@@ -30,6 +32,8 @@ async function takeDomSnapshot(logger, driver, options = {}) {
     dontFetchResources,
     serializeResources: true,
     compressResources: false,
+    useSessionCache,
+    showLogs,
   }
   const scripts = {
     main: {

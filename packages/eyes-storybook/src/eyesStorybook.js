@@ -2,7 +2,6 @@
 const puppeteer = require('puppeteer');
 const getStories = require('../dist/getStories');
 const {makeVisualGridClient} = require('@applitools/visual-grid-client');
-const {getProcessPageAndSerialize} = require('@applitools/dom-snapshot');
 const {presult} = require('@applitools/functional-commons');
 const chalk = require('chalk');
 const makeInitPage = require('./initPage');
@@ -17,6 +16,8 @@ const memoryLog = require('./memoryLog');
 const getIframeUrl = require('./getIframeUrl');
 const createPagePool = require('./pagePool');
 const getClientAPI = require('../dist/getClientAPI');
+const {takeDomSnapshot} = require('@applitools/eyes-sdk-core');
+const {Driver} = require('@applitools/eyes-puppeteer');
 
 const CONCURRENT_PAGES = 3;
 
@@ -54,9 +55,15 @@ async function eyesStorybook({
 
   const pagePool = createPagePool({initPage, logger});
 
-  const processPageAndSerialize = `(${await getProcessPageAndSerialize()})(document, {useSessionCache: true, showLogs: ${
-    config.showLogs
-  }, dontFetchResources: ${config.disableBrowserFetching}})`;
+  const doTakeDomSnapshot = async page => {
+    const driver = new Driver(logger, page);
+    return takeDomSnapshot(logger, driver, {
+      useSessionCache: true,
+      showLogs: !!config.showLogs,
+      disableBrowserFetching: !!config.disableBrowserFetching,
+    });
+  };
+
   logger.log('got script for processPage');
   browserLog({
     page,
@@ -81,7 +88,11 @@ async function eyesStorybook({
 
     logger.log(`starting to run ${storiesIncludingVariations.length} stories`);
 
-    const getStoryData = makeGetStoryData({logger, processPageAndSerialize, waitBeforeScreenshot});
+    const getStoryData = makeGetStoryData({
+      logger,
+      takeDomSnapshot: doTakeDomSnapshot,
+      waitBeforeScreenshot,
+    });
     const renderStory = makeRenderStory({
       config,
       logger: logger.extend('renderStory'),
