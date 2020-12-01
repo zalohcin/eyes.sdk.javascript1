@@ -2,8 +2,11 @@
 
 ## Unreleased
 
-- add `extractText` function to the Eyes class
 
+
+## 12.8.0 - 2020/12/1
+
+- add `extractText` function to the Eyes class
 
 ## 12.7.0 - 2020/12/1
 
