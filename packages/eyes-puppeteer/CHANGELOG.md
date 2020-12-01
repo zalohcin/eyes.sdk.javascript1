@@ -1,7 +1,7 @@
 # Change Log
 
 ## Unreleased
-
+- export `Driver`
 
 ## 1.1.2 - 2020/12/1
 
