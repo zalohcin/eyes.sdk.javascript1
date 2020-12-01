@@ -4,11 +4,11 @@ function makeScroller({logger, element, scrollingMode = 'mixed'}) {
   const defaultElement = element
 
   return {
+    element,
     moveTo,
     getInnerOffset,
     getSize,
     getClientRect,
-
     getScrollOffset,
     getTranslateOffset,
     getShiftOffset,

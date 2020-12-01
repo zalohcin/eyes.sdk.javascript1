@@ -1,18 +1,20 @@
 const utils = require('@applitools/utils')
 const sharp = require('sharp')
 
-function makeImage(bufferOrSize) {
+function makeImage(data) {
   let image, size
-  if (utils.types.isString(bufferOrSize)) {
-    const buffer = Buffer.from(bufferOrSize, 'base64')
+  if (utils.types.isBase64(data)) {
+    const buffer = Buffer.from(data, 'base64')
     image = fromBuffer(buffer)
     size = extractPngSize(buffer)
-  } else if (Buffer.isBuffer(bufferOrSize)) {
-    image = fromBuffer(bufferOrSize)
-    size = extractPngSize(bufferOrSize)
+  } else if (utils.types.isString(data)) {
+    image = fromFile(data)
+  } else if (Buffer.isBuffer(data)) {
+    image = fromBuffer(data)
+    size = extractPngSize(data)
   } else {
-    image = fromSize(bufferOrSize)
-    size = bufferOrSize
+    image = fromSize(data)
+    size = data
   }
 
   return {
@@ -52,6 +54,12 @@ function makeImage(bufferOrSize) {
   }
 }
 
+async function fromFile(path) {
+  return sharp(path)
+    .raw()
+    .toBuffer({resolveWithObject: true})
+}
+
 async function fromBuffer(buffer) {
   return sharp(buffer)
     .raw()
@@ -83,12 +91,20 @@ async function scale(image, scaleRatio) {
 }
 
 async function crop(image, region) {
+  if (utils.types.has(region, 'left')) {
+    region = {
+      x: region.left,
+      y: region.top,
+      width: image.info.width - region.left - region.right,
+      height: image.info.height - region.top - region.bottom,
+    }
+  }
   return sharp(image.data, {raw: image.info})
     .extract({
-      left: Math.round(region.x),
-      top: Math.round(region.y),
-      width: Math.round(region.width),
-      height: Math.round(region.height),
+      left: Math.round(Math.max(0, region.x)),
+      top: Math.round(Math.max(0, region.y)),
+      width: Math.round(Math.min(region.width, image.info.width - region.x)),
+      height: Math.round(Math.min(region.height, image.info.height - region.y)),
     })
     .raw()
     .toBuffer({resolveWithObject: true})
@@ -109,14 +125,9 @@ async function copy(image1, image2, offset) {
 }
 
 function extractPngSize(buffer) {
-  if (buffer[12] === 0x49 && buffer[13] === 0x48 && buffer[14] === 0x44 && buffer[15] === 0x52) {
-    const width =
-      buffer[16] * 256 * 256 * 256 + buffer[17] * 256 * 256 + buffer[18] * 256 + buffer[19]
-
-    const height =
-      buffer[20] * 256 * 256 * 256 + buffer[21] * 256 * 256 + buffer[22] * 256 + buffer[23]
-    return {width, height}
-  }
+  return buffer.slice(12, 16).toString('ascii') === 'IHDR'
+    ? {width: buffer.readUInt32BE(16), height: buffer.readUInt32BE(20)}
+    : {width: 0, height: 0}
 }
 
 module.exports = makeImage

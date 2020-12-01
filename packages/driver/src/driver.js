@@ -365,11 +365,17 @@ class Driver {
   async execute(script, ...args) {
     return this._currentContext.execute(script, ...args)
   }
+  async click(element) {
+    return this._currentContext.click(element)
+  }
   /**
    * @return {Promise<MutableImage>}
    */
   async takeScreenshot() {
     return this.spec.takeScreenshot(this._driver)
+  }
+  async visit(url) {
+    await this.spec.visit(this._driver, url)
   }
   /**
    * @return {Promise<RectangleSize>}
