@@ -2,6 +2,7 @@
 
 ## Unreleased
 - export `Driver`
+- updated to @applitools/eyes-sdk-core@12.8.1 (from 12.6.1)
 
 ## 1.1.2 - 2020/12/1
 
