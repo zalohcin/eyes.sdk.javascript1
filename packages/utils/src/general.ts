@@ -1,4 +1,4 @@
-import * as types from './type'
+import * as types from './types'
 
 export function getEnvValue<T extends 'boolean' | 'number' | 'string' = 'string'>(
   name: string,

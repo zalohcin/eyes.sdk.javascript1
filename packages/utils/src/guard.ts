@@ -1,4 +1,4 @@
-import * as types from './type'
+import * as types from './types'
 
 type NamedParam = {
   name: string
