@@ -1,10 +1,13 @@
 # Change Log
 
 ## Unreleased
+
+
+
+## 12.7.0 - 2020/12/1
+
 - export `takeDomSnapshot`
-
 # 12.6.2 - 2020/11/26
-
 - fix concurrency bug with 503 responses
 
 ## 12.6.1 - 2020/11/24
