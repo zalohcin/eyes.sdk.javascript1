@@ -2,9 +2,13 @@
 # yarn lockfile v1
 
 
-"@applitools/driver@link:../driver":
-  version "0.0.0"
-  uid ""
+"@applitools/driver@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.0.0.tgz#9dffce26d3a381438e2f45d268074884946ed3ae"
+  integrity sha512-75V9gdRAJjWp4DVCpqaxbU+YFYLbcmbmWE8KhjQLThvmn4pzXlQM4JLGKz0ofL5v6l1ETHumJQUI7A78PElN7g==
+  dependencies:
+    "@applitools/snippets" "2.1.0"
+    "@applitools/utils" "1.0.0"
 
 "@applitools/functional-commons@1.6.0":
   version "1.6.0"
@@ -58,14 +62,15 @@
     ncp "2.0.0"
     yargs "15.3.1"
 
-"@applitools/snippets@^2.1.0":
+"@applitools/snippets@2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@applitools/snippets/-/snippets-2.1.0.tgz#edd143ec52ec19db19e94a5c3e0da8647e60eaf7"
   integrity sha512-8bzQIweiMcdkuRQolbT4IqI+D0libRa7pJSRDC4yHud2TpXIV/QjFLcYzBZvCG4N8Ggqp4Dx7FfFWkW1to+vCg==
 
-"@applitools/utils@link:../utils":
-  version "0.0.0"
-  uid ""
+"@applitools/utils@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.0.0.tgz#ecf845148f6e2c952b97462f11b0d702cce6cb40"
+  integrity sha512-jf3DDLSRLYsTYK6/PiriVC5mejemVzHFFSFGTirKRnUg2121xyhpA/SQcx0UUoDLLEYZGNlfqiTpBSE9Gr/UMQ==
 
 "@babel/code-frame@^7.0.0":
   version "7.10.4"
@@ -2786,7 +2791,7 @@ setprototypeof@1.1.1:
   resolved "https://registry.yarnpkg.com/setprototypeof/-/setprototypeof-1.1.1.tgz#7e95acb24aa92f5885e0abef5ba131330d4ae683"
   integrity sha512-JvdAWfbXeIGaZ9cILp38HntZSFSo3mWg6xGcJJsd+d4aRMOqauag1C63dJfDw7OaMYwEbHMOxEZ1lqVRYP2OAw==
 
-sharp@^0.26.3:
+sharp@0.26.3:
   version "0.26.3"
   resolved "https://registry.yarnpkg.com/sharp/-/sharp-0.26.3.tgz#9de8577a986b22538e6e12ced1f7e8a53f9728de"
   integrity sha512-NdEJ9S6AMr8Px0zgtFo1TJjMK/ROMU92MkDtYn2BBrDjIx3YfH9TUyGdzPC+I/L619GeYQc690Vbaxc5FPCCWg==
