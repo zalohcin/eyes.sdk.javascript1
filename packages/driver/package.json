@@ -23,13 +23,13 @@
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
   },
   "directories": {
-    "lib": "./lib",
+    "lib": "./src",
     "test": "./test"
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/snippets": "^2.1.0",
-    "@applitools/utils": "link:../utils"
+    "@applitools/snippets": "2.1.0",
+    "@applitools/utils": "1.0.0"
   },
   "devDependencies": {
     "@applitools/sdk-release-kit": "0.10.5",
@@ -40,7 +40,12 @@
     "prettier": "1.19.0"
   },
   "scripts": {
-    "lint": "eslint . --ext .js"
+    "lint": "eslint . --ext .js",
+    "preversion": "bongo preversion",
+    "version": "bongo version",
+    "postversion": "bongo postversion --skip-release-notification",
+    "deps": "bongo deps",
+    "prepublish:setup": "echo 'setup is a no-op. Move along, nothing to see here.'"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

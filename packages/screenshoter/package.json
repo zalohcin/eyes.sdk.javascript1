@@ -29,7 +29,7 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/utils": "link:../utils",
+    "@applitools/utils": "1.0.0",
     "sharp": "^0.26.3"
   },
   "devDependencies": {
@@ -46,9 +46,14 @@
   },
   "scripts": {
     "lint": "eslint . --ext .js",
-    "test": "yarn test:it & yarn test:coverage",
+    "test": "yarn test:it && yarn test:coverage",
     "test:coverage": "mocha --no-timeouts './test/coverage/*.spec.js'",
-    "test:it": "mocha --no-timeouts './test/it/*.spec.js'"
+    "test:it": "mocha --no-timeouts './test/it/*.spec.js'",
+    "preversion": "bongo preversion && yarn test",
+    "version": "bongo version",
+    "postversion": "bongo postversion --skip-release-notification",
+    "deps": "bongo deps",
+    "prepublish:setup": "echo 'setup is a no-op. Move along, nothing to see here.'"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

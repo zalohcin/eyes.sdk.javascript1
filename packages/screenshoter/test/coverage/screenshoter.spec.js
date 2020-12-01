@@ -71,7 +71,7 @@ describe('screenshoter', () => {
     return fullElement({scrollingMode: 'scroll'})
   })
   it('take full element screenshot with "css" scrolling', () => {
-    return fullElement({scrollingMode: 'css', debug: {path: './'}})
+    return fullElement({scrollingMode: 'css'})
   })
 
   it('take region in context screenshot with "scroll" scrolling', () => {
@@ -118,7 +118,7 @@ describe('screenshoter', () => {
 
   async function viewport(options) {
     const screenshot = await screenshoter({logger, driver, ...options})
-    const actual = await screenshot.toObject()
+    const actual = await screenshot.image.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/page.png').toObject()
     assert.strictEqual(
       pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
@@ -132,7 +132,7 @@ describe('screenshoter', () => {
       isFully: true,
       ...options,
     })
-    const actual = await screenshot.toObject()
+    const actual = await screenshot.image.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/page-fully.png').toObject()
     assert.strictEqual(
       pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
@@ -146,7 +146,7 @@ describe('screenshoter', () => {
       context: {reference: 'iframe[name="frame1"]'},
       ...options,
     })
-    const actual = await screenshot.toObject()
+    const actual = await screenshot.image.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/context.png').toObject()
     assert.strictEqual(
       pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
@@ -161,7 +161,7 @@ describe('screenshoter', () => {
       isFully: true,
       ...options,
     })
-    const actual = await screenshot.toObject()
+    const actual = await screenshot.image.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/context-fully.png').toObject()
     assert.strictEqual(
       pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
@@ -175,7 +175,7 @@ describe('screenshoter', () => {
       target: {x: 30, y: 500, height: 100, width: 200},
       ...options,
     })
-    const actual = await screenshot.toObject()
+    const actual = await screenshot.image.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/region.png').toObject()
     assert.strictEqual(
       pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
@@ -190,7 +190,7 @@ describe('screenshoter', () => {
       isFully: true,
       ...options,
     })
-    const actual = await screenshot.toObject()
+    const actual = await screenshot.image.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/region-fully.png').toObject()
     assert.strictEqual(
       pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
@@ -204,7 +204,7 @@ describe('screenshoter', () => {
       target: '#overflowing-div-image',
       ...options,
     })
-    const actual = await screenshot.toObject()
+    const actual = await screenshot.image.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/element.png').toObject()
     assert.strictEqual(
       pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
@@ -219,7 +219,7 @@ describe('screenshoter', () => {
       isFully: true,
       ...options,
     })
-    const actual = await screenshot.toObject()
+    const actual = await screenshot.image.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/element-fully.png').toObject()
     assert.strictEqual(
       pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
@@ -234,7 +234,7 @@ describe('screenshoter', () => {
       target: {x: 10, y: 20, width: 110, height: 120},
       ...options,
     })
-    const actual = await screenshot.toObject()
+    const actual = await screenshot.image.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/inner-region.png').toObject()
     assert.strictEqual(
       pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
@@ -250,7 +250,7 @@ describe('screenshoter', () => {
       isFully: true,
       ...options,
     })
-    const actual = await screenshot.toObject()
+    const actual = await screenshot.image.toObject()
     const expected = await makeImage(
       './test/fixtures/screenshoter/inner-region-fully.png',
     ).toObject()
@@ -267,7 +267,7 @@ describe('screenshoter', () => {
       target: '#inner-frame-div',
       ...options,
     })
-    const actual = await screenshot.toObject()
+    const actual = await screenshot.image.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/inner-element.png').toObject()
     assert.strictEqual(
       pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
@@ -283,7 +283,7 @@ describe('screenshoter', () => {
       isFully: true,
       ...options,
     })
-    const actual = await screenshot.toObject()
+    const actual = await screenshot.image.toObject()
     const expected = await makeImage(
       './test/fixtures/screenshoter/inner-element-fully.png',
     ).toObject()
@@ -302,7 +302,7 @@ describe('screenshoter', () => {
       },
       ...options,
     })
-    const actual = await screenshot.toObject()
+    const actual = await screenshot.image.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/inner-context.png').toObject()
     assert.strictEqual(
       pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
@@ -320,7 +320,7 @@ describe('screenshoter', () => {
       isFully: true,
       ...options,
     })
-    const actual = await screenshot.toObject()
+    const actual = await screenshot.image.toObject()
     const expected = await makeImage(
       './test/fixtures/screenshoter/inner-context-fully.png',
     ).toObject()
