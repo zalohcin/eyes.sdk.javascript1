@@ -26,7 +26,10 @@
     "test": "mocha test/**/*.spec.js",
     "lint": "eslint . --ext .js",
     "deps": "bongo deps",
-    "prepublish:setup": "echo 'no setup'"
+    "prepublish:setup": "echo 'no setup'",
+    "preversion": "src/cli/index.js preversion && yarn test",
+    "version": "src/cli/index.js version",  
+    "postversion": "src/cli/index.js postversion"
   },
   "bugs": {
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
