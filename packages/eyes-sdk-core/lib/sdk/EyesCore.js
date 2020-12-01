@@ -438,7 +438,7 @@ class EyesCore extends EyesBase {
         isFully: true,
         hideScrollbars: this._configuration.getHideScrollbars(),
         hideCaret: this._configuration.getHideCaret(),
-        scrollingMode: this._configuration.getStitchMode(),
+        scrollingMode: this._configuration.getStitchMode().toLocaleLowerCase(),
         overlap: this._configuration.getStitchOverlap(),
         wait: this._configuration.getWaitBeforeScreenshots(),
         crop:

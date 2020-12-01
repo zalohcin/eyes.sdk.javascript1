@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-
+- fix stitchMode usage in `extractText`
 
 ## 12.8.0 - 2020/12/1
 
