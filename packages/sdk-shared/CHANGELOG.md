@@ -1,7 +1,7 @@
 # Changelog
 
 ## Unreleased
-
+- remove hard-coded testsPath to generic tests (fixes broken generic coverage test generation)
 
 ## 0.5.17 - 2020/12/1
 
