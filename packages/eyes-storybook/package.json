@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-storybook",
-  "version": "3.12.1",
+  "version": "3.13.0",
   "description": "",
   "engines": {
     "node": ">=8.6.0"
@@ -54,8 +54,8 @@
   },
   "dependencies": {
     "@applitools/dom-snapshot": "4.2.7",
-    "@applitools/eyes-puppeteer": "1.1.1",
-    "@applitools/eyes-sdk-core": "12.6.2",
+    "@applitools/eyes-puppeteer": "1.2.0",
+    "@applitools/eyes-sdk-core": "12.8.1",
     "@applitools/functional-commons": "1.6.0",
     "@applitools/monitoring-commons": "1.0.19",
     "@applitools/visual-grid-client": "15.2.1",
@@ -69,8 +69,8 @@
     "yargs": "12.0.5"
   },
   "devDependencies": {
-    "@applitools/sdk-release-kit": "0.10.5",
-    "@applitools/sdk-shared": "0.5.16",
+    "@applitools/sdk-release-kit": "0.10.6",
+    "@applitools/sdk-shared": "0.5.18",
     "@storybook/addon-options": "^5.2.8",
     "@storybook/react": "^5.2.8",
     "@testing-library/dom": "^5.6.1",

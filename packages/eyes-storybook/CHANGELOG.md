@@ -1,7 +1,12 @@
 # Changelog
 
 ## Unreleased
+
+## 3.13.0 - 2020/12/2
+
 - use eyes-puppeteer SDK for running dom-snapshot - adds support for cross-origin iframes [Trello 635](https://trello.com/c/TgiAqTUM) and [Trello 551](https://trello.com/c/wPl3ef7y))
+- updated to @applitools/eyes-puppeteer@1.2.0 (from 1.1.1)
+- updated to @applitools/eyes-sdk-core@12.8.1 (from 12.6.2)
 
 ## 3.12.1 - 2020/11/26
 
