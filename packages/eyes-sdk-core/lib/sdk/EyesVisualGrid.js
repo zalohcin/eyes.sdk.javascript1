@@ -393,7 +393,7 @@ class EyesVisualGrid extends EyesCore {
           this._runner._allTestResult.push(...results)
         }
         if (isErrorCaught) {
-          const error = TypeUtils.isArray(results) ? results[0] : results
+          const error = EyesVisualGrid.__getErrorFromResults(results)
           if (throwEx || !error.getTestResults) throw error
           else return error.getTestResults()
         }
@@ -401,6 +401,13 @@ class EyesVisualGrid extends EyesCore {
       })
 
     return this._closePromise
+  }
+  // static for simpler unit testing - could move it to a separate util file or do something else, thoughts?
+  static __getErrorFromResults(results) {
+    if (TypeUtils.isArray(results)) {
+      return results.find(result => result instanceof Error)
+    }
+    return results
   }
   /**
    * @param {boolean} [throwEx]
