@@ -162,7 +162,8 @@ async function getViewportSize(page) {
   return page.viewport()
 }
 async function setViewportSize(page, size = {}) {
-  return page.setViewport(size)
+  await page.setViewport(size)
+  await new Promise(res => setTimeout(res, 100))
 }
 async function getTitle(page) {
   return page.title()
