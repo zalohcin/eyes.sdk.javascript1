@@ -14,7 +14,7 @@ function convertJunitXmlToResultSchema({junit, browser, metadata}) {
         mode: meta.executionMode,
       },
       passed: !test.failure,
-      ...metadata[testName],
+      isGeneric: meta.isGeneric,
     }
   })
 }
