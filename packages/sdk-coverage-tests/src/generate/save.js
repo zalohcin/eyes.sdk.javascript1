@@ -13,12 +13,17 @@ async function createTestFiles(tests, {outPath, ext}) {
   })
 }
 
-async function createTestMetaData(tests, {metaPath = ''} = {}) {
+async function createTestMetaData(tests, {metaPath = '', pascalizeTests = true} = {}) {
   const targetDirectory = path.resolve(process.cwd(), metaPath)
   fs.mkdirSync(targetDirectory, {recursive: true})
 
   const meta = tests.reduce((meta, test) => {
-    meta[test.name] = {isGeneric: true}
+    const data = {isGeneric: true, name: test.group}
+    if (test.config) {
+      if (test.config.stitchMode) data.executionMode = test.config.stitchMode.toLowerCase()
+      else if (test.vg) data.executionMode = 'visualgrid'
+    }
+    meta[pascalizeTests ? test.key : test.name] = data
     return meta
   }, {})
 

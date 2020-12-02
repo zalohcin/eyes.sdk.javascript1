@@ -45,6 +45,15 @@ const cli = yargs
           description: 'ignore skip flag',
           type: 'boolean',
         },
+        ignoreSkipEmit: {
+          description: 'ignore skip emit flag',
+          type: 'boolean',
+        },
+        pascalizeTests: {
+          description: 'save tests metadata with pascalized keys',
+          type: 'boolean',
+          default: false,
+        },
         strict: {
           description: 'whether to throw an error if test emitting is failed',
           type: 'boolean',

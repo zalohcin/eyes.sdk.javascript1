@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- add more metadata about the test
+- add `skipEmit` flag to the test configuration and also cli flag `ignoreSkipEmit` to ignore the test flag
+- change behavior of `emitOnly`
 
 ## 2.1.3 - 2020/11/25
 
