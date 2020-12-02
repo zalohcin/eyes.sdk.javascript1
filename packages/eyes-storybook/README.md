@@ -562,7 +562,7 @@ storiesOf('Components with accessibility regions', module)
   .add(
     'Some story',
     () => <div>
-      <span>I am visually perfect!<span>
+      <span>I am visually perfect!</span>
       <span className="check-me">this should be tested for accessibility</span>
     </div>,
     {eyes: {
@@ -587,7 +587,7 @@ storiesOf('Components with ignoreDisplacements', module)
   .add(
     'Some story',
     () => <div>
-      <span>I am visually perfect!<span>
+      <span>I am visually perfect!</span>
     </div>,
     {eyes: {
       ignoreDisplacements: true
