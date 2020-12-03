@@ -1,6 +1,6 @@
 {
   "name": "@applitools/visual-grid-client",
-  "version": "15.2.1",
+  "version": "15.2.2",
   "description": "",
   "keywords": [
     "applitools",
@@ -48,9 +48,9 @@
     "@applitools/jsdom": false
   },
   "devDependencies": {
-    "@applitools/dom-snapshot": "^4.2.5",
-    "@applitools/sdk-release-kit": "0.10.5",
-    "@applitools/sdk-shared": "0.5.16",
+    "@applitools/dom-snapshot": "4.2.8",
+    "@applitools/sdk-release-kit": "0.10.6",
+    "@applitools/sdk-shared": "0.5.18",
     "chai": "^4.2.0",
     "chai-spies": "^1.0.0",
     "chai-uuid": "^1.0.6",
