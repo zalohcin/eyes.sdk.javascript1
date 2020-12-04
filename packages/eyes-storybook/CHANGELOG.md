@@ -1,6 +1,9 @@
 # Changelog
 
 ## Unreleased
+
+## 3.13.2 - 2020/12/4
+
 - updated to @applitools/dom-snapshot@4.2.9 (from 4.2.8)
 - updated to @applitools/eyes-puppeteer@1.2.1 (from 1.2.0)
 
