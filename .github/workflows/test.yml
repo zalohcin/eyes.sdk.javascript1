@@ -22,7 +22,7 @@ jobs:
           cd "packages/${{github.event.inputs.name}}"
           yarn
           yarn prepublish:setup
-          yarn test:coverage
+          yarn coverage:sandbox
           echo "::endgroup::"
     env:
       CVG_TESTS_REMOTE: http://localhost:4444/wd/hub
