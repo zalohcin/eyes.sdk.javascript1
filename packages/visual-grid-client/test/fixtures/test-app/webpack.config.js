@@ -14,4 +14,7 @@ module.exports = {
     child_process: 'empty',
     module: 'empty',
   },
+  externals: {
+    sharp: 'commonjs sharp'
+  },
 }
