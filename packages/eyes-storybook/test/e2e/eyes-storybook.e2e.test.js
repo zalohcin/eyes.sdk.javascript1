@@ -166,7 +166,7 @@ Need a higher concurrency in your account? Email us @ sdr@applitools.com with yo
 `);
   });
 
-  it.only('renders cross-origin iframes', async () => {
+  it('renders cross-origin iframes', async () => {
     let closeServerA, closeServerB;
     const staticPath = path.join(
       process.cwd(),
@@ -188,6 +188,7 @@ Need a higher concurrency in your account? Email us @ sdr@applitools.com with yo
         })
       ).close;
       closeServerB = (await testServer({port: 7374, staticPath})).close;
+      await new Promise(res => setTimeout(res, 100));
       const [err, result] = await presult(
         sh(
           `node ${path.resolve(__dirname, '../../bin/eyes-storybook')} -f ${path.resolve(
