@@ -65,6 +65,7 @@
     "morgan": "^1.9.1",
     "nock": "^11.3.5",
     "node-fetch": "^2.6.0",
+    "null-loader": "^4.0.1",
     "prettier": "1.19.0",
     "puppeteer": "^1.20.0",
     "typescript": "^3.9.2",

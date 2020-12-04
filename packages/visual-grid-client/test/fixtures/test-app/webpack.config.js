@@ -14,7 +14,12 @@ module.exports = {
     child_process: 'empty',
     module: 'empty',
   },
-  externals: {
-    sharp: 'commonjs sharp'
+  module: {
+    rules: [
+      {
+        test: /@applitools\/screenshoter/,
+        use: 'null-loader',
+      },
+    ],
   },
 }
