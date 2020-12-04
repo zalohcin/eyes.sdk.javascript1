@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix a typo on MatchWindowAndCloseTask
 
 ## 12.8.2 - 2020/12/3
 

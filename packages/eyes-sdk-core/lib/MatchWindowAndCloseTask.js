@@ -18,11 +18,11 @@ class MatchWindowAndCloseTask extends MatchWindowTask {
     eyes,
     appOutputProvider,
     updateBaselineIfNew,
-    updateBaselineInDifferent,
+    updateBaselineIfDifferent,
   ) {
     super(logger, serverConnector, runningSession, retryTimeout, eyes, appOutputProvider)
     this._updateBaseLineIfNew = updateBaselineIfNew
-    this._updateBaselineInDifferent = updateBaselineInDifferent
+    this._updateBaselineIfDifferent = updateBaselineIfDifferent
   }
   /**
    * Creates the match model and calls the server connector matchWindow method.
