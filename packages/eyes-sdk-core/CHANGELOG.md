@@ -3,6 +3,7 @@
 ## Unreleased
 
 - fix a typo on MatchWindowAndCloseTask
+- updated to @applitools/dom-snapshot@4.2.9 (from 4.2.8)
 
 ## 12.8.2 - 2020/12/3
 
