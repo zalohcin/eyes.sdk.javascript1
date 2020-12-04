@@ -21,6 +21,7 @@ jobs:
           echo "::group::test ${{github.event.inputs.name}}"
           cd "packages/${{github.event.inputs.name}}"
           yarn
+          yarn deps
           yarn prepublish:setup
           yarn coverage:sandbox
           echo "::endgroup::"
