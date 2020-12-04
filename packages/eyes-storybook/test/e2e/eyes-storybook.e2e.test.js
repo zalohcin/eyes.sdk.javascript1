@@ -166,7 +166,7 @@ Need a higher concurrency in your account? Email us @ sdr@applitools.com with yo
 `);
   });
 
-  it('renders cross-origin iframes', async () => {
+  it.only('renders cross-origin iframes', async () => {
     let closeServerA, closeServerB;
     const staticPath = path.join(
       process.cwd(),
