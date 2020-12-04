@@ -1,4 +1,4 @@
-name: Test
+name: Test Coverage
 
 on:
   workflow_dispatch:
@@ -22,7 +22,7 @@ jobs:
           cd "packages/${{github.event.inputs.name}}"
           yarn
           yarn prepublish:setup
-          yarn test
+          yarn test:coverage
           echo "::endgroup::"
     env:
       CVG_TESTS_REMOTE: http://localhost:4444/wd/hub
