@@ -245,7 +245,19 @@ class EyesVisualGrid extends EyesCore {
           checkSettings.getDisableBrowserFetching(),
           this._configuration.getDisableBrowserFetching(),
         )
-        const snapshots = await this._takeDomSnapshots({breakpoints, disableBrowserFetching})
+        const browsers = this._configuration.getBrowsersInfo()
+        let requiredWidths
+        if (breakpoints) requiredWidths = await this._getRequiredWidths({browsers, breakpoints})
+        const viewportSize = await this.getViewportSize()
+        const snapshots = await this._takeDomSnapshots({
+          breakpoints,
+          browsers,
+          disableBrowserFetching,
+          driver: this._driver,
+          logger: this._logger,
+          requiredWidths,
+          viewportSize,
+        })
         const [{url}] = snapshots
         if (this.getCorsIframeHandle() === CorsIframeHandles.BLANK) {
           snapshots.forEach(CorsIframeHandler.blankCorsIframeSrcOfCdt)
@@ -293,15 +305,8 @@ class EyesVisualGrid extends EyesCore {
     }
   }
 
-  async _takeDomSnapshots({breakpoints, disableBrowserFetching}) {
-    const browsers = this._configuration.getBrowsersInfo()
-    if (!breakpoints) {
-      this._logger.verbose(`taking single dom snapshot`)
-      const snapshot = await takeDomSnapshot(this._logger, this._driver, {disableBrowserFetching})
-      return Array(browsers.length).fill(snapshot)
-    }
-
-    const requiredWidths = await browsers.reduce((widths, browser, index) => {
+  async _getRequiredWidths({browsers, breakpoints}) {
+    return await browsers.reduce((widths, browser, index) => {
       const browserInfo = this.getBrowserInfo(browser)
       return widths.then(async widths => {
         const {type, name, width} = await browserInfo
@@ -315,6 +320,22 @@ class EyesVisualGrid extends EyesCore {
         return widths
       })
     }, Promise.resolve(new Map()))
+  }
+
+  async _takeDomSnapshots({
+    breakpoints,
+    browsers,
+    disableBrowserFetching,
+    driver,
+    logger,
+    requiredWidths,
+    viewportSize,
+  }) {
+    if (!breakpoints) {
+      logger.verbose(`taking single dom snapshot`)
+      const snapshot = await takeDomSnapshot(logger, driver, {disableBrowserFetching})
+      return Array(browsers.length).fill(snapshot)
+    }
 
     const isStrictBreakpoints = Array.isArray(breakpoints)
     const smallestBreakpoint = Math.min(...(isStrictBreakpoints ? breakpoints : []))
@@ -330,23 +351,22 @@ class EyesVisualGrid extends EyesCore {
       console.log(message)
     }
 
-    this._logger.verbose(`taking multiple dom snapshots for breakpoints: ${breakpoints}`)
-    this._logger.verbose(`required widths: ${[...requiredWidths.keys()].join(', ')}`)
-    const viewportSize = await this.getViewportSize()
+    logger.verbose(`taking multiple dom snapshots for breakpoints: ${breakpoints}`)
+    logger.verbose(`required widths: ${[...requiredWidths.keys()].join(', ')}`)
     const snapshots = Array(browsers.length)
     if (requiredWidths.has(viewportSize.getWidth())) {
-      this._logger.log(`taking dom snapshot for existing width ${viewportSize.getWidth()}`)
-      const snapshot = await takeDomSnapshot(this._logger, this._driver, {disableBrowserFetching})
+      logger.log(`taking dom snapshot for existing width ${viewportSize.getWidth()}`)
+      const snapshot = await takeDomSnapshot(logger, driver, {disableBrowserFetching})
       requiredWidths
         .get(viewportSize.getWidth())
         .forEach(({index}) => (snapshots[index] = snapshot))
     }
     for (const [requiredWidth, browsersInfo] of requiredWidths.entries()) {
-      this._logger.log(`taking dom snapshot for width ${requiredWidth}`)
+      logger.log(`taking dom snapshot for width ${requiredWidth}`)
       try {
-        await this._driver.setViewportSize({width: requiredWidth, height: viewportSize.getHeight()})
+        await driver.setViewportSize({width: requiredWidth, height: viewportSize.getHeight()})
       } catch (err) {
-        const actualViewportSize = await this._driver.getViewportSize()
+        const actualViewportSize = await driver.getViewportSize()
         if (isStrictBreakpoints) {
           const failedBrowsers = browsersInfo
             .map(({name, width}) => `(${name}, ${width})`)
@@ -363,10 +383,10 @@ class EyesVisualGrid extends EyesCore {
           console.log(message)
         }
       }
-      const snapshot = await takeDomSnapshot(this._logger, this._driver, {disableBrowserFetching})
+      const snapshot = await takeDomSnapshot(logger, driver, {disableBrowserFetching})
       browsersInfo.forEach(({index}) => (snapshots[index] = snapshot))
     }
-    await this._driver.setViewportSize(viewportSize)
+    await driver.setViewportSize(viewportSize)
     return snapshots
   }
   /**
