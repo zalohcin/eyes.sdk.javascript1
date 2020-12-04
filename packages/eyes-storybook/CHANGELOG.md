@@ -1,6 +1,9 @@
 # Changelog
 
 ## Unreleased
+
+## 3.13.3 - 2020/12/4
+
 - updated to @applitools/visual-grid-client@15.2.3 (from 15.2.2)
 
 ## 3.13.2 - 2020/12/4
