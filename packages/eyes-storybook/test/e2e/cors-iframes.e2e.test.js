@@ -28,7 +28,6 @@ describe('eyes-storybook', () => {
         })
       ).close;
       closeServerB = (await testServer({port: 7778, staticPath})).close;
-      await new Promise(res => setTimeout(res, 100));
       const [err, result] = await presult(
         sh(
           `node ${path.resolve(__dirname, '../../bin/eyes-storybook')} -f ${path.resolve(
