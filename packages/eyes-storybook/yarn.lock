@@ -249,6 +249,24 @@
     postcss-value-parser "4.1.0"
     throat "5.0.0"
 
+"@applitools/visual-grid-client@15.2.3":
+  version "15.2.3"
+  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-15.2.3.tgz#efec082b6fe0238f9e411205fd131c792473b467"
+  integrity sha512-AuIeinhUBtqgdST1PD3R/F+J+kfjBmUpoRtsHWuepx7eKONuxOrFcPiI42Vc1dOrhNuaL3UHbaT3uTJ4g1Wutg==
+  dependencies:
+    "@applitools/eyes-sdk-core" "12.8.2"
+    "@applitools/functional-commons" "1.6.0"
+    "@applitools/http-commons" "2.4.3"
+    "@applitools/isomorphic-fetch" "3.0.0"
+    "@applitools/jsdom" "1.0.2"
+    chalk "3.0.0"
+    he "1.2.0"
+    lodash.mapvalues "4.6.0"
+    mime-types "2.1.27"
+    mkdirp "0.5.5"
+    postcss-value-parser "4.1.0"
+    throat "5.0.0"
+
 "@azure/abort-controller@^1.0.0":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@azure/abort-controller/-/abort-controller-1.0.1.tgz#8510935b25ac051e58920300e9d7b511ca6e656a"
