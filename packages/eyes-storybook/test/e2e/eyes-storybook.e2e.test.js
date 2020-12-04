@@ -175,7 +175,7 @@ Need a higher concurrency in your account? Email us @ sdr@applitools.com with yo
     try {
       closeServerA = (
         await testServer({
-          port: 7373,
+          port: 7777,
           staticPath,
           allowCors: false,
           middlewareFile: path.resolve(
@@ -183,11 +183,11 @@ Need a higher concurrency in your account? Email us @ sdr@applitools.com with yo
             'node_modules/@applitools/sdk-shared/coverage-tests/util/handlebars-middleware.js',
           ),
           hbData: {
-            src: 'http://localhost:7374/cors_frames/frame.html',
+            src: 'http://localhost:7778/cors_frames/frame.html',
           },
         })
       ).close;
-      closeServerB = (await testServer({port: 7374, staticPath})).close;
+      closeServerB = (await testServer({port: 7778, staticPath})).close;
       await new Promise(res => setTimeout(res, 100));
       const [err, result] = await presult(
         sh(
