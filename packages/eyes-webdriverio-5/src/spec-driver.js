@@ -124,9 +124,13 @@ async function isEqualElements(browser, element1, element2) {
 // #region COMMANDS
 
 async function executeScript(browser, script, ...args) {
-  script = TypeUtils.isString(script) ? script : script.toString()
-  const {argsWithElementMarkers, elements} = serializeArgs(args)
-  return browser.execute(scriptRunner, {script, argsWithElementMarkers}, ...elements)
+  if (browser.isDevTools) {
+    script = TypeUtils.isString(script) ? script : script.toString()
+    const {argsWithElementMarkers, elements} = serializeArgs(args)
+    return browser.execute(scriptRunner, {script, argsWithElementMarkers}, ...elements)
+  } else {
+    return browser.execute(script, ...args)
+  }
 }
 async function mainContext(browser) {
   await browser.switchToFrame(null)
