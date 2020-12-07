@@ -51,6 +51,7 @@
   "devDependencies": {
     "@applitools/sdk-release-kit": "0.10.5",
     "@applitools/sdk-shared": "0.5.16",
+    "@applitools/snaptdout": "^1.5.4",
     "chai": "^4.2.0",
     "chai-spies": "^1.0.0",
     "cookie-parser": "^1.4.4",
@@ -65,7 +66,6 @@
     "ncp": "^2.0.0",
     "node-fetch": "^2.6.0",
     "prettier": "^1.19.1",
-    "snaptdout": "^1.4.0",
     "typescript": "^3.9.2"
   }
 }

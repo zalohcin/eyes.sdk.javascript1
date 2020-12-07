@@ -2,7 +2,7 @@
 const {describe, it} = require('mocha');
 const errorDigest = require('../../../src/plugin/errorDigest');
 const {TestResults} = require('@applitools/visual-grid-client');
-const snap = require('snaptdout');
+const snap = require('@applitools/snaptdout');
 
 describe('errorDigest', () => {
   it('works', async () => {

@@ -201,6 +201,11 @@
     prettier "1.18.2"
     yargs "15.3.1"
 
+"@applitools/snaptdout@^1.5.4":
+  version "1.5.4"
+  resolved "https://registry.yarnpkg.com/@applitools/snaptdout/-/snaptdout-1.5.4.tgz#ddddc88121a18dd944bda7c60d732c0a0ac583ed"
+  integrity sha512-0mc0yDHIWucTOkxJOCQc+AcPj+kRnGDq7DUphBNACVw/ehNtwRahdLoFMqbdRH9PR5XGZSZQFJ/zPeMIsWQ2RA==
+
 "@applitools/snippets@2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@applitools/snippets/-/snippets-2.1.0.tgz#edd143ec52ec19db19e94a5c3e0da8647e60eaf7"
@@ -3431,11 +3436,6 @@ slice-ansi@^2.1.0:
     ansi-styles "^3.2.0"
     astral-regex "^1.0.0"
     is-fullwidth-code-point "^2.0.0"
-
-snaptdout@^1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/snaptdout/-/snaptdout-1.4.0.tgz#1847b33798bee06f41eeb269d66e2bfc5c788108"
-  integrity sha512-unET3eH5iN8aK5rkn/bHMA/OtcqcSWUGc36Mr5uWlzsT52G+U/aywaqOE26b0lFQMXVrHYFOvivtS/bN87utrg==
 
 source-map@^0.6.1, source-map@~0.6.1:
   version "0.6.1"
