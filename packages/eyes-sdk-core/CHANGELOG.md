@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 12.8.4 - 2020/12/8
+
 - support skip list in dom-snapshot
 - updated to @applitools/dom-snapshot@4.3.0 (from 4.2.9)
 
