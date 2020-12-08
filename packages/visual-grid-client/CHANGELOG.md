@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- support skip list
 
 ## 15.2.4 - 2020/12/4
 
