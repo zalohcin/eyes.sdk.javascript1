@@ -25,6 +25,16 @@
     css-tree "1.0.0-alpha.39"
     pako "1.0.11"
 
+"@applitools/dom-snapshot@4.3.0":
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-4.3.0.tgz#8ede2ea7732fc4090874607468222fc4a419ee5a"
+  integrity sha512-hfHLtyhLrFNktnCOv5A3ig65rxD/uTN14FFMs0aQWz/03L22QXClxdglNsnt1GvXC43UstxAyroceS8G7RvEbw==
+  dependencies:
+    "@applitools/dom-shared" "1.0.4"
+    "@applitools/functional-commons" "1.6.0"
+    css-tree "1.0.0-alpha.39"
+    pako "1.0.11"
+
 "@applitools/driver@1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.0.1.tgz#8bcf9a7f506e96bdb070a26b2f4274e6d5e68169"
