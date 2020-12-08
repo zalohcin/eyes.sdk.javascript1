@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- support skip list in dom-snapshot
 
 ## 12.8.3 - 2020/12/4
 
