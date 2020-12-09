@@ -118,11 +118,11 @@ const args = require('yargs')
     {},
     async () => await sendReleaseNotification(cwd, args.recipient),
   )
-  .command(['deps', 'd'], {}, async () => {
+  .command(['deps', 'd'], 'update internal deps', {}, async () => {
     await deps()
     await commitFiles()
   })
-  .demandCommand()
+  .demandCommand(1, 'no arguments provided, run with --help')
   .fail((msg, error, args) => {
     const command = args._[0]
     if (args.verbose) {
@@ -133,6 +133,7 @@ const args = require('yargs')
     }
     process.exit(1)
   })
+  .wrap(150)
   .help().argv
 
 async function deps() {
