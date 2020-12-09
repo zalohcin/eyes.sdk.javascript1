@@ -17,7 +17,11 @@ const args = require('yargs')
   .command(
     ['preversion', 'release-pre-check', 'pre-version'],
     'Run all verification checks pre-release',
-    {},
+    {
+      skipVerifyInstalledVersions: {alias: 'sviv', type: 'boolean'},
+      skipVerifyVersions: {alias: 'svv', type: 'boolean'},
+      skipDeps: {alias: 'sd', type: 'boolean'},
+    },
     async args => {
       if (!args.skipDeps) {
         console.log('[bongo preversion] yarn install')
@@ -60,10 +64,10 @@ const args = require('yargs')
   .command(
     ['postversion, post-version'],
     'Supportive steps to after a package has been versioned',
-    {},
+    {recipient: {alias: 'r', type: 'string'}},
     async args => {
       await gitPushWithTags()
-      if (!args['skip-release-notification']) {
+      if (!args.skipReleaseNotification) {
         await sendReleaseNotification(cwd, args.recipient)
       }
     },
@@ -115,7 +119,7 @@ const args = require('yargs')
   .command(
     ['send-release-notification', 'hello-world'],
     'Send a notification that a has been released',
-    {},
+    {recipient: {alias: 'r', type: 'string'}},
     async () => await sendReleaseNotification(cwd, args.recipient),
   )
   .command(['deps', 'd'], 'update internal deps', {}, async () => {
