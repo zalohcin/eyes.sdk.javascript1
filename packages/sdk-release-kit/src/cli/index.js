@@ -123,7 +123,11 @@ const args = require('yargs')
     async () => await sendReleaseNotification(cwd, args.recipient),
   )
   .command(['deps', 'd'], 'update internal deps', {}, async () => {
-    await deps()
+    verifyUnfixedDeps(cwd)
+    await yarnUpgrade({
+      folder: cwd,
+      upgradeAll: args.upgradeAll,
+    })
     await commitFiles()
   })
   .demandCommand(1, 'no arguments provided, run with --help')
@@ -139,14 +143,6 @@ const args = require('yargs')
   })
   .wrap(150)
   .help().argv
-
-async function deps() {
-  verifyUnfixedDeps(cwd)
-  await yarnUpgrade({
-    folder: cwd,
-    upgradeAll: args.upgradeAll,
-  })
-}
 
 async function commitFiles(shouldCommit = true) {
   if (shouldCommit) {
