@@ -60,6 +60,10 @@ async function eyesStorybook({
     const result = await takeDomSnapshots({
       logger,
       driver,
+      // TODO
+      // breakpoints
+      // requiredWidths
+      // viewportSize (map)
       browsers: [true],
       useSessionCache: true,
       showLogs: !!config.showLogs,

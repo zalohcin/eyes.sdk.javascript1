@@ -47,6 +47,7 @@ function makeGetStoryData({logger, takeDomSnapshot, waitBeforeScreenshot, reload
 
     logger.log(`running takeDomSnapshot for story ${title}`);
 
+    // TODO: update to process array of results
     const {resourceUrls, resourceContents, frames, cdt} = await takeDomSnapshot(page);
 
     logger.log(`done getting data from story`, title);
