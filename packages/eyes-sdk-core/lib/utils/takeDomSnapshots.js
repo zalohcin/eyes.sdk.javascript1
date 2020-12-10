@@ -8,11 +8,17 @@ async function takeDomSnapshots({
   driver,
   logger,
   requiredWidths,
+  showLogs,
+  useSessionCache,
   viewportSize,
 }) {
   if (!breakpoints) {
     logger.verbose(`taking single dom snapshot`)
-    const snapshot = await takeDomSnapshot(logger, driver, {disableBrowserFetching})
+    const snapshot = await takeDomSnapshot(logger, driver, {
+      disableBrowserFetching,
+      showLogs,
+      useSessionCache,
+    })
     return Array(browsers.length).fill(snapshot)
   }
 
