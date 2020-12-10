@@ -16,7 +16,7 @@ const memoryLog = require('./memoryLog');
 const getIframeUrl = require('./getIframeUrl');
 const createPagePool = require('./pagePool');
 const getClientAPI = require('../dist/getClientAPI');
-const {takeDomSnapshot} = require('@applitools/eyes-sdk-core');
+const {takeDomSnapshots} = require('@applitools/eyes-sdk-core');
 const {Driver} = require('@applitools/eyes-puppeteer');
 
 const CONCURRENT_PAGES = 3;
@@ -57,11 +57,15 @@ async function eyesStorybook({
 
   const doTakeDomSnapshot = async page => {
     const driver = new Driver(logger, page);
-    return takeDomSnapshot(logger, driver, {
+    const result = await takeDomSnapshots({
+      logger,
+      driver,
+      browsers: [true],
       useSessionCache: true,
       showLogs: !!config.showLogs,
       disableBrowserFetching: !!config.disableBrowserFetching,
     });
+    return result[0];
   };
 
   logger.log('got script for processPage');
