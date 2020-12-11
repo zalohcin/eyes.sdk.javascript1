@@ -8,7 +8,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint . --ext .js",
-    "test": "wdio tests/wdio.conf.js",
+    "test": "wdio test/wdio.conf.js",
     "preversion": "bongo preversion && yarn test",
     "version": "bongo version",
     "postversion": "bongo postversion --skip-release-notification",
