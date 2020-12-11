@@ -15,12 +15,17 @@
   resolved "https://registry.yarnpkg.com/@applitools/dom-shared/-/dom-shared-1.0.4.tgz#1a59116f3f29fb140ac031949547531348c9d972"
   integrity sha512-WRGko/7pJLwcDbQ5r0q2KD58VemIHm+JyKeXSflQhJvQqA5ONYyBX6cZo0h3o1SqdlzQnWM5REzoxoOpOGflzQ==
 
-"@applitools/dom-snapshot@4.2.9":
-  version "4.2.9"
-  resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-4.2.9.tgz#b9344a046def1e82a176daa25114ee73b1ab9b3b"
-  integrity sha512-cvnjTbEQIrBhoQJiGhGjyF21nfREyb15yYB8691VaZnA1vgpNRaUxS+guIZ/bWXv4Zz3XWkrtFyIUC4+lnG3ug==
+"@applitools/dom-shared@1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-shared/-/dom-shared-1.0.5.tgz#d67d9bd8c2c612da6dd9dcdea2b08f9630b22a3a"
+  integrity sha512-O2zgnnqVi3/Atq7EQjURLa73XNaDFJCj8wHht6WQtxIv1EWYnPutNTmnJSKwK7FnbJAg65OVjZylcz4EezyYZA==
+
+"@applitools/dom-snapshot@4.3.1":
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-4.3.1.tgz#d49843e1c1f6f9e6efbeed10cfa93631456bd7ba"
+  integrity sha512-O0Rtm5VeCH+cY9z3HvTNn19JhJjls9xPRldNwuFSRPfmmSa/z4KjvsgteBZ3lMsaO+cEdnLAdAkg8yMOFuXFUw==
   dependencies:
-    "@applitools/dom-shared" "1.0.4"
+    "@applitools/dom-shared" "1.0.5"
     "@applitools/functional-commons" "1.6.0"
     css-tree "1.0.0-alpha.39"
     pako "1.0.11"
@@ -33,13 +38,34 @@
     "@applitools/snippets" "2.1.0"
     "@applitools/utils" "1.0.0"
 
-"@applitools/eyes-sdk-core@12.8.3":
-  version "12.8.3"
-  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-12.8.3.tgz#7f37d9b061c83deafa1c117a1e241c797cebff06"
-  integrity sha512-QojIZ63mdjYxgca97CSPjsNKMge0c+U3mX9XRGEJbXrSPgGu34ZpH19QIcEuBTijTph+f9WGfuV1putE5VP/9Q==
+"@applitools/eyes-sdk-core@12.9.0":
+  version "12.9.0"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-12.9.0.tgz#e571c94380cb47bf91b519b259df91ba6e7c5b7e"
+  integrity sha512-TvhRlp4f11okcXv4Bg/gHEZw1QJoX7WRI/NlfgwSMDRL8zz8vU0g7rcQR/bhD/d02IbZY2ZFPl/y8skotX11DA==
   dependencies:
     "@applitools/dom-capture" "8.0.1"
-    "@applitools/dom-snapshot" "4.2.9"
+    "@applitools/dom-snapshot" "4.3.1"
+    "@applitools/driver" "1.0.1"
+    "@applitools/isomorphic-fetch" "3.0.0"
+    "@applitools/screenshoter" "1.0.1"
+    "@applitools/snippets" "2.1.0"
+    axios "0.19.2"
+    chalk "3.0.0"
+    cosmiconfig "6.0.0"
+    dateformat "3.0.3"
+    debug "4.2.0"
+    deepmerge "4.2.2"
+    png-async "0.9.4"
+    stack-trace "0.0.10"
+    tunnel "0.0.6"
+
+"@applitools/eyes-sdk-core@12.9.1":
+  version "12.9.1"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-12.9.1.tgz#c677f40cfc86e070b75a614f85045bef8186f8b2"
+  integrity sha512-BBrSNeXTEmZelizKCR62alinubhSZOjSjhqYPt20f2VYsqnLVeQx6UMW9P29L2Jk8vjWPUYXu7sZkMPh9Nz2cg==
+  dependencies:
+    "@applitools/dom-capture" "8.0.1"
+    "@applitools/dom-snapshot" "4.3.1"
     "@applitools/driver" "1.0.1"
     "@applitools/isomorphic-fetch" "3.0.0"
     "@applitools/screenshoter" "1.0.1"
@@ -211,12 +237,12 @@
   resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.0.0.tgz#ecf845148f6e2c952b97462f11b0d702cce6cb40"
   integrity sha512-jf3DDLSRLYsTYK6/PiriVC5mejemVzHFFSFGTirKRnUg2121xyhpA/SQcx0UUoDLLEYZGNlfqiTpBSE9Gr/UMQ==
 
-"@applitools/visual-grid-client@15.2.4":
-  version "15.2.4"
-  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-15.2.4.tgz#451446bc45663617c163f7a89baf75683ac0b21d"
-  integrity sha512-mKWEKkKpfLzsU0qy8lhpZ3MhS2jgyXw75hcc+uwgDIcAdOpxeRo9hlCZH0tIytUPRVAH3NUUb1M7lbBgVpSETQ==
+"@applitools/visual-grid-client@15.3.0":
+  version "15.3.0"
+  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-15.3.0.tgz#b7f017161d6f019f6b23c2090eb587619b9f958c"
+  integrity sha512-yMzccjp8InV+3NjZ9iBqvIDuIcNGjywg5gVOAPE/nmBAVNaB1BxYS4vDa6y4itkrsctCDvTn81nBeFU2R/xGmA==
   dependencies:
-    "@applitools/eyes-sdk-core" "12.8.3"
+    "@applitools/eyes-sdk-core" "12.9.0"
     "@applitools/functional-commons" "1.6.0"
     "@applitools/http-commons" "2.4.3"
     "@applitools/isomorphic-fetch" "3.0.0"
