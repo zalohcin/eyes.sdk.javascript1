@@ -116,7 +116,7 @@ async function getElementRect(_driver, element) {
 async function getWindowRect(driver) {
   try {
     if (TypeUtils.isFunction(driver.manage().window().getRect)) {
-      return driver
+      return await driver
         .manage()
         .window()
         .getRect()

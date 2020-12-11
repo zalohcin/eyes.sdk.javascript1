@@ -102,7 +102,7 @@ async function getElementRect(_driver, element) {
 }
 async function getWindowRect(driver) {
   try {
-    return driver
+    return await driver
       .manage()
       .window()
       .getRect()
@@ -138,6 +138,7 @@ async function getDriverInfo(driver) {
   const browserName = capabilities.get('browserName')
   const browserVersion = capabilities.get('browserVersion')
   const isMobile = ['android', 'ios'].includes(platformName && platformName.toLowerCase())
+
   return {
     sessionId,
     isMobile,
