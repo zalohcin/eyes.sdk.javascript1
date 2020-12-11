@@ -8,11 +8,14 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint . --ext .js",
-    "test": "wdio test/wdio.conf.js",
+    "test": "wdio tests/wdio.conf.js",
     "preversion": "bongo preversion && yarn test",
     "version": "bongo version",
     "postversion": "bongo postversion --skip-release-notification",
-    "prepublish:setup": "echo 'no setup'"
+    "deps": "bongo deps",
+    "docker:setup": "node ../sdk-shared/src/generate-docker-compose-config.js && docker-compose up -d",
+    "docker:teardown": "docker-compose down",
+    "prepublish:setup": "yarn docker:setup"
   },
   "author": "",
   "license": "SEE LICENSE IN LICENSE",
@@ -20,7 +23,7 @@
     "@applitools/eyes.webdriverio": "2.20.0"
   },
   "devDependencies": {
-    "@applitools/sdk-release-kit": "0.2.2",
+    "@applitools/sdk-release-kit": "^0.10.6",
     "chromedriver": "^83.0.0",
     "mocha": "^6.2.2",
     "wdio-chromedriver-service": "^0.1.5",
