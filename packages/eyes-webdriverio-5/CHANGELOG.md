@@ -1,7 +1,7 @@
 # Change Log
 
 ## Unreleased
-
+- update eyes-service to use new concurrency configuration
 
 ## 5.28.0 - 2020/12/11
 
