@@ -130,11 +130,14 @@ const args = require('yargs')
     })
     await commitFiles()
   })
-  .demandCommand(1, 'no arguments provided, run with --help')
+  .demandCommand(1, 'exit')
   .fail((msg, error, args) => {
-    const command = args._[0]
-    if (args.verbose) {
-      console.log(msg)
+    if (msg === 'exit') {
+      return args.showHelp()
+    }
+    const command = process.argv[2]
+    if (process.argv.includes('--verbose')) {
+      console.log(error)
     } else {
       console.log(chalk.red(error.message))
       console.log(`run "npx bongo ${command} --verbose" to see stack trace`)
