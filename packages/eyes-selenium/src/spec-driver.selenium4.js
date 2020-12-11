@@ -20,9 +20,11 @@ function extractElementId(element) {
 }
 
 function transformSelector(selector) {
+  const {By} = require('selenium-webdriver')
   if (TypeUtils.has(selector, ['type', 'selector'])) {
     if (selector.type === 'css') return {css: selector.selector}
     else if (selector.type === 'xpath') return {xpath: selector.selector}
+    else return new By(selector.type, selector.selector)
   }
   return selector
 }
