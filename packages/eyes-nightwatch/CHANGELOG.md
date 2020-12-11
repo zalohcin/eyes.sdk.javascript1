@@ -1,7 +1,7 @@
 # Change Log
 
 ## Unreleased
-
+- update chaining API to support new concurrency configuration
 
 ## 1.4.0 - 2020/12/11
 
