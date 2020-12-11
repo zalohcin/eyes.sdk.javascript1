@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 1.10.0 - 2020/12/11
+
 - expose grid configuration primitives
 
 ## 1.9.1 - 2020/12/11
