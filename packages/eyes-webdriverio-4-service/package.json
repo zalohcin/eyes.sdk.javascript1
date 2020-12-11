@@ -30,7 +30,11 @@
     "wdio-dot-reporter": "0.0.10",
     "wdio-mocha-framework": "^0.6.4",
     "wdio-sync": "^0.7.3",
-    "webdriverio": "^4.14.4"
+    "webdriverio": "^4.14.4",
+    "eslint": "^7.9.0",
+    "eslint-plugin-mocha-no-only": "^1.1.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.1.4"
   },
   "engines": {
     "node": ">=8.9.0 <12"
