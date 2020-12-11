@@ -15,12 +15,27 @@
   resolved "https://registry.yarnpkg.com/@applitools/dom-shared/-/dom-shared-1.0.4.tgz#1a59116f3f29fb140ac031949547531348c9d972"
   integrity sha512-WRGko/7pJLwcDbQ5r0q2KD58VemIHm+JyKeXSflQhJvQqA5ONYyBX6cZo0h3o1SqdlzQnWM5REzoxoOpOGflzQ==
 
+"@applitools/dom-shared@1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-shared/-/dom-shared-1.0.5.tgz#d67d9bd8c2c612da6dd9dcdea2b08f9630b22a3a"
+  integrity sha512-O2zgnnqVi3/Atq7EQjURLa73XNaDFJCj8wHht6WQtxIv1EWYnPutNTmnJSKwK7FnbJAg65OVjZylcz4EezyYZA==
+
 "@applitools/dom-snapshot@4.3.0":
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-4.3.0.tgz#8ede2ea7732fc4090874607468222fc4a419ee5a"
   integrity sha512-hfHLtyhLrFNktnCOv5A3ig65rxD/uTN14FFMs0aQWz/03L22QXClxdglNsnt1GvXC43UstxAyroceS8G7RvEbw==
   dependencies:
     "@applitools/dom-shared" "1.0.4"
+    "@applitools/functional-commons" "1.6.0"
+    css-tree "1.0.0-alpha.39"
+    pako "1.0.11"
+
+"@applitools/dom-snapshot@4.3.1":
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-4.3.1.tgz#d49843e1c1f6f9e6efbeed10cfa93631456bd7ba"
+  integrity sha512-O0Rtm5VeCH+cY9z3HvTNn19JhJjls9xPRldNwuFSRPfmmSa/z4KjvsgteBZ3lMsaO+cEdnLAdAkg8yMOFuXFUw==
+  dependencies:
+    "@applitools/dom-shared" "1.0.5"
     "@applitools/functional-commons" "1.6.0"
     css-tree "1.0.0-alpha.39"
     pako "1.0.11"
