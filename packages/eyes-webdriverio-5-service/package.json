@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-webdriverio5-service",
-  "version": "1.8.2",
+  "version": "1.9.0",
   "description": "",
   "keywords": [
     "wdio-plugin",
