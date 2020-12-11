@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 12.9.0 - 2020/12/11
+
 - long running tasks enhancement
 - updated to @applitools/dom-snapshot@4.3.1 (from 4.3.0)
 
