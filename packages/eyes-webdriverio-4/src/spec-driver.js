@@ -16,6 +16,7 @@ function transformSelector(selector) {
   } else if (TypeUtils.has(selector, ['type', 'selector'])) {
     if (selector.type === 'css') return `css selector:${selector.selector}`
     else if (selector.type === 'xpath') return `xpath:${selector.selector}`
+    else return `${selector.type}:${selector.selector}`
   }
   return selector
 }
