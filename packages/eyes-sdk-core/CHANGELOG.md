@@ -1,6 +1,9 @@
 # Change Log
 
 ## Unreleased
+
+## 12.9.1 - 2020/12/11
+
 - updated visual-grid-client dev dependency to latest (used for testing)
 
 ## 12.9.0 - 2020/12/11
