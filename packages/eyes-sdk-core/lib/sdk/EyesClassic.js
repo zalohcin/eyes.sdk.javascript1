@@ -200,6 +200,13 @@ class EyesClassic extends EyesCore {
           return this._checkFrame(checkSettings, closeAfterMatch, throwEx)
         }
       } else {
+        if (!this._stitchContent) {
+          this._context = this._driver.mainContext
+          this._regionToCheck = new Region(
+            await this._context.getInnerOffset(),
+            await this._driver.getViewportSize(),
+          )
+        }
         const source = await this._driver.getUrl()
         return this.checkWindowBase(
           new NullRegionProvider(),
@@ -371,7 +378,7 @@ class EyesClassic extends EyesCore {
       )
 
       const source = await this._driver.getUrl()
-      return super.checkWindowBase(
+      return await super.checkWindowBase(
         new RegionProvider(this._regionToCheck),
         checkSettings.getName(),
         false,

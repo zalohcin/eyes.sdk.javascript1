@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- calculate image location for viewport screenshots
 
 ## 12.9.2 - 2020/12/14
 
