@@ -33,7 +33,7 @@
   "typings": "./typings/index.d.ts",
   "dependencies": {
     "@applitools/dom-capture": "8.0.1",
-    "@applitools/dom-snapshot": "4.3.1",
+    "@applitools/dom-snapshot": "4.4.0",
     "@applitools/driver": "1.0.1",
     "@applitools/isomorphic-fetch": "3.0.0",
     "@applitools/screenshoter": "1.0.1",
