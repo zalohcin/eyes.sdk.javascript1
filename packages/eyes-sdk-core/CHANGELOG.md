@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 12.9.2 - 2020/12/14
+
 - using new protection method for native builtins with dom-snapshot
 - updated to @applitools/dom-snapshot@4.4.0 (from 4.3.1)
 
