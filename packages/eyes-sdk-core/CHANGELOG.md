@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- using new protection method for native builtins with dom-snapshot
+
 ## 12.9.1 - 2020/12/11
 
 - updated visual-grid-client dev dependency to latest (used for testing)
