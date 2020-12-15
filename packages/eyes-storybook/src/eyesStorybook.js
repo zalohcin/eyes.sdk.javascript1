@@ -55,21 +55,21 @@ async function eyesStorybook({
 
   const pagePool = createPagePool({initPage, logger});
 
-  const doTakeDomSnapshot = async page => {
+  const doTakeDomSnapshots = async page => {
     const driver = new Driver(logger, page);
     const result = await takeDomSnapshots({
       logger,
       driver,
       // TODO
-      // breakpoints
       // requiredWidths
       // viewportSize (map)
-      browsers: [true],
+      breakpoints: config.layoutBreakpoints,
+      browsers: config.browser || [true],
       useSessionCache: true,
       showLogs: !!config.showLogs,
       disableBrowserFetching: !!config.disableBrowserFetching,
     });
-    return result[0];
+    return result;
   };
 
   logger.log('got script for processPage');
@@ -98,7 +98,7 @@ async function eyesStorybook({
 
     const getStoryData = makeGetStoryData({
       logger,
-      takeDomSnapshot: doTakeDomSnapshot,
+      takeDomSnapshots: doTakeDomSnapshots,
       waitBeforeScreenshot,
     });
     const renderStory = makeRenderStory({
