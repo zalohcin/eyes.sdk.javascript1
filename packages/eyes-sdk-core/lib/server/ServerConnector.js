@@ -230,8 +230,9 @@ class ServerConnector {
       ),
       params: {
         aborted: isAborted,
-        updateBaselineIfNew,
-        updateBaselineIfDifferent,
+        updateBaseline: runningSession.getIsNew() ? updateBaselineIfNew : updateBaselineIfDifferent,
+        // updateBaselineIfNew,
+        // updateBaselineIfDifferent,
       },
     }
 
