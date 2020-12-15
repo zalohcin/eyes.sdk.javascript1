@@ -2,6 +2,26 @@
 
 ## Unreleased
 
+- calculate image location for viewport screenshots
+
+## 12.9.2 - 2020/12/14
+
+- using new protection method for native builtins with dom-snapshot
+- updated to @applitools/dom-snapshot@4.4.0 (from 4.3.1)
+
+## 12.9.1 - 2020/12/11
+
+- updated visual-grid-client dev dependency to latest (used for testing)
+
+## 12.9.0 - 2020/12/11
+
+- long running tasks enhancement
+- updated to @applitools/dom-snapshot@4.3.1 (from 4.3.0)
+
+## 12.8.4 - 2020/12/8
+
+- support skip list in dom-snapshot
+- updated to @applitools/dom-snapshot@4.3.0 (from 4.2.9)
 
 ## 12.8.3 - 2020/12/4
 

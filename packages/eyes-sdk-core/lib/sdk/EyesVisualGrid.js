@@ -187,7 +187,7 @@ class EyesVisualGrid extends EyesCore {
       this._configuration.addBrowser(vs.getWidth(), vs.getHeight(), BrowserType.CHROME)
     }
 
-    const {openEyes} = await this._runner.getVisualGridClientWithCache({
+    const {openEyes, getResourceUrlsInCache} = await this._runner.getVisualGridClientWithCache({
       logger: this._logger,
       agentId: this.getFullAgentId(),
       apiKey: this._configuration.getApiKey(),
@@ -211,6 +211,7 @@ class EyesVisualGrid extends EyesCore {
     this._checkWindowCommand = checkWindow
     this._closeCommand = close
     this._abortCommand = abort
+    this._getResourceUrlsInCache = getResourceUrlsInCache
 
     await this._initCommon()
 

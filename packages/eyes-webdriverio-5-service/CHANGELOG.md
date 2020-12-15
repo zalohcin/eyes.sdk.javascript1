@@ -3,6 +3,22 @@
 ## Unreleased
 
 
+## 1.10.1 - 2020/12/14
+
+- updated to @applitools/eyes-webdriverio@5.28.2 (from 5.28.1)
+
+## 1.10.0 - 2020/12/11
+
+- expose grid configuration primitives
+
+## 1.9.1 - 2020/12/11
+
+- updated to @applitools/eyes-webdriverio@5.28.1 (from 5.28.0)
+
+## 1.9.0 - 2020/12/11
+
+- updated to @applitools/eyes-webdriverio@5.28.0 (from 5.27.2)
+
 ## 1.8.2 - 2020/12/1
 
 - updated to @applitools/eyes-webdriverio@5.27.2 (from 5.27.1)

@@ -3,6 +3,16 @@
 ## Unreleased
 
 
+## 1.12.1 - 2020/12/14
+
+- updated to @applitools/eyes-sdk-core@12.9.2 (from 12.9.1)
+- updated to @applitools/visual-grid-client@15.3.1 (from 15.3.0)
+
+## 1.12.0 - 2020/12/11
+
+- updated to @applitools/eyes-sdk-core@12.9.1 (from 12.5.7)
+- updated to @applitools/visual-grid-client@15.3.0 (from 15.2.1)
+
 ## 1.11.2 - 2020/12/1
 
 - export `RunnerOptions`
