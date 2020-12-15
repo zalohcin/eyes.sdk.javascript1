@@ -1,7 +1,6 @@
 'use strict'
 const BrowserType = require('../config/BrowserType')
 const Configuration = require('../config/Configuration')
-const GeneralUtils = require('../utils/GeneralUtils')
 const TypeUtils = require('../utils/TypeUtils')
 const ArgumentGuard = require('../utils/ArgumentGuard')
 const TestResultsFormatter = require('../TestResultsFormatter')
@@ -246,8 +245,6 @@ class EyesVisualGrid extends EyesCore {
           this._configuration.getDisableBrowserFetching(),
         )
         const browsers = this._configuration.getBrowsersInfo()
-        let requiredWidths
-        if (breakpoints) requiredWidths = await this._getRequiredWidths({browsers, breakpoints})
         const viewportSize = await this.getViewportSize()
         const snapshots = await takeDomSnapshots({
           breakpoints,
@@ -255,7 +252,6 @@ class EyesVisualGrid extends EyesCore {
           disableBrowserFetching,
           driver: this._driver,
           logger: this._logger,
-          requiredWidths,
           viewportSize,
         })
         const [{url}] = snapshots
@@ -303,23 +299,6 @@ class EyesVisualGrid extends EyesCore {
     } finally {
       this._context = await originalContext.focus()
     }
-  }
-
-  async _getRequiredWidths({browsers, breakpoints}) {
-    return await browsers.reduce((widths, browser, index) => {
-      const browserInfo = this.getBrowserInfo(browser)
-      return widths.then(async widths => {
-        const {type, name, width} = await browserInfo
-        const requiredWidth = GeneralUtils.getBreakpointWidth(breakpoints, width)
-        let groupedBrowsers = widths.get(requiredWidth)
-        if (!groupedBrowsers) {
-          groupedBrowsers = []
-          widths.set(requiredWidth, groupedBrowsers)
-        }
-        groupedBrowsers.push({index, width, type, name})
-        return widths
-      })
-    }, Promise.resolve(new Map()))
   }
 
   /**
@@ -377,34 +356,6 @@ class EyesVisualGrid extends EyesCore {
    */
   async getInferredEnvironment() {
     return undefined
-  }
-
-  async getBrowserInfo(browser) {
-    if (TypeUtils.has(browser, 'name')) {
-      const {name, width, height} = browser
-      return {type: 'browser', name, width, height}
-    } else if (
-      TypeUtils.has(browser, 'chromeEmulationInfo') ||
-      TypeUtils.has(browser, 'deviceName')
-    ) {
-      const {deviceName, screenOrientation = 'portrait'} = browser.chromeEmulationInfo || browser
-      if (!this._emulatedDevicesSizesPromise) {
-        await this.getAndSaveRenderingInfo()
-        this._emulatedDevicesSizesPromise = this._serverConnector.getEmulatedDevicesSizes()
-      }
-      const devicesSizes = await this._emulatedDevicesSizesPromise
-      const size = devicesSizes[deviceName][screenOrientation]
-      return {type: 'emulation', name: deviceName, screenOrientation, ...size}
-    } else if (TypeUtils.has(browser, 'iosDeviceInfo')) {
-      const {deviceName, screenOrientation = 'portrait'} = browser.iosDeviceInfo
-      if (!this._iosDevicesSizesPromise) {
-        await this.getAndSaveRenderingInfo()
-        this._iosDevicesSizesPromise = this._serverConnector.getIosDevicesSizes()
-      }
-      const devicesSizes = await this._iosDevicesSizesPromise
-      const size = devicesSizes[deviceName][screenOrientation]
-      return {type: 'ios', name: deviceName, screenOrientation, ...size}
-    }
   }
 }
 module.exports = EyesVisualGrid

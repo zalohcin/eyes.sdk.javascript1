@@ -61,7 +61,6 @@ async function eyesStorybook({
       logger,
       driver,
       // TODO
-      // requiredWidths
       // viewportSize (map)
       breakpoints: config.layoutBreakpoints,
       browsers: config.browser || [true],

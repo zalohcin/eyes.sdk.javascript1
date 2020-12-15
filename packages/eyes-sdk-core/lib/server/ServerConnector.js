@@ -887,14 +887,17 @@ class ServerConnector {
     throw new Error(`ServerConnector.extractText - unexpected status (${response.statusText})`)
   }
 
-  async getEmulatedDevicesSizes() {
+  async getEmulatedDevicesSizes(serviceUrl) {
     this._logger.verbose(`ServerConnector.getEmulatedDevicesSizes`)
 
     const config = {
       name: 'getEmulatedDevicesSizes',
       method: 'GET',
       withApiKey: false,
-      url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/emulated-devices-sizes'),
+      url: GeneralUtils.urlConcat(
+        serviceUrl || this._renderingInfo.getServiceUrl(),
+        '/emulated-devices-sizes',
+      ),
     }
 
     const response = await this._axios.request(config)
@@ -907,13 +910,16 @@ class ServerConnector {
     }
   }
 
-  async getIosDevicesSizes() {
+  async getIosDevicesSizes(serviceUrl) {
     this._logger.verbose(`ServerConnector.getIosDevicesSizes`)
 
     const config = {
       name: 'getIosDevicesSizes',
       method: 'GET',
-      url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/ios-devices-sizes'),
+      url: GeneralUtils.urlConcat(
+        serviceUrl || this._renderingInfo.getServiceUrl(),
+        '/ios-devices-sizes',
+      ),
     }
 
     const response = await this._axios.request(config)

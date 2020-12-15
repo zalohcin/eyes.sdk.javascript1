@@ -1,13 +1,65 @@
 const takeDomSnapshot = require('./takeDomSnapshot')
 const chalk = require('chalk')
+const GeneralUtils = require('./GeneralUtils')
+const TypeUtils = require('./TypeUtils')
+const ServerConnector = require('../..')
 
+async function _getRequiredWidths({browsers, breakpoints}) {
+  return await browsers.reduce((widths, browser, index) => {
+    const browserInfo = _getBrowserInfo(browser)
+    return widths.then(async widths => {
+      const {type, name, width} = await browserInfo
+      const requiredWidth = GeneralUtils.getBreakpointWidth(breakpoints, width)
+      let groupedBrowsers = widths.get(requiredWidth)
+      if (!groupedBrowsers) {
+        groupedBrowsers = []
+        widths.set(requiredWidth, groupedBrowsers)
+      }
+      groupedBrowsers.push({index, width, type, name})
+      return widths
+    })
+  }, Promise.resolve(new Map()))
+}
+
+async function _getBrowserInfo(browser) {
+  if (TypeUtils.has(browser, 'name')) {
+    const {name, width, height} = browser
+    return {type: 'browser', name, width, height}
+  } else if (
+    TypeUtils.has(browser, 'chromeEmulationInfo') ||
+    TypeUtils.has(browser, 'deviceName')
+  ) {
+    const {deviceName, screenOrientation = 'portrait'} = browser.chromeEmulationInfo || browser
+    let _emulatedDevicesSizesPromise
+    if (!_emulatedDevicesSizesPromise) {
+      //await this.getAndSaveRenderingInfo()
+      const serverUrl = 'https://render-wus.applitools.com' // TODO: find a better way to do this
+      const serverConnector = new ServerConnector()
+      _emulatedDevicesSizesPromise = serverConnector.getEmulatedDevicesSizes(serverUrl)
+    }
+    const devicesSizes = await _emulatedDevicesSizesPromise
+    const size = devicesSizes[deviceName][screenOrientation]
+    return {type: 'emulation', name: deviceName, screenOrientation, ...size}
+  } else if (TypeUtils.has(browser, 'iosDeviceInfo')) {
+    const {deviceName, screenOrientation = 'portrait'} = browser.iosDeviceInfo
+    let _iosDevicesSizesPromise
+    if (!_iosDevicesSizesPromise) {
+      //await this.getAndSaveRenderingInfo()
+      const serverUrl = 'https://render-wus.applitools.com' // TODO: find a better way to do this
+      const serverConnector = new ServerConnector()
+      _iosDevicesSizesPromise = serverConnector.getIosDevicesSizes(serverUrl)
+    }
+    const devicesSizes = await _iosDevicesSizesPromise
+    const size = devicesSizes[deviceName][screenOrientation]
+    return {type: 'ios', name: deviceName, screenOrientation, ...size}
+  }
+}
 async function takeDomSnapshots({
   breakpoints,
   browsers,
   disableBrowserFetching,
   driver,
   logger,
-  requiredWidths,
   showLogs,
   useSessionCache,
   viewportSize,
@@ -22,6 +74,7 @@ async function takeDomSnapshots({
     return Array(browsers.length).fill(snapshot)
   }
 
+  const requiredWidths = await this._getRequiredWidths({browsers, breakpoints})
   const isStrictBreakpoints = Array.isArray(breakpoints)
   const smallestBreakpoint = Math.min(...(isStrictBreakpoints ? breakpoints : []))
 
