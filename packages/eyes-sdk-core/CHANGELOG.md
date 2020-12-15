@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 12.9.3 - 2020/12/15
+
 - calculate image location for viewport screenshots
 - revert update baseline logic
 - updated to @applitools/dom-capture@8.0.2 (from 8.0.1)
