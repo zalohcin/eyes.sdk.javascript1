@@ -2,7 +2,10 @@ const takeDomSnapshot = require('./takeDomSnapshot')
 const chalk = require('chalk')
 const GeneralUtils = require('./GeneralUtils')
 const TypeUtils = require('./TypeUtils')
-const ServerConnector = require('../..')
+const {ServerConnector} = require('../..')
+
+let _emulatedDevicesSizesPromise
+let _iosDevicesSizesPromise
 
 async function _getRequiredWidths({browsers, breakpoints}) {
   return await browsers.reduce((widths, browser, index) => {
@@ -30,9 +33,8 @@ async function _getBrowserInfo(browser) {
     TypeUtils.has(browser, 'deviceName')
   ) {
     const {deviceName, screenOrientation = 'portrait'} = browser.chromeEmulationInfo || browser
-    let _emulatedDevicesSizesPromise
     if (!_emulatedDevicesSizesPromise) {
-      //await this.getAndSaveRenderingInfo()
+      // fetch instead of server connector? what about caching the result? dynamically getting the server url?
       const serverUrl = 'https://render-wus.applitools.com' // TODO: find a better way to do this
       const serverConnector = new ServerConnector()
       _emulatedDevicesSizesPromise = serverConnector.getEmulatedDevicesSizes(serverUrl)
@@ -42,9 +44,7 @@ async function _getBrowserInfo(browser) {
     return {type: 'emulation', name: deviceName, screenOrientation, ...size}
   } else if (TypeUtils.has(browser, 'iosDeviceInfo')) {
     const {deviceName, screenOrientation = 'portrait'} = browser.iosDeviceInfo
-    let _iosDevicesSizesPromise
     if (!_iosDevicesSizesPromise) {
-      //await this.getAndSaveRenderingInfo()
       const serverUrl = 'https://render-wus.applitools.com' // TODO: find a better way to do this
       const serverConnector = new ServerConnector()
       _iosDevicesSizesPromise = serverConnector.getIosDevicesSizes(serverUrl)
@@ -54,6 +54,7 @@ async function _getBrowserInfo(browser) {
     return {type: 'ios', name: deviceName, screenOrientation, ...size}
   }
 }
+
 async function takeDomSnapshots({
   breakpoints,
   browsers,
@@ -74,7 +75,7 @@ async function takeDomSnapshots({
     return Array(browsers.length).fill(snapshot)
   }
 
-  const requiredWidths = await this._getRequiredWidths({browsers, breakpoints})
+  const requiredWidths = await _getRequiredWidths({browsers, breakpoints})
   const isStrictBreakpoints = Array.isArray(breakpoints)
   const smallestBreakpoint = Math.min(...(isStrictBreakpoints ? breakpoints : []))
 
