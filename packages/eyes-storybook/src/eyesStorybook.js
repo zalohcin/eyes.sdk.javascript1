@@ -62,7 +62,7 @@ async function eyesStorybook({
       driver,
       viewportSize: new RectangleSize(config.viewportSize),
       breakpoints: config.layoutBreakpoints,
-      browsers: config.browser || [true],
+      browsers: config.browser || [true], // won't work if no config.browser but there are layoutBreakpoints
       useSessionCache: true,
       showLogs: !!config.showLogs,
       disableBrowserFetching: !!config.disableBrowserFetching,
