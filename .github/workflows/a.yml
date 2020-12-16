@@ -1,4 +1,4 @@
-name: 2
+name: a
 
 on:
   workflow_run:
