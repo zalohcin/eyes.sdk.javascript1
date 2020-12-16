@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 0.5.19 - 2020/12/16
+
 - add `getDom` function to the coverage tests
 
 ## 0.5.18 - 2020/12/1
