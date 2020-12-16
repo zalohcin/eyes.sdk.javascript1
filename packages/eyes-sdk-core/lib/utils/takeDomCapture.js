@@ -18,9 +18,10 @@ const POLL_TIMEOUT = 200
 const IOS_CHUNK_BYTE_LENGTH = 100000
 const DEFAULT_CHUNK_BYTE_LENGTH = 262144000 // 250MB (could be 256MB but decide to leave a 6MB buffer)
 
-async function takeDomCapture(logger, driver, options = {}) {
+async function takeDomCapture(logger, context, options = {}) {
   ArgumentGuard.notNull(logger, 'logger')
-  ArgumentGuard.notNull(driver, 'driver')
+  ArgumentGuard.notNull(context, 'context')
+  const driver = context.driver
   const {
     axios = Axios.create(),
     chunkByteLength = driver.isIOS ? IOS_CHUNK_BYTE_LENGTH : DEFAULT_CHUNK_BYTE_LENGTH,
@@ -45,7 +46,7 @@ async function takeDomCapture(logger, driver, options = {}) {
   }
 
   const url = await driver.getUrl()
-  const dom = await captureContextDom(driver.mainContext)
+  const dom = await captureContextDom(context)
 
   return dom
 

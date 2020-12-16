@@ -696,7 +696,7 @@ class EyesClassic extends EyesCore {
   async tryCaptureDom() {
     try {
       this._logger.verbose('Getting window DOM...')
-      return await takeDomCapture(this._logger, this._driver)
+      return await takeDomCapture(this._logger, this._context)
     } catch (ignored) {
       return ''
     }
