@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- add new option to browser list ([Trello 693](https://trello.com/c/cEKupD0M))
 
 ## 12.9.4 - 2020/12/17
 
