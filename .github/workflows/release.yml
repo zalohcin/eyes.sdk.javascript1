@@ -1,4 +1,4 @@
-name: Publish
+name: Release single package
 
 on:
   workflow_dispatch:
