@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- add a temporary solution for recursive types
 
 ## 2.1.4 - 2020/12/2
 
