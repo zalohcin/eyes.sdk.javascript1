@@ -6,7 +6,7 @@ const {
   Logger,
   GeneralUtils: {backwardCompatible, deprecationWarning},
   RunnerStartedEvent,
-} = require('@applitools/eyes-sdk-core')
+} = require('@applitools/eyes-sdk-core/shared')
 const {ptimeoutWithError, presult} = require('@applitools/functional-commons')
 const makeGetAllResources = require('./getAllResources')
 const extractCssResources = require('./extractCssResources')

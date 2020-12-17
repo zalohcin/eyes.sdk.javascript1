@@ -1,5 +1,5 @@
 'use strict'
-const {EyesBase, NullRegionProvider} = require('@applitools/eyes-sdk-core')
+const {EyesBase, NullRegionProvider} = require('@applitools/eyes-sdk-core/shared')
 const {presult} = require('@applitools/functional-commons')
 const VERSION = require('../../package.json').version
 

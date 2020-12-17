@@ -1,7 +1,7 @@
 'use strict'
 const mapValues = require('lodash.mapvalues')
 const {URL} = require('url')
-const {RGridResource} = require('@applitools/eyes-sdk-core')
+const {RGridResource} = require('@applitools/eyes-sdk-core/shared')
 const absolutizeUrl = require('./absolutizeUrl')
 const resourceType = require('./resourceType')
 const toCacheEntry = require('./toCacheEntry')

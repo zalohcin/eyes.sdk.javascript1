@@ -20,7 +20,7 @@ const {
   FloatingRegionByRectangle,
   AccessibilityRegionByRectangle,
   TestResults,
-} = require('@applitools/eyes-sdk-core')
+} = require('@applitools/eyes-sdk-core/shared')
 const {
   apiKeyFailMsg,
   authorizationErrMsg,
