@@ -4,7 +4,7 @@ const {
   BatchInfo,
   GeneralUtils: {backwardCompatible, cachify},
   BrowserType,
-} = require('@applitools/eyes-sdk-core')
+} = require('@applitools/eyes-sdk-core/shared')
 const makeCheckWindow = require('./checkWindow')
 const makeAbort = require('./makeAbort')
 const makeClose = require('./makeClose')

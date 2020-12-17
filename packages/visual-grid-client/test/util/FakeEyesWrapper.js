@@ -7,7 +7,7 @@ const {
   Location,
   Region,
   BatchInfo,
-} = require('@applitools/eyes-sdk-core')
+} = require('@applitools/eyes-sdk-core/shared')
 const {URL} = require('url')
 const {loadJsonFixture, loadFixtureBuffer} = require('./loadFixture')
 const getSha256Hash = require('./getSha256Hash')

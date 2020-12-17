@@ -1,6 +1,6 @@
 'use strict'
 
-const {Region} = require('@applitools/eyes-sdk-core')
+const {Region} = require('@applitools/eyes-sdk-core/shared')
 const {presult} = require('@applitools/functional-commons')
 const createRenderRequest = require('./createRenderRequest')
 const createCheckSettings = require('./createCheckSettings')

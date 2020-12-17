@@ -27,6 +27,7 @@
   },
   "directories": {
     "lib": "./lib",
+    "common": "./common",
     "test": "./test"
   },
   "main": "./index.js",
