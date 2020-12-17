@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 12.9.4 - 2020/12/17
+
 - change `takeDomCapture` to capture dom only of the provided context
 
 ## 12.9.3 - 2020/12/15
