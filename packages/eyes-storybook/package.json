@@ -24,7 +24,7 @@
     "lint": "eslint '**/*.js'",
     "storybook": "start-storybook -c test/fixtures/appWithStorybook -p 9001 -s test/fixtures",
     "storybook:heavy": "start-storybook -c test/fixtures/heavyStorybook -p 9002 -s test/fixtures",
-    "eyes-storybook": "node bin/eyes-storybook.js -f test/fixtures/applitools.config.js",
+    "eyes-storybook": "node bin/eyes-storybook.js",
     "eyes-storybook:heavy": "node bin/eyes-storybook.js -f test/fixtures/heavyStorybook/applitools.config.js",
     "eyes-storybook:configured": "node bin/eyes-storybook.js -f scripts/preconfigured.config.js",
     "changelog": "git changelog -x -p -f v$npm_package_version > History.md && git add ./History.md && git commit -am 'changelog'",

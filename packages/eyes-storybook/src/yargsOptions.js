@@ -2,17 +2,23 @@ module.exports = {
   conf: {
     alias: 'f',
     description: 'Path to applitools.config.js config file',
+    default: 'test/fixtures/applitools.config.js',
     requiresArg: true,
     string: true,
   },
-
+  serverUrl: {
+    alias: ['server-url', 'srv'],
+    description: 'URL to eyes server',
+    default: 'https://eyes.applitools.com',
+    requiresArg: true,
+    string: true,
+  },
   storybookUrl: {
     alias: ['storybook-url', 'u'],
     description: 'URL to storybook',
     requiresArg: true,
     string: true,
   },
-
   // storybook options
   storybookPort: {
     alias: ['storybook-port', 'p'],
