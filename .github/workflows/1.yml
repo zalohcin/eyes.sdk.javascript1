@@ -9,7 +9,6 @@ on:
 jobs:
   eyes-sdk-core:
     runs-on: ubuntu-latest
-    name: publish ${{github.event.inputs.name}}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -30,7 +29,6 @@ jobs:
   visual-grid-client:
     needs: eyes-sdk-core
     runs-on: ubuntu-latest
-    name: publish ${{github.event.inputs.name}}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -51,7 +49,6 @@ jobs:
   eyes-selenium:
     needs: visual-grid-client
     runs-on: ubuntu-latest
-    name: publish ${{github.event.inputs.name}}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -72,7 +69,6 @@ jobs:
   eyes-storybook:
     needs: visual-grid-client
     runs-on: ubuntu-latest
-    name: publish ${{github.event.inputs.name}}
     steps:
       - uses: actions/checkout@v2
         with:
