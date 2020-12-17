@@ -37,11 +37,11 @@ function useEmitter() {
     }
     ref.type = function(type) {
       if (type) {
-        const parsed = typeof type === 'string' ? parseType(type) : parseType(type.type)
-        ref._type = {
-          ...parsed,
-          items: type.items,
-          schema: type.schema,
+        if (typeof type === 'string') ref._type = parseType(type)
+        else if (typeof type.type === 'string') {
+          ref._type = {...type, ...parseType(type.type)}
+        } else {
+          ref._type = type
         }
         return this
       } else {
@@ -54,7 +54,9 @@ function useEmitter() {
         const type = ref.type()
         const result = useRef(() => syntax.getter({type, target: ref.ref(), key}))
         if (type) {
-          if (type.items) result.type(type.items)
+          console.log(type)
+          if (type.recursive) result.type(type)
+          else if (type.items) result.type(type.items)
           else if (type.schema && type.schema[key]) result.type(type.schema[key])
         }
         return result

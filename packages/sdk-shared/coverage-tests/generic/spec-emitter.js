@@ -215,10 +215,10 @@ module.exports = function(tracker, test) {
       return addCommand(js`await new Promise(r => setTimeout(r, ${milliseconds}))`)
     },
     getTestInfo(result) {
-      return addCommand(js`await getTestInfo(${result})`).type('TestInfo')
+      return addCommand(js`await getTestInfo(${result})`)
     },
     getDom(result, domId) {
-      return addCommand(js`await getDom(${result}, ${domId})`).type('TestInfo')
+      return addCommand(js`await getDom(${result}, ${domId})`)
     },
   }
 
