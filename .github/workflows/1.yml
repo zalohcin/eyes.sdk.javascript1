@@ -7,7 +7,7 @@ on:
         description: "version type (specify 'major', 'minor, or 'patch')"
         required: true
 jobs:
-  publish:
+  eyes-sdk-core:
     runs-on: ubuntu-latest
     name: publish ${{github.event.inputs.name}}
     steps:
@@ -18,7 +18,69 @@ jobs:
         with:
           node-version: 14
       - run: |
-
+          echo "--${{github.event.inputs.version}}"
+    env:
+      CVG_TESTS_REMOTE: http://localhost:4444/wd/hub
+      APPLITOOLS_API_KEY_SDK: ${{secrets.APPLITOOLS_API_KEY_SDK}}
+      APPLITOOLS_API_KEY: ${{secrets.APPLITOOLS_API_KEY}}
+      SAUCE_ACCESS_KEY: ${{secrets.SAUCE_ACCESS_KEY}}
+      SAUCE_USERNAME: ${{secrets.SAUCE_USERNAME}}
+      NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
+  visual-grid-client:
+    needs: eyes-sdk-core
+    runs-on: ubuntu-latest
+    name: publish ${{github.event.inputs.name}}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - run: |
+          echo "--${{github.event.inputs.version}}"
+    env:
+      CVG_TESTS_REMOTE: http://localhost:4444/wd/hub
+      APPLITOOLS_API_KEY_SDK: ${{secrets.APPLITOOLS_API_KEY_SDK}}
+      APPLITOOLS_API_KEY: ${{secrets.APPLITOOLS_API_KEY}}
+      SAUCE_ACCESS_KEY: ${{secrets.SAUCE_ACCESS_KEY}}
+      SAUCE_USERNAME: ${{secrets.SAUCE_USERNAME}}
+      NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
+  eyes-selenium:
+    needs: visual-grid-client
+    runs-on: ubuntu-latest
+    name: publish ${{github.event.inputs.name}}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - run: |
+          echo "--${{github.event.inputs.version}}"
+    env:
+      CVG_TESTS_REMOTE: http://localhost:4444/wd/hub
+      APPLITOOLS_API_KEY_SDK: ${{secrets.APPLITOOLS_API_KEY_SDK}}
+      APPLITOOLS_API_KEY: ${{secrets.APPLITOOLS_API_KEY}}
+      SAUCE_ACCESS_KEY: ${{secrets.SAUCE_ACCESS_KEY}}
+      SAUCE_USERNAME: ${{secrets.SAUCE_USERNAME}}
+      NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
+  eyes-storybook:
+    needs: visual-grid-client
+    runs-on: ubuntu-latest
+    name: publish ${{github.event.inputs.name}}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - run: |
           echo "--${{github.event.inputs.version}}"
     env:
       CVG_TESTS_REMOTE: http://localhost:4444/wd/hub
