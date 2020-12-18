@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 0.6.0 - 2020/12/18
+
 - Re-established defaults for a few of the native mobile tests (which defaults to skipEmit: true) since they are failing. Need to revisit them later.
 
 ## 0.5.19 - 2020/12/16
