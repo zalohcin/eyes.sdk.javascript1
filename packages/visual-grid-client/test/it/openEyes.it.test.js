@@ -350,7 +350,7 @@ describe('openEyes', () => {
         appName,
       }),
     )
-    expect(err.message).to.equal(
+    expect(err && err.message).to.equal(
       `browser name should be one of the following:
 * chrome
 * chrome-canary
@@ -361,6 +361,7 @@ describe('openEyes', () => {
 * edgelegacy
 * ie
 * safari
+* safari-earlyaccess
 * chrome-one-version-back
 * chrome-two-versions-back
 * firefox-one-version-back
