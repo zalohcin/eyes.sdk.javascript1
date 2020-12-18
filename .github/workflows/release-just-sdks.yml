@@ -1,4 +1,4 @@
-name: Release core & SDKs
+name: Release just SDKs (not core)
 
 on:
   workflow_dispatch:
@@ -7,103 +7,7 @@ on:
         description: "version type (specify 'major', 'minor, or 'patch')"
         required: true
 jobs:
-  eyes-sdk-core:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 14
-      - run: |
-          echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > .npmrc
-          echo "registry=https://registry.npmjs.org/" >> .npmrc
-          echo "always-auth=true" >> .npmrc
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-
-          echo "::group::create temp branch"
-          DATE=$(date +%F_%H-%M)
-          BRANCH="eyes-sdk-core_$DATE"
-          git checkout -b $BRANCH
-          git push -u origin $BRANCH
-          echo "::endgroup::"
-
-          echo "::group::publish eyes-sdk-core"
-          cd "packages/eyes-sdk-core"
-          yarn
-          yarn deps
-          yarn list
-          yarn prepublish:setup
-          yarn publish "--${{github.event.inputs.version}}" --access public
-          echo "::endgroup::"
-
-          echo "::group::update master from $BRANCH"
-          git checkout master
-          git pull origin master --rebase
-          git merge $BRANCH
-          git push origin master
-          echo "::endgroup::"
-    env:
-      APPLITOOLS_API_KEY_READ: ${{secrets.APPLITOOLS_API_KEY_READ}}
-      CVG_TESTS_REMOTE: http://localhost:4444/wd/hub
-      APPLITOOLS_API_KEY_SDK: ${{secrets.APPLITOOLS_API_KEY_SDK}}
-      APPLITOOLS_API_KEY: ${{secrets.APPLITOOLS_API_KEY}}
-      SAUCE_ACCESS_KEY: ${{secrets.SAUCE_ACCESS_KEY}}
-      SAUCE_USERNAME: ${{secrets.SAUCE_USERNAME}}
-      NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
-  visual-grid-client:
-    needs: eyes-sdk-core
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 14
-      - run: |
-          echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > .npmrc
-          echo "registry=https://registry.npmjs.org/" >> .npmrc
-          echo "always-auth=true" >> .npmrc
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-
-          echo "::group::create temp branch"
-          DATE=$(date +%F_%H-%M)
-          BRANCH="visual-grid-client_$DATE"
-          git checkout -b $BRANCH
-          git push -u origin $BRANCH
-          echo "::endgroup::"
-
-          echo "::group::publish visual-grid-client"
-          cd "packages/visual-grid-client"
-          yarn
-          yarn deps
-          yarn list
-          yarn prepublish:setup
-          yarn publish "--${{github.event.inputs.version}}" --access public
-          echo "::endgroup::"
-
-          echo "::group::update master from $BRANCH"
-          git checkout master
-          git pull origin master --rebase
-          git merge $BRANCH
-          git push origin master
-          echo "::endgroup::"
-    env:
-      APPLITOOLS_API_KEY_READ: ${{secrets.APPLITOOLS_API_KEY_READ}}
-      CVG_TESTS_REMOTE: http://localhost:4444/wd/hub
-      APPLITOOLS_API_KEY_SDK: ${{secrets.APPLITOOLS_API_KEY_SDK}}
-      APPLITOOLS_API_KEY: ${{secrets.APPLITOOLS_API_KEY}}
-      SAUCE_ACCESS_KEY: ${{secrets.SAUCE_ACCESS_KEY}}
-      SAUCE_USERNAME: ${{secrets.SAUCE_USERNAME}}
-      NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
   eyes-cypress:
-    needs: visual-grid-client
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -151,7 +55,6 @@ jobs:
       NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
   eyes-images:
-    needs: visual-grid-client
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -199,7 +102,6 @@ jobs:
       NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
   eyes-nightwatch:
-    needs: visual-grid-client
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -247,7 +149,6 @@ jobs:
       NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
   eyes-playwright:
-    needs: visual-grid-client
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -295,7 +196,6 @@ jobs:
       NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
   eyes-protractor:
-    needs: visual-grid-client
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -343,7 +243,6 @@ jobs:
       NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
   eyes-puppeteer:
-    needs: visual-grid-client
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -391,7 +290,6 @@ jobs:
       NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
   eyes-selenium:
-    needs: visual-grid-client
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -439,7 +337,6 @@ jobs:
       NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
   eyes-storybook:
-    needs: visual-grid-client
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -487,7 +384,6 @@ jobs:
       NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
   eyes-webdriverio-4:
-    needs: visual-grid-client
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -535,7 +431,6 @@ jobs:
       NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
   eyes-webdriverio-5:
-    needs: visual-grid-client
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
