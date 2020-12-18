@@ -7,7 +7,7 @@ on:
         description: "name"
         required: true
 jobs:
-  publish:
+  test:
     runs-on: ubuntu-latest
     name: publish ${{github.event.inputs.name}}
     steps:
@@ -18,6 +18,16 @@ jobs:
         with:
           node-version: 14
       - run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+          echo "::group::create temp branch"
+          DATE=$(date +%F_%H-%M)
+          BRANCH="${{github.event.inputs.name}}_$DATE"
+          git checkout -b $BRANCH
+          git push -u origin $BRANCH
+          echo "::endgroup::"
+
           echo "::group::test ${{github.event.inputs.name}}"
           cd "packages/${{github.event.inputs.name}}"
           yarn
@@ -25,6 +35,9 @@ jobs:
           yarn prepublish:setup
           yarn coverage:sandbox
           echo "::endgroup::"
+
+          git branch -d $BRANCH
+          git push origin --delete $BRANCH
     env:
       CVG_TESTS_REMOTE: http://localhost:4444/wd/hub
       APPLITOOLS_API_KEY_SDK: ${{secrets.APPLITOOLS_API_KEY_SDK}}
