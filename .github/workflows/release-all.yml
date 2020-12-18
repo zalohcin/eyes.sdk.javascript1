@@ -1,4 +1,4 @@
-name: Release core & SDKs
+name: Release all
 
 on:
   workflow_dispatch:
