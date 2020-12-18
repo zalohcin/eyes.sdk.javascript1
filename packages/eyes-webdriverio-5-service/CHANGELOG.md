@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- updated to @applitools/eyes-webdriverio@5.29.0 (from 5.28.2)
 
 
 ## 1.10.1 - 2020/12/14
