@@ -1,4 +1,4 @@
-name: Release SDKs (not internal packages)
+name: Release all w/o core
 
 on:
   workflow_dispatch:
