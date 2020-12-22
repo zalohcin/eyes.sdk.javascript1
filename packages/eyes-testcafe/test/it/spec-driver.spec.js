@@ -275,7 +275,6 @@ test('setWindowRect (x, y)', async driver => {
   assert.deepStrictEqual(actualPosition.x, expectedPosition.x)
   assert.deepStrictEqual(actualPosition.y, expectedPosition.y)
 })
-// TODO: use fakeEyesServer
 test('Eyes integration', async driver => {
   const eyes = new EyesFactory()
   assert.doesNotThrow(async () => {
