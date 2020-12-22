@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- add dom traversing functionality
 
 ## 0.6.0 - 2020/12/18
 
