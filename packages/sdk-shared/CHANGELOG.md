@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- expose coverateTestsConfig
 
 ## 0.6.1 - 2020/12/22
 
