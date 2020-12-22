@@ -13,6 +13,10 @@ function isUrl(value) {
   return /^https?:/.test(value)
 }
 
+function isString(value) {
+  return typeof value === 'string'
+}
+
 function isFunction(value) {
   return typeof value === 'function'
 }
@@ -54,6 +58,7 @@ module.exports = {
   findDifferencesBetweenCollections,
   mergeObjects,
   isUrl,
+  isString,
   isFunction,
   isObject,
   isEmptyObject,

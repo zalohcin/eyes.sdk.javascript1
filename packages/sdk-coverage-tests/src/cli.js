@@ -13,18 +13,32 @@ const cli = yargs
     description: 'create test files for a given SDK configuration',
     builder: yargs =>
       yargs.options({
-        configPath: {
+        config: {
+          aliases: ['configPath', 'c'],
           description: 'path to the sdk configuration .js file',
           type: 'string',
           default: './test/coverage/index.js',
         },
-        testsPath: {
-          alias: 't',
+        tests: {
+          aliases: ['testsPath', 't'],
           description: 'path to the tests file (local or remote)',
           type: 'string',
         },
-        outPath: {
-          alias: 'o',
+        template: {
+          description: 'path to the template .hbs file (local or remote)',
+          type: 'string',
+        },
+        spec: {
+          aliases: ['s'],
+          description: 'path to the spec emitter definition file (local or remote)',
+          type: 'string',
+        },
+        overrides: {
+          description: 'path to the tests overrides file (local or remote)',
+          type: 'string',
+        },
+        output: {
+          aliases: ['outPath', 'o'],
           description: 'path to save generated files',
           type: 'string',
         },
@@ -100,7 +114,7 @@ const cli = yargs
           describe: 'id of the report which will be displayed at the dashboard',
         },
         sandbox: {
-          description: `don't send a result report to the sandbox QA dashboard`,
+          description: `send a result report to the sandbox QA dashboard instead of prod`,
         },
       }),
     handler: report,

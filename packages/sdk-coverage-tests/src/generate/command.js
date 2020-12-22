@@ -1,12 +1,11 @@
 const path = require('path')
 const chalk = require('chalk')
-const {prepareTests} = require('./prepare')
+const {prepareTests, prepareEmitter, prepareFileTemplate} = require('./prepare')
 const {emitTests} = require('./emit')
 const {createTestFiles, createTestMetaData} = require('./save')
 
 const DEFAULT_CONFIG = {
-  testsPath:
-    'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/master/coverage-tests.js',
+  tests: 'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/master/coverage-tests.js',
 }
 
 async function generate({configPath, ...options}) {
@@ -26,10 +25,10 @@ async function generate({configPath, ...options}) {
       return
     }
 
-    const {emittedTests, errors} = emitTests(tests, {
-      makeSdk: config.initializeSdk,
-      fileTemplate: config.testFrameworkTemplate,
-    })
+    const makeSpecEmitter = await prepareEmitter(config)
+    const makeFile = await prepareFileTemplate(config)
+
+    const {emittedTests, errors} = emitTests(tests, {makeSpecEmitter, makeFile})
 
     if (errors.length > 0) {
       if (config.strict) {

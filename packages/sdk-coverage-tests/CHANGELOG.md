@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- add types registration mechanism - `addType`
+- add type cast mechanism
+- add a possibility to register type-specific syntax variations
 
 ## 2.1.5 - 2020/12/17
 
@@ -65,4 +68,3 @@
 - updated to chalk@4.1.0 (from 3.0.0)
 - updated to node-fetch@2.6.1 (from 2.6.0)
 - updated to yargs@16.0.3 (from 15.0.2)
-

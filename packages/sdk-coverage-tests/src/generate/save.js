@@ -1,15 +1,15 @@
 const fs = require('fs')
 const path = require('path')
 
-async function createTestFiles(tests, {outPath, ext}) {
-  const targetDirectory = path.join(process.cwd(), outPath)
+async function createTestFiles(tests, {output, outPath, ext, formatter}) {
+  const targetDirectory = path.join(process.cwd(), output || outPath)
 
   fs.rmdirSync(targetDirectory, {recursive: true})
   fs.mkdirSync(targetDirectory, {recursive: true})
 
-  tests.forEach(test => {
+  tests.forEach(async test => {
     const filePath = path.resolve(targetDirectory, `${test.key}${ext}`)
-    fs.writeFileSync(filePath, test.code)
+    fs.writeFileSync(filePath, formatter ? await formatter(test.code) : test.code)
   })
 }
 
