@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 2.2.0 - 2020/12/22
+
 - add types registration mechanism - `addType`
 - add type cast mechanism
 - add a possibility to register type-specific syntax variations
