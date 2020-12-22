@@ -18,7 +18,7 @@ fixture`Coverage Tests`
   {{command}}
   {{/each}}
 })
-test{{#if skip}}.skip{{/if}}('{{name}}{{#tags tags}}@{{this}}{{/tags}}', async () => {
+test{{#if skip}}.skip{{/if}}('{{name}}{{#tags tags}}@{{this}}{{/tags}}', async driver => {
   {{#each output.commands as |command|}}
   {{command}}
   {{/each}}
