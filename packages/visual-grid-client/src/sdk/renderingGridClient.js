@@ -129,6 +129,8 @@ function makeRenderingGridClient({
     setRenderingInfo,
     doGetRenderJobInfo,
     doLogEvents,
+    doGetEmulatedDeviceSizes,
+    doGetIosDevicesSizes,
   } = getRenderMethods(renderWrapper)
   const resourceCache = createResourceCache()
   const fetchCache = createResourceCache()
@@ -220,12 +222,17 @@ function makeRenderingGridClient({
   const closeBatch = makeCloseBatch({globalState, dontCloseBatches, isDisabled})
   const testWindow = makeTestWindow(openConfig)
 
+  let emulatedDevicesSizes
+  let iosDevicesSizes
+
   return {
     openEyes,
     closeBatch,
     globalState,
     testWindow,
     getResourceUrlsInCache,
+    getIosDevicesSizes,
+    getEmulatedDevicesSizes,
   }
 
   async function getInitialData() {
@@ -267,6 +274,20 @@ function makeRenderingGridClient({
 
     setRenderingInfo(renderInfo)
     return {renderInfo}
+  }
+
+  async function getEmulatedDevicesSizes() {
+    if (!emulatedDevicesSizes) {
+      emulatedDevicesSizes = await doGetEmulatedDeviceSizes()
+    }
+    return emulatedDevicesSizes
+  }
+
+  async function getIosDevicesSizes() {
+    if (!iosDevicesSizes) {
+      iosDevicesSizes = await doGetIosDevicesSizes()
+    }
+    return iosDevicesSizes
   }
 
   function getResourceUrlsInCache() {
