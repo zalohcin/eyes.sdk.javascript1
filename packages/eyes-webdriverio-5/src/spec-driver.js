@@ -11,11 +11,68 @@ function extractElementId(element) {
 }
 
 function transformSelector(selector) {
-  if (TypeUtils.has(selector, ['type', 'selector'])) {
+  if (selector instanceof LegacySelector) {
+    return selector.toString()
+  } else if (TypeUtils.has(selector, ['type', 'selector'])) {
     if (selector.type === 'css') return `css selector:${selector.selector}`
     else if (selector.type === 'xpath') return `xpath:${selector.selector}`
+    else return `${selector.type}:${selector.selector}`
   }
   return selector
+}
+function serializeArgs(args) {
+  const elements = []
+  const argsWithElementMarkers = args.map(serializeArg)
+
+  return {argsWithElementMarkers, elements}
+
+  function serializeArg(arg) {
+    if (isElement(arg)) {
+      elements.push(arg)
+      return {isElement: true}
+    } else if (TypeUtils.isArray(arg)) {
+      return arg.map(serializeArg)
+    } else if (TypeUtils.isObject(arg)) {
+      return Object.entries(arg).reduce((object, [key, value]) => {
+        return Object.assign(object, {[key]: serializeArg(value)})
+      }, {})
+    } else {
+      return arg
+    }
+  }
+}
+// NOTE:
+// A few things to note:
+//  - this function runs inside of the browser process
+//  - evaluations in Puppeteer accept multiple arguments (not just one like in Playwright)
+//  - an element reference (a.k.a. an ElementHandle) can only be sent as its
+//    own argument. To account for this, we use a wrapper function to receive all
+//    of the arguments in a serialized structure, deserialize them, and call the script,
+//    and pass the arguments as originally intended
+async function scriptRunner() {
+  function deserializeArg(arg) {
+    if (!arg) {
+      return arg
+    } else if (arg.isElement) {
+      return elements.shift()
+    } else if (Array.isArray(arg)) {
+      return arg.map(deserializeArg)
+    } else if (typeof arg === 'object') {
+      return Object.entries(arg).reduce((object, [key, value]) => {
+        return Object.assign(object, {[key]: deserializeArg(value)})
+      }, {})
+    } else {
+      return arg
+    }
+  }
+  const args = Array.from(arguments)
+  const elements = args.slice(1)
+  let script = args[0].script
+  script = new Function(
+    script.startsWith('function') ? `return (${script}).apply(null, arguments)` : script,
+  )
+  const deserializedArgs = args[0].argsWithElementMarkers.map(deserializeArg)
+  return script.apply(null, deserializedArgs)
 }
 
 // #endregion
@@ -68,7 +125,13 @@ async function isEqualElements(browser, element1, element2) {
 // #region COMMANDS
 
 async function executeScript(browser, script, ...args) {
-  return browser.execute(script, ...args)
+  if (browser.isDevTools) {
+    script = TypeUtils.isString(script) ? script : script.toString()
+    const {argsWithElementMarkers, elements} = serializeArgs(args)
+    return browser.execute(scriptRunner, {script, argsWithElementMarkers}, ...elements)
+  } else {
+    return browser.execute(script, ...args)
+  }
 }
 async function mainContext(browser) {
   await browser.switchToFrame(null)
@@ -83,15 +146,11 @@ async function childContext(browser, element) {
   return browser
 }
 async function findElement(browser, selector) {
-  const element = await browser.$(
-    selector instanceof LegacySelector ? selector.toString() : transformSelector(selector),
-  )
+  const element = await browser.$(transformSelector(selector))
   return !element.error ? element : null
 }
 async function findElements(browser, selector) {
-  const elements = await browser.$$(
-    selector instanceof LegacySelector ? selector.toString() : transformSelector(selector),
-  )
+  const elements = await browser.$$(transformSelector(selector))
   return Array.from(elements)
 }
 async function getElementRect(browser, element) {
@@ -175,27 +234,23 @@ async function takeScreenshot(driver) {
   return driver.takeScreenshot()
 }
 async function click(browser, element) {
-  const extendedElement = await browser.$(element)
-  return extendedElement.click()
+  if (isSelector(element)) element = await findElement(browser, element)
+  return element.click()
 }
 async function type(browser, element, keys) {
-  const extendedElement = await browser.$(element)
-  return extendedElement.setValue(keys)
+  if (isSelector(element)) element = await findElement(browser, element)
+  return element.setValue(keys)
 }
 async function waitUntilDisplayed(browser, selector, timeout) {
   const element = await findElement(browser, selector)
   return element.waitForDisplayed({timeout})
 }
 async function scrollIntoView(browser, element, align = false) {
-  if (isSelector(element)) {
-    const element = await findElement(browser, element)
-  }
+  if (isSelector(element)) element = await findElement(browser, element)
   return element.scrollIntoView(align)
 }
 async function hover(browser, element, {x, y} = {}) {
-  if (isSelector(element)) {
-    const element = await findElement(browser, element)
-  }
+  if (isSelector(element)) element = await findElement(browser, element)
   // NOTE: WDIO6 changed the signature of moveTo method
   if (process.env.APPLITOOLS_WDIO_MAJOR_VERSION === '5') {
     await element.moveTo(x, y)
@@ -217,7 +272,7 @@ async function build(env) {
   const chromedriver = require('chromedriver')
   const {testSetup} = require('@applitools/sdk-shared')
   const {
-    protocol = 'wd',
+    protocol,
     browser = '',
     capabilities,
     url,
@@ -227,7 +282,7 @@ async function build(env) {
     args = [],
     headless,
     logLevel = 'silent',
-  } = testSetup.Env(env)
+  } = testSetup.Env(env, process.env.APPLITOOLS_WDIO_PROTOCOL)
 
   const options = {
     capabilities: {browserName: browser, ...capabilities},
@@ -252,13 +307,16 @@ async function build(env) {
         options.port = 9515
         options.path = '/'
       }
-      const browserOptionsName = browserOptionsNames[browser]
+      const browserOptionsName = browserOptionsNames[browser || options.capabilities.browserName]
       if (browserOptionsName) {
-        options.capabilities[browserOptionsName] = {
-          args: headless ? args.concat('headless') : args,
-          w3c: !attach,
-          debuggerAddress: attach === true ? 'localhost:9222' : attach,
+        const browserOptions = options.capabilities[browserOptionsName] || {}
+        browserOptions.args = [...(browserOptions.args || []), ...args]
+        if (headless) browserOptions.args.push('headless')
+        if (attach) {
+          browserOptions.debuggerAddress = attach === true ? 'localhost:9222' : attach
+          if (browser !== 'firefox') browserOptions.w3c = false
         }
+        options.capabilities[browserOptionsName] = browserOptions
       }
     }
   }

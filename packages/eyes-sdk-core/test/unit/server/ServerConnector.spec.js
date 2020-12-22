@@ -2,8 +2,19 @@
 
 const assert = require('assert')
 const assertRejects = require('assert-rejects')
+const settle = require('axios/lib/core/settle')
 const {startFakeEyesServer} = require('@applitools/sdk-fake-eyes-server')
-const {ServerConnector, Logger, Configuration, GeneralUtils} = require('../../../')
+const {
+  ServerConnector,
+  Logger,
+  Configuration,
+  GeneralUtils,
+  SessionStartInfo,
+  MatchWindowAndCloseData,
+  AppOutput,
+  Location,
+  TestResults,
+} = require('../../../')
 const {presult} = require('../../../lib/troubleshoot/utils')
 const logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS)
 
@@ -45,6 +56,143 @@ describe('ServerConnector', () => {
     } finally {
       await close()
     }
+  })
+
+  it('retry startSession if it blocked by concurrency', async () => {
+    const serverConnector = getServerConnector()
+    assert.deepStrictEqual(serverConnector._axios.defaults.concurrencyBackoff, [
+      2000,
+      2000,
+      2000,
+      2000,
+      2000,
+      5000,
+      5000,
+      5000,
+      5000,
+      10000,
+    ])
+    serverConnector._axios.defaults.concurrencyBackoff = [50, 50, 100, 100, 100]
+    let retries = 0
+    let timeoutPassed = false
+    const timeoutId = setTimeout(() => (timeoutPassed = true), 1000)
+    serverConnector._axios.defaults.adapter = async config =>
+      new Promise((resolve, reject) => {
+        retries += 1
+        if (retries >= 7) {
+          clearTimeout(timeoutId)
+          assert.strictEqual(timeoutPassed, false)
+          return settle(resolve, reject, {
+            status: 200,
+            config,
+            data: {
+              id: 'id',
+              sessionId: 'sessionId',
+              batchId: 'batchId',
+              baselineId: 'baselineId',
+              isNew: true,
+              url: 'url',
+            },
+            headers: {},
+            request: {},
+          })
+        }
+        const data = JSON.parse(config.data)
+        assert.strictEqual(data.startInfo.concurrencyVersion, 2)
+        assert.strictEqual(data.startInfo.agentSessionId, guid)
+        return settle(resolve, reject, {status: 503, config, data: {}, headers: {}, request: {}})
+      })
+    const guid = GeneralUtils.guid()
+    const runningSession = await serverConnector.startSession(
+      new SessionStartInfo({
+        agentId: 'agentId',
+        appIdOrName: 'appIdOrName',
+        scenarioIdOrName: 'scenarioIdOrName',
+        environment: {displaySize: {width: 1, height: 2}},
+        batchInfo: {id: 'batchId'},
+        defaultMatchSettings: {},
+        agentSessionId: guid,
+      }),
+    )
+    assert.strictEqual(retries, 7)
+    assert.deepStrictEqual(runningSession.toJSON(), {
+      id: 'id',
+      sessionId: 'sessionId',
+      batchId: 'batchId',
+      baselineId: 'baselineId',
+      isNew: true,
+      renderingInfo: undefined,
+      url: 'url',
+    })
+  })
+
+  it('retry startSession long running task if it blocked by concurrency', async () => {
+    const serverConnector = getServerConnector()
+    serverConnector._axios.defaults.concurrencyBackoff = [50]
+    serverConnector._axios.defaults.delayBeforePolling = [50]
+    let startSessionRequests = 0
+    let pollingRequests = 0
+    let blockedResponses = 0
+    serverConnector._axios.defaults.adapter = async config =>
+      new Promise((resolve, reject) => {
+        if (config.url === 'https://eyesapi.applitools.com/api/sessions/running') {
+          startSessionRequests += 1
+          const headers = {location: 'polling url'}
+          return settle(resolve, reject, {status: 202, config, headers, request: {}})
+        } else if (config.url === 'polling url') {
+          pollingRequests += 1
+          if (pollingRequests < 3) {
+            return settle(resolve, reject, {status: 200, config, headers: {}, request: {}})
+          } else {
+            pollingRequests = 0
+            const headers = {location: 'get result url'}
+            return settle(resolve, reject, {status: 201, config, headers, request: {}})
+          }
+        } else if (config.url === 'get result url') {
+          if (startSessionRequests <= 2) {
+            blockedResponses += 1
+            return settle(resolve, reject, {status: 503, config, headers: {}, request: {}})
+          } else {
+            return settle(resolve, reject, {
+              status: 200,
+              config,
+              data: {
+                id: 'id',
+                sessionId: 'sessionId',
+                batchId: 'batchId',
+                baselineId: 'baselineId',
+                isNew: true,
+                url: 'url',
+              },
+              headers: {},
+              request: {},
+            })
+          }
+        }
+      })
+    const guid = GeneralUtils.guid()
+    const runningSession = await serverConnector.startSession(
+      new SessionStartInfo({
+        agentId: 'agentId',
+        appIdOrName: 'appIdOrName',
+        scenarioIdOrName: 'scenarioIdOrName',
+        environment: {displaySize: {width: 1, height: 2}},
+        batchInfo: {id: 'batchId'},
+        defaultMatchSettings: {},
+        agentSessionId: guid,
+      }),
+    )
+    assert.strictEqual(startSessionRequests, 3)
+    assert.strictEqual(blockedResponses, 2)
+    assert.deepStrictEqual(runningSession.toJSON(), {
+      id: 'id',
+      sessionId: 'sessionId',
+      batchId: 'batchId',
+      baselineId: 'baselineId',
+      isNew: true,
+      renderingInfo: undefined,
+      url: 'url',
+    })
   })
 
   // [trello] https://trello.com/c/qjmAw1Sc/160-storybook-receiving-an-inconsistent-typeerror
@@ -155,6 +303,7 @@ describe('ServerConnector', () => {
       if (config.url === 'http://long-request.url') {
         response.status = 202
         response.headers.location = 'http://polling.url'
+        response.headers['Retry-After'] = '1'
         timestampBefore = Date.now()
       } else if (config.isPollingRequest) {
         const timestampAfter = Date.now()
@@ -171,7 +320,8 @@ describe('ServerConnector', () => {
     })
     assert.strictEqual(timeouts.length, ANSWER_AFTER)
     timeouts.forEach((timeout, index) => {
-      const expectedTimeout = delayBeforePolling[Math.min(index, delayBeforePolling.length - 1)]
+      const expectedTimeout =
+        index === 0 ? 1000 : delayBeforePolling[Math.min(index, delayBeforePolling.length - 1)]
       assert(timeout >= expectedTimeout && timeout <= expectedTimeout + 10)
     })
   })
@@ -197,6 +347,47 @@ describe('ServerConnector', () => {
         } else {
           response.status = 200
         }
+      } else if (config.url === 'http://finish-polling.url') {
+        response.status = 200
+        response.data = RES_DATA
+        pollingWasFinished = true
+      }
+      return response
+    }
+    const result = await serverConnector._axios.request({
+      url: 'http://long-request.url',
+    })
+
+    assert(pollingWasStarted)
+    assert.strictEqual(pollsCount, MAX_POLLS_COUNT)
+    assert(pollingWasFinished)
+    assert.deepStrictEqual(result.data, RES_DATA)
+  })
+
+  it('check polling protocol v2', async () => {
+    const serverConnector = getServerConnector()
+    const MAX_POLLS_COUNT = 2
+    const RES_DATA = {createdAt: Date.now()}
+    let pollingWasStarted = false
+    let pollsCount = 0
+    let pollingWasFinished = false
+    serverConnector._axios.defaults.adapter = async config => {
+      const response = {status: 200, config, data: {}, headers: {}, request: {}}
+      if (!pollingWasStarted) {
+        response.status = 202
+        response.headers.location = 'http://polling.url'
+        pollingWasStarted = true
+      } else if (config.url === 'http://polling.url') {
+        pollsCount += 1
+        if (pollsCount >= MAX_POLLS_COUNT) {
+          response.headers.location = 'http://polling-2.url'
+          response.status = 200
+        } else {
+          response.status = 200
+        }
+      } else if (config.url === 'http://polling-2.url') {
+        response.status = 201
+        response.headers.location = 'http://finish-polling.url'
       } else if (config.url === 'http://finish-polling.url') {
         response.status = 200
         response.data = RES_DATA
@@ -306,5 +497,86 @@ describe('ServerConnector', () => {
 
     await assertRejects(serverConnector.startSession({}), 'ENOTFOUND')
     assert.strictEqual(tries, 6)
+  })
+
+  it('logEvent', async () => {
+    const events = [
+      {timestamp: new Date().toISOString(), level: 'Notice', event: 'test 1'},
+      {timestamp: new Date().toISOString(), level: 'Notice', event: 'test 2'},
+    ]
+    const serverConnector = getServerConnector()
+    serverConnector._axios.defaults.adapter = async config => {
+      assert.deepStrictEqual(config.data, JSON.stringify({events}))
+      return {
+        status: 200,
+        config,
+      }
+    }
+    await serverConnector.logEvents(events)
+  })
+
+  it('matchWindowAndClose works', async () => {
+    const serverConnector = getServerConnector()
+    serverConnector._axios.defaults.adapter = async config => {
+      if (config.url === 'https://eyesapi.applitools.com/api/sessions/running/id/matchandend') {
+        return {
+          status: 200,
+          config,
+          data: {name: 'result'},
+          headers: {},
+          request: {},
+        }
+      }
+      throw new Error()
+    }
+    const appOutput = new AppOutput({
+      title: 'Dummy',
+      screenshotUrl: 'bla',
+      imageLocation: new Location(20, 40),
+    })
+    const data = new MatchWindowAndCloseData({appOutput, tag: 'mytag'})
+    const results = await serverConnector.matchWindowAndClose(
+      {getId: () => 'id', getIsNew: () => false},
+      data,
+    )
+    assert.ok(results instanceof TestResults)
+    assert.strictEqual(results.getName(), 'result')
+  })
+
+  it('matchWindowAndClose should fallback', async () => {
+    const serverConnector = getServerConnector()
+    serverConnector._axios.defaults.adapter = async config =>
+      new Promise((resolve, reject) => {
+        if (config.url === 'https://eyesapi.applitools.com/api/sessions/running/id/matchandend') {
+          return settle(resolve, reject, {
+            status: 404,
+            config,
+            data: {},
+            headers: {},
+            request: {},
+          })
+        } else if (config.url === 'https://eyesapi.applitools.com/api/sessions/running/id') {
+          return settle(resolve, reject, {
+            status: 200,
+            config,
+            data: {name: 'fallback result'},
+            headers: {},
+            request: {},
+          })
+        }
+        throw new Error()
+      })
+    const appOutput = new AppOutput({
+      title: 'Dummy',
+      screenshotUrl: 'bla',
+      imageLocation: new Location(20, 40),
+    })
+    const data = new MatchWindowAndCloseData({appOutput, tag: 'mytag'})
+    const results = await serverConnector.matchWindowAndClose(
+      {getId: () => 'id', getIsNew: () => false},
+      data,
+    )
+    assert.ok(results instanceof TestResults)
+    assert.strictEqual(results.getName(), 'fallback result')
   })
 })

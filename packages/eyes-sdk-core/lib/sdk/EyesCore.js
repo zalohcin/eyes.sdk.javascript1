@@ -1,4 +1,6 @@
 'use strict'
+const {makeDriver} = require('@applitools/driver')
+const screenshoter = require('@applitools/screenshoter')
 const ArgumentGuard = require('../utils/ArgumentGuard')
 const Region = require('../geometry/Region')
 const Location = require('../geometry/Location')
@@ -17,6 +19,11 @@ const ScaleProviderIdentityFactory = require('../scaling/ScaleProviderIdentityFa
 const FixedScaleProviderFactory = require('../scaling/FixedScaleProviderFactory')
 const ContextBasedScaleProviderFactory = require('../scaling/ContextBasedScaleProviderFactory')
 const ImageProviderFactory = require('../capture/ImageProviderFactory')
+const TypeUtils = require('../utils/TypeUtils')
+const MatchResult = require('../match/MatchResult')
+const TestResults = require('../TestResults')
+const NullDebugScreenshotProvider = require('../debug/NullDebugScreenshotProvider')
+const takeDomCapture = require('../utils/takeDomCapture')
 
 const UNKNOWN_DEVICE_PIXEL_RATIO = 0
 const DEFAULT_DEVICE_PIXEL_RATIO = 1
@@ -75,6 +82,42 @@ class EyesCore extends EyesBase {
       this,
       this._userAgent,
     )
+  }
+
+  async check(nameOrCheckSettings, checkSettings) {
+    if (this._configuration.getIsDisabled()) {
+      this._logger.log(`check(${nameOrCheckSettings}, ${checkSettings}): Ignored`)
+      return new MatchResult()
+    }
+    ArgumentGuard.isValidState(this._isOpen, 'Eyes not open')
+    if (TypeUtils.isNull(checkSettings) && !TypeUtils.isString(nameOrCheckSettings)) {
+      checkSettings = nameOrCheckSettings
+      nameOrCheckSettings = null
+    }
+
+    checkSettings = this.spec.newCheckSettings(checkSettings)
+
+    if (TypeUtils.isString(nameOrCheckSettings)) {
+      checkSettings.withName(nameOrCheckSettings)
+    }
+
+    this._logger.verbose(`check(${nameOrCheckSettings}, checkSettings) - begin`)
+
+    return this._check(checkSettings)
+  }
+
+  async checkAndClose(checkSettings, throwEx) {
+    if (this._configuration.getIsDisabled()) {
+      this._logger.log(`checkAndClose(${checkSettings}): Ignored`)
+      return new TestResults()
+    }
+    ArgumentGuard.isValidState(this._isOpen, 'Eyes not open')
+
+    checkSettings = this.spec.newCheckSettings(checkSettings)
+
+    this._logger.verbose(`checkAndClose(checkSettings) - begin`)
+
+    return this._check(checkSettings, true, throwEx)
   }
 
   /* ------------ Classic API ------------ */
@@ -369,6 +412,87 @@ class EyesCore extends EyesBase {
       locatorNames: visualLocatorSettings.locatorNames,
       firstOnly: visualLocatorSettings.firstOnly,
     })
+  }
+
+  async extractText(regions) {
+    if (!TypeUtils.isArray(regions)) regions = [regions]
+
+    const driver = makeDriver(this._driver.spec, this._logger, this._driver.wrapper)
+
+    const extractTextInputs = []
+
+    for (const userRegion of regions) {
+      const region = {...userRegion}
+
+      const screenshot = await screenshoter({
+        logger: this._logger,
+        driver,
+        target: Region.isRegionCompatible(region.target)
+          ? {
+              x: region.target.left,
+              y: region.target.top,
+              width: region.target.width,
+              height: region.target.height,
+            }
+          : region.target,
+        isFully: true,
+        hideScrollbars: this._configuration.getHideScrollbars(),
+        hideCaret: this._configuration.getHideCaret(),
+        scrollingMode: this._configuration.getStitchMode().toLocaleLowerCase(),
+        overlap: this._configuration.getStitchOverlap(),
+        wait: this._configuration.getWaitBeforeScreenshots(),
+        crop:
+          this._cutProviderHandler.get() instanceof NullCutProvider
+            ? null
+            : this._cutProviderHandler.get().toObject(),
+        scale:
+          this._scaleProviderHandler.get() instanceof NullScaleProvider
+            ? null
+            : this._scaleProviderHandler.get().getScaleRatio(),
+        debug: {
+          path:
+            this._debugScreenshotsProvider instanceof NullDebugScreenshotProvider
+              ? null
+              : this._debugScreenshotsProvider.getPath(),
+        },
+      })
+
+      if (region.hint === undefined && !Region.isRegionCompatible(region.target)) {
+        const element = await this._context.element(region.target)
+        if (!element) {
+          throw new Error(`Unable to find element using provided selector - "${region.target}"`)
+        }
+        // TODO create a separate snippet with more sophisticated logic
+        region.hint = await this._context.execute('return arguments[0].innerText', element)
+      }
+
+      const domCapture = await takeDomCapture(this._logger, this._driver).catch(() => null)
+      await this.getAndSaveRenderingInfo()
+      const [screenshotUrl, domUrl] = await Promise.all([
+        this._serverConnector.uploadScreenshot(GeneralUtils.guid(), await screenshot.image.toPng()),
+        domCapture ? this._serverConnector.postDomSnapshot(GeneralUtils.guid(), domCapture) : null,
+      ])
+      extractTextInputs.push({
+        domUrl,
+        screenshotUrl,
+        location: {x: Math.round(screenshot.region.x), y: Math.round(screenshot.region.y)},
+        region: {
+          left: 0,
+          top: 0,
+          width: screenshot.image.width,
+          height: screenshot.image.height,
+          expected: region.hint,
+        },
+        minMatch: region.minMatch,
+        language: region.language,
+      })
+    }
+
+    const results = await Promise.all(
+      extractTextInputs.map(input => this._serverConnector.extractText(input)),
+    )
+
+    return results.reduce((strs, result) => strs.concat(result), [])
   }
 
   /**

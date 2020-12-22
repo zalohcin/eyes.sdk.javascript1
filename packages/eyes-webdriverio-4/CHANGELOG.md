@@ -1,11 +1,62 @@
 # Change Log
 
 ## Unreleased
-- updated to @applitools/eyes-sdk-core@12.2.4 (from 12.2.0)
-- updated to @applitools/visual-grid-client@15.0.4 (from 15.0.0)
+
+
+## 2.27.0 - 2020/12/18
+
+- updated to @applitools/eyes-sdk-core@12.10.0 (from 12.9.3)
+- updated to @applitools/visual-grid-client@15.4.0 (from 15.3.2)
+
+## 2.26.2 - 2020/12/15
+
+- updated to @applitools/eyes-sdk-core@12.9.3 (from 12.9.2)
+- updated to @applitools/visual-grid-client@15.3.2 (from 15.3.1)
+
+## 2.26.1 - 2020/12/14
+
+- updated to @applitools/eyes-sdk-core@12.9.2 (from 12.9.1)
+- updated to @applitools/visual-grid-client@15.3.1 (from 15.3.0)
+
+## 2.26.0 - 2020/12/11
+
+- updated to @applitools/eyes-sdk-core@12.8.4 (from 12.5.7)
+- updated to @applitools/visual-grid-client@15.2.6 (from 15.2.1)
+- updated to @applitools/eyes-sdk-core@12.9.1 (from 12.8.4)
+- updated to @applitools/visual-grid-client@15.3.0 (from 15.2.6)
+
+## 2.25.2 - 2020/12/1
+
+- export `RunnerOptions`
+- export `RunnerOptions`
+## 2.25.1 - 2020/11/29
+
+- updated to @applitools/visual-grid-client@15.2.1 (from 15.2.0)
+
+## 2.25.0 - 2020/11/25
+
+- updated to @applitools/visual-grid-client@15.2.0 (from 15.1.1)
+
+## 2.24.0 - 2020/11/10
+
+- deprecate `saveDebugData`
+- updated to @applitools/eyes-sdk-core@12.5.7 (from 12.5.2)
+- updated to @applitools/visual-grid-client@15.1.1 (from 15.0.14)
+
+## 2.23.1 - 2020/10/15
+
+- add iosVersion to readme
+- updated to @applitools/eyes-sdk-core@12.4.2 (from 12.3.1)
+- updated to @applitools/visual-grid-client@15.0.10 (from 15.0.9)
+
+## 2.23.0 - 2020/10/7
+
 - remove yarn workspaces
-- updated to @applitools/eyes-sdk-core@12.2.6 (from 12.2.5)
-- updated to @applitools/visual-grid-client@15.0.6 (from 15.0.5)
+- updated to @applitools/eyes-sdk-core@12.3.0 (from 12.2.0)
+- updated to @applitools/visual-grid-client@15.0.9 (from 15.0.0)
+- updated to @applitools/eyes-sdk-core@12.3.0 (from 12.2.6)
+- updated to @applitools/visual-grid-client@15.0.9 (from 15.0.6)
+- updated to @applitools/eyes-sdk-core@12.3.1 (from 12.3.0)
 
 ## 2.22.0 - 2020/8/30
 

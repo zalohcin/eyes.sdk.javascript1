@@ -20,9 +20,11 @@ function extractElementId(element) {
 }
 
 function transformSelector(selector) {
+  const {By} = require('selenium-webdriver')
   if (TypeUtils.has(selector, ['type', 'selector'])) {
     if (selector.type === 'css') return {css: selector.selector}
     else if (selector.type === 'xpath') return {xpath: selector.selector}
+    else return new By(selector.type, selector.selector)
   }
   return selector
 }
@@ -114,7 +116,7 @@ async function getElementRect(_driver, element) {
 async function getWindowRect(driver) {
   try {
     if (TypeUtils.isFunction(driver.manage().window().getRect)) {
-      return driver
+      return await driver
         .manage()
         .window()
         .getRect()
@@ -266,15 +268,15 @@ async function build(env) {
   } = testSetup.Env({legacy: true, ...env})
   const desiredCapabilities = {browserName: browser, ...capabilities}
   if (configurable) {
-    const browserOptionsName = browserOptionsNames[browser]
+    const browserOptionsName = browserOptionsNames[browser || desiredCapabilities.browserName]
     if (browserOptionsName) {
-      desiredCapabilities[browserOptionsName] = {
-        args: headless ? args.concat('headless') : args,
-        debuggerAddress: attach === true ? 'localhost:9222' : attach,
+      const browserOptions = desiredCapabilities[browserOptionsName] || {}
+      browserOptions.args = [...(browserOptions.args || []), ...args]
+      if (headless) browserOptions.args.push('headless')
+      if (attach) {
+        browserOptions.debuggerAddress = attach === true ? 'localhost:9222' : attach
       }
-      if (browser !== 'firefox') {
-        desiredCapabilities[browserOptionsName].w3c = false
-      }
+      desiredCapabilities[browserOptionsName] = browserOptions
     }
   }
   const builder = new Builder().withCapabilities(desiredCapabilities)

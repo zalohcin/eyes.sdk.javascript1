@@ -1,19 +1,20 @@
 'use strict'
 
-const {Region} = require('@applitools/eyes-sdk-core')
+const {Region} = require('@applitools/eyes-sdk-core/shared')
 const {presult} = require('@applitools/functional-commons')
-const saveData = require('../troubleshoot/saveData')
-const createRenderRequests = require('./createRenderRequests')
+const createRenderRequest = require('./createRenderRequest')
 const createCheckSettings = require('./createCheckSettings')
-const calculateMatchRegions = require('./calculateMatchRegions')
 const isInvalidAccessibility = require('./isInvalidAccessibility')
+const calculateSelectorsToFindRegionsFor = require('./calculateSelectorsToFindRegionsFor')
+const makeWaitForTestEnd = require('./makeWaitForTestEnd')
 
 function makeCheckWindow({
   globalState,
   testController,
-  saveDebugData,
   createRGridDOMAndGetResourceMapping,
-  renderBatch,
+  putResources,
+  getRenderJobInfo,
+  render,
   waitForRenderedStatus,
   renderInfo,
   logger,
@@ -27,9 +28,8 @@ function makeCheckWindow({
   openEyesPromises,
   userAgent,
   matchLevel: _matchLevel,
-  isSingleWindow,
-  getUserAgents,
   visualGridOptions: _visualGridOptions,
+  resolveTests,
 }) {
   return function checkWindow({
     snapshot,
@@ -53,13 +53,15 @@ function makeCheckWindow({
     enablePatterns,
     ignoreDisplacements,
     visualGridOptions = _visualGridOptions,
+    closeAfterMatch,
+    throwEx = true,
   }) {
     const snapshots = Array.isArray(snapshot) ? snapshot : Array(browsers.length).fill(snapshot)
 
     if (target === 'window' && !fully) {
       sizeMode = 'viewport'
     } else if (target === 'region' && selector) {
-      sizeMode = 'selector'
+      sizeMode = fully ? 'full-selector' : 'selector'
     } else if (target === 'region' && region) {
       sizeMode = 'region'
     }
@@ -77,53 +79,77 @@ function makeCheckWindow({
       return
     }
 
-    if (typeof window === 'undefined') {
-      const handleBrowserDebugData = require('../troubleshoot/handleBrowserDebugData')
-      snapshots.forEach(snapshot => {
-        handleBrowserDebugData({
-          frame: snapshot,
-          metaData: {agentId: wrappers[0].getBaseAgentId()},
-          logger,
-        })
+    const {selectorsToFindRegionsFor, getMatchRegions} = calculateSelectorsToFindRegionsFor({
+      sizeMode,
+      selector,
+      ignore,
+      layout,
+      strict,
+      content,
+      accessibility,
+      floating,
+    })
+
+    const resourcesPromises = snapshots.map(async snapshot => {
+      const {rGridDom: dom, allResources: resources} = await createRGridDOMAndGetResourceMapping({
+        resourceUrls: snapshot.resourceUrls,
+        resourceContents: snapshot.resourceContents,
+        cdt: snapshot.cdt,
+        frames: snapshot.frames,
+        userAgent,
+        referer: url,
+        proxySettings: wrappers[0].getProxy(),
+      })
+      await putResources([dom, ...Object.values(resources)])
+      return {dom, resources: Object.values(resources)}
+    })
+
+    const checkWindowRunningJobs = browsers.map((_browser, index) =>
+      checkWindowJob(index, getCheckWindowPromises()[index]).catch(
+        testController.setError.bind(null, index),
+      ),
+    )
+    setCheckWindowPromises(checkWindowRunningJobs)
+
+    const renderJobs = new WeakMap()
+
+    if (closeAfterMatch) {
+      const waitAndResolveTests = makeWaitForTestEnd({
+        getCheckWindowPromises,
+        openEyesPromises,
+        logger,
+      })
+
+      let error, didError
+      const settleError = (throwEx ? Promise.reject : Promise.resolve).bind(Promise)
+
+      const batchId = wrappers[0].getBatchIdWithoutGenerating()
+      globalState.batchStore.addId(batchId)
+
+      return waitAndResolveTests(async (testIndex, result) => {
+        resolveTests[testIndex]()
+
+        if ((error = testController.getFatalError())) {
+          await wrappers[testIndex].ensureAborted()
+          return (didError = true), error
+        }
+        if ((error = testController.getError(testIndex))) {
+          return (didError = true), error
+        }
+
+        const [closeError, closeResult] = await [null, result]
+        if (!closeError) {
+          return closeResult
+        } else {
+          didError = true
+          return closeError
+        }
+      }).then(results => {
+        return didError ? settleError(results) : results
       })
     }
 
-    const getResourcesPromise = Promise.all(
-      snapshots.map(snapshot =>
-        createRGridDOMAndGetResourceMapping({
-          resourceUrls: snapshot.resourceUrls,
-          resourceContents: snapshot.resourceContents,
-          cdt: snapshot.cdt,
-          frames: snapshot.frames,
-          userAgent,
-          referer: url,
-          proxySettings: wrappers[0].getProxy(),
-        }),
-      ),
-    )
-
-    const noOffsetSelectors = {
-      all: [ignore, layout, strict, content, accessibility],
-      ignore: 0,
-      layout: 1,
-      strict: 2,
-      content: 3,
-      accessibility: 4,
-    }
-    const offsetSelectors = {
-      all: [floating],
-      floating: 0,
-    }
-    const renderPromise = presult(startRender())
-
-    let renderJobs // This will be an array of `resolve` functions to rendering jobs. See `createRenderJob` below.
-
-    setCheckWindowPromises(
-      browsers.map((_browser, i) =>
-        checkWindowJob(getCheckWindowPromises()[i], i).catch(testController.setError.bind(null, i)),
-      ),
-    )
-    async function checkWindowJob(prevJobPromise = presult(Promise.resolve()), index) {
+    async function checkWindowJob(index, prevJobPromise = presult(Promise.resolve())) {
       logger.verbose(
         `starting checkWindowJob. test=${testName} stepCount #${currStepCount} index=${index}`,
       )
@@ -135,27 +161,56 @@ function makeCheckWindow({
         return
       }
 
-      const [renderErr, renderIds] = await renderPromise
+      await openEyesPromises[index]
+
+      if (testController.shouldStopTest(index)) {
+        logger.log(`aborting checkWindow after waiting for openEyes promise`)
+        return
+      }
+
+      const renderRequest = createRenderRequest({
+        url,
+        browser: browsers[index],
+        renderInfo,
+        sizeMode,
+        selector,
+        selectorsToFindRegionsFor,
+        region,
+        scriptHooks,
+        sendDom,
+        visualGridOptions,
+      })
+
+      if (!wrapper.getAppEnvironment()) {
+        const info = await getRenderJobInfo(renderRequest)
+        wrapper.setRenderJobInfo(info)
+      }
+
+      await wrapper.ensureRunningSession()
+
+      const {dom, resources} = await resourcesPromises[index]
+      renderRequest.setDom(dom)
+      renderRequest.setResources(resources)
+      renderRequest.setRenderer(wrapper.getRenderer())
+
+      const [renderErr, renderId] = await presult(renderJob(renderRequest))
 
       if (testController.shouldStopTest(index)) {
         logger.log(
           `aborting checkWindow after render request complete but before waiting for rendered status`,
         )
-        renderJobs && renderJobs[index]()
+        if (renderJobs.has(renderRequest)) renderJobs.get(renderRequest)()
         return
       }
 
       // render error fails all tests
       if (renderErr) {
         logger.log('got render error aborting tests', renderErr)
-        const userAgents = await getUserAgents()
-        wrapper.setInferredEnvironment(`useragent:${userAgents[browsers[index].name]}`)
         testController.setFatalError(renderErr)
-        renderJobs && renderJobs[index]()
+        if (renderJobs.has(renderRequest)) renderJobs.get(renderRequest)()
         return
       }
 
-      const renderId = renderIds[index]
       testController.addRenderId(index, renderId)
 
       logger.verbose(
@@ -170,27 +225,18 @@ function makeCheckWindow({
 
       if (testController.shouldStopTest(index)) {
         logger.log('aborting checkWindow after render status finished')
-        renderJobs && renderJobs[index]()
+        if (renderJobs.has(renderRequest)) renderJobs.get(renderRequest)()
         return
       }
 
       if (renderStatusErr) {
         logger.log('got render status error aborting tests')
-        const userAgents = await getUserAgents()
-        wrapper.setInferredEnvironment(`useragent:${userAgents[browsers[index].name]}`)
         testController.setFatalError(renderStatusErr)
-        renderJobs && renderJobs[index]()
-        await openEyesPromises[index]
+        if (renderJobs.has(renderRequest)) renderJobs.get(renderRequest)()
         return
       }
 
-      const {
-        imageLocation: screenshotUrl,
-        domLocation,
-        userAgent,
-        deviceSize,
-        selectorRegions,
-      } = renderStatusResult
+      const {imageLocation: screenshotUrl, domLocation, selectorRegions} = renderStatusResult
 
       if (screenshotUrl) {
         logger.verbose(`screenshot available for ${renderId} at ${screenshotUrl}`)
@@ -198,12 +244,7 @@ function makeCheckWindow({
         logger.log(`screenshot NOT available for ${renderId}`)
       }
 
-      renderJobs && renderJobs[index]()
-
-      wrapper.setInferredEnvironment(`useragent:${userAgent}`)
-      if (deviceSize) {
-        wrapper.setViewportSize(deviceSize)
-      }
+      renderJobs.get(renderRequest)()
 
       logger.verbose(
         `checkWindow waiting for prev job. test=${testName}, stepCount #${currStepCount}`,
@@ -218,29 +259,17 @@ function makeCheckWindow({
         return
       }
 
-      const imageLocationRegion = sizeMode === 'selector' ? selectorRegions[0] : undefined
+      const {imageLocationRegion, ...regions} = getMatchRegions({selectorRegions})
 
       let imageLocation = undefined
-      if (sizeMode === 'selector' && imageLocationRegion) {
+      if ((sizeMode === 'selector' || sizeMode === 'full-selector') && imageLocationRegion) {
         imageLocation = new Region(imageLocationRegion).getLocation()
       } else if (sizeMode === 'region' && region) {
         imageLocation = new Region(region).getLocation()
       }
 
-      const {noOffsetRegions, offsetRegions} = calculateMatchRegions({
-        noOffsetSelectors: noOffsetSelectors.all,
-        offsetSelectors: offsetSelectors.all,
-        selectorRegions,
-        imageLocationRegion,
-      })
-
       const checkSettings = createCheckSettings({
-        ignore: noOffsetRegions[noOffsetSelectors.ignore],
-        floating: offsetRegions[offsetSelectors.floating],
-        layout: noOffsetRegions[noOffsetSelectors.layout],
-        strict: noOffsetRegions[noOffsetSelectors.strict],
-        content: noOffsetRegions[noOffsetSelectors.content],
-        accessibility: noOffsetRegions[noOffsetSelectors.accessibility],
+        ...regions,
         useDom,
         enablePatterns,
         ignoreDisplacements,
@@ -251,8 +280,6 @@ function makeCheckWindow({
       logger.verbose(
         `checkWindow waiting for openEyes. test=${testName}, stepCount #${currStepCount}`,
       )
-
-      await openEyesPromises[index]
 
       if (testController.shouldStopTest(index)) {
         logger.log(`aborting checkWindow after waiting for openEyes promise`)
@@ -268,67 +295,46 @@ function makeCheckWindow({
         checkSettings,
         imageLocation,
         url,
+        closeAfterMatch,
+        throwEx,
       }
 
-      return !isSingleWindow ? wrapper.checkWindow(checkArgs) : wrapper.testWindow(checkArgs)
+      return wrapper.checkWindow(checkArgs)
     }
 
-    async function startRender() {
+    async function renderJob(renderRequest) {
       if (testController.shouldStopAllTests()) {
-        logger.log(`aborting startRender because there was an error in getRenderInfo`)
+        logger.log(`aborting renderJob because there was an error in getAllResources`)
         return
       }
 
-      const pages = await getResourcesPromise
-
-      if (testController.shouldStopAllTests()) {
-        logger.log(`aborting startRender because there was an error in getAllResources`)
-        return
-      }
-
-      const renderRequests = createRenderRequests({
-        url,
-        pages,
-        browsers,
-        renderInfo,
-        sizeMode,
-        selector,
-        region,
-        scriptHooks,
-        noOffsetSelectors: noOffsetSelectors.all,
-        offsetSelectors: offsetSelectors.all,
-        sendDom,
-        visualGridOptions,
-      })
-
+      const renderRequestTask = new Task()
       globalState.setQueuedRendersCount(globalState.getQueuedRendersCount() + 1)
-      const renderBatchPromise = renderThroat(() => {
-        logger.log(`starting to render test ${testName}`)
-        return renderBatch(renderRequests)
+      const holder = new Promise(resolve => {
+        renderThroat(async () => {
+          logger.log(`starting to render test ${testName}`)
+          renderJobs.set(renderRequest, resolve)
+          const [renderIdErr, renderId] = await presult(render(renderRequest))
+          if (renderIdErr) {
+            renderRequestTask.reject(renderIdErr)
+          } else {
+            renderRequestTask.resolve(renderId)
+          }
+          globalState.setQueuedRendersCount(globalState.getQueuedRendersCount() - 1)
+          return holder
+        })
       })
-      renderJobs = renderRequests.map(createRenderJob)
-      const renderIds = await renderBatchPromise
-      globalState.setQueuedRendersCount(globalState.getQueuedRendersCount() - 1)
 
-      if (saveDebugData) {
-        for (const [index, renderId] of renderIds.entries()) {
-          await saveData({renderId, cdt: snapshots[index].cdt, resources, url, logger})
-        }
-      }
-
-      return renderIds
+      return renderRequestTask.promise
     }
-  }
-
-  /**
-   * Run a function down the renderThroat and return a way to resolve it. Once resolved (in another place) it makes room in the throat for the next renders that
-   */
-  function createRenderJob() {
-    let resolve
-    const p = new Promise(res => (resolve = res))
-    renderThroat(() => p)
-    return resolve
   }
 }
 
 module.exports = makeCheckWindow
+
+function Task() {
+  this.promise = new Promise((r, j) => {
+    this.resolve = r
+    this.reject = j
+  })
+}

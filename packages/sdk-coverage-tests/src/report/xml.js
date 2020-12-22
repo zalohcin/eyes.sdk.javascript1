@@ -1,38 +1,22 @@
 const convert = require('xml-js')
 const {logDebug} = require('../log')
 
-function convertJunitXmlToResultSchema({xmlResult, browser, metaData}) {
-  const tests = parseJunitXmlForTests(xmlResult).filter(test => !test.skipped && !test.ignored)
+function convertJunitXmlToResultSchema({junit, browser, metadata}) {
+  const tests = parseJunitXmlForTests(junit).filter(test => !test.skipped && !test.ignored)
   logDebug(tests)
   return tests.map(test => {
     const testName = parseBareTestName(test._attributes.name)
-    const testNameWithoutSuffix = removeSuffix(testName)
+    const meta = metadata[testName] || {}
     return {
-      test_name: testNameWithoutSuffix,
+      test_name: meta.name || testName,
       parameters: {
-        browser: browser ? browser : 'chrome',
-
-        mode: parseExecutionMode(testName),
+        browser: browser || 'chrome',
+        mode: meta.executionMode,
       },
       passed: !test.failure,
-      ...metaData[testName],
+      isGeneric: meta.isGeneric,
     }
   })
-}
-
-function removeSuffix(testName) {
-  return testName.replace(/_(VG|Scroll)$/, '')
-}
-
-function convertSuffixToExecutionMode(suffix) {
-  switch (suffix) {
-    case 'VG':
-      return 'visualgrid'
-    case 'Scroll':
-      return 'scroll'
-    default:
-      return 'css'
-  }
 }
 
 function parseBareTestName(testCaseName) {
@@ -40,13 +24,6 @@ function parseBareTestName(testCaseName) {
     .replace(/Coverage Tests /, '')
     .replace(/\(.*\)/, '')
     .trim()
-}
-
-function parseExecutionMode(bareTestName) {
-  const parsedBareTestName = bareTestName.split('_')
-  const suffix =
-    parsedBareTestName.length > 1 ? parsedBareTestName[parsedBareTestName.length - 1] : undefined
-  return convertSuffixToExecutionMode(suffix)
 }
 
 function parseJunitXmlForTests(xmlResult) {
@@ -69,6 +46,5 @@ function parseJunitXmlForTests(xmlResult) {
 module.exports = {
   convertJunitXmlToResultSchema,
   parseBareTestName,
-  parseExecutionMode,
   parseJunitXmlForTests,
 }

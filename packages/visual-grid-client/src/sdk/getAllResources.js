@@ -1,7 +1,7 @@
 'use strict'
 const mapValues = require('lodash.mapvalues')
 const {URL} = require('url')
-const {RGridResource} = require('@applitools/eyes-sdk-core')
+const {RGridResource} = require('@applitools/eyes-sdk-core/shared')
 const absolutizeUrl = require('./absolutizeUrl')
 const resourceType = require('./resourceType')
 const toCacheEntry = require('./toCacheEntry')
@@ -58,6 +58,9 @@ function makeGetAllResources({resourceCache, fetchResource, extractCssResources,
         // "preResources" are not fetched and not in "fetchCache" so cache them to "resourceCache".
         const rGridResource = fromFetchedToRGridResource(resource)
         resourceCache.setValue(url, toCacheEntry(rGridResource))
+        if (resource.dependencies) {
+          resourceCache.setDependencies(url, resource.dependencies)
+        }
         handledResources.add(url)
         assignContentfulResources(resources, {[url]: rGridResource})
       }
@@ -75,18 +78,17 @@ function makeGetAllResources({resourceCache, fetchResource, extractCssResources,
       }
 
       await Promise.all(
-        missingResourceUrls.map(url => {
-          const fetchOptions = getFetchOptions({url, referer, userAgent, proxySettings})
-          return fetchResource(url, fetchOptions)
-            .then(async resource =>
-              assignContentfulResources(resources, await processResource(resource)),
+        missingResourceUrls.map(async url => {
+          try {
+            const fetchOptions = getFetchOptions({url, referer, userAgent, proxySettings})
+            const resource = await fetchResource(url, fetchOptions)
+            return assignContentfulResources(resources, await processResource(resource))
+          } catch (err) {
+            logger.log(
+              `error fetching resource at ${url}, setting errorStatusCode to 504. err=${err}`,
             )
-            .catch(ex => {
-              logger.log(
-                `error fetching resource at ${url}, setting errorStatusCode to 504. err=${ex}`,
-              )
-              resources[url] = new RGridResource({url, errorStatusCode: 504})
-            })
+            resources[url] = new RGridResource({url, errorStatusCode: 504})
+          }
         }),
       )
 

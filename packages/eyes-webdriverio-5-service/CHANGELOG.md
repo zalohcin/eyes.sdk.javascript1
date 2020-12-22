@@ -3,6 +3,47 @@
 ## Unreleased
 
 
+## 1.11.0 - 2020/12/18
+
+- updated to @applitools/eyes-webdriverio@5.29.0 (from 5.28.2)
+
+## 1.10.1 - 2020/12/14
+
+- updated to @applitools/eyes-webdriverio@5.28.2 (from 5.28.1)
+
+## 1.10.0 - 2020/12/11
+
+- expose grid configuration primitives
+
+## 1.9.1 - 2020/12/11
+
+- updated to @applitools/eyes-webdriverio@5.28.1 (from 5.28.0)
+
+## 1.9.0 - 2020/12/11
+
+- updated to @applitools/eyes-webdriverio@5.28.0 (from 5.27.2)
+
+## 1.8.2 - 2020/12/1
+
+- updated to @applitools/eyes-webdriverio@5.27.2 (from 5.27.1)
+
+## 1.8.1 - 2020/11/29
+
+- updated to @applitools/eyes-webdriverio@5.27.1 (from 5.27.0)
+
+## 1.8.0 - 2020/11/26
+
+- updated to @applitools/eyes-webdriverio@5.27.0 (from 5.26.0)
+
+## 1.7.0 - 2020/11/10
+
+- updated to @applitools/eyes-webdriverio@5.25.1 (from 5.24.0)
+- updated to @applitools/eyes-webdriverio@5.26.0 (from 5.25.1)
+
+## 1.6.11 - 2020/10/7
+
+- updated to @applitools/eyes-webdriverio@5.24.0 (from 5.23.1)
+
 ## 1.6.10 - 2020/10/1
 
 - remove yarn workspaces

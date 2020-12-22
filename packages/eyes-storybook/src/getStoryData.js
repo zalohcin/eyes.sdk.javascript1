@@ -1,18 +1,12 @@
 'use strict';
 const {presult} = require('@applitools/functional-commons');
-const {deserializeDomSnapshotResult} = require('@applitools/eyes-sdk-core');
 const {ArgumentGuard} = require('@applitools/eyes-sdk-core');
 const renderStoryWithClientAPI = require('../dist/renderStoryWithClientAPI');
 const runRunBeforeScript = require('../dist/runRunBeforeScript');
 const getStoryTitle = require('./getStoryTitle');
 const {URL} = require('url');
 
-function makeGetStoryData({
-  logger,
-  processPageAndSerialize,
-  waitBeforeScreenshot,
-  reloadPagePerStory,
-}) {
+function makeGetStoryData({logger, takeDomSnapshot, waitBeforeScreenshot, reloadPagePerStory}) {
   return async function getStoryData({story, storyUrl, page, waitBeforeStory}) {
     const title = getStoryTitle(story);
     logger.log(`getting data from story`, title);
@@ -51,10 +45,9 @@ function makeGetStoryData({
       });
     }
 
-    logger.log(`running processPageAndSerialize for story ${title}`);
-    const {resourceUrls, resourceContents, frames, cdt} = await page
-      .evaluate(processPageAndSerialize)
-      .then(deserializeDomSnapshotResult);
+    logger.log(`running takeDomSnapshot for story ${title}`);
+
+    const {resourceUrls, resourceContents, frames, cdt} = await takeDomSnapshot(page);
 
     logger.log(`done getting data from story`, title);
     logger.log('dom result: cdt', JSON.stringify(cdt));

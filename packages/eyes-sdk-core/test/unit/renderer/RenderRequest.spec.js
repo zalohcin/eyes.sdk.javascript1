@@ -6,35 +6,6 @@ const {RenderRequest} = require('../../../index')
 
 describe('RenderRequest', () => {
   describe('constructor', () => {
-    it("doesn't allow empty webhook", () => {
-      assert.throws(() => new RenderRequest(), /IllegalArgument: webhook is null or empty/)
-      assert.throws(
-        () => new RenderRequest({webhook: ''}),
-        /IllegalArgument: webhook is null or empty/,
-      )
-    })
-
-    it("doesn't allow empty url", () => {
-      assert.throws(
-        () => new RenderRequest({webhook: 'webhook'}),
-        /IllegalArgument: url is null or undefined/,
-      )
-    })
-
-    it("doesn't allow empty dom", () => {
-      assert.throws(
-        () => new RenderRequest({webhook: 'webhook', url: 'url'}),
-        /IllegalArgument: dom is null or undefined/,
-      )
-    })
-
-    it("doesn't allow empty resources", () => {
-      assert.throws(
-        () => new RenderRequest({webhook: 'webhook', url: 'url', dom: 'dom'}),
-        /IllegalArgument: resources is null or undefined/,
-      )
-    })
-
     it('fills values', () => {
       const renderRequest = new RenderRequest({
         webhook: 'webhook',
@@ -109,6 +80,7 @@ describe('RenderRequest', () => {
         selectorsToFindRegionsFor: 'selectorsToFindRegionsFor',
         sendDom: 'sendDom',
         visualGridOptions: {polyfillAdoptedStyleSheets: true},
+        enableMultipleResultsPerSelector: true,
       })
       const expected = {
         stitchingService: undefined,
@@ -130,6 +102,7 @@ describe('RenderRequest', () => {
         selectorsToFindRegionsFor: 'selectorsToFindRegionsFor',
         sendDom: 'sendDom',
         options: {polyfillAdoptedStyleSheets: true},
+        enableMultipleResultsPerSelector: true,
       }
       assert.deepStrictEqual(renderRequest.toJSON(), expected)
     })
@@ -177,10 +150,11 @@ describe('RenderRequest', () => {
         selectorsToFindRegionsFor: 'selectorsToFindRegionsFor',
         sendDom: 'sendDom',
         visualGridOptions: {polyfillAdoptedStyleSheets: true},
+        enableMultipleResultsPerSelector: true,
       })
       assert.strictEqual(
         renderRequest.toString(),
-        'RenderRequest { {"webhook":"webhook","url":"url","dom":"dom_hashAsObject","resources":{"url1":"hashAsObject1","url2":"hashAsObject2"},"browser":{"name":"browserName"},"platform":{"name":"platform"},"renderInfo":"renderInfoToJSON","scriptHooks":"scriptHooks","selectorsToFindRegionsFor":"selectorsToFindRegionsFor","sendDom":"sendDom","options":{"polyfillAdoptedStyleSheets":true}} }',
+        'RenderRequest { {"webhook":"webhook","url":"url","dom":"dom_hashAsObject","resources":{"url1":"hashAsObject1","url2":"hashAsObject2"},"enableMultipleResultsPerSelector":true,"browser":{"name":"browserName"},"platform":{"name":"platform"},"renderInfo":"renderInfoToJSON","scriptHooks":"scriptHooks","selectorsToFindRegionsFor":"selectorsToFindRegionsFor","sendDom":"sendDom","options":{"polyfillAdoptedStyleSheets":true}} }',
       )
     })
   })

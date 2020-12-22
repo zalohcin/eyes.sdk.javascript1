@@ -183,6 +183,7 @@ describe('spec driver', async () => {
       ;[browser, destroyBrowser] = await spec.build({
         app: 'http://saucelabs.com/example_files/ContactManager.apk',
         device: 'Android Emulator',
+        orientation: 'landscape',
       })
     })
 
@@ -266,21 +267,6 @@ describe('spec driver', async () => {
     it('visit()', visit())
     it('isMobile()', isMobile({expected: false}))
     it('getPlatformName()', getPlatformName({expected: os.type().toLowerCase()}))
-  })
-
-  describe('onscreen desktop (@puppeteer)', async () => {
-    before(async () => {
-      ;[browser, destroyBrowser] = await spec.build({
-        browser: 'chrome',
-        protocol: 'cdp',
-        headless: false,
-      })
-    })
-
-    after(async () => {
-      await destroyBrowser()
-    })
-
     it('getWindowRect()', getWindowRect())
     it(
       'setWindowRect({x, y, width, height})',

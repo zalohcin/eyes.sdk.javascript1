@@ -3,6 +3,102 @@
 ## Unreleased
 
 
+## 15.4.0 - 2020/12/18
+
+- updated to @applitools/eyes-sdk-core@12.10.0 (from 12.9.4)
+
+## 15.3.3 - 2020/12/17
+
+- updated to @applitools/eyes-sdk-core@12.9.4 (from 12.9.3)
+
+## 15.3.2 - 2020/12/15
+
+- updated to @applitools/eyes-sdk-core@12.9.3 (from 12.9.2)
+
+## 15.3.1 - 2020/12/14
+
+- updated to @applitools/eyes-sdk-core@12.9.2 (from 12.9.0)
+
+## 15.3.0 - 2020/12/11
+
+- updated to @applitools/eyes-sdk-core@12.9.0 (from 12.8.4)
+
+## 15.2.6 - 2020/12/8
+
+- updated to @applitools/eyes-sdk-core@12.8.4 (from 12.8.3)
+
+## 15.2.5 - 2020/12/8
+
+- support skip list
+
+## 15.2.4 - 2020/12/4
+
+- updated to @applitools/eyes-sdk-core@12.8.3 (from 12.8.2)
+
+## 15.2.3 - 2020/12/4
+
+- updated to @applitools/eyes-sdk-core@12.8.2 (from 12.6.2)
+
+## 15.2.2 - 2020/12/3
+
+- add `saveDiffs` to `renderingGridClient` and `openEyes`
+
+## 15.2.1 - 2020/11/26
+
+- updated to @applitools/eyes-sdk-core@12.6.2 (from 12.6.0)
+
+## 15.2.0 - 2020/11/19
+
+- upload resources before render
+- changed concurrency model
+- updated to @applitools/eyes-sdk-core@12.6.0 (from 12.5.7)
+
+## 15.1.1 - 2020/11/9
+
+- updated to @applitools/eyes-sdk-core@12.5.7 (from 12.5.5)
+
+## 15.1.0 - 2020/11/1
+
+- updated to @applitools/eyes-sdk-core@12.5.5 (from 12.5.4)
+- support full selector
+
+## 15.0.16 - 2020/10/26
+
+- updated to @applitools/eyes-sdk-core@12.5.4 (from 12.5.3)
+
+## 15.0.15 - 2020/10/24
+
+- updated to @applitools/eyes-sdk-core@12.5.3 (from 12.5.2)
+
+## 15.0.14 - 2020/10/23
+
+- updated to @applitools/eyes-sdk-core@12.5.2 (from 12.5.1)
+
+## 15.0.13 - 2020/10/22
+
+- updated to @applitools/eyes-sdk-core@12.5.1 (from 12.4.4)
+- fix closing batches ([Trello](https://trello.com/c/8zPehdmh))
+
+## 15.0.12 - 2020/10/19
+
+- deprecate `saveDebugData`
+- updated to @applitools/eyes-sdk-core@12.4.4 (from 12.4.3)
+
+## 15.0.11 - 2020/10/18
+
+- support multiple regions per selector
+- updated to @applitools/eyes-sdk-core@12.4.3 (from 12.3.2)
+
+## 15.0.10 - 2020/10/13
+
+- updated to @applitools/eyes-sdk-core@12.3.1 (from 12.3.0)
+- updated to @applitools/eyes-sdk-core@12.3.2 (from 12.3.1)
+
+## 15.0.9 - 2020/10/6
+
+- updated to @applitools/eyes-sdk-core@12.3.0 (from 12.2.9)
+- support multiple versions of ios
+
 ## 15.0.8 - 2020/9/28
 
 - updated to @applitools/eyes-sdk-core@12.2.9 (from 12.2.8)

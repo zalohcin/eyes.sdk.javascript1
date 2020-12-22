@@ -6,6 +6,7 @@ const spec = require(path.resolve(cwd, 'src/spec-driver'))
 const {
   ScreenOrientation,
   IosDeviceName,
+  IosVersion,
   BrowserType,
   AccessibilityLevel,
   AccessibilityGuidelinesVersion,
@@ -25,7 +26,7 @@ describe('TestVGServerConfigs', () => {
 
   beforeEach(async () => {
     ;[webDriver, destroyDriver] = await spec.build({browser: 'chrome'})
-    eyes = await getEyes({isVisualGrid: true})
+    eyes = await getEyes({vg: true})
     runner = eyes.getRunner()
   })
 
@@ -45,20 +46,33 @@ describe('TestVGServerConfigs', () => {
     await expect(eyes.close()).to.be.rejectedWith(Error, 'IllegalState: Eyes not open')
   })
 
-  // TODO unskip when VG ios stabilizes (https://trello.com/c/5hGd01CW/552-ios-malformed-screenshot)
-  it.skip(`TestMobileWeb_VG`, async () => {
+  it(`TestMobileWeb_VG`, async () => {
     const conf = eyes.getConfiguration()
-    conf.addBrowser({
-      iosDeviceInfo: {
-        deviceName: IosDeviceName.iPhone_XR,
-        screenOrientation: ScreenOrientation.LANDSCAPE,
+    conf.addBrowsers(
+      {
+        iosDeviceInfo: {
+          deviceName: IosDeviceName.iPhone_XR,
+          screenOrientation: ScreenOrientation.LANDSCAPE,
+        },
       },
-    })
+      {
+        iosDeviceInfo: {
+          deviceName: IosDeviceName.iPhone_XR,
+          iosVersion: IosVersion.LATEST,
+        },
+      },
+      {
+        iosDeviceInfo: {
+          deviceName: IosDeviceName.iPhone_XR,
+          iosVersion: IosVersion.LATEST_ONE_VERSION_BACK,
+        },
+      },
+    )
     eyes.setConfiguration(conf)
 
     await spec.visit(webDriver, 'http://applitools.github.io/demo')
     await eyes.open(webDriver, 'Eyes SDK', 'UFG Mobile Web Happy Flow', {width: 800, height: 600})
-    await eyes.checkWindow()
+    await eyes.check({isFully: true})
     await eyes.close()
   })
 
@@ -124,7 +138,7 @@ describe('TestVGServerConfigs', () => {
     conf
       .setAccessibilityValidation({
         level: AccessibilityLevel.AA,
-        version: AccessibilityGuidelinesVersion.WCAG_2_0,
+        guidelinesVersion: AccessibilityGuidelinesVersion.WCAG_2_0,
       })
       .setIgnoreDisplacements(false)
     eyes.setConfiguration(conf)
@@ -134,7 +148,7 @@ describe('TestVGServerConfigs', () => {
     conf
       .setAccessibilityValidation({
         level: AccessibilityLevel.AAA,
-        version: AccessibilityGuidelinesVersion.WCAG_2_1,
+        guidelinesVersion: AccessibilityGuidelinesVersion.WCAG_2_1,
       })
       .setIgnoreDisplacements(true)
     eyes.setConfiguration(conf)
@@ -144,7 +158,7 @@ describe('TestVGServerConfigs', () => {
     conf
       .setAccessibilityValidation({
         level: AccessibilityLevel.AA,
-        version: AccessibilityGuidelinesVersion.WCAG_2_0,
+        guidelinesVersion: AccessibilityGuidelinesVersion.WCAG_2_0,
       })
       .setMatchLevel(MatchLevel.Layout)
     eyes.setConfiguration(conf)
@@ -195,7 +209,7 @@ describe('Miscellaneous VG tests', () => {
     ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
   })
   after(async () => {
-    await destroyDriver
+    await destroyDriver()
   })
 
   it('TestWarningForEDGE', async () => {
@@ -206,13 +220,13 @@ describe('Miscellaneous VG tests', () => {
     const edgeWarning = chalk.yellow(edgeWarningText)
 
     try {
-      const eyes = getEyes({isVisualGrid: true})
+      const eyes = getEyes({vg: true})
       const configuration = eyes.getConfiguration()
       configuration.addBrowser(1000, 900, BrowserType.EDGE)
       configuration.addBrowser(1000, 900, BrowserType.FIREFOX)
       eyes.setConfiguration(configuration)
       await eyes.open(driver, 'some app', 'some test', {width: 800, height: 600})
-      expect(logOutput).to.eql([edgeWarning])
+      expect(logOutput).to.include(edgeWarning)
     } finally {
       console.log = origConsoleLog
       console.log(logOutput)

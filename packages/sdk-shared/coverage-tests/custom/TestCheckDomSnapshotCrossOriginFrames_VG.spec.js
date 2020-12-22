@@ -22,16 +22,16 @@ describe('Coverage Tests', () => {
     })
     serverB = await testServer({port: 7374, staticPath})
     ;[driver, destroy] = await spec.build({browser: 'chrome'})
-    eyes = getEyes({
-      isVisualGrid: true,
-      branchName: 'master',
-    })
+    eyes = getEyes({stitchMode: 'CSS'})
   })
 
   afterEach(async () => {
-    await destroy()
-    await serverA.close()
-    await serverB.close()
+    try {
+      await destroy()
+    } finally {
+      await serverA.close()
+      await serverB.close()
+    }
   })
 
   it('TestCheckDomSnapshotCrossOriginFrames_VG', async () => {

@@ -8,6 +8,7 @@ const path = require('path')
 const filenamify = require('filenamify')
 const uuid = require('uuid/v4')
 const fetch = require('node-fetch')
+const {json} = require('express')
 
 function startFakeEyesServer({
   matchMode = 'fair', // fair|always|never
@@ -61,10 +62,9 @@ function startFakeEyesServer({
         }
         return {
           renderId,
-          renderStatus: renderRequest.renderId ? 'rendering' : 'need-more-resources',
-          needMoreDom: !renderRequest.renderId,
-          needMoreResources:
-            screenshotEntry && !renderRequest.renderId ? [screenshotEntry[0]] : undefined,
+          renderStatus: renderId ? 'rendering' : 'need-more-resources',
+          needMoreDom: !renderId,
+          needMoreResources: screenshotEntry && !renderId ? [screenshotEntry[0]] : undefined,
         }
       }),
     )
@@ -100,11 +100,24 @@ function startFakeEyesServer({
               domLocation,
               userAgent:
                 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.101 Safari/537.36',
-              selectorRegions: regions.map(() => ({x: 1, y: 2, width: 3, height: 4})),
+              selectorRegions: regions.map(() => [{x: 1, y: 2, width: 3, height: 4}]),
             }
           }
         }),
       ),
+    )
+  })
+
+  app.post('/job-info', jsonMiddleware, (req, res) => {
+    const requests = req.body
+    res.send(
+      requests.map(request => ({
+        eyesEnvironment: {
+          displaySize: 'widthxheight',
+          originalRenderRequest: JSON.stringify(request),
+        },
+        renderer: '',
+      })),
     )
   })
 
@@ -263,6 +276,43 @@ function startFakeEyesServer({
     },
   )
 
+  // matchWindowAndClose
+  app.post(
+    '/api/sessions/running/:id/matchandend',
+    (req, res, next) => {
+      if (req.headers['content-type'] === 'application/octet-stream') {
+        return rawMiddleware(req, res, next)
+      } else {
+        return jsonMiddleware(req, res, next)
+      }
+    },
+    async (req, res) => {
+      const runningSession = runningSessions[req.params.id]
+      const {steps, hostOS, hostApp} = runningSession
+      const {matchWindowData, screenshot} = await getMatchWindowDataFromRequest(req)
+      logger.log('matchWindowData', matchWindowData)
+      const {appOutput: _appOutput} = matchWindowData
+
+      let asExpected = matchMode === 'always'
+      if (matchMode === 'fair') {
+        const expectedPath = path.resolve(
+          expectedFolder,
+          `${filenamify(`${req.params.id}__${hostOS}__${hostApp}`)}.png`,
+        )
+
+        if (updateFixtures) {
+          logger.log('[sdk-fake-eyes-server] updating fixture at', expectedPath)
+          fs.writeFileSync(expectedPath, screenshot)
+        }
+
+        const expectedBuff = fs.readFileSync(expectedPath)
+        asExpected = screenshot.compare(expectedBuff) === 0
+      }
+      steps.push({matchWindowData, asExpected})
+      res.send(createTestResultFromRunningSession(runningSession))
+    },
+  )
+
   async function getMatchWindowDataFromRequest(req) {
     if (Buffer.isBuffer(req.body)) {
       const buff = req.body
@@ -326,6 +376,11 @@ function startFakeEyesServer({
       scmSourceBranch: `scmSourceBranch_${req.params.batchId}`,
       scmTargetBranch_: `scmTargetBranch_${req.params.batchId}`,
     })
+  })
+
+  app.post('/resources/query/resources-exist', jsonMiddleware, (req, res) => {
+    const response = new Array(req.body ? req.body.length : 0).fill(true)
+    res.status(200).send(response)
   })
 
   function createTestResultFromRunningSession(runningSession) {

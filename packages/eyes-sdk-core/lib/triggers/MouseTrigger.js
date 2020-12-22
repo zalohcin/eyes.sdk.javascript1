@@ -1,7 +1,6 @@
 'use strict'
 
-const {ArgumentGuard} = require('../..')
-
+const ArgumentGuard = require('../utils/ArgumentGuard')
 const Trigger = require('./Trigger')
 
 /**

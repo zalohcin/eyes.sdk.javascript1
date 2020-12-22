@@ -2,11 +2,61 @@
 
 ## Unreleased
 
+
+## 1.13.0 - 2020/12/18
+
+- updated to @applitools/eyes-sdk-core@12.10.0 (from 12.9.3)
+- updated to @applitools/visual-grid-client@15.4.0 (from 15.3.2)
+
+## 1.12.2 - 2020/12/15
+
+- updated to @applitools/eyes-sdk-core@12.9.3 (from 12.9.2)
+- updated to @applitools/visual-grid-client@15.3.2 (from 15.3.1)
+
+## 1.12.1 - 2020/12/14
+
+- updated to @applitools/eyes-sdk-core@12.9.2 (from 12.9.1)
+- updated to @applitools/visual-grid-client@15.3.1 (from 15.3.0)
+
+## 1.12.0 - 2020/12/11
+
+- updated to @applitools/eyes-sdk-core@12.9.1 (from 12.5.7)
+- updated to @applitools/visual-grid-client@15.3.0 (from 15.2.1)
+
+## 1.11.2 - 2020/12/1
+
+- export `RunnerOptions`
+
+## 1.11.1 - 2020/11/29
+
+- updated to @applitools/visual-grid-client@15.2.1 (from 15.2.0)
+
+## 1.11.0 - 2020/11/25
+
+- updated to @applitools/visual-grid-client@15.2.0 (from 15.1.1)
+
+## 1.10.0 - 2020/11/13
+
+- deprecate `saveDebugData`
+- updated to @applitools/eyes-sdk-core@12.4.4 (from 12.4.2)
+- updated to @applitools/visual-grid-client@15.0.12 (from 15.0.10)
+- updated to @applitools/eyes-sdk-core@12.5.7 (from 12.4.4)
+- updated to @applitools/visual-grid-client@15.1.1 (from 15.0.12)
+
+## 1.9.1 - 2020/10/15
+
+- add iosVersion to readme
+- updated to @applitools/eyes-sdk-core@12.4.2 (from 12.3.0)
+- updated to @applitools/visual-grid-client@15.0.10 (from 15.0.9)
+
+## 1.9.0 - 2020/10/6
+
 - updated to @applitools/eyes-sdk-core@12.2.5 (from 12.2.4)
 - updated to @applitools/visual-grid-client@15.0.5 (from 15.0.4)
 - updated to @applitools/eyes-sdk-core@12.2.6 (from 12.2.5)
 - updated to @applitools/visual-grid-client@15.0.6 (from 15.0.5)
-
+- updated to @applitools/eyes-sdk-core@12.3.0 (from 12.2.6)
+- updated to @applitools/visual-grid-client@15.0.9 (from 15.0.6)
 
 ## 1.8.1 - 2020/9/15
 

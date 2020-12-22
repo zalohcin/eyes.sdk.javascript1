@@ -1,6 +1,7 @@
 'use strict'
 
-const {GeneralUtils, RectangleSize} = require('..')
+const RectangleSize = require('../lib/geometry/RectangleSize')
+const GeneralUtils = require('../lib/utils/GeneralUtils')
 
 /**
  * The environment in which the application under test is executing.

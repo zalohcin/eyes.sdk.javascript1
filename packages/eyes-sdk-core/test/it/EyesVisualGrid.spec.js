@@ -44,6 +44,22 @@ describe('EyesVisualGrid', async () => {
     expect(matchLevel).to.be.eql('Layout')
   })
 
+  it('should return original render request', async () => {
+    const config = eyes.getConfiguration()
+    config.addBrowser({width: 888, height: 777, name: 'firefox'})
+    eyes.setConfiguration(config)
+    await eyes.open(driver, 'FakeApp', 'FakeTest')
+    await eyes.check({matchLevel: MatchLevel.Layout})
+    const results = await eyes.close()
+    const {startInfo} = await getSession(results, serverUrl)
+    const {
+      environment: {originalRenderRequest},
+    } = startInfo
+    const {browser, renderInfo} = JSON.parse(originalRenderRequest)
+    expect(browser).to.deep.equal({name: 'firefox'})
+    expect(renderInfo).to.deep.equal({width: 888, height: 777, sizeMode: 'viewport'})
+  })
+
   it('should not create session with missing device size', async () => {
     const origStartSession = ServerConnector.prototype.startSession
     let startSessionCalled
@@ -65,7 +81,7 @@ describe('EyesVisualGrid', async () => {
     driver.mockScript('dom-snapshot', () => JSON.stringify({status: 'ERROR', error: 'bla'}))
     await eyes.open(driver, 'FakeApp', 'FakeTest')
     const err = await eyes.check().catch(err => err)
-    expect(err.message).to.equal('Unable to process dom snapshot: bla')
+    expect(err.message).to.equal("Error during execute poll script: 'bla'")
   })
 
   it('should throw an error on invalid dom snapshot JSON', async () => {
@@ -74,9 +90,11 @@ describe('EyesVisualGrid', async () => {
     await eyes.open(driver, 'FakeApp', 'FakeTest')
     const err = await eyes.check().catch(err => err)
     expect(err.message).to.contain(
-      `dom snapshot is not a valid JSON string. response length: ${
+      `Response is not a valid JSON string. length: ${
         response.length
-      }, first 100 chars: "${response.substr(0, 100)}", last 100 chars: "${response.substr(-100)}"`,
+      }, first 100 chars: "${response.substr(0, 100)}", last 100 chars: "${response.substr(
+        -100,
+      )}". error: SyntaxError: Unexpected number in JSON at position 1`,
     )
   })
 

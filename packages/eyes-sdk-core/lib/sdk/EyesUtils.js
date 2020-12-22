@@ -46,16 +46,16 @@ async function getViewportSize(logger, context) {
  * @param {EyesContext} context
  * @param {RectangleSize} requiredViewportSize - required viewport size to set
  */
-async function setViewportSize(logger, context, viewportSize) {
-  ArgumentGuard.notNull(viewportSize, 'viewportSize')
+async function setViewportSize(logger, context, requiredViewportSize) {
+  ArgumentGuard.notNull(requiredViewportSize, 'requiredViewportSize')
   // First we will set the window size to the required size.
   // Then we'll check the viewport size and increase the window size accordingly.
-  logger.verbose(`setViewportSize(${viewportSize})`)
+  logger.verbose(`setViewportSize(${requiredViewportSize})`)
 
   let actualViewportSize = await getViewportSize(logger, context)
   logger.verbose(`Initial viewport size: ${actualViewportSize}`)
   // If the viewport size is already the required size
-  if (actualViewportSize.equals(viewportSize)) return true
+  if (actualViewportSize.equals(requiredViewportSize)) return true
 
   // We move the window to (0,0) to have the best chance to be able to
   // set the viewport size as requested.
@@ -63,65 +63,37 @@ async function setViewportSize(logger, context, viewportSize) {
     logger.verbose('Warning: Failed to move the browser window to (0,0)', err)
   })
 
-  const actualWindowSize = await context.driver.getWindowRect()
+  let actualWindowSize = await context.driver.getWindowRect()
   actualViewportSize = await getViewportSize(logger, context)
-  const windowSize = new RectangleSize(
-    actualWindowSize.getWidth() + (viewportSize.getWidth() - actualViewportSize.getWidth()),
-    actualWindowSize.getHeight() + (viewportSize.getHeight() - actualViewportSize.getHeight()),
-  )
+  logger.verbose(`actualWindowSize: ${actualWindowSize}, actualViewportSize: ${actualViewportSize}`)
 
-  await _setWindowSize(logger, context, windowSize)
-  actualViewportSize = await getViewportSize(logger, context)
-  if (actualViewportSize.equals(viewportSize)) return true
-
-  logger.verbose(
-    `Failed attempt to set viewport size. actualViewportSize=${actualViewportSize}, requiredViewportSize=${viewportSize}. Trying again...`,
-  )
-
-  // // Additional attempt. This Solves the "maximized browser" bug
-  // // (border size for maximized browser sometimes different than non-maximized, so the original browser size calculation is wrong).
-  // logger.verbose(
-  //   `Failed attempt to set viewport size. actualViewportSize=${actualViewportSize}, requiredViewportSize=${requiredViewportSize}`,
-  // )
-
-  throw new Error('Failed to set viewport size!')
-}
-/**
- * Set window size with retries
- * @param {Logger} logger
- * @param {EyesContext} context
- * @param {RectangleSize} requiredViewportSize
- * @return {boolean} true if operation finished successfully, false otherwise
- */
-async function _setWindowSize(logger, context, windowSize) {
   const sleep = 3000
   let retries = 3
-  let windowSizeToSend = windowSize
-  try {
-    while (retries >= 0) {
-      logger.verbose(`Attempt to set window size to ${windowSizeToSend}. Retries left: ${retries}`)
-      await context.driver.setWindowRect(windowSizeToSend)
-      await GeneralUtils.sleep(sleep)
-      const actualWindowSize = await context.driver.getWindowRect().then(rect => rect.getSize())
-      if (windowSize.equals(actualWindowSize)) return true
-      logger.verbose(
-        `Attempt to set window size to ${windowSize} failed. actualWindowSize=${actualWindowSize}`,
-      )
-      windowSizeToSend = new RectangleSize({
-        width:
-          windowSizeToSend.getWidth() - (actualWindowSize.getWidth() - windowSizeToSend.getWidth()),
-        height:
-          windowSizeToSend.getHeight() -
-          (actualWindowSize.getHeight() - windowSizeToSend.getHeight()),
-      })
-      retries -= 1
-    }
-    logger.verbose('Failed to set browser size: no more retries.')
-    return false
-  } catch (ex) {
-    logger.verbose('Failed to set browser size: error thrown.', ex)
-    return false
+
+  while (retries >= 0) {
+    const requiredWindowSize = new RectangleSize(
+      actualWindowSize.getWidth() +
+        (requiredViewportSize.getWidth() - actualViewportSize.getWidth()),
+      actualWindowSize.getHeight() +
+        (requiredViewportSize.getHeight() - actualViewportSize.getHeight()),
+    )
+    logger.verbose(`Attempt to set window size to ${requiredWindowSize}. Retries left: ${retries}`)
+    await context.driver.setWindowRect(requiredWindowSize)
+    await GeneralUtils.sleep(sleep)
+    actualViewportSize = await getViewportSize(logger, context)
+    if (requiredViewportSize.equals(actualViewportSize)) return true
+    logger.verbose(
+      `Attempt to set viewport size to ${requiredViewportSize} failed. actualViewportSize=${actualViewportSize}`,
+    )
+    actualWindowSize = requiredWindowSize
+    retries -= 1
   }
+
+  logger.verbose(
+    `Failed attempt to set viewport size. actualViewportSize=${actualViewportSize}, requiredViewportSize=${requiredViewportSize}. Trying again...`,
+  )
+
+  throw new Error('Failed to set viewport size!')
 }
 /**
  * Get current context content size
@@ -370,14 +342,14 @@ async function getElementXpath(logger, context, element) {
   })
 }
 
-async function markElements(_logger, context, elementsById) {
+async function setElementMarkers(_logger, context, elementsById) {
   const elements = Object.values(elementsById)
   const ids = Object.keys(elementsById)
-  await context.execute(snippets.markElements, [elements, ids])
+  await context.execute(snippets.setElementMarkers, [elements, ids])
 }
 
-async function cleanupElementIds(_logger, context, elements) {
-  await context.execute(snippets.cleanupElementIds, [elements])
+async function cleanupElementMarkers(_logger, context, elements) {
+  await context.execute(snippets.cleanupElementMarkers, [elements])
 }
 
 /**
@@ -453,6 +425,52 @@ async function ensureRegionVisible(logger, context, positionProvider, region) {
   return remainingOffset
 }
 
+async function executePollScript(
+  logger,
+  context,
+  scripts,
+  {executionTimeout = 5 * 60 * 1000, pollTimeout = 200} = {},
+) {
+  logger.verbose('Executing poll script')
+  let isExecutionTimedOut = false
+  const executionTimer = setTimeout(() => (isExecutionTimedOut = true), executionTimeout)
+  try {
+    const {script, args = []} = scripts.main
+    let response = deserialize(await context.execute(script, ...args))
+    let chunks = ''
+    while (!isExecutionTimedOut) {
+      if (response.status === 'ERROR') {
+        throw new EyesError(`Error during execute poll script: '${response.error}'`, response.error)
+      } else if (response.status === 'SUCCESS') {
+        return response.value
+      } else if (response.status === 'SUCCESS_CHUNKED') {
+        chunks += response.value
+        if (response.done) return deserialize(chunks)
+      } else if (response.status === 'WIP') {
+        await GeneralUtils.sleep(pollTimeout)
+      }
+      logger.verbose('Polling...')
+      const {script, args = []} = scripts.poll
+      response = deserialize(await context.execute(script, ...args))
+    }
+    throw new EyesError('Poll script execution is timed out')
+  } finally {
+    clearTimeout(executionTimer)
+  }
+
+  function deserialize(json) {
+    try {
+      return JSON.parse(json)
+    } catch (err) {
+      const firstChars = json.slice(0, 100)
+      const lastChars = json.slice(-100)
+      throw new Error(
+        `Response is not a valid JSON string. length: ${json.length}, first 100 chars: "${firstChars}", last 100 chars: "${lastChars}". error: ${err}`,
+      )
+    }
+  }
+}
+
 async function addPageMarker(_logger, context) {
   return context.execute(snippets.addPageMarker)
 }
@@ -484,11 +502,12 @@ module.exports = {
   blurElement,
   focusElement,
   getElementXpath,
-  markElements,
-  cleanupElementIds,
+  setElementMarkers,
+  cleanupElementMarkers,
   getContextInfo,
   getChildFramesInfo,
   ensureRegionVisible,
+  executePollScript,
   addPageMarker,
   cleanupPageMarker,
 }

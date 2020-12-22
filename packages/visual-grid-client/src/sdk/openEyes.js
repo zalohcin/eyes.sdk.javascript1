@@ -4,7 +4,7 @@ const {
   BatchInfo,
   GeneralUtils: {backwardCompatible, cachify},
   BrowserType,
-} = require('@applitools/eyes-sdk-core')
+} = require('@applitools/eyes-sdk-core/shared')
 const makeCheckWindow = require('./checkWindow')
 const makeAbort = require('./makeAbort')
 const makeClose = require('./makeClose')
@@ -12,6 +12,7 @@ const isEmulation = require('./isEmulation')
 const mapChromeEmulationInfo = require('./mapChromeEmulationInfo')
 const getSupportedBrowsers = require('./supportedBrowsers')
 const chalk = require('chalk')
+const throatPkg = require('throat')
 
 const {
   initWrappers,
@@ -24,7 +25,6 @@ const {
 function makeOpenEyes({
   appName: _appName,
   browser: _browser,
-  saveDebugData: _saveDebugData,
   batch: _batch,
   properties: _properties,
   baselineBranchName: _baselineBranchName,
@@ -43,6 +43,7 @@ function makeOpenEyes({
   parentBranch: _parentBranch,
   branchName: _branchName,
   branch: _branch,
+  saveDiffs: _saveDiffs,
   saveFailedTests: _saveFailedTests,
   saveNewTests: _saveNewTests,
   compareWithParentBranch: _compareWithParentBranch,
@@ -53,19 +54,17 @@ function makeOpenEyes({
   proxy,
   serverUrl,
   logger,
-  renderBatch,
+  putResources,
+  getRenderJobInfo,
+  render,
   waitForRenderedStatus,
-  renderThroat,
   eyesTransactionThroat,
-  getRenderInfoPromise,
-  getHandledRenderInfoPromise,
-  getRenderInfo,
+  getInitialData,
   agentId,
-  getUserAgents: _getUserAgents,
   globalState,
   wrappers: _wrappers,
-  isSingleWindow = false,
   visualGridOptions: _visualGridOptions,
+  concurrentRendersPerTest,
 }) {
   return async function openEyes({
     testName,
@@ -74,7 +73,6 @@ function makeOpenEyes({
     userAgent = _userAgent,
     appName = _appName,
     browser = _browser,
-    saveDebugData = _saveDebugData,
     batchSequenceName,
     batchSequence,
     batchName,
@@ -98,12 +96,12 @@ function makeOpenEyes({
     parentBranch = _parentBranch,
     branchName = _branchName,
     branch = _branch,
+    saveDiffs = _saveDiffs,
     saveFailedTests = _saveFailedTests,
     saveNewTests = _saveNewTests,
     compareWithParentBranch = _compareWithParentBranch,
     ignoreBaseline = _ignoreBaseline,
     notifyOnCompletion,
-    getUserAgents = _getUserAgents,
     visualGridOptions = _visualGridOptions,
   }) {
     logger.verbose(`openEyes: testName=${testName}, browser=`, browser)
@@ -183,6 +181,8 @@ function makeOpenEyes({
         getBatchInfoWithCache,
       })
 
+    const {renderInfo} = await getInitialData()
+
     configureWrappers({
       wrappers,
       browsers,
@@ -203,6 +203,7 @@ function makeOpenEyes({
       parentBranch,
       branch,
       proxy,
+      saveDiffs,
       saveFailedTests,
       saveNewTests,
       compareWithParentBranch,
@@ -218,14 +219,6 @@ function makeOpenEyes({
       )
     }
 
-    const renderInfoPromise = getRenderInfoPromise() || getHandledRenderInfoPromise(getRenderInfo())
-
-    const renderInfo = await renderInfoPromise
-
-    if (renderInfo instanceof Error) {
-      throw renderInfo
-    }
-
     logger.verbose('openEyes: opening wrappers')
     const {openEyesPromises, resolveTests} = openWrappers({
       wrappers,
@@ -233,7 +226,7 @@ function makeOpenEyes({
       appName,
       testName,
       eyesTransactionThroat,
-      skipStartingSession: isSingleWindow,
+      skipStartingSession: false,
     })
 
     let stepCounter = 0
@@ -245,12 +238,15 @@ function makeOpenEyes({
       logger,
     })
 
+    const renderThroat = throatPkg(concurrentRendersPerTest * browsers.length)
+
     const checkWindow = makeCheckWindow({
       globalState,
       testController,
-      saveDebugData,
       createRGridDOMAndGetResourceMapping,
-      renderBatch,
+      putResources,
+      getRenderJobInfo,
+      render,
       waitForRenderedStatus,
       renderInfo,
       logger,
@@ -264,9 +260,8 @@ function makeOpenEyes({
       openEyesPromises,
       matchLevel,
       userAgent,
-      isSingleWindow,
-      getUserAgents,
       visualGridOptions,
+      resolveTests,
     })
 
     const close = makeClose({
@@ -277,7 +272,6 @@ function makeOpenEyes({
       globalState,
       testController,
       logger,
-      isSingleWindow,
     })
     const abort = makeAbort({
       getCheckWindowPromises,

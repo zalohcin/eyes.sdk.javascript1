@@ -1,7 +1,6 @@
 'use strict'
 
-const {ArgumentGuard} = require('../..')
-
+const ArgumentGuard = require('../utils/ArgumentGuard')
 const ScaleProvider = require('./ScaleProvider')
 
 // Allowed deviations for viewport size and default content entire size.

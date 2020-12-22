@@ -23,8 +23,8 @@ function makeInitPage({iframeUrl, config, browser, logger}) {
     page.on('error', async err => {
       logger.log(`Puppeteer error for page ${pageId}:`, err);
       pagePool.removePage(pageId);
-      const {pageId} = await pagePool.createPage();
-      pagePool.addToPool(pageId);
+      const {pageId: newPageId} = await pagePool.createPage();
+      pagePool.addToPool(newPageId);
     });
     page.on('close', async () => {
       if (pagePool.isInPool(pageId)) {

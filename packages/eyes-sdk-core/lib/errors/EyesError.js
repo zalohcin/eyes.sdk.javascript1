@@ -17,8 +17,9 @@ class EyesError extends Error {
     /** @inheritDoc */
     this.message = message
 
+    this.originalError = error
+
     if (error instanceof Error) {
-      this.originalError = error
       this.message = `${message}: ${error.message}`
       this.stack = error.stack
     }

@@ -2,6 +2,109 @@
 
 ## Unreleased
 
+## 3.15.0 - 2020/12/18
+
+- updated to @applitools/eyes-puppeteer@1.4.0 (from 1.3.1)
+- updated to @applitools/eyes-sdk-core@12.10.0 (from 12.9.3)
+- updated to @applitools/visual-grid-client@15.4.0 (from 15.3.2)
+
+## 3.14.2 - 2020/12/15
+
+- updated to @applitools/dom-snapshot@4.4.1 (from 4.4.0)
+- updated to @applitools/eyes-puppeteer@1.3.1 (from 1.3.0)
+- updated to @applitools/eyes-sdk-core@12.9.3 (from 12.9.2)
+- updated to @applitools/visual-grid-client@15.3.2 (from 15.3.1)
+
+## 3.14.1 - 2020/12/14
+
+- updated to @applitools/dom-snapshot@4.4.0 (from 4.3.1)
+- updated to @applitools/eyes-puppeteer@1.3.0 (from 1.2.2)
+- updated to @applitools/eyes-sdk-core@12.9.2 (from 12.9.1)
+- updated to @applitools/visual-grid-client@15.3.1 (from 15.3.0)
+
+## 3.14.0 - 2020/12/11
+
+- updated to @applitools/dom-snapshot@4.3.1 (from 4.2.9)
+- updated to @applitools/eyes-sdk-core@12.9.1 (from 12.8.3)
+- updated to @applitools/visual-grid-client@15.3.0 (from 15.2.4)
+
+## 3.13.4 - 2020/12/4
+
+- updated to @applitools/eyes-puppeteer@1.2.2 (from 1.2.1)
+- updated to @applitools/eyes-sdk-core@12.8.3 (from 12.8.2)
+- updated to @applitools/visual-grid-client@15.2.4 (from 15.2.3)
+
+## 3.13.3 - 2020/12/4
+
+- updated to @applitools/visual-grid-client@15.2.3 (from 15.2.2)
+
+## 3.13.2 - 2020/12/4
+
+- updated to @applitools/dom-snapshot@4.2.9 (from 4.2.8)
+- updated to @applitools/eyes-puppeteer@1.2.1 (from 1.2.0)
+
+## 3.13.1 - 2020/12/3
+
+- updated to @applitools/dom-snapshot@4.2.8 (from 4.2.7)
+- updated to @applitools/eyes-sdk-core@12.8.2 (from 12.8.1)
+- updated to @applitools/visual-grid-client@15.2.2 (from 15.2.1)
+
+- fix `saveFailedTests`
+
+## 3.13.0 - 2020/12/2
+
+- use eyes-puppeteer SDK for running dom-snapshot - adds support for cross-origin iframes [Trello 635](https://trello.com/c/TgiAqTUM) and [Trello 551](https://trello.com/c/wPl3ef7y))
+- updated to @applitools/eyes-puppeteer@1.2.0 (from 1.1.1)
+- updated to @applitools/eyes-sdk-core@12.8.1 (from 12.6.2)
+
+## 3.12.1 - 2020/11/26
+
+- updated to @applitools/eyes-sdk-core@12.6.2 (from 12.6.0)
+- updated to @applitools/visual-grid-client@15.2.1 (from 15.2.0)
+
+## 3.12.0 - 2020/11/19
+
+- updated to @applitools/dom-snapshot@4.2.7 (from 4.2.6)
+- updated to @applitools/eyes-sdk-core@12.6.0 (from 12.5.7)
+- updated to @applitools/visual-grid-client@15.2.0 (from 15.1.1)
+
+## 3.11.0 - 2020/11/13
+
+- updated to @applitools/dom-snapshot@4.2.6 (from 4.2.4)
+- updated to @applitools/eyes-sdk-core@12.5.7 (from 12.5.4)
+- updated to @applitools/visual-grid-client@15.1.1 (from 15.0.16)
+
+## 3.10.1 - 2020/10/28
+
+- support indeterminate checkboxes
+- updated to @applitools/dom-snapshot@4.2.4 (from 4.2.2)
+- updated to @applitools/eyes-sdk-core@12.5.4 (from 12.4.4)
+- updated to @applitools/visual-grid-client@15.0.16 (from 15.0.12)
+
+## 3.10.0 - 2020/10/19
+
+- deprecate `saveDebugData`
+- updated to @applitools/eyes-sdk-core@12.4.4 (from 12.4.3)
+- updated to @applitools/visual-grid-client@15.0.12 (from 15.0.11)
+
+## 3.9.2 - 2020/10/18
+
+- updated to @applitools/dom-snapshot@4.2.2 (from 4.2.1)
+- updated to @applitools/eyes-sdk-core@12.4.3 (from 12.4.2)
+- updated to @applitools/visual-grid-client@15.0.11 (from 15.0.10)
+
+## 3.9.1 - 2020/10/14
+
+- add iosVersion to readme
+- updated to @applitools/dom-snapshot@4.2.1 (from 4.2.0)
+- updated to @applitools/eyes-sdk-core@12.4.2 (from 12.3.1)
+- updated to @applitools/visual-grid-client@15.0.10 (from 15.0.9)
+
+## 3.9.0 - 2020/10/12
+
+- updated to @applitools/dom-snapshot@4.2.0 (from 4.1.1)
+- updated to @applitools/eyes-sdk-core@12.3.1 (from 12.2.9)
+- updated to @applitools/visual-grid-client@15.0.9 (from 15.0.8)
 
 ## 3.8.11 - 2020/10/1
 

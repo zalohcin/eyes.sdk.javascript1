@@ -2,11 +2,76 @@
 
 ## Unreleased
 
+
+## 4.52.0 - 2020/12/18
+
+- updated to @applitools/eyes-sdk-core@12.10.0 (from 12.9.3)
+- updated to @applitools/visual-grid-client@15.4.0 (from 15.3.2)
+
+## 4.51.2 - 2020/12/15
+
+- updated to @applitools/eyes-sdk-core@12.9.3 (from 12.9.2)
+- updated to @applitools/visual-grid-client@15.3.2 (from 15.3.1)
+
+## 4.51.1 - 2020/12/14
+
+- updated to @applitools/eyes-sdk-core@12.9.2 (from 12.9.1)
+- updated to @applitools/visual-grid-client@15.3.1 (from 15.3.0)
+
+## 4.51.0 - 2020/12/11
+
+- updated to @applitools/eyes-sdk-core@12.8.4 (from 12.8.1)
+- updated to @applitools/visual-grid-client@15.2.6 (from 15.2.1)
+- updated to @applitools/eyes-sdk-core@12.9.1 (from 12.8.4)
+- updated to @applitools/visual-grid-client@15.3.0 (from 15.2.6)
+
+## 4.50.0 - 2020/12/1
+
+- add `extractText` to `Eyes`
+
+## 4.49.2 - 2020/12/1
+
+- export `RunnerOptions`
+
+## 4.49.1 - 2020/11/29
+
+- updated to @applitools/visual-grid-client@15.2.1 (from 15.2.0)
+
+## 4.49.0 - 2020/11/24
+
+- using new concurrency model
+- updated to @applitools/eyes-sdk-core@12.6.1 (from 12.5.7)
+- updated to @applitools/visual-grid-client@15.2.0 (from 15.1.1)
+
+## 4.48.0 - 2020/11/9
+
+- updated to @applitools/visual-grid-client@15.1.1 (from 15.1.0)
+
+## 4.47.0 - 2020/11/9
+
+- fix firefox region compensation issue
+- add 2020 ios devices
+- fix coded region calculation when running in target region ([Trello 538](https://trello.com/c/FQ8iJZdi))
+- deprecate `saveDebugData`
+- updated to @applitools/eyes-sdk-core@12.5.6 (from 12.4.2)
+- updated to @applitools/visual-grid-client@15.1.0 (from 15.0.10)
+- updated to @applitools/eyes-sdk-core@12.5.7 (from 12.5.6)
+
+## 4.46.1 - 2020/10/15
+
+- add iosVersion to readme
+- updated to @applitools/eyes-sdk-core@12.4.2 (from 12.3.0)
+- updated to @applitools/visual-grid-client@15.0.10 (from 15.0.9)
+
+## 4.46.0 - 2020/10/6
+
 - remove yarn workspaces
 - updated to @applitools/eyes-sdk-core@12.2.6 (from 12.2.4)
 - updated to @applitools/visual-grid-client@15.0.6 (from 15.0.4)
 - updated to @applitools/eyes-sdk-core@12.2.8 (from 12.2.6)
 - updated to @applitools/visual-grid-client@15.0.7 (from 15.0.6)
+- updated to @applitools/eyes-sdk-core@12.3.0 (from 12.2.8)
+- updated to @applitools/visual-grid-client@15.0.9 (from 15.0.7)
 
 ## 4.45.3 - 2020/9/4
 

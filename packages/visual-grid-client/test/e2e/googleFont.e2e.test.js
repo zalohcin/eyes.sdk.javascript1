@@ -6,8 +6,9 @@ const {expect} = require('chai')
 const puppeteer = require('puppeteer')
 const makeRenderingGridClient = require('../../src/sdk/renderingGridClient')
 const testServer = require('@applitools/sdk-shared/src/run-test-server')
-const {deserializeDomSnapshotResult} = require('@applitools/eyes-sdk-core')
+const {deserializeDomSnapshotResult} = require('@applitools/eyes-sdk-core/shared')
 const {getProcessPageAndSerialize} = require('@applitools/dom-snapshot')
+const testLogger = require('../util/testLogger')
 
 describe('openEyes', () => {
   let baseUrl, closeServer, openEyes
@@ -20,6 +21,7 @@ describe('openEyes', () => {
       showLogs: process.env.APPLITOOLS_SHOW_LOGS,
       apiKey,
       fetchResourceTimeout: 2000,
+      logger: testLogger,
     }).openEyes
   })
 
@@ -44,8 +46,7 @@ describe('openEyes', () => {
     await browser.close()
   })
 
-  // TODO unskip once VG has an answer to the cause of the failure
-  it.skip('renders google font on IE correctly', async () => {
+  it('renders google font on IE correctly', async () => {
     await page.goto(`${baseUrl}/google-font.html`)
     const userAgent = await page.evaluate(() => navigator.userAgent)
 
@@ -54,15 +55,14 @@ describe('openEyes', () => {
     const {checkWindow, close} = await openEyes({
       appName: 'some app',
       testName: 'renders google font on IE correctly',
-      browser: [{width: 640, height: 480, name: 'ie11'}],
+      browser: [{width: 640, height: 480, name: 'ie'}],
       userAgent,
+      saveNewTests: false,
     })
 
     checkWindow({
-      resourceUrls,
-      resourceContents,
-      cdt,
       url,
+      snapshot: {resourceUrls, resourceContents, cdt},
     })
 
     const results = await close(false)

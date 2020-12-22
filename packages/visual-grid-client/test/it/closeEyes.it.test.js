@@ -1,6 +1,8 @@
 'use strict'
 const {describe, it, before, after, beforeEach, afterEach} = require('mocha')
-const {expect} = require('chai')
+const chai = require('chai')
+chai.use(require('chai-uuid'))
+const {expect} = chai
 const makeRenderingGridClient = require('../../src/sdk/renderingGridClient')
 const makeGlobalState = require('../../src/sdk/globalState')
 const createFakeWrapper = require('../util/createFakeWrapper')
@@ -34,6 +36,7 @@ describe('closeEyes', () => {
     wrapper2 = createFakeWrapper(baseUrl)
 
     openEyes = makeRenderingGridClient({
+      testConcurrency: 500,
       showLogs: APPLITOOLS_SHOW_LOGS,
       apiKey,
       renderWrapper: wrapper,
@@ -56,7 +59,6 @@ describe('closeEyes', () => {
       url: `${baseUrl}/basic.html`,
     })
     const [err, result] = await presult(close())
-    console.log('err', err)
     expect(err).to.be.undefined
     expect(result[0].getStepsInfo().map(r => r.result.getAsExpected())).to.eql([true])
   })
@@ -167,6 +169,7 @@ describe('closeEyes', () => {
   it('rejectes and fails all tests on render error', async () => {
     const failRenderWrapper = createFakeWrapper(baseUrl, {failRender: true})
     const openEyesRenderFail = makeRenderingGridClient({
+      testConcurrency: 500,
       showLogs: APPLITOOLS_SHOW_LOGS,
       apiKey,
       renderWrapper: failRenderWrapper,
@@ -195,6 +198,7 @@ describe('closeEyes', () => {
   it('resolves and fails all tests on render error with throwEx=false', async () => {
     const failRenderWrapper = createFakeWrapper(baseUrl, {failRender: true})
     const openEyesRenderFail = makeRenderingGridClient({
+      testConcurrency: 500,
       showLogs: APPLITOOLS_SHOW_LOGS,
       apiKey,
       renderWrapper: failRenderWrapper,
@@ -243,6 +247,7 @@ describe('closeEyes', () => {
   it('sets the correct batchId on batches when closing', async () => {
     const globalState = makeGlobalState({logger: {log: () => {}}})
     const openEyes = makeRenderingGridClient({
+      testConcurrency: 500,
       showLogs: APPLITOOLS_SHOW_LOGS,
       apiKey,
       renderWrapper: wrapper,
@@ -266,8 +271,8 @@ describe('closeEyes', () => {
     await close()
 
     // this simulates setting batchId: 'secondBatchId' in openEyes
-    const wrapper3 = createFakeWrapper(baseUrl, {batchId: 'secondBatchId'})
-    const wrapper4 = createFakeWrapper(baseUrl, {batchId: 'secondBatchId'})
+    const wrapper3 = createFakeWrapper(baseUrl)
+    const wrapper4 = createFakeWrapper(baseUrl)
 
     ;({checkWindow, close} = await openEyes({
       wrappers: [wrapper3, wrapper4],
@@ -276,10 +281,15 @@ describe('closeEyes', () => {
         {width: 2, height: 2},
       ],
       appName,
+      batchId: 'secondBatchId',
     }))
     await close()
 
-    expect([...globalState.batchStore.ids.values()]).to.eql(['1', 'secondBatchId'])
+    expect(globalState.batchStore.ids.size).to.equal(2)
+
+    const batchStoreArr = [...globalState.batchStore.ids]
+    expect(batchStoreArr[0]).to.be.a.uuid('v4')
+    expect(batchStoreArr[1]).to.equal('secondBatchId')
   })
 
   it('resolves with empty array if aborted by user with throwEx=false', async () => {

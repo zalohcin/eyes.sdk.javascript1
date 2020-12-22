@@ -1,7 +1,5 @@
 'use strict'
 
-const {ArgumentGuard} = require('../..')
-
 /**
  * Encapsulates data required to start render using the RenderingGrid API.
  */
@@ -36,12 +34,8 @@ class RenderRequest {
     renderId,
     agentId,
     visualGridOptions,
+    renderer,
   } = {}) {
-    ArgumentGuard.notNullOrEmpty(webhook, 'webhook')
-    ArgumentGuard.notNull(url, 'url')
-    ArgumentGuard.notNull(dom, 'dom')
-    ArgumentGuard.notNull(resources, 'resources')
-
     this._webhook = webhook
     this._stitchingService = stitchingService
     this._url = url
@@ -56,6 +50,7 @@ class RenderRequest {
     this._sendDom = sendDom
     this._agentId = agentId
     this._visualGridOptions = visualGridOptions
+    this._renderer = renderer
   }
 
   /**
@@ -87,10 +82,21 @@ class RenderRequest {
   }
 
   /**
+   * @return {RGridDom}
+   */
+  setDom(dom) {
+    this._dom = dom
+  }
+
+  /**
    * @return {RGridResource[]}
    */
   getResources() {
     return this._resources
+  }
+
+  setResources(resources) {
+    this._resources = resources
   }
 
   /**
@@ -192,21 +198,36 @@ class RenderRequest {
     this._visualGridOptions = options
   }
 
+  getRenderer() {
+    return this._renderer
+  }
+
+  setRenderer(renderer) {
+    this._renderer = renderer
+  }
+
   /**
    * @override
    */
   toJSON() {
     const resources = {}
-    this.getResources().forEach(resource => {
-      resources[resource.getUrl()] = resource.getHashAsObject()
-    })
+    if (this.getResources()) {
+      this.getResources().forEach(resource => {
+        resources[resource.getUrl()] = resource.getHashAsObject()
+      })
+    }
 
     const object = {
       webhook: this._webhook,
       stitchingService: this._stitchingService,
       url: this._url,
-      dom: this._dom.getHashAsObject(),
-      resources,
+      dom: this._dom ? this._dom.getHashAsObject() : null,
+      resources: this._resources
+        ? this._resources.reduce((resources, resource) => {
+            return Object.assign(resources, {[resource.getUrl()]: resource.getHashAsObject()})
+          }, {})
+        : null,
+      enableMultipleResultsPerSelector: true,
     }
 
     if (this._renderId) {

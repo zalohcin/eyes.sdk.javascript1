@@ -27,6 +27,14 @@ const IosDeviceNames = Enum('IosDeviceName', {
   iPad_7: 'iPad (7th generation)',
   /** @type {'iPad Air (2nd generation)'} */
   iPad_Air_2: 'iPad Air (2nd generation)',
+  /** @type {'iPhone 12 Pro Max'} */
+  iPhone_12_Pro_Max: 'iPhone 12 Pro Max',
+  /** @type {'iPhone 12 Pro'} */
+  iPhone_12_Pro: 'iPhone 12 Pro',
+  /** @type {'iPhone 12'} */
+  iPhone_12: 'iPhone 12',
+  /** @type {'iPhone 12 mini'} */
+  iPhone_12_mini: 'iPhone 12 mini',
 })
 
 module.exports = IosDeviceNames

@@ -449,8 +449,8 @@ cy.eyesClose();
 
 ## Concurrency
 
-The default level of concurrency for free accounts is `1`. This means that visual tests will not run in parallel during your tests, and will therefore be slow.
-If your account does support a higher level of concurrency, it's possible to pass a different value by specifying it in the property `concurrency` in the applitools.config.js file (see [Advanced configuration](#advanced-configuration) section below).
+The default level of concurrency for free accounts is `5`. This means that only up to 5 visual tests can run in parallel, and therefore the execution might be slow.
+If your account does support a higher level of concurrency, it's possible to pass a different value by specifying it in the property `testConcurrency` in the applitools.config.js file (see [Advanced configuration](#advanced-configuration) section below).
 
 If you are interested in speeding up your visual tests, contact sdr@applitools.com to get a trial account and faster tests with more concurrency.
 
@@ -469,7 +469,6 @@ The list above is also the order of precedence, which means that if you pass a p
 | -------------             |:-------------               |:-----------   |
 | `testName`                | The value of Cypress's test title | Test name. If this is not specified, the test name will be the title of the `it` block where the test is running.    |
 | `browser`                 | { width: 800, height: 600, name: 'chrome' } | The size and browser of the generated screenshots. This doesn't need to be the same as the browser that Cypress is running. It could be a different size and also a different browser. For more info and possible values, see the [browser section below](#configuring-the-browser).|
-| `saveDebugData`           | false                       | Whether to save troubleshooting data. See the troubleshooting section of this doc for more info. |
 | `batchId`                 | random                      | Provides ability to group tests into batches. Read more about batches [here](https://applitools.com/docs/topics/working-with-test-batches/how-to-group-tests-into-batches.html). |
 | `batchName`               | The name of the first test in the batch                   | Provides a name to the batch (for display purpose only). |
 | `batchSequenceName`               | undefined | Name for managing batch statistics. |
@@ -502,9 +501,11 @@ The following configuration properties cannot be defined using the first method 
 | `isDisabled`              | false                       | If true, all calls to Eyes-Cypress commands will be silently ignored. |
 | `failCypressOnDiff`       | true                        | If true, then the Cypress test fails if an eyes visual test fails. If false and an eyes test fails, then the Cypress test does not fail. 
 | `tapDirPath`              | undefined                   | Directory path of a results file. If set, then a [TAP](https://en.wikipedia.org/wiki/Test_Anything_Protocol#Specification) file is created in this directory, the tap file name is created with the name [ISO-DATE](https://en.wikipedia.org/wiki/ISO_8601)\-eyes.tap and contains the Eyes test results (Note that because of a current Cypress [limitation](https://github.com/cypress-io/cypress-documentation/issues/818) the results are scoped per spec file, this means that the results file is created once for each spec file).|
-| `concurrency`             | 1                           | The maximum number of tests that can run concurrently. The default value is the allowed amount for free accounts. For paid accounts, set this number to the quota set for your account. |
+| `testConcurrency`             | 5                          | The maximum number of tests that can run concurrently. The default value is the allowed amount for free accounts. For paid accounts, set this number to the quota set for your account. |
 |`dontCloseBatches`| false | If true, batches are not closed for  [notifyOnCompletion](#advanced-configuration).|
 |`disableBrowserFetching`| false | If true, page resources for rendering on the UFG will be fetched from outside of the browser.|
+|`enablePatterns`| false | |
+|`useDom`| false | |
 
 
 ### Method 1: Arguments for `cy.eyesOpen`
@@ -648,13 +649,20 @@ cy.eyesOpen({
   browser: {
     iosDeviceInfo: {
       deviceName: 'iPhone XR',
-      screenOrientation: 'landscape',
+      screenOrientation: 'landscape', // optional, default: 'portrait'
+      iosVersion: 'latest' // optional, default: undefined (i.e. the default is determined by the Ultrafast grid)
     },
   }
 })
 ```
 
 The list of devices is available at https://github.com/applitools/eyes.sdk.javascript1/blob/master/packages/eyes-sdk-core/lib/config/IosDeviceName.js
+
+Possible values for `iosVersion` are:
+
+- `'latest'` - the latest iOS version that's supported by the UFG
+- `'latest-1'` - one version prior to the latest version
+- `undefined` - the UFG's default
 
 ## Setting a timeout
 
@@ -690,8 +698,3 @@ Adding a [tsconfig.json](http://www.typescriptlang.org/docs/handbook/tsconfig-js
   ]
 }
 ```
-
-
-## Troubleshooting
-
-If issues occur, the `saveDebugData` config property can be set to true in order to save helpful information. The information will be saved under a folder named `.applitools` in the current working directory. This could be then used for getting support on your issue.

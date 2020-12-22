@@ -1,12 +1,10 @@
 'use strict'
 
-const {
-  Region,
-  GeneralUtils,
-  MatchLevel,
-  FloatingMatchSettings,
-  AccessibilityMatchSettings,
-} = require('../..')
+const Region = require('../geometry/Region')
+const GeneralUtils = require('../utils/GeneralUtils')
+const MatchLevel = require('../config/MatchLevel')
+const FloatingMatchSettings = require('../config/FloatingMatchSettings')
+const AccessibilityMatchSettings = require('../config/AccessibilityMatchSettings')
 
 const GetRegion = require('./GetRegion')
 const IgnoreRegionByRectangle = require('./IgnoreRegionByRectangle')

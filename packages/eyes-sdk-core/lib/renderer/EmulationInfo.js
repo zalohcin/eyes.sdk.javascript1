@@ -1,7 +1,6 @@
 'use strict'
 
-const {GeneralUtils} = require('../..')
-
+const GeneralUtils = require('../utils/GeneralUtils')
 const EmulationDevice = require('./EmulationDevice')
 
 class EmulationInfo {

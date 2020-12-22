@@ -1,6 +1,6 @@
 {
   "name": "@applitools/visual-grid-client",
-  "version": "15.0.8",
+  "version": "15.4.0",
   "description": "",
   "keywords": [
     "applitools",
@@ -31,7 +31,7 @@
     "index.d.ts"
   ],
   "dependencies": {
-    "@applitools/eyes-sdk-core": "12.2.9",
+    "@applitools/eyes-sdk-core": "12.10.0",
     "@applitools/functional-commons": "1.6.0",
     "@applitools/http-commons": "2.4.3",
     "@applitools/isomorphic-fetch": "3.0.0",
@@ -48,11 +48,12 @@
     "@applitools/jsdom": false
   },
   "devDependencies": {
-    "@applitools/dom-snapshot": "^4.0.5",
-    "@applitools/sdk-release-kit": "^0.3.1",
-    "@applitools/sdk-shared": "^0.1.0",
+    "@applitools/dom-snapshot": "4.4.1",
+    "@applitools/sdk-release-kit": "0.10.6",
+    "@applitools/sdk-shared": "0.5.19",
     "chai": "^4.2.0",
     "chai-spies": "^1.0.0",
+    "chai-uuid": "^1.0.6",
     "cookie-parser": "^1.4.4",
     "debug": "^4.1.1",
     "eslint": "^7.9.0",
@@ -64,6 +65,7 @@
     "morgan": "^1.9.1",
     "nock": "^11.3.5",
     "node-fetch": "^2.6.0",
+    "null-loader": "^4.0.1",
     "prettier": "1.19.0",
     "puppeteer": "^1.20.0",
     "typescript": "^3.9.2",
@@ -78,6 +80,7 @@
     "test:e2e": "mocha --no-timeouts \"test/e2e/**/*.test.js\"",
     "build:browser": "cd test/fixtures/test-app && yarn install --focused && yarn build",
     "test:browser": "mocha --no-timeouts 'test/browser/**/*.test.js'",
+    "prepublish:setup": "echo 'no setup'",
     "test": "yarn build:browser && yarn test:mocha",
     "render": "node example/render.js",
     "preversion": "bongo preversion && yarn test",

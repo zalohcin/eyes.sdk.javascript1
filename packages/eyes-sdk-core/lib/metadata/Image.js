@@ -1,6 +1,7 @@
 'use strict'
 
-const {GeneralUtils, RectangleSize} = require('../..')
+const GeneralUtils = require('../utils/GeneralUtils')
+const RectangleSize = require('../geometry/RectangleSize')
 
 class Image {
   /**

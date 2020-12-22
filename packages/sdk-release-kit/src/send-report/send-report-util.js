@@ -32,6 +32,12 @@ function convertSdkNameToReportName(sdkName) {
       return 'js_images'
     case 'eyes-protractor':
       return 'js_protractor'
+    case 'eyes-playwright':
+      return 'playwright'
+    case 'eyes-nightwatch':
+      return 'nightwatch'
+    case 'eyes-puppeteer':
+      return 'puppeteer'
     default:
       throw new Error('Unsupported SDK')
   }

@@ -2,10 +2,72 @@
 
 ## Unreleased
 
+
+## 3.17.0 - 2020/12/18
+
+- updated to @applitools/visual-grid-client@15.4.0 (from 15.3.3)
+
+## 3.16.4 - 2020/12/17
+
+- updated to @applitools/visual-grid-client@15.3.3 (from 15.3.2)
+
+## 3.16.3 - 2020/12/15
+
+- updated to @applitools/dom-snapshot@4.4.1 (from 4.4.0)
+- updated to @applitools/eyes-sdk-core@12.9.3 (from 12.9.2)
+- updated to @applitools/visual-grid-client@15.3.2 (from 15.3.1)
+
+## 3.16.2 - 2020/12/14
+
+- updated to @applitools/dom-snapshot@4.3.1 (from 4.2.6)
+- updated to @applitools/eyes-sdk-core@12.9.1 (from 12.6.2)
+- updated to @applitools/visual-grid-client@15.3.0 (from 15.2.1)
+- updated to @applitools/dom-snapshot@4.4.0 (from 4.3.1)
+- updated to @applitools/eyes-sdk-core@12.9.2 (from 12.9.1)
+- updated to @applitools/visual-grid-client@15.3.1 (from 15.3.0)
+
+## 3.16.1 - 2020/11/30
+
+- fix output with empty tests
+- using new concurrency model
+- updated to @applitools/eyes-sdk-core@12.6.2 (from 12.6.1)
+- updated to @applitools/visual-grid-client@15.2.1 (from 15.2.0)
+
+## 3.15.5 - 2020/11/10
+
+- updated to @applitools/dom-snapshot@4.2.6 (from 4.2.5)
+- updated to @applitools/eyes-sdk-core@12.5.7 (from 12.5.4)
+- updated to @applitools/visual-grid-client@15.1.1 (from 15.0.16)
+
+## 3.15.4 - 2020/11/1
+
+- updated to @applitools/dom-snapshot@4.2.5 (from 4.2.2)
+- updated to @applitools/eyes-sdk-core@12.5.4 (from 12.5.1)
+- updated to @applitools/visual-grid-client@15.0.16 (from 15.0.13)
+
+## 3.15.3 - 2020/10/22
+
+- deprecate `saveDebugData`
+- updated to @applitools/eyes-sdk-core@12.5.1 (from 12.4.3)
+- updated to @applitools/visual-grid-client@15.0.13 (from 15.0.11)
+- fix closing batches ([Trello](https://trello.com/c/8zPehdmh))
+
+## 3.15.2 - 2020/10/18
+
+- updated to @applitools/dom-snapshot@4.2.2 (from 4.2.0)
+- updated to @applitools/eyes-sdk-core@12.4.3 (from 12.3.1)
+- updated to @applitools/visual-grid-client@15.0.11 (from 15.0.9)
+
+## 3.15.1 - 2020/10/14
+
+- add iosVersion to readme
+
+## 3.15.0 - 2020/10/12
+
 - remove yarn workspaces
-- updated to @applitools/dom-snapshot@4.1.0 (from 4.0.6)
-- updated to @applitools/eyes-sdk-core@12.2.6 (from 12.2.5)
-- updated to @applitools/visual-grid-client@15.0.6 (from 15.0.5)
+- updated to @applitools/dom-snapshot@4.2.0 (from 4.0.6)
+- updated to @applitools/eyes-sdk-core@12.3.1 (from 12.2.5)
+- updated to @applitools/visual-grid-client@15.0.9 (from 15.0.5)
 
 ## 3.14.0 - 2020/9/22
 

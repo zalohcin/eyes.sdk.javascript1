@@ -24,7 +24,8 @@ typings
 .bongo
 
 # sdk-coverage-tests
-**/test/coverage/generic/
+**/test/generic/
+**/generated/
 coverage-test-report.xml
 coverage-tests-metadata.json
 
@@ -39,3 +40,10 @@ tags
 tags.*
 support
 eyes-testcafe-bak
+
+# generated
+dist
+types
+docs
+doc
+bin

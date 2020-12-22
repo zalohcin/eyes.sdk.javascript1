@@ -3,6 +3,14 @@
 ## Unreleased
 
 
+## 2.1.1 - 2020/11/24
+
+- add `/resources/query/resources-exist` endpoint
+
+## 2.1.0 - 2020/11/19
+
+- add `/job-info` endpoint
+
 ## 2.0.1 - 2020/9/23
 
 - refactor and add utilities

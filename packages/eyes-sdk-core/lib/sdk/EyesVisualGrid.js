@@ -6,7 +6,6 @@ const GeneralUtils = require('../utils/GeneralUtils')
 const TypeUtils = require('../utils/TypeUtils')
 const ArgumentGuard = require('../utils/ArgumentGuard')
 const TestResultsFormatter = require('../TestResultsFormatter')
-const MatchResult = require('../match/MatchResult')
 const CorsIframeHandler = require('../capture/CorsIframeHandler')
 const CorsIframeHandles = require('../capture/CorsIframeHandles')
 const VisualGridRunner = require('../runner/VisualGridRunner')
@@ -189,18 +188,15 @@ class EyesVisualGrid extends EyesCore {
       this._configuration.addBrowser(vs.getWidth(), vs.getHeight(), BrowserType.CHROME)
     }
 
-    if (this._runner.getConcurrentSessions())
-      this._configuration.setConcurrentSessions(this._runner.getConcurrentSessions())
-
-    const {openEyes} = await this._runner.getVisualGridClientWithCache({
+    const {openEyes, getResourceUrlsInCache} = await this._runner.getVisualGridClientWithCache({
       logger: this._logger,
       agentId: this.getFullAgentId(),
       apiKey: this._configuration.getApiKey(),
       showLogs: this._configuration.getShowLogs(),
-      saveDebugData: this._configuration.getSaveDebugData(),
       proxy: this._configuration.getProxy(),
       serverUrl: this._configuration.getServerUrl(),
-      renderConcurrencyFactor: this._configuration.getConcurrentSessions(),
+      concurrency: this._runner.legacyConcurrency || this._configuration.getConcurrentSessions(),
+      testConcurrency: this._runner.testConcurrency,
     })
 
     if (this._configuration.getViewportSize()) {
@@ -216,6 +212,7 @@ class EyesVisualGrid extends EyesCore {
     this._checkWindowCommand = checkWindow
     this._closeCommand = close
     this._abortCommand = abort
+    this._getResourceUrlsInCache = getResourceUrlsInCache
 
     await this._initCommon()
 
@@ -226,24 +223,7 @@ class EyesVisualGrid extends EyesCore {
    * @param {CheckSettings<TElement, TSelector>} [checkSettings] - check settings for the described test case
    * @returns {Promise<MatchResult>}
    */
-  async check(nameOrCheckSettings, checkSettings) {
-    if (this._configuration.getIsDisabled()) {
-      this._logger.log(`check(${nameOrCheckSettings}, ${checkSettings}): Ignored`)
-      return new MatchResult()
-    }
-    ArgumentGuard.isValidState(this._isOpen, 'Eyes not open')
-
-    if (TypeUtils.isNull(checkSettings) && !TypeUtils.isString(nameOrCheckSettings)) {
-      checkSettings = nameOrCheckSettings
-      nameOrCheckSettings = null
-    }
-
-    checkSettings = this.spec.newCheckSettings(checkSettings)
-
-    if (TypeUtils.isString(nameOrCheckSettings)) {
-      checkSettings.withName(nameOrCheckSettings)
-    }
-
+  async _check(checkSettings, closeAfterMatch = false, throwEx = true) {
     this._logger.verbose(
       `check started with tag "${checkSettings.getName()}" for test "${this._configuration.getTestName()}"`,
     )
@@ -251,9 +231,9 @@ class EyesVisualGrid extends EyesCore {
     return this._checkPrepare(checkSettings, async () => {
       const elementsById = await resolveAllRegionElements({
         checkSettings,
-        context: this._driver,
+        context: this._context,
       })
-      await EyesUtils.markElements(this._logger, this._driver, elementsById)
+      await EyesUtils.setElementMarkers(this._logger, this._context, elementsById)
 
       this._logger.verbose(`elements marked: ${Object.keys(elementsById)}`)
 
@@ -277,13 +257,19 @@ class EyesVisualGrid extends EyesCore {
           configuration: this._configuration,
         })
 
-        await this._checkWindowCommand({
+        return await this._checkWindowCommand({
           ...config,
+          closeAfterMatch,
+          throwEx,
           snapshot: snapshots,
           url,
         })
       } finally {
-        await EyesUtils.cleanupElementIds(this._logger, this._driver, Object.values(elementsById))
+        await EyesUtils.cleanupElementMarkers(
+          this._logger,
+          this._context,
+          Object.values(elementsById),
+        )
       }
     })
   }
@@ -310,12 +296,13 @@ class EyesVisualGrid extends EyesCore {
 
   async _takeDomSnapshots({breakpoints, disableBrowserFetching}) {
     const browsers = this._configuration.getBrowsersInfo()
+    const skipResources = this._getResourceUrlsInCache()
+    this._logger.verbose('dom snapshot skip list', skipResources)
     if (!breakpoints) {
       this._logger.verbose(`taking single dom snapshot`)
-      const snapshot = await takeDomSnapshot({
-        driver: this._driver,
+      const snapshot = await takeDomSnapshot(this._logger, this._driver, {
         disableBrowserFetching,
-        logger: this._logger,
+        skipResources,
       })
       return Array(browsers.length).fill(snapshot)
     }
@@ -355,10 +342,9 @@ class EyesVisualGrid extends EyesCore {
     const snapshots = Array(browsers.length)
     if (requiredWidths.has(viewportSize.getWidth())) {
       this._logger.log(`taking dom snapshot for existing width ${viewportSize.getWidth()}`)
-      const snapshot = await takeDomSnapshot({
-        driver: this._driver,
+      const snapshot = await takeDomSnapshot(this._logger, this._driver, {
         disableBrowserFetching,
-        logger: this._logger,
+        skipResources,
       })
       requiredWidths
         .get(viewportSize.getWidth())
@@ -386,10 +372,9 @@ class EyesVisualGrid extends EyesCore {
           console.log(message)
         }
       }
-      const snapshot = await takeDomSnapshot({
-        driver: this._driver,
+      const snapshot = await takeDomSnapshot(this._logger, this._driver, {
         disableBrowserFetching,
-        logger: this._logger,
+        skipResources,
       })
       browsersInfo.forEach(({index}) => (snapshots[index] = snapshot))
     }

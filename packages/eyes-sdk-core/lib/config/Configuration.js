@@ -70,7 +70,6 @@ const DEFAULT_VALUES = {
 /**
  * @typedef PlainConfiguration
  * @prop {boolean} showLogs
- * @prop {boolean} saveDebugData
  *
  * @prop {string} appName
  * @prop {string} testName
@@ -136,8 +135,6 @@ class Configuration {
   constructor(configuration) {
     /** @private @type {boolean} */
     this._showLogs = undefined
-    /** @type {boolean} */
-    this._saveDebugData = undefined
 
     /** @type {string} */
     this._appName = undefined
@@ -248,6 +245,9 @@ class Configuration {
     /** @type {boolean} */
     this._disableBrowserFetching = undefined
 
+    /** @type {number} */
+    this._abortIdleTestTimeout = undefined
+
     if (configuration) {
       this.mergeConfig(configuration)
     }
@@ -274,16 +274,15 @@ class Configuration {
    * @return {boolean}
    */
   getSaveDebugData() {
-    return this._saveDebugData
+    GeneralUtils.deprecationWarning({deprecatedThing: 'saveDebugData', isDead: true})
   }
 
   /**
    * @param {boolean} value
    * @return {this}
    */
-  setSaveDebugData(value) {
-    ArgumentGuard.isBoolean(value, 'saveDebugData')
-    this._saveDebugData = value
+  setSaveDebugData(_value) {
+    GeneralUtils.deprecationWarning({deprecatedThing: 'saveDebugData', isDead: true})
     return this
   }
 
@@ -1184,6 +1183,7 @@ class Configuration {
   /* ------------ Visual Grid properties ------------ */
 
   /**
+   * @deprecated
    * @return {number}
    */
   getConcurrentSessions() {
@@ -1191,6 +1191,7 @@ class Configuration {
   }
 
   /**
+   * @deprecated
    * @param {number} value
    * @return {this}
    */
@@ -1331,6 +1332,16 @@ class Configuration {
     return this
   }
 
+  getAbortIdleTestTimeout() {
+    return this._abortIdleTestTimeout
+  }
+
+  setAbortIdleTestTimeout(value) {
+    ArgumentGuard.isNumber(value, 'abortIdleTestTimeout')
+    this._abortIdleTestTimeout = value
+    return this
+  }
+
   /**
    * @param {Configuration|object} other
    */
@@ -1371,6 +1382,7 @@ class Configuration {
       baselineName: this.getBaselineEnvName(),
       envName: this.getEnvironmentName(),
       branchName: this.getBranchName(),
+      saveDiffs: this.getSaveDiffs(),
       saveFailedTests: this.getSaveFailedTests(),
       saveNewTests: this.getSaveNewTests(),
       compareWithParentBranch: this.getCompareWithParentBranch(),
@@ -1383,7 +1395,6 @@ class Configuration {
       useDom: this.getUseDom(),
       enablePatterns: this.getEnablePatterns(),
       ignoreDisplacements: this.getIgnoreDisplacements(),
-      saveDebugData: this.getSaveDebugData(),
       accessibilitySettings: this.getAccessibilityValidation(),
       visualGridOptions: this.getVisualGridOptions(),
     }

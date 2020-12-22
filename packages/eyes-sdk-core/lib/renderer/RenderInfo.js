@@ -1,6 +1,7 @@
 'use strict'
 
-const {GeneralUtils, Region} = require('../..')
+const Region = require('../geometry/Region')
+const GeneralUtils = require('../utils/GeneralUtils')
 
 const EmulationInfo = require('./EmulationInfo')
 
@@ -149,7 +150,10 @@ class RenderInfo {
     }
 
     if (this._iosDeviceInfo) {
-      obj.iosDeviceInfo = GeneralUtils.toPlain(this._iosDeviceInfo, undefined, {deviceName: 'name'})
+      obj.iosDeviceInfo = GeneralUtils.toPlain(this._iosDeviceInfo, undefined, {
+        deviceName: 'name',
+        iosVersion: 'version',
+      })
     }
 
     // TODO remove this when rendering-grid changes x/y to left/top

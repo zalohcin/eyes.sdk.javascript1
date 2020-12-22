@@ -1,15 +1,15 @@
 'use strict'
+const fs = require('fs')
+const path = require('path')
 const {URL} = require('url')
 const cwd = process.cwd()
-const path = require('path')
-const fs = require('fs')
 const {
-  StitchMode,
   BatchInfo,
   Configuration,
   Eyes,
   VisualGridRunner,
   ConsoleLogHandler,
+  FileLogHandler,
 } = require(cwd)
 
 const SAUCE_SERVER_URL = 'https://ondemand.saucelabs.com:443/wd/hub'
@@ -27,7 +27,6 @@ const DEVICES = {
       deviceName: 'Android Emulator',
       platformName: 'Android',
       platformVersion: '6.0',
-      deviceOrientation: 'landscape',
       clearSystemFiles: true,
       noReset: true,
       ...SAUCE_CREDENTIALS,
@@ -44,6 +43,17 @@ const DEVICES = {
       ...SAUCE_CREDENTIALS,
     },
   },
+  'Pixel 3 XL': {
+    capabilities: {
+      deviceName: 'Google Pixel 3 XL GoogleAPI Emulator',
+      platformName: 'Android',
+      platformVersion: '10.0',
+      deviceOrientation: 'portrait',
+      ...SAUCE_CREDENTIALS,
+    },
+    url: SAUCE_SERVER_URL,
+    sauce: true,
+  },
   'Samsung Galaxy S8': {
     type: 'sauce',
     url: SAUCE_SERVER_URL,
@@ -55,6 +65,7 @@ const DEVICES = {
       appiumVersion: '1.9.1',
       deviceName: 'Samsung Galaxy S8 FHD GoogleAPI Emulator',
       automationName: 'uiautomator2',
+      newCommandTimeout: 600,
       ...SAUCE_CREDENTIALS,
     },
   },
@@ -96,6 +107,19 @@ const DEVICES = {
       platformVersion: '12.4',
       platformName: 'iOS',
       ...SAUCE_CREDENTIALS,
+    },
+  },
+  'Android 8.0 Chrome Emulator': {
+    capabilities: {
+      browserName: 'chrome',
+      'goog:chromeOptions': {
+        mobileEmulation: {
+          deviceMetrics: {width: 384, height: 512, pixelRatio: 2},
+          userAgent:
+            'Mozilla/5.0 (Linux; Android 8.0.0; Android SDK built for x86_64 Build/OSR1.180418.004) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Mobile Safari/537.36',
+        },
+        args: ['hide-scrollbars'],
+      },
     },
   },
 }
@@ -141,9 +165,16 @@ const BROWSERS = {
     type: 'sauce',
     url: SAUCE_SERVER_URL,
     capabilities: {
-      browserName: 'safari',
-      browserVersion: '11.0',
-      platformName: 'macOS 10.12',
+      w3c: {
+        browserName: 'safari',
+        browserVersion: '11.0',
+        platformName: 'macOS 10.12',
+      },
+      legacy: {
+        browserName: 'safari',
+        version: '11.0',
+        platform: 'macOS 10.12',
+      },
     },
     options: {
       name: 'Safari 11',
@@ -155,9 +186,16 @@ const BROWSERS = {
     type: 'sauce',
     url: SAUCE_SERVER_URL,
     capabilities: {
-      browserName: 'safari',
-      browserVersion: '12.1',
-      platformName: 'macOS 10.13',
+      w3c: {
+        browserName: 'safari',
+        browserVersion: '12.1',
+        platformName: 'macOS 10.13',
+      },
+      legacy: {
+        browserName: 'safari',
+        version: '12.1',
+        platform: 'macOS 10.13',
+      },
     },
     options: {
       name: 'Safari 12',
@@ -219,38 +257,42 @@ function Env(
 const batchName = process.env.APPLITOOLS_BATCH_NAME || 'JS Coverage Tests'
 const batch = typeof BatchInfo === 'undefined' ? batchName : new BatchInfo(batchName)
 
-function getEyes({
-  isVisualGrid,
-  isCssStitching,
-  configuration,
-  branchName = 'master',
-  showLogs,
-  debugScreenshots,
-} = {}) {
-  const eyes = new Eyes(isVisualGrid ? new VisualGridRunner(10) : undefined)
-  if (debugScreenshots) {
-    const screenshotsPath = path.resolve(cwd, 'screenshots')
-    if (!fs.existsSync(screenshotsPath)) fs.mkdirSync(screenshotsPath)
-    eyes.setDebugScreenshotsPath(screenshotsPath)
-    eyes.setSaveDebugScreenshots(true)
+function getEyes({vg, showLogs, saveLogs, saveDebugScreenshots, runner, ...config} = {}) {
+  runner = runner || (vg ? new VisualGridRunner({testConcurrency: 500}) : undefined)
+  const eyes = new Eyes(runner)
+  const conf = {
+    apiKey: process.env.APPLITOOLS_API_KEY_SDK,
+    batch,
+    parentBranchName: 'master',
+    branchName: 'master',
+    dontCloseBatches: true,
+    matchTimeout: 0,
+    saveNewTests: false,
+    ...config,
   }
-  const conf = Object.assign(
-    {
-      apiKey: process.env.APPLITOOLS_API_KEY_SDK,
-      batch,
-      branchName,
-      parentBranchName: 'master',
-      dontCloseBatches: true,
-      matchTimeout: 0,
-      stitchMode: isCssStitching ? StitchMode.CSS : StitchMode.SCROLL,
-      saveNewTests: false,
-    },
-    configuration,
-  )
   eyes.setConfiguration(new Configuration(conf))
 
   if (process.env.APPLITOOLS_SHOW_LOGS || showLogs) {
     eyes.setLogHandler(new ConsoleLogHandler(true))
+  }
+
+  if (process.env.APPLITOOLS_SAVE_LOGS || saveLogs) {
+    const logsPath =
+      typeof saveLogs === 'string' ? saveLogs : `./logs/${new Date().toISOString()}.log`
+    const logHandler = new FileLogHandler(true, logsPath)
+    logHandler.open()
+    eyes.setLogHandler(logHandler)
+  }
+
+  if (process.env.APPLITOOLS_SAVE_DEBUG_SCREENSHOTS || saveDebugScreenshots) {
+    eyes.setSaveDebugScreenshots(true)
+    const screenshotsPath =
+      typeof saveDebugScreenshots === 'string'
+        ? saveDebugScreenshots
+        : `./logs/${new Date().toISOString()}`
+    const fullScreenshotsPath = path.resolve(cwd, screenshotsPath)
+    fs.mkdirSync(fullScreenshotsPath, {recursive: true})
+    eyes.setDebugScreenshotsPath(fullScreenshotsPath)
   }
 
   return eyes

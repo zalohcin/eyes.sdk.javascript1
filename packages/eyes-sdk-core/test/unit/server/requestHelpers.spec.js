@@ -48,6 +48,7 @@ describe('requestHelpers', () => {
         'x-applitools-eyes-client': 'testAgent',
         'x-applitools-eyes-client-request-id': REQUEST_ID,
         'Eyes-Expect': '202+location',
+        'Eyes-Expect-Version': '2',
         'Eyes-Date': TIMESTAMP.toUTCString(),
       },
       data: {},
@@ -83,7 +84,20 @@ describe('requestHelpers', () => {
     })
   })
 
-  it('configAxiosProxy works with http only proxy', () => {
+  it('configAxiosProxy works with http only proxy and port 80 specified', () => {
+    const proxy = new ProxySettings('http://some.url:80', 'daniel', '1234', true)
+    const axiosConfig = {}
+    configAxiosProxy({axiosConfig, proxy, logger})
+
+    assert.deepStrictEqual(axiosConfig.proxy, false)
+    assert.deepStrictEqual(axiosConfig.httpsAgent.proxyOptions, {
+      host: 'some.url',
+      port: '80',
+      proxyAuth: 'daniel:1234',
+    })
+  })
+
+  it('configAxiosProxy works with http only proxy and no port specified', () => {
     const proxy = new ProxySettings('http://some.url', 'daniel', '1234', true)
     const axiosConfig = {}
     configAxiosProxy({axiosConfig, proxy, logger})

@@ -1,7 +1,12 @@
 'use strict';
 
-const {ConfigUtils, Logger, TypeUtils} = require('@applitools/eyes-sdk-core');
-const {makeVisualGridClient, configParams} = require('@applitools/visual-grid-client');
+const {
+  makeVisualGridClient,
+  configParams,
+  ConfigUtils,
+  Logger,
+  TypeUtils,
+} = require('@applitools/visual-grid-client');
 const makeStartServer = require('./server');
 const makePluginExport = require('./pluginExport');
 const {startApp} = require('./app');
@@ -13,7 +18,7 @@ const {version: packageVersion} = require('../../package.json');
 const agentId = `eyes-cypress/${packageVersion}`;
 
 const config = Object.assign(
-  {concurrency: 1, agentId},
+  {agentId},
   ConfigUtils.getConfig({
     configParams: [
       ...configParams,

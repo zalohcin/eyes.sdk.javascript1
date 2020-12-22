@@ -2,6 +2,71 @@
 
 ## Unreleased
 
+## 5.29.0 - 2020/12/18
+
+- updated to @applitools/eyes-sdk-core@12.10.0 (from 12.9.3)
+- updated to @applitools/visual-grid-client@15.4.0 (from 15.3.2)
+
+## 5.28.3 - 2020/12/15
+
+- updated to @applitools/eyes-sdk-core@12.9.3 (from 12.9.2)
+- updated to @applitools/visual-grid-client@15.3.2 (from 15.3.1)
+
+## 5.28.2 - 2020/12/14
+
+- updated to @applitools/eyes-sdk-core@12.9.2 (from 12.9.1)
+- updated to @applitools/visual-grid-client@15.3.1 (from 15.3.0)
+
+## 5.28.1 - 2020/12/11
+
+- update eyes-service to use new concurrency configuration
+
+## 5.28.0 - 2020/12/11
+
+- updated to @applitools/eyes-sdk-core@12.9.1 (from 12.6.1)
+- updated to @applitools/visual-grid-client@15.3.0 (from 15.2.1)
+
+## 5.27.2 - 2020/11/30
+
+- export `RunnerOptions`
+
+## 5.27.1 - 2020/11/29
+
+- updated to @applitools/visual-grid-client@15.2.1 (from 15.2.0)
+
+## 5.27.0 - 2020/11/25
+
+- updated to @applitools/eyes-sdk-core@12.6.0 (from 12.5.7)
+- updated to @applitools/visual-grid-client@15.2.0 (from 15.1.1)
+
+## 5.26.0 - 2020/11/10
+
+-- fix firefox region compensation issue
+- add 2020 ios devices
+- fix coded region calculation when running in target region ([Trello 538](https://trello.com/c/FQ8iJZdi))
+- fix issue with element markers cleanup ([Trello](https://trello.com/c/H7I1Ofke)) ([commit](https://github.com/applitools/eyes.sdk.javascript1/commit/b643d01608512c3b30303149b0af7d1b03657225))
+- deprecate `saveDebugData`
+- updated to @applitools/eyes-sdk-core@12.5.7 (from 12.4.2)
+- updated to @applitools/visual-grid-client@15.1.0 (from 15.0.10)
+- updated to @applitools/visual-grid-client@15.1.1 (from 15.1.0)
+
+## 5.25.1 - 2020/10/15
+
+- add iosVersion to readme
+
+## 5.25.0 - 2020/10/14
+
+- updated to @applitools/eyes-sdk-core@12.4.2 (from 12.3.1)
+- updated to @applitools/visual-grid-client@15.0.10 (from 15.0.9)
+
+## 5.24.1 - 2020/10/7
+
+- updated to @applitools/eyes-sdk-core@12.3.1 (from 12.3.0)
+
+## 5.24.0 - 2020/10/6
+
+- updated to @applitools/eyes-sdk-core@12.3.0 (from 12.2.6)
+- updated to @applitools/visual-grid-client@15.0.9 (from 15.0.6)
 
 ## 5.23.1 - 2020/9/23
 

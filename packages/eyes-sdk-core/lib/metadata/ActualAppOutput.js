@@ -1,6 +1,7 @@
 'use strict'
 
-const {GeneralUtils, DateTimeUtils} = require('../..')
+const GeneralUtils = require('../utils/GeneralUtils')
+const DateTimeUtils = require('../utils/DateTimeUtils')
 
 const ImageMatchSettings = require('./ImageMatchSettings')
 const Image = require('./Image')

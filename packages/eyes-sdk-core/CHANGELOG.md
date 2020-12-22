@@ -2,9 +2,158 @@
 
 ## Unreleased
 
+
+## 12.10.0 - 2020/12/18
+
+- add new option to browser list ([Trello 693](https://trello.com/c/cEKupD0M))
+- updated to @applitools/dom-capture@9.0.0 (from 8.0.2)
+
+## 12.9.4 - 2020/12/17
+
+- change `takeDomCapture` to capture dom only of the provided context
+
+## 12.9.3 - 2020/12/15
+
+- calculate image location for viewport screenshots
+- revert update baseline logic
+- updated to @applitools/dom-capture@8.0.2 (from 8.0.1)
+- updated to @applitools/dom-snapshot@4.4.1 (from 4.4.0)
+
+## 12.9.2 - 2020/12/14
+
+- using new protection method for native builtins with dom-snapshot
+- updated to @applitools/dom-snapshot@4.4.0 (from 4.3.1)
+
+## 12.9.1 - 2020/12/11
+
+- updated visual-grid-client dev dependency to latest (used for testing)
+
+## 12.9.0 - 2020/12/11
+
+- long running tasks enhancement
+- updated to @applitools/dom-snapshot@4.3.1 (from 4.3.0)
+
+## 12.8.4 - 2020/12/8
+
+- support skip list in dom-snapshot
+- updated to @applitools/dom-snapshot@4.3.0 (from 4.2.9)
+
+## 12.8.3 - 2020/12/4
+
+- fix a typo on MatchWindowAndCloseTask
+- updated to @applitools/dom-snapshot@4.2.9 (from 4.2.8)
+
+## 12.8.2 - 2020/12/3
+
+- add `updateBaselineIfDifferent` to MatchWindowAndCloseTask
+- split `updateBaseline` to `updateBaselineIfNew` and `updateBaselineIfDifferent` in EyesBase.close
+- updated to @applitools/dom-snapshot@4.2.8 (from 4.2.7)
+
+## 12.8.1 - 2020/12/1
+
+- fix stitchMode usage in `extractText`
+
+## 12.8.0 - 2020/12/1
+
+- add `extractText` function to the Eyes class
+
+## 12.7.0 - 2020/12/1
+
+- export `takeDomSnapshot`
+# 12.6.2 - 2020/11/26
+- fix concurrency bug with 503 responses
+
+## 12.6.1 - 2020/11/24
+
+- fix check frame logic by passing closeAfterMatch flag
+
+## 12.6.0 - 2020/11/19
+
+- new concurrency model
+- updated to @applitools/dom-snapshot@4.2.7 (from 4.2.5)
+
+## 12.5.7 - 2020/11/9
+
+- fix region compensation issue in firefox
+
+## 12.5.6 - 2020/11/8
+
+- add 2020 ios devices
+- fix coded region calculation when running in target region ([Trello 538](https://trello.com/c/FQ8iJZdi))
+
+## 12.5.5 - 2020/11/1
+
+- updated to @applitools/dom-snapshot@4.2.5 (from 4.2.3)
+
+## 12.5.4 - 2020/10/26
+
+- restore inner offset of the element in case one stitch full page screenshot ([Trello 528](https://trello.com/c/iu2Png9p))
+- updated to @applitools/dom-snapshot@4.2.3 (from 4.2.2)
+
+## 12.5.3 - 2020/10/24
+
+- fix `setViewportSize` utility
+
+## 12.5.2 - 2020/10/23
+
+- remove unused devDependencies
+- fix sending multiple region types by the same element in vg mode
+- fix sending `ignoreDisplacements` in vg mode
+- fix check settings when set `false` in `sendDom` using object notation
+- remove force hiding scrollbars during taking full page screenshot with css stitching
+- updated to @applitools/dom-capture@8.0.1 (from 8.0.0)
+- updated to @applitools/snippets@2.1.0 (from 2.0.3)
+
+## 12.5.1 - 2020/10/22
+
+- rename `_getSetBatchId` to `getBatchIdWithoutGenerating`
+
+## 12.5.0 - 2020/10/22
+
+- added ability to close batches using batch IDs
+
+## 12.4.4 - 2020/10/19
+
+- deprecate `saveDebugData`
+
+## 12.4.3 - 2020/10/18
+
+- use `enableMultipleResultsPerSelector` in render request
+- updated to @applitools/dom-snapshot@4.2.2 (from 4.2.1)
+
+## 12.4.2 - 2020/10/14
+
+- re-enable native app viewport screenshotting along with added support for checkRegion
+
+## 12.4.1 - 2020/10/13
+
+- disable native mobile app viewport screenshotting (until check region functionality is also supported)
+
+## 12.4.0 - 2020/10/13
+
+- improve screenshots on native mobile apps (with Appium) so just the application viewport is captured ([PR 135](https://github.com/applitools/eyes.sdk.javascript1/pull/135))
+=======
+
+## 12.3.2 - 2020/10/13
+
+- override cors frame's src after dom snapshot is taken
+- prevent taking a screenshot of the invisible part of the region ([Trello 544](https://trello.com/c/wJsUyBPE), [Trello 528](https://trello.com/c/iu2Png9p), [commit](https://github.com/applitools/eyes.sdk.javascript1/commit/c4adcdd74d479284075835e7a99489d8ba37825f))
+- updated to @applitools/dom-snapshot@4.2.1 (from 4.2.0)
+
+## 12.3.1 - 2020/10/7
+
+- add support for proxy configurations that use a default port (e.g., port 80) with isHttpOnly ([Trello 539](https://trello.com/c/0RPLxkOo), [commit](https://github.com/applitools/eyes.sdk.javascript1/commit/f0225dd9d5d761f5941eea1fa145bfaea9170877))
+
+## 12.3.0 - 2020/10/6
+
+- added support of chunked dom snapshot results
+- used common polling logic for dom snapshot and dom capture
 - add warnings when `setViewportSize` fails during taking dom snapshot with layout breakpoints
+- support multiple versions of ios for visual grid
 - updated to @applitools/dom-snapshot@4.1.2 (from 4.1.0)
 - updated to @applitools/snippets@2.0.3 (from 2.0.1)
+- updated to @applitools/dom-capture@8.0.0 (from 7.3.0)
+- updated to @applitools/dom-snapshot@4.2.0 (from 4.1.2)
 
 ## 12.2.9 - 2020/9/28
 
@@ -320,7 +469,7 @@
 
 ## 8.0.2
 
-- fix exception on aborts - using _getSetBatchId in closeBatch so we dont generate batch id but still get the generated batch id.
+- fix exception on aborts - using `_getSetBatchId` in closeBatch so we dont generate batch id but still get the generated batch id.
 guarding addBrowsers arguments for sending an array
 - upload domsnapshot directly to Azure [Trello](https://trello.com/c/ZCLJo8Fy/241-upload-dom-directly-to-azure)
 - support future long running tasks [Trello](https://trello.com/c/60Rm4xXG/240-support-future-long-running-tasks)

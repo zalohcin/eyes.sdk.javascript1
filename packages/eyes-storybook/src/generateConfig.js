@@ -1,8 +1,8 @@
 'use strict';
 const pick = require('lodash.pick');
-const {ConfigUtils} = require('@applitools/eyes-sdk-core');
+const {ConfigUtils, GeneralUtils} = require('@applitools/eyes-sdk-core');
 const {resolve} = require('path');
-const deprecationWarning = require('./deprecationWarning');
+const {deprecationWarning} = GeneralUtils;
 const uniq = require('./uniq');
 
 function generateConfig({argv = {}, defaultConfig = {}, externalConfigParams = []}) {
@@ -18,7 +18,12 @@ function generateConfig({argv = {}, defaultConfig = {}, externalConfigParams = [
     result.waitBeforeScreenshots !== defaultConfig.waitBeforeScreenshots &&
     result.waitBeforeScreenshot === defaultConfig.waitBeforeScreenshot
   ) {
-    console.log(deprecationWarning("'waitBeforeScreenshots'", "'waitBeforeScreenshot' (no 's')"));
+    console.log(
+      deprecationWarning({
+        deprecatedThing: "'waitBeforeScreenshots'",
+        newThing: "'waitBeforeScreenshot' (no 's')",
+      }),
+    );
     result.waitBeforeScreenshot = result.waitBeforeScreenshots;
   }
 
@@ -33,12 +38,8 @@ function generateConfig({argv = {}, defaultConfig = {}, externalConfigParams = [
     result.showLogs = true;
   }
 
-  if (
-    result.storyDataGap === undefined &&
-    result.concurrency !== undefined &&
-    result.renderConcurrencyFactor !== undefined
-  ) {
-    result.storyDataGap = result.concurrency * result.renderConcurrencyFactor;
+  if (result.storyDataGap === undefined && result.concurrency !== undefined) {
+    result.storyDataGap = result.concurrency;
   }
   return result;
 }
