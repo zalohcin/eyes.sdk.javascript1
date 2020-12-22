@@ -1,10 +1,10 @@
 const assert = require('assert')
-const spec = require('../../src/SpecDriver')
+const spec = require('../../src/spec-driver')
 const {Selector} = require('testcafe')
 const fs = require('fs')
 const {EyesFactory} = require('../../src/TestCafeSDK')
 
-fixture`SpecDriver`.page`https://applitools.github.io/demo/TestPages/FramesTestPage/`
+fixture`spec-driver`.page`https://applitools.github.io/demo/TestPages/FramesTestPage/`
 
 test('isDriver(driver)', driver => {
   assert.strictEqual(spec.isDriver(driver), true)
