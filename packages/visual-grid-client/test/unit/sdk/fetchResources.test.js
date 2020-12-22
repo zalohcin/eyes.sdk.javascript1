@@ -83,4 +83,64 @@ describe('fetchResource', () => {
     expect(await fetchResourceWithRetry(url)).to.eql({url, errorStatusCode: 404})
     expect(called).to.equal(1)
   })
+
+  describe('mediaDownloadTimeout', () => {
+    it('stop fetching media after mediaDownloadTimeout', async () => {
+      const fetchResource = makeFetchResource({logger: testLogger, mediaDownloadTimeout: 80, fetch})
+      const url = 'http://something2'
+      nock(url)
+        .get('/')
+        .delayBody(200)
+        .reply(200, 'bla', {'content-type': 'audio/content-type'})
+
+      await fetchResource(url).then(expect.fail, e => {
+        expect(e.message).to.equal(`timeout when downloading ${url} content`)
+      })
+    })
+
+    it("doesn't include headers fetching time", async () => {
+      const fetchResource = makeFetchResource({logger: testLogger, mediaDownloadTimeout: 80, fetch})
+      const url = 'http://something2'
+      nock(url)
+        .get('/')
+        .delay(200)
+        .reply(200, 'bla', {'content-type': 'audio/content-type'})
+
+      await fetchResource(url).then(
+        resource =>
+          expect(resource).to.eql({url, type: 'audio/content-type', value: Buffer.from('bla')}),
+        expect.fail,
+      )
+    })
+
+    it("doesn't apply to requests with content length", async () => {
+      const fetchResource = makeFetchResource({logger: testLogger, mediaDownloadTimeout: 80, fetch})
+      const url = 'http://something2'
+      nock(url)
+        .get('/')
+        .delayBody(200)
+        .reply(200, 'bla', {'content-type': 'audio/content-type', 'content-length': 3})
+
+      await fetchResource(url).then(
+        resource =>
+          expect(resource).to.eql({url, type: 'audio/content-type', value: Buffer.from('bla')}),
+        expect.fail,
+      )
+    })
+
+    it("doesn't apply to requests with non media content type", async () => {
+      const fetchResource = makeFetchResource({logger: testLogger, mediaDownloadTimeout: 80, fetch})
+      const url = 'http://something2'
+      nock(url)
+        .get('/')
+        .delayBody(200)
+        .reply(200, 'bla', {'content-type': 'some/content-type'})
+
+      await fetchResource(url).then(
+        resource =>
+          expect(resource).to.eql({url, type: 'some/content-type', value: Buffer.from('bla')}),
+        expect.fail,
+      )
+    })
+  })
 })
