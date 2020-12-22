@@ -143,7 +143,7 @@ function useEmitter() {
             type = currentType
           }
         }
-        return useRef({deref: () => getter({target: ref.ref(), type, key}), type})
+        return useRef({deref: () => getter({target: ref.ref(), type: currentType, key}), type})
       },
       apply(_target, _this, args) {
         const type = ref.type()
