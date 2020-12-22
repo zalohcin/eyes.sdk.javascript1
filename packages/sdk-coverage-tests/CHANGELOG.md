@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix type in getter
 
 ## 2.2.0 - 2020/12/22
 
