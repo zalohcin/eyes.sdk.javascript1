@@ -15,7 +15,6 @@ class DecoratedEyesFactory extends sdk.EyesFactory {
   constructor() {
     const eyesInstance = super()
     const _open = eyesInstance.open.bind(eyesInstance)
-    const _check = eyesInstance.check.bind(eyesInstance)
     const api = {
       async open(...args) {
         if (args && args.length === 1 && TypeUtils.isObject(args[0]) && !spec.isDriver(args[0])) {
@@ -25,8 +24,8 @@ class DecoratedEyesFactory extends sdk.EyesFactory {
         }
         await _open(...args)
       },
-      async checkWindow(...args) {
-        await _check(...args)
+      async checkWindow(..._args) {
+        // TODO
       },
     }
     eyesInstance.open = api.open

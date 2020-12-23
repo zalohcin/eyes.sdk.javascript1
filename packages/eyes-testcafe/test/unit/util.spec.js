@@ -25,6 +25,7 @@ describe('util', () => {
     const config = translateArgsToConfig(args)
     assert.deepStrictEqual(config.getTestName(), args.testName)
     assert.deepStrictEqual(config.getBrowsersInfo(), args.browser)
+    // TODO: sort out
     //config.getBatch() // id & name
     assert.deepStrictEqual(config.getBaselineEnvName(), args.baselineEnvName)
     assert.deepStrictEqual(config.getEnvironmentName(), args.envName)
