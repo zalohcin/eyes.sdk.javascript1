@@ -45,7 +45,7 @@ async function eyesStorybook({
   logger.log('browser launched');
   const page = await browser.newPage();
   const userAgent = await page.evaluate('navigator.userAgent');
-  const {testWindow, closeBatch, globalState} = makeVisualGridClient({
+  const {testWindow, closeBatch, globalState, getIosDevicesSizes, getEmulatedDevicesSizes, getResourceUrlsInCache} = makeVisualGridClient({
     userAgent,
     ...config,
     logger: logger.extend('vgc'),
@@ -57,15 +57,18 @@ async function eyesStorybook({
 
   const doTakeDomSnapshots = async page => {
     const driver = new Driver(logger, page);
+    const skipResources = getResourceUrlsInCache()
     const result = await takeDomSnapshots({
       logger,
       driver,
       viewportSize: config.viewportSize,
       breakpoints: config.layoutBreakpoints,
       browsers: config.browser,
-      useSessionCache: true,
+      skipResources,
       showLogs: !!config.showLogs,
       disableBrowserFetching: !!config.disableBrowserFetching,
+      getIosDevicesSizes,
+      getEmulatedDevicesSizes,
     });
     return result;
   };

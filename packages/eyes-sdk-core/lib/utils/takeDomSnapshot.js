@@ -23,7 +23,6 @@ async function takeDomSnapshot(logger, driver, options = {}) {
     chunkByteLength = DEFAULT_CHUNK_BYTE_LENGTH,
     pollTimeout = POLL_TIMEOUT,
     executionTimeout = EXECUTION_TIMEOUT,
-    useSessionCache,
     showLogs,
     skipResources,
   } = options
@@ -33,7 +32,6 @@ async function takeDomSnapshot(logger, driver, options = {}) {
     dontFetchResources,
     serializeResources: true,
     compressResources: false,
-    useSessionCache,
     showLogs,
     skipResources,
   }

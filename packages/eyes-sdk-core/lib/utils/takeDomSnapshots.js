@@ -10,7 +10,7 @@ async function takeDomSnapshots({
   driver,
   logger,
   showLogs,
-  useSessionCache,
+  skipResources,
   viewportSize,
   getEmulatedDevicesSizes,
   getIosDevicesSizes,
@@ -20,7 +20,7 @@ async function takeDomSnapshots({
     const snapshot = await takeDomSnapshot(logger, driver, {
       disableBrowserFetching,
       showLogs,
-      useSessionCache,
+      skipResources,
     })
     return Array(browsers.length).fill(snapshot)
   }
@@ -45,7 +45,11 @@ async function takeDomSnapshots({
   const snapshots = Array(browsers.length)
   if (requiredWidths.has(viewportSize.width)) {
     logger.log(`taking dom snapshot for existing width ${viewportSize.width}`)
-    const snapshot = await takeDomSnapshot(logger, driver, {disableBrowserFetching})
+    const snapshot = await takeDomSnapshot(logger, driver, {
+      disableBrowserFetching,
+      showLogs,
+      skipResources,
+    })
     requiredWidths.get(viewportSize.width).forEach(({index}) => (snapshots[index] = snapshot))
   }
   for (const [requiredWidth, browsersInfo] of requiredWidths.entries()) {
@@ -68,7 +72,11 @@ async function takeDomSnapshots({
         console.log(message)
       }
     }
-    const snapshot = await takeDomSnapshot(logger, driver, {disableBrowserFetching})
+    const snapshot = await takeDomSnapshot(logger, driver, {
+      disableBrowserFetching,
+      showLogs,
+      skipResources,
+    })
     browsersInfo.forEach(({index}) => (snapshots[index] = snapshot))
   }
   await driver.setViewportSize(viewportSize)
