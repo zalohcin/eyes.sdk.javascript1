@@ -7,54 +7,6 @@ const {ServerConnector} = require('../..')
 let _emulatedDevicesSizesPromise
 let _iosDevicesSizesPromise
 
-async function _getRequiredWidths({browsers, breakpoints}) {
-  return await browsers.reduce((widths, browser, index) => {
-    const browserInfo = _getBrowserInfo(browser)
-    return widths.then(async widths => {
-      const {type, name, width} = await browserInfo
-      const requiredWidth = GeneralUtils.getBreakpointWidth(breakpoints, width)
-      let groupedBrowsers = widths.get(requiredWidth)
-      if (!groupedBrowsers) {
-        groupedBrowsers = []
-        widths.set(requiredWidth, groupedBrowsers)
-      }
-      groupedBrowsers.push({index, width, type, name})
-      return widths
-    })
-  }, Promise.resolve(new Map()))
-}
-
-async function _getBrowserInfo(browser) {
-  if (TypeUtils.has(browser, 'name')) {
-    const {name, width, height} = browser
-    return {type: 'browser', name, width, height}
-  } else if (
-    TypeUtils.has(browser, 'chromeEmulationInfo') ||
-    TypeUtils.has(browser, 'deviceName')
-  ) {
-    const {deviceName, screenOrientation = 'portrait'} = browser.chromeEmulationInfo || browser
-    if (!_emulatedDevicesSizesPromise) {
-      // fetch instead of server connector? what about caching the result? dynamically getting the server url?
-      const serverUrl = 'https://render-wus.applitools.com' // TODO: find a better way to do this
-      const serverConnector = new ServerConnector()
-      _emulatedDevicesSizesPromise = serverConnector.getEmulatedDevicesSizes(serverUrl)
-    }
-    const devicesSizes = await _emulatedDevicesSizesPromise
-    const size = devicesSizes[deviceName][screenOrientation]
-    return {type: 'emulation', name: deviceName, screenOrientation, ...size}
-  } else if (TypeUtils.has(browser, 'iosDeviceInfo')) {
-    const {deviceName, screenOrientation = 'portrait'} = browser.iosDeviceInfo
-    if (!_iosDevicesSizesPromise) {
-      const serverUrl = 'https://render-wus.applitools.com' // TODO: find a better way to do this
-      const serverConnector = new ServerConnector()
-      _iosDevicesSizesPromise = serverConnector.getIosDevicesSizes(serverUrl)
-    }
-    const devicesSizes = await _iosDevicesSizesPromise
-    const size = devicesSizes[deviceName][screenOrientation]
-    return {type: 'ios', name: deviceName, screenOrientation, ...size}
-  }
-}
-
 async function takeDomSnapshots({
   breakpoints,
   browsers,
@@ -123,6 +75,54 @@ async function takeDomSnapshots({
   }
   await driver.setViewportSize(viewportSize)
   return snapshots
+}
+
+async function _getRequiredWidths({browsers, breakpoints}) {
+  return await browsers.reduce((widths, browser, index) => {
+    const browserInfo = _getBrowserInfo(browser)
+    return widths.then(async widths => {
+      const {type, name, width} = await browserInfo
+      const requiredWidth = GeneralUtils.getBreakpointWidth(breakpoints, width)
+      let groupedBrowsers = widths.get(requiredWidth)
+      if (!groupedBrowsers) {
+        groupedBrowsers = []
+        widths.set(requiredWidth, groupedBrowsers)
+      }
+      groupedBrowsers.push({index, width, type, name})
+      return widths
+    })
+  }, Promise.resolve(new Map()))
+}
+
+async function _getBrowserInfo(browser) {
+  if (TypeUtils.has(browser, 'name')) {
+    const {name, width, height} = browser
+    return {type: 'browser', name, width, height}
+  } else if (
+    TypeUtils.has(browser, 'chromeEmulationInfo') ||
+    TypeUtils.has(browser, 'deviceName')
+  ) {
+    const {deviceName, screenOrientation = 'portrait'} = browser.chromeEmulationInfo || browser
+    if (!_emulatedDevicesSizesPromise) {
+      // fetch instead of server connector? what about caching the result? dynamically getting the server url?
+      const serverUrl = 'https://render-wus.applitools.com' // TODO: find a better way to do this
+      const serverConnector = new ServerConnector()
+      _emulatedDevicesSizesPromise = serverConnector.getEmulatedDevicesSizes(serverUrl)
+    }
+    const devicesSizes = await _emulatedDevicesSizesPromise
+    const size = devicesSizes[deviceName][screenOrientation]
+    return {type: 'emulation', name: deviceName, screenOrientation, ...size}
+  } else if (TypeUtils.has(browser, 'iosDeviceInfo')) {
+    const {deviceName, screenOrientation = 'portrait'} = browser.iosDeviceInfo
+    if (!_iosDevicesSizesPromise) {
+      const serverUrl = 'https://render-wus.applitools.com' // TODO: find a better way to do this
+      const serverConnector = new ServerConnector()
+      _iosDevicesSizesPromise = serverConnector.getIosDevicesSizes(serverUrl)
+    }
+    const devicesSizes = await _iosDevicesSizesPromise
+    const size = devicesSizes[deviceName][screenOrientation]
+    return {type: 'ios', name: deviceName, screenOrientation, ...size}
+  }
 }
 
 module.exports = takeDomSnapshots
