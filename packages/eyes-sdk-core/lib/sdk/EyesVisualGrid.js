@@ -186,7 +186,12 @@ class EyesVisualGrid extends EyesCore {
       this._configuration.addBrowser(vs.getWidth(), vs.getHeight(), BrowserType.CHROME)
     }
 
-    const {openEyes, getResourceUrlsInCache} = await this._runner.getVisualGridClientWithCache({
+    const {
+      openEyes,
+      getResourceUrlsInCache,
+      getIosDevicesSizes,
+      getEmulatedDevicesSizes,
+    } = await this._runner.getVisualGridClientWithCache({
       logger: this._logger,
       agentId: this.getFullAgentId(),
       apiKey: this._configuration.getApiKey(),
@@ -211,6 +216,8 @@ class EyesVisualGrid extends EyesCore {
     this._closeCommand = close
     this._abortCommand = abort
     this._getResourceUrlsInCache = getResourceUrlsInCache
+    this._getIosDevicesSizes = getIosDevicesSizes
+    this._getEmulatedDevicesSizes = getEmulatedDevicesSizes
 
     await this._initCommon()
 
@@ -245,15 +252,16 @@ class EyesVisualGrid extends EyesCore {
           this._configuration.getDisableBrowserFetching(),
         )
         const browsers = this._configuration.getBrowsersInfo()
-        const viewportSize = await this.getViewportSize()
         const snapshots = await takeDomSnapshots({
           breakpoints,
           browsers,
           disableBrowserFetching,
           driver: this._driver,
           logger: this._logger,
-          viewportSize: viewportSize.toJSON(),
           skipResources: this._getResourceUrlsInCache(),
+          getViewportSize: () => this.getViewportSize(),
+          getEmulatedDevicesSizes: this._getEmulatedDevicesSizes,
+          getIosDevicesSizes: this._getIosDevicesSizes,
         })
         const [{url}] = snapshots
         if (this.getCorsIframeHandle() === CorsIframeHandles.BLANK) {
