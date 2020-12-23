@@ -1,8 +1,8 @@
 const assert = require('assert')
-const spec = require('../../src/SpecDriver')
+const spec = require('../../src/spec-driver')
 const {Selector} = require('testcafe')
 
-describe('SpecDriver', () => {
+describe('spec-driver', () => {
   describe('prepareArgsFunctionString', () => {
     it('flat arguments', () => {
       const expected = 'let args = [...arguments]\n' + 'args[2] = args[2]()\n' + 'return args'
