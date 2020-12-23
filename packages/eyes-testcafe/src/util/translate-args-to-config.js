@@ -9,8 +9,13 @@ module.exports = args => {
   configArgs.batch = {
     id: configArgs.batchId,
     name: configArgs.batchName,
+    notifyOnCompletion: configArgs.notifyOnCompletion,
   }
   delete configArgs.browser
   delete configArgs.envName
-  return new Configuration(configArgs)
+  const config = new Configuration(configArgs)
+  config.setMatchLevel(args.matchLevel)
+  config.setIgnoreDisplacements(args.ignoreDisplacements)
+  config.setAccessibilityValidation(args.accessibilityValidation)
+  return config
 }

@@ -27,25 +27,23 @@ describe('util', () => {
     assert.deepStrictEqual(config.getBrowsersInfo(), args.browser)
     const batch = config.getBatch()
     assert.deepStrictEqual(batch.getName(), args.batchName)
-    assert.deepStrictEqual(batch.getId(), args.batchId, args.batchId)
+    assert.deepStrictEqual(batch.getId(), args.batchId)
+    assert.deepStrictEqual(batch.getNotifyOnCompletion(), args.notifyOnCompletion)
     assert.deepStrictEqual(config.getBaselineEnvName(), args.baselineEnvName)
     assert.deepStrictEqual(config.getEnvironmentName(), args.envName)
     assert.deepStrictEqual(config.getIgnoreCaret(), args.ignoreCaret)
-    // TODO: fix
-    //assert.deepStrictEqual(config.getMatchLevel(), args.matchLevel)
+    assert.deepStrictEqual(config.getMatchLevel(), args.matchLevel)
     assert.deepStrictEqual(config.getBaselineBranchName(), args.baselineBranchName)
     assert.deepStrictEqual(config.getParentBranchName(), args.parentBranchName)
     assert.deepStrictEqual(config.getSaveFailedTests(), args.saveFailedTests)
     assert.deepStrictEqual(config.getSaveNewTests(), args.saveNewTests)
-    const props = config.getProperties()
-    assert.deepStrictEqual(Object.values(props[0]), Object.values(args.properties[0]))
-    // TODO: fix
-    //assert.deepStrictEqual(config.getIgnoreDisplacements(), args.ignoreDisplacements)
+    assert.deepStrictEqual(
+      Object.values(config.getProperties()[0]),
+      Object.values(args.properties[0]),
+    )
+    assert.deepStrictEqual(config.getIgnoreDisplacements(), args.ignoreDisplacements)
     assert.deepStrictEqual(config.getCompareWithParentBranch(), args.compareWithParentBranch)
     assert.deepStrictEqual(config.getIgnoreBaseline(), args.ignoreBaseline)
-    // TODO: find where this is passed
-    // notifyOnCompletion
-    // TODO: fix
-    //assert.deepStrictEqual(config.getAccessibilityValidation(), args.accessibilityValidation)
+    assert.deepStrictEqual(config.getAccessibilityValidation(), args.accessibilityValidation)
   })
 })
