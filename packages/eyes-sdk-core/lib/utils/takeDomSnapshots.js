@@ -2,10 +2,6 @@ const takeDomSnapshot = require('./takeDomSnapshot')
 const chalk = require('chalk')
 const GeneralUtils = require('./GeneralUtils')
 const TypeUtils = require('./TypeUtils')
-const {ServerConnector} = require('../..')
-
-let _emulatedDevicesSizesPromise
-let _iosDevicesSizesPromise
 
 async function takeDomSnapshots({
   breakpoints,
@@ -16,6 +12,8 @@ async function takeDomSnapshots({
   showLogs,
   useSessionCache,
   viewportSize,
+  getEmulatedDevicesSizes,
+  getIosDevicesSizes,
 }) {
   if (!breakpoints) {
     logger.verbose(`taking single dom snapshot`)
@@ -27,7 +25,7 @@ async function takeDomSnapshots({
     return Array(browsers.length).fill(snapshot)
   }
 
-  const requiredWidths = await _getRequiredWidths({browsers, breakpoints})
+  const requiredWidths = await getRequiredWidths()
   const isStrictBreakpoints = Array.isArray(breakpoints)
   const smallestBreakpoint = Math.min(...(isStrictBreakpoints ? breakpoints : []))
 
@@ -45,27 +43,27 @@ async function takeDomSnapshots({
   logger.verbose(`taking multiple dom snapshots for breakpoints: ${breakpoints}`)
   logger.verbose(`required widths: ${[...requiredWidths.keys()].join(', ')}`)
   const snapshots = Array(browsers.length)
-  if (requiredWidths.has(viewportSize.getWidth())) {
-    logger.log(`taking dom snapshot for existing width ${viewportSize.getWidth()}`)
+  if (requiredWidths.has(viewportSize.width)) {
+    logger.log(`taking dom snapshot for existing width ${viewportSize.width}`)
     const snapshot = await takeDomSnapshot(logger, driver, {disableBrowserFetching})
-    requiredWidths.get(viewportSize.getWidth()).forEach(({index}) => (snapshots[index] = snapshot))
+    requiredWidths.get(viewportSize.width).forEach(({index}) => (snapshots[index] = snapshot))
   }
   for (const [requiredWidth, browsersInfo] of requiredWidths.entries()) {
     logger.log(`taking dom snapshot for width ${requiredWidth}`)
     try {
-      await driver.setViewportSize({width: requiredWidth, height: viewportSize.getHeight()})
+      await driver.setViewportSize({width: requiredWidth, height: viewportSize.height})
     } catch (err) {
       const actualViewportSize = await driver.getViewportSize()
       if (isStrictBreakpoints) {
         const failedBrowsers = browsersInfo.map(({name, width}) => `(${name}, ${width})`).join(', ')
         const message = chalk.yellow(
-          `One of the configured layout breakpoints is ${requiredWidth} pixels, while your local browser has a limit of ${actualViewportSize.getWidth()}, so the SDK couldn't resize it to the desired size. As a fallback, the resources that will be used for the following configurations: [${failedBrowsers}] have been captured on the browser's limit (${actualViewportSize.getWidth()} pixels). To resolve this, you may use a headless browser as it can be resized to any size.`,
+          `One of the configured layout breakpoints is ${requiredWidth} pixels, while your local browser has a limit of ${actualViewportSize.width}, so the SDK couldn't resize it to the desired size. As a fallback, the resources that will be used for the following configurations: [${failedBrowsers}] have been captured on the browser's limit (${actualViewportSize.width} pixels). To resolve this, you may use a headless browser as it can be resized to any size.`,
         )
         console.log(message)
       } else {
         const failedBrowsers = browsersInfo.map(({name}) => `(${name})`).join(', ')
         const message = chalk.yellow(
-          `The following configurations [${failedBrowsers}] have a viewport-width of ${requiredWidth} pixels, while your local browser has a limit of ${actualViewportSize.getWidth()} pixels, so the SDK couldn't resize it to the desired size. As a fallback, the resources that will be used for these checkpoints have been captured on the browser's limit (${actualViewportSize.getWidth()} pixels). To resolve this, you may use a headless browser as it can be resized to any size.`,
+          `The following configurations [${failedBrowsers}] have a viewport-width of ${requiredWidth} pixels, while your local browser has a limit of ${actualViewportSize.width} pixels, so the SDK couldn't resize it to the desired size. As a fallback, the resources that will be used for these checkpoints have been captured on the browser's limit (${actualViewportSize.width} pixels). To resolve this, you may use a headless browser as it can be resized to any size.`,
         )
         console.log(message)
       }
@@ -75,54 +73,41 @@ async function takeDomSnapshots({
   }
   await driver.setViewportSize(viewportSize)
   return snapshots
-}
 
-async function _getRequiredWidths({browsers, breakpoints}) {
-  return await browsers.reduce((widths, browser, index) => {
-    const browserInfo = _getBrowserInfo(browser)
-    return widths.then(async widths => {
-      const {type, name, width} = await browserInfo
-      const requiredWidth = GeneralUtils.getBreakpointWidth(breakpoints, width)
-      let groupedBrowsers = widths.get(requiredWidth)
-      if (!groupedBrowsers) {
-        groupedBrowsers = []
-        widths.set(requiredWidth, groupedBrowsers)
+  async function getRequiredWidths() {
+    return await browsers.reduce((widths, browser, index) => {
+      const browserInfo = getBrowserInfo(browser)
+      return widths.then(async widths => {
+        const {type, name, width} = await browserInfo
+        const requiredWidth = GeneralUtils.getBreakpointWidth(breakpoints, width)
+        let groupedBrowsers = widths.get(requiredWidth)
+        if (!groupedBrowsers) {
+          groupedBrowsers = []
+          widths.set(requiredWidth, groupedBrowsers)
+        }
+        groupedBrowsers.push({index, width, type, name})
+        return widths
+      })
+    }, Promise.resolve(new Map()))
+  }
+
+  async function getBrowserInfo(browser) {
+    if (TypeUtils.has(browser, 'name')) {
+      const {name, width, height} = browser
+      return {name, width, height}
+    } else {
+      let devicesSizes, browserObj
+      if (TypeUtils.has(browser, 'chromeEmulationInfo') || TypeUtils.has(browser, 'deviceName')) {
+        browserObj = browser.chromeEmulationInfo || browser
+        devicesSizes = await getEmulatedDevicesSizes()
+      } else if (TypeUtils.has(browser, 'iosDeviceInfo')) {
+        browserObj = browser.iosDeviceInfo
+        devicesSizes = await getIosDevicesSizes()
       }
-      groupedBrowsers.push({index, width, type, name})
-      return widths
-    })
-  }, Promise.resolve(new Map()))
-}
-
-async function _getBrowserInfo(browser) {
-  if (TypeUtils.has(browser, 'name')) {
-    const {name, width, height} = browser
-    return {type: 'browser', name, width, height}
-  } else if (
-    TypeUtils.has(browser, 'chromeEmulationInfo') ||
-    TypeUtils.has(browser, 'deviceName')
-  ) {
-    const {deviceName, screenOrientation = 'portrait'} = browser.chromeEmulationInfo || browser
-    if (!_emulatedDevicesSizesPromise) {
-      // fetch instead of server connector? what about caching the result? dynamically getting the server url?
-      const serverUrl = 'https://render-wus.applitools.com' // TODO: find a better way to do this
-      const serverConnector = new ServerConnector()
-      _emulatedDevicesSizesPromise = serverConnector.getEmulatedDevicesSizes(serverUrl)
+      const {deviceName, screenOrientation = 'portrait'} = browserObj
+      const size = devicesSizes[deviceName][screenOrientation]
+      return {name: deviceName, screenOrientation, ...size}
     }
-    const devicesSizes = await _emulatedDevicesSizesPromise
-    const size = devicesSizes[deviceName][screenOrientation]
-    return {type: 'emulation', name: deviceName, screenOrientation, ...size}
-  } else if (TypeUtils.has(browser, 'iosDeviceInfo')) {
-    const {deviceName, screenOrientation = 'portrait'} = browser.iosDeviceInfo
-    if (!_iosDevicesSizesPromise) {
-      const serverUrl = 'https://render-wus.applitools.com' // TODO: find a better way to do this
-      const serverConnector = new ServerConnector()
-      _iosDevicesSizesPromise = serverConnector.getIosDevicesSizes(serverUrl)
-    }
-    const devicesSizes = await _iosDevicesSizesPromise
-    const size = devicesSizes[deviceName][screenOrientation]
-    return {type: 'ios', name: deviceName, screenOrientation, ...size}
   }
 }
-
 module.exports = takeDomSnapshots

@@ -16,7 +16,7 @@ const memoryLog = require('./memoryLog');
 const getIframeUrl = require('./getIframeUrl');
 const createPagePool = require('./pagePool');
 const getClientAPI = require('../dist/getClientAPI');
-const {takeDomSnapshots, RectangleSize} = require('@applitools/eyes-sdk-core');
+const {takeDomSnapshots} = require('@applitools/eyes-sdk-core');
 const {Driver} = require('@applitools/eyes-puppeteer');
 
 const CONCURRENT_PAGES = 3;
@@ -60,9 +60,9 @@ async function eyesStorybook({
     const result = await takeDomSnapshots({
       logger,
       driver,
-      viewportSize: new RectangleSize(config.viewportSize),
+      viewportSize: config.viewportSize,
       breakpoints: config.layoutBreakpoints,
-      browsers: config.browser || [true], // won't work if no config.browser but there are layoutBreakpoints
+      browsers: config.browser,
       useSessionCache: true,
       showLogs: !!config.showLogs,
       disableBrowserFetching: !!config.disableBrowserFetching,

@@ -50,8 +50,6 @@ function makeGetStoryData({logger, takeDomSnapshots, waitBeforeScreenshot, reloa
     const snapshots = await takeDomSnapshots(page);
 
     logger.log(`done getting data from story`, title);
-    if (snapshots && snapshots.length === 1)
-      logger.log('dom result: cdt', JSON.stringify(snapshots[0].cdt));
     return snapshots;
 
     async function renderStoryLegacy() {

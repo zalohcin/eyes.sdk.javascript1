@@ -252,7 +252,7 @@ class EyesVisualGrid extends EyesCore {
           disableBrowserFetching,
           driver: this._driver,
           logger: this._logger,
-          viewportSize,
+          viewportSize: viewportSize.toJSON(),
         })
         const [{url}] = snapshots
         if (this.getCorsIframeHandle() === CorsIframeHandles.BLANK) {
