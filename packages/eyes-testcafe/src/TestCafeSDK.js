@@ -11,6 +11,7 @@ const sdk = EyesSDK({
   VisualGridClient,
 })
 
+// TODO: also support applitools.config.js
 class DecoratedEyesFactory extends sdk.EyesFactory {
   constructor() {
     const eyesInstance = super()
