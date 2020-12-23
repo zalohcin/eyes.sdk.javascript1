@@ -25,8 +25,9 @@ describe('util', () => {
     const config = translateArgsToConfig(args)
     assert.deepStrictEqual(config.getTestName(), args.testName)
     assert.deepStrictEqual(config.getBrowsersInfo(), args.browser)
-    // TODO: sort out
-    //config.getBatch() // id & name
+    const batch = config.getBatch()
+    assert.deepStrictEqual(batch.getName(), args.batchName)
+    assert.deepStrictEqual(batch.getId(), args.batchId, args.batchId)
     assert.deepStrictEqual(config.getBaselineEnvName(), args.baselineEnvName)
     assert.deepStrictEqual(config.getEnvironmentName(), args.envName)
     assert.deepStrictEqual(config.getIgnoreCaret(), args.ignoreCaret)
@@ -43,7 +44,7 @@ describe('util', () => {
     assert.deepStrictEqual(config.getCompareWithParentBranch(), args.compareWithParentBranch)
     assert.deepStrictEqual(config.getIgnoreBaseline(), args.ignoreBaseline)
     // TODO: find where this is passed
-    // notifyOnCompletion ?
+    // notifyOnCompletion
     // TODO: fix
     //assert.deepStrictEqual(config.getAccessibilityValidation(), args.accessibilityValidation)
   })
