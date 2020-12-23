@@ -21,6 +21,60 @@ describe('util', () => {
         const checkSettings = translateArgsToCheckSettings(args)
         assert.deepStrictEqual(checkSettings.getTargetElement(), args.selector)
       })
+      it.skip('region', () => {
+        //{target: 'region', region: {top: 100, left: 0, width: 1000, height: 200}}
+      })
+      it.skip('ignore', () => {
+        //{ignore: [{selector: '#overflowing-div'}, {top: 100, left: 0, width: 1000, height: 200}]}
+      })
+      it.skip('floating', () => {
+        //{
+        //    floating: [
+        //      {
+        //        top: 100,
+        //        left: 0,
+        //        width: 1000,
+        //        height: 100,
+        //        maxUpOffset: 20,
+        //        maxDownOffset: 20,
+        //        maxLeftOffset: 20,
+        //        maxRightOffset: 20,
+        //      },
+        //      {
+        //        selector: '#overflowing-div',
+        //        maxUpOffset: 20,
+        //        maxDownOffset: 20,
+        //        maxLeftOffset: 20,
+        //        maxRightOffset: 20,
+        //      },
+        //    ],
+        //  }
+      })
+      it.skip('layout', () => {
+        //{layout: [{top: 100, left: 0, width: 1000, height: 100}, {selector: '#overflowing-div'}]}
+      })
+      it.skip('strict', () => {
+        //{strict: [{top: 100, left: 0, width: 1000, height: 100}, {selector: '#overflowing-div'}]}
+      })
+      it.skip('content', () => {
+        // {content: [{top: 100, left: 0, width: 1000, height: 100}, {selector: '#overflowing-div'}]}
+      })
+      it.skip('accessibility', () => {
+        //{
+        //  accessibility: [
+        //    {accessibilityType: 'RegularText', selector: '#overflowing-div'},
+        //    {accessibilityType: 'BoldText', top: 100, left: 0, width: 1000, height: 100},
+        //  ]
+        //}
+      })
+      it.skip('scriptsHooks', () => {
+        //{scriptHooks: {
+        //  beforeCaptureScreenshot: "document.body.style.backgroundColor = 'gold'",
+        //}}
+      })
+      it.skip('sendDom', () => {
+        //{sendDom: false}
+      })
     })
     describe('translate open args to config', () => {
       it('works', () => {
