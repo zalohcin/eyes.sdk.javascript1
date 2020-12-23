@@ -14,8 +14,8 @@ module.exports = args => {
   delete configArgs.browser
   delete configArgs.envName
   const config = new Configuration(configArgs)
-  config.setMatchLevel(args.matchLevel)
-  config.setIgnoreDisplacements(args.ignoreDisplacements)
-  config.setAccessibilityValidation(args.accessibilityValidation)
+  if (args.matchLevel) config.setMatchLevel(args.matchLevel)
+  if (args.ignoreDisplacements) config.setIgnoreDisplacements(args.ignoreDisplacements)
+  if (args.accessibilityValidation) config.setAccessibilityValidation(args.accessibilityValidation)
   return config
 }
