@@ -2,8 +2,38 @@ const vm = require('vm')
 const fs = require('fs')
 const fetch = require('node-fetch')
 const chalk = require('chalk')
+const handlebars = require('handlebars')
 const {useFramework} = require('../framework')
 const {isUrl, mergeObjects, toPascalCase} = require('../common-util')
+
+async function loadFileTemplate(templatePath) {
+  return isUrl(templatePath)
+    ? await fetch(templatePath).then(response => response.text())
+    : fs.readFileSync(templatePath).toString()
+}
+
+async function loadEmitter(emitterPath) {
+  const source = isUrl(emitterPath)
+    ? await fetch(emitterPath).then(response => response.text())
+    : fs.readFileSync(emitterPath).toString()
+  try {
+    const module = {exports: {}}
+    vm.runInContext(source, vm.createContext({module, process, console}))
+    return module.exports
+  } catch (err) {
+    if (err.constructor.name !== 'ReferenceError') throw err
+    const stack = err.stack.split('\n')
+    const [columnNumber, lineNumber] = stack[5].split(':').reverse()
+    console.log(
+      chalk.yellow(`Error emitter loading ${emitterPath}:${columnNumber}:${lineNumber}`),
+      '\n',
+    )
+    const [line, caret] = stack.slice(1, 3)
+    console.log(chalk.cyan(line))
+    console.log(chalk.yellow(caret))
+    throw new ReferenceError(err.message)
+  }
+}
 
 async function loadTests(testsPath) {
   const source = isUrl(testsPath)
@@ -29,8 +59,23 @@ async function loadTests(testsPath) {
   }
 }
 
+async function prepareFileTemplate({template, testFrameworkTemplate}) {
+  if (testFrameworkTemplate) return testFrameworkTemplate
+  const string = await loadFileTemplate(template)
+  handlebars.registerHelper('tags', (context, options) => {
+    if (!context || context.length <= 0) return ''
+    return ` (${context.map(options.fn).join(' ')})`
+  })
+  return handlebars.compile(string, {noEscape: true})
+}
+
+async function prepareEmitter({emitter, initializeSdk}) {
+  if (initializeSdk) return initializeSdk
+  return loadEmitter(emitter)
+}
+
 async function prepareTests({
-  testsPath,
+  tests: testsPath,
   overrideTests = {},
   ignoreSkip,
   ignoreSkipEmit,
@@ -45,7 +90,7 @@ async function prepareTests({
     if (variants) {
       Object.entries(variants).forEach(([variantName, variant]) => {
         variant.key = variant.key || test.key + toPascalCase(variantName)
-        variant.name = test.name + ' ' + variantName
+        variant.name = variantName ? test.name + ' ' + variantName : test.name
         const testVariant = mergeObjects(test, variant, overrideTests[variant.name])
         tests.push(normalizeTest(testVariant))
       })
@@ -84,4 +129,4 @@ async function prepareTests({
   }
 }
 
-module.exports = {prepareTests}
+module.exports = {prepareFileTemplate, prepareEmitter, prepareTests}

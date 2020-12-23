@@ -246,6 +246,12 @@ async function isScrollable(_logger, context, element) {
 async function markScrollRootElement(_logger, context, element) {
   return context.execute(snippets.setElementAttributes, [element, {'data-applitools-scroll': true}])
 }
+async function markActiveContext(_logger, context) {
+  return context.parent.execute(snippets.setElementAttributes, [
+    await context.getFrameElement(),
+    {'data-applitools-active-frame': true},
+  ])
+}
 /**
  * Get transforms of the specified element or default scrolling element
  * @param {Logger} _logger
@@ -495,6 +501,7 @@ module.exports = {
   getInnerOffset,
   isScrollable,
   markScrollRootElement,
+  markActiveContext,
   getTransforms,
   setTransforms,
   getOverflow,

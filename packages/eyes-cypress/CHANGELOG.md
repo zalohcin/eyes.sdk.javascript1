@@ -3,6 +3,20 @@
 ## Unreleased
 
 
+## 3.17.0 - 2020/12/18
+
+- updated to @applitools/visual-grid-client@15.4.0 (from 15.3.3)
+
+## 3.16.4 - 2020/12/17
+
+- updated to @applitools/visual-grid-client@15.3.3 (from 15.3.2)
+
+## 3.16.3 - 2020/12/15
+
+- updated to @applitools/dom-snapshot@4.4.1 (from 4.4.0)
+- updated to @applitools/eyes-sdk-core@12.9.3 (from 12.9.2)
+- updated to @applitools/visual-grid-client@15.3.2 (from 15.3.1)
+
 ## 3.16.2 - 2020/12/14
 
 - updated to @applitools/dom-snapshot@4.3.1 (from 4.2.6)

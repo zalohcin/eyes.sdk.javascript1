@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+
+## 0.6.1 - 2020/12/22
+
+- add dom traversing functionality
+
+## 0.6.0 - 2020/12/18
+
+- Re-established defaults for a few of the native mobile tests (which defaults to skipEmit: true) since they are failing. Need to revisit them later.
+
+## 0.5.19 - 2020/12/16
+
+- add `getDom` function to the coverage tests
+
 ## 0.5.18 - 2020/12/1
 
 - remove hard-coded testsPath to generic tests (fixes broken generic coverage test generation)

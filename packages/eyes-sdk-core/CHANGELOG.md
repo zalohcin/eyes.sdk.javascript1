@@ -2,7 +2,22 @@
 
 ## Unreleased
 
+
+## 12.10.0 - 2020/12/18
+
+- add new option to browser list ([Trello 693](https://trello.com/c/cEKupD0M))
+- updated to @applitools/dom-capture@9.0.0 (from 8.0.2)
+
+## 12.9.4 - 2020/12/17
+
+- change `takeDomCapture` to capture dom only of the provided context
+
+## 12.9.3 - 2020/12/15
+
 - calculate image location for viewport screenshots
+- revert update baseline logic
+- updated to @applitools/dom-capture@8.0.2 (from 8.0.1)
+- updated to @applitools/dom-snapshot@4.4.1 (from 4.4.0)
 
 ## 12.9.2 - 2020/12/14
 
@@ -454,7 +469,7 @@
 
 ## 8.0.2
 
-- fix exception on aborts - using _getSetBatchId in closeBatch so we dont generate batch id but still get the generated batch id.
+- fix exception on aborts - using `_getSetBatchId` in closeBatch so we dont generate batch id but still get the generated batch id.
 guarding addBrowsers arguments for sending an array
 - upload domsnapshot directly to Azure [Trello](https://trello.com/c/ZCLJo8Fy/241-upload-dom-directly-to-azure)
 - support future long running tasks [Trello](https://trello.com/c/60Rm4xXG/240-support-future-long-running-tasks)

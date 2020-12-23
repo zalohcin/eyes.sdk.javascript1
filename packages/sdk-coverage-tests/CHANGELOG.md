@@ -3,6 +3,20 @@
 ## Unreleased
 
 
+## 2.2.1 - 2020/12/22
+
+- fix type in getter
+
+## 2.2.0 - 2020/12/22
+
+- add types registration mechanism - `addType`
+- add type cast mechanism
+- add a possibility to register type-specific syntax variations
+
+## 2.1.5 - 2020/12/17
+
+- add a temporary solution for recursive types
+
 ## 2.1.4 - 2020/12/2
 
 - add more metadata about the test
@@ -61,4 +75,3 @@
 - updated to chalk@4.1.0 (from 3.0.0)
 - updated to node-fetch@2.6.1 (from 2.6.0)
 - updated to yargs@16.0.3 (from 15.0.2)
-

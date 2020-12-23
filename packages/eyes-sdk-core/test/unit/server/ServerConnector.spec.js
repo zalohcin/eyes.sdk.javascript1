@@ -535,7 +535,10 @@ describe('ServerConnector', () => {
       imageLocation: new Location(20, 40),
     })
     const data = new MatchWindowAndCloseData({appOutput, tag: 'mytag'})
-    const results = await serverConnector.matchWindowAndClose({getId: () => 'id'}, data)
+    const results = await serverConnector.matchWindowAndClose(
+      {getId: () => 'id', getIsNew: () => false},
+      data,
+    )
     assert.ok(results instanceof TestResults)
     assert.strictEqual(results.getName(), 'result')
   })
@@ -569,7 +572,10 @@ describe('ServerConnector', () => {
       imageLocation: new Location(20, 40),
     })
     const data = new MatchWindowAndCloseData({appOutput, tag: 'mytag'})
-    const results = await serverConnector.matchWindowAndClose({getId: () => 'id'}, data)
+    const results = await serverConnector.matchWindowAndClose(
+      {getId: () => 'id', getIsNew: () => false},
+      data,
+    )
     assert.ok(results instanceof TestResults)
     assert.strictEqual(results.getName(), 'fallback result')
   })
