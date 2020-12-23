@@ -129,7 +129,7 @@ function makeRenderingGridClient({
     setRenderingInfo,
     doGetRenderJobInfo,
     doLogEvents,
-    doGetEmulatedDeviceSizes,
+    doGetEmulatedDevicesSizes,
     doGetIosDevicesSizes,
   } = getRenderMethods(renderWrapper)
   const resourceCache = createResourceCache()
@@ -278,7 +278,7 @@ function makeRenderingGridClient({
 
   async function getEmulatedDevicesSizes() {
     if (!emulatedDevicesSizes) {
-      emulatedDevicesSizes = await doGetEmulatedDeviceSizes()
+      emulatedDevicesSizes = await doGetEmulatedDevicesSizes()
     }
     return emulatedDevicesSizes
   }
