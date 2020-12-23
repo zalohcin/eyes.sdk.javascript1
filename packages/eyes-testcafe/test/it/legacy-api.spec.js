@@ -18,17 +18,12 @@ test('eyes.open with config params', async driver => {
     testName: 'test-name',
   }
   const browser = [{width: 1024, height: 768, name: 'ie11'}]
-  const concurrency = 1
-  const batchName = 'blah'
   assert.doesNotThrow(async () => {
     await eyes.open({
       ...init,
       browser,
-      concurrency,
-      batchName,
     })
   })
   const config = eyes.getConfiguration()
-  console.log(config)
   assert.deepStrictEqual(config.getBrowsersInfo(), browser)
 })

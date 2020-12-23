@@ -1,7 +1,8 @@
-const {EyesSDK, TypeUtils, Configuration} = require('@applitools/eyes-sdk-core')
+const {EyesSDK, TypeUtils} = require('@applitools/eyes-sdk-core')
 const VisualGridClient = require('@applitools/visual-grid-client')
 const spec = require('./spec-driver')
 const {version} = require('../package.json')
+const translateArgsToConfig = require('./util/translate-args-to-config')
 
 const sdk = EyesSDK({
   name: 'eyes.testcafe',
@@ -19,27 +20,7 @@ class DecoratedEyesFactory extends sdk.EyesFactory {
       async open(...args) {
         if (args && args.length === 1 && TypeUtils.isObject(args[0]) && !spec.isDriver(args[0])) {
           const {t, appName, testName} = args[0]
-          const config = new Configuration()
-          // options noted at https://www.npmjs.com/package/@applitools/eyes-testcafe#configuration-properties
-          // browser
-          config.setBrowsersInfo(args[0].browser)
-          // batchId
-          // batchName
-          // baselineEnvName
-          // envName
-          // ignoreCaret
-          // matchLevel
-          // baselineBranchName
-          // parentBranchName
-          // saveFailedTests
-          // saveNewTests
-          // properties
-          // ignoreDisplacements
-          // compareWithParentBranch
-          // ignoreBaseline
-          // notifyOnCompletion
-          // accessibilityValidation
-          eyesInstance.setConfiguration(config)
+          eyesInstance.setConfiguration(translateArgsToConfig(args[0]))
           return await _open(t, appName, testName)
         }
         await _open(...args)
