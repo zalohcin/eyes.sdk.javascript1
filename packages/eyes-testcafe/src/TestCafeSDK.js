@@ -13,6 +13,8 @@ const sdk = EyesSDK({
 })
 
 // TODO: also support applitools.config.js
+// TODO: default to EyesVisualGrid
+// TODO: pull in readme from other repo
 class DecoratedEyesFactory extends sdk.EyesFactory {
   constructor() {
     const eyesInstance = super()
