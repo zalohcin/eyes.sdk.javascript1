@@ -247,8 +247,8 @@ async function markScrollRootElement(_logger, context, element) {
   return context.execute(snippets.setElementAttributes, [element, {'data-applitools-scroll': true}])
 }
 async function markActiveContext(_logger, context) {
-  return context.parent.execute(snippets.setElementAttributes, [
-    await context.getFrameElement(),
+  return context.execute(snippets.setElementAttributes, [
+    await context.element({type: 'css', selector: 'html'}),
     {'data-applitools-active-frame': true},
   ])
 }
