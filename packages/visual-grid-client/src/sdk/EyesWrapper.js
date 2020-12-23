@@ -144,6 +144,14 @@ class EyesWrapper extends EyesBase {
     return this._serverConnector.renderStatusById(renderId)
   }
 
+  getEmulatedDevicesSizes() {
+    return this._serverConnector.getEmulatedDevicesSizes()
+  }
+
+  getIosDevicesSizes() {
+    return this._serverConnector.getIosDevicesSizes()
+  }
+
   logEvents(events) {
     return this._serverConnector.logEvents(events)
   }
