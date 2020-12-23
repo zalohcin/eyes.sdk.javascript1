@@ -64,6 +64,8 @@ class FakeEyesWrapper extends EventEmitter {
     this.closeErr = closeErr
     this.failRender = failRender
     this._serverConnector = {deleteBatchSessions: () => {}}
+    this._emulatedDevices = ['emulated device 1', 'emulated device 2']
+    this._iosDevices = ['ios device 1', 'ios device 2']
   }
 
   async open(...args) {
@@ -476,6 +478,14 @@ class FakeEyesWrapper extends EventEmitter {
 
   getProxy() {
     return this.proxy
+  }
+
+  async getEmulatedDevicesSizes() {
+    return this._emulatedDevices
+  }
+
+  async getIosDevicesSizes() {
+    return this._iosDevices
   }
 }
 
