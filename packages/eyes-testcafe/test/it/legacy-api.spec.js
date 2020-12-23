@@ -27,3 +27,9 @@ test('eyes.open with config params', async driver => {
   const config = eyes.getConfiguration()
   assert.deepStrictEqual(config.getBrowsersInfo(), browser)
 })
+test.only('eyes.checkWindow', async t => {
+  await t.navigateTo('https://applitools.github.io/demo/TestPages/FramesTestPage/')
+  await eyes.open({t, appName: 'eyes-testcafe', testName: 'legacy api test: checkWindow'})
+  await eyes.checkWindow()
+  await eyes.close(true)
+})
