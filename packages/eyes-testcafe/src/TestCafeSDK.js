@@ -2,7 +2,8 @@ const {EyesSDK, TypeUtils} = require('@applitools/eyes-sdk-core')
 const VisualGridClient = require('@applitools/visual-grid-client')
 const spec = require('./spec-driver')
 const {version} = require('../package.json')
-const translateArgsToConfig = require('./util/translate-args-to-config')
+const translateArgsToConfig = require('./util/translate-open-args-to-config')
+const translateArgsToCheckSettings = require('./util/translate-check-args-to-check-settings')
 
 const sdk = EyesSDK({
   name: 'eyes.testcafe',
@@ -26,9 +27,12 @@ class DecoratedEyesFactory extends sdk.EyesFactory {
         }
         await _open(...args)
       },
+      async checkWindow(args) {
+        await _check(args && TypeUtils.isObject(args) ? translateArgsToCheckSettings(args) : args)
+      },
     }
     eyesInstance.open = api.open
-    eyesInstance.checkWindow = _check
+    eyesInstance.checkWindow = api.checkWindow
     return eyesInstance
   }
 }

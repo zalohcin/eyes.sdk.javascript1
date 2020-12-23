@@ -1,9 +1,28 @@
-const translateArgsToConfig = require('../../src/util/translate-args-to-config')
 const assert = require('assert')
+const translateArgsToConfig = require('../../src/util/translate-open-args-to-config')
+const translateArgsToCheckSettings = require('../../src/util/translate-check-args-to-check-settings')
 
 describe('util', () => {
   describe('config', () => {
-    describe('translate args to config', () => {
+    describe('translate check args to check settings', () => {
+      it('window fully', () => {
+        const args = {
+          target: 'window',
+          fully: true,
+        }
+        const checkSettings = translateArgsToCheckSettings(args)
+        assert.deepStrictEqual(checkSettings.getStitchContent(), args.fully)
+      })
+      it('region selector', () => {
+        const args = {
+          target: 'region',
+          selector: '#overflowing-div',
+        }
+        const checkSettings = translateArgsToCheckSettings(args)
+        assert.deepStrictEqual(checkSettings.getTargetElement(), args.selector)
+      })
+    })
+    describe('translate open args to config', () => {
       it('works', () => {
         const args = {
           testName: 'test-name',

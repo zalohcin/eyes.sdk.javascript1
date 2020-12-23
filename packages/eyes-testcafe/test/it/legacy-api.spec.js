@@ -35,25 +35,25 @@ test.skip('eyes.checkWindow tag', async t => {
   await eyes.close(false)
   // assert tags in jobs
 })
-test('eyes.checkWindow fully', async t => {
+test.skip('eyes.checkWindow fully', async t => {
   await t.navigateTo('https://applitools.github.io/demo/TestPages/FramesTestPage/')
   await eyes.open({t, appName: 'eyes-testcafe', testName: 'legacy api test: checkWindow fully'})
   await eyes.checkWindow({target: 'window', fully: true})
   await eyes.close(true)
 })
-test('eyes.checkWindow selector', async t => {
+test.skip('eyes.checkWindow selector', async t => {
   await t.navigateTo('https://applitools.github.io/demo/TestPages/FramesTestPage/')
   await eyes.open({t, appName: 'eyes-testcafe', testName: 'legacy api test: checkWindow selector'})
   await eyes.checkWindow({target: 'region', selector: '#overflowing-div'})
   await eyes.close(true)
 })
-test('eyes.checkWindow region', async t => {
+test.skip('eyes.checkWindow region', async t => {
   await t.navigateTo('https://applitools.github.io/demo/TestPages/FramesTestPage/')
   await eyes.open({t, appName: 'eyes-testcafe', testName: 'legacy api test: checkWindow region'})
   await eyes.checkWindow({target: 'region', region: {top: 100, left: 0, width: 1000, height: 200}})
   await eyes.close(true)
 })
-test('eyes.checkWindow ignore', async t => {
+test.skip('eyes.checkWindow ignore', async t => {
   await t.navigateTo('https://applitools.github.io/demo/TestPages/FramesTestPage/')
   await eyes.open({t, appName: 'eyes-testcafe', testName: 'legacy api test: checkWindow ignore'})
   await eyes.checkWindow({
@@ -61,7 +61,7 @@ test('eyes.checkWindow ignore', async t => {
   })
   await eyes.close(true)
 })
-test('eyes.checkWindow floating', async t => {
+test.skip('eyes.checkWindow floating', async t => {
   await t.navigateTo('https://applitools.github.io/demo/TestPages/FramesTestPage/')
   await eyes.open({t, appName: 'eyes-testcafe', testName: 'legacy api test: checkWindow floating'})
   await eyes.checkWindow({
@@ -87,7 +87,7 @@ test('eyes.checkWindow floating', async t => {
   })
   await eyes.close(true)
 })
-test('eyes.checkWindow layout', async t => {
+test.skip('eyes.checkWindow layout', async t => {
   await t.navigateTo('https://applitools.github.io/demo/TestPages/FramesTestPage/')
   await eyes.open({t, appName: 'eyes-testcafe', testName: 'legacy api test: checkWindow layout'})
   await eyes.checkWindow({
@@ -95,7 +95,7 @@ test('eyes.checkWindow layout', async t => {
   })
   await eyes.close(true)
 })
-test('eyes.checkWindow strict', async t => {
+test.skip('eyes.checkWindow strict', async t => {
   await t.navigateTo('https://applitools.github.io/demo/TestPages/FramesTestPage/')
   await eyes.open({t, appName: 'eyes-testcafe', testName: 'legacy api test: checkWindow strict'})
   await eyes.checkWindow({
@@ -103,7 +103,7 @@ test('eyes.checkWindow strict', async t => {
   })
   await eyes.close(true)
 })
-test('eyes.checkWindow content', async t => {
+test.skip('eyes.checkWindow content', async t => {
   await t.navigateTo('https://applitools.github.io/demo/TestPages/FramesTestPage/')
   await eyes.open({t, appName: 'eyes-testcafe', testName: 'legacy api test: checkWindow content'})
   await eyes.checkWindow({
@@ -111,7 +111,7 @@ test('eyes.checkWindow content', async t => {
   })
   await eyes.close(true)
 })
-test('eyes.checkWindow accessibility', async t => {
+test.skip('eyes.checkWindow accessibility', async t => {
   await t.navigateTo('https://applitools.github.io/demo/TestPages/FramesTestPage/')
   await eyes.open({
     t,
@@ -126,7 +126,7 @@ test('eyes.checkWindow accessibility', async t => {
   })
   await eyes.close(true)
 })
-test('eyes.checkWindow scriptHooks', async t => {
+test.skip('eyes.checkWindow scriptHooks', async t => {
   await t.navigateTo('https://applitools.github.io/demo/TestPages/FramesTestPage/')
   await eyes.open({
     t,
