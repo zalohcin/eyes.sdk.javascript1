@@ -259,7 +259,8 @@ class EyesVisualGrid extends EyesCore {
           driver: this._driver,
           logger: this._logger,
           skipResources: this._getResourceUrlsInCache(),
-          getViewportSize: () => this.getViewportSize(),
+          getViewportSize: () =>
+            this.getViewportSize().then(rectangleSize => rectangleSize.toJSON()),
           getEmulatedDevicesSizes: this._getEmulatedDevicesSizes,
           getIosDevicesSizes: this._getIosDevicesSizes,
         })

@@ -42,7 +42,7 @@ async function takeDomSnapshots({
 
   logger.verbose(`taking multiple dom snapshots for breakpoints: ${breakpoints}`)
   logger.verbose(`required widths: ${[...requiredWidths.keys()].join(', ')}`)
-  const viewportSize = (await getViewportSize()).toJSON()
+  const viewportSize = await getViewportSize()
   const snapshots = Array(browsers.length)
   if (requiredWidths.has(viewportSize.width)) {
     logger.log(`taking dom snapshot for existing width ${viewportSize.width}`)
