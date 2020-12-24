@@ -24,6 +24,7 @@ const MatchResult = require('../match/MatchResult')
 const TestResults = require('../TestResults')
 const NullDebugScreenshotProvider = require('../debug/NullDebugScreenshotProvider')
 const takeDomCapture = require('../utils/takeDomCapture')
+const EyesUtils = require('./EyesUtils')
 
 const UNKNOWN_DEVICE_PIXEL_RATIO = 0
 const DEFAULT_DEVICE_PIXEL_RATIO = 1
@@ -419,6 +420,8 @@ class EyesCore extends EyesBase {
 
     const driver = makeDriver(this._driver.spec, this._logger, this._driver.wrapper)
     await driver.refreshContexts()
+
+    await EyesUtils.markActiveContext(this._logger, this._context)
 
     const extractTextInputs = []
 
