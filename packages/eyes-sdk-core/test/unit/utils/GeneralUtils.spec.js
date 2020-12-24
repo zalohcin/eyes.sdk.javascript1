@@ -400,6 +400,7 @@ describe('GeneralUtils', () => {
       assert.strictEqual(GeneralUtils.getBreakpointWidth([100, 300], 150), 100)
       assert.strictEqual(GeneralUtils.getBreakpointWidth([300, 100], 500), 300)
       assert.strictEqual(GeneralUtils.getBreakpointWidth([100, 300], 500), 300)
+      assert.strictEqual(GeneralUtils.getBreakpointWidth([100, 200, 200, 100, 50, 25], 250), 200)
       assert.strictEqual(GeneralUtils.getBreakpointWidth([], 33), 33)
       assert.strictEqual(GeneralUtils.getBreakpointWidth(null, 33), 33)
       assert.strictEqual(GeneralUtils.getBreakpointWidth(undefined, 33), 33)
