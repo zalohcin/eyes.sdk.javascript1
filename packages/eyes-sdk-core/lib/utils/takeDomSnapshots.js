@@ -87,14 +87,14 @@ async function takeDomSnapshots({
     return await browsers.reduce((widths, browser, index) => {
       const browserInfo = getBrowserInfo({browser, getEmulatedDevicesSizes, getIosDevicesSizes})
       return widths.then(async widths => {
-        const {type, name, width} = await browserInfo
+        const {name, width} = await browserInfo
         const requiredWidth = GeneralUtils.getBreakpointWidth(breakpoints, width)
         let groupedBrowsers = widths.get(requiredWidth)
         if (!groupedBrowsers) {
           groupedBrowsers = []
           widths.set(requiredWidth, groupedBrowsers)
         }
-        groupedBrowsers.push({index, width, type, name})
+        groupedBrowsers.push({index, width, name})
         return widths
       })
     }, Promise.resolve(new Map()))
