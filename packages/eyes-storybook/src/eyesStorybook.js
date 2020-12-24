@@ -45,7 +45,14 @@ async function eyesStorybook({
   logger.log('browser launched');
   const page = await browser.newPage();
   const userAgent = await page.evaluate('navigator.userAgent');
-  const {testWindow, closeBatch, globalState, getIosDevicesSizes, getEmulatedDevicesSizes, getResourceUrlsInCache} = makeVisualGridClient({
+  const {
+    testWindow,
+    closeBatch,
+    globalState,
+    getIosDevicesSizes,
+    getEmulatedDevicesSizes,
+    getResourceUrlsInCache,
+  } = makeVisualGridClient({
     userAgent,
     ...config,
     logger: logger.extend('vgc'),
@@ -57,16 +64,16 @@ async function eyesStorybook({
 
   const doTakeDomSnapshots = async page => {
     const driver = new Driver(logger, page);
-    const skipResources = getResourceUrlsInCache()
+    const skipResources = getResourceUrlsInCache();
     const result = await takeDomSnapshots({
       logger,
       driver,
-      viewportSize: config.viewportSize,
       breakpoints: config.layoutBreakpoints,
-      browsers: config.browser,
+      browsers: config.browser || [true], // this is a hack, since takeDomSnapshots expects an array. And VGC has a default in case browser is not specified. So we just need an array with length of 1 here.
       skipResources,
       showLogs: !!config.showLogs,
       disableBrowserFetching: !!config.disableBrowserFetching,
+      getViewportSize: () => config.viewportSize,
       getIosDevicesSizes,
       getEmulatedDevicesSizes,
     });
