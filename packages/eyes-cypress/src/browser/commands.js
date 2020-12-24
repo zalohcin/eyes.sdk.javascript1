@@ -6,7 +6,7 @@ const processPage = require('@applitools/dom-snapshot/dist/processPageCjs');
 const domSnapshotOptions = {dontFetchResources: Cypress.config('eyesDisableBrowserFetching')};
 const send = makeSend(Cypress.config('eyesPort'), window.fetch);
 const makeSendRequest = require('./sendRequest');
-const makeEyesCheckWindow = require('./eyesCheckWindow');
+const makeEyesCheckWindow = require('./eyesCheckWindow.js');
 const makeHandleCypressViewport = require('./makeHandleCypressViewport');
 const sendRequest = makeSendRequest(send);
 const eyesCheckWindow = makeEyesCheckWindow({sendRequest, processPage, domSnapshotOptions});
@@ -46,6 +46,7 @@ if (!Cypress.config('eyesIsDisabled')) {
 let isCurrentTestDisabled;
 
 Cypress.Commands.add('eyesOpen', function(args = {}) {
+  Cypress.config('eyesOpenArgs', args);
   Cypress.log({name: 'Eyes: open'});
   const {title: testName} = this.currentTest || this.test;
   if (Cypress.config('eyesIsDisabled') && args.isDisabled === false) {
@@ -65,9 +66,10 @@ Cypress.Commands.add('eyesOpen', function(args = {}) {
 });
 
 Cypress.Commands.add('eyesCheckWindow', args => {
+  Cypress.config();
   Cypress.log({name: 'Eyes: check window'});
   if (isCurrentTestDisabled) return;
-  return cy.document({log: false}).then({timeout: 60000}, doc => eyesCheckWindow(doc, args));
+  return cy.document({log: false}).then({timeout: 60000}, async doc => await eyesCheckWindow(doc, args));
 });
 
 Cypress.Commands.add('eyesClose', () => {

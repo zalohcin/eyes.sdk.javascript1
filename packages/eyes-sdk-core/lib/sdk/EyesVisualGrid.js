@@ -377,7 +377,7 @@ class EyesVisualGrid extends EyesCore {
         skipResources,
       })
       browsersInfo.forEach(({index}) => (snapshots[index] = snapshot))
-    }
+    } 
     await this._driver.setViewportSize(viewportSize)
     return snapshots
   }
