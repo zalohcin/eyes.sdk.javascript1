@@ -4,7 +4,7 @@ const { describe, it } = require('mocha');
 const { expect } = require('chai');
 const makeEyesCheckWindow = require('../../../src/browser/eyesCheckWindow');
 
-describe.only('eyesCheckWindow', () => {
+describe('eyesCheckWindow', () => {
   const fakeDoc = { defaultView: { innerWidth: 800, innerHeight: 600 } }
   const cypressFakeFunction = async (data) => {
     Promise.resolve(data);
@@ -40,34 +40,17 @@ describe.only('eyesCheckWindow', () => {
       command: 'checkWindow',
       data: {
         url,
-        snapshot: {
+        snapshots: [{
           cdt,
+          url,
           resourceUrls,
           blobData: [
             { url: 'blobUrl1', type: 'blobType1' },
             { url: 'blobUrl2', type: 'blobType2' },
           ],
           frames,
-        },
+        }],
         tag,
-        ignore: undefined,
-        floating: undefined,
-        layout: undefined,
-        content: undefined,
-        strict: undefined,
-        region: undefined,
-        scriptHooks: undefined,
-        selector: undefined,
-        sendDom: undefined,
-        sizeMode: undefined,
-        target: undefined,
-        fully: undefined,
-        useDom: undefined,
-        enablePatterns: undefined,
-        ignoreDisplacements: undefined,
-        accessibility: undefined,
-        matchLevel: undefined,
-        visualGridOptions: undefined,
       },
     });
     expect(resourcesPutted).to.eql([
@@ -115,6 +98,7 @@ describe.only('eyesCheckWindow', () => {
     const eyesCheckWindow = makeEyesCheckWindow({
       sendRequest,
       processPage,
+      cypress
     });
 
     const tag = 'some tag';
@@ -163,15 +147,16 @@ describe.only('eyesCheckWindow', () => {
       command: 'checkWindow',
       data: {
         url,
-        snapshot: {
+        snapshots: [{
           cdt,
+          url,
           resourceUrls,
           blobData: [
             { url: 'blobUrl1', type: 'blobType1' },
             { url: 'blobUrl2', type: 'blobType2' },
           ],
           frames,
-        },
+        }],
         tag,
         sizeMode,
         target,
@@ -248,6 +233,7 @@ describe.only('eyesCheckWindow', () => {
     const eyesCheckWindow = makeEyesCheckWindow({
       sendRequest,
       processPage,
+      cypress
     });
 
     await eyesCheckWindow(fakeDoc);
@@ -256,8 +242,9 @@ describe.only('eyesCheckWindow', () => {
       command: 'checkWindow',
       data: {
         url,
-        snapshot: {
+        snapshots: [{
           cdt,
+          url,
           resourceUrls,
           blobData: [{ url: 'blobUrl1', type: 'blobType1' }],
           frames: [
@@ -283,26 +270,7 @@ describe.only('eyesCheckWindow', () => {
               ],
             },
           ],
-        },
-        tag: undefined,
-        sizeMode: undefined,
-        target: undefined,
-        fully: undefined,
-        selector: undefined,
-        region: undefined,
-        scriptHooks: undefined,
-        ignore: undefined,
-        floating: undefined,
-        layout: undefined,
-        content: undefined,
-        strict: undefined,
-        sendDom: undefined,
-        useDom: undefined,
-        enablePatterns: undefined,
-        ignoreDisplacements: undefined,
-        accessibility: undefined,
-        matchLevel: undefined,
-        visualGridOptions: undefined,
+        }],
       },
     });
     expect(resourcesPutted).to.eql([
@@ -356,6 +324,7 @@ describe.only('eyesCheckWindow', () => {
     const eyesCheckWindow = makeEyesCheckWindow({
       sendRequest,
       processPage,
+      cypress
     });
 
     await eyesCheckWindow(fakeDoc);
@@ -364,31 +333,13 @@ describe.only('eyesCheckWindow', () => {
       command: 'checkWindow',
       data: {
         url,
-        snapshot: {
+        snapshots: [{
           cdt,
+          url,
           resourceUrls,
           blobData: [{ url: 'blobUrl', type: 'application/x-applitools-unknown' }],
           frames: [],
-        },
-        tag: undefined,
-        sizeMode: undefined,
-        target: undefined,
-        fully: undefined,
-        selector: undefined,
-        region: undefined,
-        scriptHooks: undefined,
-        ignore: undefined,
-        floating: undefined,
-        layout: undefined,
-        content: undefined,
-        strict: undefined,
-        sendDom: undefined,
-        useDom: undefined,
-        enablePatterns: undefined,
-        ignoreDisplacements: undefined,
-        accessibility: undefined,
-        matchLevel: undefined,
-        visualGridOptions: undefined,
+        }],
       },
     });
     expect(resourcesPutted).to.eql([
@@ -429,6 +380,7 @@ describe.only('eyesCheckWindow', () => {
     const eyesCheckWindow = makeEyesCheckWindow({
       sendRequest,
       processPage,
+      cypress
     });
 
     const tag = 'some tag';
@@ -439,31 +391,14 @@ describe.only('eyesCheckWindow', () => {
       command: 'checkWindow',
       data: {
         url,
-        snapshot: {
+        snapshots: [{
           cdt,
+          url,
           resourceUrls: ['resourceUrls', 'blobUrl2', 'blobUrl3'],
           blobData: [{ url: 'blobUrl1', type: 'blobType1' }],
           frames,
-        },
-        tag,
-        ignore: undefined,
-        floating: undefined,
-        layout: undefined,
-        content: undefined,
-        strict: undefined,
-        region: undefined,
-        scriptHooks: undefined,
-        selector: undefined,
-        sendDom: undefined,
-        sizeMode: undefined,
-        target: undefined,
-        fully: undefined,
-        useDom: undefined,
-        enablePatterns: undefined,
-        ignoreDisplacements: undefined,
-        accessibility: undefined,
-        matchLevel: undefined,
-        visualGridOptions: undefined,
+        }],
+        tag
       },
     });
     expect(resourcesPutted).to.eql([
@@ -505,6 +440,7 @@ describe.only('eyesCheckWindow', () => {
     const eyesCheckWindow = makeEyesCheckWindow({
       sendRequest,
       processPage,
+      cypress
     });
 
     const tag = 'some tag';
@@ -514,31 +450,14 @@ describe.only('eyesCheckWindow', () => {
       command: 'checkWindow',
       data: {
         url,
-        snapshot: {
+        snapshots: [{
           cdt,
+          url,
           resourceUrls,
           blobData: [{ url: 'blobUrl1', errorStatusCode: 500 }],
           frames,
-        },
-        tag,
-        ignore: undefined,
-        floating: undefined,
-        layout: undefined,
-        content: undefined,
-        strict: undefined,
-        region: undefined,
-        scriptHooks: undefined,
-        selector: undefined,
-        sendDom: undefined,
-        sizeMode: undefined,
-        target: undefined,
-        fully: undefined,
-        useDom: undefined,
-        enablePatterns: undefined,
-        ignoreDisplacements: undefined,
-        accessibility: undefined,
-        matchLevel: undefined,
-        visualGridOptions: undefined,
+        }],
+        tag
       },
     });
     expect(resourcesPutted).to.eql([]);

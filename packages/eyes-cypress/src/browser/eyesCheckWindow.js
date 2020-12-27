@@ -3,7 +3,7 @@
 const getAllBlobs = require('./getAllBlobs');
 
 function makeEyesCheckWindow({ sendRequest, processPage, domSnapshotOptions, cypress = cy }) {
-    return function eyesCheckWindow(doc, args) {
+    return function eyesCheckWindow(doc, args = {}) {
         const browser = args.browser;
         const layoutBreakpoints = args.layoutBreakpoints;
         const browsers = Array.isArray(browser) ? browser : [browser];
@@ -67,23 +67,26 @@ function makeEyesCheckWindow({ sendRequest, processPage, domSnapshotOptions, cyp
                 return Promise.all(allBlobs.map(putResource)).then(() => {
                     return snapshot;
                 });
+
+
+                function putResource({ url, value }) {
+                    return sendRequest({
+                        command: `resource/${encodeURIComponent(url)}`,
+                        data: value,
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/octet-stream' },
+                    }).catch(_e => {
+                        snapshot.blobData.splice(
+                            snapshot.blobData.findIndex(({ url: blobUrl }) => blobUrl === url),
+                            1,
+                        );
+                        snapshot.resourceUrls.push(url);
+                    });
+                }
             });
         }
 
-        function putResource({ url, value }) {
-            return sendRequest({
-                command: `resource/${encodeURIComponent(url)}`,
-                data: value,
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/octet-stream' },
-            }).catch(_e => {
-                snapshot.blobData.splice(
-                    snapshot.blobData.findIndex(({ url: blobUrl }) => blobUrl === url),
-                    1,
-                );
-                snapshot.resourceUrls.push(url);
-            });
-        }
+
 
         function getBrowserInfo(browser) {
             const browserInfo = !!browser.name;
