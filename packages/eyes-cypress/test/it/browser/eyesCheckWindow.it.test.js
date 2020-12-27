@@ -6,14 +6,14 @@ const makeEyesCheckWindow = require('../../../src/browser/eyesCheckWindow');
 
 describe('eyesCheckWindow', () => {
   const fakeDoc = { defaultView: { innerWidth: 800, innerHeight: 600 } }
-  const cypressFakeFunction = async (data) => {
+  const fakeCypressFunction = async (data) => {
     Promise.resolve(data);
     return {
-      wait: async (d) => Promise.resolve(d),
-      viewport: async (w, h) => Promise.resolve(`${w}x${h}`),
+      wait: async () => Promise.resolve(),
+      viewport: async () => Promise.resolve(),
     }
   }
-  const cypress = { viewport: cypressFakeFunction, wrap: cypressFakeFunction }
+  const cypress = { viewport: fakeCypressFunction, wrap: fakeCypressFunction };
 
   it('handles string input', async () => {
     let sendRequestInput;

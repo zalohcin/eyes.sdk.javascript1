@@ -38,7 +38,7 @@ if (!Cypress.config('eyesIsDisabled')) {
   after(() => {
     cy.then({ timeout: 86400000 }, () => {
       return batchEnd({ timeout: getGlobalConfigProperty('eyesTimeout') }).catch(e => {
-        if (getGlobalConfigProperty('eyesFailCypressOnDiff')) {
+        if (!!getGlobalConfigProperty('eyesFailCypressOnDiff')) {
           throw e;
         }
       });
