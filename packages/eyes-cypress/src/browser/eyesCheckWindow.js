@@ -1,36 +1,33 @@
 'use strict';
-const chalk = require('chalk');
+
 const getAllBlobs = require('./getAllBlobs');
 
-function makeEyesCheckWindow({ sendRequest, processPage, domSnapshotOptions }) {
+function makeEyesCheckWindow({ sendRequest, processPage, domSnapshotOptions, cypress = cy }) {
     return function eyesCheckWindow(doc, args) {
-        const globalConfigBreakpoints = Cypress.config('eyesLayoutBreakpoints');
-        const layoutBreakpoints = args.layoutBreakpoints || JSON.parse(globalConfigBreakpoints);
-        const breakpoints = layoutBreakpoints ? layoutBreakpoints.sort((a, b) => a > b ? -1 : 1) : undefined;
+        const browser = args.browser;
+        const layoutBreakpoints = args.layoutBreakpoints;
+        const browsers = Array.isArray(browser) ? browser : [browser];
         const { innerWidth: width, innerHeight: height } = doc.defaultView;
+        const breakpoints = layoutBreakpoints ? layoutBreakpoints.sort((a, b) => a > b ? -1 : 1) : undefined;
+        const sendArgs = typeof args === "object" ? args : { tag: args };
         return takeDomSnapshots(domSnapshotOptions).then(snapshots => {
             // console.log("%cDone taking snapshots!", "color:chartreuse");
-            console.log(snapshots);
             sendRequest({
                 command: 'checkWindow',
                 data: {
                     url: snapshots[0].url,
                     snapshots,
-                    ...args
+                    ...sendArgs
                 },
             });
-            // cy.viewport(width, height, { log: false }).wait(0, { log: false });
         });
 
         function takeDomSnapshots(options) {
-            const eyesOpenArgs = Cypress.config('eyesOpenArgs')
-            const globalConfigBrowsers = Cypress.config('eyesBrowser');
-            const browsers = eyesOpenArgs.browser || JSON.parse(globalConfigBrowsers)
             if (!breakpoints) {
                 //console.log('no breakpoints, taking single dom snapshot');
-                return takeDomSnapshot(doc, options).then(snapshot => Array(browsers.length).fill(snapshot));
+                return takeDomSnapshot(options).then(snapshot => Array(browsers.length).fill(snapshot));
             }
-            
+
             return browsers.reduce((widths, browser, index) => {
                 return widths.then(widthsMap => {
                     return getBrowserInfo(browser).then(({ name, width }) => {
@@ -44,49 +41,24 @@ function makeEyesCheckWindow({ sendRequest, processPage, domSnapshotOptions }) {
                         return widthsMap;
                     });
                 });
-            }, cy.wrap({})).then(requiredWidths => {
-                console.log(requiredWidths);
-
-                // const isStrictBreakpoints = Array.isArray(breakpoints)
-                // const smallestBreakpoint = Math.min(...(isStrictBreakpoints ? breakpoints : []))
-
-                // if (isStrictBreakpoints && requiredWidths[smallestBreakpoint - 1]) {
-                //     const smallestBrowsers = requiredWidths[smallestBreakpoint - 1]
-                //         .map(({ name, width }) => `(${name}, ${width})`)
-                //         .join(', ')
-                //console.log(`%cThe following configuration's viewport-widths are smaller than the smallest configured layout breakpoint (${smallestBreakpoint} pixels): [${smallestBrowsers}]. As a fallback, the resources that will be used for these configurations have been captured on a viewport-width of ${smallestBreakpoint} - 1 pixels. If an additional layout breakpoint is needed for you to achieve better results - please add it to your configuration.`, 'color:yellow')
-                // }
-
-                //console.log(`taking multiple dom snapshots for breakpoints: ${breakpoints}`)
-                //console.log(`required widths: ${requiredWidthsKeys.join(', ')}`)
+            }, cypress.wrap({}, { log: false })).then(requiredWidths => {
                 const snapshots = Array(browsers.length);
-                if (requiredWidths[width]) {
-                    //console.log(`taking dom snapshot for existing width ${width}`)
-                    return takeDomSnapshot(doc, options).then(snapshot => {
-                        requiredWidths[width].forEach(({ index }) => (snapshots[index] = snapshot));
-                        return { snapshots, requiredWidths };
-                    });
-                } else {
-                    return { snapshots, requiredWidths };
-                }
-            }).then(({ snapshots, requiredWidths }) => {
                 const requiredWidthsKeys = Object.keys(requiredWidths);
-                let cyPromise = cy.window({ log: false });
                 for (const requiredWidth of requiredWidthsKeys) {
                     const browsersInfo = requiredWidths[requiredWidth];
-                    //console.log(`taking dom snapshot for width ${requiredWidth}`);
-                    cyPromise = cyPromise.viewport(Number(requiredWidth), height, { log: false }).wait(0, { log: false }).then(() => {
-                        return takeDomSnapshot(doc, options).then(snapshot => {
+                    // console.log(`taking dom snapshot for width ${requiredWidth}`);
+                    cypress.viewport(Number(requiredWidth), height, { log: false }).wait(300, { log: false }).then(() => {
+                        takeDomSnapshot(options).then(snapshot => {
                             browsersInfo.forEach(({ index }) => snapshots[index] = snapshot);
-                            return snapshots;
                         });
                     });
-                }
-                return cyPromise;
+                };
+                return cypress.viewport(width, height).wait(0, { log: false }).then(() => snapshots);
             });
         }
 
-        function takeDomSnapshot(doc, options) {
+        function takeDomSnapshot(options) {
+            // console.log(`take dom snapshot with ${doc.defaultView.innerWidth}`);
             return processPage(Object.assign({ doc }, options)).then(mainFrame => {
                 const allBlobs = getAllBlobs(mainFrame)
                     .filter(blob => !blob.errorStatusCode)

@@ -12,7 +12,7 @@ function makePluginExport({ startServer, config }) {
       // prefix each config key with `eyes` to avoid conflicts with Cypress config
       const eyesConfig = Object.keys(config).reduce((eyesConfig, key) => {
         const firstLetter = key[0].toUpperCase();
-        const upperCased = 'eyes' + firstLetter + key.substr(1)
+        const upperCased = 'eyes' + firstLetter + key.substring(1)
         const value = typeof config[key] === "object" ? JSON.stringify(config[key]) : config[key]
         eyesConfig[upperCased] = value;
         return eyesConfig;

@@ -123,7 +123,7 @@ describe('handlers', () => {
     ).to.be.an.instanceof(Error);
   });
 
-  it('handles "checkWindow"', async () => {
+  it.only('handles "checkWindow"', async () => {
     handlers.batchStart();
     await handlers.open({__test: 123});
 
@@ -175,13 +175,10 @@ describe('handlers', () => {
       matchLevel,
       visualGridOptions,
     });
-
+    
     expect(result).to.eql({
       __test: 'checkWindow_123',
-      snapshot: {
-        resourceContents,
-        frames: [],
-      },
+      snapshot: [],
       tag,
       sizeMode,
       target,

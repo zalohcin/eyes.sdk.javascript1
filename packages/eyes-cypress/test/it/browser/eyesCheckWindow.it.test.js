@@ -1,29 +1,41 @@
 'use strict';
 
-const {describe, it} = require('mocha');
-const {expect} = require('chai');
+const { describe, it } = require('mocha');
+const { expect } = require('chai');
 const makeEyesCheckWindow = require('../../../src/browser/eyesCheckWindow');
 
-describe('eyesCheckWindow', () => {
+describe.only('eyesCheckWindow', () => {
+  const fakeDoc = { defaultView: { innerWidth: 800, innerHeight: 600 } }
+  const cypressFakeFunction = async (data) => {
+    Promise.resolve(data);
+    return {
+      wait: async (d) => Promise.resolve(d),
+      viewport: async (w, h) => Promise.resolve(`${w}x${h}`),
+    }
+  }
+  const cypress = { viewport: cypressFakeFunction, wrap: cypressFakeFunction }
+
   it('handles string input', async () => {
     let sendRequestInput;
     const resourcesPutted = [];
 
-    const blob1 = {url: 'blobUrl1', type: 'blobType1', value: {someKey: 'bla'}};
-    const blob2 = {url: 'blobUrl2', type: 'blobType2', value: {someKey: 'blabla'}};
+    const blob1 = { url: 'blobUrl1', type: 'blobType1', value: { someKey: 'bla' } };
+    const blob2 = { url: 'blobUrl2', type: 'blobType2', value: { someKey: 'blabla' } };
     const blobs = [blob1, blob2];
     const resourceUrls = 'resourceUrls';
     const url = 'url';
     const cdt = 'cdt';
     const frames = [];
+
     const eyesCheckWindow = makeEyesCheckWindow({
       sendRequest,
       processPage,
+      cypress
     });
 
     const tag = 'some tag';
 
-    await eyesCheckWindow('bla doc', tag);
+    await eyesCheckWindow(fakeDoc, tag, cypress);
     expect(sendRequestInput).to.eql({
       command: 'checkWindow',
       data: {
@@ -32,8 +44,8 @@ describe('eyesCheckWindow', () => {
           cdt,
           resourceUrls,
           blobData: [
-            {url: 'blobUrl1', type: 'blobType1'},
-            {url: 'blobUrl2', type: 'blobType2'},
+            { url: 'blobUrl1', type: 'blobType1' },
+            { url: 'blobUrl2', type: 'blobType2' },
           ],
           frames,
         },
@@ -61,7 +73,7 @@ describe('eyesCheckWindow', () => {
     expect(resourcesPutted).to.eql([
       {
         command: `resource/blobUrl1`,
-        data: {someKey: 'bla'},
+        data: { someKey: 'bla' },
         headers: {
           'Content-Type': 'application/octet-stream',
         },
@@ -69,7 +81,7 @@ describe('eyesCheckWindow', () => {
       },
       {
         command: `resource/blobUrl2`,
-        data: {someKey: 'blabla'},
+        data: { someKey: 'blabla' },
         headers: {
           'Content-Type': 'application/octet-stream',
         },
@@ -85,7 +97,7 @@ describe('eyesCheckWindow', () => {
     }
 
     async function processPage() {
-      return {resourceUrls, blobs, frames, url, cdt};
+      return { resourceUrls, blobs, frames, url, cdt };
     }
   });
 
@@ -93,8 +105,8 @@ describe('eyesCheckWindow', () => {
     let sendRequestInput;
     const resourcesPutted = [];
 
-    const blob1 = {url: 'blobUrl1', type: 'blobType1', value: {someKey: 'bla'}};
-    const blob2 = {url: 'blobUrl2', type: 'blobType2', value: {someKey: 'blabla'}};
+    const blob1 = { url: 'blobUrl1', type: 'blobType1', value: { someKey: 'bla' } };
+    const blob2 = { url: 'blobUrl2', type: 'blobType2', value: { someKey: 'blabla' } };
     const blobs = [blob1, blob2];
     const resourceUrls = 'resourceUrls';
     const url = 'url';
@@ -125,7 +137,7 @@ describe('eyesCheckWindow', () => {
     const matchLevel = 'matchLevel';
     const visualGridOptions = 'visualGridOptions';
 
-    await eyesCheckWindow('bla doc', {
+    await eyesCheckWindow(fakeDoc, {
       tag,
       sizeMode,
       target,
@@ -155,8 +167,8 @@ describe('eyesCheckWindow', () => {
           cdt,
           resourceUrls,
           blobData: [
-            {url: 'blobUrl1', type: 'blobType1'},
-            {url: 'blobUrl2', type: 'blobType2'},
+            { url: 'blobUrl1', type: 'blobType1' },
+            { url: 'blobUrl2', type: 'blobType2' },
           ],
           frames,
         },
@@ -184,7 +196,7 @@ describe('eyesCheckWindow', () => {
     expect(resourcesPutted).to.eql([
       {
         command: `resource/blobUrl1`,
-        data: {someKey: 'bla'},
+        data: { someKey: 'bla' },
         headers: {
           'Content-Type': 'application/octet-stream',
         },
@@ -192,7 +204,7 @@ describe('eyesCheckWindow', () => {
       },
       {
         command: `resource/blobUrl2`,
-        data: {someKey: 'blabla'},
+        data: { someKey: 'blabla' },
         headers: {
           'Content-Type': 'application/octet-stream',
         },
@@ -208,7 +220,7 @@ describe('eyesCheckWindow', () => {
     }
 
     async function processPage() {
-      return {resourceUrls, blobs, frames, url, cdt};
+      return { resourceUrls, blobs, frames, url, cdt };
     }
   });
 
@@ -216,9 +228,9 @@ describe('eyesCheckWindow', () => {
     let sendRequestInput;
     const resourcesPutted = [];
 
-    const blob1 = {url: 'blobUrl1', type: 'blobType1', value: {someKey1: 'bla1'}};
-    const blob2 = {url: 'blobUrl2', type: 'blobType2', value: {someKey2: 'bla2'}};
-    const blob3 = {url: 'blobUrl3', type: 'blobType3', value: {someKey3: 'bla3'}};
+    const blob1 = { url: 'blobUrl1', type: 'blobType1', value: { someKey1: 'bla1' } };
+    const blob2 = { url: 'blobUrl2', type: 'blobType2', value: { someKey2: 'bla2' } };
+    const blob3 = { url: 'blobUrl3', type: 'blobType3', value: { someKey3: 'bla3' } };
     const blobs = [blob1];
     const resourceUrls = 'resourceUrls';
     const url = 'url';
@@ -231,14 +243,14 @@ describe('eyesCheckWindow', () => {
       frames: [],
     };
     const frames = [
-      {url: 'url1', resourceUrls: [], blobs: [blob1, blob2], cdt: 'cdt1', frames: [innerFrame]},
+      { url: 'url1', resourceUrls: [], blobs: [blob1, blob2], cdt: 'cdt1', frames: [innerFrame] },
     ];
     const eyesCheckWindow = makeEyesCheckWindow({
       sendRequest,
       processPage,
     });
 
-    await eyesCheckWindow('bla doc');
+    await eyesCheckWindow(fakeDoc);
 
     expect(sendRequestInput).to.eql({
       command: 'checkWindow',
@@ -247,14 +259,14 @@ describe('eyesCheckWindow', () => {
         snapshot: {
           cdt,
           resourceUrls,
-          blobData: [{url: 'blobUrl1', type: 'blobType1'}],
+          blobData: [{ url: 'blobUrl1', type: 'blobType1' }],
           frames: [
             {
               url: 'url1',
               resourceUrls: [],
               blobData: [
-                {url: 'blobUrl1', type: 'blobType1'},
-                {url: 'blobUrl2', type: 'blobType2'},
+                { url: 'blobUrl1', type: 'blobType1' },
+                { url: 'blobUrl2', type: 'blobType2' },
               ],
               cdt: 'cdt1',
               frames: [
@@ -262,8 +274,8 @@ describe('eyesCheckWindow', () => {
                   url: 'url2',
                   resourceUrls: [],
                   blobData: [
-                    {url: 'blobUrl1', type: 'blobType1'},
-                    {url: 'blobUrl3', type: 'blobType3'},
+                    { url: 'blobUrl1', type: 'blobType1' },
+                    { url: 'blobUrl3', type: 'blobType3' },
                   ],
                   cdt: 'cdt2',
                   frames: [],
@@ -296,7 +308,7 @@ describe('eyesCheckWindow', () => {
     expect(resourcesPutted).to.eql([
       {
         command: `resource/blobUrl1`,
-        data: {someKey1: 'bla1'},
+        data: { someKey1: 'bla1' },
         headers: {
           'Content-Type': 'application/octet-stream',
         },
@@ -304,7 +316,7 @@ describe('eyesCheckWindow', () => {
       },
       {
         command: `resource/blobUrl2`,
-        data: {someKey2: 'bla2'},
+        data: { someKey2: 'bla2' },
         headers: {
           'Content-Type': 'application/octet-stream',
         },
@@ -312,7 +324,7 @@ describe('eyesCheckWindow', () => {
       },
       {
         command: `resource/blobUrl3`,
-        data: {someKey3: 'bla3'},
+        data: { someKey3: 'bla3' },
         headers: {
           'Content-Type': 'application/octet-stream',
         },
@@ -328,7 +340,7 @@ describe('eyesCheckWindow', () => {
     }
 
     async function processPage() {
-      return {resourceUrls, blobs, frames, url, cdt};
+      return { resourceUrls, blobs, frames, url, cdt };
     }
   });
 
@@ -336,7 +348,7 @@ describe('eyesCheckWindow', () => {
     let sendRequestInput;
     const resourcesPutted = [];
 
-    const blob1 = {url: 'blobUrl', value: {someKey: 'bla'}};
+    const blob1 = { url: 'blobUrl', value: { someKey: 'bla' } };
     const blobs = [blob1];
     const resourceUrls = 'resourceUrls';
     const url = 'url';
@@ -346,7 +358,7 @@ describe('eyesCheckWindow', () => {
       processPage,
     });
 
-    await eyesCheckWindow('bla doc');
+    await eyesCheckWindow(fakeDoc);
 
     expect(sendRequestInput).to.eql({
       command: 'checkWindow',
@@ -355,7 +367,7 @@ describe('eyesCheckWindow', () => {
         snapshot: {
           cdt,
           resourceUrls,
-          blobData: [{url: 'blobUrl', type: 'application/x-applitools-unknown'}],
+          blobData: [{ url: 'blobUrl', type: 'application/x-applitools-unknown' }],
           frames: [],
         },
         tag: undefined,
@@ -382,7 +394,7 @@ describe('eyesCheckWindow', () => {
     expect(resourcesPutted).to.eql([
       {
         command: `resource/blobUrl`,
-        data: {someKey: 'bla'},
+        data: { someKey: 'bla' },
         headers: {
           'Content-Type': 'application/octet-stream',
         },
@@ -398,7 +410,7 @@ describe('eyesCheckWindow', () => {
     }
 
     async function processPage() {
-      return {resourceUrls, blobs, frames: [], url, cdt};
+      return { resourceUrls, blobs, frames: [], url, cdt };
     }
   });
 
@@ -406,9 +418,9 @@ describe('eyesCheckWindow', () => {
     let sendRequestInput;
     const resourcesPutted = [];
 
-    const blob1 = {url: 'blobUrl1', type: 'blobType1', value: {someKey: 'bla'}};
-    const blob2 = {url: 'blobUrl2', type: 'blobType2', value: {someKey: 'blabla'}};
-    const blob3 = {url: 'blobUrl3', type: 'blobType3', value: {someKey: 'blablabla'}};
+    const blob1 = { url: 'blobUrl1', type: 'blobType1', value: { someKey: 'bla' } };
+    const blob2 = { url: 'blobUrl2', type: 'blobType2', value: { someKey: 'blabla' } };
+    const blob3 = { url: 'blobUrl3', type: 'blobType3', value: { someKey: 'blablabla' } };
     const blobs = [blob1, blob2, blob3];
     const resourceUrls = ['resourceUrls'];
     const url = 'url';
@@ -421,7 +433,7 @@ describe('eyesCheckWindow', () => {
 
     const tag = 'some tag';
 
-    await eyesCheckWindow('bla doc', tag);
+    await eyesCheckWindow(fakeDoc, tag);
 
     expect(sendRequestInput).to.eql({
       command: 'checkWindow',
@@ -430,7 +442,7 @@ describe('eyesCheckWindow', () => {
         snapshot: {
           cdt,
           resourceUrls: ['resourceUrls', 'blobUrl2', 'blobUrl3'],
-          blobData: [{url: 'blobUrl1', type: 'blobType1'}],
+          blobData: [{ url: 'blobUrl1', type: 'blobType1' }],
           frames,
         },
         tag,
@@ -457,7 +469,7 @@ describe('eyesCheckWindow', () => {
     expect(resourcesPutted).to.eql([
       {
         command: `resource/blobUrl1`,
-        data: {someKey: 'bla'},
+        data: { someKey: 'bla' },
         headers: {
           'Content-Type': 'application/octet-stream',
         },
@@ -476,7 +488,7 @@ describe('eyesCheckWindow', () => {
     }
 
     async function processPage() {
-      return {resourceUrls, blobs, frames, url, cdt};
+      return { resourceUrls, blobs, frames, url, cdt };
     }
   });
 
@@ -484,7 +496,7 @@ describe('eyesCheckWindow', () => {
     let sendRequestInput;
     const resourcesPutted = [];
 
-    const blob = {url: 'blobUrl1', errorStatusCode: 500};
+    const blob = { url: 'blobUrl1', errorStatusCode: 500 };
     const blobs = [blob];
     const resourceUrls = 'resourceUrls';
     const url = 'url';
@@ -497,7 +509,7 @@ describe('eyesCheckWindow', () => {
 
     const tag = 'some tag';
 
-    await eyesCheckWindow('bla doc', tag);
+    await eyesCheckWindow(fakeDoc, tag);
     expect(sendRequestInput).to.eql({
       command: 'checkWindow',
       data: {
@@ -505,7 +517,7 @@ describe('eyesCheckWindow', () => {
         snapshot: {
           cdt,
           resourceUrls,
-          blobData: [{url: 'blobUrl1', errorStatusCode: 500}],
+          blobData: [{ url: 'blobUrl1', errorStatusCode: 500 }],
           frames,
         },
         tag,
@@ -539,7 +551,7 @@ describe('eyesCheckWindow', () => {
     }
 
     async function processPage() {
-      return {resourceUrls, blobs, frames, url, cdt};
+      return { resourceUrls, blobs, frames, url, cdt };
     }
   });
 });

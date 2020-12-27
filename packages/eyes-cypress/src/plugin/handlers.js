@@ -141,7 +141,7 @@ function makeHandlers({
           '\nSee: https://github.com/applitools/eyes-cypress#target for more details.',
         );
       }
-      logger.log('SNAPSHOTS ', snapshotsWithResourceContents);
+     
       return await checkWindow({
         url,
         snapshot: snapshotsWithResourceContents,
