@@ -1,6 +1,6 @@
 const {VisualGridRunner} = require('@applitools/eyes-sdk-core')
-const {EyesFactory} = require('../../src/TestCafeSDK')
-const eyes = new EyesFactory(new VisualGridRunner())
+const {Eyes} = require('../../src/TestCafeSDK')
+const eyes = new Eyes(new VisualGridRunner({testConcurrency: 10}))
 const assert = require('assert')
 const {v4: uuidv4} = require('uuid')
 process.env.APPLITOOLS_BATCH_NAME = 'JS Coverage Tests - eyes-testcafe (legacy API)'
@@ -134,6 +134,7 @@ test('eyes.checkWindow scriptHooks', async t => {
   await eyes.open({
     t,
     appName: 'eyes-testcafe',
+    browser: [{width: 800, height: 600, name: 'chrome'}],
     testName: 'legacy api test: checkWindow scriptHooks',
   })
   await eyes.checkWindow({
@@ -143,7 +144,7 @@ test('eyes.checkWindow scriptHooks', async t => {
   })
   await eyes.close(true)
 })
-test('eyes.checkWindow sendDom', async t => {
+test.skip('eyes.checkWindow sendDom', async t => {
   await t.navigateTo('https://applitools.github.io/demo/TestPages/FramesTestPage/')
   await eyes.open({t, appName: 'eyes-testcafe', testName: 'legacy api test: checkWindow sendDom'})
   await eyes.checkWindow({

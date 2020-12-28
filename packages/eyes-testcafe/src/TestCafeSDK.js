@@ -1,4 +1,4 @@
-const {EyesSDK, TypeUtils} = require('@applitools/eyes-sdk-core')
+const {EyesSDK, TypeUtils, VisualGridRunner} = require('@applitools/eyes-sdk-core')
 const VisualGridClient = require('@applitools/visual-grid-client')
 const spec = require('./spec-driver')
 const {version} = require('../package.json')
@@ -13,11 +13,10 @@ const sdk = EyesSDK({
 const translateArgsToCheckSettings = makeTranslateArgsToCheckSettings(sdk.CheckSettings)
 
 // TODO: also support applitools.config.js
-// TODO: default to EyesVisualGrid
 // TODO: pull in readme from other repo
-class DecoratedEyesFactory extends sdk.EyesFactory {
-  constructor() {
-    const eyesInstance = super()
+class DecoratedEyes extends sdk.EyesFactory {
+  constructor(serverUrl, isDisabled, runner = new VisualGridRunner()) {
+    const eyesInstance = super(serverUrl, isDisabled, runner)
     const _open = eyesInstance.open.bind(eyesInstance)
     const _check = eyesInstance.check.bind(eyesInstance)
     const api = {
@@ -26,8 +25,9 @@ class DecoratedEyesFactory extends sdk.EyesFactory {
           const {t, appName, testName} = args[0]
           eyesInstance.setConfiguration(translateArgsToConfig(args[0]))
           return await _open(t, appName, testName)
+        } else {
+          return await _open(...args)
         }
-        await _open(...args)
       },
       async checkWindow(args) {
         await _check(args && TypeUtils.isObject(args) ? translateArgsToCheckSettings(args) : args)
@@ -40,7 +40,7 @@ class DecoratedEyesFactory extends sdk.EyesFactory {
 }
 
 const modifiedSdk = {...sdk}
-modifiedSdk.EyesFactory = DecoratedEyesFactory
+modifiedSdk.Eyes = DecoratedEyes
 module.exports = {
   ...modifiedSdk,
 }
