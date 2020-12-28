@@ -207,5 +207,33 @@ describe('util', () => {
         assert.deepStrictEqual(config.getAccessibilityValidation(), undefined)
       })
     })
+    describe('translate applitools.config.js file contents to config', () => {
+      it('works', () => {
+        const args = {
+          apiKey: 'asdf',
+          showLogs: true,
+          serverUrl: 'https://blah',
+          proxy: 'https://username:password@myproxy.com:443',
+          isDisabled: true,
+          failTestcafeOnDiff: false,
+          tapDirPath: process.cwd(),
+          concurrency: 10,
+          dontCloseBatches: true,
+          disableBrowserFetching: true,
+        }
+        const config = translateArgsToConfig(args)
+        assert.deepStrictEqual(config.getApiKey(), args.apiKey)
+        assert.deepStrictEqual(config.getShowLogs(), args.showLogs)
+        assert.deepStrictEqual(config.getServerUrl(), args.serverUrl)
+        assert.deepStrictEqual(config.getProxy()._uri, args.proxy)
+        assert.deepStrictEqual(config.getIsDisabled(), args.isDisabled)
+        assert.deepStrictEqual(config.getDontCloseBatches(), args.dontCloseBatches)
+        assert.deepStrictEqual(config.getDisableBrowserFetching(), args.disableBrowserFetching)
+        // TODO:
+        // failTestcafeOnDiff
+        // tapDirPath
+        // concurrency
+      })
+    })
   })
 })
