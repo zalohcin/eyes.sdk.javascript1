@@ -86,12 +86,8 @@ function makeHandlers({
       );
       return client;
     },
-    getIosDevicesSizes: async () => {
-      return await getIosDevicesSizes();
-    },
-    getEmulatedDevicesSizes: async () => {
-      return await getEmulatedDevicesSizes();
-    },
+    getIosDevicesSizes: () => getIosDevicesSizes(),
+    getEmulatedDevicesSizes: () => getEmulatedDevicesSizes(),
     batchEnd: async ({timeout} = {}) => {
       logger.log(`[handlers] batchEnd, timeout=${timeout}`);
       return await pollBatchEnd({timeout});

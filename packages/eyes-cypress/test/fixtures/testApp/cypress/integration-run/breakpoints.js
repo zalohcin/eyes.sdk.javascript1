@@ -6,11 +6,11 @@ describe('JS layout', () => {
       appName: 'JS layout',
       testName: 'testing js layout support in cypress',
       browser: [
-        {width: 800, height: 600, name: 'chrome'},
-        {deviceName: 'iPhone 11', screenOrientation: 'portrait'},
-        {deviceName: 'Pixel 2', screenOrientation: 'portrait'},
+        {name: 'chrome', width: 1000, height: 800},
+        {iosDeviceInfo: {deviceName: 'iPad (7th generation)'}},
+        {chromeEmulationInfo: {deviceName: 'Pixel 4 XL'}},
       ],
-      layoutBreakpoints: [500, 800],
+      layoutBreakpoints: [500, 1000],
     });
     cy.eyesCheckWindow('Test');
     cy.eyesClose();

@@ -6,7 +6,7 @@ const processPage = require('@applitools/dom-snapshot/dist/processPageCjs');
 const domSnapshotOptions = {dontFetchResources: Cypress.config('eyesDisableBrowserFetching')};
 const send = makeSend(Cypress.config('eyesPort'), window.fetch);
 const makeSendRequest = require('./sendRequest');
-const makeEyesCheckWindow = require('./eyesCheckWindow.js');
+const makeEyesCheckWindow = require('./eyesCheckWindow');
 const makeHandleCypressViewport = require('./makeHandleCypressViewport');
 const sendRequest = makeSendRequest(send);
 const eyesCheckWindow = makeEyesCheckWindow({sendRequest, processPage, domSnapshotOptions});
@@ -74,20 +74,22 @@ Cypress.Commands.add('eyesCheckWindow', args => {
 
   const defaultBrowser = {width: 800, height: 600, name: 'chrome'};
   const eyesOpenArgs = getGlobalConfigProperty('eyesOpenArgs');
-  const globalBreakpoints = getGlobalConfigProperty('eyesLayoutBreakpoints');
-  const globalBrowser = getGlobalConfigProperty('eyesBrowser');
+  const globalArgs = {
+    browser: getGlobalConfigProperty('eyesBrowser'),
+    layoutBreakpoints: getGlobalConfigProperty('eyesLayoutBreakpoints'),
+  };
 
-  const browser = eyesOpenArgs.browser || globalBrowser || defaultBrowser;
+  const browser = eyesOpenArgs.browser || globalArgs.browser || defaultBrowser;
   const layoutBreakpoints =
     (args && args.layoutBreakpoints) ||
     (eyesOpenArgs && eyesOpenArgs.layoutBreakpoints) ||
-    globalBreakpoints;
-  const checkArgs = {};
+    globalArgs.layoutBreakpoints;
 
+  const checkArgs = Object.assign(globalArgs, eyesOpenArgs, args);
   if (typeof args === 'object') {
-    Object.assign(checkArgs, {...args, eyesOpenArgs, browser, layoutBreakpoints});
+    Object.assign(checkArgs, layoutBreakpoints, browser);
   } else {
-    Object.assign(checkArgs, {tag: args, browser, eyesOpenArgs, layoutBreakpoints});
+    Object.assign(checkArgs, {tag: args}, browser, layoutBreakpoints);
   }
 
   return cy
