@@ -21,59 +21,137 @@ describe('util', () => {
         const checkSettings = translateArgsToCheckSettings(args)
         assert.deepStrictEqual(checkSettings.getTargetElement(), args.selector)
       })
-      it.skip('region', () => {
-        //{target: 'region', region: {top: 100, left: 0, width: 1000, height: 200}}
+      it('region', () => {
+        const args = {target: 'region', region: {top: 100, left: 0, width: 1000, height: 200}}
+        const checkSettings = translateArgsToCheckSettings(args)
+        const actualRegion = checkSettings.getTargetRegion()
+        assert.deepStrictEqual(actualRegion.getTop(), args.region.top)
+        assert.deepStrictEqual(actualRegion.getLeft(), args.region.left)
+        assert.deepStrictEqual(actualRegion.getWidth(), args.region.width)
+        assert.deepStrictEqual(actualRegion.getHeight(), args.region.height)
       })
-      it.skip('ignore', () => {
-        //{ignore: [{selector: '#overflowing-div'}, {top: 100, left: 0, width: 1000, height: 200}]}
+      it('ignore', async () => {
+        const args = {
+          ignore: [{selector: '#overflowing-div'}, {top: 100, left: 0, width: 1000, height: 200}],
+        }
+        const checkSettings = translateArgsToCheckSettings(args)
+        const ignoreRegions = checkSettings.getIgnoreRegions()
+        assert.deepStrictEqual(ignoreRegions.length, args.ignore.length)
+        assert.deepStrictEqual(ignoreRegions[0]._selector, args.ignore[0].selector)
+        const r = await ignoreRegions[1].getRegion()
+        assert.deepStrictEqual(r[0], args.ignore[1])
       })
-      it.skip('floating', () => {
-        //{
-        //    floating: [
-        //      {
-        //        top: 100,
-        //        left: 0,
-        //        width: 1000,
-        //        height: 100,
-        //        maxUpOffset: 20,
-        //        maxDownOffset: 20,
-        //        maxLeftOffset: 20,
-        //        maxRightOffset: 20,
-        //      },
-        //      {
-        //        selector: '#overflowing-div',
-        //        maxUpOffset: 20,
-        //        maxDownOffset: 20,
-        //        maxLeftOffset: 20,
-        //        maxRightOffset: 20,
-        //      },
-        //    ],
-        //  }
+      it('floating', async () => {
+        const args = {
+          floating: [
+            {
+              top: 100,
+              left: 0,
+              width: 1000,
+              height: 100,
+              maxUpOffset: 20,
+              maxDownOffset: 20,
+              maxLeftOffset: 20,
+              maxRightOffset: 20,
+            },
+            {
+              selector: '#overflowing-div',
+              maxUpOffset: 20,
+              maxDownOffset: 20,
+              maxLeftOffset: 20,
+              maxRightOffset: 20,
+            },
+          ],
+        }
+        const checkSettings = translateArgsToCheckSettings(args)
+        const actualFloatingRegions = checkSettings.getFloatingRegions()
+        assert.deepStrictEqual(actualFloatingRegions.length, args.floating.length)
+        assert.deepStrictEqual(actualFloatingRegions[0]._region._top, args.floating[0].top)
+        assert.deepStrictEqual(actualFloatingRegions[0]._region._left, args.floating[0].left)
+        assert.deepStrictEqual(actualFloatingRegions[0]._region._width, args.floating[0].width)
+        assert.deepStrictEqual(actualFloatingRegions[0]._region._height, args.floating[0].height)
+        assert.deepStrictEqual(
+          actualFloatingRegions[0]._options.maxUpOffset,
+          args.floating[0].maxUpOffset,
+        )
+        assert.deepStrictEqual(
+          actualFloatingRegions[0]._options.maxDownOffset,
+          args.floating[0].maxDownOffset,
+        )
+        assert.deepStrictEqual(
+          actualFloatingRegions[0]._options.maxLeftOffset,
+          args.floating[0].maxLeftOffset,
+        )
+        assert.deepStrictEqual(
+          actualFloatingRegions[0]._options.maxRightOffset,
+          args.floating[0].maxRightOffset,
+        )
+        assert.deepStrictEqual(actualFloatingRegions[1]._selector, args.floating[1].selector)
+        assert.deepStrictEqual(
+          actualFloatingRegions[1]._options.maxUpOffset,
+          args.floating[1].maxUpOffset,
+        )
+        assert.deepStrictEqual(
+          actualFloatingRegions[1]._options.maxDownOffset,
+          args.floating[1].maxDownOffset,
+        )
+        assert.deepStrictEqual(
+          actualFloatingRegions[1]._options.maxLeftOffset,
+          args.floating[1].maxLeftOffset,
+        )
+        assert.deepStrictEqual(
+          actualFloatingRegions[1]._options.maxRightOffset,
+          args.floating[1].maxRightOffset,
+        )
       })
-      it.skip('layout', () => {
-        //{layout: [{top: 100, left: 0, width: 1000, height: 100}, {selector: '#overflowing-div'}]}
+      it('layout', () => {
+        const args = {
+          layout: [{top: 100, left: 0, width: 1000, height: 100}, {selector: '#overflowing-div'}],
+        }
+        const checkSettings = translateArgsToCheckSettings(args)
+        const actualLayoutRegions = checkSettings.getLayoutRegions()
+        assert.deepStrictEqual(actualLayoutRegions.length, args.layout.length)
       })
-      it.skip('strict', () => {
-        //{strict: [{top: 100, left: 0, width: 1000, height: 100}, {selector: '#overflowing-div'}]}
+      it('strict', () => {
+        const args = {
+          strict: [{top: 100, left: 0, width: 1000, height: 100}, {selector: '#overflowing-div'}],
+        }
+        const checkSettings = translateArgsToCheckSettings(args)
+        const actualStrictRegions = checkSettings.getStrictRegions()
+        assert.deepStrictEqual(actualStrictRegions.length, args.strict.length)
       })
-      it.skip('content', () => {
-        // {content: [{top: 100, left: 0, width: 1000, height: 100}, {selector: '#overflowing-div'}]}
+      it('content', () => {
+        const args = {
+          content: [{top: 100, left: 0, width: 1000, height: 100}, {selector: '#overflowing-div'}],
+        }
+        const checkSettings = translateArgsToCheckSettings(args)
+        const actualContentRegions = checkSettings.getContentRegions()
+        assert.deepStrictEqual(actualContentRegions.length, args.content.length)
       })
-      it.skip('accessibility', () => {
-        //{
-        //  accessibility: [
-        //    {accessibilityType: 'RegularText', selector: '#overflowing-div'},
-        //    {accessibilityType: 'BoldText', top: 100, left: 0, width: 1000, height: 100},
-        //  ]
-        //}
+      it('accessibility', () => {
+        const args = {
+          accessibility: [
+            {accessibilityType: 'RegularText', selector: '#overflowing-div'},
+            {accessibilityType: 'BoldText', top: 100, left: 0, width: 1000, height: 100},
+          ],
+        }
+        const checkSettings = translateArgsToCheckSettings(args)
+        const actualAccessibilityRegions = checkSettings.getAccessibilityRegions()
+        assert.deepStrictEqual(actualAccessibilityRegions.length, args.accessibility.length)
       })
-      it.skip('scriptsHooks', () => {
-        //{scriptHooks: {
-        //  beforeCaptureScreenshot: "document.body.style.backgroundColor = 'gold'",
-        //}}
+      it('scriptsHooks', () => {
+        const args = {
+          scriptHooks: {
+            beforeCaptureScreenshot: "document.body.style.backgroundColor = 'gold'",
+          },
+        }
+        const checkSettings = translateArgsToCheckSettings(args)
+        assert.deepStrictEqual(checkSettings.getScriptHooks(), args.scriptHooks)
       })
-      it.skip('sendDom', () => {
-        //{sendDom: false}
+      it('sendDom', () => {
+        const args = {sendDom: false}
+        const checkSettings = translateArgsToCheckSettings(args)
+        assert.deepStrictEqual(checkSettings.getSendDom(), args.sendDom)
       })
     })
     describe('translate open args to config', () => {
