@@ -3,14 +3,14 @@ const VisualGridClient = require('@applitools/visual-grid-client')
 const spec = require('./spec-driver')
 const {version} = require('../package.json')
 const translateArgsToConfig = require('./util/translate-open-args-to-config')
-const translateArgsToCheckSettings = require('./util/translate-check-args-to-check-settings')
-
+const makeTranslateArgsToCheckSettings = require('./util/translate-check-args-to-check-settings')
 const sdk = EyesSDK({
   name: 'eyes.testcafe',
   version,
   spec,
   VisualGridClient,
 })
+const translateArgsToCheckSettings = makeTranslateArgsToCheckSettings(sdk.CheckSettings)
 
 // TODO: also support applitools.config.js
 // TODO: default to EyesVisualGrid
