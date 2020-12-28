@@ -34,4 +34,4 @@ export type FancyOptions = {
     formatterFunction: FancyFormatFunction
 }
 
-export default function fancy(options: FancyOptions);
+export default function fancy(options: FancyOptions): Record<string, string | Function>;
