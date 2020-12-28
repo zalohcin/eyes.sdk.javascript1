@@ -12,7 +12,6 @@ const sdk = EyesSDK({
 const translateArgsToCheckSettings = makeTranslateArgsToCheckSettings(sdk.CheckSettings)
 
 // TODO: also support applitools.config.js
-// TODO: pull in readme from other repo
 class DecoratedEyes extends sdk.EyesFactory {
   constructor(serverUrl, isDisabled, runner = new VisualGridRunner()) {
     const eyesInstance = super(serverUrl, isDisabled, runner)
