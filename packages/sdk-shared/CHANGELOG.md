@@ -4,6 +4,10 @@
 
 - added debugScreenshots boolean option to getEyes that will automatically create a screenshots dir in the cwd
 
+## 0.6.1 - 2020/12/22
+
+- add dom traversing functionality
+
 ## 0.6.0 - 2020/12/18
 
 - Re-established defaults for a few of the native mobile tests (which defaults to skipEmit: true) since they are failing. Need to revisit them later.

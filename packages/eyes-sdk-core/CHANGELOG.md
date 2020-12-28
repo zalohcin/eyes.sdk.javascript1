@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- fix `extractText` method
+- add `imagePositionInActiveFrame` to `RenderStatusResults`
 
 ## 12.10.0 - 2020/12/18
 

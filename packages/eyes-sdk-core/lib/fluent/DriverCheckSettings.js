@@ -208,7 +208,7 @@ class CheckSettings {
       settings.scrollRootElement(object.scrollRootElement)
     }
     if (object.hooks) {
-      Object.values(object.hooks).forEach(([name, script]) => {
+      Object.entries(object.hooks).forEach(([name, script]) => {
         settings.hook(name, script)
       })
     }

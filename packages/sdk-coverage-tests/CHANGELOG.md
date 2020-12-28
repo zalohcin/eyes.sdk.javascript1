@@ -3,6 +3,10 @@
 ## Unreleased
 
 
+## 2.2.1 - 2020/12/22
+
+- fix type in getter
+
 ## 2.2.0 - 2020/12/22
 
 - add types registration mechanism - `addType`

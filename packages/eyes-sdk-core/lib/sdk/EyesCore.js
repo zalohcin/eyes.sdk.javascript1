@@ -24,6 +24,7 @@ const MatchResult = require('../match/MatchResult')
 const TestResults = require('../TestResults')
 const NullDebugScreenshotProvider = require('../debug/NullDebugScreenshotProvider')
 const takeDomCapture = require('../utils/takeDomCapture')
+const EyesUtils = require('./EyesUtils')
 
 const UNKNOWN_DEVICE_PIXEL_RATIO = 0
 const DEFAULT_DEVICE_PIXEL_RATIO = 1
@@ -418,6 +419,9 @@ class EyesCore extends EyesBase {
     if (!TypeUtils.isArray(regions)) regions = [regions]
 
     const driver = makeDriver(this._driver.spec, this._logger, this._driver.wrapper)
+    await driver.refreshContexts()
+
+    await EyesUtils.markActiveContext(this._logger, this._context)
 
     const extractTextInputs = []
 
@@ -466,11 +470,11 @@ class EyesCore extends EyesBase {
         region.hint = await this._context.execute('return arguments[0].innerText', element)
       }
 
-      const domCapture = await takeDomCapture(this._logger, this._driver).catch(() => null)
+      const domCapture = await takeDomCapture(this._logger, this._context)
       await this.getAndSaveRenderingInfo()
       const [screenshotUrl, domUrl] = await Promise.all([
         this._serverConnector.uploadScreenshot(GeneralUtils.guid(), await screenshot.image.toPng()),
-        domCapture ? this._serverConnector.postDomSnapshot(GeneralUtils.guid(), domCapture) : null,
+        this._serverConnector.postDomSnapshot(GeneralUtils.guid(), domCapture),
       ])
       extractTextInputs.push({
         domUrl,

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- use `imagePositionInActiveFrame` instead of custom calculation
 
 ## 15.4.0 - 2020/12/18
 
