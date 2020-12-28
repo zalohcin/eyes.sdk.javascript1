@@ -1,9 +1,9 @@
 'use strict';
-const { presult } = require('@applitools/functional-commons');
+const {presult} = require('@applitools/functional-commons');
 const pollingHandler = require('./pollingHandler');
 const makeWaitForBatch = require('./waitForBatch');
 const makeHandleBatchResultsFile = require('./makeHandleBatchResultsFile');
-const { GeneralUtils } = require('@applitools/visual-grid-client');
+const {GeneralUtils} = require('@applitools/visual-grid-client');
 
 const TIMEOUT_MSG = timeout =>
   `Eyes-Cypress timed out after ${timeout}ms. The default timeout is 2 minutes. It's possible to increase this timeout by setting a the value of 'eyesTimeout' in Cypress configuration, e.g. for 3 minutes: Cypress.config('eyesTimeout', 180000)`;
@@ -17,7 +17,14 @@ function makeHandlers({
   errorDigest,
 }) {
   logger.log('[handlers] creating handlers with the following config:', config);
-  let openEyes, pollBatchEnd, checkWindow, close, resources, openErr, getEmulatedDevicesSizes, getIosDevicesSizes;
+  let openEyes,
+    pollBatchEnd,
+    checkWindow,
+    close,
+    resources,
+    openErr,
+    getEmulatedDevicesSizes,
+    getIosDevicesSizes;
   let runningTests = [];
 
   return {
@@ -85,9 +92,9 @@ function makeHandlers({
     getEmulatedDevicesSizes: async () => {
       return await getEmulatedDevicesSizes();
     },
-    batchEnd: async ({ timeout } = {}) => {
+    batchEnd: async ({timeout} = {}) => {
       logger.log(`[handlers] batchEnd, timeout=${timeout}`);
-      return await pollBatchEnd({ timeout });
+      return await pollBatchEnd({timeout});
     },
 
     putResource: (id, buffer) => {
@@ -118,7 +125,7 @@ function makeHandlers({
       ignoreDisplacements,
       accessibility,
       matchLevel,
-      visualGridOptions
+      visualGridOptions,
     }) => {
       logger.log(`[handlers] checkWindow: checkWindow=${typeof checkWindow}`);
       if (!checkWindow) {
@@ -141,7 +148,7 @@ function makeHandlers({
           '\nSee: https://github.com/applitools/eyes-cypress#target for more details.',
         );
       }
-     
+
       return await checkWindow({
         url,
         snapshot: snapshotsWithResourceContents,
@@ -169,7 +176,8 @@ function makeHandlers({
 
     close: async () => {
       logger.log(
-        `[handlers] close: openErr=${openErr}, close=${typeof close}, checkWindow=${typeof checkWindow}, resources=${resources ? `count:${Object.keys(resources).length}` : resources
+        `[handlers] close: openErr=${openErr}, close=${typeof close}, checkWindow=${typeof checkWindow}, resources=${
+          resources ? `count:${Object.keys(resources).length}` : resources
         }`,
       );
       if (openErr) {
@@ -191,7 +199,7 @@ function makeHandlers({
   };
 
   function makeClose(doClose, runningTest) {
-    return async function () {
+    return async function() {
       return (runningTest.closePromise = presult(doClose(false)));
     };
   }
@@ -209,8 +217,8 @@ function makeHandlers({
   }
 
   function blobDataToResourceContents(blobData = []) {
-    return blobData.reduce((acc, { url, type, errorStatusCode }) => {
-      const data = errorStatusCode ? { url, errorStatusCode } : { url, type, value: resources[url] };
+    return blobData.reduce((acc, {url, type, errorStatusCode}) => {
+      const data = errorStatusCode ? {url, errorStatusCode} : {url, type, value: resources[url]};
       acc[url] = data;
       return acc;
     }, {});

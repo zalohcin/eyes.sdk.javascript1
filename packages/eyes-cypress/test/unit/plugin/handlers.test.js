@@ -123,7 +123,7 @@ describe('handlers', () => {
     ).to.be.an.instanceof(Error);
   });
 
-  it.only('handles "checkWindow"', async () => {
+  it('handles "checkWindow"', async () => {
     handlers.batchStart();
     await handlers.open({__test: 123});
 
@@ -149,7 +149,6 @@ describe('handlers', () => {
     const accessibility = 'accessibility';
     const matchLevel = 'matchLevel';
     const visualGridOptions = 'visualGridOptions';
-    const resourceContents = {};
 
     const result = await handlers.checkWindow({
       cdt,
@@ -175,7 +174,7 @@ describe('handlers', () => {
       matchLevel,
       visualGridOptions,
     });
-    
+
     expect(result).to.eql({
       __test: 'checkWindow_123',
       snapshot: [],
@@ -226,8 +225,8 @@ describe('handlers', () => {
       id3: {url: 'id3', type: 'type3', value: 'buff3'},
     };
 
-    const result = await handlers.checkWindow({snapshot: {blobData}});
-    expect(result.snapshot.resourceContents).to.eql(resourceContents);
+    const result = await handlers.checkWindow({snapshots: [{blobData}]});
+    expect(result.snapshot[0].resourceContents).to.eql(resourceContents);
   });
 
   it('handles "checkWindow" with errorStatusCode resources', async () => {
@@ -240,8 +239,8 @@ describe('handlers', () => {
       id1: {url: 'id1', errorStatusCode: 500},
     };
 
-    const result = await handlers.checkWindow({snapshot: {blobData}});
-    expect(result.snapshot.resourceContents).to.eql(resourceContents);
+    const result = await handlers.checkWindow({snapshots: [{blobData}]});
+    expect(result.snapshot[0].resourceContents).to.eql(resourceContents);
   });
 
   it('handles "checkWindow" with nested frames', async () => {
@@ -269,10 +268,12 @@ describe('handlers', () => {
     handlers.putResource('id3', 'buff3');
 
     const result = await handlers.checkWindow({
-      snapshot: {
-        blobData,
-        frames,
-      },
+      snapshots: [
+        {
+          blobData,
+          frames,
+        },
+      ],
     });
 
     expect(result).to.eql({
@@ -281,33 +282,35 @@ describe('handlers', () => {
         __test: 123,
         accessibilitySettings: undefined,
       },
-      snapshot: {
-        resourceContents: {
-          id1: {url: 'id1', type: 'type1', value: 'buff1'},
-        },
-        frames: [
-          {
-            resourceContents: {
-              id2: {url: 'id2', type: 'type2', value: 'buff2'},
-            },
-            frames: [
-              {
-                resourceContents: {
-                  id3: {url: 'id3', type: 'type3', value: 'buff3'},
-                  id4: {url: 'id4', errorStatusCode: 500},
-                },
-                resourceUrls: undefined,
-                cdt: undefined,
-                url: undefined,
-                frames: undefined,
-              },
-            ],
-            resourceUrls: undefined,
-            cdt: undefined,
-            url: undefined,
+      snapshot: [
+        {
+          resourceContents: {
+            id1: {url: 'id1', type: 'type1', value: 'buff1'},
           },
-        ],
-      },
+          frames: [
+            {
+              resourceContents: {
+                id2: {url: 'id2', type: 'type2', value: 'buff2'},
+              },
+              frames: [
+                {
+                  resourceContents: {
+                    id3: {url: 'id3', type: 'type3', value: 'buff3'},
+                    id4: {url: 'id4', errorStatusCode: 500},
+                  },
+                  resourceUrls: undefined,
+                  cdt: undefined,
+                  url: undefined,
+                  frames: undefined,
+                },
+              ],
+              resourceUrls: undefined,
+              cdt: undefined,
+              url: undefined,
+            },
+          ],
+        },
+      ],
       url: undefined,
       tag: undefined,
       sizeMode: undefined,
@@ -341,14 +344,15 @@ describe('handlers', () => {
       id: {url: 'id', type: 'type', value: 'buff'},
     };
     let result = await handlers.checkWindow({
-      snapshot: {blobData},
+      snapshots: [{blobData}],
     });
 
-    const actualResourceContents = result.snapshot.resourceContents;
+    const actualResourceContents = result.snapshot[0].resourceContents;
+    // expect(actualResourceContents).to.eql(result.snapshot);
     expect(actualResourceContents).to.eql(expectedResourceContents);
     await handlers.close();
 
-    const err = await handlers.checkWindow({snapshot: {blobData}}).then(
+    const err = await handlers.checkWindow({snapshots: [{blobData}]}).then(
       x => x,
       err => err,
     );
@@ -360,9 +364,9 @@ describe('handlers', () => {
     expect(err2).to.be.an.instanceOf(Error);
     await handlers.open({__test: 123});
     result = await handlers.checkWindow({
-      snapshot: {blobData},
+      snapshots: [{blobData}],
     });
-    const emptyResourceContents = result.snapshot.resourceContents;
+    const emptyResourceContents = result.snapshot[0].resourceContents;
     expect(emptyResourceContents).to.eql({
       id: {url: 'id', type: 'type', value: undefined},
     });
