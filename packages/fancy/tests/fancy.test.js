@@ -126,7 +126,7 @@ describe('formatter', () => {
       indent: 4,
       header: 'custom header',
       footer: 'custom footer',
-      format:(formatter, { body: _body }) => {
+      formatterFunction:(formatter, { body: _body }) => {
         // you should call format.section at some point and add sections to body
         // otherwise the body will remain empty
         // you must return the body at the end;
@@ -137,7 +137,7 @@ describe('formatter', () => {
         })
         formatter.body(_body)
       }
-    });    
+    });   
     await snap(output, 'format function')
   });
 
@@ -186,7 +186,7 @@ describe('formatter', () => {
       indent: 4,
       header: 'custom header',
       footer: 'custom footer',
-      format:(formatter, { body: _body }) => {
+      formatterFunction:(formatter, { body: _body }) => {
         const { section, background } = formatter;
         Object.keys(_body).forEach((key, index) => {
           const color = index === 0 ? 'green' : 'red';
@@ -207,7 +207,7 @@ describe('formatter', () => {
       indent: 4,
       header: 'my cool header',
       footer: 'my awesome footer',
-      format:(formatter, { body: _body, header: _header, footer: _footer }) => {
+      formatterFunction:(formatter, { body: _body, header: _header, footer: _footer }) => {
         const { underline, background, bold, section, italic } = formatter;
         formatter.header(underline(_header.toUpperCase(), 'teal'));
         formatter.footer(background(_footer.toUpperCase(), 'pink'));
@@ -229,7 +229,7 @@ describe('formatter', () => {
       },
       indent: 4,
       header: 'Test Results',
-      format:(formatter, { body: _body, header: _header }) => {
+      formatterFunction:(formatter, { body: _body, header: _header }) => {
         const { bold, section, gray, underline } = formatter;
         formatter.header(underline(_header.toUpperCase(), 'marine'));
         const statuses = {

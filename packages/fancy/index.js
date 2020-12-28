@@ -14,7 +14,7 @@ function fancy({
 
 	return {
 		formatter: formatFunction,
-		output: formatterFunction.report()
+		output: formatFunction.report()
 	}
 }
 
