@@ -18,7 +18,7 @@ function makeEyesCheckWindow({sendRequest, processPage, domSnapshotOptions, cypr
       sendRequest({
         command: 'checkWindow',
         data: {
-          url: snapshots[0].url,
+          url: Array.isArray(snapshots) ? snapshots[0].url : snapshots.url,
           snapshots,
           ...sendArgs,
         },
@@ -28,7 +28,7 @@ function makeEyesCheckWindow({sendRequest, processPage, domSnapshotOptions, cypr
     function takeDomSnapshots(options) {
       if (!breakpoints) {
         //console.log('no breakpoints, taking single dom snapshot');
-        return takeDomSnapshot(options).then(snapshot => Array(browsers.length).fill(snapshot));
+        return takeDomSnapshot(options).then(snapshot => snapshot);
       }
 
       return browsers

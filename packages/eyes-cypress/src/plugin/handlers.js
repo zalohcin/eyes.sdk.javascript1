@@ -102,7 +102,7 @@ function makeHandlers({
 
     checkWindow: async ({
       url,
-      snapshots = [],
+      snapshots = {},
       tag,
       sizeMode,
       target,
@@ -128,15 +128,9 @@ function makeHandlers({
         throw new Error('Please call cy.eyesOpen() before calling cy.eyesCheckWindow()');
       }
 
-      const snapshotsWithResourceContents = snapshots.map(snapshot => {
-        const target = {};
-        Object.assign(target, snapshot, {
-          resourceContents: blobDataToResourceContents(snapshot.blobData),
-          frames: createResourceContents(snapshot.frames),
-        });
-        delete target.blobData;
-        return target;
-      });
+      const snapshotsWithResourceContents = Array.isArray(snapshots)
+        ? snapshots.map(getSnapshotWithResourceContents)
+        : getSnapshotWithResourceContents(snapshots);
 
       if (sizeMode) {
         console.warn(
@@ -198,6 +192,16 @@ function makeHandlers({
     return async function() {
       return (runningTest.closePromise = presult(doClose(false)));
     };
+  }
+
+  function getSnapshotWithResourceContents(snapshot) {
+    const target = {};
+    Object.assign(target, snapshot, {
+      resourceContents: blobDataToResourceContents(snapshot.blobData),
+      frames: createResourceContents(snapshot.frames),
+    });
+    delete target.blobData;
+    return target;
   }
 
   function createResourceContents(frames = []) {
