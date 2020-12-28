@@ -12,7 +12,7 @@ function makeEyesCheckWindow({sendRequest, processPage, domSnapshotOptions, cypr
     const breakpoints = layoutBreakpoints
       ? layoutBreakpoints.sort((a, b) => (a > b ? -1 : 1))
       : undefined;
-    const sendArgs = typeof args === 'object' ? args : {tag: args};
+    const sendArgs = typeof args === 'string' ? {tag: args} : args;
     return takeDomSnapshots(domSnapshotOptions).then(snapshots => {
       // console.log("%cDone taking snapshots!", "color:chartreuse");
       sendRequest({
