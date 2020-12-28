@@ -10,6 +10,14 @@ const sdk = EyesSDK({
   VisualGridClient,
 })
 const translateArgsToCheckSettings = makeTranslateArgsToCheckSettings(sdk.CheckSettings)
+const cwd = process.cwd()
+const path = require('path')
+let applitoolsConfigJs
+try {
+  applitoolsConfigJs = require(path.join(cwd, 'applitools.config.js'))
+} catch (error) {
+  applitoolsConfigJs = {}
+}
 
 // TODO: also support applitools.config.js
 class DecoratedEyes extends sdk.EyesFactory {
@@ -21,7 +29,7 @@ class DecoratedEyes extends sdk.EyesFactory {
       async open(...args) {
         if (args && args.length === 1 && TypeUtils.isObject(args[0]) && !spec.isDriver(args[0])) {
           const {t, appName, testName} = args[0]
-          eyesInstance.setConfiguration(translateArgsToConfig(args[0]))
+          eyesInstance.setConfiguration(translateArgsToConfig({...applitoolsConfigJs, ...args[0]}))
           return await _open(t, appName, testName)
         } else {
           return await _open(...args)
