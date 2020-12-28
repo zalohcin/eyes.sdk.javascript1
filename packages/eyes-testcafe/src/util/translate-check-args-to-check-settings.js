@@ -4,8 +4,6 @@ module.exports = CheckSettings => {
     checkArgs.isFully = checkArgs.fully
     if (checkArgs.target && checkArgs.target === 'region' && checkArgs.selector)
       checkArgs.region = checkArgs.selector
-    if (checkArgs.ignore)
-      checkArgs.ignoreRegions = checkArgs.ignore.map(r => (r.selector ? r.selector : r))
     if (checkArgs.floating)
       checkArgs.floatingRegions = checkArgs.floating.map(r => {
         if (
@@ -18,6 +16,8 @@ module.exports = CheckSettings => {
         else if (r.selector) r.region = r.selector
         return r
       })
+    if (checkArgs.ignore)
+      checkArgs.ignoreRegions = checkArgs.ignore.map(r => (r.selector ? r.selector : r))
     if (checkArgs.layout)
       checkArgs.layoutRegions = checkArgs.layout.map(r => (r.selector ? r.selector : r))
     if (checkArgs.strict)

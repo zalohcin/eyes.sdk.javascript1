@@ -2,6 +2,7 @@ const {VisualGridRunner} = require('@applitools/eyes-sdk-core')
 const {Eyes} = require('../../src/TestCafeSDK')
 const eyes = new Eyes(new VisualGridRunner({testConcurrency: 10}))
 const assert = require('assert')
+const {getTestInfo} = require('@applitools/sdk-shared')
 const {v4: uuidv4} = require('uuid')
 process.env.APPLITOOLS_BATCH_NAME = 'JS Coverage Tests - eyes-testcafe (legacy API)'
 process.env.APPLITOOLS_BATCH_ID = uuidv4()
@@ -30,12 +31,14 @@ test('eyes.open with config params', async driver => {
   const config = eyes.getConfiguration()
   assert.deepStrictEqual(config.getBrowsersInfo(), browser)
 })
-test.skip('eyes.checkWindow tag', async t => {
+test('eyes.checkWindow tag', async t => {
   await t.navigateTo('https://applitools.github.io/demo/TestPages/FramesTestPage/')
   await eyes.open({t, appName: 'eyes-testcafe', testName: 'legacy api test: checkWindow tag'})
   await eyes.checkWindow('tag')
   await eyes.checkWindow({tag: 'tag'})
-  await eyes.close(false)
+  const result = await eyes.close(false)
+  const info = await getTestInfo(result, process.env.APPLITOOLS_API_KEY)
+  assert.deepStrictEqual(info['actualAppOutput']['0'].tag, 'tag')
   // assert tags in jobs
 })
 test('eyes.checkWindow fully', async t => {
@@ -144,13 +147,32 @@ test('eyes.checkWindow scriptHooks', async t => {
   })
   await eyes.close(true)
 })
+// NOTE: sendDom is always true when running against VG... ¯\_(ツ)_/¯
 test.skip('eyes.checkWindow sendDom', async t => {
   await t.navigateTo('https://applitools.github.io/demo/TestPages/FramesTestPage/')
   await eyes.open({t, appName: 'eyes-testcafe', testName: 'legacy api test: checkWindow sendDom'})
   await eyes.checkWindow({
     sendDom: false,
   })
-  await eyes.close(false)
-  // assert dom not sent
+  const result = await eyes.close(false)
+  const info = await getTestInfo(result, process.env.APPLITOOLS_API_KEY)
+  console.log(info['actualAppOutput']['0']['image'])
+  assert.deepStrictEqual(info['actualAppOutput']['0']['image']['hasDom'], false)
 })
-test.skip('eyes.waitForResults', async _t => {})
+test('eyes.waitForResults', async t => {
+  const eyes = new Eyes(new VisualGridRunner({testConcurrency: 10}))
+  await t.navigateTo('https://applitools.github.io/demo/TestPages/FramesTestPage/')
+  await eyes.open({
+    t,
+    appName: 'eyes-testcafe',
+    testName: 'legacy api test: checkWindow waitForResults',
+  })
+  await eyes.checkWindow({
+    sendDom: false,
+  })
+  await eyes.close(false)
+  const result = await eyes.waitForResults()
+  assert.deepStrictEqual(result.constructor.name, 'TestResultsSummary')
+  assert.deepStrictEqual(result._passed, 1)
+  assert(result._allResults.length)
+})

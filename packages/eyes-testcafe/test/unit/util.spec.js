@@ -1,7 +1,6 @@
 const assert = require('assert')
-const translateArgsToConfig = require('../../src/util/translate-open-args-to-config')
+const {translateArgsToConfig, makeTranslateArgsToCheckSettings} = require('../../src/util')
 const {CheckSettings} = require('../../src/TestCafeSDK')
-const makeTranslateArgsToCheckSettings = require('../../src/util/translate-check-args-to-check-settings')
 const translateArgsToCheckSettings = makeTranslateArgsToCheckSettings(CheckSettings)
 
 describe('util', () => {
