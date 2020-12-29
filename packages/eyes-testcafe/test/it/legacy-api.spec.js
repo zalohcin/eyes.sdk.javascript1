@@ -1,6 +1,5 @@
-const {VisualGridRunner} = require('@applitools/eyes-sdk-core')
 const {Eyes} = require('../../src/TestCafeSDK')
-const eyes = new Eyes(new VisualGridRunner({testConcurrency: 10}))
+const eyes = new Eyes()
 const assert = require('assert')
 const {getTestInfo} = require('@applitools/sdk-shared')
 const {v4: uuidv4} = require('uuid')
@@ -9,6 +8,9 @@ process.env.APPLITOOLS_BATCH_ID = uuidv4()
 
 fixture`legacy vg api`.after(async () => {
   if (eyes.getIsOpen()) await eyes.close(false)
+})
+test('is vg', () => {
+  assert.deepStrictEqual(eyes.getRunner().constructor.name, 'VisualGridRunner')
 })
 test('eyes.open with init params', async driver => {
   assert.doesNotThrow(async () => {
