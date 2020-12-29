@@ -19,5 +19,6 @@ module.exports = args => {
   if (args.ignoreDisplacements) config.setIgnoreDisplacements(args.ignoreDisplacements)
   if (args.accessibilityValidation) config.setAccessibilityValidation(args.accessibilityValidation)
   config.failTestcafeOnDiff = args.failTestcafeOnDiff
+  config.tapDirPath = args.tapDirPath
   return config
 }

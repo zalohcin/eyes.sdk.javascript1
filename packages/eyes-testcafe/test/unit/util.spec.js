@@ -231,8 +231,7 @@ describe('util', () => {
         assert.deepStrictEqual(config.getDisableBrowserFetching(), args.disableBrowserFetching)
         assert.deepStrictEqual(config.getConcurrentSessions(), args.concurrency)
         assert.deepStrictEqual(config.failTestcafeOnDiff, args.failTestcafeOnDiff)
-        // TODO:
-        // tapDirPath
+        assert.deepStrictEqual(config.tapDirPath, args.tapDirPath)
       })
       it('merges args in the correct order', () => {
         const args1 = {isDisabled: true}
