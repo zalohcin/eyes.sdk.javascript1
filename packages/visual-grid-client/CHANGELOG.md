@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+
+## 15.4.2 - 2020/12/29
+
+- fix missing imageLocation in tests of eyes-sdk-core
 - fix missing imageLocation in tests of eyes-sdk-core
 ## 15.4.1 - 2020/12/29
 
