@@ -46,7 +46,7 @@ class DecoratedEyes extends sdk.EyesFactory {
       async waitForResults(throwEx = true) {
         return await eyesInstance.getRunner().getAllTestResults(throwEx && failTestcafeOnDiff)
       },
-      async close(throwEx) {
+      async close(throwEx = true) {
         return await _close(throwEx && failTestcafeOnDiff)
       },
     }
