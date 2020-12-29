@@ -162,19 +162,39 @@ test.skip('eyes.checkWindow sendDom', async t => {
   assert.deepStrictEqual(info['actualAppOutput']['0']['image']['hasDom'], false)
 })
 test('eyes.waitForResults', async t => {
-  const eyes = new Eyes(new VisualGridRunner({testConcurrency: 10}))
+  const eyes = new Eyes()
   await t.navigateTo('https://applitools.github.io/demo/TestPages/FramesTestPage/')
   await eyes.open({
     t,
     appName: 'eyes-testcafe',
     testName: 'legacy api test: checkWindow waitForResults',
   })
-  await eyes.checkWindow({
-    sendDom: false,
-  })
+  await eyes.checkWindow({})
   await eyes.close(false)
   const result = await eyes.waitForResults()
   assert.deepStrictEqual(result.constructor.name, 'TestResultsSummary')
   assert.deepStrictEqual(result._passed, 1)
   assert(result._allResults.length)
+})
+test('eyes failTestcafeOnDiff', async t => {
+  const eyes = new Eyes()
+  await t.navigateTo('https://applitools.github.io/demo/TestPages/FramesTestPage/')
+  await eyes.open({
+    t,
+    appName: 'eyes-testcafe',
+    testName: 'legacy api test: failTestcafeOnDiff',
+    failTestcafeOnDiff: false,
+  })
+  // force a diff
+  await eyes.checkWindow({
+    scriptHooks: {
+      beforeCaptureScreenshot: "document.body.style.backgroundColor = 'pink'",
+    },
+  })
+  // even when set to throw ex, the test should still pass
+  const result = await eyes.close(true)
+  await eyes.waitForResults(true)
+  // confirm there was a diff
+  const info = await getTestInfo(result, process.env.APPLITOOLS_API_KEY)
+  assert.deepStrictEqual(info.actualAppOutput[0].isMatching, false)
 })

@@ -4,6 +4,7 @@ module.exports = args => {
   const configArgs = {
     ...args,
   }
+  configArgs.concurrentSessions = configArgs.concurrency
   configArgs.browsersInfo = configArgs.browser
   configArgs.environmentName = configArgs.envName
   configArgs.batch = {
@@ -17,5 +18,6 @@ module.exports = args => {
   if (args.matchLevel) config.setMatchLevel(args.matchLevel)
   if (args.ignoreDisplacements) config.setIgnoreDisplacements(args.ignoreDisplacements)
   if (args.accessibilityValidation) config.setAccessibilityValidation(args.accessibilityValidation)
+  config.failTestcafeOnDiff = args.failTestcafeOnDiff
   return config
 }

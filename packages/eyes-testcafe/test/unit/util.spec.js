@@ -229,10 +229,16 @@ describe('util', () => {
         assert.deepStrictEqual(config.getIsDisabled(), args.isDisabled)
         assert.deepStrictEqual(config.getDontCloseBatches(), args.dontCloseBatches)
         assert.deepStrictEqual(config.getDisableBrowserFetching(), args.disableBrowserFetching)
+        assert.deepStrictEqual(config.getConcurrentSessions(), args.concurrency)
+        assert.deepStrictEqual(config.failTestcafeOnDiff, args.failTestcafeOnDiff)
         // TODO:
-        // failTestcafeOnDiff
         // tapDirPath
-        // concurrency
+      })
+      it('merges args in the correct order', () => {
+        const args1 = {isDisabled: true}
+        const args2 = {isDisabled: false}
+        const config = translateArgsToConfig({...args2, ...args1})
+        assert.deepStrictEqual(config.getIsDisabled(), true)
       })
     })
   })

@@ -25,11 +25,15 @@ class DecoratedEyes extends sdk.EyesFactory {
     const eyesInstance = super(serverUrl, isDisabled, runner)
     const _open = eyesInstance.open.bind(eyesInstance)
     const _check = eyesInstance.check.bind(eyesInstance)
+    const _close = eyesInstance.close.bind(eyesInstance)
+    let failTestcafeOnDiff = true
     const api = {
       async open(...args) {
         if (args && args.length === 1 && TypeUtils.isObject(args[0]) && !spec.isDriver(args[0])) {
           const {t, appName, testName} = args[0]
-          eyesInstance.setConfiguration(translateArgsToConfig({...applitoolsConfigJs, ...args[0]}))
+          const config = translateArgsToConfig({...applitoolsConfigJs, ...args[0]})
+          failTestcafeOnDiff = config.failTestcafeOnDiff
+          eyesInstance.setConfiguration(config)
           return await _open(t, appName, testName)
         } else {
           return await _open(...args)
@@ -39,12 +43,16 @@ class DecoratedEyes extends sdk.EyesFactory {
         await _check(args && TypeUtils.isObject(args) ? translateArgsToCheckSettings(args) : args)
       },
       async waitForResults(throwEx = true) {
-        return await eyesInstance.getRunner().getAllTestResults(throwEx)
+        return await eyesInstance.getRunner().getAllTestResults(throwEx && failTestcafeOnDiff)
+      },
+      async close(throwEx) {
+        return await _close(throwEx && failTestcafeOnDiff)
       },
     }
     eyesInstance.open = api.open
     eyesInstance.checkWindow = api.checkWindow
     eyesInstance.waitForResults = api.waitForResults
+    eyesInstance.close = api.close
     return eyesInstance
   }
 }
