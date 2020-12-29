@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 15.4.1 - 2020/12/29
+
 - use `imagePositionInActiveFrame` instead of custom calculation
 - updated to @applitools/eyes-sdk-core@12.10.1 (from 12.10.0)
 
