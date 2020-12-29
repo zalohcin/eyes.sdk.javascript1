@@ -19,7 +19,8 @@ try {
   applitoolsConfigJs = {}
 }
 
-// TODO: also support applitools.config.js
+// TODO: add int. test for applitools.config.js
+// TODO: add support for writing a tapDirPath (it's already supported in the config)
 class DecoratedEyes extends sdk.EyesFactory {
   constructor(serverUrl, isDisabled, runner = new VisualGridRunner()) {
     const eyesInstance = super(serverUrl, isDisabled, runner)
