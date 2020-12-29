@@ -10,24 +10,26 @@ const sdk = EyesSDK({
   VisualGridClient,
 })
 const translateArgsToCheckSettings = makeTranslateArgsToCheckSettings(sdk.CheckSettings)
-const cwd = process.cwd()
-const path = require('path')
-let applitoolsConfigJs
-try {
-  applitoolsConfigJs = require(path.join(cwd, 'applitools.config.js'))
-} catch (error) {
-  applitoolsConfigJs = {}
-}
 
-// TODO: add int. test for applitools.config.js
 // TODO: add support for writing a tapDirPath (it's already supported in the config)
 class DecoratedEyes extends sdk.EyesFactory {
-  constructor(serverUrl, isDisabled, runner = new VisualGridRunner()) {
-    const eyesInstance = super(serverUrl, isDisabled, runner)
+  constructor({configPath, runner = new VisualGridRunner()} = {}) {
+    // init
+    const eyesInstance = super(runner)
     const _open = eyesInstance.open.bind(eyesInstance)
     const _check = eyesInstance.check.bind(eyesInstance)
     const _close = eyesInstance.close.bind(eyesInstance)
     let failTestcafeOnDiff = true
+
+    // load config
+    let applitoolsConfigJs
+    try {
+      applitoolsConfigJs = require(configPath)
+    } catch (error) {
+      applitoolsConfigJs = {}
+    }
+
+    // set api wrapper
     const api = {
       async open(...args) {
         if (args && args.length === 1 && TypeUtils.isObject(args[0]) && !spec.isDriver(args[0])) {

@@ -5,6 +5,7 @@ const {getTestInfo} = require('@applitools/sdk-shared')
 const {v4: uuidv4} = require('uuid')
 process.env.APPLITOOLS_BATCH_NAME = 'JS Coverage Tests - eyes-testcafe (legacy API)'
 process.env.APPLITOOLS_BATCH_ID = uuidv4()
+const path = require('path')
 
 fixture`legacy vg api`.after(async () => {
   if (eyes.getIsOpen()) await eyes.close(false)
@@ -197,4 +198,16 @@ test('eyes failTestcafeOnDiff', async t => {
   // confirm there was a diff
   const info = await getTestInfo(result, process.env.APPLITOOLS_API_KEY)
   assert.deepStrictEqual(info.actualAppOutput[0].isMatching, false)
+})
+test('should load applitools.config.js', async t => {
+  const configPath = path.join(__dirname, 'applitools.config.js')
+  const eyes = new Eyes({configPath})
+  await eyes.open({
+    t,
+    appName: 'eyes-testcafe',
+    testName: 'legacy api test: applitools.config.js',
+    failTestcafeOnDiff: false,
+  })
+  const config = eyes.getConfiguration()
+  assert.deepStrictEqual(config.getBrowsersInfo(), require(configPath).browser)
 })
