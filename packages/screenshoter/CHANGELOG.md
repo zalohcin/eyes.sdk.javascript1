@@ -3,7 +3,7 @@
 
 ## Unreleased
 
-
+- fix saveScreenshot
 ## 1.0.1 - 2020/12/1
 
 - round coordinate and size before image operations

@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-
+- add `setTransforms` method to element
 ## 1.0.1 - 2020/12/1
 
 - add getTransforms method to the element
