@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+
+## 12.10.2 - 2020/12/29
+
+- bring back verify-installed-versions
 - bring back verify-installed-versions
 ## 12.10.1 - 2020/12/29
 
