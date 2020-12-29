@@ -48,6 +48,7 @@ async function takeDomCapture(logger, context, options = {}) {
   const url = await driver.getUrl()
   const dom = await captureContextDom(context)
 
+  // TODO save debug DOM like we have for debug screenshots
   return dom
 
   async function captureContextDom(context) {
