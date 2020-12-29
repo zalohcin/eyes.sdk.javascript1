@@ -1,3 +1,8 @@
+const vm = require('vm')
+const fs = require('fs')
+const fetch = require('node-fetch')
+const chalk = require('chalk')
+
 function findDifferencesBetweenCollections(hostCollection = [], guestCollection = []) {
   const _hostCollection = Array.isArray(hostCollection)
     ? hostCollection
@@ -54,6 +59,25 @@ function toPascalCase(string) {
     .join('')
 }
 
+async function requirePath(path, context) {
+  const source = isUrl(path)
+    ? await fetch(path).then(response => response.text())
+    : fs.readFileSync(path).toString()
+
+  try {
+    return vm.runInContext(source, vm.createContext({...context, process}))
+  } catch (err) {
+    if (err.constructor.name !== 'ReferenceError') throw err
+    const stack = err.stack.split('\n')
+    const [columnNumber, lineNumber] = stack[5].split(':').reverse()
+    console.log(chalk.yellow(`Error during requiring ${path}:${columnNumber}:${lineNumber}`), '\n')
+    const [line, caret] = stack.slice(1, 3)
+    console.log(chalk.cyan(line))
+    console.log(chalk.yellow(caret))
+    throw new ReferenceError(err.message)
+  }
+}
+
 module.exports = {
   findDifferencesBetweenCollections,
   mergeObjects,
@@ -64,4 +88,5 @@ module.exports = {
   isEmptyObject,
   capitalize,
   toPascalCase,
+  requirePath,
 }

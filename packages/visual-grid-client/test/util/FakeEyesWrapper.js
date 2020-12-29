@@ -142,15 +142,29 @@ class FakeEyesWrapper extends EventEmitter {
 
   async getRenderStatus(renderIds) {
     return renderIds.map(renderId => {
-      const {browserName, emulationInfo, iosDeviceInfo, selectorsToFindRegionsFor} = JSON.parse(
-        renderId,
-      )
+      const {
+        browserName,
+        emulationInfo,
+        iosDeviceInfo,
+        selectorsToFindRegionsFor,
+        region,
+        sizeMode,
+        selector,
+      } = JSON.parse(renderId)
       const deviceName =
         emulationInfo && emulationInfo.deviceName
           ? emulationInfo.deviceName
           : iosDeviceInfo
           ? iosDeviceInfo.deviceName
           : undefined
+
+      let imagePositionInActiveFrame
+      if (sizeMode === 'region') {
+        imagePositionInActiveFrame = {x: region.left, y: region.top}
+      } else if (sizeMode === 'selector' || sizeMode === 'full-selector') {
+        const loc = selectorsToLocations[selector.selector || selector]
+        imagePositionInActiveFrame = {x: loc.x, y: loc.y}
+      }
 
       return new RenderStatusResults({
         status: RenderStatus.RENDERED,
@@ -162,6 +176,7 @@ class FakeEyesWrapper extends EventEmitter {
               selectorsToLocations[selector.selector || selector],
             ])
           : undefined,
+        imagePositionInActiveFrame,
       })
     })
   }
@@ -227,7 +242,7 @@ class FakeEyesWrapper extends EventEmitter {
 
     let expectedImageLocation = undefined
     if (sizeMode === 'selector' || sizeMode === 'full-selector') {
-      expectedImageLocation = new Location(selectorsToLocations[selectorsToFindRegionsFor[0]])
+      expectedImageLocation = new Location(selectorsToLocations[selector])
     } else if (sizeMode === 'region') {
       expectedImageLocation = new Region(this.region).getLocation()
     }

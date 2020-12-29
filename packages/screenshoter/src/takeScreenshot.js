@@ -29,16 +29,16 @@ function makeTakeDefaultScreenshot({logger, driver, rotate, crop, scale, debug =
   return async function takeScreenshot({name} = {}) {
     logger.verbose('Taking screenshot...')
     const image = makeImage(await driver.takeScreenshot())
-    await saveScreenshot(image, {path: debug.path, name, suffix: 'original'})
+    await saveScreenshot(image, {path: debug.path, name, suffix: 'original', logger})
 
     if (rotate) {
       await image.rotate(rotate)
-      await saveScreenshot(image, {path: debug.path, name, suffix: 'rotated'})
+      await saveScreenshot(image, {path: debug.path, name, suffix: 'rotated', logger})
     }
 
     if (crop) {
       await image.crop(crop)
-      await saveScreenshot(image, {path: debug.path, name, suffix: 'cropped'})
+      await saveScreenshot(image, {path: debug.path, name, suffix: 'cropped', logger})
     }
 
     if (scale) {
@@ -55,7 +55,7 @@ function makeTakeDefaultScreenshot({logger, driver, rotate, crop, scale, debug =
       }
       await image.scale(calculateScaleRatio(image.width))
     }
-    await saveScreenshot(image, {path: debug.path, name, suffix: 'scaled'})
+    await saveScreenshot(image, {path: debug.path, name, suffix: 'scaled', logger})
 
     return image
   }
@@ -69,11 +69,11 @@ function makeTakeSafari11Screenshot({logger, driver, rotate, crop, scale, debug 
   return async function takeScreenshot({name} = {}) {
     logger.verbose('Taking safari 11 driver screenshot...')
     const image = makeImage(await driver.takeScreenshot())
-    await saveScreenshot(image, {path: debug.path, name, suffix: 'original'})
+    await saveScreenshot(image, {path: debug.path, name, suffix: 'original', logger})
 
     if (rotate) {
       await image.rotate(rotate)
-      await saveScreenshot(image, {path: debug.path, name, suffix: 'rotated'})
+      await saveScreenshot(image, {path: debug.path, name, suffix: 'rotated', logger})
     }
 
     if (crop) {
@@ -84,7 +84,7 @@ function makeTakeSafari11Screenshot({logger, driver, rotate, crop, scale, debug 
       const viewportLocation = await driver.mainContext.getScrollOffset()
       await image.crop(utils.geometry.scale({...viewportLocation, ...viewportSize}, pixelRatio))
     }
-    await saveScreenshot(image, {path: debug.path, name, suffix: 'cropped'})
+    await saveScreenshot(image, {path: debug.path, name, suffix: 'cropped', logger})
 
     if (scale) {
       await image.scale(scale)
@@ -101,7 +101,7 @@ function makeTakeSafari11Screenshot({logger, driver, rotate, crop, scale, debug 
       }
       await image.scale(calculateScaleRatio(image.width))
     }
-    await saveScreenshot(image, {path: debug.path, name, suffix: 'scaled'})
+    await saveScreenshot(image, {path: debug.path, name, suffix: 'scaled', logger})
 
     return image
   }
@@ -114,11 +114,11 @@ function makeTakeMarkedScreenshot({logger, driver, rotate, crop, scale, debug = 
   return async function takeScreenshot({name} = {}) {
     logger.verbose('Taking viewport screenshot (using markers)...')
     const image = makeImage(await driver.takeScreenshot())
-    await saveScreenshot(image, {path: debug.path, name, suffix: 'original'})
+    await saveScreenshot(image, {path: debug.path, name, suffix: 'original', logger})
 
     if (rotate) {
       await image.rotate(rotate)
-      await saveScreenshot(image, {path: debug.path, name, suffix: 'rotated'})
+      await saveScreenshot(image, {path: debug.path, name, suffix: 'rotated', logger})
     }
 
     if (crop) {
@@ -127,7 +127,7 @@ function makeTakeMarkedScreenshot({logger, driver, rotate, crop, scale, debug = 
       if (!viewportRegion) viewportRegion = await getViewportRegion()
       await image.crop(viewportRegion)
     }
-    await saveScreenshot(image, {path: debug.path, name, suffix: 'cropped'})
+    await saveScreenshot(image, {path: debug.path, name, suffix: 'cropped', logger})
 
     if (scale) {
       await image.scale(scale)
@@ -143,7 +143,7 @@ function makeTakeMarkedScreenshot({logger, driver, rotate, crop, scale, debug = 
       }
       await image.scale(calculateScaleRatio(image.width))
     }
-    await saveScreenshot(image, {path: debug.path, name, suffix: 'scaled'})
+    await saveScreenshot(image, {path: debug.path, name, suffix: 'scaled', logger})
 
     return image
   }
@@ -154,7 +154,7 @@ function makeTakeMarkedScreenshot({logger, driver, rotate, crop, scale, debug = 
       const image = makeImage(await driver.takeScreenshot())
       if (rotate) await image.rotate(rotate)
 
-      await saveScreenshot(image, 'marker')
+      await saveScreenshot(image, 'marker') // TODO fix
 
       const markerLocation = findPattern(await image.toObject(), marker)
       if (!markerLocation) return null
@@ -178,21 +178,21 @@ function makeTakeNativeScreenshot({logger, driver, rotate, crop, scale, debug = 
         ? await driver.takeScreenshot()
         : await takeViewportScreenshot(),
     )
-    await saveScreenshot(image, {path: debug.path, name, suffix: 'original'})
+    await saveScreenshot(image, {path: debug.path, name, suffix: 'original', logger})
 
     if (rotate) {
       await image.rotate(rotate)
-      await saveScreenshot(image, {path: debug.path, name, suffix: 'rotated'})
+      await saveScreenshot(image, {path: debug.path, name, suffix: 'rotated', logger})
     }
 
     if (crop) {
       await image.crop(crop)
-      await saveScreenshot(image, {path: debug.path, name, suffix: 'cropped'})
+      await saveScreenshot(image, {path: debug.path, name, suffix: 'cropped', logger})
     }
 
     if (scale) {
       await image.scale(scale)
-      await saveScreenshot(image, {path: debug.path, name, suffix: 'scaled'})
+      await saveScreenshot(image, {path: debug.path, name, suffix: 'scaled', logger})
     }
 
     process.env.APPLITOOLS_SKIP_MOBILE_NATIVE_SCREENSHOT_HOOK = undefined // TODO remove

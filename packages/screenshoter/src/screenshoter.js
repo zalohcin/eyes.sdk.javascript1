@@ -35,6 +35,15 @@ async function screenshoter({
 
   const area = await getTargetArea({logger, context: targetContext, target, isFully, scrollingMode})
 
+  // temporary solution
+  if (isFully) {
+    await area.context.execute(
+      'arguments[0].setAttribute("data-applitools-scroll", "true")',
+      area.scroller.element,
+    )
+  }
+  // ---
+
   try {
     const image = isFully
       ? await takeStitchedScreenshot({...area, logger, rotate, crop, scale, wait, overlap, debug})

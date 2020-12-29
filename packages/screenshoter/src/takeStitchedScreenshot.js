@@ -40,7 +40,7 @@ async function takeStitchedImage({
 
   logger.verbose('cropping...')
   await image.crop(cropRegion)
-  await saveScreenshot(image, {path: debug.path, name: 'initial', suffix: 'region'})
+  await saveScreenshot(image, {path: debug.path, name: 'initial', suffix: 'region', logger})
 
   if (region) region = utils.geometry.intersect(region, scrollerRegion)
   else region = scrollerRegion
@@ -97,7 +97,7 @@ async function takeStitchedImage({
 
       logger.verbose('cropping...')
       await image.crop(cropPartRegion)
-      await saveScreenshot(image, {path: debug.path, name: partName, suffix: 'region'})
+      await saveScreenshot(image, {path: debug.path, name: partName, suffix: 'region', logger})
 
       await composition.copy(
         await image.toObject(),
@@ -123,7 +123,7 @@ async function takeStitchedImage({
     })
   }
 
-  await saveScreenshot(composition, {path: debug.path, name: 'stitched'})
+  await saveScreenshot(composition, {path: debug.path, name: 'stitched', logger})
   return composition
 }
 

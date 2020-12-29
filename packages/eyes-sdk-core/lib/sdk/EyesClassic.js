@@ -696,9 +696,7 @@ class EyesClassic extends EyesCore {
   async tryCaptureDom() {
     try {
       this._logger.verbose('Getting window DOM...')
-      if (!this._context.isMain) {
-        await EyesUtils.markActiveContext(this._logger, this._context)
-      }
+      await EyesUtils.markActiveContext(this._logger, this._context)
       return await takeDomCapture(this._logger, this._driver.mainContext)
     } catch (ignored) {
       return ''
