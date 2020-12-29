@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-
+- bring back verify-installed-versions
 ## 12.10.1 - 2020/12/29
 
 - fix `extractText` method
