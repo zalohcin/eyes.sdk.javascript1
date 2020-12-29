@@ -24,17 +24,18 @@ describe('getStoryData', () => {
   });
 
   it('works with waitBeforeScreenshot as a number', async () => {
-    const takeDomSnapshot = async () =>
+    const takeDomSnapshots = async () => [
       deserializeDomSnapshotResult({
         resourceUrls: ['url1', await page.evaluate('window.timeout')],
         blobs: [{url: 'url2', type: 'type', value: 'ss'}],
         cdt: 'cdt',
         frames: [],
-      });
+      }),
+    ];
 
     const getStoryData = makeGetStoryData({
       logger,
-      takeDomSnapshot,
+      takeDomSnapshots,
       waitBeforeScreenshot: 2000,
     });
 
@@ -43,7 +44,7 @@ describe('getStoryData', () => {
       storyUrl: 'http://localhost:7272/renderTimeoutNumber.html',
       page,
     });
-    const {resourceUrls, resourceContents, cdt} = await ptimeoutWithError(
+    const [{resourceUrls, resourceContents, cdt}] = await ptimeoutWithError(
       getStoryPromise,
       3000,
       'timeout',
@@ -57,7 +58,7 @@ describe('getStoryData', () => {
   });
 
   it('works with waitBeforeScreenshot as a css selector', async () => {
-    const takeDomSnapshot = async () =>
+    const takeDomSnapshots = async () => [
       deserializeDomSnapshotResult({
         resourceUrls: [
           'url1',
@@ -68,11 +69,12 @@ describe('getStoryData', () => {
         blobs: [{url: 'url2', type: 'type', value: 'ss'}],
         cdt: 'cdt',
         frames: [],
-      });
+      }),
+    ];
 
     const getStoryData = makeGetStoryData({
       logger,
-      takeDomSnapshot,
+      takeDomSnapshots,
       waitBeforeScreenshot: '#newDiv',
     });
 
@@ -81,7 +83,7 @@ describe('getStoryData', () => {
       storyUrl: 'http://localhost:7272/renderTimeoutSelector.html',
       page,
     });
-    const {resourceUrls, resourceContents, cdt} = await ptimeoutWithError(
+    const [{resourceUrls, resourceContents, cdt}] = await ptimeoutWithError(
       getStoryPromise,
       3000,
       'timeout',
@@ -95,7 +97,7 @@ describe('getStoryData', () => {
   });
 
   it('works with waitBeforeScreenshot as a function', async () => {
-    const takeDomSnapshot = async () =>
+    const takeDomSnapshots = async () => [
       deserializeDomSnapshotResult({
         resourceUrls: [
           'url1',
@@ -104,11 +106,12 @@ describe('getStoryData', () => {
         blobs: [{url: 'url2', type: 'type', value: 'ss'}],
         cdt: 'cdt',
         frames: [],
-      });
+      }),
+    ];
 
     const getStoryData = makeGetStoryData({
       logger,
-      takeDomSnapshot,
+      takeDomSnapshots,
       // eslint-disable-next-line no-undef
       waitBeforeScreenshot: () => window.ready === 'ok',
     });
@@ -118,7 +121,7 @@ describe('getStoryData', () => {
       storyUrl: 'http://localhost:7272/renderTimeoutFunction.html',
       page,
     });
-    const {resourceUrls, resourceContents, cdt} = await ptimeoutWithError(
+    const [{resourceUrls, resourceContents, cdt}] = await ptimeoutWithError(
       getStoryPromise,
       3000,
       'timeout',
@@ -132,68 +135,72 @@ describe('getStoryData', () => {
   });
 
   it('uses storybook client API V5 when possible', async () => {
-    const takeDomSnapshot = async () =>
+    const takeDomSnapshots = async () => [
       deserializeDomSnapshotResult({
         resourceUrls: [],
         blobs: [],
         cdt: await page.evaluate("document.getElementById('story').textContent"),
         frames: [],
-      });
+      }),
+    ];
 
     await page.goto('http://localhost:7272/renderStorybookClientApiV5_2-iframe.html');
-    const getStoryData = makeGetStoryData({logger, takeDomSnapshot});
+    const getStoryData = makeGetStoryData({logger, takeDomSnapshots});
 
-    expect((await getStoryData({story: {isApi: true, index: 0}, page})).cdt).to.equal('story1');
-    expect((await getStoryData({story: {isApi: true, index: 1}, page})).cdt).to.equal('story2');
+    expect((await getStoryData({story: {isApi: true, index: 0}, page}))[0].cdt).to.equal('story1');
+    expect((await getStoryData({story: {isApi: true, index: 1}, page}))[0].cdt).to.equal('story2');
   });
 
   // TODO: ask about this -- duplicate, no? the URL is slightly different
   it('uses storybook client API V5 when possible', async () => {
-    const takeDomSnapshot = async () =>
+    const takeDomSnapshots = async () => [
       deserializeDomSnapshotResult({
         resourceUrls: [],
         blobs: [],
         cdt: await page.evaluate("document.getElementById('story').textContent"),
         frames: [],
-      });
+      }),
+    ];
 
     await page.goto('http://localhost:7272/renderStorybookClientApiV5-iframe.html');
-    const getStoryData = makeGetStoryData({logger, takeDomSnapshot});
+    const getStoryData = makeGetStoryData({logger, takeDomSnapshots});
 
-    expect((await getStoryData({story: {isApi: true, index: 0}, page})).cdt).to.equal('story1');
-    expect((await getStoryData({story: {isApi: true, index: 1}, page})).cdt).to.equal('story2');
+    expect((await getStoryData({story: {isApi: true, index: 0}, page}))[0].cdt).to.equal('story1');
+    expect((await getStoryData({story: {isApi: true, index: 1}, page}))[0].cdt).to.equal('story2');
   });
 
   it('uses storybook client API V4 when possible', async () => {
-    const takeDomSnapshot = async () =>
+    const takeDomSnapshots = async () => [
       deserializeDomSnapshotResult({
         resourceUrls: [],
         blobs: [],
         cdt: await page.evaluate("document.getElementById('story').textContent"),
         frames: [],
-      });
+      }),
+    ];
 
     await page.goto('http://localhost:7272/renderStorybookClientApiV4-iframe.html');
-    const getStoryData = makeGetStoryData({logger, takeDomSnapshot});
+    const getStoryData = makeGetStoryData({logger, takeDomSnapshots});
 
-    expect((await getStoryData({story: {isApi: true, index: 0}, page})).cdt).to.equal(
+    expect((await getStoryData({story: {isApi: true, index: 0}, page}))[0].cdt).to.equal(
       'Button-With text',
     );
   });
 
   it('runs runBefore before extracting story data V5', async () => {
-    const takeDomSnapshot = async () =>
+    const takeDomSnapshots = async () => [
       deserializeDomSnapshotResult({
         resourceUrls: [],
         blobs: [],
         cdt: await page.evaluate("document.getElementById('root').textContent"),
         frames: [],
-      });
+      }),
+    ];
 
     await page.goto('http://localhost:7272/runBeforeV5-iframe.html');
-    const getStoryData = makeGetStoryData({logger, takeDomSnapshot});
+    const getStoryData = makeGetStoryData({logger, takeDomSnapshots});
 
-    const {cdt} = await getStoryData({
+    const [{cdt}] = await getStoryData({
       story: {
         isApi: true,
         index: 0,
@@ -210,18 +217,19 @@ describe('getStoryData', () => {
   });
 
   it('runs runBefore before extracting story data V4', async () => {
-    const takeDomSnapshot = async () =>
+    const takeDomSnapshots = async () => [
       deserializeDomSnapshotResult({
         resourceUrls: [],
         blobs: [],
         cdt: await page.evaluate("document.getElementById('root').textContent"),
         frames: [],
-      });
+      }),
+    ];
 
     await page.goto('http://localhost:7272/runBeforeV4-iframe.html');
-    const getStoryData = makeGetStoryData({logger, takeDomSnapshot});
+    const getStoryData = makeGetStoryData({logger, takeDomSnapshots});
 
-    const {cdt} = await getStoryData({
+    const [{cdt}] = await getStoryData({
       story: {
         isApi: true,
         index: 0,
@@ -238,18 +246,19 @@ describe('getStoryData', () => {
   });
 
   it("doesn't throw on exception in runBefore", async () => {
-    const takeDomSnapshot = async () =>
+    const takeDomSnapshots = async () => [
       deserializeDomSnapshotResult({
         resourceUrls: [],
         blobs: [],
         cdt: await page.evaluate("document.getElementById('root').textContent"),
         frames: [],
-      });
+      }),
+    ];
 
     await page.goto('http://localhost:7272/runBeforeWithException-iframe.html');
-    const getStoryData = makeGetStoryData({logger, takeDomSnapshot});
+    const getStoryData = makeGetStoryData({logger, takeDomSnapshots});
 
-    const {cdt} = await getStoryData({
+    const [{cdt}] = await getStoryData({
       story: {isApi: true, index: 0, parameters: {eyes: {runBefore: {}}}},
       page,
     });
@@ -258,24 +267,25 @@ describe('getStoryData', () => {
   });
 
   it('reloads page when reloadPagePerStory is set', async () => {
-    const takeDomSnapshot = async () =>
+    const takeDomSnapshots = async () => [
       deserializeDomSnapshotResult({
         resourceUrls: [],
         blobs: [],
         cdt: await page.evaluate("document.getElementById('root').textContent"),
         frames: [],
-      });
+      }),
+    ];
 
     const storyUrl = 'http://localhost:7272/reloadPagePerStory.html';
 
     await page.goto(storyUrl);
     const getStoryData = makeGetStoryData({
       logger,
-      takeDomSnapshot,
+      takeDomSnapshots,
       reloadPagePerStory: true,
     });
 
-    const {cdt} = await getStoryData({
+    const [{cdt}] = await getStoryData({
       story: {isApi: true, index: 0},
       storyUrl,
       page,

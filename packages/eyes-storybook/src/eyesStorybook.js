@@ -16,7 +16,7 @@ const memoryLog = require('./memoryLog');
 const getIframeUrl = require('./getIframeUrl');
 const createPagePool = require('./pagePool');
 const getClientAPI = require('../dist/getClientAPI');
-const {takeDomSnapshot} = require('@applitools/eyes-sdk-core');
+const {takeDomSnapshots} = require('@applitools/eyes-sdk-core');
 const {Driver} = require('@applitools/eyes-puppeteer');
 
 const CONCURRENT_PAGES = 3;
@@ -45,7 +45,14 @@ async function eyesStorybook({
   logger.log('browser launched');
   const page = await browser.newPage();
   const userAgent = await page.evaluate('navigator.userAgent');
-  const {testWindow, closeBatch, globalState} = makeVisualGridClient({
+  const {
+    testWindow,
+    closeBatch,
+    globalState,
+    getIosDevicesSizes,
+    getEmulatedDevicesSizes,
+    getResourceUrlsInCache,
+  } = makeVisualGridClient({
     userAgent,
     ...config,
     logger: logger.extend('vgc'),
@@ -55,13 +62,22 @@ async function eyesStorybook({
 
   const pagePool = createPagePool({initPage, logger});
 
-  const doTakeDomSnapshot = async page => {
+  const doTakeDomSnapshots = async page => {
     const driver = new Driver(logger, page);
-    return takeDomSnapshot(logger, driver, {
-      useSessionCache: true,
+    const skipResources = getResourceUrlsInCache();
+    const result = await takeDomSnapshots({
+      logger,
+      driver,
+      breakpoints: config.layoutBreakpoints,
+      browsers: config.browser || [true], // this is a hack, since takeDomSnapshots expects an array. And VGC has a default in case browser is not specified. So we just need an array with length of 1 here.
+      skipResources,
       showLogs: !!config.showLogs,
       disableBrowserFetching: !!config.disableBrowserFetching,
+      getViewportSize: () => config.viewportSize,
+      getIosDevicesSizes,
+      getEmulatedDevicesSizes,
     });
+    return result;
   };
 
   logger.log('got script for processPage');
@@ -90,7 +106,7 @@ async function eyesStorybook({
 
     const getStoryData = makeGetStoryData({
       logger,
-      takeDomSnapshot: doTakeDomSnapshot,
+      takeDomSnapshots: doTakeDomSnapshots,
       waitBeforeScreenshot,
     });
     const renderStory = makeRenderStory({
