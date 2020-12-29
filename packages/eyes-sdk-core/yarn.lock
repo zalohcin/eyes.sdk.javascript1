@@ -158,10 +158,10 @@
     uuid "3.3.3"
     zlib "1.0.5"
 
-"@applitools/sdk-release-kit@0.10.6":
-  version "0.10.6"
-  resolved "https://registry.yarnpkg.com/@applitools/sdk-release-kit/-/sdk-release-kit-0.10.6.tgz#e6359148f64f8d812509dac2a1850a89eb8cfd7c"
-  integrity sha512-1UMYXeRaHVi++ZYTQ+A9BhfQ51DGdO9AzKwRQFWgHYe7IV3W/Gptkdl42vOo0wk68KfQvgv13eXk6S9oyaoBuQ==
+"@applitools/sdk-release-kit@0.10.9":
+  version "0.10.9"
+  resolved "https://registry.yarnpkg.com/@applitools/sdk-release-kit/-/sdk-release-kit-0.10.9.tgz#87aa27adb400a73b290d199a8ef7573c2e5fca55"
+  integrity sha512-S1weHmjwu+WgSPppyrTsKaGnWSAPq2lUa8ROczsXDR5D1Di0GBk39/bM0lgB3fFZ9HxMEDSRbIegKiWMmNgNNg==
   dependencies:
     "@applitools/sdk-shared" "0.5.18"
     chalk "3.0.0"
@@ -201,10 +201,10 @@
   resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.0.0.tgz#ecf845148f6e2c952b97462f11b0d702cce6cb40"
   integrity sha512-jf3DDLSRLYsTYK6/PiriVC5mejemVzHFFSFGTirKRnUg2121xyhpA/SQcx0UUoDLLEYZGNlfqiTpBSE9Gr/UMQ==
 
-"@applitools/visual-grid-client@15.4.1":
-  version "15.4.1"
-  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-15.4.1.tgz#1efebee81bb9bf545f031e13cf345d9e3c514633"
-  integrity sha512-BKC/69hqHa+QZfcXIbNTICQjvaTrjHDTy+JZvZv2GjGsXgtWx58ITNK1ZVaY+AnOzt7R/ycPSwUNWAfuhscdkg==
+"@applitools/visual-grid-client@15.4.2":
+  version "15.4.2"
+  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-15.4.2.tgz#75e06c9c3d484488178bb6e8a1af3823fcd53ffa"
+  integrity sha512-Vp0z/BatC6CshsJoHV9wEnC5G15R+Kde+xbX8aIXH/sdhl2LBg7+FDguk1qmjDpiws2iQMTRG0FeDUNzBxYRvw==
   dependencies:
     "@applitools/eyes-sdk-core" "12.10.1"
     "@applitools/functional-commons" "1.6.0"
