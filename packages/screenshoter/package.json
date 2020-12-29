@@ -1,6 +1,6 @@
 {
   "name": "@applitools/screenshoter",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Applitools universal screenshoter for web and native applications",
   "keywords": [
     "applitools",
@@ -33,8 +33,8 @@
     "sharp": "0.26.3"
   },
   "devDependencies": {
-    "@applitools/driver": "1.0.0",
-    "@applitools/sdk-release-kit": "0.10.5",
+    "@applitools/driver": "1.0.2",
+    "@applitools/sdk-release-kit": "0.10.6",
     "eslint": "^7.9.0",
     "eslint-plugin-mocha-no-only": "^1.1.1",
     "eslint-plugin-node": "^11.1.0",
