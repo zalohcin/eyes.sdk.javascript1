@@ -10,14 +10,6 @@
     "@applitools/dom-shared" "1.0.4"
     "@applitools/functional-commons" "1.6.0"
 
-"@applitools/dom-capture@9.0.0":
-  version "9.0.0"
-  resolved "https://registry.yarnpkg.com/@applitools/dom-capture/-/dom-capture-9.0.0.tgz#4d2b425eb78a0c70479a141e6f9c100eb9bedf9b"
-  integrity sha512-1ha1vUlcxIbRLRfalN2l+wkhAp/mcAkmSpXRJK06XUeUftB2EjY+4SmL9xBO2z2Eis352zOVIU4V/QrBQPxNuQ==
-  dependencies:
-    "@applitools/dom-shared" "1.0.4"
-    "@applitools/functional-commons" "1.6.0"
-
 "@applitools/dom-shared@1.0.4":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@applitools/dom-shared/-/dom-shared-1.0.4.tgz#1a59116f3f29fb140ac031949547531348c9d972"
@@ -38,14 +30,6 @@
     css-tree "1.0.0-alpha.39"
     pako "1.0.11"
 
-"@applitools/driver@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.0.1.tgz#8bcf9a7f506e96bdb070a26b2f4274e6d5e68169"
-  integrity sha512-f/hq7HC2qNPoWg9nWtiUQZCYvIMgsjT7B6JLKgC29TltMllM4yw6XJVeJSar1pOjsmxv/3NkGyvXMm0HEkmaTw==
-  dependencies:
-    "@applitools/snippets" "2.1.0"
-    "@applitools/utils" "1.0.0"
-
 "@applitools/driver@1.0.2":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.0.2.tgz#1b0f87f5cca75c525a1a77813898823331131953"
@@ -54,16 +38,16 @@
     "@applitools/snippets" "2.1.0"
     "@applitools/utils" "1.0.0"
 
-"@applitools/eyes-sdk-core@12.10.0":
-  version "12.10.0"
-  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-12.10.0.tgz#f8be61195241670253c9e67e08503f90523c27ad"
-  integrity sha512-YBU/vnoj/wv7YuDrA3yEGY9Q8izwfO3Yqj3U06QhigOn2gYsqFnWPc056NGIdeukfB7Fz5P9wtBBocij6PQn4w==
+"@applitools/eyes-sdk-core@12.10.1":
+  version "12.10.1"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-12.10.1.tgz#2d21180777adcc95f21fd9cb7f230f9622e9e1f5"
+  integrity sha512-3VpY7svK+pJcsVh6/wPZ5eCvqbCQJ8nDH9c3I2SUZj1A8CG1Q513D80IadQ7OcwW5n7LSOvB9QOkPcx7CPgYqw==
   dependencies:
-    "@applitools/dom-capture" "9.0.0"
+    "@applitools/dom-capture" "10.0.0"
     "@applitools/dom-snapshot" "4.4.1"
-    "@applitools/driver" "1.0.1"
+    "@applitools/driver" "1.0.2"
     "@applitools/isomorphic-fetch" "3.0.0"
-    "@applitools/screenshoter" "1.0.1"
+    "@applitools/screenshoter" "1.0.2"
     "@applitools/snippets" "2.1.0"
     axios "0.19.2"
     chalk "3.0.0"
@@ -138,14 +122,6 @@
   integrity sha512-rzEOvGoiEF4KnK0PJ9I0btdwnaNlIPLYhjF1vTEG15PoucbbKpix9fYusxWlDG7kMiZya8ZycVPc0woVlNaHRQ==
   dependencies:
     debug "^4.1.0"
-
-"@applitools/screenshoter@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@applitools/screenshoter/-/screenshoter-1.0.1.tgz#9bba961a38b45002752764e82b007f56ff6a055a"
-  integrity sha512-B3ikcu/c1UluCYB8h29c0Tly7iEpxwGw3jMC+USd7Re/65K8afjSAk8f6zv9sqg0WsJd+iKoh5vwHtgd/s7ssA==
-  dependencies:
-    "@applitools/utils" "1.0.0"
-    sharp "0.26.3"
 
 "@applitools/screenshoter@1.0.2":
   version "1.0.2"
@@ -225,12 +201,12 @@
   resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.0.0.tgz#ecf845148f6e2c952b97462f11b0d702cce6cb40"
   integrity sha512-jf3DDLSRLYsTYK6/PiriVC5mejemVzHFFSFGTirKRnUg2121xyhpA/SQcx0UUoDLLEYZGNlfqiTpBSE9Gr/UMQ==
 
-"@applitools/visual-grid-client@15.4.0":
-  version "15.4.0"
-  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-15.4.0.tgz#d12cebc7abcb4f6d78b91bb71863a9d35dc5c520"
-  integrity sha512-Kk8lDK44SBCziRIru5azw9LzXEKcy6piC7FS0SaabreS7UHMcOZsF6wxtSggjBJ9YchECtIkSkDegFE2yaMfFA==
+"@applitools/visual-grid-client@15.4.1":
+  version "15.4.1"
+  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-15.4.1.tgz#1efebee81bb9bf545f031e13cf345d9e3c514633"
+  integrity sha512-BKC/69hqHa+QZfcXIbNTICQjvaTrjHDTy+JZvZv2GjGsXgtWx58ITNK1ZVaY+AnOzt7R/ycPSwUNWAfuhscdkg==
   dependencies:
-    "@applitools/eyes-sdk-core" "12.10.0"
+    "@applitools/eyes-sdk-core" "12.10.1"
     "@applitools/functional-commons" "1.6.0"
     "@applitools/http-commons" "2.4.3"
     "@applitools/isomorphic-fetch" "3.0.0"
