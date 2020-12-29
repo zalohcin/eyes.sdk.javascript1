@@ -177,7 +177,10 @@ describe('handlers', () => {
 
     expect(result).to.eql({
       __test: 'checkWindow_123',
-      snapshot: [],
+      snapshot: {
+        frames: [],
+        resourceContents: {},
+      },
       tag,
       sizeMode,
       target,

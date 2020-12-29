@@ -72,7 +72,10 @@ Cypress.Commands.add('eyesCheckWindow', args => {
   Cypress.log({name: 'Eyes: check window'});
   if (isCurrentTestDisabled) return;
 
-  const defaultBrowser = {width: 800, height: 600, name: 'chrome'};
+  const defaultBrowser = {
+    width: getGlobalConfigProperty('viewportWidth'),
+    height: getGlobalConfigProperty('viewportHeight'),
+  };
   const eyesOpenArgs = getGlobalConfigProperty('eyesOpenArgs');
   const globalArgs = {
     browser: getGlobalConfigProperty('eyesBrowser'),
