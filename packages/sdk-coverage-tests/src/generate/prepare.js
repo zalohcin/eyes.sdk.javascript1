@@ -1,10 +1,8 @@
-const vm = require('vm')
 const fs = require('fs')
 const fetch = require('node-fetch')
-const chalk = require('chalk')
 const handlebars = require('handlebars')
 const {useFramework} = require('../framework')
-const {isUrl, mergeObjects, toPascalCase} = require('../common-util')
+const {isUrl, mergeObjects, toPascalCase, requirePath} = require('../common-util')
 
 async function loadFileTemplate(templatePath) {
   return isUrl(templatePath)
@@ -13,50 +11,21 @@ async function loadFileTemplate(templatePath) {
 }
 
 async function loadEmitter(emitterPath) {
-  const source = isUrl(emitterPath)
-    ? await fetch(emitterPath).then(response => response.text())
-    : fs.readFileSync(emitterPath).toString()
-  try {
-    const module = {exports: {}}
-    vm.runInContext(source, vm.createContext({module, process, console}))
-    return module.exports
-  } catch (err) {
-    if (err.constructor.name !== 'ReferenceError') throw err
-    const stack = err.stack.split('\n')
-    const [columnNumber, lineNumber] = stack[5].split(':').reverse()
-    console.log(
-      chalk.yellow(`Error emitter loading ${emitterPath}:${columnNumber}:${lineNumber}`),
-      '\n',
-    )
-    const [line, caret] = stack.slice(1, 3)
-    console.log(chalk.cyan(line))
-    console.log(chalk.yellow(caret))
-    throw new ReferenceError(err.message)
-  }
+  const module = {exports: {}}
+  await requirePath(emitterPath, {module, console})
+  return module.exports
+}
+
+async function loadOverrides(overridesPath) {
+  const module = {exports: {}}
+  await requirePath(overridesPath, {module, console})
+  return module.exports
 }
 
 async function loadTests(testsPath) {
-  const source = isUrl(testsPath)
-    ? await fetch(testsPath).then(response => response.text())
-    : fs.readFileSync(testsPath).toString()
-
   const {context, api} = useFramework()
-  try {
-    vm.runInContext(source, vm.createContext({...api, process}))
-    return context
-  } catch (err) {
-    if (err.constructor.name !== 'ReferenceError') throw err
-    const stack = err.stack.split('\n')
-    const [columnNumber, lineNumber] = stack[5].split(':').reverse()
-    console.log(
-      chalk.yellow(`Error during tests loading ${testsPath}:${columnNumber}:${lineNumber}`),
-      '\n',
-    )
-    const [line, caret] = stack.slice(1, 3)
-    console.log(chalk.cyan(line))
-    console.log(chalk.yellow(caret))
-    throw new ReferenceError(err.message)
-  }
+  await requirePath(testsPath, api)
+  return context
 }
 
 async function prepareFileTemplate({template, testFrameworkTemplate}) {
@@ -76,13 +45,15 @@ async function prepareEmitter({emitter, initializeSdk}) {
 
 async function prepareTests({
   tests: testsPath,
-  overrideTests = {},
+  overrides,
+  overrideTests,
   ignoreSkip,
   ignoreSkipEmit,
   emitSkipped,
   emitOnly = [],
 }) {
   const {tests, testsConfig} = await loadTests(testsPath)
+  overrideTests = overrideTests || (await loadOverrides(overrides))
   const normalizedTests = Object.entries(tests).reduce((tests, [testName, {variants, ...test}]) => {
     test.group = testName
     test.key = test.key || toPascalCase(testName)

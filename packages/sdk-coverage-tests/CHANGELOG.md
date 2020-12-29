@@ -3,6 +3,10 @@
 ## Unreleased
 
 
+## 2.2.2 - 2020/12/29
+
+- fix remote overrides
+- fix remote overrides
 ## 2.2.1 - 2020/12/22
 
 - fix type in getter

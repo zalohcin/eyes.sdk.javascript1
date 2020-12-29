@@ -1,6 +1,6 @@
 {
   "name": "@applitools/sdk-release-kit",
-  "version": "0.10.6",
+  "version": "0.10.9",
   "engines": {
     "node": ">=10.0.0"
   },
@@ -28,7 +28,7 @@
     "deps": "src/cli/index.js deps",
     "prepublish:setup": "echo 'no setup'",
     "preversion": "src/cli/index.js preversion && yarn test",
-    "version": "src/cli/index.js version",  
+    "version": "src/cli/index.js version",
     "postversion": "src/cli/index.js postversion --skip-release-notification"
   },
   "bugs": {

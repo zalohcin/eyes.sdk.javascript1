@@ -859,7 +859,14 @@ class ServerConnector {
   async extractText({screenshotUrl, domUrl, location, region, minMatch, language}) {
     ArgumentGuard.notNull(screenshotUrl, 'screenshotUrl')
     this._logger.verbose(
-      `ServerConnector.extractText called with ${JSON.stringify({screenshotUrl, domUrl, region})}`,
+      `ServerConnector.extractText called with ${JSON.stringify({
+        screenshotUrl,
+        domUrl,
+        region,
+        location,
+        minMatch,
+        language,
+      })}`,
     )
 
     const config = {
