@@ -3,6 +3,7 @@ const {
   TypeUtils,
   VisualGridRunner,
   TestResultsFormatter,
+  ConfigUtils,
 } = require('@applitools/eyes-sdk-core')
 const VisualGridClient = require('@applitools/visual-grid-client')
 const spec = require('./spec-driver')
@@ -17,7 +18,6 @@ const sdk = EyesSDK({
 const translateArgsToCheckSettings = makeTranslateArgsToCheckSettings(sdk.CheckSettings)
 
 // TODO:
-// ConfigUtils
 // Port test-server custom coverage tests over
 // Review tests in old repo and port as needed
 // Run generic VG coverage tests
@@ -32,16 +32,9 @@ class DecoratedEyes extends sdk.EyesFactory {
     const _open = eyesInstance.open.bind(eyesInstance)
     const _check = eyesInstance.check.bind(eyesInstance)
     const _close = eyesInstance.close.bind(eyesInstance)
+    const applitoolsConfigJs = ConfigUtils.getConfig({configPath})
     let failTestcafeOnDiff = true
     let tapDirPath
-
-    // load config
-    let applitoolsConfigJs
-    try {
-      applitoolsConfigJs = require(configPath)
-    } catch (error) {
-      applitoolsConfigJs = {}
-    }
 
     // set api wrapper
     const api = {
