@@ -18,7 +18,6 @@ const sdk = EyesSDK({
 const translateArgsToCheckSettings = makeTranslateArgsToCheckSettings(sdk.CheckSettings)
 
 // TODO:
-// Update README to remove ref to rejectOnError
 // Confirm proxy issue re: 1.9.x
 // Run generic VG coverage tests
 // Port test-server custom coverage tests over

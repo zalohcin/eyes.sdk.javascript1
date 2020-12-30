@@ -321,22 +321,27 @@ eyes.close();
 ```
 
 ### **waitForResults**
+
 Wait until all tests in the fixture are completed and return their results.
+
 Note that if you don't wait for the tests to be completed then in case of a visual test failure, eyes cannot fail the fixture.
+
 * it is recommended to wait for the results in the testcafe `after()` hook. 
 
 ```js
 await eyes.waitForResults()
 ```
 
-waitForResults receives `rejectOnErrors`,
+waitForResults receives `throwEx`,
+
 * If `true` (default) and a visual test fails then reject with an `Error` (in case of a general error reject as well).
 If the rejection is not handled then Testcafe fails the fixture.
+
 * If `false` and a visual test fails then `waitForResults` resolves with an `Error`.
 In case of a general `Error` reject with the `Error`. 
 
-In case all the tests passed then waitForResults resolves with the test results.
-<!-- resolves with an Array, each element in the array represents a test (testcafe test, i.e. open checkWindow and close) and is an Array of TestResults. Each TestResults is a visual test environnement. -->
+In case all the tests passed then waitForResults resolves with the test results. If using `tapDirPath`, then a tap file will be written to disk with the results as well.
+
 ___
 <br/>
 
