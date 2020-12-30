@@ -6,17 +6,17 @@ const runRunBeforeScript = require('../dist/runRunBeforeScript');
 const getStoryTitle = require('./getStoryTitle');
 const {URL} = require('url');
 
-function makeGetStoryData({logger, takeDomSnapshot, waitBeforeScreenshot, reloadPagePerStory}) {
+function makeGetStoryData({logger, takeDomSnapshots, waitBeforeScreenshot, reloadPagePerStory}) {
   return async function getStoryData({story, storyUrl, page, waitBeforeStory}) {
     const title = getStoryTitle(story);
     logger.log(`getting data from story`, title);
 
+    const eyesParameters = story.parameters && story.parameters.eyes;
     if (story.isApi && !reloadPagePerStory) {
       const actualVariationParam = await getEyesVariationParam(page);
-      const expectedVariationUrlParam =
-        story.parameters && story.parameters.eyes
-          ? story.parameters.eyes.variationUrlParam
-          : undefined;
+      const expectedVariationUrlParam = eyesParameters
+        ? eyesParameters.variationUrlParam
+        : undefined;
       if (
         (!actualVariationParam && !expectedVariationUrlParam) ||
         actualVariationParam === expectedVariationUrlParam
@@ -39,19 +39,21 @@ function makeGetStoryData({logger, takeDomSnapshot, waitBeforeScreenshot, reload
       await page.waitFor(wait);
     }
 
-    if (story.parameters && story.parameters.eyes && story.parameters.eyes.runBefore) {
+    if (eyesParameters && eyesParameters.runBefore) {
       await page.evaluate(runRunBeforeScript, story.index).catch(err => {
         logger.log(`error during runBefore: ${err}`); // it might be good to aggregate these errors and output them at the end of the run
       });
     }
 
-    logger.log(`running takeDomSnapshot for story ${title}`);
+    logger.log(`running takeDomSnapshot(s) for story ${title}`);
 
-    const {resourceUrls, resourceContents, frames, cdt} = await takeDomSnapshot(page);
+    const snapshots = await takeDomSnapshots({
+      page,
+      layoutBreakpoints: eyesParameters ? eyesParameters.layoutBreakpoints : undefined,
+    });
 
     logger.log(`done getting data from story`, title);
-    logger.log('dom result: cdt', JSON.stringify(cdt));
-    return {resourceUrls, resourceContents, cdt, frames};
+    return snapshots;
 
     async function renderStoryLegacy() {
       logger.log(`getting data from story ${storyUrl}`);
