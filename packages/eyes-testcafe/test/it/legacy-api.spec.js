@@ -6,6 +6,7 @@ const {v4: uuidv4} = require('uuid')
 process.env.APPLITOOLS_BATCH_NAME = 'JS Coverage Tests - eyes-testcafe (legacy API)'
 process.env.APPLITOOLS_BATCH_ID = uuidv4()
 const path = require('path')
+const fs = require('fs')
 
 fixture`legacy vg api`.after(async () => {
   if (eyes.getIsOpen()) await eyes.close(false)
@@ -177,7 +178,7 @@ test('eyes.waitForResults', async t => {
   assert.deepStrictEqual(result._passed, 1)
   assert(result._allResults.length)
 })
-test('eyes failTestcafeOnDiff', async t => {
+test('eyes failTestcafeOnDiff false', async t => {
   const eyes = new Eyes()
   await t.navigateTo('https://applitools.github.io/demo/TestPages/FramesTestPage/')
   await eyes.open({
@@ -199,6 +200,30 @@ test('eyes failTestcafeOnDiff', async t => {
   const info = await getTestInfo(result, process.env.APPLITOOLS_API_KEY)
   assert.deepStrictEqual(info.actualAppOutput[0].isMatching, false)
 })
+test('eyes failTestcafeOnDiff true', async t => {
+  const eyes = new Eyes()
+  await t.navigateTo('https://applitools.github.io/demo/TestPages/FramesTestPage/')
+  await eyes.open({
+    t,
+    appName: 'eyes-testcafe',
+    testName: 'legacy api test: failTestcafeOnDiff',
+    failTestcafeOnDiff: true,
+  })
+  // force a diff
+  await eyes.checkWindow({
+    scriptHooks: {
+      beforeCaptureScreenshot: "document.body.style.backgroundColor = 'pink'",
+    },
+  })
+  try {
+    // when set to throw ex, the test fail
+    await eyes.close(true)
+    await eyes.waitForResults(true)
+    assert(false) // we should not reach this
+  } catch (error) {
+    assert(true) // we should reach this
+  }
+})
 test('should load applitools.config.js', async t => {
   const configPath = path.join(__dirname, 'applitools.config.js')
   const eyes = new Eyes({configPath})
@@ -210,4 +235,63 @@ test('should load applitools.config.js', async t => {
   })
   const config = eyes.getConfiguration()
   assert.deepStrictEqual(config.getBrowsersInfo(), require(configPath).browser)
+})
+test('should output a tap file when tapDirPath is specified', async t => {
+  const eyes = new Eyes()
+  await t.navigateTo('https://applitools.github.io/demo/TestPages/FramesTestPage/')
+  const pathToFile = path.resolve(__dirname, 'eyes.tap')
+  try {
+    await eyes.open({
+      t,
+      appName: 'eyes-testcafe',
+      testName: 'legacy api test: tapDirPath',
+      failTestcafeOnDiff: false,
+      tapDirPath: __dirname,
+    })
+    await eyes.checkWindow()
+    await eyes.close()
+    await eyes.waitForResults()
+    assert(fs.existsSync(pathToFile))
+    assert(
+      fs
+        .readFileSync(pathToFile, {encoding: 'utf-8'})
+        .includes(
+          `ok 1 - [PASSED TEST] Test: 'legacy api test: tapDirPath', Application: 'eyes-testcafe'`,
+        ),
+    )
+  } finally {
+    pathToFile && fs.unlinkSync(pathToFile)
+  }
+})
+test('should output a tap file when tapDirPath is specified and waitForResults throws an exception', async t => {
+  const eyes = new Eyes()
+  await t.navigateTo('https://applitools.github.io/demo/TestPages/FramesTestPage/')
+  const pathToFile = path.resolve(__dirname, 'eyes.tap')
+  try {
+    await eyes.open({
+      t,
+      appName: 'eyes-testcafe',
+      testName: 'legacy api test: tapDirPath w/ exception',
+      failTestcafeOnDiff: true,
+      tapDirPath: __dirname,
+    })
+    // force a diff
+    await eyes.checkWindow({
+      scriptHooks: {
+        beforeCaptureScreenshot: "document.body.style.backgroundColor = 'blue'",
+      },
+    })
+    await eyes.close(false)
+    await eyes.waitForResults(true) // I'm not convinced this actually throws
+    assert(fs.existsSync(pathToFile))
+    assert(
+      fs
+        .readFileSync(pathToFile, {encoding: 'utf-8'})
+        .includes(
+          `ok 1 - [PASSED TEST] Test: 'legacy api test: tapDirPath w/ exception', Application: 'eyes-testcafe'`,
+        ),
+    )
+  } finally {
+    pathToFile && fs.unlinkSync(pathToFile)
+  }
 })

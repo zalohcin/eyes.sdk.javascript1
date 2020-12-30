@@ -1,8 +1,13 @@
-const {EyesSDK, TypeUtils, VisualGridRunner} = require('@applitools/eyes-sdk-core')
+const {
+  EyesSDK,
+  TypeUtils,
+  VisualGridRunner,
+  TestResultsFormatter,
+} = require('@applitools/eyes-sdk-core')
 const VisualGridClient = require('@applitools/visual-grid-client')
 const spec = require('./spec-driver')
 const {version} = require('../package.json')
-const {translateArgsToConfig, makeTranslateArgsToCheckSettings} = require('./util')
+const {translateArgsToConfig, makeTranslateArgsToCheckSettings, writeTapFile} = require('./util')
 const sdk = EyesSDK({
   name: 'eyes.testcafe',
   version,
@@ -20,6 +25,7 @@ class DecoratedEyes extends sdk.EyesFactory {
     const _check = eyesInstance.check.bind(eyesInstance)
     const _close = eyesInstance.close.bind(eyesInstance)
     let failTestcafeOnDiff = true
+    let tapDirPath
 
     // load config
     let applitoolsConfigJs
@@ -36,6 +42,7 @@ class DecoratedEyes extends sdk.EyesFactory {
           const {t, appName, testName} = args[0]
           const config = translateArgsToConfig({...applitoolsConfigJs, ...args[0]})
           failTestcafeOnDiff = config.failTestcafeOnDiff
+          tapDirPath = config.tapDirPath
           eyesInstance.setConfiguration(config)
           return await _open(t, appName, testName)
         } else {
@@ -46,7 +53,15 @@ class DecoratedEyes extends sdk.EyesFactory {
         await _check(args && TypeUtils.isObject(args) ? translateArgsToCheckSettings(args) : args)
       },
       async waitForResults(throwEx = true) {
-        return await eyesInstance.getRunner().getAllTestResults(throwEx && failTestcafeOnDiff)
+        const resultsSummary = await eyesInstance
+          .getRunner()
+          .getAllTestResults(throwEx && failTestcafeOnDiff)
+        if (tapDirPath) {
+          const results = resultsSummary.getAllResults().map(r => r.getTestResults())
+          const formatter = new TestResultsFormatter(results)
+          writeTapFile({tapDirPath, formatter})
+        }
+        return resultsSummary
       },
       async close(throwEx = true) {
         return await _close(throwEx && failTestcafeOnDiff)

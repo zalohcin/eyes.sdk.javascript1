@@ -1,9 +1,29 @@
 const assert = require('assert')
-const {translateArgsToConfig, makeTranslateArgsToCheckSettings} = require('../../src/util')
+const {
+  translateArgsToConfig,
+  makeTranslateArgsToCheckSettings,
+  writeTapFile,
+} = require('../../src/util')
 const {CheckSettings} = require('../../src/TestCafeSDK')
 const translateArgsToCheckSettings = makeTranslateArgsToCheckSettings(CheckSettings)
+const path = require('path')
+const fs = require('fs')
 
 describe('util', () => {
+  describe('write tap file', () => {
+    it('works', () => {
+      const formatter = {asHierarchicTAPString: () => 'the results'}
+      let pathToFile
+      try {
+        pathToFile = writeTapFile({tapDirPath: __dirname, formatter})
+        assert.deepStrictEqual(pathToFile, path.resolve(__dirname, 'eyes.tap'))
+        const content = fs.readFileSync(path.resolve(__dirname, 'eyes.tap'), 'utf8')
+        assert.deepStrictEqual(content, formatter.asHierarchicTAPString())
+      } finally {
+        pathToFile && fs.unlinkSync(pathToFile)
+      }
+    })
+  })
   describe('config', () => {
     describe('translate check args to check settings', () => {
       it('window fully', () => {
