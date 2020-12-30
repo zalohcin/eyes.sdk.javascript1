@@ -1,5 +1,7 @@
 'use strict'
 
+const {Region} = require('@applitools/eyes-sdk-core/shared')
+
 function selectorObject({selector, type}) {
   return type === 'xpath' || type === 'css' ? {type, selector} : selector
 }
@@ -27,7 +29,7 @@ function calculateSelectorsToFindRegionsFor({
   }, new Map())
 
   if (userRegions.size === 0) {
-    return {selectorsToFindRegionsFor: [], getMatchRegions}
+    return {getMatchRegions}
   }
 
   const selectorsToFindRegionsFor = Array.from(userRegions.values()).reduce((prev, regions) => {
@@ -48,7 +50,11 @@ function calculateSelectorsToFindRegionsFor({
 
         if (codedRegions && codedRegions.length > 0) {
           codedRegions.forEach(region => {
-            const regionObject = regionify({region, imageLocation})
+            const regionObject = regionify({region})
+            if (imageLocation && userRegion.selector) {
+              regionObject.left = Math.max(0, regionObject.left - imageLocation.x)
+              regionObject.top = Math.max(0, regionObject.top - imageLocation.y)
+            }
             regions.push(regionWithUserInput({regionObject, userRegion, regionName}))
           })
         }
@@ -61,16 +67,13 @@ function calculateSelectorsToFindRegionsFor({
   }
 }
 
-function regionify({region, imageLocation}) {
-  if (imageLocation) {
-    return {
-      width: region.getWidth(),
-      height: region.getHeight(),
-      left: Math.max(0, region.getLeft() - imageLocation.x),
-      top: Math.max(0, region.getTop() - imageLocation.y),
-    }
-  } else {
-    return region['toJSON'] ? region.toJSON() : region
+function regionify({region}) {
+  const regionInst = new Region(region)
+  return {
+    width: regionInst.getWidth(),
+    height: regionInst.getHeight(),
+    left: regionInst.getLeft(),
+    top: regionInst.getTop(),
   }
 }
 

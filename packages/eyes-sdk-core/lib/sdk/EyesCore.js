@@ -440,7 +440,7 @@ class EyesCore extends EyesBase {
             }
           : region.target,
         isFully: true,
-        hideScrollbars: this._configuration.getHideScrollbars(),
+        hideScrollbars: false, // because otherwise DOM will not be aligned with image // this._configuration.getHideScrollbars(),
         hideCaret: this._configuration.getHideCaret(),
         scrollingMode: this._configuration.getStitchMode().toLocaleLowerCase(),
         overlap: this._configuration.getStitchOverlap(),

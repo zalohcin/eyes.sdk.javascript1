@@ -2,8 +2,13 @@
 
 ## Unreleased
 
+- bring back verify-installed-versions
+## 12.10.1 - 2020/12/29
+
 - fix `extractText` method
 - add `imagePositionInActiveFrame` to `RenderStatusResults`
+- updated to @applitools/driver@1.0.2 (from 1.0.1)
+- updated to @applitools/screenshoter@1.0.2 (from 1.0.1)
 
 ## 12.10.0 - 2020/12/18
 

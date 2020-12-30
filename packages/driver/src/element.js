@@ -127,6 +127,12 @@ class Element {
     return this.withRefresh(() => scripts.getTransforms(this._logger, this._context, this))
   }
 
+  async setTransforms(transforms) {
+    return this.withRefresh(() =>
+      scripts.setTransforms(this._logger, this._context, transforms, this),
+    )
+  }
+
   async hideScrollbars() {
     return this.withRefresh(async () => {
       this._originalOverflow = await scripts.setOverflow(
