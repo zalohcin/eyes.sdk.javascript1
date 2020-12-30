@@ -16,7 +16,13 @@ const sdk = EyesSDK({
 })
 const translateArgsToCheckSettings = makeTranslateArgsToCheckSettings(sdk.CheckSettings)
 
-// TODO: add support for writing a tapDirPath (it's already supported in the config)
+// TODO:
+// ConfigUtils
+// Port test-server custom coverage tests over
+// Review tests in old repo and port as needed
+// Run generic VG coverage tests
+// Confirm proxy issue re: 1.9.x
+// Confirm tests on 1.7.x - 1.10.x
 class DecoratedEyes extends sdk.EyesFactory {
   constructor({configPath, runner = new VisualGridRunner()} = {}) {
     // init
