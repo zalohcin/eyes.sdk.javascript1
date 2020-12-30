@@ -25,7 +25,7 @@ describe('eyes-storybook', () => {
     );
   });
 
-  it.only('renders with layout breakpoints in story parameters', async () => {
+  it('renders with layout breakpoints in story parameters', async () => {
     const [err, result] = await presult(
       sh(
         `node ${path.resolve(__dirname, '../../bin/eyes-storybook')} -f ${path.resolve(
