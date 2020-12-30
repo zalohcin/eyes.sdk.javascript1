@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 3.16.0 - 2020/12/30
+
 - support JS layout
 - updated to @applitools/eyes-sdk-core@12.11.0 (from 12.10.0)
 - updated to @applitools/visual-grid-client@15.5.0 (from 15.4.0)
