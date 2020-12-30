@@ -11,12 +11,12 @@ function makeGetStoryData({logger, takeDomSnapshots, waitBeforeScreenshot, reloa
     const title = getStoryTitle(story);
     logger.log(`getting data from story`, title);
 
+    const eyesParameters = story.parameters && story.parameters.eyes;
     if (story.isApi && !reloadPagePerStory) {
       const actualVariationParam = await getEyesVariationParam(page);
-      const expectedVariationUrlParam =
-        story.parameters && story.parameters.eyes
-          ? story.parameters.eyes.variationUrlParam
-          : undefined;
+      const expectedVariationUrlParam = eyesParameters
+        ? eyesParameters.variationUrlParam
+        : undefined;
       if (
         (!actualVariationParam && !expectedVariationUrlParam) ||
         actualVariationParam === expectedVariationUrlParam
@@ -39,7 +39,7 @@ function makeGetStoryData({logger, takeDomSnapshots, waitBeforeScreenshot, reloa
       await page.waitFor(wait);
     }
 
-    if (story.parameters && story.parameters.eyes && story.parameters.eyes.runBefore) {
+    if (eyesParameters && eyesParameters.runBefore) {
       await page.evaluate(runRunBeforeScript, story.index).catch(err => {
         logger.log(`error during runBefore: ${err}`); // it might be good to aggregate these errors and output them at the end of the run
       });
@@ -47,7 +47,10 @@ function makeGetStoryData({logger, takeDomSnapshots, waitBeforeScreenshot, reloa
 
     logger.log(`running takeDomSnapshot(s) for story ${title}`);
 
-    const snapshots = await takeDomSnapshots(page);
+    const snapshots = await takeDomSnapshots({
+      page,
+      layoutBreakpoints: eyesParameters ? eyesParameters.layoutBreakpoints : undefined,
+    });
 
     logger.log(`done getting data from story`, title);
     return snapshots;

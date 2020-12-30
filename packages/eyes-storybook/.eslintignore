@@ -4,5 +4,6 @@ test/fixtures/singleStorybook
 test/fixtures/accessibilityStorybook
 test/fixtures/crossOriginIframeStorybook
 test/fixtures/jsLayoutStorybook
+test/fixtures/jsLayoutStorybookLocal
 dist
 logs
