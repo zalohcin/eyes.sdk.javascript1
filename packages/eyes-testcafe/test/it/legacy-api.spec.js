@@ -186,6 +186,7 @@ test('eyes failTestcafeOnDiff false', async t => {
     appName: 'eyes-testcafe',
     testName: 'legacy api test: failTestcafeOnDiff',
     failTestcafeOnDiff: false,
+    saveDiffs: false,
   })
   // force a diff
   await eyes.checkWindow({
@@ -208,6 +209,7 @@ test('eyes failTestcafeOnDiff true', async t => {
     appName: 'eyes-testcafe',
     testName: 'legacy api test: failTestcafeOnDiff',
     failTestcafeOnDiff: true,
+    saveDiffs: false,
   })
   // force a diff
   await eyes.checkWindow({
