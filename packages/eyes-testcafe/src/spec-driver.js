@@ -300,10 +300,11 @@ async function click(driver, element) {
   // 2. Selector object
   // 3. resolved Selector object (e.g., DOM Node snapshot/state)
   // https://devexpress.github.io/testcafe/documentation/reference/test-api/testcontroller/click.html#select-target-elements
-  await driver.click(element)
+  const selector = await transformSelector({driver, selector: element})
+  await driver.click(selector)
 }
 async function type(driver, element, keys) {
-  // NOTE: there are add'l options if we wnat them
+  // NOTE: there are add'l options if we want them
   // https://devexpress.github.io/testcafe/documentation/reference/test-api/testcontroller/typetext.html
   await driver.typeText(element, keys)
 }
