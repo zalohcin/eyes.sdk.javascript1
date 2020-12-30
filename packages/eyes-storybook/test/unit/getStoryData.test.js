@@ -17,20 +17,21 @@ describe('getStoryData', () => {
     const valueBuffer = Buffer.from('value');
     const blobs = [{url: 'url2', type: 'type', value: valueBuffer.toString('base64')}];
     const expectedResourceContents = {url2: {url: 'url2', type: 'type', value: valueBuffer}};
-    const takeDomSnapshot = () =>
+    const takeDomSnapshots = () => [
       deserializeDomSnapshotResult({
         resourceUrls: ['url1'],
         blobs,
         cdt: 'cdt',
         frames: [],
-      });
+      }),
+    ];
 
     const getStoryData = makeGetStoryData({
       logger,
-      takeDomSnapshot,
+      takeDomSnapshots,
       waitBeforeScreenshot: 50,
     });
-    const {resourceUrls, resourceContents, cdt} = await getStoryData({
+    const [{resourceUrls, resourceContents, cdt}] = await getStoryData({
       story: {},
       storyUrl: 'url',
       page,
@@ -58,20 +59,21 @@ describe('getStoryData', () => {
     const valueBuffer = Buffer.from('value');
     const blobs = [{url: 'url2', type: 'type', value: valueBuffer.toString('base64')}];
     const expectedResourceContents = {url2: {url: 'url2', type: 'type', value: valueBuffer}};
-    const takeDomSnapshot = () =>
+    const takeDomSnapshots = () => [
       deserializeDomSnapshotResult({
         resourceUrls: ['url1'],
         blobs,
         cdt: 'cdt',
         frames: [],
-      });
+      }),
+    ];
     const getStoryData = makeGetStoryData({
       logger,
-      takeDomSnapshot,
+      takeDomSnapshots,
       waitBeforeScreenshot,
     });
 
-    const {resourceUrls, resourceContents, cdt} = await getStoryData({
+    const [{resourceUrls, resourceContents, cdt}] = await getStoryData({
       story: {},
       storyUrl: 'url',
       page,
@@ -99,20 +101,21 @@ describe('getStoryData', () => {
     const valueBuffer = Buffer.from('value');
     const blobs = [{url: 'url2', type: 'type', value: valueBuffer.toString('base64')}];
     const expectedResourceContents = {url2: {url: 'url2', type: 'type', value: valueBuffer}};
-    const takeDomSnapshot = () =>
+    const takeDomSnapshots = () => [
       deserializeDomSnapshotResult({
         resourceUrls: ['url1'],
         blobs,
         cdt: 'cdt',
         frames: [],
-      });
+      }),
+    ];
     const getStoryData = makeGetStoryData({
       logger,
-      takeDomSnapshot,
+      takeDomSnapshots,
       waitBeforeScreenshot: 2000,
     });
 
-    const {resourceUrls, resourceContents, cdt} = await getStoryData({
+    const [{resourceUrls, resourceContents, cdt}] = await getStoryData({
       story: {},
       storyUrl: 'url',
       page,
@@ -228,13 +231,14 @@ describe('getStoryData', () => {
     };
     const getStoryData = makeGetStoryData({
       logger,
-      takeDomSnapshot: () =>
+      takeDomSnapshots: () => [
         deserializeDomSnapshotResult({
           resourceUrls: [],
           blobs: [],
           cdt: 'cdt',
           frames: [],
         }),
+      ],
       reloadPagePerStory: true,
     });
     const data = await getStoryData({
@@ -243,6 +247,6 @@ describe('getStoryData', () => {
       page,
     });
 
-    expect(data).to.eql({cdt: 'cdt', resourceUrls: [], resourceContents: {}, frames: []});
+    expect(data).to.eql([{cdt: 'cdt', resourceUrls: [], resourceContents: {}, frames: []}]);
   });
 });

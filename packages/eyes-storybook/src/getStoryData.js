@@ -6,7 +6,7 @@ const runRunBeforeScript = require('../dist/runRunBeforeScript');
 const getStoryTitle = require('./getStoryTitle');
 const {URL} = require('url');
 
-function makeGetStoryData({logger, takeDomSnapshot, waitBeforeScreenshot, reloadPagePerStory}) {
+function makeGetStoryData({logger, takeDomSnapshots, waitBeforeScreenshot, reloadPagePerStory}) {
   return async function getStoryData({story, storyUrl, page, waitBeforeStory}) {
     const title = getStoryTitle(story);
     logger.log(`getting data from story`, title);
@@ -45,13 +45,12 @@ function makeGetStoryData({logger, takeDomSnapshot, waitBeforeScreenshot, reload
       });
     }
 
-    logger.log(`running takeDomSnapshot for story ${title}`);
+    logger.log(`running takeDomSnapshot(s) for story ${title}`);
 
-    const {resourceUrls, resourceContents, frames, cdt} = await takeDomSnapshot(page);
+    const snapshots = await takeDomSnapshots(page);
 
     logger.log(`done getting data from story`, title);
-    logger.log('dom result: cdt', JSON.stringify(cdt));
-    return {resourceUrls, resourceContents, cdt, frames};
+    return snapshots;
 
     async function renderStoryLegacy() {
       logger.log(`getting data from story ${storyUrl}`);

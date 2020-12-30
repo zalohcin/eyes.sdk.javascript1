@@ -3,9 +3,13 @@
 ## Unreleased
 
 
+## 15.5.0 - 2020/12/29
+
+- expose device sizes functions from renderingGridClient
+- updated to @applitools/eyes-sdk-core@12.11.0 (from 12.10.1)
+- updated to @applitools/eyes-sdk-core@12.11.0 (from 12.10.1)
 ## 15.4.2 - 2020/12/29
 
-- fix missing imageLocation in tests of eyes-sdk-core
 - fix missing imageLocation in tests of eyes-sdk-core
 ## 15.4.1 - 2020/12/29
 

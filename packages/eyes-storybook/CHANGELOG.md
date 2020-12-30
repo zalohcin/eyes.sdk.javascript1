@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- support JS layout
+
 ## 3.15.0 - 2020/12/18
 
 - updated to @applitools/eyes-puppeteer@1.4.0 (from 1.3.1)

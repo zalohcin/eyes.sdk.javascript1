@@ -3,5 +3,6 @@ test/fixtures/heavyStorybook
 test/fixtures/singleStorybook
 test/fixtures/accessibilityStorybook
 test/fixtures/crossOriginIframeStorybook
+test/fixtures/jsLayoutStorybook
 dist
 logs
