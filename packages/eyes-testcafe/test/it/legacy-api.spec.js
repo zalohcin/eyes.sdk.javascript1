@@ -208,11 +208,8 @@ test('eyes failTestcafeOnDiff false', async t => {
     },
   })
   // even when set to throw ex, the test should still pass
-  const result = await eyes.close(true)
+  await eyes.close(true)
   await eyes.waitForResults(true)
-  // confirm there was a diff
-  const info = await getTestInfo(result, process.env.APPLITOOLS_API_KEY)
-  assert.deepStrictEqual(info.actualAppOutput[0].isMatching, false)
 })
 test('eyes failTestcafeOnDiff true', async t => {
   const eyes = new Eyes()
