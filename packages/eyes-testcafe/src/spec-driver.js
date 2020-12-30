@@ -148,7 +148,11 @@ function isDriver(driver) {
   return driver.constructor.name === 'TestController'
 }
 function isSelector(selector) {
-  return TypeUtils.isString(selector) || isTestCafeSelector(selector)
+  return (
+    TypeUtils.has(selector, ['type', 'selector']) ||
+    TypeUtils.isString(selector) ||
+    isTestCafeSelector(selector)
+  )
 }
 function isElement(element) {
   return isTestCafeSelector(element)
