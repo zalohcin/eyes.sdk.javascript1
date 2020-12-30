@@ -23,6 +23,8 @@ const translateArgsToCheckSettings = makeTranslateArgsToCheckSettings(sdk.CheckS
 // Run generic VG coverage tests
 // Confirm proxy issue re: 1.9.x
 // Confirm tests on 1.7.x - 1.10.x
+// Add support for nested iframes
+// Add support for CORS iframes (might be fixed with nested iframe support)
 class DecoratedEyes extends sdk.EyesFactory {
   constructor({configPath, runner = new VisualGridRunner()} = {}) {
     // init
