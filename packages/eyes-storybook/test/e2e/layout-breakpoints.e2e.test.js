@@ -41,7 +41,7 @@ describe('eyes-storybook', () => {
     //const stderr = err ? err.stderr : result.stderr;
 
     expect(stdout.replace(/\[Chrome \d+.\d+\]/g, '[Chrome]')).to.include(
-      'JS Layout: JS Layout page [Chrome] [1000x800] - Passed\nJS Layout: JS Layout page [Safari 14.0] [810x1080] - Passed\nJS Layout: JS Layout page [Chrome] [412x869] - Passed\n\n\nNo differences were found!',
+      'JS Layout: JS Layout page [Chrome] [1000x800] - Passed\nJS Layout: JS Layout page [Safari 14.0] [810x1080] - Passed\nJS Layout: JS Layout page [Chrome] [412x869] - Passed\nJS Layout: JS Layout page without specifying layoutBreakpoints [Chrome] [1000x800] - Passed\nJS Layout: JS Layout page without specifying layoutBreakpoints [Safari 14.0] [810x1080] - Passed\nJS Layout: JS Layout page without specifying layoutBreakpoints [Chrome] [412x869] - Passed\n\n\nNo differences were found!'
     );
   });
 });
