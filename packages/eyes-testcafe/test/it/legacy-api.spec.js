@@ -8,6 +8,12 @@ process.env.APPLITOOLS_BATCH_ID = uuidv4()
 const path = require('path')
 const fs = require('fs')
 
+// TODO
+// add xpath selector test (skipped below)
+// improve a11y test? https://github.com/applitools/eyes-testcafe/blob/master/tests/e2e/testcafe-tests/accessibility.testcafe.js
+// check coverage tests for the following cases:
+// - dev emulation
+// - multi browser (e.g., browser-one, etc.)
 fixture`legacy vg api`.after(async () => {
   if (eyes.getIsOpen()) await eyes.close(false)
 })
@@ -51,7 +57,14 @@ test('eyes.checkWindow fully', async t => {
   await eyes.checkWindow({target: 'window', fully: true})
   await eyes.close(true)
 })
-test('eyes.checkWindow selector', async t => {
+test('eyes.checkWindow selector (css)', async t => {
+  await t.navigateTo('https://applitools.github.io/demo/TestPages/FramesTestPage/')
+  await eyes.open({t, appName: 'eyes-testcafe', testName: 'legacy api test: checkWindow selector'})
+  await eyes.checkWindow({target: 'region', selector: '#overflowing-div'})
+  await eyes.close(true)
+})
+// ref: https://github.com/applitools/eyes-testcafe/blob/master/tests/e2e/testcafe-tests/selector.testcafe.js#L32
+test.skip('eyes.checkWindow selector (xpath)', async t => {
   await t.navigateTo('https://applitools.github.io/demo/TestPages/FramesTestPage/')
   await eyes.open({t, appName: 'eyes-testcafe', testName: 'legacy api test: checkWindow selector'})
   await eyes.checkWindow({target: 'region', selector: '#overflowing-div'})

@@ -18,10 +18,10 @@ const sdk = EyesSDK({
 const translateArgsToCheckSettings = makeTranslateArgsToCheckSettings(sdk.CheckSettings)
 
 // TODO:
-// Port test-server custom coverage tests over
-// Review tests in old repo and port as needed
-// Run generic VG coverage tests
+// Update README to remove ref to rejectOnError
 // Confirm proxy issue re: 1.9.x
+// Run generic VG coverage tests
+// Port test-server custom coverage tests over
 // Confirm tests on 1.7.x - 1.10.x
 // Add support for nested iframes
 // Add support for CORS iframes (might be fixed with nested iframe support)
