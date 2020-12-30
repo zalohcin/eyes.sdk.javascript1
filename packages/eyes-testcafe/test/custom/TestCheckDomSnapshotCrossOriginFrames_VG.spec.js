@@ -30,7 +30,7 @@ fixture`CORS iframe support in vg`
     await serverA.close()
     await serverB.close()
   })
-test.skip('TestCheckDomSnapshotCrossOriginFrames_VG', async t => {
+test('TestCheckDomSnapshotCrossOriginFrames_VG', async t => {
   await t.navigateTo(url)
   await eyes.open(t, 'CORS iframes', 'TestCheckDomSnapshotCrossOriginFrames_VG', {
     width: 1200,
