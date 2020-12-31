@@ -5,13 +5,13 @@ const getAllBlobs = require('./getAllBlobs');
 
 function makeEyesCheckWindow({sendRequest, processPage, domSnapshotOptions, cypress = cy}) {
   return function eyesCheckWindow(doc, args = {}) {
-    return takeDomSnapshots(domSnapshotOptions).then(snapshots => {
+    return takeDomSnapshots(domSnapshotOptions).then(snapshot => {
       // console.log("%cDone taking snapshots!", "color:chartreuse");
       sendRequest({
         command: 'checkWindow',
         data: {
-          url: Array.isArray(snapshots) ? snapshots[0].url : snapshots.url,
-          snapshot: snapshots,
+          url: Array.isArray(snapshot) ? snapshot[0].url : snapshot.url,
+          snapshot,
           ...args,
         },
       });

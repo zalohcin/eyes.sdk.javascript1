@@ -171,6 +171,7 @@ Applitools will take screenshots and perform the visual comparisons in the backg
     - [content](#content)
     - [accessibility](#accessibility)
     - [scriptHooks](#scriptHooks)
+    - [layoutBreakpoints](#layoutBreakpoints)
     - [sendDom](#sendDom)
   - [Close](#Close)
 - [Concurrency](#Concurrency)
@@ -382,6 +383,19 @@ An object with the following properties:
         }
       })
       ```
+
+##### `layoutBreakpoints`
+(optional): An array of viewport widths to use in order to take different sized dom captures.   
+It can also be specified as a boolean, at which point we will take dom captures using the device/browser widths configured.   
+Responsive pages display different content depending on the viewport's width, so this option can be used to instruct `eyes` to take dom captures using those widths, and test all responsive variations of your page.   
+
+Note that this option can also be specificed in `eyesOpen` or globally in `applitools.config.js`.   
+
+```js
+cy.eyesCheckWindow({
+  layoutBreakpoints: [500, 1000]
+});
+```
 
 ##### `sendDom`
 
