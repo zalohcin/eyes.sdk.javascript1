@@ -62,10 +62,12 @@ Cypress.Commands.add('eyesOpen', function(args = {}) {
   isCurrentTestDisabled = getGlobalConfigProperty('eyesIsDisabled') || isDisabled;
   if (isCurrentTestDisabled) return;
 
-  if (Array.isArray(browser)) {
-    browser.forEach(fillDefaultBrowserName);
-  } else {
-    fillDefaultBrowserName(browser);
+  if (browser) {
+    if (Array.isArray(browser)) {
+      browser.forEach(fillDefaultBrowserName);
+    } else {
+      fillDefaultBrowserName(browser);
+    }
   }
 
   function fillDefaultBrowserName(browser) {
