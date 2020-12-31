@@ -209,6 +209,30 @@ describe('handlers', () => {
     });
   });
 
+  it('handles an array of snapshots', async () => {
+    handlers.batchStart();
+    await handlers.open({__test: 123});
+
+    handlers.putResource('id1', 'buff1');
+    handlers.putResource('id2', 'buff2');
+    handlers.putResource('id3', 'buff3');
+
+    const blobData = [
+      {url: 'id1', type: 'type1'},
+      {url: 'id2', type: 'type2'},
+      {url: 'id3', type: 'type3'},
+    ];
+
+    const resourceContents = {
+      id1: {url: 'id1', type: 'type1', value: 'buff1'},
+      id2: {url: 'id2', type: 'type2', value: 'buff2'},
+      id3: {url: 'id3', type: 'type3', value: 'buff3'},
+    };
+
+    const result = await handlers.checkWindow({snapshot: [{blobData}]});
+    expect(result.snapshot[0].resourceContents).to.eql(resourceContents);
+  });
+
   it('handles "putResource"', async () => {
     handlers.batchStart();
     await handlers.open({__test: 123});
