@@ -501,7 +501,7 @@ The list above is also the order of precedence, which means that if you pass a p
 | `notifyOnCompletion`  | false | If `true` batch completion notifications are sent. |
 | `accessibilityValidation` | undefined | An object that specifies the accessibility level and guidelines version to use for the screenshots. Possible values for **level** are `None`, `AA` and `AAA`, and possible values for **guidelinesVersion** are `WCAG_2_0` and `WCAG_2_1`. For example: `{level: 'AA', guidelinesVersion: 'WCAG_2_0'}`|
 | `visualGridOptions` | undefined | An object that specifies options to configure renderings on the Ultrafast grid. See more information [here](#visualgridoptions) |
-|`layoutBreakpoints`| undefined | When set to `true`, a snapshot of the DOM will be taken once for each browser/device size in the `browser` configuration. For optimization purposes, an array of numbers can be passed. The DOM snapshot will be taken once for every **width** in the array. For more information, see [per component  configuration - layoutBreakpoints](#layoutBreakpoints)|
+|`layoutBreakpoints`| undefined | When set to `true`, a snapshot of the DOM will be taken once for each browser/device size in the `browser` configuration. For optimization purposes, an array of numbers can be passed. The DOM snapshot will be taken once for every **width** in the array. For more information, see [layoutBreakpoints](#layoutBreakpoints)|
 
 ### Global configuration properties:
 
