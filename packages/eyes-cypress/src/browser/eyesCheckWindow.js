@@ -19,14 +19,10 @@ function makeEyesCheckWindow({sendRequest, processPage, domSnapshotOptions, cypr
 
     function takeDomSnapshots(options) {
       const browser = args.browser;
-      const layoutBreakpoints = args.layoutBreakpoints;
+      const breakpoints = args.layoutBreakpoints;
       const browsers = Array.isArray(browser) ? browser : [browser];
-      // const {innerWidth: width, innerHeight: height} = doc.defaultView && doc.defaultView;
       const width = doc.defaultView && doc.defaultView.innerWidth;
       const height = doc.defaultView && doc.defaultView.innerHeight;
-      const breakpoints = layoutBreakpoints
-        ? layoutBreakpoints.sort((a, b) => (a > b ? -1 : 1))
-        : undefined;
 
       if (!breakpoints) {
         //console.log('no breakpoints, taking single dom snapshot');
@@ -114,11 +110,10 @@ function makeEyesCheckWindow({sendRequest, processPage, domSnapshotOptions, cypr
     }
 
     function getBreakpointWidth(breakpoints, width) {
-      if (!Array.isArray(breakpoints) || breakpoints.length === 0) {
-        return width;
-      }
-      const breakpoint = breakpoints.find(breakpoint => width >= breakpoint);
-      return breakpoint || breakpoints[breakpoints.length - 1] - 1;
+      if (!Array.isArray(breakpoints) || breakpoints.length === 0) return width;
+      const sortedBreakpoints = Array.from(new Set(breakpoints)).sort((a, b) => (a < b ? 1 : -1));
+      const breakpoint = sortedBreakpoints.find(sortedBreakpoint => width >= sortedBreakpoint);
+      return breakpoint || sortedBreakpoints[breakpoints.length - 1] - 1;
     }
   };
 }
