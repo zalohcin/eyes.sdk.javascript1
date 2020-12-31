@@ -52,15 +52,31 @@ Cypress.Commands.add('eyesOpen', function(args = {}) {
   Cypress.config('eyesOpenArgs', args);
   Cypress.log({name: 'Eyes: open'});
   const {title: testName} = this.currentTest || this.test;
-  if (Cypress.config('eyesIsDisabled') && args.isDisabled === false) {
+  const {browser, isDisabled} = args;
+
+  if (Cypress.config('eyesIsDisabled') && isDisabled === false) {
     throw new Error(
       `Eyes-Cypress is disabled by an env variable or in the applitools.config.js file, but the "${testName}" test was passed isDisabled:false. A single test cannot be enabled when Eyes.Cypress is disabled through the global configuration. Please remove "isDisabled:false" from cy.eyesOpen() for this test, or enable Eyes.Cypress in the global configuration, either by unsetting the APPLITOOLS_IS_DISABLED env var, or by deleting 'isDisabled' from the applitools.config.js file.`,
     );
   }
-  isCurrentTestDisabled = getGlobalConfigProperty('eyesIsDisabled') || args.isDisabled;
+  isCurrentTestDisabled = getGlobalConfigProperty('eyesIsDisabled') || isDisabled;
   if (isCurrentTestDisabled) return;
 
-  return handleCypressViewport(args.browser).then({timeout: 15000}, () =>
+  const validateBrowserName = browser => {
+    if (!browser.name && !browser.iosDeviceInfo && !browser.chromeEmulationInfo) {
+      browser.name = 'chrome';
+    }
+  };
+
+  if (browser) {
+    if (Array.isArray(browser)) {
+      browser.forEach(validateBrowserName);
+    } else {
+      validateBrowserName(browser);
+    }
+  }
+
+  return handleCypressViewport(browser).then({timeout: 15000}, () =>
     sendRequest({
       command: 'open',
       data: Object.assign({testName}, args),

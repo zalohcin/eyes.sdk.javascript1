@@ -6,7 +6,7 @@ describe('JS layout', () => {
       appName: 'JS layout',
       testName: 'testing js layout support in cypress',
       browser: [
-        {name: 'chrome', width: 1000, height: 800},
+        {width: 1000, height: 800},
         {iosDeviceInfo: {deviceName: 'iPad (7th generation)'}},
         {chromeEmulationInfo: {deviceName: 'Pixel 4 XL'}},
       ],
