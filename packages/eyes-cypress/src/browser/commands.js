@@ -62,17 +62,15 @@ Cypress.Commands.add('eyesOpen', function(args = {}) {
   isCurrentTestDisabled = getGlobalConfigProperty('eyesIsDisabled') || isDisabled;
   if (isCurrentTestDisabled) return;
 
-  const validateBrowserName = browser => {
+  if (Array.isArray(browser)) {
+    browser.forEach(fillDefaultBrowserName);
+  } else {
+    fillDefaultBrowserName(browser);
+  }
+
+  function fillDefaultBrowserName(browser) {
     if (!browser.name && !browser.iosDeviceInfo && !browser.chromeEmulationInfo) {
       browser.name = 'chrome';
-    }
-  };
-
-  if (browser) {
-    if (Array.isArray(browser)) {
-      browser.forEach(validateBrowserName);
-    } else {
-      validateBrowserName(browser);
     }
   }
 
