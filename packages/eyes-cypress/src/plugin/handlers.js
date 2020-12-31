@@ -102,7 +102,7 @@ function makeHandlers({
 
     checkWindow: async ({
       url,
-      snapshots = {},
+      snapshot = {},
       tag,
       sizeMode,
       target,
@@ -128,9 +128,9 @@ function makeHandlers({
         throw new Error('Please call cy.eyesOpen() before calling cy.eyesCheckWindow()');
       }
 
-      const snapshotsWithResourceContents = Array.isArray(snapshots)
-        ? snapshots.map(getSnapshotWithResourceContents)
-        : getSnapshotWithResourceContents(snapshots);
+      const snapshotsWithResourceContents = Array.isArray(snapshot)
+        ? snapshot.map(getSnapshotWithResourceContents)
+        : getSnapshotWithResourceContents(snapshot);
 
       if (sizeMode) {
         console.warn(

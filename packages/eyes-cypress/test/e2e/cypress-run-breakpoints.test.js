@@ -28,7 +28,7 @@ describe('layout breakpoints', () => {
   it('works for js layouts', async () => {
     try {
       await pexec(
-        './node_modules/.bin/cypress run --headless --config testFiles=breakpoints.js,integrationFolder=cypress/integration-run,pluginsFile=cypress/plugins/index-run.js,supportFile=cypress/support/index-run.js',
+        './node_modules/.bin/cypress run --headless --config testFiles=layout-breakpoints.js,integrationFolder=cypress/integration-run,pluginsFile=cypress/plugins/index-run.js,supportFile=cypress/support/index-run.js',
         {
           maxBuffer: 10000000,
         },

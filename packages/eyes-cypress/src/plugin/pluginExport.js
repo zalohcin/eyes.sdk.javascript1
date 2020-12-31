@@ -9,26 +9,16 @@ function makePluginExport({startServer, config}) {
 
       closeEyesServer = closeServer;
       const moduleExportsResult = await pluginModuleExports(...args);
-      // prefix each config key with `eyes` to avoid conflicts with Cypress config
-      const eyesConfig = Object.keys(config).reduce(
-        (userConfig, key) => {
-          const firstLetter = key[0].toUpperCase();
-          const upperCased = 'eyes' + firstLetter + key.substring(1);
-          const value = typeof config[key] === 'object' ? JSON.stringify(config[key]) : config[key];
-          if (key.startsWith('eyes')) {
-            userConfig[key] = config[key];
-          }
-          if (!userConfig[key]) {
-            userConfig[upperCased] = value;
-          }
-          return userConfig;
-        },
-        {eyesFailCypressOnDiff: true, eyesIsDisabled: false, eyesDisableBrowserFetching: false},
-      );
-
+      const eyesConfig = {
+        eyesIsDisabled: !!config.isDisabled,
+        eyesBrowser: JSON.stringify(config.browser),
+        eyesFailCypressOnDiff:
+          config.failCypressOnDiff === undefined ? true : !!config.failCypressOnDiff,
+        eyesTimeout: config.eyesTimeout,
+        eyesDisableBrowserFetching: !!config.disableBrowserFetching,
+      };
       return Object.assign(eyesConfig, {eyesPort}, moduleExportsResult);
     };
-
     return function getCloseServer() {
       return closeEyesServer;
     };

@@ -5,30 +5,32 @@ const getAllBlobs = require('./getAllBlobs');
 
 function makeEyesCheckWindow({sendRequest, processPage, domSnapshotOptions, cypress = cy}) {
   return function eyesCheckWindow(doc, args = {}) {
-    const browser = args.browser;
-    const layoutBreakpoints = args.layoutBreakpoints;
-    const browsers = Array.isArray(browser) ? browser : [browser];
-    const {innerWidth: width, innerHeight: height} = doc.defaultView;
-    const breakpoints = layoutBreakpoints
-      ? layoutBreakpoints.sort((a, b) => (a > b ? -1 : 1))
-      : undefined;
-    const sendArgs = typeof args === 'string' ? {tag: args} : args;
     return takeDomSnapshots(domSnapshotOptions).then(snapshots => {
       // console.log("%cDone taking snapshots!", "color:chartreuse");
       sendRequest({
         command: 'checkWindow',
         data: {
           url: Array.isArray(snapshots) ? snapshots[0].url : snapshots.url,
-          snapshots,
-          ...sendArgs,
+          snapshot: snapshots,
+          ...args,
         },
       });
     });
 
     function takeDomSnapshots(options) {
+      const browser = args.browser;
+      const layoutBreakpoints = args.layoutBreakpoints;
+      const browsers = Array.isArray(browser) ? browser : [browser];
+      // const {innerWidth: width, innerHeight: height} = doc.defaultView && doc.defaultView;
+      const width = doc.defaultView && doc.defaultView.innerWidth;
+      const height = doc.defaultView && doc.defaultView.innerHeight;
+      const breakpoints = layoutBreakpoints
+        ? layoutBreakpoints.sort((a, b) => (a > b ? -1 : 1))
+        : undefined;
+
       if (!breakpoints) {
         //console.log('no breakpoints, taking single dom snapshot');
-        return takeDomSnapshot(options).then(snapshot => snapshot);
+        return takeDomSnapshot(options);
       }
 
       return browsers
@@ -62,7 +64,7 @@ function makeEyesCheckWindow({sendRequest, processPage, domSnapshotOptions, cypr
               });
           }
           return cypress
-            .viewport(width, height)
+            .viewport(width, height, {log: false})
             .wait(0, {log: false})
             .then(() => snapshots);
         });
@@ -97,15 +99,13 @@ function makeEyesCheckWindow({sendRequest, processPage, domSnapshotOptions, cypr
     }
 
     function getBrowserInfo(browser) {
-      const browserInfo = !!browser.name;
-      if (browserInfo) {
+      if (browser.name) {
         const {name, width} = browser;
         return Promise.resolve({name, width});
       } else {
-        const iosDevice = !!browser.iosDeviceInfo;
         const {deviceName, screenOrientation = 'portrait'} =
           browser.iosDeviceInfo || browser.chromeEmulationInfo || browser;
-        const command = iosDevice ? 'getIosDevicesSizes' : 'getEmulatedDevicesSizes';
+        const command = browser.iosDeviceInfo ? 'getIosDevicesSizes' : 'getEmulatedDevicesSizes';
         return sendRequest({command}).then(devicesSizes => {
           const size = devicesSizes[deviceName][screenOrientation];
           return {name: deviceName, ...size};

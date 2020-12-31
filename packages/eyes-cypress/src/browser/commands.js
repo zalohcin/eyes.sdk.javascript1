@@ -71,12 +71,11 @@ Cypress.Commands.add('eyesOpen', function(args = {}) {
 Cypress.Commands.add('eyesCheckWindow', args => {
   Cypress.log({name: 'Eyes: check window'});
   if (isCurrentTestDisabled) return;
-
+  const eyesOpenArgs = getGlobalConfigProperty('eyesOpenArgs');
   const defaultBrowser = {
     width: getGlobalConfigProperty('viewportWidth'),
     height: getGlobalConfigProperty('viewportHeight'),
   };
-  const eyesOpenArgs = getGlobalConfigProperty('eyesOpenArgs');
   const globalArgs = {
     browser: getGlobalConfigProperty('eyesBrowser'),
     layoutBreakpoints: getGlobalConfigProperty('eyesLayoutBreakpoints'),
@@ -88,13 +87,13 @@ Cypress.Commands.add('eyesCheckWindow', args => {
     (eyesOpenArgs && eyesOpenArgs.layoutBreakpoints) ||
     globalArgs.layoutBreakpoints;
 
-  const checkArgs = Object.assign(globalArgs, eyesOpenArgs, args);
+  const checkArgs = {layoutBreakpoints, browser};
   if (typeof args === 'object') {
-    Object.assign(checkArgs, layoutBreakpoints, browser);
+    Object.assign(checkArgs, args);
   } else {
-    Object.assign(checkArgs, {tag: args}, browser, layoutBreakpoints);
+    Object.assign(checkArgs, {tag: args});
   }
-
+  console.log(checkArgs);
   return cy
     .document({log: false})
     .then({timeout: 60000}, async doc => await eyesCheckWindow(doc, checkArgs));

@@ -5,9 +5,7 @@ const {expect} = require('chai');
 const makeEyesCheckWindow = require('../../../src/browser/eyesCheckWindow');
 
 describe('eyesCheckWindow', () => {
-  const fakeDoc = {defaultView: {innerWidth: 800, innerHeight: 600}};
-  const fakeCypressFunction = async data => {
-    Promise.resolve(data);
+  const fakeCypressFunction = () => {
     return {
       wait: async () => Promise.resolve(),
       viewport: async () => Promise.resolve(),
@@ -26,7 +24,6 @@ describe('eyesCheckWindow', () => {
     const url = 'url';
     const cdt = 'cdt';
     const frames = [];
-
     const eyesCheckWindow = makeEyesCheckWindow({
       sendRequest,
       processPage,
@@ -34,13 +31,14 @@ describe('eyesCheckWindow', () => {
     });
 
     const tag = 'some tag';
-
-    await eyesCheckWindow(fakeDoc, tag, cypress);
+    // eyesCheckWindow has all args dealt in commands.js
+    // therefore it can no longer accept a string directly
+    await eyesCheckWindow('bla doc', {tag});
     expect(sendRequestInput).to.eql({
       command: 'checkWindow',
       data: {
         url,
-        snapshots: {
+        snapshot: {
           cdt,
           url,
           resourceUrls,
@@ -121,7 +119,7 @@ describe('eyesCheckWindow', () => {
     const matchLevel = 'matchLevel';
     const visualGridOptions = 'visualGridOptions';
 
-    await eyesCheckWindow(fakeDoc, {
+    await eyesCheckWindow('bla doc', {
       tag,
       sizeMode,
       target,
@@ -147,7 +145,7 @@ describe('eyesCheckWindow', () => {
       command: 'checkWindow',
       data: {
         url,
-        snapshots: {
+        snapshot: {
           cdt,
           url,
           resourceUrls,
@@ -236,15 +234,15 @@ describe('eyesCheckWindow', () => {
       cypress,
     });
 
-    await eyesCheckWindow(fakeDoc);
+    await eyesCheckWindow('bla doc');
 
     expect(sendRequestInput).to.eql({
       command: 'checkWindow',
       data: {
         url,
-        snapshots: {
-          cdt,
+        snapshot: {
           url,
+          cdt,
           resourceUrls,
           blobData: [{url: 'blobUrl1', type: 'blobType1'}],
           frames: [
@@ -327,15 +325,15 @@ describe('eyesCheckWindow', () => {
       cypress,
     });
 
-    await eyesCheckWindow(fakeDoc);
+    await eyesCheckWindow('bla doc');
 
     expect(sendRequestInput).to.eql({
       command: 'checkWindow',
       data: {
         url,
-        snapshots: {
-          cdt,
+        snapshot: {
           url,
+          cdt,
           resourceUrls,
           blobData: [{url: 'blobUrl', type: 'application/x-applitools-unknown'}],
           frames: [],
@@ -385,15 +383,15 @@ describe('eyesCheckWindow', () => {
 
     const tag = 'some tag';
 
-    await eyesCheckWindow(fakeDoc, tag);
+    await eyesCheckWindow('bla doc', {tag});
 
     expect(sendRequestInput).to.eql({
       command: 'checkWindow',
       data: {
         url,
-        snapshots: {
-          cdt,
+        snapshot: {
           url,
+          cdt,
           resourceUrls: ['resourceUrls', 'blobUrl2', 'blobUrl3'],
           blobData: [{url: 'blobUrl1', type: 'blobType1'}],
           frames,
@@ -445,12 +443,12 @@ describe('eyesCheckWindow', () => {
 
     const tag = 'some tag';
 
-    await eyesCheckWindow(fakeDoc, tag);
+    await eyesCheckWindow('bla doc', {tag});
     expect(sendRequestInput).to.eql({
       command: 'checkWindow',
       data: {
         url,
-        snapshots: {
+        snapshot: {
           cdt,
           url,
           resourceUrls,
