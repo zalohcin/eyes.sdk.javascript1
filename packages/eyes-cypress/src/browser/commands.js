@@ -93,7 +93,7 @@ Cypress.Commands.add('eyesCheckWindow', args => {
   } else {
     Object.assign(checkArgs, {tag: args});
   }
-  console.log(checkArgs);
+
   return cy
     .document({log: false})
     .then({timeout: 60000}, async doc => await eyesCheckWindow(doc, checkArgs));

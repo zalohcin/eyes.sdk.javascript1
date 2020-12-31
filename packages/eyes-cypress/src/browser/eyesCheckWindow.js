@@ -21,8 +21,6 @@ function makeEyesCheckWindow({sendRequest, processPage, domSnapshotOptions, cypr
       const browser = args.browser;
       const breakpoints = args.layoutBreakpoints;
       const browsers = Array.isArray(browser) ? browser : [browser];
-      const width = doc.defaultView && doc.defaultView.innerWidth;
-      const height = doc.defaultView && doc.defaultView.innerHeight;
 
       if (!breakpoints) {
         //console.log('no breakpoints, taking single dom snapshot');
@@ -45,6 +43,7 @@ function makeEyesCheckWindow({sendRequest, processPage, domSnapshotOptions, cypr
           });
         }, cypress.wrap({}, {log: false}))
         .then(requiredWidths => {
+          const {innerWidth: width, innerHeight: height} = doc.defaultView;
           const snapshots = Array(browsers.length);
           const requiredWidthsKeys = Object.keys(requiredWidths);
           for (const requiredWidth of requiredWidthsKeys) {
