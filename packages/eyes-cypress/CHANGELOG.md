@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-
+- fix global config layoutBreakpoints
 ## 3.18.1 - 2021/1/3
 
 - updated to @applitools/dom-snapshot@4.4.3 (from 4.4.2)
