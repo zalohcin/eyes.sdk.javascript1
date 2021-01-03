@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+
+## 3.18.2 - 2021/1/3
+
+- fix global config layoutBreakpoints
 - fix global config layoutBreakpoints
 ## 3.18.1 - 2021/1/3
 
