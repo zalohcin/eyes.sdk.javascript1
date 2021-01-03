@@ -3,6 +3,10 @@
 ## Unreleased
 
 
+## 3.18.1 - 2021/1/3
+
+- updated to @applitools/dom-snapshot@4.4.3 (from 4.4.2)
+
 ## 3.18.0 - 2020/12/31
 
 - updated to @applitools/dom-snapshot@4.4.2 (from 4.4.1)
