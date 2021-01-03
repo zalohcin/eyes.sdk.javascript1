@@ -30,10 +30,10 @@
     css-tree "1.0.0-alpha.39"
     pako "1.0.11"
 
-"@applitools/dom-snapshot@4.4.2":
-  version "4.4.2"
-  resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-4.4.2.tgz#5ef7860aec5a832cc009db090527290d8ad33e4a"
-  integrity sha512-CO+smoxd8c91lq7o0BBPpMbyldekPgaZUKPwKG8ep24bEEohr1l415FGx0bj9I/HbHW7W6fCBouPu2+sbiIthQ==
+"@applitools/dom-snapshot@4.4.3":
+  version "4.4.3"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-4.4.3.tgz#001fc7bdad58760d6d06ce629b90b706c9935d36"
+  integrity sha512-tFFgxHwg4GO20zIhPc7AdmAzXOKbjbdrtL/RzOhv99Vz8YcNf60XK4mBrtPe4evvkl+C6qViiAIUUWJqCHp+NA==
   dependencies:
     "@applitools/dom-shared" "1.0.5"
     "@applitools/functional-commons" "1.6.0"
