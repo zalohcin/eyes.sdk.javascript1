@@ -248,14 +248,12 @@ async function findElement(driver, selector) {
 async function findElements(driver, selector) {
   const transformedSelector = await transformSelector({driver, selector})
   if (selector.type === 'xpath') return await transformedSelector()
-  return await executeScript(
-    driver,
-    function() {
-      // eslint-disable-next-line no-undef
-      return document.querySelectorAll(arguments[0])
-    },
-    extractSelectorString(transformedSelector),
-  )
+  // fix courtesy of https://testcafe-discuss.devexpress.com/t/how-to-get-a-nodelist-from-selector/778
+  const elements = Selector(extractSelectorString(transformedSelector), {boundTestRun: driver})
+  const elementsCount = await elements.count
+  return [...Array(elementsCount).keys()].map((_entry, index) => {
+    return elements.nth(index)
+  })
 }
 async function getElementRect(driver, element) {
   const elSnapshot = isSelector(element)
