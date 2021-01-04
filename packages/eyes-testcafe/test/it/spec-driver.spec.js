@@ -60,19 +60,31 @@ test('findElements(string) - single element returned', async driver => {
 test('findElements(string) - multiple elements returned', async driver => {
   const elements = await spec.findElements(driver, 'div')
   assert.deepStrictEqual(elements.length > 1, true)
+  const element1 = await elements[0]()
+  const element2 = await elements[1]()
+  assert(!spec.isEqualElements(driver, element1, element2))
 })
 test('findElements(Selector)', async driver => {
   const elements = await spec.findElements(driver, Selector('div'))
   assert.deepStrictEqual(elements.length > 1, true)
+  const element1 = await elements[0]()
+  const element2 = await elements[1]()
+  assert(!spec.isEqualElements(driver, element1, element2))
 })
 test('findElements(DOM Node snapshot)', async driver => {
   const elSnapshot = await Selector('div')()
   const elements = await spec.findElements(driver, elSnapshot)
   assert.deepStrictEqual(elements.length > 1, true)
+  const element1 = await elements[0]()
+  const element2 = await elements[1]()
+  assert(!spec.isEqualElements(driver, element1, element2))
 })
 test('findElements(Eyes Selector - css)', async driver => {
   const elements = await spec.findElements(driver, {type: 'css', selector: 'div'})
   assert.deepStrictEqual(elements.length > 1, true)
+  const element1 = await elements[0]()
+  const element2 = await elements[1]()
+  assert(!spec.isEqualElements(driver, element1, element2))
 })
 test.skip('findElements(Eyes Selector - xpath)', async driver => {
   // NOTE:
