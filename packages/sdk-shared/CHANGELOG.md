@@ -2,7 +2,11 @@
 
 ## Unreleased
 
+
+## 0.7.0 - 2021/1/4
+
 - expose coverateTestsConfig
+- updated to @applitools/sdk-coverage-tests@2.2.2 (from 2.1.3)
 
 ## 0.6.1 - 2020/12/22
 
