@@ -4,7 +4,7 @@ const {
   makeTranslateArgsToCheckSettings,
   writeTapFile,
 } = require('../../src/util')
-const {CheckSettings} = require('../../src/TestCafeSDK')
+const {CheckSettings} = require('../../src/sdk')
 const translateArgsToCheckSettings = makeTranslateArgsToCheckSettings(CheckSettings)
 const path = require('path')
 const fs = require('fs')

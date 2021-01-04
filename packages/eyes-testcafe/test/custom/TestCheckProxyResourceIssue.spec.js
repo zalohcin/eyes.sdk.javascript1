@@ -1,5 +1,5 @@
 // re: https://trello.com/c/HnnKL5VU/677-image-is-shown-as-blank-and-the-buttons-images-are-shown-as-squares-testcafe-hackathon-nov-2020
-const {Eyes} = require('../../src/TestCafeSDK')
+const {Eyes} = require('../../src/sdk')
 let eyes
 const {v4: uuidv4} = require('uuid')
 process.env.APPLITOOLS_BATCH_NAME = 'JS Coverage Tests - eyes-testcafe (custom)'
