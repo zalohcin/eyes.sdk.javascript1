@@ -22,9 +22,10 @@
     "coverage:generate": "coverage-tests generate ./test/coverage/index.js --name 'eyes-testcafe'",
     "coverage:sandbox": "coverage-tests create-tests && yarn test:coverage && coverage-tests process-report",
     "coverage:prod": "coverage-tests create-tests && yarn test:coverage && coverage-tests process-report --send-report prod",
-    "test:coverage": "docker run --env APPLITOOLS_SHOW_LOGS=true --env APPLITOOLS_API_KEY=\"$APPLITOOLS_API_KEY_SDK\" --env APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-testcafe' --env APPLITOOLS_BATCH_ID=$(uuidgen) -v $(pwd):/tests -w /tests -it testcafe/testcafe chromium test/generic/*WithVg*",
-    "test:coverage:local": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-testcafe' APPLITOOLS_BATCH_ID=$(uuidgen) testcafe chrome:headless test/generic/*WithVg* --reporter spec,xunit:coverage-test-report.xml",
-    "test:coverage:local:debug": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-testcafe' APPLITOOLS_BATCH_ID=$(uuidgen) testcafe $BROWSER test/coverage/generic --reporter spec,xunit:coverage-test-report.xml --inspect-brk",
+    "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-testcafe' APPLITOOLS_BATCH_ID=$(uuidgen) testcafe chrome:headless test/generic/*WithVg* --reporter spec,xunit:coverage-test-report.xml",
+    "test:coverage:debug": "yarn test:coverage --inspect-brk",
+    "test:coverage:docker": "docker run --env APPLITOOLS_SHOW_LOGS=true --env APPLITOOLS_API_KEY=\"$APPLITOOLS_API_KEY_SDK\" --env APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-testcafe' --env APPLITOOLS_BATCH_ID=$(uuidgen) -v $(pwd):/tests -w /tests -it testcafe/testcafe chromium test/generic/*WithVg*",
+    "prepublish:setup": "echo 'no-op'",
     "preversion": "bongo preversion && yarn test && yarn coverage:prod",
     "version": "bongo version",
     "postversion": "bongo postversion"
@@ -48,17 +49,17 @@
   },
   "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "file:../eyes-sdk-core",
-    "@applitools/visual-grid-client": "file:../visual-grid-client",
+    "@applitools/eyes-sdk-core": "12.11.0",
+    "@applitools/visual-grid-client": "15.5.0",
     "rimraf": "^3.0.2"
   },
   "peerDependencies": {
     "testcafe": "^1.9.0"
   },
   "devDependencies": {
-    "@applitools/sdk-coverage-tests": "file:../sdk-coverage-tests",
-    "@applitools/sdk-release-kit": "file:../sdk-release-kit",
-    "@applitools/sdk-shared": "file:../sdk-shared",
+    "@applitools/sdk-coverage-tests": "^2.2.2",
+    "@applitools/sdk-release-kit": "^0.10.9",
+    "@applitools/sdk-shared": "^0.6.1",
     "eslint": "^7.2.0",
     "eslint-plugin-mocha-no-only": "^1.1.1",
     "eslint-plugin-node": "^11.1.0",
