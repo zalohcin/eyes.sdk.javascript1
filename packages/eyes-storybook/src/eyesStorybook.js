@@ -62,13 +62,13 @@ async function eyesStorybook({
 
   const pagePool = createPagePool({initPage, logger});
 
-  const doTakeDomSnapshots = async page => {
+  const doTakeDomSnapshots = async ({page, layoutBreakpoints}) => {
     const driver = new Driver(logger, page);
     const skipResources = getResourceUrlsInCache();
     const result = await takeDomSnapshots({
       logger,
       driver,
-      breakpoints: config.layoutBreakpoints,
+      breakpoints: layoutBreakpoints !== undefined ? layoutBreakpoints : config.layoutBreakpoints,
       browsers: config.browser || [true], // this is a hack, since takeDomSnapshots expects an array. And VGC has a default in case browser is not specified. So we just need an array with length of 1 here.
       skipResources,
       showLogs: !!config.showLogs,
