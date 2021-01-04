@@ -59,27 +59,27 @@ test('findElements(string) - single element returned', async driver => {
 })
 test('findElements(string) - multiple elements returned', async driver => {
   const elements = await spec.findElements(driver, 'div')
-  assert.deepStrictEqual(!!elements.length, true)
+  assert.deepStrictEqual(elements.length > 1, true)
 })
 test('findElements(Selector)', async driver => {
   const elements = await spec.findElements(driver, Selector('div'))
-  assert.deepStrictEqual(!!elements.length, true)
+  assert.deepStrictEqual(elements.length > 1, true)
 })
 test('findElements(DOM Node snapshot)', async driver => {
   const elSnapshot = await Selector('div')()
   const elements = await spec.findElements(driver, elSnapshot)
-  assert.deepStrictEqual(!!elements.length, true)
+  assert.deepStrictEqual(elements.length > 1, true)
 })
 test('findElements(Eyes Selector - css)', async driver => {
   const elements = await spec.findElements(driver, {type: 'css', selector: 'div'})
-  assert.deepStrictEqual(!!elements.length, true)
+  assert.deepStrictEqual(elements.length > 1, true)
 })
 test.skip('findElements(Eyes Selector - xpath)', async driver => {
   // NOTE:
   // XPathSelector does not return an array even though it's supposed to
   // Not necessary for core, so skipping.
   const elements = await spec.findElements(driver, {type: 'xpath', selector: '//div'})
-  assert.deepStrictEqual(!!elements.length, true)
+  assert.deepStrictEqual(elements.length > 1, true)
 })
 test('findElements(non-existent)', async driver => {
   const elements = await spec.findElements(driver, 'non-existent')
