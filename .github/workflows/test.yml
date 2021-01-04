@@ -9,7 +9,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    name: publish ${{github.event.inputs.name}}
+    name: test ${{github.event.inputs.name}}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -31,7 +31,6 @@ jobs:
           echo "::group::test ${{github.event.inputs.name}}"
           cd "packages/${{github.event.inputs.name}}"
           yarn
-          yarn deps
           yarn prepublish:setup
           yarn coverage:sandbox
           echo "::endgroup::"
