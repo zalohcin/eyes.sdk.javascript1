@@ -12,6 +12,7 @@
     "test:debug": "yarn test:it:debug",
     "test:full": "yarn test:it:full",
     "test:it": "testcafe chrome:headless test/it",
+    "test:spec": "testcafe chrome:headless ./test/it/spec-driver.spec.js",
     "test:api": "testcafe chrome:headless ./test/it/legacy-api.spec.js",
     "run:testcafe:10": "./node_modules/testcafe-10/bin/testcafe-with-v8-flag-filter.js",
     "run:testcafe:9": "./node_modules/testcafe-9/bin/testcafe-with-v8-flag-filter.js",
