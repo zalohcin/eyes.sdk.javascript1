@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+
+## 0.7.1 - 2021/1/5
+
+- change safari-11 to run on Mac 10.13 instead of 10.12
 - change safari-11 to run on Mac 10.13 instead of 10.12
 ## 0.7.0 - 2021/1/4
 
