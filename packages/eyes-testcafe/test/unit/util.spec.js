@@ -237,7 +237,6 @@ describe('util', () => {
           isDisabled: true,
           failTestcafeOnDiff: false,
           tapDirPath: process.cwd(),
-          concurrency: 10,
           dontCloseBatches: true,
           disableBrowserFetching: true,
         }
@@ -249,7 +248,6 @@ describe('util', () => {
         assert.deepStrictEqual(config.getIsDisabled(), args.isDisabled)
         assert.deepStrictEqual(config.getDontCloseBatches(), args.dontCloseBatches)
         assert.deepStrictEqual(config.getDisableBrowserFetching(), args.disableBrowserFetching)
-        assert.deepStrictEqual(config.getConcurrentSessions(), args.concurrency)
         assert.deepStrictEqual(config.failTestcafeOnDiff, args.failTestcafeOnDiff)
         assert.deepStrictEqual(config.tapDirPath, args.tapDirPath)
       })

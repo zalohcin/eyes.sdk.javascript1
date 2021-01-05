@@ -20,11 +20,14 @@ const translateArgsToCheckSettings = makeTranslateArgsToCheckSettings(sdk.CheckS
 class DecoratedEyes extends sdk.EyesFactory {
   constructor({configPath, runner = new VisualGridRunner()} = {}) {
     // init
+    const applitoolsConfigJs = ConfigUtils.getConfig({configPath})
+    runner.testConcurrency = {
+      testConcurrency: applitoolsConfigJs.concurrency || applitoolsConfigJs.testConcurrency,
+    }
     const eyesInstance = super(runner)
     const _open = eyesInstance.open.bind(eyesInstance)
     const _check = eyesInstance.check.bind(eyesInstance)
     const _close = eyesInstance.close.bind(eyesInstance)
-    const applitoolsConfigJs = ConfigUtils.getConfig({configPath})
     let failTestcafeOnDiff = true
     let tapDirPath
 

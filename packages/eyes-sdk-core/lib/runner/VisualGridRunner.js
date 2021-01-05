@@ -39,6 +39,10 @@ class VisualGridRunner extends EyesRunner {
     return this._concurrentSessions
   }
 
+  set testConcurrency(runnerOptions) {
+    this._concurrentSessions = runnerOptions.testConcurrency
+  }
+
   makeGetVisualGridClient(makeVisualGridClient) {
     if (!this._getVisualGridClient) {
       this._getVisualGridClient = makeVisualGridClient

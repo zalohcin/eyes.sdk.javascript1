@@ -1,4 +1,4 @@
-const {Eyes} = require('../../src/sdk')
+const {Eyes} = require('../..')
 const eyes = new Eyes()
 const assert = require('assert')
 const {getTestInfo} = require('@applitools/sdk-shared')
@@ -313,4 +313,9 @@ test('should output a tap file when tapDirPath is specified and waitForResults t
   } finally {
     pathToFile && fs.unlinkSync(pathToFile)
   }
+})
+test('should set concurrency correctly', async () => {
+  const eyes = new Eyes({configPath: path.join(__dirname, 'applitools.config.js')})
+  const runner = eyes.getRunner()
+  assert.deepStrictEqual(runner.testConcurrency, 10)
 })
