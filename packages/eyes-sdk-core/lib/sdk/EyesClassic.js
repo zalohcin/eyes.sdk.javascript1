@@ -437,8 +437,8 @@ class EyesClassic extends EyesCore {
       this._regionFullArea = new Region(
         this._regionToCheck
           .getLocation()
-          .offsetNegative(remainingOffset)
-          .offsetNegative(await this._context.getInnerOffset()),
+          .offsetNegative(remainingOffset),
+          // .offsetNegative(await this._context.getInnerOffset()),
         this._regionToCheck.getSize(),
       )
     }
@@ -764,7 +764,10 @@ class EyesClassic extends EyesCore {
    */
   getImageLocation() {
     if (this._imageLocation) {
-      return this._imageLocation
+      return new Location(
+        Math.round(this._imageLocation.getX()),
+        Math.round(this._imageLocation.getY()),
+      )
     }
     return Location.ZERO
   }

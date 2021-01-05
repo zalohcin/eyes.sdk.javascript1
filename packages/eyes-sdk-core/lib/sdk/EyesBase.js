@@ -2178,7 +2178,6 @@ class EyesBase {
     const title = await this.getTitle()
     let domUrl = await this.getDomUrl()
     const imageLocation = await this.getImageLocation()
-    console.log(imageLocation)
     this._logger.verbose('Done getting title, domUrl, imageLocation!')
 
     if (!domUrl && TypeUtils.getOrDefault(checkSettings.getSendDom(), await this.getSendDom())) {
