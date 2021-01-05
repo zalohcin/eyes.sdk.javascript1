@@ -2130,18 +2130,6 @@ class EyesBase {
     this._logger.verbose('getting screenshot...')
     let screenshot, screenshotUrl, screenshotBuffer
 
-    // START NOTE (amit): the following is something I'm not proud nor confident of. I copied it from EyesSelenium::getScreenshot, and it is to solve https://trello.com/c/O5sTPAU1. This should be rewritten asap.
-    let isMobileDevice, originalPosition
-    const positionProvider = this.getPositionProvider()
-    if (this._driver) {
-      isMobileDevice = await this._driver.isNative
-
-      if (!isMobileDevice && positionProvider) {
-        originalPosition = await positionProvider.getState()
-      }
-    }
-    // END NOTE
-
     // Getting the screenshot (abstract function implemented by each SDK).
     screenshot = await this.getScreenshot()
     this._logger.verbose('Done getting screenshot!')
@@ -2149,6 +2137,9 @@ class EyesBase {
     if (screenshot) {
       // Cropping by region if necessary
       if (!region.isSizeEmpty()) {
+        this._imageLocation = screenshot
+          .getIntersectedRegion(region, CoordinatesType.SCREENSHOT_AS_IS)
+          .getLocation()
         screenshot = await screenshot.getSubScreenshot(region, false)
         await this._debugScreenshotsProvider.save(screenshot.getImage(), 'SUB_SCREENSHOT')
       }
@@ -2187,27 +2178,15 @@ class EyesBase {
     const title = await this.getTitle()
     let domUrl = await this.getDomUrl()
     const imageLocation = await this.getImageLocation()
+    console.log(imageLocation)
     this._logger.verbose('Done getting title, domUrl, imageLocation!')
 
     if (!domUrl && TypeUtils.getOrDefault(checkSettings.getSendDom(), await this.getSendDom())) {
-      // START NOTE (amit): the following is something I'm not proud nor confident of. I copied it from EyesSelenium::getScreenshot, and it is to solve https://trello.com/c/O5sTPAU1. This should be rewritten asap.
-      const forceFullPageScreenshot = this._configuration.getForceFullPageScreenshot()
-      if ((forceFullPageScreenshot || this._stitchContent) && !isMobileDevice) {
-        await positionProvider.setPosition(Location.ZERO)
-      }
-      // END NOTE
-
       const domJson = await this.tryCaptureDom()
 
       domUrl = await this._tryPostDomSnapshot(domJson)
       this._logger.verbose(`domUrl: ${domUrl}`)
     }
-
-    // START NOTE (amit): the following is something I'm not proud nor confident of. I copied it from EyesSelenium::getScreenshot, and it is to solve https://trello.com/c/O5sTPAU1. This should be rewritten asap.
-    if (originalPosition) {
-      await positionProvider.restoreState(originalPosition)
-    }
-    // END NOTE
 
     const appOutput = new AppOutput({
       title,
