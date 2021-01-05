@@ -43,7 +43,6 @@ class DecoratedEyes extends sdk.EyesFactory {
           failTestcafeOnDiff = config.failTestcafeOnDiff
           tapDirPath = config.tapDirPath
           eyesInstance.setConfiguration(config)
-          console.log(config)
           return await _open(...args)
         }
       },

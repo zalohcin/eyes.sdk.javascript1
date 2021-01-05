@@ -1,9 +1,11 @@
 // re: https://trello.com/c/HnnKL5VU/677-image-is-shown-as-blank-and-the-buttons-images-are-shown-as-squares-testcafe-hackathon-nov-2020
-const {Eyes} = require('../../src/sdk')
+const cwd = process.cwd()
+const path = require('path')
+const {Eyes} = require('../..')
 let eyes
 
 fixture`internal proxying of resources`.before(async () => {
-  eyes = new Eyes()
+  eyes = new Eyes({configPath: path.join(cwd, 'test', 'custom', 'applitools.config.js')})
 })
 test.skip('works with hard-coded resource URLs', async t => {
   // NOTE:

@@ -22,7 +22,7 @@ fixture`TestVisualGridRefererHeader`
         'node_modules/@applitools/sdk-shared/coverage-tests/util/cors-middleware.js',
       ),
     })
-    eyes = new Eyes()
+    eyes = new Eyes({configPath: path.join(cwd, 'test', 'custom', 'applitools.config.js')})
   })
 
   .after(async () => {

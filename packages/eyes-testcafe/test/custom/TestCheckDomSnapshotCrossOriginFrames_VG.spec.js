@@ -24,7 +24,7 @@ fixture`CORS iframe support in vg`
       },
     })
     serverB = await testServer({port: 7374, staticPath})
-    eyes = new Eyes()
+    eyes = new Eyes({configPath: path.join(cwd, 'test', 'custom', 'applitools.config.js')})
   })
   .after(async () => {
     await serverA.close()
