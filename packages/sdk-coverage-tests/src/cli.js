@@ -19,26 +19,28 @@ const cli = yargs
           type: 'string',
           default: './test/coverage/index.js',
         },
-        tests: {
-          aliases: ['testsPath', 't'],
+        testsPath: {
+          aliases: ['tests', 't'],
           description: 'path to the tests file (local or remote)',
           type: 'string',
         },
-        template: {
+        templatePath: {
+          aliases: ['template'],
           description: 'path to the template .hbs file (local or remote)',
           type: 'string',
         },
-        spec: {
-          aliases: ['s'],
+        specPath: {
+          aliases: ['spec', 's'],
           description: 'path to the spec emitter definition file (local or remote)',
           type: 'string',
         },
-        overrides: {
+        overridesPath: {
+          aliases: ['overrides'],
           description: 'path to the tests overrides file (local or remote)',
           type: 'string',
         },
-        output: {
-          aliases: ['outPath', 'o'],
+        outPath: {
+          aliases: ['output', 'o'],
           description: 'path to save generated files',
           type: 'string',
         },

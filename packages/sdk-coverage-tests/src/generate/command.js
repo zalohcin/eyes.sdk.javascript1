@@ -1,6 +1,8 @@
 const path = require('path')
 const chalk = require('chalk')
-const {prepareTests, prepareEmitter, prepareFileTemplate} = require('./prepare')
+const {testsLoader} = require('./tests-loader')
+const {templateLoader} = require('./template-loader')
+const {specEmitterLoader} = require('./spec-emitter-loader')
 const {emitTests} = require('./emit')
 const {createTestFiles, createTestMetaData} = require('./save')
 
@@ -17,7 +19,7 @@ async function generate({configPath, ...options}) {
     }
     console.log(`Creating coverage tests for ${config.name}...\n`)
 
-    const tests = await prepareTests(config)
+    const tests = await testsLoader(config)
 
     if (tests.length <= 0) {
       const message = `No test will be emitted. Please check "testPath", "emitSkipped", "emitOnly" config parameters`
@@ -25,8 +27,8 @@ async function generate({configPath, ...options}) {
       return
     }
 
-    const makeSpecEmitter = await prepareEmitter(config)
-    const makeFile = await prepareFileTemplate(config)
+    const makeSpecEmitter = await specEmitterLoader(config)
+    const makeFile = await templateLoader(config)
 
     const {emittedTests, errors} = emitTests(tests, {makeSpecEmitter, makeFile})
 
