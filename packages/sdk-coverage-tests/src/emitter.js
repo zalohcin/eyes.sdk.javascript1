@@ -1,4 +1,7 @@
 function useEmitter() {
+  const hooks = {deps: [], vars: [], beforeEach: [], afterEach: []}
+  const commands = []
+  const types = {}
   const syntax = new Proxy(new Object(), {
     get(target, key) {
       if (key in target) return Reflect.get(target, key)
@@ -7,13 +10,20 @@ function useEmitter() {
       )
     },
   })
-  const types = {}
-  const hooks = {deps: [], vars: [], beforeEach: [], afterEach: []}
-  const commands = []
+  const deref = ref => (ref.isRef ? ref.ref() : ref)
+  const ref = (name, value) => (value.isRef ? value.ref(name) : value)
+  const operators = {
+    add: (left, right) => useRef({deref: () => `${deref(left)} + ${deref(right)}`}),
+    sub: (left, right) => useRef({deref: () => `${deref(left)} - ${deref(right)}`}),
+    mul: (left, right) => useRef({deref: () => `${deref(left)} * ${deref(right)}`}),
+    div: (left, right) => useRef({deref: () => `${deref(left)} / ${deref(right)}`}),
+    pow: (left, right) => useRef({deref: () => `${deref(left)} ** ${deref(right)}`}),
+  }
 
   return [
     {hooks, commands},
-    {useRef, useSyntax, withScope, addSyntax, addHook, addCommand, addType},
+    {useRef, withScope, addSyntax, addHook, addCommand, addType, addOperator},
+    {operators, ref},
   ]
 
   function addHook(name, value) {
@@ -58,8 +68,8 @@ function useEmitter() {
     syntax[name] = callback
   }
 
-  function useSyntax(name, data) {
-    return syntax[name](data)
+  function addOperator(name, callback) {
+    operators[name] = callback
   }
 
   function addType(name, options) {

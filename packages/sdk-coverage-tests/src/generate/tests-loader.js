@@ -1,49 +1,59 @@
-const fs = require('fs')
-const fetch = require('node-fetch')
-const handlebars = require('handlebars')
+const babel = require('@babel/core')
+const {isUrl, toPascalCase, mergeObjects, loadFile, runCode, requireUrl} = require('../common-util')
 const {useFramework} = require('../framework')
-const {isUrl, mergeObjects, toPascalCase, requirePath} = require('../common-util')
 
-async function loadFileTemplate(templatePath) {
-  return isUrl(templatePath)
-    ? await fetch(templatePath).then(response => response.text())
-    : fs.readFileSync(templatePath).toString()
+async function loadOverrides(path) {
+  return isUrl(path) ? requireUrl(path) : require(path)
 }
 
-async function loadEmitter(emitterPath) {
-  const module = {exports: {}}
-  await requirePath(emitterPath, {module, console})
-  return module.exports
-}
-
-async function loadOverrides(overridesPath) {
-  const module = {exports: {}}
-  await requirePath(overridesPath, {module, console})
-  return module.exports
-}
-
-async function loadTests(testsPath) {
+async function loadTests(path) {
+  const code = transformTests(loadFile(path))
   const {context, api} = useFramework()
-  await requirePath(testsPath, api)
+  runCode(code, api)
   return context
 }
 
-async function prepareFileTemplate({template, testFrameworkTemplate}) {
-  if (testFrameworkTemplate) return testFrameworkTemplate
-  const string = await loadFileTemplate(template)
-  handlebars.registerHelper('tags', (context, options) => {
-    if (!context || context.length <= 0) return ''
-    return ` (${context.map(options.fn).join(' ')})`
-  })
-  return handlebars.compile(string, {noEscape: true})
+function transformTests(code) {
+  const transformer = ({types: t}) => {
+    const isTransformable = path => {
+      return !!path.findParent(path => path.isObjectMethod() && path.node.key.name === 'test')
+    }
+    const operators = {
+      '+': 'add',
+      '-': 'sub',
+      '*': 'mul',
+      '/': 'div',
+      '**': 'pow',
+    }
+    return {
+      visitor: {
+        BinaryExpression(path) {
+          if (!isTransformable(path)) return
+          if (operators[path.node.operator])
+            path.replaceWith(
+              t.callExpression(t.identifier(`this.operators.${operators[path.node.operator]}`), [
+                path.node.left,
+                path.node.right,
+              ]),
+            )
+        },
+        VariableDeclarator(path) {
+          if (!path.node.init) return
+          if (!isTransformable(path)) return
+          path.node.init = t.callExpression(t.identifier('this.ref'), [
+            t.stringLiteral(path.node.id.name),
+            path.node.init,
+          ])
+        },
+      },
+    }
+  }
+
+  const transformed = babel.transformSync(code, {plugins: [transformer]})
+  return transformed.code
 }
 
-async function prepareEmitter({emitter, initializeSdk}) {
-  if (initializeSdk) return initializeSdk
-  return loadEmitter(emitter)
-}
-
-async function prepareTests({
+async function testsLoader({
   tests: testsPath,
   overrides,
   overrideTests,
@@ -100,4 +110,6 @@ async function prepareTests({
   }
 }
 
-module.exports = {prepareFileTemplate, prepareEmitter, prepareTests}
+exports.loadTests = loadTests
+exports.transformTests = transformTests
+exports.testsLoader = testsLoader
