@@ -167,13 +167,13 @@ const BROWSERS = {
     capabilities: {
       w3c: {
         browserName: 'safari',
-        browserVersion: '11.0',
-        platformName: 'macOS 10.12',
+        browserVersion: '11',
+        platformName: 'macOS 10.13',
       },
       legacy: {
         browserName: 'safari',
-        version: '11.0',
-        platform: 'macOS 10.12',
+        version: '11',
+        platform: 'macOS 10.13',
       },
     },
     options: {

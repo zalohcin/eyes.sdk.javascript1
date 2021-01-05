@@ -33,11 +33,11 @@ function emitTest(test, {makeSpecEmitter, makeFile}) {
     return tags
   }, [])
 
-  const [output, emitter] = useEmitter()
+  const [output, emitter, utils] = useEmitter()
   const sdk = makeSpecEmitter(emitter, test)
   test.output = output
   if (test.page) sdk.driver.visit(test.page)
-  test.test(sdk)
+  test.test.call(utils, sdk)
   test.code = makeFile(test)
   return test
 }

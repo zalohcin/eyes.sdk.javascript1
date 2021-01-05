@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+- add operators support
+- add auto variable name handling
+- add support for remote multifile specs
+
+## 2.2.2 - 2020/12/29
+
+- fix remote overrides
+- fix remote overrides
+## 2.2.1 - 2020/12/22
+
+- fix type in getter
 
 ## 2.2.0 - 2020/12/22
 

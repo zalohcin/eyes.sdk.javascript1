@@ -464,8 +464,9 @@ function getBreakpointWidth(breakpoints, width) {
   if (!TypeUtils.isArray(breakpoints) || breakpoints.length === 0) {
     return width
   }
-  const breakpoint = breakpoints.find(breakpoint => width >= breakpoint)
-  return breakpoint || breakpoints[breakpoints.length - 1] - 1
+  const sortedBreakpoints = Array.from(new Set(breakpoints)).sort((a, b) => (a < b ? 1 : -1))
+  const breakpoint = sortedBreakpoints.find(breakpoint => width >= breakpoint)
+  return breakpoint || sortedBreakpoints[breakpoints.length - 1] - 1
 }
 
 function deprecationWarning({deprecatedThing, newThing, isDead}) {

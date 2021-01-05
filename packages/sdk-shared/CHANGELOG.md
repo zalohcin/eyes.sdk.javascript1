@@ -3,6 +3,19 @@
 ## Unreleased
 
 
+## 0.7.1 - 2021/1/5
+
+- change safari-11 to run on Mac 10.13 instead of 10.12
+- change safari-11 to run on Mac 10.13 instead of 10.12
+## 0.7.0 - 2021/1/4
+
+- expose coverateTestsConfig
+- updated to @applitools/sdk-coverage-tests@2.2.2 (from 2.1.3)
+
+## 0.6.1 - 2020/12/22
+
+- add dom traversing functionality
+
 ## 0.6.0 - 2020/12/18
 
 - Re-established defaults for a few of the native mobile tests (which defaults to skipEmit: true) since they are failing. Need to revisit them later.

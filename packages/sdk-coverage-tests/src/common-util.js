@@ -1,3 +1,8 @@
+const vm = require('vm')
+const fs = require('fs')
+const chalk = require('chalk')
+const fetchSync = require('sync-fetch')
+
 function findDifferencesBetweenCollections(hostCollection = [], guestCollection = []) {
   const _hostCollection = Array.isArray(hostCollection)
     ? hostCollection
@@ -54,6 +59,40 @@ function toPascalCase(string) {
     .join('')
 }
 
+function loadFile(path) {
+  return isUrl(path) ? fetchSync(path).text() : fs.readFileSync(path).toString()
+}
+
+function runCode(code, context) {
+  try {
+    return vm.runInContext(code, vm.createContext({...context, console, process}))
+  } catch (err) {
+    if (err.constructor.name !== 'ReferenceError') throw err
+    const stack = err.stack.split('\n')
+    const [columnNumber, lineNumber] = stack[5].split(':').reverse()
+    console.log(chalk.yellow(`Error during running ${columnNumber}:${lineNumber}`), '\n')
+    const [line, caret] = stack.slice(1, 3)
+    console.log(chalk.cyan(line))
+    console.log(chalk.yellow(caret))
+    throw new ReferenceError(err.message)
+  }
+}
+
+async function requireUrl(url, cache = {}) {
+  const code = loadFile(url)
+  const module = {exports: {}}
+  cache[url] = module
+  runCode(code, {
+    require(path) {
+      if (!/^[./]/.test(path)) return require(path)
+      const requiringUrl = new URL(path, url).href
+      return cache[requiringUrl] ? cache[requiringUrl].exports : requireUrl(requiringUrl, cache)
+    },
+    module,
+  })
+  return module.exports
+}
+
 module.exports = {
   findDifferencesBetweenCollections,
   mergeObjects,
@@ -64,4 +103,7 @@ module.exports = {
   isEmptyObject,
   capitalize,
   toPascalCase,
+  loadFile,
+  runCode,
+  requireUrl,
 }

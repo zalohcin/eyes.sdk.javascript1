@@ -171,6 +171,7 @@ Applitools will take screenshots and perform the visual comparisons in the backg
     - [content](#content)
     - [accessibility](#accessibility)
     - [scriptHooks](#scriptHooks)
+    - [layoutBreakpoints](#layoutBreakpoints)
     - [sendDom](#sendDom)
   - [Close](#Close)
 - [Concurrency](#Concurrency)
@@ -383,6 +384,19 @@ An object with the following properties:
       })
       ```
 
+##### `layoutBreakpoints`
+(optional): An array of viewport widths to use in order to take different sized dom captures.   
+It can also be specified as a boolean, at which point we will take dom captures using the device/browser widths configured.   
+Responsive pages display different content depending on the viewport's width, so this option can be used to instruct `eyes` to take dom captures using those widths, and test all responsive variations of your page.   
+
+Note that this option can also be specificed in `eyesOpen` or globally in `applitools.config.js`.   
+
+```js
+cy.eyesCheckWindow({
+  layoutBreakpoints: [500, 1000]
+});
+```
+
 ##### `sendDom`
 
 (optional): A flag to specify whether a capture of DOM and CSS should be taken when rendering the screenshot. The default value is true. This should only be modified to troubleshoot unexpected behavior, and not for normal production use.
@@ -487,6 +501,7 @@ The list above is also the order of precedence, which means that if you pass a p
 | `notifyOnCompletion`  | false | If `true` batch completion notifications are sent. |
 | `accessibilityValidation` | undefined | An object that specifies the accessibility level and guidelines version to use for the screenshots. Possible values for **level** are `None`, `AA` and `AAA`, and possible values for **guidelinesVersion** are `WCAG_2_0` and `WCAG_2_1`. For example: `{level: 'AA', guidelinesVersion: 'WCAG_2_0'}`|
 | `visualGridOptions` | undefined | An object that specifies options to configure renderings on the Ultrafast grid. See more information [here](#visualgridoptions) |
+|`layoutBreakpoints`| undefined | When set to `true`, a snapshot of the DOM will be taken once for each browser/device size in the `browser` configuration. For optimization purposes, an array of numbers can be passed. The DOM snapshot will be taken once for every **width** in the array. For more information, see [layoutBreakpoints](#layoutBreakpoints)|
 
 ### Global configuration properties:
 

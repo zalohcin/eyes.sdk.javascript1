@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+
+## 0.10.9 - 2020/12/29
+
+- fix `skipCommit` in `commitFiles`
+
 ## 0.10.6 - 2020/12/1
 
 - switch yarnUpgrade back to `yarn upgrade` (instead of `yarn add`) -- fixes bug in updating package.json and CHANGELOG.md files

@@ -35,6 +35,7 @@ const {createDotFolder} = require('../setup')
 const {verifyCommits, verifyInstalledVersions, verifyVersions} = require('../versions')
 const {gitAdd, gitCommit, gitPushWithTags, isChanged} = require('../git')
 const {yarnInstall, yarnUpgrade, verifyUnfixedDeps} = require('../yarn')
+const {should} = require('chai')
 
 const command = args._[0]
 
@@ -122,7 +123,7 @@ const command = args._[0]
         return await gitAdd('CHANGELOG.md')
       case 'deps':
         await deps()
-        return await commitFiles()
+        return await commitFiles(!!args.skipCommit)
       default:
         throw new Error('Invalid option provided')
     }
