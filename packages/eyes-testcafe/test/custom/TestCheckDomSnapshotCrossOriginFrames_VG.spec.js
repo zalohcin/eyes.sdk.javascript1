@@ -1,7 +1,7 @@
 const cwd = process.cwd()
 const path = require('path')
 const {testServer} = require('@applitools/sdk-shared')
-const {Eyes} = require('../../src/sdk')
+const {Eyes} = require('../..')
 let eyes, serverA, serverB, url
 const adjustUrlToDocker = url => {
   return url
