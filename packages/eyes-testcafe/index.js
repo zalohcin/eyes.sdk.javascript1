@@ -1,7 +1,7 @@
 const core = require('@applitools/eyes-sdk-core')
-const {Eyes, _EyesFactory, CheckSettings} = require('./src/sdk')
+const {EyesFactory, CheckSettings} = require('./src/sdk')
 
-exports.Eyes = Eyes
+exports.Eyes = EyesFactory
 exports.Target = CheckSettings
 
 exports.AccessibilityLevel = core.AccessibilityLevel

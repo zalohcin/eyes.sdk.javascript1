@@ -2,7 +2,7 @@ const assert = require('assert')
 const spec = require('../../src/spec-driver')
 const {Selector} = require('testcafe')
 const fs = require('fs')
-const {EyesFactory} = require('../../src/sdk')
+const {Eyes} = require('../..')
 
 fixture`spec-driver`.page`https://applitools.github.io/demo/TestPages/FramesTestPage/`
 
@@ -288,7 +288,7 @@ test('setWindowRect (x, y)', async driver => {
   assert.deepStrictEqual(actualPosition.y, expectedPosition.y)
 })
 test('Eyes integration', async driver => {
-  const eyes = new EyesFactory()
+  const eyes = new Eyes()
   assert.doesNotThrow(async () => {
     await eyes.open(driver)
   })

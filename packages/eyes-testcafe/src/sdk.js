@@ -17,7 +17,7 @@ const sdk = EyesSDK({
 })
 const translateArgsToCheckSettings = makeTranslateArgsToCheckSettings(sdk.CheckSettings)
 
-class DecoratedEyes extends sdk.EyesFactory {
+class DecoratedEyesFactory extends sdk.EyesFactory {
   constructor({configPath, runner = new VisualGridRunner()} = {}) {
     // init
     const applitoolsConfigJs = ConfigUtils.getConfig({configPath})
@@ -76,7 +76,7 @@ class DecoratedEyes extends sdk.EyesFactory {
 }
 
 const modifiedSdk = {...sdk}
-modifiedSdk.Eyes = DecoratedEyes
+modifiedSdk.EyesFactory = DecoratedEyesFactory
 module.exports = {
   ...modifiedSdk,
 }
