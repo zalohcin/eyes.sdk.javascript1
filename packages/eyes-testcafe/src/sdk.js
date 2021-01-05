@@ -17,9 +17,6 @@ const sdk = EyesSDK({
 })
 const translateArgsToCheckSettings = makeTranslateArgsToCheckSettings(sdk.CheckSettings)
 
-// TODO:
-// Run generic VG coverage tests
-// Port test-server custom coverage tests over
 class DecoratedEyes extends sdk.EyesFactory {
   constructor({configPath, runner = new VisualGridRunner()} = {}) {
     // init
@@ -42,6 +39,11 @@ class DecoratedEyes extends sdk.EyesFactory {
           eyesInstance.setConfiguration(config)
           return await _open(t, appName, testName)
         } else {
+          const config = translateArgsToConfig(applitoolsConfigJs)
+          failTestcafeOnDiff = config.failTestcafeOnDiff
+          tapDirPath = config.tapDirPath
+          eyesInstance.setConfiguration(config)
+          console.log(config)
           return await _open(...args)
         }
       },

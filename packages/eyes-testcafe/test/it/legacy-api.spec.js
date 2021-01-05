@@ -248,6 +248,13 @@ test('should load applitools.config.js', async t => {
   const config = eyes.getConfiguration()
   assert.deepStrictEqual(config.getBrowsersInfo(), require(configPath).browser)
 })
+test('should load applitools.config.js w/o args object', async t => {
+  const configPath = path.join(__dirname, 'applitools.config.js')
+  const eyes = new Eyes({configPath})
+  await eyes.open(t, 'eyes-testcafe', 'legacy api test: applitools.config.js')
+  const config = eyes.getConfiguration()
+  assert.deepStrictEqual(config.getBrowsersInfo(), require(configPath).browser)
+})
 test('should output a tap file when tapDirPath is specified', async t => {
   const eyes = new Eyes()
   await t.navigateTo('https://applitools.github.io/demo/TestPages/FramesTestPage/')
