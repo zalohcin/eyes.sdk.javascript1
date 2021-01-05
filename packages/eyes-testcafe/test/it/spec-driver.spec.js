@@ -86,12 +86,12 @@ test('findElements(Eyes Selector - css)', async driver => {
   const element2 = await elements[1]()
   assert(!spec.isEqualElements(driver, element1, element2))
 })
-test.skip('findElements(Eyes Selector - xpath)', async driver => {
-  // NOTE:
-  // XPathSelector does not return an array even though it's supposed to
-  // Not necessary for core, so skipping.
+test('findElements(Eyes Selector - xpath)', async driver => {
   const elements = await spec.findElements(driver, {type: 'xpath', selector: '//div'})
   assert.deepStrictEqual(elements.length > 1, true)
+  const element1 = await elements[0]()
+  const element2 = await elements[1]()
+  assert(!spec.isEqualElements(driver, element1, element2))
 })
 test('findElements(non-existent)', async driver => {
   const elements = await spec.findElements(driver, 'non-existent')

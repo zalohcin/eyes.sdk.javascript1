@@ -245,13 +245,15 @@ async function findElement(driver, selector) {
   const elSnapshot = await selector()
   return elSnapshot ? elSnapshot.selector : undefined
 }
+// adapted from https://testcafe-discuss.devexpress.com/t/how-to-get-a-nodelist-from-selector/778
 async function findElements(driver, selector) {
   const transformedSelector = await transformSelector({driver, selector})
-  if (selector.type === 'xpath') return await transformedSelector()
-  // fix courtesy of https://testcafe-discuss.devexpress.com/t/how-to-get-a-nodelist-from-selector/778
-  const elements = Selector(extractSelectorString(transformedSelector), {boundTestRun: driver})
-  const elementsCount = await elements.count
-  return [...Array(elementsCount).keys()].map((_entry, index) => {
+  const elements =
+    selector.type === 'xpath'
+      ? transformedSelector
+      : Selector(extractSelectorString(transformedSelector), {boundTestRun: driver})
+  const elementCount = await elements.count
+  return Array.from({length: elementCount}, (_entry, index) => {
     return elements.nth(index)
   })
 }
