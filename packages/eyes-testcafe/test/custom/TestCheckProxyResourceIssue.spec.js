@@ -1,9 +1,6 @@
 // re: https://trello.com/c/HnnKL5VU/677-image-is-shown-as-blank-and-the-buttons-images-are-shown-as-squares-testcafe-hackathon-nov-2020
 const {Eyes} = require('../../src/sdk')
 let eyes
-const {v4: uuidv4} = require('uuid')
-process.env.APPLITOOLS_BATCH_NAME = 'JS Coverage Tests - eyes-testcafe (custom)'
-process.env.APPLITOOLS_BATCH_ID = uuidv4()
 
 fixture`internal proxying of resources`.before(async () => {
   eyes = new Eyes()
