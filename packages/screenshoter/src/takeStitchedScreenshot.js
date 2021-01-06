@@ -124,7 +124,7 @@ async function takeStitchedImage({
   }
 
   await saveScreenshot(composition, {path: debug.path, name: 'stitched', logger})
-  return composition
+  return {image: composition, region: cropRegion}
 }
 
 module.exports = takeStitchedImage
