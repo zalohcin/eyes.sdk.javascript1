@@ -5,7 +5,7 @@ const {Eyes} = require('../..')
 const {testServer} = require('@applitools/sdk-shared')
 let eyes, server
 
-fixture`internal proxying of resources`
+fixture`proxying of resources`
   .before(async () => {
     const staticPath = path.join(cwd, 'test', 'custom', 'fixtures')
     server = await testServer({port: 7777, staticPath})
@@ -14,9 +14,9 @@ fixture`internal proxying of resources`
   .after(async () => {
     await server.close()
   })
-test('works', async t => {
+test('works with images', async t => {
   await t.navigateTo('http://localhost:7777/images.html')
-  await eyes.open(t, 'internal proxying of resources', 'works', {
+  await eyes.open(t, 'eyes-testcafe proxying of resources', 'works with images', {
     width: 1024,
     height: 768,
   })
