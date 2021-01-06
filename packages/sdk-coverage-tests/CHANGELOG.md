@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 2.3.0 - 2021/1/6
+
 - add operators support
 - add auto variable name handling
 - add support for remote multifile specs
