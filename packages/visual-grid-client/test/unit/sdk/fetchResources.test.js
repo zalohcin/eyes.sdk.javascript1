@@ -93,9 +93,7 @@ describe('fetchResource', () => {
         .delayBody(200)
         .reply(200, 'bla', {'content-type': 'audio/content-type'})
 
-      await fetchResource(url).then(expect.fail, e => {
-        expect(e.message).to.equal(`timeout when downloading ${url} content`)
-      })
+      expect(await fetchResource(url)).to.eql({url, errorStatusCode: 599})
     })
 
     it("doesn't include headers fetching time", async () => {
@@ -106,11 +104,11 @@ describe('fetchResource', () => {
         .delay(200)
         .reply(200, 'bla', {'content-type': 'audio/content-type'})
 
-      await fetchResource(url).then(
-        resource =>
-          expect(resource).to.eql({url, type: 'audio/content-type', value: Buffer.from('bla')}),
-        expect.fail,
-      )
+      expect(await fetchResource(url)).to.eql({
+        url,
+        type: 'audio/content-type',
+        value: Buffer.from('bla'),
+      })
     })
 
     it("doesn't apply to requests with content length", async () => {
@@ -121,11 +119,11 @@ describe('fetchResource', () => {
         .delayBody(200)
         .reply(200, 'bla', {'content-type': 'audio/content-type', 'content-length': 3})
 
-      await fetchResource(url).then(
-        resource =>
-          expect(resource).to.eql({url, type: 'audio/content-type', value: Buffer.from('bla')}),
-        expect.fail,
-      )
+      expect(await fetchResource(url)).to.eql({
+        url,
+        type: 'audio/content-type',
+        value: Buffer.from('bla'),
+      })
     })
 
     it("doesn't apply to requests with non media content type", async () => {
@@ -136,11 +134,11 @@ describe('fetchResource', () => {
         .delayBody(200)
         .reply(200, 'bla', {'content-type': 'some/content-type'})
 
-      await fetchResource(url).then(
-        resource =>
-          expect(resource).to.eql({url, type: 'some/content-type', value: Buffer.from('bla')}),
-        expect.fail,
-      )
+      expect(await fetchResource(url)).to.eql({
+        url,
+        type: 'some/content-type',
+        value: Buffer.from('bla'),
+      })
     })
   })
 })
