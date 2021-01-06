@@ -4,6 +4,15 @@
 
 - added debugScreenshots boolean option to getEyes that will automatically create a screenshots dir in the cwd
 
+## 0.7.1 - 2021/1/5
+
+- change safari-11 to run on Mac 10.13 instead of 10.12
+- change safari-11 to run on Mac 10.13 instead of 10.12
+## 0.7.0 - 2021/1/4
+
+- expose coverateTestsConfig
+- updated to @applitools/sdk-coverage-tests@2.2.2 (from 2.1.3)
+
 ## 0.6.1 - 2020/12/22
 
 - add dom traversing functionality
