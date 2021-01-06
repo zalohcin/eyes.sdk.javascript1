@@ -22,7 +22,7 @@ function useEmitter() {
 
   return [
     {hooks, commands},
-    {useRef, withScope, addSyntax, addHook, addCommand, addType, addOperator},
+    {useRef, withScope, addSyntax, addExpression, addHook, addCommand, addType, addOperator},
     {operators, ref},
   ]
 
@@ -60,6 +60,19 @@ function useEmitter() {
         const value = commands[id - 1]
         commands[id - 1] = syntax.var({constant: true, name, value, type})
         return name
+      },
+    })
+  }
+
+  function addExpression(expression) {
+    return useRef({
+      deref({name, type} = {}) {
+        if (name) {
+          commands.push(syntax.var({constant: true, name, value: expression, type}))
+          return name
+        } else {
+          return expression
+        }
       },
     })
   }
@@ -143,6 +156,10 @@ function useEmitter() {
         let key = prop
         let type
         if (currentType) {
+          if (prop === Symbol.iterator && currentType.iterable) {
+            let index = 0
+            return () => ({next: () => ({value: proxy[index], done: false})})
+          }
           getter = currentType.getter || getter
           if (currentType.schema && currentType.schema[prop]) {
             type = currentType.schema[prop]

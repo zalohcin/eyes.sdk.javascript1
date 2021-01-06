@@ -40,6 +40,7 @@ function transformTests(code) {
         VariableDeclarator(path) {
           if (!path.node.init) return
           if (!isTransformable(path)) return
+          if (!path.node.id.name) return
           path.node.init = t.callExpression(t.identifier('this.ref'), [
             t.stringLiteral(path.node.id.name),
             path.node.init,

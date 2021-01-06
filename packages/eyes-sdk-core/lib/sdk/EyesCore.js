@@ -421,8 +421,6 @@ class EyesCore extends EyesBase {
     const driver = makeDriver(this._driver.spec, this._logger, this._driver.wrapper)
     await driver.refreshContexts()
 
-    await EyesUtils.markActiveContext(this._logger, this._context)
-
     const extractTextInputs = []
 
     for (const userRegion of regions) {
