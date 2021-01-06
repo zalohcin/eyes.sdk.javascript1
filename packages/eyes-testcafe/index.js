@@ -1,6 +1,7 @@
 const core = require('@applitools/eyes-sdk-core')
 const {EyesFactory, CheckSettings} = require('./src/sdk')
 
+module.exports.default = EyesFactory
 exports.Eyes = EyesFactory
 exports.Target = CheckSettings
 
