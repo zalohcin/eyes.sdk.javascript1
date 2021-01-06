@@ -5,6 +5,7 @@
 - add operators support
 - add auto variable name handling
 - add support for remote multifile specs
+- add expressions support
 
 ## 2.2.2 - 2020/12/29
 
