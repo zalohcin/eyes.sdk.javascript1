@@ -324,15 +324,13 @@ eyes.close();
 
 Wait until all tests in the fixture are completed and return their results.
 
-Note that if you don't wait for the tests to be completed then in case of a visual test failure, eyes cannot fail the fixture.
-
 * it is recommended to wait for the results in the testcafe `after()` hook. 
 
 ```js
 await eyes.waitForResults()
 ```
 
-waitForResults receives `throwEx`,
+waitForResults receives an argument of `throwEx`,
 
 * If `true` (default) and a visual test fails then reject with an `Error` (in case of a general error reject as well).
 If the rejection is not handled then Testcafe fails the fixture.
