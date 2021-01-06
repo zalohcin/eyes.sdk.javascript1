@@ -1,7 +1,7 @@
 # Change Log
 
 ## Unreleased
-
+- add streaming resource timeout 
 
 ## 15.5.0 - 2020/12/29
 
