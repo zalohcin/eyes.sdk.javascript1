@@ -6,7 +6,6 @@ const {testServer} = require('@applitools/sdk-shared')
 const {Target} = require(cwd)
 const spec = require(path.resolve(cwd, 'src/spec-driver'))
 const {Eyes} = require('../..')
-const adjustUrlToDocker = url => url
 let serverA, serverB, eyes
 
 fixture`TestVisualGridRefererHeader`
@@ -31,8 +30,7 @@ fixture`TestVisualGridRefererHeader`
   })
 
 test('send referer header', async driver => {
-  const url = adjustUrlToDocker('http://localhost:5555/cors.html')
-  await spec.visit(driver, url)
+  await spec.visit(driver, 'http://localhost:5555/cors.html')
   await eyes.open(driver, 'VgFetch', ' VgFetch referer', {width: 800, height: 600})
   await eyes.check('referer', Target.window())
   await eyes.close()

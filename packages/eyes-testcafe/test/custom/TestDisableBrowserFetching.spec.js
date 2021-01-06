@@ -6,7 +6,6 @@ const {testServer} = require('@applitools/sdk-shared')
 const {Target} = require(cwd)
 const spec = require(path.resolve(cwd, 'src/spec-driver'))
 const {Eyes} = require('../..')
-const adjustUrlToDocker = url => url
 let server, eyes
 
 fixture`TestDisableBrowserFetching`
@@ -26,8 +25,7 @@ fixture`TestDisableBrowserFetching`
     await server.close()
   })
 test('sends dontFetchResources to dom snapshot', async driver => {
-  const url = adjustUrlToDocker('http://localhost:5557/ua.html')
-  await spec.visit(driver, url)
+  await spec.visit(driver, 'http://localhost:5557/ua.html')
   await eyes.open({
     t: driver,
     appName: 'VgFetch',
