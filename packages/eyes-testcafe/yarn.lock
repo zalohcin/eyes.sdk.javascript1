@@ -144,7 +144,7 @@
     xml-js "1.6.11"
     yargs "16.0.3"
 
-"@applitools/sdk-coverage-tests@2.2.2", "@applitools/sdk-coverage-tests@^2.2.2":
+"@applitools/sdk-coverage-tests@^2.2.2":
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/@applitools/sdk-coverage-tests/-/sdk-coverage-tests-2.2.2.tgz#5446a5b719c9e9313dd950e979f76357e3853151"
   integrity sha512-ohyEnrBpZvFWHByb0vvsx5MpLovR+letMVYfCnbb8NsDYUWBRAWINiuTEsExpnDRJCG2Y3eo03zN+DtoHXTRWA==
@@ -193,13 +193,11 @@
     prettier "1.18.2"
     yargs "15.3.1"
 
-"@applitools/sdk-shared@^0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@applitools/sdk-shared/-/sdk-shared-0.7.0.tgz#3196c1c0ed376d669d239c723757a33e7ed9af8b"
-  integrity sha512-U9nEzaEvmCdPVd8xYGyCVIgPONqwXpIGgsA97rgO3tArlaJFx1X4oazz/l2DrPBwnAfwz8a4lmk6jnze5GramQ==
+"@applitools/sdk-shared@file:../sdk-shared":
+  version "0.6.1"
   dependencies:
     "@applitools/functional-commons" "1.6.0"
-    "@applitools/sdk-coverage-tests" "2.2.2"
+    "@applitools/sdk-coverage-tests" "2.1.3"
     chai "4.2.0"
     chai-as-promised "7.1.1"
     chalk "3.0.0"
