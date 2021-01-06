@@ -148,7 +148,7 @@ class FullPageCaptureAlgorithm {
       ) {
         await this._originProvider.restoreState(originalPosition)
         await positionProvider.restoreState(originalStitchedState)
-        return image
+        return {image, imageLocation: regionInScreenshot.getLocation()}
       }
 
       fullArea = new Region(Location.ZERO, entireSize)
