@@ -1,5 +1,5 @@
 @import 'images-nested.css';
 
-.hasImgFromCssFile {
+.hasImgFromNestedCssFile {
   background-image: url('smurfs.jpg');
 }
