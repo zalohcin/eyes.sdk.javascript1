@@ -36,7 +36,7 @@
     "@applitools/http-commons": "2.4.3",
     "@applitools/isomorphic-fetch": "3.0.0",
     "@applitools/jsdom": "1.0.2",
-    "abort-controller": "^3.0.0",
+    "abort-controller": "3.0.0",
     "chalk": "3.0.0",
     "he": "1.2.0",
     "lodash.mapvalues": "4.6.0",
