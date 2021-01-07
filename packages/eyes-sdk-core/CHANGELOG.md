@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-
+- republish to update vgc due to cyclic dependency
 ## 12.11.1 - 2021/1/7
 
 - fix DOM and image alignment
