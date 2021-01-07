@@ -1,8 +1,14 @@
 # Change Log
 
 ## Unreleased
-
 - add support for SDKs that don't support traversing between frames (e.g., it doesn't implement parentContext)
+- republish to update vgc due to cyclic dependency
+
+## 12.11.1 - 2021/1/7
+
+- fix DOM and image alignment
+- updated to @applitools/screenshoter@2.0.0 (from 1.0.2)
+- updated to @applitools/dom-snapshot@4.4.3 (from 4.4.1)
 
 ## 12.11.0 - 2020/12/29
 

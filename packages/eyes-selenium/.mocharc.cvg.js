@@ -15,9 +15,9 @@ module.exports = {
     'node_modules/@applitools/sdk-shared/coverage-tests/custom/**/*.spec.js',
   ],
   parallel: true,
-  jobs: 15,
+  jobs: 5,
   timeout: 0,
   reporter: 'spec-xunit-file',
   require: ['./test/util/version-alias.js', '@applitools/sdk-shared/coverage-tests/util/mocha-hooks.js'],
-  grep: new RegExp(`^[\\w\\s]*?(\\((?:@(${tags.join('|')}) ?)+\\))?$`),
+  grep: new RegExp(`^[\\w\\s\\-]*?(\\((?:@(${tags.join('|')}) ?)+\\))?$`),
 }

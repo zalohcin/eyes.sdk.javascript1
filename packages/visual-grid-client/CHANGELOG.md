@@ -3,6 +3,15 @@
 ## Unreleased
 
 
+## 15.5.2 - 2021/1/7
+
+- move `abort-controller` to dependencies
+- move `abort-controller` to dependencies
+ ## 15.5.1 - 2021/1/7
+
+- add streaming resource timeout 
+- updated to @applitools/eyes-sdk-core@12.11.1 (from 12.11.0)
+- updated to @applitools/eyes-sdk-core@12.11.1 (from 12.11.0)
 ## 15.5.0 - 2020/12/29
 
 - expose device sizes functions from renderingGridClient

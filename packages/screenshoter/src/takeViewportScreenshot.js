@@ -29,9 +29,10 @@ async function takeViewportScreenshot({
     const cropRegion = await context.getRegionInViewport(region)
     await image.crop(cropRegion)
     await saveScreenshot(image, {path: debug.path, suffix: 'region', logger})
+    return {image, region: cropRegion}
+  } else {
+    return {image, region: {x: 0, y: 0, width: image.width, height: image.height}}
   }
-
-  return image
 }
 
 module.exports = takeViewportScreenshot
