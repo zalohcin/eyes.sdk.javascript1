@@ -3,6 +3,7 @@
   "version": "1.11.0",
   "description": "Applitools Eyes SDK for TestCafe",
   "main": "index.js",
+  "types": "./ts/index.d.ts",
   "scripts": {
     "deps": "bongo deps",
     "lint": "eslint . --ext .js",
