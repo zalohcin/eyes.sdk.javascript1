@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+
+## 2.0.0 - 2021/1/7
+
+- return image location relative to viewport
 - return image location relative to viewport
 ## 1.0.2 - 2020/12/29
 
