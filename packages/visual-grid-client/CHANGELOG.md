@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+
+## 15.5.2 - 2021/1/7
+
+- move `abort-controller` to dependencies
 - move `abort-controller` to dependencies
  ## 15.5.1 - 2021/1/7
 
