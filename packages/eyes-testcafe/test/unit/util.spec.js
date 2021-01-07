@@ -195,6 +195,7 @@ describe('util', () => {
           ignoreBaseline: true,
           notifyOnCompletion: true,
           accessibilityValidation: {level: 'AA', guidelinesVersion: 'WCAG_2_0'},
+          showLogs: true,
         }
         const config = translateArgsToConfig(args)
         assert.deepStrictEqual(config.getTestName(), args.testName)
@@ -219,6 +220,7 @@ describe('util', () => {
         assert.deepStrictEqual(config.getCompareWithParentBranch(), args.compareWithParentBranch)
         assert.deepStrictEqual(config.getIgnoreBaseline(), args.ignoreBaseline)
         assert.deepStrictEqual(config.getAccessibilityValidation(), args.accessibilityValidation)
+        assert.deepStrictEqual(config.getShowLogs(), args.showLogs)
       })
       it('skips undefined entries', () => {
         const config = translateArgsToConfig({})
