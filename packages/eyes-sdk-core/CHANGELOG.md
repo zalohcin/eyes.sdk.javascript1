@@ -3,6 +3,8 @@
 ## Unreleased
 
 - republish to update vgc due to cyclic dependency
+- updated to axios@0.21.1 (from 0.19.2)
+
 ## 12.11.1 - 2021/1/7
 
 - fix DOM and image alignment
