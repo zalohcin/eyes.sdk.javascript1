@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-
+- move `abort-controller` to dependencies
  ## 15.5.1 - 2021/1/7
 
 - add streaming resource timeout 
