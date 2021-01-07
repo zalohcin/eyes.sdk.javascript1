@@ -10,6 +10,14 @@
     "@applitools/dom-shared" "1.0.4"
     "@applitools/functional-commons" "1.6.0"
 
+"@applitools/dom-capture@11.0.0":
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-capture/-/dom-capture-11.0.0.tgz#b7635f93dd8c5e0ed3e6e6d7345b16bf414d428f"
+  integrity sha512-4nnqcH31NRRzfvx1LbYE4NIwDjRZPZofK+T4k2RMERZ2+blO+xFj8EpcDVdsoFiXSUqqybv1FmQBySwLQESH2w==
+  dependencies:
+    "@applitools/dom-shared" "1.0.5"
+    "@applitools/functional-commons" "1.6.0"
+
 "@applitools/dom-shared@1.0.4":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@applitools/dom-shared/-/dom-shared-1.0.4.tgz#1a59116f3f29fb140ac031949547531348c9d972"
@@ -127,6 +135,14 @@
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@applitools/screenshoter/-/screenshoter-1.0.2.tgz#899e8b36b5ad17f5a0e0f90d432320af678c57f0"
   integrity sha512-KpqrQPJwaehTRjX9w+3Ug+AGjcUpoUYsVtb2dumG6kr+hraoVTgubEuJuqwaYo4shLJG+aTMHVqL4qFrIZRrMA==
+  dependencies:
+    "@applitools/utils" "1.0.0"
+    sharp "0.26.3"
+
+"@applitools/screenshoter@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@applitools/screenshoter/-/screenshoter-2.0.0.tgz#2313ee40cc4d36dd4de1201951bbd90802dec221"
+  integrity sha512-qSAk1PbXglK4U6/+netATqtwoAgjvfTBdMEpWWH8vIncZkQAsXj12PNd5n4BTbmeOsoF3pMnYlhqcjb8opKrGQ==
   dependencies:
     "@applitools/utils" "1.0.0"
     sharp "0.26.3"
