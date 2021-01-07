@@ -35,22 +35,20 @@ class DecoratedEyesFactory extends sdk.EyesFactory {
     // set api wrapper
     const api = {
       async open(...args) {
+        let openArgs, config
         if (args && args.length === 1 && TypeUtils.isObject(args[0]) && !spec.isDriver(args[0])) {
           const {t, appName, testName} = args[0]
-          const config = translateArgsToConfig({...applitoolsConfigJs, ...args[0]})
-          failTestcafeOnDiff = config.failTestcafeOnDiff
-          tapDirPath = config.tapDirPath
-          eyesInstance.setConfiguration(config)
-          eyesInstance.logger = new Logger(config.getShowLogs())
-          return await _open(t, appName, testName)
+          openArgs = [t, appName, testName]
+          config = translateArgsToConfig({...applitoolsConfigJs, ...args[0]})
         } else {
-          const config = translateArgsToConfig(applitoolsConfigJs)
-          failTestcafeOnDiff = config.failTestcafeOnDiff
-          tapDirPath = config.tapDirPath
-          eyesInstance.setConfiguration(config)
-          eyesInstance.logger = new Logger(config.getShowLogs())
-          return await _open(...args)
+          openArgs = args
+          config = translateArgsToConfig(applitoolsConfigJs)
         }
+        failTestcafeOnDiff = config.failTestcafeOnDiff
+        tapDirPath = config.tapDirPath
+        eyesInstance.setConfiguration(config)
+        eyesInstance.logger = new Logger(config.getShowLogs())
+        return await _open(...openArgs)
       },
       async checkWindow(args) {
         await _check(args && TypeUtils.isObject(args) ? translateArgsToCheckSettings(args) : args)
