@@ -1,8 +1,8 @@
 # Change Log
 
 ## Unreleased
-- add streaming resource timeout 
 
+- add streaming resource timeout 
 ## 15.5.0 - 2020/12/29
 
 - expose device sizes functions from renderingGridClient

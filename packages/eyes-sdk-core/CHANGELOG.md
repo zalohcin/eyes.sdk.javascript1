@@ -2,10 +2,9 @@
 
 ## Unreleased
 
-
+- fix DOM and image alignment
 ## 12.11.0 - 2020/12/29
 
-- export `takeDomSnapshots` function for JS layout in Storybook
 - export `takeDomSnapshots` function for JS layout in Storybook
 ## 12.10.2 - 2020/12/29
 
