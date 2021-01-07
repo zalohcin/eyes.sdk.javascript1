@@ -5,11 +5,12 @@ const fs = require('fs')
 const rmrf = require('rimraf')
 
 // helpers
+//
+// NOTE:
+// We inspect the internals of the function and find/return the selector string used to create it.
+// It's possible that a DOM Node snapshot was passed in, if so, we wrap it in a Selector so we can
+// use this approach.
 function extractSelectorString(selector) {
-  // NOTE:
-  // We inspect the internals of the function and find/return the selector string used to create it.
-  // It's possible that a DOM Node snapshot was passed in, if so, we wrap it in a Selector so we can
-  // use this approach.
   selector = isTestCafeSelector(selector) ? selector : Selector(selector)
   const util = require('util')
   const internals = util.inspect(selector, true, 2).split(',') // inspect(object, showHidden, depth)
@@ -61,13 +62,15 @@ function prepareArrayArgsString(arg, indexPath) {
   })
   return result
 }
+// NOTE:
+// Objects/functions passed into a ClientFunction get transpiled into something
+// that is difficult to understand. We have significantly more knowledge of
+// what's passed in before sending it into the ClientFunction. We use this
+// information to create a static function that will return a modified set of
+// arguments (to be run inside of the ClientFunction). It detects if a provided
+// argument is a Selector function and calls it (so it is initialized for use
+// in the ClientFunction. Otherwise, it will return the argument unchanged.
 function prepareArgsFunctionString(args) {
-  // NOTE:
-  // Objects/functions passed into a ClientFunction get transpiled into something that is difficult to understand.
-  // We have significantly more knowledge of object/function contents/type before sending it into the ClientFunction.
-  // We use this information to create a static function that will return a modified set of arguments
-  // (to be run inside of the ClientFunction). It detects if a provided argument is a Selector function
-  // and calls, otherwise, it will return the argument unchanged.
   let entry = ''
   entry += 'let args = [...arguments]\n'
   args.forEach((arg, index) => {
@@ -84,6 +87,11 @@ function prepareArgsFunctionString(args) {
   entry += `return args`
   return entry
 }
+// NOTE:
+// The function passed to the clientFunction runs inside of the browser
+// There are constraints about what can be returned from the clientFunction
+// depending on the executor type used. Which is why we store nodes on window
+// for retrieval on an additional round-trip.
 function prepareClientFunction({clientFunction, dependencies, driver}) {
   const prepareArgs = new Function(prepareArgsFunctionString(dependencies.args))
   const executor = clientFunction(
@@ -142,6 +150,7 @@ async function transformSelector({driver, selector}) {
   }
   return selector
 }
+//
 // end helpers
 
 function isDriver(driver) {
@@ -157,14 +166,14 @@ function isSelector(selector) {
 function isElement(element) {
   return isTestCafeSelector(element)
 }
+// NOTE:
+// It's unclear of a better way to determine element identity.
+// Also, when looking up the same element twice, the second lookup does not
+// contain the `propType` property -- presumably a caching optimization.
+// To compensate we create normalized copies of the elements and do a
+// stringified comparison.
 function isEqualElements(_driver, element1, element2) {
   if (!element1 || !element2) return false
-  // NOTE:
-  // It's unclear of a better way to determine element identity.
-  // Also, when looking up the same element twice, the second lookup does not
-  // contain the `propType` property -- presumably a caching optimization.
-  // To compensate we create normalized copies of the elements and do a
-  // stringified comparison.
   const elements = [{...element1}, {...element2}].map(el => {
     delete el.propType
     return el
@@ -215,29 +224,23 @@ async function executeScript(driver, script, ...args) {
       return r
     }
   } catch (error) {
-    debugger
+    debugger // in order to hit this breakpoint, run testcafe with --inspect-brk
     throw error
   }
 }
 async function mainContext(driver) {
   await driver.switchToMainWindow()
 }
-//async function parentContext(driver) {
 // NOTE:
-// Switching from the current browsing context up one-level is not built into TestCafe (yet).
-// See the following for reference:
+// Switching from the current browsing context up one-level is not built into
+// TestCafe (yet). See the following for reference:
 // - https://github.com/DevExpress/testcafe/issues/5429
 // - https://stackoverflow.com/questions/63453228/how-to-traverse-a-nested-frame-tree-by-its-hierarchy-in-testcafe
-// A workaround for this will be implemented in the core in order to minimize on the
-// performance overhead needed to construct and walk through the frame tree in TestCafe.
-//}
+// A workaround was implemented in core to minimize on the performance overhead
+// needed to construct and walk through the frame tree with DFS.
+// See `findPathToChildContext` in core/lib/sdk/EyesDriver.js for details.
+async function _parentContext(_driver) {}
 async function childContext(driver, element) {
-  // NOTE:
-  // The name of this function can be confusing out of context. This function is
-  // just a wrapper for switchToIframe. It's used in concert with parentContext
-  // in the core. parentContext is used to (implicitly) switch to the parent
-  // frame. childContext is used to (explicitly) switch to the element provided
-  // (it's assumed to be a child frame that is accessible from the current context).
   return await driver.switchToIframe(element)
 }
 async function findElement(driver, selector) {
@@ -245,7 +248,8 @@ async function findElement(driver, selector) {
   const elSnapshot = await selector()
   return elSnapshot ? elSnapshot.selector : undefined
 }
-// adapted from https://testcafe-discuss.devexpress.com/t/how-to-get-a-nodelist-from-selector/778
+// NOTE:
+// Adapted from https://testcafe-discuss.devexpress.com/t/how-to-get-a-nodelist-from-selector/778
 async function findElements(driver, selector) {
   const transformedSelector = await transformSelector({driver, selector})
   const elements =
@@ -276,11 +280,11 @@ async function getUrl(driver) {
 async function visit(driver, url) {
   await driver.navigateTo(url)
 }
+// NOTE:
+// Since we are constrained to saving screenshots to disk, we place each screenshot in its own
+// dot-folder which has a GUID prefix (e.g., .applitools-guide/screenshot.png).
+// We then read the file from disk, return the buffer, and delete the folder.
 async function takeScreenshot(driver, opts = {}) {
-  // NOTE:
-  // Since we are constrained to saving screenshots to disk, we place each screenshot in its own
-  // dot-folder which has a GUID prefix (e.g., .applitools-guide/screenshot.png).
-  // We then read the file from disk, return the buffer, and delete the folder.
   const SCREENSHOTS_PREFIX = '/.applitools'
   const SCREENSHOTS_FILENAME = 'screenshot.png'
   const filepath = path.resolve(
@@ -297,27 +301,30 @@ async function takeScreenshot(driver, opts = {}) {
     rmrf.sync(screenshotFolder)
   }
 }
+// NOTE:
+// This supposedly works with all options, e.g.,:
+// 1. selector string
+// 2. Selector object
+// 3. resolved Selector object (e.g., DOM Node snapshot/state)
+// https://devexpress.github.io/testcafe/documentation/reference/test-api/testcontroller/click.html#select-target-elements
 async function click(driver, element) {
-  // NOTE:
-  // supposedly works with all options, e.g.,:
-  // 1. selector string
-  // 2. Selector object
-  // 3. resolved Selector object (e.g., DOM Node snapshot/state)
-  // https://devexpress.github.io/testcafe/documentation/reference/test-api/testcontroller/click.html#select-target-elements
   const selector = await transformSelector({driver, selector: element})
   await driver.click(selector)
 }
+// NOTE:
+// There are additionall options if we want them:
+// https://devexpress.github.io/testcafe/documentation/reference/test-api/testcontroller/typetext.html
 async function type(driver, element, keys) {
-  // NOTE: there are add'l options if we want them
-  // https://devexpress.github.io/testcafe/documentation/reference/test-api/testcontroller/typetext.html
   await driver.typeText(element, keys)
 }
+// NOTE:
+// Documented here:
+// https://devexpress.github.io/testcafe/documentation/guides/concepts/built-in-wait-mechanisms.html#wait-mechanism-for-selectors
 async function waitUntilDisplayed(_driver, element, timeout) {
-  // NOTE: documented here:
-  // https://devexpress.github.io/testcafe/documentation/guides/concepts/built-in-wait-mechanisms.html#wait-mechanism-for-selectors
   await element.with({visibilityCheck: true, timeout})
 }
-// placeholder until implemented in core
+// NOTE:
+// This is an interim solution until it's properly implemented in core
 async function getWindowRect(driver) {
   const rect = await executeScript(
     driver,
@@ -329,7 +336,8 @@ async function getWindowRect(driver) {
   await setWindowRect(driver, defaultRect)
   return await getWindowRect(driver)
 }
-// placeholder until implemented in core
+// NOTE:
+// This is an interim solution until it's properly implemented in core
 async function setWindowRect(driver, {x, y, width, height} = {}) {
   if (width && height) {
     await driver.resizeWindow(width, height)
