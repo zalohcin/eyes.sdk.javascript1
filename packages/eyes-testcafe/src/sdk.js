@@ -4,6 +4,7 @@ const {
   VisualGridRunner,
   TestResultsFormatter,
   ConfigUtils,
+  Logger,
 } = require('@applitools/eyes-sdk-core')
 const VisualGridClient = require('@applitools/visual-grid-client')
 const spec = require('./spec-driver')
@@ -40,12 +41,14 @@ class DecoratedEyesFactory extends sdk.EyesFactory {
           failTestcafeOnDiff = config.failTestcafeOnDiff
           tapDirPath = config.tapDirPath
           eyesInstance.setConfiguration(config)
+          eyesInstance.logger = new Logger(config.getShowLogs())
           return await _open(t, appName, testName)
         } else {
           const config = translateArgsToConfig(applitoolsConfigJs)
           failTestcafeOnDiff = config.failTestcafeOnDiff
           tapDirPath = config.tapDirPath
           eyesInstance.setConfiguration(config)
+          eyesInstance.logger = new Logger(config.getShowLogs())
           return await _open(...args)
         }
       },
