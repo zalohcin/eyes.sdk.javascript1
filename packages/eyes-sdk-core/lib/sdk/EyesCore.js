@@ -24,7 +24,6 @@ const MatchResult = require('../match/MatchResult')
 const TestResults = require('../TestResults')
 const NullDebugScreenshotProvider = require('../debug/NullDebugScreenshotProvider')
 const takeDomCapture = require('../utils/takeDomCapture')
-const EyesUtils = require('./EyesUtils')
 
 const UNKNOWN_DEVICE_PIXEL_RATIO = 0
 const DEFAULT_DEVICE_PIXEL_RATIO = 1

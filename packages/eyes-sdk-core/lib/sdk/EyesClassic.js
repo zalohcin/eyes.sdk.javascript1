@@ -435,10 +435,8 @@ class EyesClassic extends EyesCore {
         await this._context.getScrollRootElement(),
       )
       this._regionFullArea = new Region(
-        this._regionToCheck
-          .getLocation()
-          .offsetNegative(remainingOffset),
-          // .offsetNegative(await this._context.getInnerOffset()),
+        this._regionToCheck.getLocation().offsetNegative(remainingOffset),
+        // .offsetNegative(await this._context.getInnerOffset()),
         this._regionToCheck.getSize(),
       )
     }
