@@ -4,6 +4,7 @@
 
 - fix DOM and image alignment
 - updated to @applitools/screenshoter@2.0.0 (from 1.0.2)
+- updated to @applitools/dom-snapshot@4.4.3 (from 4.4.1)
 ## 12.11.0 - 2020/12/29
 
 - export `takeDomSnapshots` function for JS layout in Storybook
