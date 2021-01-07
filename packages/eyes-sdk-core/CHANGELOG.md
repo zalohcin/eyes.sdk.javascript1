@@ -2,14 +2,16 @@
 
 ## Unreleased
 
+- add support for SDKs that don't support traversing between frames (e.g., it doesn't implement parentContext)
 
 ## 12.11.0 - 2020/12/29
 
 - export `takeDomSnapshots` function for JS layout in Storybook
-- export `takeDomSnapshots` function for JS layout in Storybook
+
 ## 12.10.2 - 2020/12/29
 
 - bring back verify-installed-versions
+
 ## 12.10.1 - 2020/12/29
 
 - fix `extractText` method
