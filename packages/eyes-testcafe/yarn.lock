@@ -10,6 +10,14 @@
     "@applitools/dom-shared" "1.0.4"
     "@applitools/functional-commons" "1.6.0"
 
+"@applitools/dom-capture@11.0.0":
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-capture/-/dom-capture-11.0.0.tgz#b7635f93dd8c5e0ed3e6e6d7345b16bf414d428f"
+  integrity sha512-4nnqcH31NRRzfvx1LbYE4NIwDjRZPZofK+T4k2RMERZ2+blO+xFj8EpcDVdsoFiXSUqqybv1FmQBySwLQESH2w==
+  dependencies:
+    "@applitools/dom-shared" "1.0.5"
+    "@applitools/functional-commons" "1.6.0"
+
 "@applitools/dom-shared@1.0.4":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@applitools/dom-shared/-/dom-shared-1.0.4.tgz#1a59116f3f29fb140ac031949547531348c9d972"
@@ -30,6 +38,16 @@
     css-tree "1.0.0-alpha.39"
     pako "1.0.11"
 
+"@applitools/dom-snapshot@4.4.3":
+  version "4.4.3"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-4.4.3.tgz#001fc7bdad58760d6d06ce629b90b706c9935d36"
+  integrity sha512-tFFgxHwg4GO20zIhPc7AdmAzXOKbjbdrtL/RzOhv99Vz8YcNf60XK4mBrtPe4evvkl+C6qViiAIUUWJqCHp+NA==
+  dependencies:
+    "@applitools/dom-shared" "1.0.5"
+    "@applitools/functional-commons" "1.6.0"
+    css-tree "1.0.0-alpha.39"
+    pako "1.0.11"
+
 "@applitools/driver@1.0.2":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.0.2.tgz#1b0f87f5cca75c525a1a77813898823331131953"
@@ -38,8 +56,10 @@
     "@applitools/snippets" "2.1.0"
     "@applitools/utils" "1.0.0"
 
-"@applitools/eyes-sdk-core@12.11.0", "@applitools/eyes-sdk-core@file:../eyes-sdk-core":
+"@applitools/eyes-sdk-core@12.11.0":
   version "12.11.0"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-12.11.0.tgz#49d7aabdedae8b903e5dbfe6fa5ba3fddc13fde7"
+  integrity sha512-p8KCd9uDHiTgjeHzlrirmqA2+CTdV70JJRFIlbZ7o24opYZrC6R0Qz9IRJ0ZwXQ/Bd7Yn0maZpGBUmHqXBsThA==
   dependencies:
     "@applitools/dom-capture" "10.0.0"
     "@applitools/dom-snapshot" "4.4.1"
@@ -48,6 +68,25 @@
     "@applitools/screenshoter" "1.0.2"
     "@applitools/snippets" "2.1.0"
     axios "0.19.2"
+    chalk "3.0.0"
+    cosmiconfig "6.0.0"
+    dateformat "3.0.3"
+    debug "4.2.0"
+    deepmerge "4.2.2"
+    png-async "0.9.4"
+    stack-trace "0.0.10"
+    tunnel "0.0.6"
+
+"@applitools/eyes-sdk-core@file:../eyes-sdk-core":
+  version "12.11.1"
+  dependencies:
+    "@applitools/dom-capture" "11.0.0"
+    "@applitools/dom-snapshot" "4.4.3"
+    "@applitools/driver" "1.0.2"
+    "@applitools/isomorphic-fetch" "3.0.0"
+    "@applitools/screenshoter" "2.0.0"
+    "@applitools/snippets" "2.1.0"
+    axios "0.21.1"
     chalk "3.0.0"
     cosmiconfig "6.0.0"
     dateformat "3.0.3"
@@ -125,6 +164,14 @@
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@applitools/screenshoter/-/screenshoter-1.0.2.tgz#899e8b36b5ad17f5a0e0f90d432320af678c57f0"
   integrity sha512-KpqrQPJwaehTRjX9w+3Ug+AGjcUpoUYsVtb2dumG6kr+hraoVTgubEuJuqwaYo4shLJG+aTMHVqL4qFrIZRrMA==
+  dependencies:
+    "@applitools/utils" "1.0.0"
+    sharp "0.26.3"
+
+"@applitools/screenshoter@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@applitools/screenshoter/-/screenshoter-2.0.0.tgz#2313ee40cc4d36dd4de1201951bbd90802dec221"
+  integrity sha512-qSAk1PbXglK4U6/+netATqtwoAgjvfTBdMEpWWH8vIncZkQAsXj12PNd5n4BTbmeOsoF3pMnYlhqcjb8opKrGQ==
   dependencies:
     "@applitools/utils" "1.0.0"
     sharp "0.26.3"
@@ -1791,6 +1838,13 @@ axios@0.20.0:
   version "0.20.0"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.20.0.tgz#057ba30f04884694993a8cd07fa394cff11c50bd"
   integrity sha512-ANA4rr2BDcmmAQLOKft2fufrtuvlqR+cXNNinUmvfeSNCOF98PZL+7M/v1zIdGo7OLjEA9J2gXJL+j4zGsl0bA==
+  dependencies:
+    follow-redirects "^1.10.0"
+
+axios@0.21.1:
+  version "0.21.1"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.1.tgz#22563481962f4d6bde9a76d516ef0e5d3c09b2b8"
+  integrity sha512-dKQiRHxGD9PPRIUNIWvZhPTPpl1rf/OxTYKsqKUDjBwYylTvV7SjSHJb9ratfyzM6wCdLCOYLzs73qpg5c4iGA==
   dependencies:
     follow-redirects "^1.10.0"
 
