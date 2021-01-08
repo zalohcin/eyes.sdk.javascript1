@@ -16,7 +16,8 @@ const EyesUtils = require('../sdk/EyesUtils')
 const EXECUTION_TIMEOUT = 5 * 60 * 1000
 const POLL_TIMEOUT = 200
 const IOS_CHUNK_BYTE_LENGTH = 100000
-const DEFAULT_CHUNK_BYTE_LENGTH = 262144000 // 250MB (could be 256MB but decide to leave a 6MB buffer)
+const DEFAULT_CHUNK_BYTE_LENGTH =
+  Number(process.env.APPLITOOLS_SCRIPT_RESULT_MAX_BYTE_LENGTH) || 262144000 // 250MB (could be 256MB but decide to leave a 6MB buffer)
 
 async function takeDomCapture(logger, context, options = {}) {
   ArgumentGuard.notNull(logger, 'logger')

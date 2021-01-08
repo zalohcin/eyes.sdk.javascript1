@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- add env var APPLITOOLS_SCRIPT_RESULT_MAX_BYTE_LENGTH
+- add support for SDKs that don't support traversing between frames (e.g., it doesn't implement parentContext)
 - republish to update vgc due to cyclic dependency
 - updated to axios@0.21.1 (from 0.19.2)
 
@@ -10,13 +12,15 @@
 - fix DOM and image alignment
 - updated to @applitools/screenshoter@2.0.0 (from 1.0.2)
 - updated to @applitools/dom-snapshot@4.4.3 (from 4.4.1)
-- updated to @applitools/dom-snapshot@4.4.3 (from 4.4.1)
+
 ## 12.11.0 - 2020/12/29
 
 - export `takeDomSnapshots` function for JS layout in Storybook
+
 ## 12.10.2 - 2020/12/29
 
 - bring back verify-installed-versions
+
 ## 12.10.1 - 2020/12/29
 
 - fix `extractText` method
