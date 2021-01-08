@@ -1,4 +1,4 @@
-// re: https://trello.com/c/HnnKL5VU/677-image-is-shown-as-blank-and-the-buttons-images-are-shown-as-squares-testcafe-hackathon-nov-2020
+// re: https://trello.com/c/HnnKL5VU
 const cwd = process.cwd()
 const path = require('path')
 const {Eyes} = require('../../index')
