@@ -2,8 +2,12 @@
 
 ## Unreleased
 
+
+## 0.8.0 - 2021/1/8
+
 - added debugScreenshots boolean option to getEyes that will automatically create a screenshots dir in the cwd
 - update the Eyes deps require statement in test-setup to use 'index' explicitly in the path (to support eyes-testcafe's need for dual index files)
+- updated to @applitools/sdk-coverage-tests@2.3.0 (from 2.2.2)
 
 ## 0.7.1 - 2021/1/5
 
