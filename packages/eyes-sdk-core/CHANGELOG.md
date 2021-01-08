@@ -6,6 +6,7 @@
 - add support for SDKs that don't support traversing between frames (e.g., it doesn't implement parentContext)
 - republish to update vgc due to cyclic dependency
 - updated to axios@0.21.1 (from 0.19.2)
+- updated to @applitools/dom-snapshot@4.4.4 (from 4.4.3)
 
 ## 12.11.1 - 2021/1/7
 
