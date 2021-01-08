@@ -6,19 +6,6 @@ const rmrf = require('rimraf')
 
 // helpers
 //
-// NOTE:
-// We inspect the internals of the function and find/return the selector string used to create it.
-// It's possible that a DOM Node snapshot was passed in, if so, we wrap it in a Selector so we can
-// use this approach.
-function extractSelectorString(selector) {
-  selector = isTestCafeSelector(selector) ? selector : Selector(selector)
-  const util = require('util')
-  const internals = util.inspect(selector, true, 2).split(',') // inspect(object, showHidden, depth)
-  const filteredInternals = internals.filter(line => line.includes('Selector('))
-  const match = !!filteredInternals.length && filteredInternals[0].match(/\(['"](.*)['"]\)/)
-  if (match && match.length) return match[1]
-  else throw new Error('Unable to determine selector')
-}
 async function XPathSelector(selector, opts = {}) {
   const getElementsByXPath = Selector(xpath => {
     /* eslint-disable no-undef */
@@ -142,13 +129,11 @@ function prepareClientFunction({clientFunction, dependencies, driver}) {
   return executor
 }
 async function transformSelector({driver, selector}) {
-  if (TypeUtils.isString(selector)) return Selector(selector, {boundTestRun: driver})
   if (isEyesSelector(selector)) {
-    if (selector.type === 'css') return Selector(selector.selector, {boundTestRun: driver})
-    else if (selector.type === 'xpath')
-      return XPathSelector(selector.selector, {boundTestRun: driver})
+    if (selector.type === 'xpath') return XPathSelector(selector.selector, {boundTestRun: driver})
+    return Selector(selector.selector, {boundTestRun: driver})
   }
-  return selector
+  return Selector(selector, {boundTestRun: driver})
 }
 //
 // end helpers
@@ -252,10 +237,7 @@ async function findElement(driver, selector) {
 // Adapted from https://testcafe-discuss.devexpress.com/t/how-to-get-a-nodelist-from-selector/778
 async function findElements(driver, selector) {
   const transformedSelector = await transformSelector({driver, selector})
-  const elements =
-    selector.type === 'xpath'
-      ? transformedSelector
-      : Selector(extractSelectorString(transformedSelector), {boundTestRun: driver})
+  const elements = transformedSelector
   const elementCount = await elements.count
   return Array.from({length: elementCount}, (_entry, index) => {
     return elements.nth(index)
@@ -393,4 +375,3 @@ exports.toEyesSelector = () => {
 }
 // for unit testing
 exports.prepareArgsFunctionString = prepareArgsFunctionString
-exports.extractSelectorString = extractSelectorString

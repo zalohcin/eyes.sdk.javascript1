@@ -3,14 +3,6 @@ const spec = require('../../src/spec-driver')
 const {Selector} = require('testcafe')
 
 describe('spec-driver', () => {
-  describe('extractSelectorString', () => {
-    it('works', () => {
-      assert.deepStrictEqual(
-        spec.extractSelectorString(Selector('#overflowing-div')),
-        '#overflowing-div',
-      )
-    })
-  })
   describe('prepareArgsFunctionString', () => {
     it('flat arguments', () => {
       const expected = 'let args = [...arguments]\n' + 'args[2] = args[2]()\n' + 'return args'
