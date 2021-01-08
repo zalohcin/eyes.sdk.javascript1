@@ -3,9 +3,9 @@
 const path = require('path')
 const cwd = process.cwd()
 const {testServer} = require('@applitools/sdk-shared')
-const {Target} = require(cwd)
+const {Target} = require(path.join(cwd, 'index-full'))
 const spec = require(path.resolve(cwd, 'src/spec-driver'))
-const {Eyes} = require('../..')
+const Eyes = require('../..')
 let server, eyes
 
 fixture`TestDisableBrowserFetching`

@@ -2,7 +2,7 @@ const assert = require('assert')
 const spec = require('../../src/spec-driver')
 const {Selector} = require('testcafe')
 const fs = require('fs')
-const {Eyes} = require('../..')
+const Eyes = require('../..')
 
 fixture`spec-driver`.page`https://applitools.github.io/demo/TestPages/FramesTestPage/`
 

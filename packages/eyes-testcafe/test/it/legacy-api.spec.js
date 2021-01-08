@@ -1,4 +1,4 @@
-const {Eyes} = require('../..')
+const Eyes = require('../..')
 const eyes = new Eyes()
 const assert = require('assert')
 const {getTestInfo} = require('@applitools/sdk-shared')

@@ -1,7 +1,7 @@
 // re: https://trello.com/c/HnnKL5VU/677-image-is-shown-as-blank-and-the-buttons-images-are-shown-as-squares-testcafe-hackathon-nov-2020
 const cwd = process.cwd()
 const path = require('path')
-const {Eyes} = require('../..')
+const Eyes = require('../..')
 const {testServer} = require('@applitools/sdk-shared')
 let eyes, server
 
