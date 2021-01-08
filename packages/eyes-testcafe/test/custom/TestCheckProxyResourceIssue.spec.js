@@ -16,7 +16,6 @@ fixture`proxying of resources`
   })
 test('works with images', async t => {
   await t.navigateTo('http://localhost:7777/images.html')
-  await t.debug()
   await eyes.open(t, 'eyes-testcafe proxying of resources', 'works with images', {
     width: 1024,
     height: 768,
