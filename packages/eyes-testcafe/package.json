@@ -55,7 +55,7 @@
     "testcafe": "^1.9.0"
   },
   "devDependencies": {
-    "@applitools/sdk-coverage-tests": "^2.2.2",
+    "@applitools/sdk-coverage-tests": "file:../sdk-coverage-tests",
     "@applitools/sdk-release-kit": "^0.10.9",
     "@applitools/sdk-shared": "file:../sdk-shared",
     "eslint": "^7.2.0",

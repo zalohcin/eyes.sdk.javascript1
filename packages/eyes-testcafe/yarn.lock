@@ -207,10 +207,8 @@
     xml-js "1.6.11"
     yargs "16.0.3"
 
-"@applitools/sdk-coverage-tests@^2.2.2":
+"@applitools/sdk-coverage-tests@file:../sdk-coverage-tests":
   version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@applitools/sdk-coverage-tests/-/sdk-coverage-tests-2.3.0.tgz#3a5c29c236b6512216d8bdaf59eaeae1f88a9544"
-  integrity sha512-JtrLGJcj/QGWMw5UdN/tkx3WzQqYK/JYcvtrjH4ra4heLXu+/DMd6AhUoTQgEpeHqgsJ4JW17xT3E6/tOyldrg==
   dependencies:
     "@azure/storage-blob" "12.2.0-preview.1"
     "@babel/core" "7.12.10"
