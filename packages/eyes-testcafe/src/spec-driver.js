@@ -310,7 +310,7 @@ async function waitUntilDisplayed(_driver, element, timeout) {
 async function getWindowRect(driver) {
   const rect = await executeScript(
     driver,
-    'return {x: window.scrollX, y: scrollY, width: window.outerWidth, height: window.outerHeight}',
+    'return {x: window.screenX, y: screenY, width: window.outerWidth, height: window.outerHeight}',
   )
   // ensure there is a width and height
   if (rect && rect.width && rect.height) return rect
