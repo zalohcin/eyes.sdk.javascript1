@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 12.12.0 - 2021/1/8
+
 - add env var APPLITOOLS_SCRIPT_RESULT_MAX_BYTE_LENGTH
 - add support for SDKs that don't support traversing between frames (e.g., it doesn't implement parentContext)
 - republish to update vgc due to cyclic dependency
