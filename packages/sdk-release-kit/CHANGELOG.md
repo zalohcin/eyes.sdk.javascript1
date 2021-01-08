@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- add eyes-testcafe to list of supported sdks
 
 ## 0.10.9 - 2020/12/29
 
