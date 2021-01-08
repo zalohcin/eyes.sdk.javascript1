@@ -31,7 +31,6 @@ fixture`DOMSnapshotSkipList`
 test.skip('skip list for DOM snapshot works with dependencies for blobs', async driver => {
   const url = 'http://localhost:5558/skip-list/skip-list.html'
   await spec.visit(driver, url)
-  await driver.debug()
   await eyes.open(driver, 'Applitools Eyes SDK', 'DOMSnapshotSkipList', {width: 800, height: 600})
   await eyes.check(Target.window().fully())
   await spec.visit(driver, url)
