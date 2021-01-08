@@ -369,9 +369,5 @@ exports.build = () => {
 }
 exports.scrollIntoView = () => {} // TestCafe does this implicitly
 exports.isStaleElementError = () => {} // TestCafe doesn't have a stale element error
-// no-op for core
-exports.toEyesSelector = () => {
-  return {type: false}
-}
 // for unit testing
 exports.prepareArgsFunctionString = prepareArgsFunctionString
