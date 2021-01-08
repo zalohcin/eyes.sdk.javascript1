@@ -280,7 +280,7 @@ test('setWindowRect (width, height)', async driver => {
   const actualRect = await spec.getWindowRect(driver)
   assert.deepStrictEqual(actualRect, expectedRect)
 })
-test('setWindowRect (x, y)', async driver => {
+test.skip('setWindowRect (x, y)', async driver => {
   const expectedPosition = {x: 0, y: 10}
   await spec.setWindowRect(driver, expectedPosition)
   const actualPosition = await spec.getWindowRect(driver)

@@ -320,7 +320,7 @@ async function getWindowRect(driver) {
 }
 // NOTE:
 // This is an interim solution until it's properly implemented in core
-async function setWindowRect(driver, {x, y, width, height} = {}) {
+async function setWindowRect(driver, {_x, _y, width, height} = {}) {
   if (width && height) {
     await driver.resizeWindow(width, height)
     await executeScript(
@@ -331,8 +331,6 @@ async function setWindowRect(driver, {x, y, width, height} = {}) {
   }`,
     )
   }
-  if (Number.isInteger(x) && Number.isInteger(y))
-    await executeScript(driver, `window.scroll(${x}, ${y})`)
 }
 async function getDriverInfo(_driver) {
   return {}
