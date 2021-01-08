@@ -47,7 +47,7 @@ class DecoratedEyesFactory extends sdk.EyesFactory {
         failTestcafeOnDiff = config.failTestcafeOnDiff
         tapDirPath = config.tapDirPath
         if (!process.env.APPLITOOLS_USE_PRELOADED_CONFIG) eyesInstance.setConfiguration(config)
-        eyesInstance.logger = new Logger(config.getShowLogs())
+        eyesInstance.logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS || config.getShowLogs())
         return await _open(...openArgs)
       },
       async checkWindow(args) {
