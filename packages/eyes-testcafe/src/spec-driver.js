@@ -393,3 +393,4 @@ exports.toEyesSelector = () => {
 }
 // for unit testing
 exports.prepareArgsFunctionString = prepareArgsFunctionString
+exports.extractSelectorString = extractSelectorString
