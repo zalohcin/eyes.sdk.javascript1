@@ -3,9 +3,8 @@
 const path = require('path')
 const cwd = process.cwd()
 const {testServer} = require('@applitools/sdk-shared')
-const {Target} = require(path.join(cwd, 'index-full'))
 const spec = require(path.resolve(cwd, 'src/spec-driver'))
-const Eyes = require('../..')
+const {Eyes, Target} = require('../../index')
 let server, eyes
 
 fixture`DOMSnapshotSkipList`

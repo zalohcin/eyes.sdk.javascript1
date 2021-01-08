@@ -1,7 +1,7 @@
 const cwd = process.cwd()
 const path = require('path')
 const {testServer} = require('@applitools/sdk-shared')
-const Eyes = require('../..')
+const {Eyes} = require('../../index')
 let eyes, serverA, serverB
 
 fixture`CORS iframe support in vg`

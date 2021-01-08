@@ -2,7 +2,7 @@
   "name": "@applitools/eyes-testcafe",
   "version": "1.11.0",
   "description": "Applitools Eyes SDK for TestCafe",
-  "main": "index.js",
+  "main": "index-short.js",
   "types": "./ts/index.d.ts",
   "scripts": {
     "deps": "bongo deps",

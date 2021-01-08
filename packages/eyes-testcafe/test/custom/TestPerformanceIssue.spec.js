@@ -1,6 +1,6 @@
 const cwd = process.cwd()
 const path = require('path')
-const Eyes = require('../..')
+const {Eyes} = require('../../index')
 let _eyes
 const pages = [
   {name: 'mopub', path: 'https://www.mopub.com/content/mopub-aem-twitter/en'},
