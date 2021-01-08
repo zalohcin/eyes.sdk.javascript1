@@ -1,6 +1,8 @@
 const core = require('@applitools/eyes-sdk-core')
 const {EyesFactory, CheckSettings} = require('./src/sdk')
 
+process.env.APPLITOOLS_SCRIPT_RESULT_MAX_BYTE_LENGTH = 4718592 // 4.5 MB
+
 exports.Eyes = EyesFactory
 exports.Target = CheckSettings
 
