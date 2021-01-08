@@ -234,35 +234,36 @@ class EyesDriver {
     this._currentContext = this._mainContext
     return this.switchToChildContext(...path)
   }
+  // NOTE:
+  // This is the fallback used when a spec does not have parentContext
+  // implemented (e.g., TestCafe). It assumes that the spec is not able to
+  // switch between child and parent contexts (even when you are in the child
+  // context and have the selector/element of the parent context). This is a
+  // recursive function that performs a depth-first-search from the top of
+  // the window. When it needs to switch to a higher frame context it resets
+  // its context to the root and walks down to the target child context.
   async findPathToChildContext(contextInfo, path = []) {
-    // NOTE:
-    // This is the fallback used when a spec does not have parentContext
-    // implemented (e.g., TestCafe). It assumes that the spec is not able to
-    // switch between child and parent contexts (even when you are in the child
-    // context and have the selector/element of the parent context). This is a
-    // recursive function that performs a depth-first-search from the top of
-    // the window. When it needs to switch to a higher frame context it resets
-    // its context to the root and walks down to the target child context.
     await this.switchToMainContext()
     for (const element of path) {
       await this.spec.childContext(this._driver, element)
     }
+    const contentDocument = await this.spec.findElement(this._driver, {
+      type: 'css',
+      selector: 'html',
+    })
+    const contextDocument = contextInfo.documentElement
     if (contextInfo.selector) {
       const element = await this.spec.findElement(this._driver, {
         type: 'xpath',
         selector: contextInfo.selector,
       })
-      if (element) {
+      if (
+        element //&& (await this.spec.isEqualElements(this._driver, contentDocument, contextDocument))
+      ) {
         return [...path, element]
       }
     } else {
-      const contentDocument = await this.spec.findElement(this._driver, {
-        type: 'css',
-        selector: 'html',
-      })
-      if (
-        await this.spec.isEqualElements(this._driver, contentDocument, contextInfo.contentDocument)
-      ) {
+      if (await this.spec.isEqualElements(this._driver, contentDocument, contextDocument)) {
         return path
       }
     }
