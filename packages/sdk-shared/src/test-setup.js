@@ -3,7 +3,7 @@ const fs = require('fs')
 const path = require('path')
 const {URL} = require('url')
 const cwd = process.cwd()
-const cwdPath = path.join(cwd, 'index')
+const cwdPath = path.join(cwd, 'index.js')
 const {
   BatchInfo,
   Configuration,
