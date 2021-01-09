@@ -2,7 +2,12 @@
 
 ## Unreleased
 
+
+## 1.12.1 - 2021/1/9
+
 - move env var used to configure dom-snapshot byte length into more central place
+- updated to @applitools/eyes-sdk-core@12.12.1 (from 12.12.0)
+- updated to @applitools/visual-grid-client@15.5.4 (from 15.5.3)
 
 ## 1.12.0 - 2021/1/9
 
