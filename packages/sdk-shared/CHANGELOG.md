@@ -1,7 +1,7 @@
 # Changelog
 
 ## Unreleased
-
+- fix test-setup require to work with packages that don't have an index.js in the package root
 
 ## 0.8.0 - 2021/1/8
 
