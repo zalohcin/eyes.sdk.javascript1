@@ -18,7 +18,7 @@ fixture`TestDisableBrowserFetching`
         'node_modules/@applitools/sdk-shared/coverage-tests/util/ua-middleware.js',
       ),
     })
-    eyes = testSetup.getEyes({vg: true})
+    eyes = testSetup.getEyes({vg: true, disableBrowserFetching: true})
   })
   .after(async () => {
     await server.close()
