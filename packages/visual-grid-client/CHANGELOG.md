@@ -3,6 +3,10 @@
 ## Unreleased
 
 
+## 15.5.3 - 2021/1/9
+
+- updated to @applitools/eyes-sdk-core@12.12.0 (from 12.11.1)
+
 ## 15.5.2 - 2021/1/7
 
 - move `abort-controller` to dependencies
