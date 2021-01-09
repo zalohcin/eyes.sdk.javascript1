@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 0.8.2 - 2021/1/9
+
 - fix bug in test-setup cwd require
 
 ## 0.8.1 - 2021/1/9
