@@ -3,6 +3,7 @@ const fs = require('fs')
 const path = require('path')
 const {URL} = require('url')
 const cwd = process.cwd()
+const cwdPath = path.join(cwd, 'index')
 const {
   BatchInfo,
   Configuration,
@@ -10,7 +11,7 @@ const {
   VisualGridRunner,
   ConsoleLogHandler,
   FileLogHandler,
-} = require(path.join(cwd, 'index'))
+} = require(fs.existsSync(cwdPath) ? cwdPath : cwd)
 
 const SAUCE_SERVER_URL = 'https://ondemand.saucelabs.com:443/wd/hub'
 
