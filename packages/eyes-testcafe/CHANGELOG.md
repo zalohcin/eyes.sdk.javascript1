@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- move env var used to configure dom-snapshot byte length into more central place
 
 ## 1.12.0 - 2021/1/9
 

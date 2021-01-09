@@ -13,15 +13,15 @@ const createFramesPaths = require('./createFramesPaths')
 
 const EXECUTION_TIMEOUT = 5 * 60 * 1000
 const POLL_TIMEOUT = 200
-const DEFAULT_CHUNK_BYTE_LENGTH =
-  Number(process.env.APPLITOOLS_SCRIPT_RESULT_MAX_BYTE_LENGTH) || 262144000 // 250MB (could be 256MB but decide to leave a 6MB buffer)
+const DEFAULT_CHUNK_BYTE_LENGTH = 262144000 // 250MB (could be 256MB but decide to leave a 6MB buffer)
 
 async function takeDomSnapshot(logger, driver, options = {}) {
   ArgumentGuard.notNull(logger, 'logger')
   ArgumentGuard.notNull(driver, 'driver')
   const {
     disableBrowserFetching: dontFetchResources,
-    chunkByteLength = DEFAULT_CHUNK_BYTE_LENGTH,
+    chunkByteLength = Number(process.env.APPLITOOLS_SCRIPT_RESULT_MAX_BYTE_LENGTH) ||
+      DEFAULT_CHUNK_BYTE_LENGTH,
     pollTimeout = POLL_TIMEOUT,
     executionTimeout = EXECUTION_TIMEOUT,
     showLogs,
