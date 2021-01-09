@@ -5,7 +5,7 @@
 
 ## 1.12.1 - 2021/1/9
 
-- move env var used to configure dom-snapshot byte length into more central place
+- fix performance issue with checkWindow command when used on pages of a non-trivial size
 - updated to @applitools/eyes-sdk-core@12.12.1 (from 12.12.0)
 - updated to @applitools/visual-grid-client@15.5.4 (from 15.5.3)
 
