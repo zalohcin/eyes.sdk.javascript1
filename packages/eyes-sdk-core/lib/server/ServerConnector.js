@@ -114,7 +114,7 @@ class ServerConnector {
       headers: DEFAULT_HEADERS,
       timeout: DEFAULT_TIMEOUT_MS,
       responseType: 'json',
-      maxContentLength: 200 * 1024 * 1024, // 200 MB
+      maxBodyLength: 200 * 1024 * 1024, // 200 MB
     })
 
     this._axios.interceptors.request.use(async config => {
@@ -690,7 +690,7 @@ class ServerConnector {
         'X-Auth-Token': this._renderingInfo.getAccessToken(),
         'Content-Type': resource.getContentType(),
       },
-      maxContentLength: 15.5 * 1024 * 1024, // 15.5 MB  (VG limit is 16MB)
+      maxBodyLength: 15.5 * 1024 * 1024, // 15.5 MB  (VG limit is 16MB)
       params: {
         'render-id': GeneralUtils.guid(),
       },
