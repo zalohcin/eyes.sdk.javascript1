@@ -3,6 +3,12 @@
 ## Unreleased
 
 
+## 3.16.1 - 2021/1/10
+
+- updated to @applitools/dom-snapshot@4.4.4 (from 4.4.1)
+- updated to @applitools/eyes-sdk-core@12.12.2 (from 12.11.0)
+- updated to @applitools/visual-grid-client@15.5.5 (from 15.5.0)
+
 ## 3.16.0 - 2020/12/30
 
 - support JS layout
