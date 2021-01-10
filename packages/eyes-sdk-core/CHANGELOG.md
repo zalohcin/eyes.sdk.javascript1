@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+
+## 12.12.2 - 2021/1/10
+
+- fix(axios): update `maxContentLength` to `maxBodyLength`
 - fix(axios): update `maxContentLength` to `maxBodyLength`
 ## 12.12.1 - 2021/1/9
 
