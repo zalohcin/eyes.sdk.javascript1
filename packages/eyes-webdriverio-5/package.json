@@ -32,14 +32,14 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "12.12.1",
-    "@applitools/visual-grid-client": "15.5.4"
+    "@applitools/eyes-sdk-core": "12.12.2",
+    "@applitools/visual-grid-client": "15.5.5"
   },
   "peerDependencies": {
     "webdriverio": "5.0.0 - 6.x.x"
   },
   "devDependencies": {
-    "@applitools/sdk-coverage-tests": "^2.3.0",
+    "@applitools/sdk-coverage-tests": "^2.3.3",
     "@applitools/sdk-fake-eyes-server": "^2.1.1",
     "@applitools/sdk-release-kit": "^0.11.0",
     "@applitools/sdk-shared": "^0.8.2",
