@@ -54,7 +54,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-push": "src/cli/index.js lint && src/cli/index.js verify-changelog"
+      "pre-push": "node src/cli/index.js lint && node src/cli/index.js verify-changelog"
     }
   }
 }
