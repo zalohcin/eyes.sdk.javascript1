@@ -53,7 +53,16 @@ class DecoratedEyesFactory extends sdk.EyesFactory {
         return await _open(...openArgs)
       },
       async checkWindow(args) {
-        await _check(args && TypeUtils.isObject(args) ? translateArgsToCheckSettings(args) : args)
+        let preparedArgs
+        if (TypeUtils.isObject(args)) {
+          preparedArgs =
+            args.tag && Object.keys(args).length === 1
+              ? {tag: args.tag, target: 'window', fully: true}
+              : args
+        } else {
+          preparedArgs = {tag: args, target: 'window', fully: true}
+        }
+        await _check(translateArgsToCheckSettings(preparedArgs))
       },
       async waitForResults(throwEx = true) {
         const resultsSummary = await eyesInstance

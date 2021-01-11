@@ -48,12 +48,23 @@ test('eyes.checkWindow tag', async t => {
   const result = await eyes.close(false)
   const info = await getTestInfo(result, process.env.APPLITOOLS_API_KEY)
   assert.deepStrictEqual(info['actualAppOutput']['0'].tag, 'tag')
-  // assert tags in jobs
+})
+test('eyes.checkWindow fully (implicit default)', async t => {
+  await t.navigateTo('https://applitools.github.io/demo/TestPages/FramesTestPage/')
+  await eyes.open({t, appName: 'eyes-testcafe', testName: 'legacy api test: checkWindow fully'})
+  await eyes.checkWindow()
+  await eyes.close(true)
 })
 test('eyes.checkWindow fully', async t => {
   await t.navigateTo('https://applitools.github.io/demo/TestPages/FramesTestPage/')
   await eyes.open({t, appName: 'eyes-testcafe', testName: 'legacy api test: checkWindow fully'})
   await eyes.checkWindow({target: 'window', fully: true})
+  await eyes.close(true)
+})
+test('eyes.checkWindow viewport', async t => {
+  await t.navigateTo('https://applitools.github.io/demo/TestPages/FramesTestPage/')
+  await eyes.open({t, appName: 'eyes-testcafe', testName: 'legacy api test: checkWindow viewport'})
+  await eyes.checkWindow({target: 'window'})
   await eyes.close(true)
 })
 test('eyes.checkWindow selector (css)', async t => {

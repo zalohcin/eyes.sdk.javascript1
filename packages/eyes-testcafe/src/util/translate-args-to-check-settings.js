@@ -1,6 +1,7 @@
 module.exports = CheckSettings => {
   return args => {
     const checkArgs = {...args}
+    checkArgs.name = checkArgs.tag
     checkArgs.isFully = checkArgs.fully
     if (checkArgs.target && checkArgs.target === 'region' && checkArgs.selector)
       checkArgs.region = checkArgs.selector

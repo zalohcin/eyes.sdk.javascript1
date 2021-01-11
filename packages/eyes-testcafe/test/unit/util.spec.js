@@ -26,6 +26,13 @@ describe('util', () => {
   })
   describe('config', () => {
     describe('translate check args to check settings', () => {
+      it('tag', () => {
+        const args = {
+          tag: 'blah',
+        }
+        const checkSettings = translateArgsToCheckSettings(args)
+        assert.deepStrictEqual(checkSettings.getName(), args.tag)
+      })
       it('window fully', () => {
         const args = {
           target: 'window',

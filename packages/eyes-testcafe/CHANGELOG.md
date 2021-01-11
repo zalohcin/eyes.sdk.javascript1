@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- fixed default checkWindow behavior (when no options are provided) to respect backwards compatibility -- so it captures a full page screenshot instead of just the viewport
+- fixed bug in specifying a tag name in checkWindow
 
 ## 1.12.1 - 2021/1/9
 
