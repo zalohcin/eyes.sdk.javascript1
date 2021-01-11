@@ -1,5 +1,6 @@
 const vm = require('vm')
 const fs = require('fs')
+const path = require('path')
 const chalk = require('chalk')
 const fetchSync = require('sync-fetch')
 
@@ -83,9 +84,10 @@ function requireUrl(url, cache = {}) {
   const module = {exports: {}}
   cache[url] = module
   runCode(code, {
-    require(path) {
-      if (!/^[./]/.test(path)) return require(path)
-      const requiringUrl = new URL(path, url).href
+    require(modulePath) {
+      if (!/^[./]/.test(modulePath)) return require(modulePath)
+      if (!path.extname(modulePath)) modulePath += '.js'
+      let requiringUrl = new URL(modulePath, url).href
       return cache[requiringUrl] ? cache[requiringUrl].exports : requireUrl(requiringUrl, cache)
     },
     module,

@@ -2,10 +2,10 @@
 
 ## Unreleased
 
+- add `.js` if extension is missed for remote files
 
 ## 2.3.1 - 2021/1/11
 
-- fix remote multifile modules requiring
 - fix remote multifile modules requiring
 ## 2.3.0 - 2021/1/6
 
