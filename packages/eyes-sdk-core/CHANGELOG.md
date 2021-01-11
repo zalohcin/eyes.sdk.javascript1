@@ -6,7 +6,7 @@
 ## 12.12.2 - 2021/1/10
 
 - fix(axios): update `maxContentLength` to `maxBodyLength`
-- fix(axios): update `maxContentLength` to `maxBodyLength`
+
 ## 12.12.1 - 2021/1/9
 
 - fix usage of APPLITOOLS_SCRIPT_RESULT_MAX_BYTE_LENGTH env var so it is referenced when needed, not before (when it's possibly not set)
