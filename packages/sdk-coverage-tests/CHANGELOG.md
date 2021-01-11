@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 2.3.3 - 2021/1/11
+
 - fix `addExpression`
 
 ## 2.3.2 - 2021/1/11
