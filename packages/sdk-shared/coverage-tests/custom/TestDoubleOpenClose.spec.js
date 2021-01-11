@@ -134,7 +134,7 @@ describe.skip(appName, () => {
   })
 })
 
-describe(appName, () => {
+describe.skip(appName, () => {
   let webDriver, destroyDriver
   beforeEach(async () => {
     ;[webDriver, destroyDriver] = await spec.build({browser: 'chrome'})
