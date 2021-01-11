@@ -65,10 +65,11 @@ function useEmitter() {
   }
 
   function addExpression(expression) {
+    const id = commands.push('') - 1
     return useRef({
       deref({name, type} = {}) {
         if (name) {
-          commands.push(syntax.var({constant: true, name, value: expression, type}))
+          commands[id] = syntax.var({constant: true, name, value: expression, type})
           return name
         } else {
           return expression
