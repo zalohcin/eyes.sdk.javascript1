@@ -94,7 +94,7 @@
   "license": "SEE LICENSE IN LICENSE",
   "husky": {
     "hooks": {
-      "pre-push": "yarn bongo preversion && yarn bongo verify-changelog"
+      "pre-push": "yarn bongo lint && yarn bongo verify-changelog"
     }
   },
   "engines": {
