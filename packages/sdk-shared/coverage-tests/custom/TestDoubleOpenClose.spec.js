@@ -15,7 +15,7 @@ describe.skip(appName, () => {
     await eyes.abortIfNotClosed()
     await destroyDriver()
   })
-  describe('Classic', () => {
+  describe.skip('Classic', () => {
     let runner
     beforeEach(async () => {
       ;[webDriver, destroyDriver] = await spec.build({browser: 'chrome'})
@@ -83,7 +83,7 @@ describe.skip(appName, () => {
     })
   })
 
-  describe('VG', () => {
+  describe.skip('VG', () => {
     let runner
     beforeEach(async () => {
       ;[webDriver, destroyDriver] = await spec.build({browser: 'chrome'})
