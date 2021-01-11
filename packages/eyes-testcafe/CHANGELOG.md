@@ -2,8 +2,13 @@
 
 ## Unreleased
 
+
+## 1.12.2 - 2021/1/11
+
 - fixed default checkWindow behavior (when no options are provided) to respect backwards compatibility -- so it captures a full page screenshot instead of just the viewport
 - fixed bug in specifying a tag name in checkWindow
+- updated to @applitools/eyes-sdk-core@12.12.2 (from 12.12.1)
+- updated to @applitools/visual-grid-client@15.5.5 (from 15.5.4)
 
 ## 1.12.1 - 2021/1/9
 
