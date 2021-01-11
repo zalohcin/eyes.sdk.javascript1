@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-testcafe",
-  "version": "1.12.1",
+  "version": "1.12.2",
   "description": "Applitools Eyes SDK for TestCafe",
   "main": "index-short.js",
   "types": "./ts/index.d.ts",
@@ -47,8 +47,8 @@
   },
   "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "12.12.1",
-    "@applitools/visual-grid-client": "15.5.4",
+    "@applitools/eyes-sdk-core": "12.12.2",
+    "@applitools/visual-grid-client": "15.5.5",
     "rimraf": "3.0.2"
   },
   "peerDependencies": {
@@ -57,7 +57,7 @@
   "devDependencies": {
     "@applitools/sdk-coverage-tests": "^2.3.0",
     "@applitools/sdk-release-kit": "^0.11.0",
-    "@applitools/sdk-shared": "^0.8.2",
+    "@applitools/sdk-shared": "^0.8.4",
     "eslint": "^7.2.0",
     "eslint-plugin-mocha-no-only": "^1.1.1",
     "eslint-plugin-node": "^11.1.0",
@@ -65,14 +65,14 @@
     "eslint-plugin-testcafe": "0.2.1",
     "mocha": "^8.0.1",
     "prettier": "^1.19.0",
+    "sync-fetch": "0.3.0",
     "testcafe": "^1.10.0",
     "testcafe-10": "npm:testcafe@^1.10.0",
     "testcafe-7": "npm:testcafe@1.7.1",
     "testcafe-8": "npm:testcafe@1.8.8",
     "testcafe-9": "npm:testcafe@1.9.4",
     "testcafe-browser-provider-saucelabs": "^1.8.0",
-    "uuid": "^8.3.2",
-    "sync-fetch": "0.3.0"
+    "uuid": "^8.3.2"
   },
   "engines": {
     "node": ">=10.0.0"
