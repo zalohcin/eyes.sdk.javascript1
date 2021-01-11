@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 2.3.2 - 2021/1/11
+
 - add `.js` if extension is missed for remote files
 
 ## 2.3.1 - 2021/1/11
