@@ -8,7 +8,7 @@ const {Target, ClassicRunner, VisualGridRunner, Eyes} = require(cwd)
 
 const appName = 'Eyes Selenium SDK - Double Open Close'
 
-describe(appName, () => {
+describe.skip(appName, () => {
   let webDriver, destroyDriver, eyes
 
   afterEach(async () => {
