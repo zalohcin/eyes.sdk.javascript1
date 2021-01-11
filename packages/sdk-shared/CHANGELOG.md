@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- removing skipped tests
 
 ## 0.8.2 - 2021/1/9
 
