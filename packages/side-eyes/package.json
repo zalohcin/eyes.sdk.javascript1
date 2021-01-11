@@ -68,6 +68,7 @@
     "file-loader": "^0.11.2",
     "grizzly": "^4.0.1",
     "html-webpack-plugin": "^2.30.1",
+    "husky": "^4.3.7",
     "jest": "^24.9.0",
     "patch-package": "^5.1.1",
     "postcss-flexbugs-fixes": "^3.2.0",
@@ -112,5 +113,10 @@
     "clean-css": "^4.1.11",
     "mem": "6.0.1",
     "serialize-javascript": "2.1.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "yarn bongo lint && yarn bongo verify-changelog"
+    }
   }
 }
