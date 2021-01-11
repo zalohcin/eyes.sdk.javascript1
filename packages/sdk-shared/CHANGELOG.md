@@ -2,10 +2,9 @@
 
 ## Unreleased
 
-
+- removing skipped tests
 ## 0.8.3 - 2021/1/11
 
-- removing skipped tests
 - updated to @applitools/sdk-coverage-tests@2.3.3 (from 2.3.0)
 
 ## 0.8.2 - 2021/1/9
