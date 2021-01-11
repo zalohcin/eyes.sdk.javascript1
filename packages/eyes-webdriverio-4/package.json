@@ -47,6 +47,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.1.4",
     "geckodriver": "^1.19.1",
+    "husky": "^4.3.7",
     "mocha": "^8.0.1",
     "node-fetch": "^2.6.0",
     "prettier": "1.19.0",
@@ -56,5 +57,10 @@
   },
   "engines": {
     "node": ">=8.9.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "yarn bongo lint && yarn bongo verify-changelog"
+    }
   }
 }
