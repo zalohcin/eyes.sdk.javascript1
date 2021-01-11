@@ -58,5 +58,10 @@
     "husky": "^4.3.7",
     "mocha": "^7.0.0",
     "prettier": "1.19.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "yarn bongo lint && yarn bongo verify-changelog"
+    }
   }
 }
