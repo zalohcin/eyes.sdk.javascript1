@@ -71,7 +71,8 @@
     "testcafe-8": "npm:testcafe@1.8.8",
     "testcafe-9": "npm:testcafe@1.9.4",
     "testcafe-browser-provider-saucelabs": "^1.8.0",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "sync-fetch": "0.3.0"
   },
   "engines": {
     "node": ">=10.0.0"
