@@ -78,7 +78,7 @@ function runCode(code, context) {
   }
 }
 
-async function requireUrl(url, cache = {}) {
+function requireUrl(url, cache = {}) {
   const code = loadFile(url)
   const module = {exports: {}}
   cache[url] = module
