@@ -207,10 +207,10 @@
     prettier "1.18.2"
     yargs "15.3.1"
 
-"@applitools/sdk-shared@^0.8.4":
-  version "0.8.4"
-  resolved "https://registry.yarnpkg.com/@applitools/sdk-shared/-/sdk-shared-0.8.4.tgz#a58ec30ebbc92f7010b5357285209a64483ee412"
-  integrity sha512-Xif7u48vZhwSsyS0CIjqcsHZuiVU+ArpKdAyE5TSG5iza0lyEkF+c8gHk48f4DeU4qqdpgYJNPMgO8DVfK18xQ==
+"@applitools/sdk-shared@^0.8.5":
+  version "0.8.5"
+  resolved "https://registry.yarnpkg.com/@applitools/sdk-shared/-/sdk-shared-0.8.5.tgz#f432744d93c67b330445f55796da634a7f08ff7a"
+  integrity sha512-eMw4E960NDUaiVts6jVS3hEUR/snAZ6H5JIbUTvWlYAQRyB3Jst3USC3dL9LHNqNsMqqvt5C6Q+sJXiyG9yMhA==
   dependencies:
     "@applitools/functional-commons" "1.6.0"
     "@applitools/sdk-coverage-tests" "2.3.3"
