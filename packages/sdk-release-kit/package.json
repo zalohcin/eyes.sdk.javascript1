@@ -35,7 +35,7 @@
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
   },
   "dependencies": {
-    "@applitools/sdk-shared": "0.8.0",
+    "@applitools/sdk-shared": "0.8.5",
     "chalk": "3.0.0",
     "lodash.pickby": "4.6.0",
     "micromatch": "4.0.2",

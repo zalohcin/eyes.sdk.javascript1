@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- updated to @applitools/sdk-shared@0.8.5 (from 0.8.0)
 
 
 ## 0.11.0 - 2021/1/8
