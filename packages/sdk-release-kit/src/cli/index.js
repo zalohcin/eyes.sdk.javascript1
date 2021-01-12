@@ -87,7 +87,7 @@ const command = args._[0]
             installedDirectory: path.join('.bongo', 'dry-run'),
           })
         }
-        await commitFiles()
+        await commitFiles(!!args.skipCommit)
         console.log('[bongo preversion] done!')
         return
       case 'send-release-notification':
@@ -146,8 +146,8 @@ async function deps() {
   })
 }
 
-async function commitFiles(shouldCommit = true) {
-  if (shouldCommit) {
+async function commitFiles(skipCommit = false) {
+  if (!skipCommit) {
     const files = ['package.json', 'CHANGELOG.md', 'yarn.lock']
     for (const file of files) {
       // git add fails when trying to add files that weren't changed
