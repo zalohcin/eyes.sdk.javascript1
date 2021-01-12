@@ -91,13 +91,13 @@
     "deps": "bongo deps",
     "prepublish:setup": "yarn docker:setup"
   },
+  "license": "SEE LICENSE IN LICENSE",
+  "engines": {
+    "node": ">=8.9.0"
+  },
   "husky": {
     "hooks": {
       "pre-push": "yarn bongo lint && yarn bongo verify-changelog"
     }
-  },
-  "license": "SEE LICENSE IN LICENSE",
-  "engines": {
-    "node": ">=8.9.0"
   }
 }
