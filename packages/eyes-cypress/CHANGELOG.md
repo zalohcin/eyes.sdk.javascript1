@@ -3,6 +3,11 @@
 ## Unreleased
 
 
+## 3.18.3 - 2021/1/12
+
+- updated to @applitools/dom-snapshot@4.4.5 (from 4.4.3)
+- updated to @applitools/visual-grid-client@15.5.5 (from 15.5.0)
+
 ## 3.18.2 - 2021/1/3
 
 - fix global config layoutBreakpoints
