@@ -8,6 +8,7 @@ const PerformanceUtils = require('../utils/PerformanceUtils')
 const NullLogHandler = require('./NullLogHandler')
 const ConsoleLogHandler = require('./ConsoleLogHandler')
 const DebugLogHandler = require('./DebugLogHandler')
+const {reset} = require('chalk')
 
 const timeStorage = PerformanceUtils.start()
 
@@ -33,6 +34,13 @@ class Logger {
       : new DebugLogHandler(true, debugAppName)
     this._sessionId = ''
     this._isIncludeTime = false
+    this.logLevelColors = {
+      VERBOSE: '\x1b[38;5;219m',
+      INFO: '\x1b[38;5;185;234;129m',
+      ERROR: '\x1b[31m',
+      WARN: '\x1b[38;5;215m',
+      DATA: '\x1b[38;5;75m',
+    }
   }
 
   /**
@@ -90,6 +98,39 @@ class Logger {
   }
 
   /**
+   * Writes a (non-verbose) data message.
+   *
+   * @param {*} args
+   */
+  data(...args) {
+    this._logHandler.onMessage(false, this._getFormattedString('DATA', JSON.stringify(args)))
+  }
+
+  /**
+   * Writes a (non-verbose) warn message.
+   *
+   * @param {*} args
+   */
+  warn(...args) {
+    this._logHandler.onMessage(
+      false,
+      this._getFormattedString('WARN', GeneralUtils.stringify(...args)),
+    )
+  }
+
+  /**
+   * Writes a (non-verbose) error message.
+   *
+   * @param {*} args
+   */
+  error(...args) {
+    this._logHandler.onMessage(
+      false,
+      this._getFormattedString('ERROR', GeneralUtils.stringify(...args)),
+    )
+  }
+
+  /**
    * Writes a (non-verbose) write message.
    *
    * @param {*} args
@@ -97,7 +138,7 @@ class Logger {
   log(...args) {
     this._logHandler.onMessage(
       false,
-      this._getFormattedString('LOG    ', GeneralUtils.stringify(...args)),
+      this._getFormattedString('INFO', GeneralUtils.stringify(...args)),
     )
   }
 
@@ -106,7 +147,16 @@ class Logger {
    * @return {string} - The name of the method which called the logger, if possible, or an empty string.
    */
   _getFormattedString(logLevel, message) {
-    const dateTime = DateTimeUtils.toISO8601DateTime()
+    const date = new Date()
+    let dateTime = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
+
+    if (process.stdout.isTTY) {
+      const resetCode = '\x1b[0m'
+      const color = this.logLevelColors[logLevel.trim()]
+      logLevel = `${color}${logLevel}${resetCode}`
+      message = `\x1b[0;2m${message}${resetCode}`
+      dateTime = `\x1b[37;1m${dateTime}${resetCode}`
+    }
 
     let elapsedTime = ''
     if (this._isIncludeTime) {
