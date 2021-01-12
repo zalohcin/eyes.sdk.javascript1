@@ -21,5 +21,4 @@ const filteredOverrides = Object.fromEntries(
 fs.writeFileSync('overrides.js', `module.exports = ${JSON.stringify(filteredOverrides)}`)
 modifiedConfig.overrides = path.resolve(process.cwd(), 'overrides.js')
 
-console.log(modifiedConfig)
 module.exports = modifiedConfig
