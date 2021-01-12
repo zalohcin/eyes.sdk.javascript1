@@ -1,7 +1,11 @@
 'use strict';
 
 function filterStories({stories, config}) {
-  return stories.filter(story => filterStory(story, config));
+  const filteredStories = stories.filter(story => filterStory(story, config));
+  if (config.storybookUrl && config.storyId) {
+    return filteredStories.filter(story => story.parameters.__id === config.storyId);
+  }
+  return filteredStories;
 }
 
 function filterStory(story, config) {
