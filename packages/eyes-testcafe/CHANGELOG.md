@@ -3,6 +3,8 @@
 ## Unreleased
 
 - fix for fetching font-face resources from stylesheets [Trello](https://trello.com/c/DwmxtRoR)
+- updated to @applitools/eyes-sdk-core@12.13.0 (from 12.12.2)
+- updated to @applitools/visual-grid-client@15.5.6 (from 15.5.5)
 
 ## 1.12.2 - 2021/1/11
 
