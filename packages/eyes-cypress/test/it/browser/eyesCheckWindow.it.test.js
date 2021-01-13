@@ -2,6 +2,7 @@
 
 const {describe, it} = require('mocha');
 const {expect} = require('chai');
+const {delay} = require('@applitools/functional-commons');
 const makeEyesCheckWindow = require('../../../src/browser/eyesCheckWindow');
 
 describe('eyesCheckWindow', () => {
@@ -71,6 +72,7 @@ describe('eyesCheckWindow', () => {
     ]);
 
     async function sendRequest(arg) {
+      await delay(50)
       if (arg.command === 'checkWindow') sendRequestInput = arg;
       else {
         resourcesPutted.push(arg);
@@ -196,6 +198,7 @@ describe('eyesCheckWindow', () => {
     ]);
 
     async function sendRequest(arg) {
+      await delay(50)
       if (arg.command === 'checkWindow') sendRequestInput = arg;
       else {
         resourcesPutted.push(arg);
@@ -299,6 +302,7 @@ describe('eyesCheckWindow', () => {
     ]);
 
     async function sendRequest(arg) {
+      await delay(50)
       if (arg.command === 'checkWindow') sendRequestInput = arg;
       else {
         resourcesPutted.push(arg);
@@ -352,6 +356,7 @@ describe('eyesCheckWindow', () => {
     ]);
 
     async function sendRequest(arg) {
+      await delay(50)
       if (arg.command === 'checkWindow') sendRequestInput = arg;
       else {
         resourcesPutted.push(arg);
@@ -411,6 +416,7 @@ describe('eyesCheckWindow', () => {
     ]);
 
     async function sendRequest(arg) {
+      await delay(50)
       if (arg.command === 'checkWindow') {
         sendRequestInput = arg;
       } else if (arg.command === 'resource/blobUrl1') {
@@ -461,6 +467,7 @@ describe('eyesCheckWindow', () => {
     expect(resourcesPutted).to.eql([]);
 
     async function sendRequest(arg) {
+      await delay(50)
       if (arg.command === 'checkWindow') sendRequestInput = arg;
       else {
         resourcesPutted.push(arg);
