@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const LARGE_STRING_LENGTH = 1000 * 1000 * 1
+const FILL_LETTERS = 'abcdefghij'
 
 module.exports = () => {
   function createFillFile({withCharacter}) {
@@ -10,7 +11,7 @@ module.exports = () => {
     )
   }
   let markup = ''
-  'abcdefghij'.split('').forEach(letter => {
+  FILL_LETTERS.split('').forEach(letter => {
     createFillFile({withCharacter: letter})
     markup += `<object width="300" height="300" type="text/plain" data="${letter}.txt"></object>\n`
   })
