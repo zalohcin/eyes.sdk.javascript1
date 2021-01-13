@@ -72,7 +72,7 @@ describe('eyesCheckWindow', () => {
     ]);
 
     async function sendRequest(arg) {
-      await delay(50)
+      await delay(50);
       if (arg.command === 'checkWindow') sendRequestInput = arg;
       else {
         resourcesPutted.push(arg);
@@ -198,7 +198,7 @@ describe('eyesCheckWindow', () => {
     ]);
 
     async function sendRequest(arg) {
-      await delay(50)
+      await delay(50);
       if (arg.command === 'checkWindow') sendRequestInput = arg;
       else {
         resourcesPutted.push(arg);
@@ -302,7 +302,7 @@ describe('eyesCheckWindow', () => {
     ]);
 
     async function sendRequest(arg) {
-      await delay(50)
+      await delay(50);
       if (arg.command === 'checkWindow') sendRequestInput = arg;
       else {
         resourcesPutted.push(arg);
@@ -356,7 +356,7 @@ describe('eyesCheckWindow', () => {
     ]);
 
     async function sendRequest(arg) {
-      await delay(50)
+      await delay(50);
       if (arg.command === 'checkWindow') sendRequestInput = arg;
       else {
         resourcesPutted.push(arg);
@@ -416,7 +416,7 @@ describe('eyesCheckWindow', () => {
     ]);
 
     async function sendRequest(arg) {
-      await delay(50)
+      await delay(50);
       if (arg.command === 'checkWindow') {
         sendRequestInput = arg;
       } else if (arg.command === 'resource/blobUrl1') {
@@ -467,7 +467,7 @@ describe('eyesCheckWindow', () => {
     expect(resourcesPutted).to.eql([]);
 
     async function sendRequest(arg) {
-      await delay(50)
+      await delay(50);
       if (arg.command === 'checkWindow') sendRequestInput = arg;
       else {
         resourcesPutted.push(arg);
