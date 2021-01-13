@@ -2,8 +2,12 @@
 
 ## Unreleased
 
+
+## 3.18.4 - 2021/1/13
+
 - fix eyesCheckWindow not returning the right promise ([Trello](https://trello.com/c/AkiXvrrz))
 - updated to @applitools/dom-snapshot@4.4.7 (from 4.4.5)
+- updated to @applitools/visual-grid-client@15.5.6 (from 15.5.5)
 - updated to @applitools/visual-grid-client@15.5.6 (from 15.5.5)
 ## 3.18.3 - 2021/1/12
 
