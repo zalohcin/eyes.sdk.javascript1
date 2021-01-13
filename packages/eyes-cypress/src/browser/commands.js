@@ -112,7 +112,7 @@ Cypress.Commands.add('eyesCheckWindow', args => {
 
   return cy
     .document({log: false})
-    .then({timeout: 60000}, async doc => await eyesCheckWindow(doc, checkArgs));
+    .then({timeout: 60000}, doc => eyesCheckWindow(doc, checkArgs));
 });
 
 Cypress.Commands.add('eyesClose', () => {

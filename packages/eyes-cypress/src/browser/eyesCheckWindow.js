@@ -7,7 +7,7 @@ function makeEyesCheckWindow({sendRequest, processPage, domSnapshotOptions, cypr
   return function eyesCheckWindow(doc, args = {}) {
     return takeDomSnapshots(domSnapshotOptions).then(snapshot => {
       // console.log("%cDone taking snapshots!", "color:chartreuse");
-      sendRequest({
+      return sendRequest({
         command: 'checkWindow',
         data: {
           url: Array.isArray(snapshot) ? snapshot[0].url : snapshot.url,
@@ -72,9 +72,7 @@ function makeEyesCheckWindow({sendRequest, processPage, domSnapshotOptions, cypr
           .filter(blob => !blob.errorStatusCode)
           .map(mapBlob);
         const snapshot = replaceBlobsWithBlobDataInFrame(mainFrame);
-        return Promise.all(allBlobs.map(putResource)).then(() => {
-          return snapshot;
-        });
+        return Promise.all(allBlobs.map(putResource)).then(() => snapshot);
 
         function putResource({url, value}) {
           return sendRequest({
