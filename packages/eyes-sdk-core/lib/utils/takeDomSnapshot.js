@@ -26,6 +26,8 @@ async function takeDomSnapshot(logger, driver, options = {}) {
     executionTimeout = EXECUTION_TIMEOUT,
     showLogs,
     skipResources,
+    removeReverseProxyURLPrefixes = !!process.env
+      .APPLITOOLS_SCRIPT_REMOVE_REVERSE_PROXY_URL_PREFIXES,
   } = options
   const isLegacyBrowser = driver.isIE || driver.isEdgeLegacy
   const arg = {
@@ -35,6 +37,7 @@ async function takeDomSnapshot(logger, driver, options = {}) {
     compressResources: false,
     showLogs,
     skipResources,
+    removeReverseProxyURLPrefixes,
   }
   const scripts = {
     main: {
