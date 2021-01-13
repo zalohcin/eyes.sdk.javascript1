@@ -1,6 +1,7 @@
 const path = require('path')
 const {Eyes, Logger, FileLogHandler} = require('../../index')
 const {testServer} = require('@applitools/sdk-shared')
+const generateTestAppFiles = require('./file-factory')
 let server
 const NUMBER_OF_TESTS = 3
 
@@ -45,6 +46,7 @@ async function doTest({t, name}) {
 }
 fixture`perf`
   .before(async () => {
+    generateTestAppFiles()
     const staticPath = path.join(__dirname, 'fixtures')
     server = await testServer({port: 7771, staticPath})
   })
