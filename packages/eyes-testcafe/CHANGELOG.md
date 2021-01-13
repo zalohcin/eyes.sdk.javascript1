@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix for fetching font-face resources from stylesheets [Trello](https://trello.com/c/DwmxtRoR)
 
 ## 1.12.2 - 2021/1/11
 
