@@ -19,9 +19,15 @@ test('works with images', async t => {
     width: 1024,
     height: 768,
   })
-  await eyes.checkWindow({
-    target: 'window',
-    fully: true,
+  await eyes.checkWindow()
+  await eyes.close(true)
+})
+test('works with fonts', async t => {
+  await t.navigateTo('http://localhost:7777/fonts.html')
+  await eyes.open(t, 'eyes-testcafe proxying of resources', 'works with fonts', {
+    width: 1024,
+    height: 768,
   })
+  await eyes.checkWindow()
   await eyes.close(true)
 })
