@@ -1,6 +1,7 @@
 # Change Log
 
 ## Unreleased
+- updated to @applitools/dom-snapshot@4.4.7 (from 4.4.4)
 
 
 ## 12.12.2 - 2021/1/10
