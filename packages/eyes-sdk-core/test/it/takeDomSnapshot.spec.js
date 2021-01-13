@@ -70,9 +70,15 @@ describe('takeDomSnapshot', () => {
           })
     })
     const snapshot = await takeDomSnapshot(logger, eyesDriver)
+    derandomizeUrls(snapshot)
     expect(snapshot).to.eql({
       cdt: [
-        {nodeName: 'IFRAME', attributes: [{name: 'data-applitools-src', value: 'http://cors.com'}]},
+        {
+          nodeName: 'IFRAME',
+          attributes: [
+            {name: 'data-applitools-src', value: 'http://cors.com/?applitools-iframe=0'},
+          ],
+        },
       ],
       resourceContents: {},
       resourceUrls: [],
@@ -82,7 +88,7 @@ describe('takeDomSnapshot', () => {
         {
           cdt: 'frame-cdt',
           frames: [],
-          url: 'http://cors.com',
+          url: 'http://cors.com/?applitools-iframe=0',
           resourceContents: {},
           resourceUrls: [],
           scriptVersion: 'mock value',
@@ -92,7 +98,87 @@ describe('takeDomSnapshot', () => {
     })
   })
 
-  it('should take a dom snapshot ith nested cross origin frames', async () => {
+  it('should take a dom snapshot with cross origin frames with the same src attr', async () => {
+    driver.mockElements([
+      {
+        selector: '[data-applitools-selector="123"]',
+        frame: true,
+      },
+      {
+        selector: '[data-applitools-selector="456"]',
+        frame: true,
+      },
+    ])
+    driver.mockScript('dom-snapshot', function() {
+      switch (this.name) {
+        case '[data-applitools-selector="123"]':
+          return generateSnapshotResponse({
+            cdt: 'frame-cdt',
+            url: 'http://cors.com',
+          })
+        case '[data-applitools-selector="456"]':
+          return generateSnapshotResponse({
+            cdt: 'another-frame-cdt',
+            url: 'http://cors.com',
+          })
+        default:
+          return generateSnapshotResponse({
+            cdt: [
+              {nodeName: 'IFRAME', attributes: []},
+              {nodeName: 'IFRAME', attributes: []},
+            ],
+            crossFrames: [
+              {selector: '[data-applitools-selector="123"]', index: 0},
+              {selector: '[data-applitools-selector="456"]', index: 1},
+            ],
+          })
+      }
+    })
+    const snapshot = await takeDomSnapshot(logger, eyesDriver)
+    derandomizeUrls(snapshot)
+    expect(snapshot).to.eql({
+      cdt: [
+        {
+          nodeName: 'IFRAME',
+          attributes: [
+            {name: 'data-applitools-src', value: 'http://cors.com/?applitools-iframe=0'},
+          ],
+        },
+        {
+          nodeName: 'IFRAME',
+          attributes: [
+            {name: 'data-applitools-src', value: 'http://cors.com/?applitools-iframe=0'},
+          ],
+        },
+      ],
+      resourceContents: {},
+      resourceUrls: [],
+      scriptVersion: 'mock value',
+      srcAttr: null,
+      frames: [
+        {
+          cdt: 'frame-cdt',
+          frames: [],
+          url: 'http://cors.com/?applitools-iframe=0',
+          resourceContents: {},
+          resourceUrls: [],
+          scriptVersion: 'mock value',
+          srcAttr: null,
+        },
+        {
+          cdt: 'another-frame-cdt',
+          frames: [],
+          url: 'http://cors.com/?applitools-iframe=1',
+          resourceContents: {},
+          resourceUrls: [],
+          scriptVersion: 'mock value',
+          srcAttr: null,
+        },
+      ],
+    })
+  })
+
+  it('should take a dom snapshot with nested cross origin frames', async () => {
     driver.mockElements([
       {
         selector: '[data-applitools-selector="123"]',
@@ -128,30 +214,38 @@ describe('takeDomSnapshot', () => {
     })
 
     const snapshot = await takeDomSnapshot(logger, eyesDriver)
+    derandomizeUrls(snapshot)
     expect(snapshot).to.eql({
       cdt: [
-        {nodeName: 'IFRAME', attributes: [{name: 'data-applitools-src', value: 'http://cors.com'}]},
+        {
+          nodeName: 'IFRAME',
+          attributes: [
+            {name: 'data-applitools-src', value: 'http://cors.com/?applitools-iframe=0'},
+          ],
+        },
       ],
       frames: [
         {
           cdt: [
             {
               nodeName: 'IFRAME',
-              attributes: [{name: 'data-applitools-src', value: 'http://cors-2.com'}],
+              attributes: [
+                {name: 'data-applitools-src', value: 'http://cors-2.com/?applitools-iframe=0'},
+              ],
             },
           ],
           frames: [
             {
               cdt: 'nested frame',
               frames: [],
-              url: 'http://cors-2.com',
+              url: 'http://cors-2.com/?applitools-iframe=0',
               resourceContents: {},
               resourceUrls: [],
               scriptVersion: 'mock value',
               srcAttr: null,
             },
           ],
-          url: 'http://cors.com',
+          url: 'http://cors.com/?applitools-iframe=0',
           resourceContents: {},
           resourceUrls: [],
           scriptVersion: 'mock value',
@@ -202,6 +296,7 @@ describe('takeDomSnapshot', () => {
     })
 
     const snapshot = await takeDomSnapshot(logger, eyesDriver)
+    derandomizeUrls(snapshot)
     expect(snapshot).to.eql({
       cdt: 'top page',
       frames: [
@@ -209,13 +304,15 @@ describe('takeDomSnapshot', () => {
           cdt: [
             {
               nodeName: 'IFRAME',
-              attributes: [{name: 'data-applitools-src', value: 'http://cors.com'}],
+              attributes: [
+                {name: 'data-applitools-src', value: 'http://cors.com/?applitools-iframe=0'},
+              ],
             },
           ],
           frames: [
             {
               cdt: 'nested frame',
-              url: 'http://cors.com',
+              url: 'http://cors.com/?applitools-iframe=0',
               frames: [],
               resourceContents: {},
               resourceUrls: [],
@@ -271,12 +368,16 @@ describe('takeDomSnapshot', () => {
         case '[data-applitools-selector="123"]':
           return generateSnapshotResponse({
             cdt: 'inner parent frame',
-            crossFrames: [{selector: '[data-applitools-selector="456"]', index: 0}],
+            crossFrames: [
+              {selector: '[data-applitools-selector="456"]', index: 0, url: 'https://cors.com'},
+            ],
           })
         default:
           return generateSnapshotResponse({
-            cdt: [{nodeName: 'IFRAME', attributes: []}],
-            crossFrames: [{selector: '[data-applitools-selector="123"]', index: 0}],
+            cdt: [{nodeName: 'IFRAME', attributes: [], value: 'https://cors.com'}],
+            crossFrames: [
+              {selector: '[data-applitools-selector="123"]', index: 0, url: 'https://cors.com'},
+            ],
           })
       }
     })
@@ -319,8 +420,12 @@ describe('takeDomSnapshot', () => {
     })
 
     const {cdt} = await takeDomSnapshot(logger, eyesDriver)
+    derandomizeUrls({cdt})
     expect(cdt).to.deep.equal([
-      {nodeName: 'IFRAME', attributes: [{name: 'data-applitools-src', value: 'http://cors.com'}]},
+      {
+        nodeName: 'IFRAME',
+        attributes: [{name: 'data-applitools-src', value: 'http://cors.com/?applitools-iframe=0'}],
+      },
     ])
   })
 })
@@ -339,5 +444,31 @@ function generateSnapshotObject(overrides) {
     crossFrames: undefined,
     scriptVersion: 'mock value',
     ...overrides,
+  }
+}
+// TODO move to sdk-shared
+function derandomize(subjects, name, prop, counter = 0) {
+  for (const subject of subjects) {
+    if (subject[name]) {
+      derandomize(subject[name], name, prop, counter)
+    }
+    if (subject[prop] && subject[prop].includes('?applitools-iframe')) {
+      const randomNumber = subject[prop].match(/[^?=]*$/)[0]
+      subject[prop] = subject[prop].replace(randomNumber, counter++)
+    }
+  }
+}
+
+function derandomizeUrls(snapshot) {
+  if (snapshot.frames) {
+    derandomize(snapshot.frames, 'frames', 'url')
+    Array.isArray(snapshot.frames) &&
+      snapshot.frames.forEach(frame => frame.cdt && derandomize(frame.cdt, 'attributes', 'value'))
+  }
+
+  if (snapshot.cdt) {
+    derandomize(snapshot.cdt, 'attributes', 'value')
+    Array.isArray(snapshot.cdt) &&
+      snapshot.cdt.forEach(cdt => cdt.frames && derandomize(cdt.frames, 'frames', 'url'))
   }
 }

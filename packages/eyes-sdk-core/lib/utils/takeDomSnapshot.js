@@ -90,10 +90,12 @@ async function takeDomSnapshot(logger, driver, options = {}) {
         })
       if (frameContext) {
         const frameSnapshot = await takeContextDomSnapshot(frameContext)
-        const uniqueId = GeneralUtils.guid()
-        const url = new URL(frameSnapshot.url)
-        url.searchParams.append('applitools-iframe', uniqueId)
-        frameSnapshot.url = url.href
+        if (frameSnapshot.url) {
+          const uniqueId = GeneralUtils.guid()
+          const url = new URL(frameSnapshot.url)
+          url.searchParams.append('applitools-iframe', uniqueId)
+          frameSnapshot.url = url.href
+        }
         parentSnapshot.frames.push(frameSnapshot)
         cdtNode.attributes.push({name: 'data-applitools-src', value: frameSnapshot.url})
       }
