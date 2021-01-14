@@ -7,15 +7,18 @@ const NUMBER_OF_APP_RESOURCES = 10
 const BYTE_SIZE_OF_APP_RESOURCES = 1024 * 1024 * 1
 
 function generateTestAppFiles() {
+  const outputDir = path.join(__dirname, 'fixtures')
+  fs.rmdirSync(outputDir, {recursive: true})
+  fs.mkdirSync(outputDir)
   let markup = ''
   Array.from({length: NUMBER_OF_APP_RESOURCES}).forEach((_entry, index) => {
     fs.writeFileSync(
-      path.join(__dirname, 'fixtures', `${index}.txt`),
+      path.join(outputDir, `${index}.txt`),
       new Array(BYTE_SIZE_OF_APP_RESOURCES).join('a'),
     )
     markup += `<object width="300" height="300" type="text/plain" data="${index}.txt"></object>\n`
   })
-  fs.writeFileSync(path.join(__dirname, 'fixtures', `index.html`), markup)
+  fs.writeFileSync(path.join(outputDir, `index.html`), markup)
 }
 
 function doLog(name, msg) {
@@ -26,8 +29,11 @@ async function doTest({t, name}) {
   const log = doLog.bind(undefined, name)
   process.env.APPLITOOLS_USE_PRELOADED_CONFIG = true
   const eyes = new Eyes()
+  const logDir = path.join(__dirname, 'out')
+  fs.rmdirSync(logDir, {recursive: true})
+  fs.mkdirSync(logDir)
   const logger = new Logger()
-  const logHandler = new FileLogHandler(true, path.join(__dirname, 'out', `${name}.log`))
+  const logHandler = new FileLogHandler(true, path.join(logDir, `${name}.log`))
   logHandler.open()
   logger.setLogHandler(logHandler)
   logger.prefix = name
@@ -78,10 +84,10 @@ if (process.env.APPLITOOLS_RUN_PERFORMANCE_BENCHMARKS) {
       generateTestAppFiles()
       const staticPath = path.join(__dirname, 'fixtures')
       ctx.server = await testServer({port: 7771, staticPath})
-      ctx.suiteStart = Date.now()
       ctx.stats = {
         checkTimes: [],
         closeTimes: [],
+        suiteStart: Date.now(),
       }
     })
     .after(async ctx => {
@@ -90,7 +96,7 @@ if (process.env.APPLITOOLS_RUN_PERFORMANCE_BENCHMARKS) {
       console.log('========= stats =========')
       ctx.stats.checkTimes.forEach(time => console.log(`check time: ${time}s`))
       ctx.stats.closeTimes.forEach(time => console.log(`close time: ${time}s`))
-      console.log(`suite total: ${((Date.now() - ctx.suiteStart) / 1000).toFixed(2)}s`)
+      console.log(`suite total: ${((Date.now() - ctx.stats.suiteStart) / 1000).toFixed(2)}s`)
       console.log('========================')
       console.log('\n')
       console.log(`log files available in ${path.join(process.cwd(), 'test', 'perf', 'out')}`)
