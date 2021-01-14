@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix escaping in `extractText` method
 
 ## 12.13.1 - 2021/1/14
 
