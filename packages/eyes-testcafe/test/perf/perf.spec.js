@@ -1,13 +1,28 @@
 const path = require('path')
+const fs = require('fs')
 const {Eyes, Logger, FileLogHandler} = require('../../index')
 const {testServer} = require('@applitools/sdk-shared')
-const generateTestAppFiles = require('./file-factory')
-let server
 const NUMBER_OF_TESTS = 3
+const NUMBER_OF_APP_RESOURCES = 10
+const BYTE_SIZE_OF_APP_RESOURCES = 1024 * 1024 * 1
+let server
+
+function generateTestAppFiles(id) {
+  let markup = ''
+  Array.from({length: NUMBER_OF_APP_RESOURCES}).forEach((_entry, index) => {
+    fs.writeFileSync(
+      path.join(__dirname, 'fixtures', `${id}.txt`),
+      new Array(BYTE_SIZE_OF_APP_RESOURCES).join('a'),
+    )
+    markup += `<object width="300" height="300" type="text/plain" data="${index}.txt"></object>\n`
+  })
+  fs.writeFileSync(path.join(__dirname, 'fixtures', `index.html`), markup)
+}
 
 function doLog(name, msg) {
   console.log(`[test ${name} says] ${msg}`)
 }
+
 async function doTest({t, name}) {
   const log = doLog.bind(undefined, name)
   process.env.APPLITOOLS_USE_PRELOADED_CONFIG = true
@@ -44,17 +59,26 @@ async function doTest({t, name}) {
   log('buh-bye')
   logHandler.close()
 }
-fixture`perf`
-  .before(async () => {
-    generateTestAppFiles()
-    const staticPath = path.join(__dirname, 'fixtures')
-    server = await testServer({port: 7771, staticPath})
-  })
-  .after(async () => {
-    await server.close()
-  })
-for (let name in Array.from({length: NUMBER_OF_TESTS})) {
-  test.skip(name, async t => {
-    await doTest({t, name})
-  })
+
+if (process.env.APPLITOOLS_RUN_PERFORMANCE_BENCHMARKS) {
+  fixture`perf benchmarks`
+    .before(async () => {
+      console.log('========= init =========')
+      console.log(`number of tests: ${NUMBER_OF_TESTS}`)
+      console.log(`number of app resources: ${NUMBER_OF_APP_RESOURCES}`)
+      console.log(`byte size of app resources: ${BYTE_SIZE_OF_APP_RESOURCES}`)
+      console.log('========================')
+      console.log('\n')
+      generateTestAppFiles()
+      const staticPath = path.join(__dirname, 'fixtures')
+      server = await testServer({port: 7771, staticPath})
+    })
+    .after(async () => {
+      await server.close()
+    })
+  for (let name in Array.from({length: NUMBER_OF_TESTS})) {
+    test(name, async t => {
+      await doTest({t, name})
+    })
+  }
 }
