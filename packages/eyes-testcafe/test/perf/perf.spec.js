@@ -2,7 +2,7 @@ const path = require('path')
 const fs = require('fs')
 const {Eyes, Logger, FileLogHandler} = require('../../index')
 const {testServer} = require('@applitools/sdk-shared')
-const NUMBER_OF_TESTS = 1
+const NUMBER_OF_TESTS = 5
 const NUMBER_OF_APP_RESOURCES = 10
 const BYTE_SIZE_OF_APP_RESOURCES = 1024 * 1024 * 1
 
@@ -25,7 +25,12 @@ function doLog(name, msg) {
   console.log(`[test ${name} says] ${msg}`)
 }
 
+function formatNumber(n) {
+  return (n / 1000).toFixed(2)
+}
+
 async function doTest({t, name}) {
+  const testStart = Date.now()
   const log = doLog.bind(undefined, name)
   process.env.APPLITOOLS_USE_PRELOADED_CONFIG = true
   const eyes = new Eyes()
@@ -54,17 +59,18 @@ async function doTest({t, name}) {
   log('check start')
   const checkStart = Date.now()
   await eyes.checkWindow()
-  const checkTotal = ((Date.now() - checkStart) / 1000).toFixed(2)
+  const checkTotal = formatNumber(Date.now() - checkStart)
   t.fixtureCtx.stats.checkTimes.push(checkTotal)
   log(`check end, total time: ${checkTotal}s`)
   log('calling close')
   const closeStart = Date.now()
   await eyes.close(false)
-  const closeTotal = ((Date.now() - closeStart) / 1000).toFixed(2)
+  const closeTotal = formatNumber(Date.now() - closeStart)
   t.fixtureCtx.stats.closeTimes.push(closeTotal)
   log(`close end, total time: ${closeTotal}s`)
   log('buh-bye')
   logHandler.close()
+  t.fixtureCtx.stats.testTimes.push(formatNumber(Date.now() - testStart))
 }
 
 if (process.env.APPLITOOLS_RUN_PERFORMANCE_BENCHMARKS) {
@@ -87,6 +93,7 @@ if (process.env.APPLITOOLS_RUN_PERFORMANCE_BENCHMARKS) {
       ctx.stats = {
         checkTimes: [],
         closeTimes: [],
+        testTimes: [],
         suiteStart: Date.now(),
       }
     })
@@ -94,9 +101,10 @@ if (process.env.APPLITOOLS_RUN_PERFORMANCE_BENCHMARKS) {
       await ctx.server.close()
       console.log('\n')
       console.log('========= stats =========')
+      console.log(`suite total: ${formatNumber(Date.now() - ctx.stats.suiteStart)}s`)
+      ctx.stats.testTimes.forEach(time => console.log(`test time: ${time}s`))
       ctx.stats.checkTimes.forEach(time => console.log(`check time: ${time}s`))
       ctx.stats.closeTimes.forEach(time => console.log(`close time: ${time}s`))
-      console.log(`suite total: ${((Date.now() - ctx.stats.suiteStart) / 1000).toFixed(2)}s`)
       console.log('========================')
       console.log('\n')
       console.log(`log files available in ${path.join(process.cwd(), 'test', 'perf', 'out')}`)
