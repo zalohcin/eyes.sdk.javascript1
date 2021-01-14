@@ -33,10 +33,10 @@
     "@applitools/snippets" "2.1.0"
     "@applitools/utils" "1.0.0"
 
-"@applitools/eyes-sdk-core@12.13.1":
-  version "12.13.1"
-  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-12.13.1.tgz#feff3148e81e2249e6f583afeff5785c8e4f8c00"
-  integrity sha512-5H2tDdDyGn9m5JfQyj4zpMEBVa2XvloNWdK71szMTRKxylHoQBvrGdyWm44rEcq+XrRPOsxnKtATLGLhESbTOA==
+"@applitools/eyes-sdk-core@12.13.2":
+  version "12.13.2"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-12.13.2.tgz#05e745be951eb6f7aba8e4bb3e628272b05c7a46"
+  integrity sha512-Y0P+RwoSBqaz7c6wA7xV3nSpoc3U7s7uFlveTWjRyJfO4gZyU+pfLBgXziZzT2j9J8Hr3hwvW6tWcezGGsdBdg==
   dependencies:
     "@applitools/dom-capture" "11.0.0"
     "@applitools/dom-snapshot" "4.4.7"
