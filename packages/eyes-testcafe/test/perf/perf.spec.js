@@ -77,45 +77,43 @@ async function doTest({t, name}) {
   t.fixtureCtx.stats.testTimes.push(formatNumber(Date.now() - testStart))
 }
 
-if (process.env.APPLITOOLS_RUN_PERFORMANCE_BENCHMARKS) {
-  fixture`perf benchmarks`
-    .before(async ctx => {
-      console.log('\n')
-      console.log('========= init =========')
-      console.log(`number of tests: ${NUMBER_OF_TESTS}`)
-      console.log(`number of app resources: ${NUMBER_OF_APP_RESOURCES}`)
-      console.log(
-        `byte size of app resources: ${BYTE_SIZE_OF_APP_RESOURCES} (~${Math.round(
-          BYTE_SIZE_OF_APP_RESOURCES / 1000000,
-        )}mb)`,
-      )
-      console.log('========================')
-      console.log('\n')
-      generateTestAppFiles()
-      const staticPath = path.join(__dirname, 'fixtures')
-      ctx.server = await testServer({port: 7771, staticPath})
-      ctx.stats = {
-        checkTimes: [],
-        closeTimes: [],
-        testTimes: [],
-        suiteStart: Date.now(),
-      }
-    })
-    .after(async ctx => {
-      await ctx.server.close()
-      console.log('\n')
-      console.log('========= stats =========')
-      console.log(`suite total: ${formatNumber(Date.now() - ctx.stats.suiteStart)}s`)
-      ctx.stats.testTimes.forEach(time => console.log(`test time: ${time}s`))
-      ctx.stats.checkTimes.forEach(time => console.log(`check time: ${time}s`))
-      ctx.stats.closeTimes.forEach(time => console.log(`close time: ${time}s`))
-      console.log('========================')
-      console.log('\n')
-      console.log(`log files available in ${path.join(process.cwd(), 'test', 'perf', 'out')}`)
-    })
-  for (let name in Array.from({length: NUMBER_OF_TESTS})) {
-    test(name, async t => {
-      await doTest({t, name})
-    })
-  }
+fixture`perf benchmarks`
+  .before(async ctx => {
+    console.log('\n')
+    console.log('========= init =========')
+    console.log(`number of tests: ${NUMBER_OF_TESTS}`)
+    console.log(`number of app resources: ${NUMBER_OF_APP_RESOURCES}`)
+    console.log(
+      `byte size of app resources: ${BYTE_SIZE_OF_APP_RESOURCES} (~${Math.round(
+        BYTE_SIZE_OF_APP_RESOURCES / 1000000,
+      )}mb)`,
+    )
+    console.log('========================')
+    console.log('\n')
+    generateTestAppFiles()
+    const staticPath = path.join(__dirname, 'fixtures')
+    ctx.server = await testServer({port: 7771, staticPath})
+    ctx.stats = {
+      checkTimes: [],
+      closeTimes: [],
+      testTimes: [],
+      suiteStart: Date.now(),
+    }
+  })
+  .after(async ctx => {
+    await ctx.server.close()
+    console.log('\n')
+    console.log('========= stats =========')
+    console.log(`suite total: ${formatNumber(Date.now() - ctx.stats.suiteStart)}s`)
+    ctx.stats.testTimes.forEach(time => console.log(`test time: ${time}s`))
+    ctx.stats.checkTimes.forEach(time => console.log(`check time: ${time}s`))
+    ctx.stats.closeTimes.forEach(time => console.log(`close time: ${time}s`))
+    console.log('========================')
+    console.log('\n')
+    console.log(`log files available in ${path.join(process.cwd(), 'test', 'perf', 'out')}`)
+  })
+for (let name in Array.from({length: NUMBER_OF_TESTS})) {
+  test(name, async t => {
+    await doTest({t, name})
+  })
 }

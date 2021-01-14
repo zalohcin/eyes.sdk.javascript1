@@ -5,7 +5,7 @@
   "main": "index-short.js",
   "types": "./ts/index.d.ts",
   "scripts": {
-    "perf": "APPLITOOLS_RUN_PERFORMANCE_BENCHMARKS=true testcafe chrome:headless test/perf/perf.spec.js",
+    "perf": "testcafe chrome:headless test/perf/perf.spec.js",
     "deps": "bongo deps",
     "lint": "eslint . --ext .js",
     "render": "node ../sdk-shared/src/render.js",
