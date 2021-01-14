@@ -2,10 +2,12 @@ const path = require('path')
 const fs = require('fs')
 const {Eyes, Logger, FileLogHandler} = require('../../index')
 const {testServer} = require('@applitools/sdk-shared')
-const NUMBER_OF_TESTS = 3
+const NUMBER_OF_TESTS = 1
 const NUMBER_OF_APP_RESOURCES = 10
 const BYTE_SIZE_OF_APP_RESOURCES = 1024 * 1024 * 1
 let server
+let checkTimes = []
+let closeTimes = []
 
 function generateTestAppFiles() {
   let markup = ''
@@ -50,11 +52,13 @@ async function doTest({t, name}) {
   const checkStart = Date.now()
   await eyes.checkWindow()
   const checkTotal = Date.now() - checkStart
+  checkTimes.push((checkTotal / 1000).toFixed(2))
   log(`check end, total time: ${(checkTotal / 1000).toFixed(2)}s`)
   log('calling close')
   const closeStart = Date.now()
   await eyes.close(false)
   const closeTotal = Date.now() - closeStart
+  closeTimes.push((closeTotal / 1000).toFixed(2))
   log(`close end, total time: ${(closeTotal / 1000).toFixed(2)}s`)
   log('buh-bye')
   logHandler.close()
@@ -62,19 +66,30 @@ async function doTest({t, name}) {
 
 if (process.env.APPLITOOLS_RUN_PERFORMANCE_BENCHMARKS) {
   fixture`perf benchmarks`
-    .before(async () => {
-      console.log('\n')
+    .before(async ctx => {
       console.log('========= init =========')
       console.log(`number of tests: ${NUMBER_OF_TESTS}`)
       console.log(`number of app resources: ${NUMBER_OF_APP_RESOURCES}`)
-      console.log(`byte size of app resources: ${BYTE_SIZE_OF_APP_RESOURCES}`)
+      console.log(
+        `byte size of app resources: ${BYTE_SIZE_OF_APP_RESOURCES} (~${Math.round(
+          BYTE_SIZE_OF_APP_RESOURCES / 1000000,
+        )}mb)`,
+      )
       console.log('========================')
+      console.log('\n')
       generateTestAppFiles()
       const staticPath = path.join(__dirname, 'fixtures')
       server = await testServer({port: 7771, staticPath})
+      ctx.suiteStart = Date.now()
     })
-    .after(async () => {
+    .after(async ctx => {
       await server.close()
+      console.log('\n')
+      console.log('========= stats =========')
+      checkTimes.forEach(time => console.log(`check time: ${time}s`))
+      closeTimes.forEach(time => console.log(`close time: ${time}s`))
+      console.log(`suite total: ${(Date.now() - ctx.suiteStart) / 1000}s`)
+      console.log('========================')
       console.log('\n')
       console.log('log files available in test/perf/out')
     })
