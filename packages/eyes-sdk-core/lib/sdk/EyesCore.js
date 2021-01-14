@@ -465,6 +465,9 @@ class EyesCore extends EyesBase {
         }
         // TODO create a separate snippet with more sophisticated logic
         region.hint = await this._context.execute('return arguments[0].innerText', element)
+        if (region.hint) {
+          region.hint = this.hint.replace(/[.\\+]/g, '\\$&')
+        }
       }
 
       const domCapture = await takeDomCapture(this._logger, this._context)
@@ -494,6 +497,54 @@ class EyesCore extends EyesBase {
     )
 
     return results.reduce((strs, result) => strs.concat(result), [])
+  }
+
+  async extractTextRegions(config) {
+    ArgumentGuard.notNull(config.patterns, 'patterns')
+
+    const driver = makeDriver(this._driver.spec, this._logger, this._driver.wrapper)
+    await driver.refreshContexts()
+
+    const screenshot = await screenshoter({
+      logger: this._logger,
+      driver,
+      hideScrollbars: false,
+      hideCaret: this._configuration.getHideCaret(),
+      scrollingMode: this._configuration.getStitchMode().toLocaleLowerCase(),
+      overlap: this._configuration.getStitchOverlap(),
+      wait: this._configuration.getWaitBeforeScreenshots(),
+      crop:
+        this._cutProviderHandler.get() instanceof NullCutProvider
+          ? null
+          : this._cutProviderHandler.get().toObject(),
+      scale:
+        this._scaleProviderHandler.get() instanceof NullScaleProvider
+          ? null
+          : this._scaleProviderHandler.get().getScaleRatio(),
+      debug: {
+        path:
+          this._debugScreenshotsProvider instanceof NullDebugScreenshotProvider
+            ? null
+            : this._debugScreenshotsProvider.getPath(),
+      },
+    })
+
+    const domCapture = await takeDomCapture(this._logger, this._context)
+    await this.getAndSaveRenderingInfo()
+    const [screenshotUrl, domUrl] = await Promise.all([
+      this._serverConnector.uploadScreenshot(GeneralUtils.guid(), await screenshot.image.toPng()),
+      this._serverConnector.postDomSnapshot(GeneralUtils.guid(), domCapture),
+    ])
+
+    return this._serverConnector.extractTextRegions({
+      domUrl,
+      screenshotUrl,
+      location: {x: Math.round(screenshot.region.x), y: Math.round(screenshot.region.y)},
+      patterns: config.patterns,
+      ignoreCase: config.ignoreCase,
+      firstOnly: config.firstOnly,
+      language: config.language,
+    })
   }
 
   /**
