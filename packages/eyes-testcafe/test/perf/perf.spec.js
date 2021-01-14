@@ -5,9 +5,6 @@ const {testServer} = require('@applitools/sdk-shared')
 const NUMBER_OF_TESTS = 1
 const NUMBER_OF_APP_RESOURCES = 10
 const BYTE_SIZE_OF_APP_RESOURCES = 1024 * 1024 * 1
-let server
-let checkTimes = []
-let closeTimes = []
 
 function generateTestAppFiles() {
   let markup = ''
@@ -43,23 +40,23 @@ async function doTest({t, name}) {
   log('opening eyes')
   await eyes.open({
     t,
-    appName: 'eyes-testcafe perf',
-    testName: 'sandbox',
+    appName: 'eyes-testcafe',
+    testName: 'performance benchmarks',
     disableBrowserFetching: true,
   })
   log('eyes open')
   log('check start')
   const checkStart = Date.now()
   await eyes.checkWindow()
-  const checkTotal = Date.now() - checkStart
-  checkTimes.push((checkTotal / 1000).toFixed(2))
-  log(`check end, total time: ${(checkTotal / 1000).toFixed(2)}s`)
+  const checkTotal = ((Date.now() - checkStart) / 1000).toFixed(2)
+  t.fixtureCtx.stats.checkTimes.push(checkTotal)
+  log(`check end, total time: ${checkTotal}s`)
   log('calling close')
   const closeStart = Date.now()
   await eyes.close(false)
-  const closeTotal = Date.now() - closeStart
-  closeTimes.push((closeTotal / 1000).toFixed(2))
-  log(`close end, total time: ${(closeTotal / 1000).toFixed(2)}s`)
+  const closeTotal = ((Date.now() - closeStart) / 1000).toFixed(2)
+  t.fixtureCtx.stats.closeTimes.push(closeTotal)
+  log(`close end, total time: ${closeTotal}s`)
   log('buh-bye')
   logHandler.close()
 }
@@ -67,6 +64,7 @@ async function doTest({t, name}) {
 if (process.env.APPLITOOLS_RUN_PERFORMANCE_BENCHMARKS) {
   fixture`perf benchmarks`
     .before(async ctx => {
+      console.log('\n')
       console.log('========= init =========')
       console.log(`number of tests: ${NUMBER_OF_TESTS}`)
       console.log(`number of app resources: ${NUMBER_OF_APP_RESOURCES}`)
@@ -79,19 +77,23 @@ if (process.env.APPLITOOLS_RUN_PERFORMANCE_BENCHMARKS) {
       console.log('\n')
       generateTestAppFiles()
       const staticPath = path.join(__dirname, 'fixtures')
-      server = await testServer({port: 7771, staticPath})
+      ctx.server = await testServer({port: 7771, staticPath})
       ctx.suiteStart = Date.now()
+      ctx.stats = {
+        checkTimes: [],
+        closeTimes: [],
+      }
     })
     .after(async ctx => {
-      await server.close()
+      await ctx.server.close()
       console.log('\n')
       console.log('========= stats =========')
-      checkTimes.forEach(time => console.log(`check time: ${time}s`))
-      closeTimes.forEach(time => console.log(`close time: ${time}s`))
-      console.log(`suite total: ${(Date.now() - ctx.suiteStart) / 1000}s`)
+      ctx.stats.checkTimes.forEach(time => console.log(`check time: ${time}s`))
+      ctx.stats.closeTimes.forEach(time => console.log(`close time: ${time}s`))
+      console.log(`suite total: ${((Date.now() - ctx.suiteStart) / 1000).toFixed(2)}s`)
       console.log('========================')
       console.log('\n')
-      console.log('log files available in test/perf/out')
+      console.log(`log files available in ${path.join(process.cwd(), 'test', 'perf', 'out')}`)
     })
   for (let name in Array.from({length: NUMBER_OF_TESTS})) {
     test(name, async t => {
