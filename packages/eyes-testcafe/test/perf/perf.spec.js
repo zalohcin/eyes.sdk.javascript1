@@ -7,11 +7,11 @@ const NUMBER_OF_APP_RESOURCES = 10
 const BYTE_SIZE_OF_APP_RESOURCES = 1024 * 1024 * 1
 let server
 
-function generateTestAppFiles(id) {
+function generateTestAppFiles() {
   let markup = ''
   Array.from({length: NUMBER_OF_APP_RESOURCES}).forEach((_entry, index) => {
     fs.writeFileSync(
-      path.join(__dirname, 'fixtures', `${id}.txt`),
+      path.join(__dirname, 'fixtures', `${index}.txt`),
       new Array(BYTE_SIZE_OF_APP_RESOURCES).join('a'),
     )
     markup += `<object width="300" height="300" type="text/plain" data="${index}.txt"></object>\n`
@@ -63,18 +63,20 @@ async function doTest({t, name}) {
 if (process.env.APPLITOOLS_RUN_PERFORMANCE_BENCHMARKS) {
   fixture`perf benchmarks`
     .before(async () => {
+      console.log('\n')
       console.log('========= init =========')
       console.log(`number of tests: ${NUMBER_OF_TESTS}`)
       console.log(`number of app resources: ${NUMBER_OF_APP_RESOURCES}`)
       console.log(`byte size of app resources: ${BYTE_SIZE_OF_APP_RESOURCES}`)
       console.log('========================')
-      console.log('\n')
       generateTestAppFiles()
       const staticPath = path.join(__dirname, 'fixtures')
       server = await testServer({port: 7771, staticPath})
     })
     .after(async () => {
       await server.close()
+      console.log('\n')
+      console.log('log files available in test/perf/out')
     })
   for (let name in Array.from({length: NUMBER_OF_TESTS})) {
     test(name, async t => {
