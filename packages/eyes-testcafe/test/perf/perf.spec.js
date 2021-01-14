@@ -4,19 +4,19 @@ const {Eyes, Logger, FileLogHandler} = require('../../index')
 const {testServer} = require('@applitools/sdk-shared')
 const NUMBER_OF_TESTS = 5
 const NUMBER_OF_APP_RESOURCES = 10
-const BYTE_SIZE_OF_APP_RESOURCES = 1024 * 1024 * 1
+const BYTE_SIZE_OF_APP_RESOURCES = 1024 * 1024 * 10
 
 function generateTestAppFiles() {
   const outputDir = path.join(__dirname, 'fixtures')
   fs.rmdirSync(outputDir, {recursive: true})
   fs.mkdirSync(outputDir)
-  let markup = ''
+  let markup = 'hello world\n'
   Array.from({length: NUMBER_OF_APP_RESOURCES}).forEach((_entry, index) => {
     fs.writeFileSync(
       path.join(outputDir, `${index}.txt`),
       new Array(BYTE_SIZE_OF_APP_RESOURCES).join('a'),
     )
-    markup += `<object width="300" height="300" type="text/plain" data="${index}.txt"></object>\n`
+    markup += `<object style="display: none;" width="300" height="300" type="text/plain" data="${index}.txt"></object>\n`
   })
   fs.writeFileSync(path.join(outputDir, `index.html`), markup)
 }
@@ -32,6 +32,7 @@ function formatNumber(n) {
 async function doTest({t, name}) {
   const testStart = Date.now()
   const log = doLog.bind(undefined, name)
+  // eyes setup
   process.env.APPLITOOLS_USE_PRELOADED_CONFIG = true
   const eyes = new Eyes()
   const logDir = path.join(__dirname, 'out')
@@ -43,6 +44,10 @@ async function doTest({t, name}) {
   logger.setLogHandler(logHandler)
   logger.prefix = name
   eyes.logger = logger
+  const config = eyes.getConfiguration()
+  config.setDisableBrowserFetching(true)
+  eyes.setConfiguration(config)
+  // eyes setup end
   await t.setPageLoadTimeout(0)
   log('ohai')
   log('navigating to page')
@@ -53,7 +58,6 @@ async function doTest({t, name}) {
     t,
     appName: 'eyes-testcafe',
     testName: 'performance benchmarks',
-    disableBrowserFetching: true,
   })
   log('eyes open')
   log('check start')
