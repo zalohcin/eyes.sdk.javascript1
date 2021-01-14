@@ -1,8 +1,8 @@
 const fs = require('fs')
 const path = require('path')
 
-async function createTestFiles(tests, {output, outPath, ext, formatter}) {
-  const targetDirectory = path.join(process.cwd(), output || outPath)
+async function createTestFiles(tests, {outDir, ext, formatter}) {
+  const targetDirectory = path.join(process.cwd(), outDir)
 
   fs.rmdirSync(targetDirectory, {recursive: true})
   fs.mkdirSync(targetDirectory, {recursive: true})
@@ -13,8 +13,8 @@ async function createTestFiles(tests, {output, outPath, ext, formatter}) {
   })
 }
 
-async function createTestMetaData(tests, {metaPath = '', pascalizeTests = true} = {}) {
-  const targetDirectory = path.resolve(process.cwd(), metaPath)
+async function createTestMetaData(tests, {metaDir = '', pascalizeTests = true} = {}) {
+  const targetDirectory = path.resolve(process.cwd(), metaDir)
   fs.mkdirSync(targetDirectory, {recursive: true})
 
   const meta = tests.reduce((meta, test) => {

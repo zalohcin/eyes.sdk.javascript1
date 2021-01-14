@@ -154,7 +154,7 @@ function useEmitter() {
         if (prop in ref) return Reflect.get(ref, prop, proxy)
         const currentType = ref.type()
         let getter = syntax.getter
-        let key = prop
+        let key = JSON.stringify(prop).slice(1, -1)
         let type
         if (currentType) {
           if (prop === Symbol.iterator && currentType.iterable) {

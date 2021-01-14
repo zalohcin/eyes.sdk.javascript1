@@ -1,8 +1,8 @@
-const path = require('path')
 const chalk = require('chalk')
-const {testsLoader} = require('./tests-loader')
-const {templateLoader} = require('./template-loader')
-const {specEmitterLoader} = require('./spec-emitter-loader')
+const {configLoader} = require('../loaders/config-loader')
+const {testsLoader} = require('../loaders/tests-loader')
+const {templateLoader} = require('../loaders/template-loader')
+const {specEmitterLoader} = require('../loaders/spec-emitter-loader')
 const {emitTests} = require('./emit')
 const {createTestFiles, createTestMetaData} = require('./save')
 
@@ -10,11 +10,11 @@ const DEFAULT_CONFIG = {
   tests: 'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/master/coverage-tests.js',
 }
 
-async function generate({configPath, ...options}) {
+async function generate(options) {
   try {
     const config = {
       ...DEFAULT_CONFIG,
-      ...require(path.join(path.resolve('.'), configPath)),
+      ...configLoader(options),
       ...options,
     }
     console.log(`Creating coverage tests for ${config.name}...\n`)
@@ -22,7 +22,7 @@ async function generate({configPath, ...options}) {
     const tests = await testsLoader(config)
 
     if (tests.length <= 0) {
-      const message = `No test will be emitted. Please check "testPath", "emitSkipped", "emitOnly" config parameters`
+      const message = `No test will be emitted. Please check "tests", "emitSkipped", "emitOnly" config parameters`
       console.log(chalk.yellow(message), '\n')
       return
     }

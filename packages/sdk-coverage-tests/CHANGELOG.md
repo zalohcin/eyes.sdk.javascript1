@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- fix bug with not escaped backslashes (`\`) in a name of the key
+- adjust cli and config option names
 
 ## 2.3.3 - 2021/1/11
 
