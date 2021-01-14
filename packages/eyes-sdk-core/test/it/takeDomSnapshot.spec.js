@@ -147,7 +147,7 @@ describe('takeDomSnapshot', () => {
         {
           nodeName: 'IFRAME',
           attributes: [
-            {name: 'data-applitools-src', value: 'http://cors.com/?applitools-iframe=0'},
+            {name: 'data-applitools-src', value: 'http://cors.com/?applitools-iframe=1'},
           ],
         },
       ],
@@ -288,6 +288,7 @@ describe('takeDomSnapshot', () => {
               generateSnapshotObject({
                 cdt: [{nodeName: 'IFRAME', attributes: []}],
                 selector: '[data-applitools-selector="123"]',
+                url: 'https://cors.com/?applitools-iframe=1231324134134',
                 crossFrames: [{selector: '[data-applitools-selector="456"]', index: 0}],
               }),
             ],
@@ -324,6 +325,7 @@ describe('takeDomSnapshot', () => {
           resourceUrls: [],
           scriptVersion: 'mock value',
           srcAttr: null,
+          url: 'https://cors.com/?applitools-iframe=0',
         },
       ],
       resourceContents: {},
@@ -420,7 +422,7 @@ describe('takeDomSnapshot', () => {
     })
 
     const {cdt} = await takeDomSnapshot(logger, eyesDriver)
-    derandomizeUrls({cdt})
+    derandomizeUrls({cdt, frames: []})
     expect(cdt).to.deep.equal([
       {
         nodeName: 'IFRAME',
@@ -447,28 +449,29 @@ function generateSnapshotObject(overrides) {
   }
 }
 // TODO move to sdk-shared
-function derandomize(subjects, name, prop, counter = 0) {
-  for (const subject of subjects) {
-    if (subject[name]) {
-      derandomize(subject[name], name, prop, counter)
+function derandomizeUrls(snapshot) {
+  let counter = 0
+  for (const node of snapshot.cdt) {
+    if (node.attributes) {
+      for (const attr of node.attributes) {
+        attr.value = derandomizeValue(attr.value, counter++)
+      }
     }
-    if (subject[prop] && subject[prop].includes('?applitools-iframe')) {
-      const randomNumber = subject[prop].match(/[^?=]*$/)[0]
-      subject[prop] = subject[prop].replace(randomNumber, counter++)
-    }
+  }
+  // reset counter for frames
+  counter = 0
+
+  for (const frame of snapshot.frames) {
+    frame.url = derandomizeValue(frame.url, counter++)
+    derandomizeUrls(frame)
   }
 }
 
-function derandomizeUrls(snapshot) {
-  if (snapshot.frames) {
-    derandomize(snapshot.frames, 'frames', 'url')
-    Array.isArray(snapshot.frames) &&
-      snapshot.frames.forEach(frame => frame.cdt && derandomize(frame.cdt, 'attributes', 'value'))
-  }
-
-  if (snapshot.cdt) {
-    derandomize(snapshot.cdt, 'attributes', 'value')
-    Array.isArray(snapshot.cdt) &&
-      snapshot.cdt.forEach(cdt => cdt.frames && derandomize(cdt.frames, 'frames', 'url'))
+function derandomizeValue(value, counter) {
+  if (value && value.includes('?applitools-iframe')) {
+    const randomNumber = value.match(/[^?=]*$/)[0]
+    return value.replace(randomNumber, counter)
+  } else {
+    return value
   }
 }
