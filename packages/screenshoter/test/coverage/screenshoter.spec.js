@@ -121,7 +121,7 @@ describe('screenshoter', () => {
     const actual = await screenshot.image.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/page.png').toObject()
     assert.strictEqual(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
+      pixelmatch(actual.data, expected.data, null, expected.width, expected.height),
       0,
     )
   }
@@ -135,7 +135,7 @@ describe('screenshoter', () => {
     const actual = await screenshot.image.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/page-fully.png').toObject()
     assert.strictEqual(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
+      pixelmatch(actual.data, expected.data, null, expected.width, expected.height),
       0,
     )
   }
@@ -149,7 +149,7 @@ describe('screenshoter', () => {
     const actual = await screenshot.image.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/context.png').toObject()
     assert.strictEqual(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
+      pixelmatch(actual.data, expected.data, null, expected.width, expected.height),
       0,
     )
   }
@@ -164,7 +164,7 @@ describe('screenshoter', () => {
     const actual = await screenshot.image.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/context-fully.png').toObject()
     assert.strictEqual(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
+      pixelmatch(actual.data, expected.data, null, expected.width, expected.height),
       0,
     )
   }
@@ -178,7 +178,7 @@ describe('screenshoter', () => {
     const actual = await screenshot.image.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/region.png').toObject()
     assert.strictEqual(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
+      pixelmatch(actual.data, expected.data, null, expected.width, expected.height),
       0,
     )
   }
@@ -193,7 +193,7 @@ describe('screenshoter', () => {
     const actual = await screenshot.image.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/region-fully.png').toObject()
     assert.strictEqual(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
+      pixelmatch(actual.data, expected.data, null, expected.width, expected.height),
       0,
     )
   }
@@ -207,7 +207,7 @@ describe('screenshoter', () => {
     const actual = await screenshot.image.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/element.png').toObject()
     assert.strictEqual(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
+      pixelmatch(actual.data, expected.data, null, expected.width, expected.height),
       0,
     )
   }
@@ -222,7 +222,7 @@ describe('screenshoter', () => {
     const actual = await screenshot.image.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/element-fully.png').toObject()
     assert.strictEqual(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
+      pixelmatch(actual.data, expected.data, null, expected.width, expected.height),
       0,
     )
   }
@@ -237,7 +237,7 @@ describe('screenshoter', () => {
     const actual = await screenshot.image.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/inner-region.png').toObject()
     assert.strictEqual(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
+      pixelmatch(actual.data, expected.data, null, expected.width, expected.height),
       0,
     )
   }
@@ -255,7 +255,7 @@ describe('screenshoter', () => {
       './test/fixtures/screenshoter/inner-region-fully.png',
     ).toObject()
     assert.strictEqual(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
+      pixelmatch(actual.data, expected.data, null, expected.width, expected.height),
       0,
     )
   }
@@ -270,7 +270,7 @@ describe('screenshoter', () => {
     const actual = await screenshot.image.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/inner-element.png').toObject()
     assert.strictEqual(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
+      pixelmatch(actual.data, expected.data, null, expected.width, expected.height),
       0,
     )
   }
@@ -288,7 +288,7 @@ describe('screenshoter', () => {
       './test/fixtures/screenshoter/inner-element-fully.png',
     ).toObject()
     assert.strictEqual(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
+      pixelmatch(actual.data, expected.data, null, expected.width, expected.height),
       0,
     )
   }
@@ -305,7 +305,7 @@ describe('screenshoter', () => {
     const actual = await screenshot.image.toObject()
     const expected = await makeImage('./test/fixtures/screenshoter/inner-context.png').toObject()
     assert.strictEqual(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
+      pixelmatch(actual.data, expected.data, null, expected.width, expected.height),
       0,
     )
   }
@@ -325,7 +325,7 @@ describe('screenshoter', () => {
       './test/fixtures/screenshoter/inner-context-fully.png',
     ).toObject()
     assert.strictEqual(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height),
+      pixelmatch(actual.data, expected.data, null, expected.width, expected.height),
       0,
     )
   }

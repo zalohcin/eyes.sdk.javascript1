@@ -16,9 +16,7 @@ describe('image', () => {
       .crop({x: 100, y: 120, width: 200, height: 200})
       .then(image => image.toObject())
     const expected = await makeImage('./test/fixtures/image/lena.cropped-region.png').toObject()
-    assert.ok(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height) === 0,
-    )
+    assert.ok(pixelmatch(actual.data, expected.data, null, expected.width, expected.height) === 0)
   })
 
   it('should crop by rect', async () => {
@@ -26,9 +24,7 @@ describe('image', () => {
       .crop({left: 100, right: 110, top: 120, bottom: 130})
       .then(image => image.toObject())
     const expected = await makeImage('./test/fixtures/image/lena.cropped-rect.png').toObject()
-    assert.ok(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height) === 0,
-    )
+    assert.ok(pixelmatch(actual.data, expected.data, null, expected.width, expected.height) === 0)
   })
 
   it('should scale', async () => {
@@ -36,9 +32,7 @@ describe('image', () => {
       .scale(0.5)
       .then(image => image.toObject())
     const expected = await makeImage('./test/fixtures/image/lena.scaled.png').toObject()
-    assert.ok(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height) === 0,
-    )
+    assert.ok(pixelmatch(actual.data, expected.data, null, expected.width, expected.height) === 0)
   })
 
   it('should rotate', async () => {
@@ -46,20 +40,16 @@ describe('image', () => {
       .rotate(90)
       .then(image => image.toObject())
     const expected = await makeImage('./test/fixtures/image/lena.rotated.png').toObject()
-    assert.ok(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height) === 0,
-    )
+    assert.ok(pixelmatch(actual.data, expected.data, null, expected.width, expected.height) === 0)
   })
 
   it('should copy one image to another', async () => {
     const image = await makeImage('./test/fixtures/image/lena.png').toObject()
-    const composition = makeImage({width: image.info.width, height: image.info.height * 2})
+    const composition = makeImage({width: image.width, height: image.height * 2})
     await composition.copy(image, {x: 0, y: 0})
-    await composition.copy(image, {x: 0, y: image.info.height})
+    await composition.copy(image, {x: 0, y: image.height})
     const actual = await composition.toObject()
     const expected = await makeImage('./test/fixtures/image/lena.stitched.png').toObject()
-    assert.ok(
-      pixelmatch(actual.data, expected.data, null, expected.info.width, expected.info.height) === 0,
-    )
+    assert.ok(pixelmatch(actual.data, expected.data, null, expected.width, expected.height) === 0)
   })
 })

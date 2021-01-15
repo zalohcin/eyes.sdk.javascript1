@@ -30,7 +30,7 @@
   "main": "./index.js",
   "dependencies": {
     "@applitools/utils": "1.0.0",
-    "sharp": "0.26.3"
+    "png-async": "^0.9.4"
   },
   "devDependencies": {
     "@applitools/driver": "1.0.2",
