@@ -2,6 +2,7 @@ const path = require('path')
 const fs = require('fs')
 const {Eyes, Logger, FileLogHandler} = require('../../index')
 const {testServer} = require('@applitools/sdk-shared')
+const logDir = path.join(__dirname, 'out')
 const NUMBER_OF_TESTS = 5
 const NUMBER_OF_APP_RESOURCES = 10
 const BYTE_SIZE_OF_APP_RESOURCES = 1024 * 1024 * 10
@@ -35,9 +36,6 @@ async function doTest({t, name}) {
   // eyes setup
   process.env.APPLITOOLS_USE_PRELOADED_CONFIG = true
   const eyes = new Eyes()
-  const logDir = path.join(__dirname, 'out')
-  fs.rmdirSync(logDir, {recursive: true})
-  fs.mkdirSync(logDir)
   const logger = new Logger()
   const logHandler = new FileLogHandler(true, path.join(logDir, `${name}.log`))
   logHandler.open()
@@ -83,6 +81,8 @@ async function doTest({t, name}) {
 
 fixture`perf benchmarks`
   .before(async ctx => {
+    fs.rmdirSync(logDir, {recursive: true})
+    fs.mkdirSync(logDir)
     console.log('\n')
     console.log('========= init =========')
     console.log(`number of tests: ${NUMBER_OF_TESTS}`)
