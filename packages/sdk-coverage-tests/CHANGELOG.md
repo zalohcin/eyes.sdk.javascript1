@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix resultDir property
 
 ## 2.3.4 - 2021/1/14
 
