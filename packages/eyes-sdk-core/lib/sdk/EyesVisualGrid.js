@@ -252,6 +252,7 @@ class EyesVisualGrid extends EyesCore {
           this._configuration.getDisableBrowserFetching(),
         )
         const browsers = this._configuration.getBrowsersInfo()
+        const showLogs = this._configuration.getShowLogs()
         const snapshots = await takeDomSnapshots({
           breakpoints,
           browsers,
@@ -263,6 +264,7 @@ class EyesVisualGrid extends EyesCore {
             this.getViewportSize().then(rectangleSize => rectangleSize.toJSON()),
           getEmulatedDevicesSizes: this._getEmulatedDevicesSizes,
           getIosDevicesSizes: this._getIosDevicesSizes,
+          showLogs,
         })
         const [{url}] = snapshots
         if (this.getCorsIframeHandle() === CorsIframeHandles.BLANK) {
