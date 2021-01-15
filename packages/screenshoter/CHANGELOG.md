@@ -3,7 +3,7 @@
 
 ## Unreleased
 
-
+- fix bug when `toPng` method returns empty buffer
 ## 2.1.0 - 2021/1/15
 
 - remove native module dependency (`sharp`)

@@ -75,11 +75,11 @@ async function fromSize(size) {
 
 async function toPng(image) {
   return new Promise((resolve, reject) => {
-    const buffer = Buffer.alloc(0)
+    let buffer = Buffer.alloc(0)
 
     const writable = new stream.Writable({
       write(chunk, _encoding, next) {
-        this._buffer = Buffer.concat([buffer, chunk])
+        buffer = Buffer.concat([buffer, chunk])
         next()
       },
     })
