@@ -46,6 +46,7 @@ async function doTest({t, name}) {
   eyes.logger = logger
   const config = eyes.getConfiguration()
   config.setDisableBrowserFetching(true)
+  config.setShowLogs(true)
   eyes.setConfiguration(config)
   // eyes setup end
   await t.setPageLoadTimeout(0)
@@ -75,6 +76,9 @@ async function doTest({t, name}) {
   log('buh-bye')
   logHandler.close()
   t.fixtureCtx.stats.testTimes.push(formatNumber(Date.now() - testStart))
+  // retrieve DS logs
+  const browserConsoleLogs = await t.getBrowserConsoleMessages()
+  fs.writeFileSync(path.join(logDir, `${name}-dom-snapshot.log`), browserConsoleLogs.log.join('\n'))
 }
 
 fixture`perf benchmarks`
