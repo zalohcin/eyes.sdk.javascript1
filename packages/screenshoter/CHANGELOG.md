@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+
+## 2.1.1 - 2021/1/15
+
+- fix bug when `toPng` method returns empty buffer
 - fix bug when `toPng` method returns empty buffer
 ## 2.1.0 - 2021/1/15
 
