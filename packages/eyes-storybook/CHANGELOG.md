@@ -1,11 +1,14 @@
 # Changelog
 
 ## Unreleased
+
+
+## 3.16.3 - 2021/1/15
+
 - updated to @applitools/dom-snapshot@4.4.7 (from 4.4.5)
 - updated to @applitools/eyes-puppeteer@1.4.2 (from 1.4.0)
 - updated to @applitools/eyes-sdk-core@12.13.4 (from 12.12.2)
 - updated to @applitools/visual-grid-client@15.5.10 (from 15.5.5)
-
 
 ## 3.16.2 - 2021/1/12
 
