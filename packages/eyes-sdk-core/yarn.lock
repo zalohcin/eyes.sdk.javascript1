@@ -126,6 +126,14 @@
     "@applitools/utils" "1.0.0"
     png-async "0.9.4"
 
+"@applitools/screenshoter@2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@applitools/screenshoter/-/screenshoter-2.1.1.tgz#6952d9acec9240e246451c352bdb99750cfc13fd"
+  integrity sha512-+KBJFbssceo1kWosPUAm+WqXTEG6pMbfOdDYIdxL+5ZNdBM3MTzb2JBtYFE0SW3b5DzeLIeyCxSqW6485QleFg==
+  dependencies:
+    "@applitools/utils" "1.0.0"
+    png-async "0.9.4"
+
 "@applitools/sdk-coverage-tests@2.3.3":
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/@applitools/sdk-coverage-tests/-/sdk-coverage-tests-2.3.3.tgz#77b32779efd6592713721774ccbb931286409b22"
