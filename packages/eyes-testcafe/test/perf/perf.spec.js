@@ -1,6 +1,6 @@
 const path = require('path')
 const fs = require('fs')
-const {Eyes, Logger, FileLogHandler} = require('../../index')
+const {Eyes, Logger, FileLogHandler, VisualGridRunner} = require('../../index')
 const {testServer} = require('@applitools/sdk-shared')
 const logDir = path.join(__dirname, 'out')
 const NUMBER_OF_TESTS = 5
@@ -35,7 +35,7 @@ async function doTest({t, name}) {
   const log = doLog.bind(undefined, name)
   // eyes setup
   process.env.APPLITOOLS_USE_PRELOADED_CONFIG = true
-  const eyes = new Eyes()
+  const eyes = new Eyes(new VisualGridRunner({testConcurrency: NUMBER_OF_TESTS}))
   const logger = new Logger()
   const logHandler = new FileLogHandler(true, path.join(logDir, `${name}.log`))
   logHandler.open()
