@@ -6,6 +6,7 @@
   "types": "./ts/index.d.ts",
   "scripts": {
     "perf": "testcafe chrome:headless test/perf/perf.spec.js",
+    "perf:full": "yarn perf && yarn perf -c 5",
     "deps": "bongo deps",
     "lint": "eslint . --ext .js",
     "render": "node ../sdk-shared/src/render.js",

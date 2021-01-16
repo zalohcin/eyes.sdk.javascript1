@@ -2,7 +2,7 @@ const path = require('path')
 const fs = require('fs')
 const {Eyes, Logger, FileLogHandler, VisualGridRunner} = require('../../index')
 const {testServer} = require('@applitools/sdk-shared')
-const logDir = path.join(__dirname, 'out')
+const logDir = path.join(__dirname, 'out', Date.now().toString())
 const NUMBER_OF_TESTS = 5
 const NUMBER_OF_APP_RESOURCES = 10
 const BYTE_SIZE_OF_APP_RESOURCES = 1024 * 1024 * 10
@@ -81,7 +81,6 @@ async function doTest({t, name}) {
 
 fixture`perf benchmarks`
   .before(async ctx => {
-    fs.rmdirSync(logDir, {recursive: true})
     fs.mkdirSync(logDir)
     console.log('\n')
     console.log('========= init =========')
