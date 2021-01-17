@@ -1,6 +1,7 @@
 'use strict'
 
 const assert = require('assert')
+const {URL} = require('url')
 
 const {GeneralUtils} = require('../../../index')
 
@@ -63,6 +64,30 @@ describe('GeneralUtils', () => {
       assert.ok(!GeneralUtils.isAbsoluteUrl('/foo/bar'))
       assert.ok(!GeneralUtils.isAbsoluteUrl('foo/bar'))
       assert.ok(!GeneralUtils.isAbsoluteUrl('foo'))
+    })
+  })
+
+  describe('uniqueUrl()', () => {
+    const validGuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+    it('generates a url with a query parameter that has a unique value', () => {
+      const uniqueUrl = GeneralUtils.uniqueUrl('https://google.com', 'some_query')
+      const parsedUrl = new URL(uniqueUrl)
+      const guid = parsedUrl.searchParams.get('some_query')
+      assert.ok(validGuid.test(guid))
+    })
+
+    it('adds a unique guid to urls with existing query parameters', () => {
+      const url = 'https://google.com/?some_query=some_value'
+      const uniqueUrl = GeneralUtils.uniqueUrl(url, 'some_search')
+      const parsedUrl = new URL(uniqueUrl)
+      const guid = parsedUrl.searchParams.get('some_search')
+      assert.ok(validGuid.test(guid))
+    })
+
+    it('does not generate a unique value if provided query parameter already exists', () => {
+      const url = 'https://google.com/?some_query=some_value'
+      const uniqueUrl = GeneralUtils.uniqueUrl(url, 'some_query')
+      assert.strictEqual(uniqueUrl, url)
     })
   })
 
