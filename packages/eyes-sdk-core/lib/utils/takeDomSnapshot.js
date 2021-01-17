@@ -10,8 +10,7 @@ const ArgumentGuard = require('./ArgumentGuard')
 const EyesUtils = require('../sdk/EyesUtils')
 const deserializeDomSnapshotResult = require('./deserializeDomSnapshotResult')
 const createFramesPaths = require('./createFramesPaths')
-const GeneralUtils = require('./GeneralUtils')
-const {URL} = require('url')
+const {uniqueUrl} = require('./GeneralUtils')
 
 const EXECUTION_TIMEOUT = 5 * 60 * 1000
 const POLL_TIMEOUT = 200
@@ -30,6 +29,7 @@ async function takeDomSnapshot(logger, driver, options = {}) {
     skipResources,
     removeReverseProxyURLPrefixes = !!process.env
       .APPLITOOLS_SCRIPT_REMOVE_REVERSE_PROXY_URL_PREFIXES,
+    generateUniqueUrl = uniqueUrl,
   } = options
   const isLegacyBrowser = driver.isIE || driver.isEdgeLegacy
   const arg = {
@@ -91,10 +91,7 @@ async function takeDomSnapshot(logger, driver, options = {}) {
       if (frameContext) {
         const frameSnapshot = await takeContextDomSnapshot(frameContext)
         if (frameSnapshot.url) {
-          const uniqueId = GeneralUtils.guid()
-          const url = new URL(frameSnapshot.url)
-          url.searchParams.append('applitools-iframe', uniqueId)
-          frameSnapshot.url = url.href
+          frameSnapshot.url = generateUniqueUrl(frameSnapshot.url, 'applitools-iframe')
         }
         parentSnapshot.frames.push(frameSnapshot)
         cdtNode.attributes.push({name: 'data-applitools-src', value: frameSnapshot.url})
