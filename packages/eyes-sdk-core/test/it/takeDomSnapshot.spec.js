@@ -63,16 +63,17 @@ describe('takeDomSnapshot', () => {
     ])
     driver.mockScript('dom-snapshot', function() {
       return this.name === '[data-applitools-selector="123"]'
-        ? generateSnapshotResponse({cdt: 'frame-cdt', url: 'http://cors.com'})
+        ? generateSnapshotResponse({
+            cdt: 'frame-cdt',
+            url: 'http://cors.com?applitools-iframe=123124',
+          })
         : generateSnapshotResponse({
             cdt: [{nodeName: 'IFRAME', attributes: []}],
             crossFrames: [{selector: '[data-applitools-selector="123"]', index: 0}],
           })
     })
     const uniqueUrl = 'https://cors.com/?applitools-iframe=0'
-    const snapshot = await takeDomSnapshot(logger, eyesDriver, {
-      generateUniqueUrl: () => uniqueUrl,
-    })
+    const snapshot = await takeDomSnapshot(logger, eyesDriver, {uniqueUrl: () => uniqueUrl})
     expect(snapshot).to.eql({
       cdt: [
         {
@@ -135,7 +136,7 @@ describe('takeDomSnapshot', () => {
       }
     })
     const uniqueUrl = 'http://cors.com/?applitools-iframe=0'
-    const snapshot = await takeDomSnapshot(logger, eyesDriver, {generateUniqueUrl: () => uniqueUrl})
+    const snapshot = await takeDomSnapshot(logger, eyesDriver, {uniqueUrl: () => uniqueUrl})
     expect(snapshot).to.eql({
       cdt: [
         {
@@ -209,7 +210,7 @@ describe('takeDomSnapshot', () => {
       }
     })
     const uniqueUrl = 'https://random.com/?applitools-iframe=1'
-    const snapshot = await takeDomSnapshot(logger, eyesDriver, {generateUniqueUrl: () => uniqueUrl})
+    const snapshot = await takeDomSnapshot(logger, eyesDriver, {uniqueUrl: () => uniqueUrl})
     expect(snapshot).to.eql({
       cdt: [
         {
@@ -288,7 +289,7 @@ describe('takeDomSnapshot', () => {
       }
     })
 
-    const snapshot = await takeDomSnapshot(logger, eyesDriver, {generateUniqueUrl: () => uniqueUrl})
+    const snapshot = await takeDomSnapshot(logger, eyesDriver, {uniqueUrl: () => uniqueUrl})
     expect(snapshot).to.eql({
       cdt: 'top page',
       frames: [
@@ -342,6 +343,7 @@ describe('takeDomSnapshot', () => {
   })
 
   it('should handle failure to switch to nested frame', async () => {
+    const url = 'https://some_url.com'
     driver.mockElements([
       {
         selector: '[data-applitools-selector="123"]',
@@ -359,21 +361,18 @@ describe('takeDomSnapshot', () => {
         case '[data-applitools-selector="123"]':
           return generateSnapshotResponse({
             cdt: 'inner parent frame',
-            crossFrames: [
-              {selector: '[data-applitools-selector="456"]', index: 0, url: 'https://cors.com'},
-            ],
+            url,
+            crossFrames: [{selector: '[data-applitools-selector="456"]', index: 0}],
           })
         default:
           return generateSnapshotResponse({
             cdt: [{nodeName: 'IFRAME', attributes: [], value: 'https://cors.com'}],
-            crossFrames: [
-              {selector: '[data-applitools-selector="123"]', index: 0, url: 'https://cors.com'},
-            ],
+            crossFrames: [{selector: '[data-applitools-selector="123"]', index: 0}],
           })
       }
     })
 
-    const snapshot = await takeDomSnapshot(logger, eyesDriver)
+    const snapshot = await takeDomSnapshot(logger, eyesDriver, {uniqueUrl: () => url})
     expect(snapshot.frames).to.deep.equal([
       {
         cdt: 'inner parent frame',
@@ -382,6 +381,7 @@ describe('takeDomSnapshot', () => {
         frames: [],
         scriptVersion: 'mock value',
         srcAttr: null,
+        url,
       },
     ])
   })
@@ -410,7 +410,7 @@ describe('takeDomSnapshot', () => {
       }
     })
     const uniqueUrl = 'https://cors.com/?applitools-iframe=0'
-    const {cdt} = await takeDomSnapshot(logger, eyesDriver, {generateUniqueUrl: () => uniqueUrl})
+    const {cdt} = await takeDomSnapshot(logger, eyesDriver, {uniqueUrl: () => uniqueUrl})
     expect(cdt).to.deep.equal([
       {
         nodeName: 'IFRAME',

@@ -63,7 +63,8 @@ function isAbsoluteUrl(url) {
 function uniqueUrl(url, query) {
   const uniqueId = guid()
   const uniqueUrl = new URL(url)
-  return uniqueUrl.searchParams.append(query, uniqueId)
+  if (!url.includes(query)) uniqueUrl.searchParams.append(query, uniqueId)
+  return uniqueUrl.href
 }
 
 /**
