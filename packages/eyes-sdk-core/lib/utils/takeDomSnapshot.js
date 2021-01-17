@@ -90,9 +90,7 @@ async function takeDomSnapshot(logger, driver, options = {}) {
         })
       if (frameContext) {
         const frameSnapshot = await takeContextDomSnapshot(frameContext)
-        if (frameSnapshot.url) {
-          frameSnapshot.url = generateUniqueUrl(frameSnapshot.url, 'applitools-iframe')
-        }
+        frameSnapshot.url = generateUniqueUrl(frameSnapshot.url, 'applitools-iframe')
         parentSnapshot.frames.push(frameSnapshot)
         cdtNode.attributes.push({name: 'data-applitools-src', value: frameSnapshot.url})
       }
