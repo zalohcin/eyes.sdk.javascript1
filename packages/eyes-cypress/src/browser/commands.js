@@ -31,7 +31,10 @@ if (!Cypress.config('eyesIsDisabled')) {
     };
     let browser = getGlobalConfigProperty('eyesBrowser');
     handleCypressViewport(browser).then({timeout: 86400000}, () =>
-      sendRequest({command: 'batchStart', data: {viewport, userAgent}}),
+      sendRequest({
+        command: 'batchStart',
+        data: {viewport, userAgent, isInteractive: getGlobalConfigProperty('isInteractive')},
+      }),
     );
   });
 
@@ -75,11 +78,11 @@ Cypress.Commands.add('eyesOpen', function(args = {}) {
       browser.name = 'chrome';
     }
   }
-
+  const isInteractive = getGlobalConfigProperty('isInteractive');
   return handleCypressViewport(browser).then({timeout: 15000}, () =>
     sendRequest({
       command: 'open',
-      data: Object.assign({testName}, args),
+      data: Object.assign({testName, isInteractive}, args),
     }),
   );
 });

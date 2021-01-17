@@ -1,6 +1,6 @@
 'use strict';
 const chalk = require('chalk');
-
+const RESET = '\x1b[0m';
 const formatByStatus = {
   Passed: {
     color: 'green',
@@ -19,7 +19,7 @@ const formatByStatus = {
   },
 };
 
-function errorDigest({passed, failed, diffs, logger}) {
+function errorDigest({passed, failed, diffs, logger, isInteractive}) {
   logger.log('errorDigest: diff errors', diffs);
   logger.log('errorDigest: test errors', failed);
 
@@ -31,6 +31,29 @@ function errorDigest({passed, failed, diffs, logger}) {
     testResultsToString(failed, 'Failed') +
     `${testLink}`
   );
+
+  function testResultsToString(testResultsArr, category) {
+    const {color, title, symbol} = formatByStatus[category];
+    const results = testResultsArr.reduce((acc, testResults) => {
+      if (!testResults.isEmpty) {
+        const error = hasError(testResults) ? stringifyError(testResults) : undefined;
+        acc.push(
+          `${colorify(symbol, color)} ${colorify(
+            error || stringifyTestResults(testResults),
+            RESET,
+          )}`,
+        );
+      }
+      return acc;
+    }, []);
+
+    const coloredTitle = results.length ? colorify(title(results.length), color) : '';
+    return testResultsSection(coloredTitle, results);
+  }
+
+  function colorify(msg, color) {
+    return isInteractive ? msg : chalk[color](msg);
+  }
 }
 
 function stringifyTestResults(testResults) {
@@ -38,22 +61,6 @@ function stringifyTestResults(testResults) {
   const viewport = hostDisplaySize ? `[${hostDisplaySize}]` : '';
   const testName = `${testResults.getName()} ${viewport}`;
   return testName + (testResults.error ? ` : ${testResults.error}` : '');
-}
-
-function testResultsToString(testResultsArr, category) {
-  const {color, title, symbol} = formatByStatus[category];
-  const results = testResultsArr.reduce((acc, testResults) => {
-    if (!testResults.isEmpty) {
-      const error = hasError(testResults) ? stringifyError(testResults) : undefined;
-      acc.push(
-        `${colorify(symbol, color)} ${chalk.reset(error || stringifyTestResults(testResults))}`,
-      );
-    }
-    return acc;
-  }, []);
-
-  const coloredTitle = results.length ? colorify(title(results.length), color) : '';
-  return testResultsSection(coloredTitle, results);
 }
 
 function testResultsSection(title, results) {
@@ -72,10 +79,6 @@ function indent(spaces = 2) {
 
 function hasError(testResult) {
   return testResult.error || testResult instanceof Error;
-}
-
-function colorify(msg, color) {
-  return chalk[color](msg);
 }
 
 module.exports = errorDigest;
