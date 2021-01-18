@@ -14,7 +14,7 @@ function makeTakeScreenshot(options) {
     if (driver.userAgent.browser === 'Firefox') {
       // TODO
     } else if (driver.userAgent.browser === 'Safari') {
-      if (driver.userAgent.os === 'iOS') {
+      if (driver.userAgent.os === 'iOS' || driver.isIOS) {
         return makeTakeMarkedScreenshot(options)
       } else if (this._driver.userAgent.browserMajorVersion === '11') {
         return makeTakeSafari11Screenshot(options)

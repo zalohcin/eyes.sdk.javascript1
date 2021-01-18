@@ -27,7 +27,7 @@ class ImageProviderFactory {
           return new TakesScreenshotImageProvider(logger, driver, rotation)
         }
       } else if (driver.userAgent.getBrowser() === BrowserNames.Safari) {
-        if (driver.userAgent.getOS() === OSNames.IOS) {
+        if (driver.userAgent.getOS() === OSNames.IOS || driver.isIOS) {
           return new IOSSafariScreenshotImageProvider(logger, driver, rotation, eyes)
         } else {
           return new SafariScreenshotImageProvider(logger, driver, rotation, eyes)

@@ -110,6 +110,18 @@ const DEVICES = {
       ...SAUCE_CREDENTIALS,
     },
   },
+  'iPad (7th generation)': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
+    capabilities: {
+      browserName: 'Safari',
+      deviceName: 'iPad (7th generation) Simulator',
+      deviceOrientation: 'portrait',
+      platformVersion: '13.2',
+      platformName: 'iOS',
+      ...SAUCE_CREDENTIALS,
+    },
+  },
   'Android 8.0 Chrome Emulator': {
     capabilities: {
       browserName: 'chrome',

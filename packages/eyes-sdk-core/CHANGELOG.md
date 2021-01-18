@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix bug when screenshots on iPad were taken with Safari navigation bar and iOS status bar
 
 ## 12.13.4 - 2021/1/15
 
