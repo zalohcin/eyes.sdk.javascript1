@@ -52,7 +52,6 @@ function errorDigest({passed, failed, diffs, logger, isInteractive}) {
   }
 
   function colorify(msg, color) {
-    console.log(color);
     return isInteractive ? msg : chalk[color](msg);
   }
 }
