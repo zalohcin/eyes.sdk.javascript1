@@ -1,6 +1,6 @@
 'use strict';
 const chalk = require('chalk');
-const RESET = '\x1b[0m';
+
 const formatByStatus = {
   Passed: {
     color: 'green',
@@ -40,7 +40,7 @@ function errorDigest({passed, failed, diffs, logger, isInteractive}) {
         acc.push(
           `${colorify(symbol, color)} ${colorify(
             error || stringifyTestResults(testResults),
-            RESET,
+            'reset',
           )}`,
         );
       }
@@ -52,6 +52,7 @@ function errorDigest({passed, failed, diffs, logger, isInteractive}) {
   }
 
   function colorify(msg, color) {
+    console.log(color);
     return isInteractive ? msg : chalk[color](msg);
   }
 }
