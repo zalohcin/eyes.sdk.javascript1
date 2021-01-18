@@ -3,6 +3,7 @@
 ## Unreleased
 
 - fix bug when screenshots on iPad were taken with Safari navigation bar and iOS status bar
+- updated to @applitools/dom-snapshot@4.4.8 (from 4.4.7)
 
 ## 12.13.4 - 2021/1/15
 
