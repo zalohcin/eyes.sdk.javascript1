@@ -124,4 +124,40 @@ describe('errorDigest', () => {
 
     expect(output).to.deep.equal(expectedOutput);
   });
+
+  it('should not print formatting codes when isInteractive', () => {
+    const passed = [
+      new TestResults({
+        name: 'test3',
+        hostDisplaySize: {width: 1, height: 2},
+        status: 'Passed',
+      }),
+    ];
+    const failed = [];
+    const diffs = [
+      new TestResults({
+        name: 'test1',
+        hostDisplaySize: {width: 100, height: 200},
+        url: 'some_url',
+        status: 'Unresolved',
+      }),
+    ];
+    const output = errorDigest({
+      passed,
+      failed,
+      diffs,
+      logger: {log: () => {}},
+      isInteractive: true,
+    });
+
+    const expectedOutput = `Eyes-Cypress detected diffs or errors during execution of visual tests:
+       Passed - 1 tests
+         \u2713 test3 [1x2]
+       Diffs detected - 1 tests
+         \u26A0 test1 [100x200]
+
+       See details at: some_url`;
+
+    expect(output).to.deep.equal(expectedOutput);
+  });
 });
