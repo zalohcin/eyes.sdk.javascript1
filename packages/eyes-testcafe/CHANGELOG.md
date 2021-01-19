@@ -1,0 +1,36 @@
+# Change Log
+
+## Unreleased
+
+
+## 1.12.3 - 2021/1/13
+
+- fix for fetching font-face resources from stylesheets [Trello](https://trello.com/c/DwmxtRoR)
+- updated to @applitools/eyes-sdk-core@12.13.0 (from 12.12.2)
+- updated to @applitools/visual-grid-client@15.5.6 (from 15.5.5)
+
+## 1.12.2 - 2021/1/11
+
+- fixed default checkWindow behavior (when no options are provided) to respect backwards compatibility -- so it captures a full page screenshot instead of just the viewport
+- fixed bug in specifying a tag name in checkWindow
+- updated to @applitools/eyes-sdk-core@12.12.2 (from 12.12.1)
+- updated to @applitools/visual-grid-client@15.5.5 (from 15.5.4)
+
+## 1.12.1 - 2021/1/9
+
+- fix performance issue with checkWindow command when used on pages of a non-trivial size
+- updated to @applitools/eyes-sdk-core@12.12.1 (from 12.12.0)
+- updated to @applitools/visual-grid-client@15.5.4 (from 15.5.3)
+
+## 1.12.0 - 2021/1/9
+
+- Updated SDK to use new core with backwards compatibility for existing API [Trello](https://trello.com/c/MZimmaSV)
+- Added support for new Eyes concurrency model [Trello](https://trello.com/c/a7xq2hlL)
+- Added JS layout support [Trello](https://trello.com/c/9dzS8FhB)
+- Added CORS iframe support [Trello](https://trello.com/c/wPl3ef7y)
+- Fix bugs in fetching resources due to TestCafe reverse proxy URLs [Trello](https://trello.com/c/nlMUhJTp)
+- updated to @applitools/visual-grid-client@15.5.3 (from 15.5.0)
+
+## earlier versions
+
+- omitted

@@ -2,6 +2,45 @@
 
 ## Unreleased
 
+## 5.29.3 - 2021/1/18
+
+- updated to @applitools/eyes-sdk-core@12.13.5 (from 12.13.4)
+- updated to @applitools/visual-grid-client@15.5.11 (from 15.5.10)
+
+## 5.29.2 - 2021/1/15
+
+- updated to @applitools/eyes-sdk-core@12.13.4 (from 12.12.2)
+- updated to @applitools/visual-grid-client@15.5.10 (from 15.5.5)
+
+## 5.29.1 - 2021/1/12
+
+- updated to @applitools/visual-grid-client@15.5.4 (from 15.4.0)
+- updated to @applitools/eyes-sdk-core@12.12.2 (from 12.12.1)
+- updated to @applitools/visual-grid-client@15.5.5 (from 15.5.4)
+
+## 5.29.0 - 2020/12/18
+
+- updated to @applitools/eyes-sdk-core@12.10.0 (from 12.9.3)
+- updated to @applitools/visual-grid-client@15.4.0 (from 15.3.2)
+
+## 5.28.3 - 2020/12/15
+
+- updated to @applitools/eyes-sdk-core@12.9.3 (from 12.9.2)
+- updated to @applitools/visual-grid-client@15.3.2 (from 15.3.1)
+
+## 5.28.2 - 2020/12/14
+
+- updated to @applitools/eyes-sdk-core@12.9.2 (from 12.9.1)
+- updated to @applitools/visual-grid-client@15.3.1 (from 15.3.0)
+
+## 5.28.1 - 2020/12/11
+
+- update eyes-service to use new concurrency configuration
+
+## 5.28.0 - 2020/12/11
+
+- updated to @applitools/eyes-sdk-core@12.9.1 (from 12.6.1)
+- updated to @applitools/visual-grid-client@15.3.0 (from 15.2.1)
 
 ## 5.27.2 - 2020/11/30
 

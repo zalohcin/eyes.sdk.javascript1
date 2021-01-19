@@ -3,6 +3,7 @@ const fs = require('fs')
 const path = require('path')
 const {URL} = require('url')
 const cwd = process.cwd()
+const cwdPath = path.join(cwd, 'index.js')
 const {
   BatchInfo,
   Configuration,
@@ -10,7 +11,7 @@ const {
   VisualGridRunner,
   ConsoleLogHandler,
   FileLogHandler,
-} = require(cwd)
+} = require(fs.existsSync(cwdPath) ? cwdPath : cwd)
 
 const SAUCE_SERVER_URL = 'https://ondemand.saucelabs.com:443/wd/hub'
 
@@ -109,6 +110,18 @@ const DEVICES = {
       ...SAUCE_CREDENTIALS,
     },
   },
+  'iPad (7th generation)': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
+    capabilities: {
+      browserName: 'Safari',
+      deviceName: 'iPad (7th generation) Simulator',
+      deviceOrientation: 'portrait',
+      platformVersion: '13.2',
+      platformName: 'iOS',
+      ...SAUCE_CREDENTIALS,
+    },
+  },
   'Android 8.0 Chrome Emulator': {
     capabilities: {
       browserName: 'chrome',
@@ -167,13 +180,13 @@ const BROWSERS = {
     capabilities: {
       w3c: {
         browserName: 'safari',
-        browserVersion: '11.0',
-        platformName: 'macOS 10.12',
+        browserVersion: '11',
+        platformName: 'macOS 10.13',
       },
       legacy: {
         browserName: 'safari',
-        version: '11.0',
-        platform: 'macOS 10.12',
+        version: '11',
+        platform: 'macOS 10.13',
       },
     },
     options: {

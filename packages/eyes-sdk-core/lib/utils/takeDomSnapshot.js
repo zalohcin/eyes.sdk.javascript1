@@ -20,9 +20,14 @@ async function takeDomSnapshot(logger, driver, options = {}) {
   ArgumentGuard.notNull(driver, 'driver')
   const {
     disableBrowserFetching: dontFetchResources,
-    chunkByteLength = DEFAULT_CHUNK_BYTE_LENGTH,
+    chunkByteLength = Number(process.env.APPLITOOLS_SCRIPT_RESULT_MAX_BYTE_LENGTH) ||
+      DEFAULT_CHUNK_BYTE_LENGTH,
     pollTimeout = POLL_TIMEOUT,
     executionTimeout = EXECUTION_TIMEOUT,
+    showLogs,
+    skipResources,
+    removeReverseProxyURLPrefixes = !!process.env
+      .APPLITOOLS_SCRIPT_REMOVE_REVERSE_PROXY_URL_PREFIXES,
   } = options
   const isLegacyBrowser = driver.isIE || driver.isEdgeLegacy
   const arg = {
@@ -30,6 +35,9 @@ async function takeDomSnapshot(logger, driver, options = {}) {
     dontFetchResources,
     serializeResources: true,
     compressResources: false,
+    showLogs,
+    skipResources,
+    removeReverseProxyURLPrefixes,
   }
   const scripts = {
     main: {
@@ -85,6 +93,9 @@ async function takeDomSnapshot(logger, driver, options = {}) {
       }
     }
 
+    logger.verbose(`dom snapshot cdt length: ${snapshot.cdt.length}`)
+    logger.verbose(`blobs urls (${snapshot.blobs.length}):`, JSON.stringify(snapshot.blobs.map(({url}) => url))) // eslint-disable-line prettier/prettier
+    logger.verbose(`resource urls (${snapshot.resourceUrls.length}):`, JSON.stringify(snapshot.resourceUrls)) // eslint-disable-line prettier/prettier
     return snapshot
   }
 }

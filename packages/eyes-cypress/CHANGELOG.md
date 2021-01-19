@@ -2,6 +2,56 @@
 
 ## Unreleased
 
+
+## 3.18.4 - 2021/1/13
+
+- fix eyesCheckWindow not returning the right promise ([Trello](https://trello.com/c/AkiXvrrz))
+- updated to @applitools/dom-snapshot@4.4.7 (from 4.4.5)
+- updated to @applitools/visual-grid-client@15.5.6 (from 15.5.5)
+- updated to @applitools/visual-grid-client@15.5.6 (from 15.5.5)
+## 3.18.3 - 2021/1/12
+
+- updated to @applitools/dom-snapshot@4.4.5 (from 4.4.3)
+- updated to @applitools/visual-grid-client@15.5.5 (from 15.5.0)
+
+## 3.18.2 - 2021/1/3
+
+- fix global config layoutBreakpoints
+- fix global config layoutBreakpoints
+## 3.18.1 - 2021/1/3
+
+- updated to @applitools/dom-snapshot@4.4.3 (from 4.4.2)
+
+## 3.18.0 - 2020/12/31
+
+- updated to @applitools/dom-snapshot@4.4.2 (from 4.4.1)
+- updated to @applitools/visual-grid-client@15.5.0 (from 15.4.0)
+
+## 3.17.0 - 2020/12/18
+
+- updated to @applitools/visual-grid-client@15.4.0 (from 15.3.3)
+
+## 3.16.4 - 2020/12/17
+
+- updated to @applitools/visual-grid-client@15.3.3 (from 15.3.2)
+
+## 3.16.3 - 2020/12/15
+
+- updated to @applitools/dom-snapshot@4.4.1 (from 4.4.0)
+- updated to @applitools/eyes-sdk-core@12.9.3 (from 12.9.2)
+- updated to @applitools/visual-grid-client@15.3.2 (from 15.3.1)
+
+## 3.16.2 - 2020/12/14
+
+- updated to @applitools/dom-snapshot@4.3.1 (from 4.2.6)
+- updated to @applitools/eyes-sdk-core@12.9.1 (from 12.6.2)
+- updated to @applitools/visual-grid-client@15.3.0 (from 15.2.1)
+- updated to @applitools/dom-snapshot@4.4.0 (from 4.3.1)
+- updated to @applitools/eyes-sdk-core@12.9.2 (from 12.9.1)
+- updated to @applitools/visual-grid-client@15.3.1 (from 15.3.0)
+
+## 3.16.1 - 2020/11/30
+
 - fix output with empty tests
 - using new concurrency model
 - updated to @applitools/eyes-sdk-core@12.6.2 (from 12.6.1)

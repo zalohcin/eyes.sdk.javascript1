@@ -35,6 +35,7 @@ const {createDotFolder} = require('../setup')
 const {verifyCommits, verifyInstalledVersions, verifyVersions} = require('../versions')
 const {gitAdd, gitCommit, gitPushWithTags, isChanged} = require('../git')
 const {yarnInstall, yarnUpgrade, verifyUnfixedDeps} = require('../yarn')
+const {should} = require('chai')
 
 const command = args._[0]
 
@@ -86,7 +87,7 @@ const command = args._[0]
             installedDirectory: path.join('.bongo', 'dry-run'),
           })
         }
-        await commitFiles()
+        await commitFiles(!!args.skipCommit)
         console.log('[bongo preversion] done!')
         return
       case 'send-release-notification':
@@ -122,7 +123,7 @@ const command = args._[0]
         return await gitAdd('CHANGELOG.md')
       case 'deps':
         await deps()
-        return await commitFiles()
+        return await commitFiles(!!args.skipCommit)
       default:
         throw new Error('Invalid option provided')
     }
@@ -145,8 +146,8 @@ async function deps() {
   })
 }
 
-async function commitFiles(shouldCommit = true) {
-  if (shouldCommit) {
+async function commitFiles(skipCommit = false) {
+  if (!skipCommit) {
     const files = ['package.json', 'CHANGELOG.md', 'yarn.lock']
     for (const file of files) {
       // git add fails when trying to add files that weren't changed
@@ -156,7 +157,7 @@ async function commitFiles(shouldCommit = true) {
     }
 
     // git commit fails when trying to commit files that weren't changed
-    if (await isChanged(files)) {
+    if (await isChanged(...files)) {
       const pkgName = JSON.parse(fs.readFileSync(path.resolve(cwd, 'package.json'))).name
       await gitCommit(`[auto commit] ${pkgName}: upgrade deps`)
     }

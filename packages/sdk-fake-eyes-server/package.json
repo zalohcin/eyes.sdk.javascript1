@@ -20,9 +20,6 @@
     "scripts",
     "lib"
   ],
-  "publishConfig": {
-    "access": "restricted"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/applitools/eyes.sdk.javascript1.git"

@@ -80,7 +80,8 @@
     "preversion": "bongo preversion && yarn test",
     "version": "bongo version",
     "postversion": "bongo postversion --skip-release-notification",
-    "prepublish:setup": "echo 'no setup'"
+    "prepublish:setup": "echo 'no setup'",
+    "deps": "bongo deps"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

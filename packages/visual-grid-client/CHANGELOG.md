@@ -3,6 +3,104 @@
 ## Unreleased
 
 
+## 15.5.11 - 2021/1/18
+
+- updated to @applitools/eyes-sdk-core@12.13.5 (from 12.13.4)
+
+## 15.5.10 - 2021/1/15
+
+- updated to @applitools/eyes-sdk-core@12.13.4 (from 12.13.3)
+
+## 15.5.9 - 2021/1/15
+
+- updated to @applitools/eyes-sdk-core@12.13.3 (from 12.13.2)
+
+## 15.5.8 - 2021/1/14
+
+- updated to @applitools/eyes-sdk-core@12.13.2 (from 12.13.1)
+
+## 15.5.7 - 2021/1/14
+
+- updated to @applitools/eyes-sdk-core@12.13.1 (from 12.13.0)
+
+## 15.5.6 - 2021/1/13
+
+- updated to @applitools/eyes-sdk-core@12.13.0 (from 12.12.2)
+
+## 15.5.5 - 2021/1/10
+
+- updated to @applitools/eyes-sdk-core@12.12.2 (from 12.12.1)
+
+## 15.5.4 - 2021/1/9
+
+- updated to @applitools/eyes-sdk-core@12.12.1 (from 12.12.0)
+
+## 15.5.3 - 2021/1/9
+
+- updated to @applitools/eyes-sdk-core@12.12.0 (from 12.11.1)
+
+## 15.5.2 - 2021/1/7
+
+- move `abort-controller` to dependencies
+- move `abort-controller` to dependencies
+ ## 15.5.1 - 2021/1/7
+
+- add streaming resource timeout 
+- updated to @applitools/eyes-sdk-core@12.11.1 (from 12.11.0)
+- updated to @applitools/eyes-sdk-core@12.11.1 (from 12.11.0)
+## 15.5.0 - 2020/12/29
+
+- expose device sizes functions from renderingGridClient
+- updated to @applitools/eyes-sdk-core@12.11.0 (from 12.10.1)
+- updated to @applitools/eyes-sdk-core@12.11.0 (from 12.10.1)
+## 15.4.2 - 2020/12/29
+
+- fix missing imageLocation in tests of eyes-sdk-core
+## 15.4.1 - 2020/12/29
+
+- use `imagePositionInActiveFrame` instead of custom calculation
+- updated to @applitools/eyes-sdk-core@12.10.1 (from 12.10.0)
+
+## 15.4.0 - 2020/12/18
+
+- updated to @applitools/eyes-sdk-core@12.10.0 (from 12.9.4)
+
+## 15.3.3 - 2020/12/17
+
+- updated to @applitools/eyes-sdk-core@12.9.4 (from 12.9.3)
+
+## 15.3.2 - 2020/12/15
+
+- updated to @applitools/eyes-sdk-core@12.9.3 (from 12.9.2)
+
+## 15.3.1 - 2020/12/14
+
+- updated to @applitools/eyes-sdk-core@12.9.2 (from 12.9.0)
+
+## 15.3.0 - 2020/12/11
+
+- updated to @applitools/eyes-sdk-core@12.9.0 (from 12.8.4)
+
+## 15.2.6 - 2020/12/8
+
+- updated to @applitools/eyes-sdk-core@12.8.4 (from 12.8.3)
+
+## 15.2.5 - 2020/12/8
+
+- support skip list
+
+## 15.2.4 - 2020/12/4
+
+- updated to @applitools/eyes-sdk-core@12.8.3 (from 12.8.2)
+
+## 15.2.3 - 2020/12/4
+
+- updated to @applitools/eyes-sdk-core@12.8.2 (from 12.6.2)
+
+## 15.2.2 - 2020/12/3
+
+- add `saveDiffs` to `renderingGridClient` and `openEyes`
+
 ## 15.2.1 - 2020/11/26
 
 - updated to @applitools/eyes-sdk-core@12.6.2 (from 12.6.0)

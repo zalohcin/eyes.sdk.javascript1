@@ -1,4 +1,4 @@
-import * as types from './type'
+import * as types from './types'
 
 export function getEnvValue<T extends 'boolean' | 'number' | 'string' = 'string'>(
   name: string,
@@ -19,6 +19,12 @@ export function guid(): string {
     const v = c === 'x' ? r : (r & 0x3) | 0x8
     return v.toString(16)
   })
+}
+
+export function sleep(ms: number) {
+  if (types.isNumber(ms)) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
 }
 
 export function toJSON<TObject extends Record<PropertyKey, any>, TKey extends string, TProps extends Readonly<TKey[]>>(

@@ -31,6 +31,7 @@
   "types": "./types/index.d.ts",
   "dependencies": {},
   "devDependencies": {
+    "@applitools/sdk-release-kit": "0.10.5",
     "@types/node": "^14.14.7",
     "@typescript-eslint/eslint-plugin": "^4.7.0",
     "@typescript-eslint/parser": "^4.7.0",
@@ -42,7 +43,12 @@
   },
   "scripts": {
     "lint": "eslint '**/*.ts'",
-    "build": "tsc"
+    "build": "tsc",
+    "preversion": "bongo preversion && yarn build",
+    "version": "bongo version",
+    "postversion": "bongo postversion --skip-release-notification",
+    "deps": "bongo deps",
+    "prepublish:setup": "echo 'setup is a no-op. Move along, nothing to see here.'"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

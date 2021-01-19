@@ -1,35 +1,36 @@
-const path = require('path')
 const chalk = require('chalk')
-const {prepareTests} = require('./prepare')
+const {configLoader} = require('../loaders/config-loader')
+const {testsLoader} = require('../loaders/tests-loader')
+const {templateLoader} = require('../loaders/template-loader')
+const {specEmitterLoader} = require('../loaders/spec-emitter-loader')
 const {emitTests} = require('./emit')
 const {createTestFiles, createTestMetaData} = require('./save')
 
 const DEFAULT_CONFIG = {
-  testsPath:
-    'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/master/coverage-tests.js',
+  tests: 'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/master/coverage-tests.js',
 }
 
-async function generate({configPath, ...options}) {
+async function generate(options) {
   try {
     const config = {
       ...DEFAULT_CONFIG,
-      ...require(path.join(path.resolve('.'), configPath)),
+      ...configLoader(options),
       ...options,
     }
     console.log(`Creating coverage tests for ${config.name}...\n`)
 
-    const tests = await prepareTests(config)
+    const tests = await testsLoader(config)
 
     if (tests.length <= 0) {
-      const message = `No test will be emitted. Please check "testPath", "emitSkipped", "emitOnly" config parameters`
+      const message = `No test will be emitted. Please check "tests", "emitSkipped", "emitOnly" config parameters`
       console.log(chalk.yellow(message), '\n')
       return
     }
 
-    const {emittedTests, errors} = emitTests(tests, {
-      makeSdk: config.initializeSdk,
-      fileTemplate: config.testFrameworkTemplate,
-    })
+    const makeSpecEmitter = await specEmitterLoader(config)
+    const makeFile = await templateLoader(config)
+
+    const {emittedTests, errors} = emitTests(tests, {makeSpecEmitter, makeFile})
 
     if (errors.length > 0) {
       if (config.strict) {

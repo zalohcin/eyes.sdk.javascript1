@@ -3,7 +3,6 @@ const path = require('path')
 const {createReport, convertSdkNameToReportName} = require('../src/report/create')
 const {
   parseBareTestName,
-  parseExecutionMode,
   parseJunitXmlForTests,
   convertJunitXmlToResultSchema,
 } = require('../src/report/xml')
@@ -19,12 +18,18 @@ const junit = loadFixture('multiple-suites-multiple-tests.xml')
 const metadata = {
   TestCheckWindow: {
     isGeneric: true,
+    executionMode: 'css',
+    name: 'TestCheckWindow',
   },
   TestCheckWindow_VG: {
     isGeneric: true,
+    executionMode: 'visualgrid',
+    name: 'TestCheckWindow',
   },
   TestCheckWindow_Scroll: {
     isGeneric: true,
+    executionMode: 'scroll',
+    name: 'TestCheckWindow',
   },
 }
 describe('Report', () => {
@@ -84,11 +89,6 @@ describe('Report', () => {
     assert.deepStrictEqual(convertSdkNameToReportName('eyes.webdriverio.javascript4'), 'js_wdio_4')
     assert.deepStrictEqual(convertSdkNameToReportName('eyes-images'), 'js_images')
   })
-  it('should return the expected mode name', () => {
-    assert.deepStrictEqual(parseExecutionMode('TestCheckWindow_VG'), 'visualgrid')
-    assert.deepStrictEqual(parseExecutionMode('TestCheckWindow_Scroll'), 'scroll')
-    assert.deepStrictEqual(parseExecutionMode('TestCheckWindow'), 'css')
-  })
   it(`should omit skipped testcases`, () => {
     const altXmlResult = loadFixture('single-suite-skipped-test.xml')
     const result = convertJunitXmlToResultSchema({junit: altXmlResult})
@@ -100,7 +100,7 @@ describe('Report', () => {
     assert.deepStrictEqual(result.length, 3)
   })
   it('should convert xml report to QA report schema as JSON', () => {
-    assert.deepStrictEqual(convertJunitXmlToResultSchema({junit, metadata: {}}), [
+    assert.deepStrictEqual(convertJunitXmlToResultSchema({junit, metadata}), [
       {
         test_name: 'TestCheckWindow',
         parameters: {
@@ -108,6 +108,7 @@ describe('Report', () => {
           mode: 'visualgrid',
         },
         passed: false,
+        isGeneric: true,
       },
       {
         test_name: 'TestCheckWindow',
@@ -116,6 +117,7 @@ describe('Report', () => {
           mode: 'css',
         },
         passed: true,
+        isGeneric: true,
       },
       {
         test_name: 'TestCheckWindow',
@@ -124,34 +126,7 @@ describe('Report', () => {
           mode: 'scroll',
         },
         passed: true,
-      },
-    ])
-  })
-  it('should convert xml report to QA report schema as JSON with generic set to false', () => {
-    assert.deepStrictEqual(convertJunitXmlToResultSchema({metadata: {}, junit}), [
-      {
-        test_name: 'TestCheckWindow',
-        parameters: {
-          browser: 'chrome',
-          mode: 'visualgrid',
-        },
-        passed: false,
-      },
-      {
-        test_name: 'TestCheckWindow',
-        parameters: {
-          browser: 'chrome',
-          mode: 'css',
-        },
-        passed: true,
-      },
-      {
-        test_name: 'TestCheckWindow',
-        parameters: {
-          browser: 'chrome',
-          mode: 'scroll',
-        },
-        passed: true,
+        isGeneric: true,
       },
     ])
   })
