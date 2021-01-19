@@ -78,7 +78,7 @@ function makeHandlers({
         processCloseAndAbort,
         getErrorsAndDiffs,
         errorDigest,
-        isInteractive: data.isInteractive,
+        isInteractive: GeneralUtils.getPropertyByPath(data, 'isInteractive'),
         handleBatchResultsFile: makeHandleBatchResultsFile(config),
       });
       pollBatchEnd = pollingHandler(
