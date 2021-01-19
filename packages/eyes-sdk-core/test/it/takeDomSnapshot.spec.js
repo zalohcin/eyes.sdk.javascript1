@@ -63,22 +63,23 @@ describe('takeDomSnapshot', () => {
     ])
     driver.mockScript('dom-snapshot', function() {
       return this.name === '[data-applitools-selector="123"]'
-        ? generateSnapshotResponse({
-            cdt: 'frame-cdt',
-            url: 'http://cors.com?applitools-iframe=123124',
-          })
+        ? generateSnapshotResponse({cdt: 'frame-cdt', url: 'http://cors.com'})
         : generateSnapshotResponse({
-            cdt: [{nodeName: 'IFRAME', attributes: []}],
+            cdt: [{nodeName: 'IFRAME', attributes: [{name: 'cross-origin-iframe', value: true}]}],
             crossFrames: [{selector: '[data-applitools-selector="123"]', index: 0}],
           })
     })
-    const uniqueUrl = 'https://cors.com/?applitools-iframe=0'
-    const snapshot = await takeDomSnapshot(logger, eyesDriver, {uniqueUrl: () => uniqueUrl})
+    const snapshot = await takeDomSnapshot(logger, eyesDriver, {
+      uniqueUrl: (url, query) => `URL:${url}--QUERY:${query}`,
+    })
     expect(snapshot).to.eql({
       cdt: [
         {
           nodeName: 'IFRAME',
-          attributes: [{name: 'data-applitools-src', value: uniqueUrl}],
+          attributes: [
+            {name: 'cross-origin-iframe', value: true},
+            {name: 'data-applitools-src', value: 'URL:http://cors.com--QUERY:applitools-iframe'},
+          ],
         },
       ],
       resourceContents: {},
@@ -89,7 +90,7 @@ describe('takeDomSnapshot', () => {
         {
           cdt: 'frame-cdt',
           frames: [],
-          url: uniqueUrl,
+          url: 'URL:http://cors.com--QUERY:applitools-iframe',
           resourceContents: {},
           resourceUrls: [],
           scriptVersion: 'mock value',
@@ -125,8 +126,8 @@ describe('takeDomSnapshot', () => {
         default:
           return generateSnapshotResponse({
             cdt: [
-              {nodeName: 'IFRAME', attributes: []},
-              {nodeName: 'IFRAME', attributes: []},
+              {nodeName: 'IFRAME', attributes: [{name: 'cross-origin-frame-1', value: true}]},
+              {nodeName: 'IFRAME', attributes: [{name: 'cross-origin-frame-2', value: true}]},
             ],
             crossFrames: [
               {selector: '[data-applitools-selector="123"]', index: 0},
@@ -135,17 +136,32 @@ describe('takeDomSnapshot', () => {
           })
       }
     })
-    const uniqueUrl = 'http://cors.com/?applitools-iframe=0'
-    const snapshot = await takeDomSnapshot(logger, eyesDriver, {uniqueUrl: () => uniqueUrl})
+    let counter = 0
+
+    const snapshot = await takeDomSnapshot(logger, eyesDriver, {
+      uniqueUrl: (url, query) => `URL:${url}--QUERY:${query}--COUNTER:${counter++}`,
+    })
     expect(snapshot).to.eql({
       cdt: [
         {
           nodeName: 'IFRAME',
-          attributes: [{name: 'data-applitools-src', value: uniqueUrl}],
+          attributes: [
+            {name: 'cross-origin-frame-1', value: true},
+            {
+              name: 'data-applitools-src',
+              value: 'URL:http://cors.com--QUERY:applitools-iframe--COUNTER:0',
+            },
+          ],
         },
         {
           nodeName: 'IFRAME',
-          attributes: [{name: 'data-applitools-src', value: uniqueUrl}],
+          attributes: [
+            {name: 'cross-origin-frame-2', value: true},
+            {
+              name: 'data-applitools-src',
+              value: 'URL:http://cors.com--QUERY:applitools-iframe--COUNTER:1',
+            },
+          ],
         },
       ],
       resourceContents: {},
@@ -156,7 +172,7 @@ describe('takeDomSnapshot', () => {
         {
           cdt: 'frame-cdt',
           frames: [],
-          url: uniqueUrl,
+          url: 'URL:http://cors.com--QUERY:applitools-iframe--COUNTER:0',
           resourceContents: {},
           resourceUrls: [],
           scriptVersion: 'mock value',
@@ -165,7 +181,7 @@ describe('takeDomSnapshot', () => {
         {
           cdt: 'another-frame-cdt',
           frames: [],
-          url: uniqueUrl,
+          url: 'URL:http://cors.com--QUERY:applitools-iframe--COUNTER:1',
           resourceContents: {},
           resourceUrls: [],
           scriptVersion: 'mock value',
@@ -193,7 +209,9 @@ describe('takeDomSnapshot', () => {
       switch (this.name) {
         case '[data-applitools-selector="123"]':
           return generateSnapshotResponse({
-            cdt: [{nodeName: 'IFRAME', attributes: []}],
+            cdt: [
+              {nodeName: 'IFRAME', attributes: [{name: 'nested-cross-origin-frame', value: true}]},
+            ],
             url: 'http://cors.com',
             crossFrames: [{selector: '[data-applitools-selector="456"]', index: 0}],
           })
@@ -204,18 +222,29 @@ describe('takeDomSnapshot', () => {
           })
         default:
           return generateSnapshotResponse({
-            cdt: [{nodeName: 'IFRAME', attributes: []}],
+            cdt: [{nodeName: 'IFRAME', attributes: [{name: 'cross-origin-frame', value: true}]}],
             crossFrames: [{selector: '[data-applitools-selector="123"]', index: 0}],
           })
       }
     })
-    const uniqueUrl = 'https://random.com/?applitools-iframe=1'
-    const snapshot = await takeDomSnapshot(logger, eyesDriver, {uniqueUrl: () => uniqueUrl})
+
+    let counter = 0
+
+    const snapshot = await takeDomSnapshot(logger, eyesDriver, {
+      uniqueUrl: (url, query) => `URL:${url}--QUERY:${query}--COUNTER:${counter++}`,
+    })
+
     expect(snapshot).to.eql({
       cdt: [
         {
           nodeName: 'IFRAME',
-          attributes: [{name: 'data-applitools-src', value: uniqueUrl}],
+          attributes: [
+            {name: 'cross-origin-frame', value: true},
+            {
+              name: 'data-applitools-src',
+              value: 'URL:http://cors.com--QUERY:applitools-iframe--COUNTER:1',
+            },
+          ],
         },
       ],
       frames: [
@@ -223,21 +252,27 @@ describe('takeDomSnapshot', () => {
           cdt: [
             {
               nodeName: 'IFRAME',
-              attributes: [{name: 'data-applitools-src', value: uniqueUrl}],
+              attributes: [
+                {name: 'nested-cross-origin-frame', value: true},
+                {
+                  name: 'data-applitools-src',
+                  value: 'URL:http://cors-2.com--QUERY:applitools-iframe--COUNTER:0',
+                },
+              ],
             },
           ],
           frames: [
             {
               cdt: 'nested frame',
               frames: [],
-              url: uniqueUrl,
+              url: 'URL:http://cors-2.com--QUERY:applitools-iframe--COUNTER:0',
               resourceContents: {},
               resourceUrls: [],
               scriptVersion: 'mock value',
               srcAttr: null,
             },
           ],
-          url: uniqueUrl,
+          url: 'URL:http://cors.com--QUERY:applitools-iframe--COUNTER:1',
           resourceContents: {},
           resourceUrls: [],
           scriptVersion: 'mock value',
@@ -265,7 +300,6 @@ describe('takeDomSnapshot', () => {
       },
     ])
 
-    const uniqueUrl = 'https://cors.com/?applitools-iframe=0'
     driver.mockScript('dom-snapshot', function() {
       switch (this.name) {
         case '[data-applitools-selector="456"]':
@@ -279,8 +313,10 @@ describe('takeDomSnapshot', () => {
             cdt: 'top page',
             frames: [
               generateSnapshotObject({
-                cdt: [{nodeName: 'IFRAME', attributes: []}],
-                url: uniqueUrl,
+                cdt: [
+                  {nodeName: 'IFRAME', attributes: [{name: 'cross-origin-frame', value: true}]},
+                ],
+                url: 'http://same-origin',
                 selector: '[data-applitools-selector="123"]',
                 crossFrames: [{selector: '[data-applitools-selector="456"]', index: 0}],
               }),
@@ -289,7 +325,12 @@ describe('takeDomSnapshot', () => {
       }
     })
 
-    const snapshot = await takeDomSnapshot(logger, eyesDriver, {uniqueUrl: () => uniqueUrl})
+    let counter = 0
+
+    const snapshot = await takeDomSnapshot(logger, eyesDriver, {
+      uniqueUrl: (url, query) => `URL:${url}--QUERY:${query}--COUNTER:${counter++}`,
+    })
+
     expect(snapshot).to.eql({
       cdt: 'top page',
       frames: [
@@ -297,13 +338,19 @@ describe('takeDomSnapshot', () => {
           cdt: [
             {
               nodeName: 'IFRAME',
-              attributes: [{name: 'data-applitools-src', value: uniqueUrl}],
+              attributes: [
+                {name: 'cross-origin-frame', value: true},
+                {
+                  name: 'data-applitools-src',
+                  value: 'URL:http://cors.com--QUERY:applitools-iframe--COUNTER:0',
+                },
+              ],
             },
           ],
           frames: [
             {
               cdt: 'nested frame',
-              url: uniqueUrl,
+              url: 'URL:http://cors.com--QUERY:applitools-iframe--COUNTER:0',
               frames: [],
               resourceContents: {},
               resourceUrls: [],
@@ -315,7 +362,7 @@ describe('takeDomSnapshot', () => {
           resourceUrls: [],
           scriptVersion: 'mock value',
           srcAttr: null,
-          url: uniqueUrl,
+          url: 'http://same-origin',
         },
       ],
       resourceContents: {},
@@ -366,14 +413,16 @@ describe('takeDomSnapshot', () => {
           })
         default:
           return generateSnapshotResponse({
-            cdt: [{nodeName: 'IFRAME', attributes: [], value: 'https://cors.com'}],
+            cdt: [{nodeName: 'IFRAME', attributes: []}],
             crossFrames: [{selector: '[data-applitools-selector="123"]', index: 0}],
           })
       }
     })
 
-    const snapshot = await takeDomSnapshot(logger, eyesDriver, {uniqueUrl: () => url})
-    expect(snapshot.frames).to.deep.equal([
+    const snapshot = await takeDomSnapshot(logger, eyesDriver, {
+      uniqueUrl: (url, query) => `URL:${url}--QUERY:${query}`,
+    })
+    expect(snapshot.frames).to.eql([
       {
         cdt: 'inner parent frame',
         resourceContents: {},
@@ -381,7 +430,7 @@ describe('takeDomSnapshot', () => {
         frames: [],
         scriptVersion: 'mock value',
         srcAttr: null,
-        url,
+        url: 'URL:https://some_url.com--QUERY:applitools-iframe',
       },
     ])
   })
@@ -409,12 +458,15 @@ describe('takeDomSnapshot', () => {
           })
       }
     })
-    const uniqueUrl = 'https://cors.com/?applitools-iframe=0'
-    const {cdt} = await takeDomSnapshot(logger, eyesDriver, {uniqueUrl: () => uniqueUrl})
+    const {cdt} = await takeDomSnapshot(logger, eyesDriver, {
+      uniqueUrl: (url, query) => `URL:${url}--QUERY:${query}`,
+    })
     expect(cdt).to.deep.equal([
       {
         nodeName: 'IFRAME',
-        attributes: [{name: 'data-applitools-src', value: uniqueUrl}],
+        attributes: [
+          {name: 'data-applitools-src', value: 'URL:http://cors.com--QUERY:applitools-iframe'},
+        ],
       },
     ])
   })
