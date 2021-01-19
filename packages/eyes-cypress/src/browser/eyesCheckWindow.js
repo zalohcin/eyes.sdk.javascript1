@@ -101,11 +101,19 @@ function makeEyesCheckWindow({sendRequest, processPage, domSnapshotOptions, cypr
         const command = browser.iosDeviceInfo ? 'getIosDevicesSizes' : 'getEmulatedDevicesSizes';
         return sendRequest({command}).then(devicesSizes => {
           if (!devicesSizes.hasOwnProperty(deviceName)) {
-            const category = browser.iosDeviceInfo ? 'iOS' : 'emulated';
-            const deviceListUrl =
-              'https://github.com/applitools/eyes.sdk.javascript1/blob/master/packages/eyes-sdk-core/lib/config/DeviceName.js';
+            const baseUrl =
+              'https://github.com/applitools/eyes.sdk.javascript1/blob/master/packages/eyes-sdk-core/lib/config';
+            const category = browser.iosDeviceInfo
+              ? {
+                  name: 'iOS',
+                  url: `${baseUrl}/IosDeviceName.js`,
+                }
+              : {
+                  name: 'emulated',
+                  url: `${baseUrl}/DeviceName.js`,
+                };
             throw new Error(
-              `'${deviceName}' does not exist in the list of ${category} devices.\nplease see the device list at: ${deviceListUrl}`,
+              `'${deviceName}' does not exist in the list of ${category.name} devices.\nplease see the device list at: ${category.url}`,
             );
           }
           const size = devicesSizes[deviceName][screenOrientation];
