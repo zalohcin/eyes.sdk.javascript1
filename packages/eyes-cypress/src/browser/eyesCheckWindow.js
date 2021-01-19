@@ -101,20 +101,7 @@ function makeEyesCheckWindow({sendRequest, processPage, domSnapshotOptions, cypr
         const command = browser.iosDeviceInfo ? 'getIosDevicesSizes' : 'getEmulatedDevicesSizes';
         return sendRequest({command}).then(devicesSizes => {
           if (!devicesSizes.hasOwnProperty(deviceName)) {
-            const baseUrl =
-              'https://github.com/applitools/eyes.sdk.javascript1/blob/master/packages/eyes-sdk-core/lib/config';
-            const category = browser.iosDeviceInfo
-              ? {
-                  name: 'iOS',
-                  url: `${baseUrl}/IosDeviceName.js`,
-                }
-              : {
-                  name: 'emulated',
-                  url: `${baseUrl}/DeviceName.js`,
-                };
-            throw new Error(
-              `'${deviceName}' does not exist in the list of ${category.name} devices.\nplease see the device list at: ${category.url}`,
-            );
+            handleDeviceError(deviceName);
           }
           const size = devicesSizes[deviceName][screenOrientation];
           return {name: deviceName, ...size};
@@ -153,4 +140,21 @@ function mapBlob({url, type, value}) {
   return {url, type: type || 'application/x-applitools-unknown', value};
 }
 
+function handleDeviceError(browser) {
+  const baseUrl =
+    'https://github.com/applitools/eyes.sdk.javascript1/blob/master/packages/eyes-sdk-core/lib/config';
+  const deviceName = browser.deviceName;
+  const category = browser.iosDeviceInfo
+    ? {
+        name: 'iOS',
+        url: `${baseUrl}/IosDeviceName.js`,
+      }
+    : {
+        name: 'emulated',
+        url: `${baseUrl}/DeviceName.js`,
+      };
+  throw new Error(
+    `'${deviceName}' does not exist in the list of ${category.name} devices.\nplease see the device list at: ${category.url}`,
+  );
+}
 module.exports = makeEyesCheckWindow;
