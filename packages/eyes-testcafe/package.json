@@ -7,6 +7,8 @@
   "scripts": {
     "perf": "testcafe chrome:headless test/perf/perf.spec.js",
     "perf:full": "yarn perf && yarn perf -c 5",
+    "perf:lite": "testcafe chrome:headless test/perf/perf-lite.spec.js",
+    "perf:lite:full": "yarn perf:lite && yarn perf:lite -c 5",
     "deps": "bongo deps",
     "lint": "eslint . --ext .js",
     "render": "node ../sdk-shared/src/render.js",
