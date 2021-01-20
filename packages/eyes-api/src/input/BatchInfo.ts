@@ -45,7 +45,7 @@ export default class BatchInfoData implements Required<BatchInfo> {
       this._id = utils.general.guid()
     }
 
-    this._name = name || utils.general.getEnvValue('BATCH_NAME')
+    this._name = batch.name || utils.general.getEnvValue('BATCH_NAME')
 
     if (batch.startedAt && !(batch.startedAt instanceof Date)) {
       utils.guard.isString(startedAt, {name: 'batch.startedAt', strict: false})

@@ -28,6 +28,7 @@
     "test": "./test"
   },
   "main": "./dist/index.js",
+  "types": "./types/index.d.ts",
   "dependencies": {
     "@applitools/utils": "link:../utils"
   },

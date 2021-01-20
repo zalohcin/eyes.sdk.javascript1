@@ -9,10 +9,10 @@
     "target": "ES2015",
     "module": "commonjs",
     "noImplicitAny": true,
-    "removeComments": false,
+    "removeComments": true,
     "preserveConstEnums": true,
     "downlevelIteration": true,
-    "stripInternal": false,
+    "stripInternal": true,
     "experimentalDecorators": true
   },
 }

@@ -58,8 +58,36 @@ export type CheckSettings<TElement, TSelector> = {
   timeout?: number
 }
 
+export type CheckSettingsTarget<TElement, TSelector> = {
+  window(): CheckSettingsFluent<TElement, TSelector>
+  frame(context: ContextReference<TElement, TSelector>): CheckSettingsFluent<TElement, TSelector>
+  frame(
+    frame: FrameReference<TElement, TSelector>,
+    scrollRootElement?: ElementReference<TElement, TSelector>,
+  ): CheckSettingsFluent<TElement, TSelector>
+  region(region: RegionReference<TElement, TSelector>): CheckSettingsFluent<TElement, TSelector>
+}
+
 export default abstract class CheckSettingsFluent<TElement = unknown, TSelector = unknown> {
-  protected abstract _spec: CheckSettingsSpec<TElement, TSelector>
+  /** @internal */
+  static make<TElement, TSelector>(
+    spec: CheckSettingsSpec<TElement, TSelector>,
+  ): CheckSettingsTarget<TElement, TSelector> {
+    return class extends CheckSettingsFluent<TElement, TSelector> {
+      protected readonly _spec = spec
+      static window() {
+        return new this()
+      }
+      static frame(contextOrFrame: any, scrollRootElement?: any) {
+        return new this().frame(contextOrFrame, scrollRootElement)
+      }
+      static region(region: any) {
+        return new this().region(region)
+      }
+    }
+  }
+
+  protected abstract readonly _spec: CheckSettingsSpec<TElement, TSelector>
 
   private _settings: CheckSettings<TElement, TSelector> = {}
 
