@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 0.12.0 - 2021/1/20
+
 - yargs as god intended
 
 ## 0.11.1 - 2021/1/12
