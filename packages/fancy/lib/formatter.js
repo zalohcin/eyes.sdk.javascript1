@@ -78,7 +78,12 @@ function formatter({ header, footer, body, indent, dull, template } = {}) {
         report(formatterFunction) {
             // call the provided format function
             const templateObj = { ...templateObject, ...formatted };
-            formatterFunction(this, templateObj);
+            try {
+                formatterFunction(this, templateObj);    
+            } catch (error) {
+                throw new Error(`the provided formatter function threw an error: ${error}`);
+            }
+            
             const newBody = templateObj.formattedBody || templateObj.body;
             const reversed = Object.keys(newBody).reduce((acc, key) => {
                 acc.push(...templateObj.formattedBody[key].reverse())
