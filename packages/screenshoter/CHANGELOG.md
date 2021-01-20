@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- chore: add husky
 - add `Galaxy S20` device name to enum
 - fix bug when screenshots on iPad were taken with Safari navigation bar and iOS status bar
 

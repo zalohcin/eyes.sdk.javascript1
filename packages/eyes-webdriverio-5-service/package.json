@@ -56,7 +56,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-push": "yarn bongo lint && yarn bongo verify-changelog"
+      "pre-push": "yarn bongo lint"
     }
   }
 }
