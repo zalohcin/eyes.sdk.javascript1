@@ -1,4 +1,4 @@
-export type Formatter = {
+export type FancyFromatter = {
     body: (body: Record<string, string[]>) => void;
     section: (title: string, data: string, key: string) => void;
     header: (header: string) => void;
@@ -23,7 +23,6 @@ export type Formatter = {
     reset: (text: string) => string;
 }
 
-export type FancyFormatFunction = (formatter: Formatter, templateObject: Record<string, string | string[]>) => void
 export type FancyOptions = {
     header: string;
     body: Record<string, string[]>;
@@ -31,7 +30,8 @@ export type FancyOptions = {
     indent: number;
     dull: boolean;
     template: string;
-    formatterFunction: FancyFormatFunction
 }
 
-export default function fancy(options: FancyOptions): Record<string, string | Function>;
+export type FancyFormatterFunction = (formatter: FancyFromatter, templateObject: Record<string, string | string[]>) => void
+
+export default function fancy(options: FancyOptions, formatterFunction: FancyFormatterFunction): Record<string, string | Function>;

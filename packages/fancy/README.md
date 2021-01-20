@@ -9,29 +9,32 @@ see [example](https://github.com/applitools/fancy/blob/master/README.md#example)
 # usage
 
 ```javascript
-const { output } = fancy({
-  header: "custom header",
-  footer: "custom footer",
-  body: {
-    custom: someArray,
-    custom2: someArray2,
+const {output} = fancy(
+  {
+    header: 'custom header',
+    footer: 'custom footer',
+    body: {
+      custom: someArray,
+      custom2: someArray2,
+    },
+    indent: 4,
   },
-  indent: 4,
-  format: (formatter, { body }) => {
+  (formatter, {body}) => {
     // you should call format.section at some point and add sections to body
     // otherwise the body will remain empty
     // you must call format.body at the end of your formatting function
     Object.keys(body).forEach((key) => {
       // typically you would transform each of the items in the body
       // using functions available on the first argument of the formatting function
-      formatter.section("title", body[key], key);
-    });
+      formatter.section('title', body[key], key);
+    })
     formatter.body(body);
-  },
-});
+  });
 ```
 
 # API
+
+## options
 
 ### `body`
 
@@ -70,13 +73,14 @@ a string representing the final output.
 defaults to `HEADER\nBODY\nFOOTER`.
 
 > NOTE you can change the spaces freely and provide any structure you want.
+> e.g `HEADER  \n\n    BODY\n  FOOTER`
 
-### `format`
+## formatterFunction
 
-the provided format function will receive the `formatter` object, with all colors and styling functions, and the template object as a second argument.
+the provided custom formatter function will receive the `formatter` object as a first argument, with all colors and styling functions, and the template object as a second argument.
 
 ```javascript
-format: (formatter, { body, header, footer }) => {
+function (formatter, { body, header, footer }) {
   const { section, background } = formatter;
   Object.keys(body).forEach((category, index) => {
     const color = index === 0 ? "green" : "red";
@@ -153,29 +157,31 @@ you are free to format the contents of each memeber of the array of course.
 
 ```javascript
 it("works like a charm", async () => {
-  const { output } = fancy({
-    body: {
-      artists: ["tool", "soundgarden", "metallica"],
-      albums: ["lateralus", "bad motorfinger", "s&m"],
+  const {output} = fancy(
+    {
+      body: {
+        artists: ['tool', 'soundgarden', 'metallica'],
+        albums: ['lateralus', 'bad motorfinger', 's&m'],
+      },
+      indent: 4,
+      header: 'my cool header',
+      footer: 'my awesome footer',
     },
-    indent: 4,
-    header: "my cool header",
-    footer: "my awesome footer",
-    format: (formatter, { body: _body, header: _header, footer: _footer }) => {
-      const { underline, background, bold, section, italic } = formatter;
-      formatter.header(underline(_header.toUpperCase(), "teal"));
-      formatter.footer(background(_footer.toUpperCase(), "pink"));
+    (formatter, {body: _body, header: _header, footer: _footer}) => {
+      const {underline, background, bold, section, italic} = formatter
+      formatter.header(underline(_header.toUpperCase(), 'teal'))
+      formatter.footer(background(_footer.toUpperCase(), 'pink'))
       Object.keys(_body).forEach((key, index) => {
-        const color = index === 0 ? "green" : "red";
+        const color = index === 0 ? 'green' : 'red'
         section(
           bold(key.toUpperCase(), color),
           _body[key].map((result) => ` 👉 ${italic(result, color)}`),
-          key
-        );
-      });
-      formatter.body(_body);
+          key,
+        )
+      })
+      formatter.body(_body)
     },
-  });
+  )
   expect(output).to.be(someOtherOutPut);
   // or better yet
   // await snap(output, 'charm')
@@ -191,39 +197,37 @@ outputs:
 an example for what would be a test results reporter:
 
 ```javascript
-const { output } = fancy({
-  body: {
-    Passed: [{ name: "test1" }, { name: "test2" }, { name: "test3" }],
-    Failed: [{ name: "test4" }, { name: "test5" }, { name: "test6" }],
+const {output} = fancy({
+    body: {
+      Passed: [{name: 'test1'}, {name: 'test2'}, {name: 'test3'}],
+      Failed: [{name: 'test4'}, {name: 'test5'}, {name: 'test6'}],
+    },
+    indent: 4,
+    header: 'Test Results',
   },
-  indent: 4,
-  header: "Test Results",
-  format: (formatter, { body: _body, header: _header }) => {
-    const { bold, section, gray, underline } = formatter;
-    formatter.header(underline(_header.toUpperCase(), "blue"));
+  (formatter, {body: _body, header: _header}) => {
+    const {bold, section, gray, underline} = formatter
+    formatter.header(underline(_header.toUpperCase(), 'blue'))
     const statuses = {
       Passed: {
-        icon: "✔",
-        color: "green",
+        icon: '✔',
+        color: 'green',
       },
       Failed: {
-        icon: "✖",
-        color: "red",
+        icon: '✖',
+        color: 'red',
       },
-    };
+    }
     Object.keys(_body).forEach((key) => {
-      const { icon, color } = statuses[key];
+      const {icon, color} = statuses[key]
       section(
         bold(key, color),
-        _body[key].map(
-          (result) => ` ${bold(icon, color)} ${gray(result.name)}`
-        ),
-        key
-      );
-    });
-    formatter.body(_body);
-  },
-});
+        _body[key].map((result) => ` ${bold(icon, color)} ${gray(result.name)}`),
+        key,
+      )
+    })
+    formatter.body(_body)
+})
 ```
 outputs:   
-<img src="https://github.com/applitools/fancy/blob/master/world.png?raw=true" />
+<img src="https://github.com/applitools/eyes.sdk.javascript1/master/packages/fancy" />

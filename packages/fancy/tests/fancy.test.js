@@ -126,7 +126,8 @@ describe('formatter', () => {
       indent: 4,
       header: 'custom header',
       footer: 'custom footer',
-      formatterFunction:(formatter, { body: _body }) => {
+    },
+      (formatter, { body: _body }) => {
         // you should call format.section at some point and add sections to body
         // otherwise the body will remain empty
         // you must return the body at the end;
@@ -136,7 +137,6 @@ describe('formatter', () => {
           section(underline(key.toUpperCase(), color), _body[key].map(result => `  ${result.getName()}`), key);
         })
         formatter.body(_body)
-      }
     });   
     await snap(output, 'format function')
   });
@@ -186,14 +186,14 @@ describe('formatter', () => {
       indent: 4,
       header: 'custom header',
       footer: 'custom footer',
-      formatterFunction:(formatter, { body: _body }) => {
+    },
+      (formatter, { body: _body }) => {
         const { section, background } = formatter;
         Object.keys(_body).forEach((key, index) => {
           const color = index === 0 ? 'green' : 'red';
           section(background(key.toUpperCase(), color), _body[key].map(result => `  ${result.getName()}`), key);
         })
         formatter.body(_body);
-      }
     });
     await snap(output, 'background')
   });
@@ -207,7 +207,8 @@ describe('formatter', () => {
       indent: 4,
       header: 'my cool header',
       footer: 'my awesome footer',
-      formatterFunction:(formatter, { body: _body, header: _header, footer: _footer }) => {
+    },
+      (formatter, { body: _body, header: _header, footer: _footer }) => {
         const { underline, background, bold, section, italic } = formatter;
         formatter.header(underline(_header.toUpperCase(), 'teal'));
         formatter.footer(background(_footer.toUpperCase(), 'pink'));
@@ -216,7 +217,6 @@ describe('formatter', () => {
           section(bold(key.toUpperCase(), color), _body[key].map(result => ` 👉 ${italic(result, color)}`), key);
         })
         formatter.body(_body);
-      }
     });
     await snap(output, 'charm')
   });
@@ -228,8 +228,9 @@ describe('formatter', () => {
         Failed: [{ name: 'test4' }, { name: 'test5' }, { name: 'test6' }]
       },
       indent: 4,
-      header: 'Test Results',
-      formatterFunction:(formatter, { body: _body, header: _header }) => {
+      header: 'Test Results'
+      },
+      (formatter, { body: _body, header: _header }) => {
         const { bold, section, gray, underline } = formatter;
         formatter.header(underline(_header.toUpperCase(), 'marine'));
         const statuses = {
@@ -247,7 +248,6 @@ describe('formatter', () => {
           section(bold(key, color), _body[key].map(result => ` ${bold(icon, color)} ${gray(result.name)}`), key);
         })
         formatter.body(_body);
-      }
     });
     
     await snap(output, 'real world')

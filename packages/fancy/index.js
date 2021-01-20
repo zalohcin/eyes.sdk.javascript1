@@ -1,4 +1,5 @@
 const formatter = require('./lib/formatter');
+const defaultFormatterFunction = require('./lib/default/formatResults')
 
 function fancy({
 	header = '',
@@ -7,8 +8,7 @@ function fancy({
 	dull = false,
 	footer = '',
 	template = '',
-	formatterFunction = require('./lib/default/formatResults')
-}) {
+}, formatterFunction = defaultFormatterFunction) {
 
 	const formatFunction = formatter({ header, footer, body, formatterFunction, indent, dull, template });
 
