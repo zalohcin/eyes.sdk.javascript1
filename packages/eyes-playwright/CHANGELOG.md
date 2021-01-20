@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-
+- chore: add husky
 ## 1.5.0 - 2020/12/18
 
 - updated to @applitools/eyes-sdk-core@12.10.0 (from 12.9.2)

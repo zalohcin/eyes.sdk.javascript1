@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- chore: add husky
 
 ## 2.3.5 - 2021/1/15
 

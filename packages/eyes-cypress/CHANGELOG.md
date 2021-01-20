@@ -2,9 +2,12 @@
 
 ## Unreleased
 
+- chore: add husky
 
 ## 3.18.5 - 2021/1/20
 
+- fix: don't format output when running in interactive mode
+- fix: add device conflict error 
 - updated to @applitools/dom-snapshot@4.4.8 (from 4.4.7)
 - updated to @applitools/visual-grid-client@15.5.11 (from 15.5.6)
 

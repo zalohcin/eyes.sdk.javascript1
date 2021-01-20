@@ -47,6 +47,7 @@
     "eslint-plugin-mocha-no-only": "^1.1.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.1.4",
+    "husky": "^4.3.7",
     "mocha": "^8.0.1",
     "playwright": "^1.6.2",
     "prettier": "1.19.0",
@@ -76,5 +77,10 @@
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
     "node": ">=8.9.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "yarn bongo lint"
+    }
   }
 }
