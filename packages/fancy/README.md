@@ -75,7 +75,7 @@ defaults to `HEADER\nBODY\nFOOTER`.
 > NOTE you can change the spaces freely and provide any structure you want.
 > e.g `HEADER  \n\n    BODY\n  FOOTER`
 
-## formatterFunction
+## customFormatter
 
 the provided custom formatter function will receive the `formatter` object as a first argument, with all colors and styling functions, and the template object as a second argument.
 

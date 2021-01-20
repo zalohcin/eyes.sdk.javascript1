@@ -74,13 +74,13 @@ function formatter({ header = '', footer = '', body = {}, indent = 0, dull = fal
         getTemplate() {
             return template;
         },
-        report(formatterFunction) {
+        report(customFormatter) {
             // call the provided format function
             const templateObj = { ...templateObject, ...formatted };
             try {
-                formatterFunction(this, templateObj);    
+                customFormatter(this, templateObj);    
             } catch (error) {
-                throw new Error(`the provided formatter function threw an error: ${error}`);
+                throw new Error(`the provided custom formatter function threw an error: ${error}`);
             }
             
             const newBody = templateObj.formattedBody || templateObj.body;
