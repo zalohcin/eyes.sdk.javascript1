@@ -1,6 +1,10 @@
 'use strict'
 
 const assert = require('assert')
+const chai = require('chai')
+chai.use(require('chai-uuid'))
+const expect = chai.expect
+const {URL} = require('url')
 
 const {GeneralUtils} = require('../../../index')
 
@@ -63,6 +67,29 @@ describe('GeneralUtils', () => {
       assert.ok(!GeneralUtils.isAbsoluteUrl('/foo/bar'))
       assert.ok(!GeneralUtils.isAbsoluteUrl('foo/bar'))
       assert.ok(!GeneralUtils.isAbsoluteUrl('foo'))
+    })
+  })
+
+  describe('uniqueUrl()', () => {
+    it('generates a url with a query parameter that has a unique value', () => {
+      const uniqueUrl = GeneralUtils.uniqueUrl('https://google.com', 'some_query')
+      const parsedUrl = new URL(uniqueUrl)
+      const guid = parsedUrl.searchParams.get('some_query')
+      expect(guid).to.be.a.guid()
+    })
+
+    it('adds a unique guid to urls with existing query parameters', () => {
+      const url = 'https://google.com/?some_query=some_value'
+      const uniqueUrl = GeneralUtils.uniqueUrl(url, 'some_search')
+      const parsedUrl = new URL(uniqueUrl)
+      const guid = parsedUrl.searchParams.get('some_search')
+      expect(guid).to.be.a.guid()
+    })
+
+    it('does not generate a unique value if provided query parameter already exists', () => {
+      const url = 'https://google.com/?some_query=some_value'
+      const uniqueUrl = GeneralUtils.uniqueUrl(url, 'some_query')
+      expect(uniqueUrl).to.deep.equal(url)
     })
   })
 

@@ -10,12 +10,13 @@ const ArgumentGuard = require('./ArgumentGuard')
 const EyesUtils = require('../sdk/EyesUtils')
 const deserializeDomSnapshotResult = require('./deserializeDomSnapshotResult')
 const createFramesPaths = require('./createFramesPaths')
+const {uniqueUrl} = require('./GeneralUtils')
 
 const EXECUTION_TIMEOUT = 5 * 60 * 1000
 const POLL_TIMEOUT = 200
 const DEFAULT_CHUNK_BYTE_LENGTH = 262144000 // 250MB (could be 256MB but decide to leave a 6MB buffer)
 
-async function takeDomSnapshot(logger, driver, options = {}) {
+async function takeDomSnapshot(logger, driver, options = {uniqueUrl}) {
   ArgumentGuard.notNull(logger, 'logger')
   ArgumentGuard.notNull(driver, 'driver')
   const {
@@ -28,6 +29,7 @@ async function takeDomSnapshot(logger, driver, options = {}) {
     skipResources,
     removeReverseProxyURLPrefixes = !!process.env
       .APPLITOOLS_SCRIPT_REMOVE_REVERSE_PROXY_URL_PREFIXES,
+    uniqueUrl,
   } = options
   const isLegacyBrowser = driver.isIE || driver.isEdgeLegacy
   const arg = {
@@ -88,6 +90,7 @@ async function takeDomSnapshot(logger, driver, options = {}) {
         })
       if (frameContext) {
         const frameSnapshot = await takeContextDomSnapshot(frameContext)
+        frameSnapshot.url = uniqueUrl(frameSnapshot.url, 'applitools-iframe')
         parentSnapshot.frames.push(frameSnapshot)
         cdtNode.attributes.push({name: 'data-applitools-src', value: frameSnapshot.url})
       }
