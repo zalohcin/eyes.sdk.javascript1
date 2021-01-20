@@ -1,16 +1,9 @@
 const formatter = require('./lib/formatter');
 const defaultFormatterFunction = require('./lib/default/formatResults')
 
-function fancy({
-	header = '',
-	indent = 0,
-	body = {},
-	dull = false,
-	footer = '',
-	template = '',
-}, formatterFunction = defaultFormatterFunction) {
+function fancy(options = {}, formatterFunction = defaultFormatterFunction) {
 
-	const formatFunction = formatter({ header, footer, body, indent, dull, template });
+	const formatFunction = formatter(options);
 
 	return {
 		formatter: formatFunction,

@@ -1,9 +1,8 @@
 const colors = require('./colors');
 const STRIP_REGEX = new RegExp(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g);
 
-function formatter({ header, footer, body, indent, dull, template } = {}) {
-    const defaultTemplate = template || `HEADER\nBODY\nFOOTER`;
-    const innerIndent = (defaultTemplate.split(" ").length - 1);
+function formatter({ header = '', footer = '', body = {}, indent = 0, dull = false, template = `HEADER\nBODY\nFOOTER` } = {}) {
+    const innerIndent = (template.split(" ").length - 1);
 
     function _format(message, color) {
         return colors.reset + colors[color] + message + colors.reset;
@@ -22,7 +21,7 @@ function formatter({ header, footer, body, indent, dull, template } = {}) {
     const formatted = {
         formattedHeader: '',
         formattedFooter: '',
-        formattedBody: Object.keys(body).reduce((acc, section) => { acc[section] = []; return acc }, {})
+        formattedBody: body ? Object.keys(body).reduce((acc, section) => { acc[section] = []; return acc }, {}) : {}
     }
 
     return {
@@ -73,7 +72,7 @@ function formatter({ header, footer, body, indent, dull, template } = {}) {
             console.log(this.report())
         },
         getTemplate() {
-            return defaultTemplate;
+            return template;
         },
         report(formatterFunction) {
             // call the provided format function
@@ -97,7 +96,7 @@ function formatter({ header, footer, body, indent, dull, template } = {}) {
             const _footer = indent ? (_indent(indent) + formattedFooter) : formattedFooter;
             // replace template with formatted content
             const formattedTemplate = { header: _header, body: _body, footer: _footer };
-            let templateString = defaultTemplate;
+            let templateString = template;
             Object.keys(formattedTemplate).forEach(key => {
                 const upperCased = key.toUpperCase();
                 templateString = templateString.replace(upperCased, formattedTemplate[key]);
