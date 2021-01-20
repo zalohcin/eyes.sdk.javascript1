@@ -10,11 +10,11 @@ function fancy({
 	template = '',
 }, formatterFunction = defaultFormatterFunction) {
 
-	const formatFunction = formatter({ header, footer, body, formatterFunction, indent, dull, template });
+	const formatFunction = formatter({ header, footer, body, indent, dull, template });
 
 	return {
 		formatter: formatFunction,
-		output: formatFunction.report()
+		output: formatFunction.report(formatterFunction)
 	}
 }
 
