@@ -7,7 +7,8 @@ describe 'spec-driver' do
     options = Selenium::WebDriver::Chrome::Options.new
     options.add_argument('--headless')
     @driver = Selenium::WebDriver.for :chrome, options: options
-    @driver.get 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
+    @url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
+    @driver.get @url
   end
   after(:all) do
     @driver.quit
@@ -42,33 +43,107 @@ describe 'spec-driver' do
     end
   end
   it('parentContext') do
-    skip
+    begin
+      @driver.switch_to.frame(@driver.find_element(:css, '[name="frame1"]'))
+      parentDocument = @driver.find_element(:css, 'html')
+      @driver.switch_to.frame(@driver.find_element(:css, '[name="frame1-1"]'))
+      frameDocument = @driver.find_element(:css, 'html')
+      expect(SpecDriver.isEqualElements(@driver, parentDocument, frameDocument)).to eq(false)
+      SpecDriver.parentContext(@driver)
+      resultDocument = @driver.find_element(:css, 'html')
+      expect(SpecDriver.isEqualElements(@driver, resultDocument, parentDocument)).to eq(true)
+    ensure
+      @driver.switch_to.default_content
+    end
   end
   it('childContext') do
+    begin
+      element = @driver.find_element(:css, '[name="frame1"]')
+      @driver.switch_to.frame(element)
+      expectedDocument = @driver.find_element(:css, 'html')
+      @driver.switch_to.default_content
+      SpecDriver.childContext(@driver, element)
+      resultDocument = @driver.find_element(:css, 'html')
+      expect(SpecDriver.isEqualElements(@driver, resultDocument, expectedDocument)).to eq(true)
+    ensure
+      @driver.switch_to.default_content
+    end
+  end
+  it('findElement css') do
+    expected = @driver.find_element(:css, 'div')
+    actual = SpecDriver.findElement(@driver, 'div')
+    expect(SpecDriver.isEqualElements(@driver, expected, actual)).to eq(true)
+  end
+  it('findElement xpath') do
     skip
   end
-  it('findElement') do
+  it('findElement eyes-selectors') do
     skip
   end
   it('findElements') do
-    skip
-  end
-  it('getViewportSize') do
-    skip
-  end
-  it('setViewportSize') do
-    skip
+    expected = @driver.find_elements(:css, 'div')
+    actual = SpecDriver.findElements(@driver, 'div')
+    expect(SpecDriver.isEqualElements(@driver, expected, actual)).to eq(true)
   end
   it('getTitle') do
-    skip
+    expected = @driver.title
+    result = SpecDriver.getTitle(@driver)
+    expect(result).to eq(expected)
   end
   it('getUrl') do
-    skip
+    result = SpecDriver.getUrl(@driver)
+    expect(result).to eq(@url)
   end
   it('getDriverInfo') do
     skip
   end
   it('takeScreenshot') do
     skip
+  end
+end
+
+describe('onscreen desktop') do
+  before(:all) do
+    options = Selenium::WebDriver::Chrome::Options.new
+    @driver = Selenium::WebDriver.for :chrome, options: options
+    @driver.get 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
+  end
+  after(:all) do
+    @driver.quit
+  end
+  it('getWindowRect') do
+    rect = @driver.manage.window.rect
+    result = SpecDriver.getWindowRect(@driver)
+    expect(result).to eq(rect)
+  end
+  it('setWindowRect') do
+    input = {x: 50, y: 50, width: 510, height: 511}
+    expected = {x: 50, y: 50, width: 510, height: 511}
+    SpecDriver.setWindowRect(@driver, input)
+    rect = @driver.manage.window.rect
+    expect(rect.height).to eq(expected[:height])
+    expect(rect.width).to eq(expected[:width])
+    expect(rect.x).to eq(expected[:x])
+    expect(rect.y).to eq(expected[:y]) 
+  end
+  it('setWindowRect({x, y})') do
+    input = {x: 100, y: 100}
+    expected = {x: 100, y: 100, width: 510, height: 511}
+    SpecDriver.setWindowRect(@driver, input)
+    rect = @driver.manage.window.rect
+    expect(rect.height).to eq(expected[:height])
+    expect(rect.width).to eq(expected[:width])
+    expect(rect.x).to eq(expected[:x])
+    expect(rect.y).to eq(expected[:y]) 
+  end
+  it('setWindowRect({width, height})') do
+    input = {width: 551, height: 552}
+    expected = {x: 100, y: 100, width: 551, height: 552}
+    SpecDriver.setWindowRect(@driver, input)
+    rect = @driver.manage.window.rect
+    expect(rect.height).to eq(expected[:height])
+    expect(rect.width).to eq(expected[:width])
+    expect(rect.x).to eq(expected[:x])
+    expect(rect.y).to eq(expected[:y]) 
   end
 end
