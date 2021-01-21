@@ -2,3 +2,9 @@ source 'https://rubygems.org'
 
 gem 'faye-websocket'
 gem 'eventmachine'
+
+group :development do
+  gem 'rspec'
+  gem 'guard-rspec'
+  gem 'webdrivers'
+end
