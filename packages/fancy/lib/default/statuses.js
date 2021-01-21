@@ -15,7 +15,7 @@ module.exports = {
   },
   Unresolved: {
     color: 'yellow',
-    symbol: '\u26A0',
+    symbol: '\u0021',
     title: tests => `Diffs detected - ${tests} test${plural(tests)}`,
   },
   _New: {
