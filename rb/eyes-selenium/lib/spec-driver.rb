@@ -53,4 +53,12 @@ module SpecDriver
   def getUrl(driver)
     driver.current_url
   end
+
+  def getDriverInfo(driver)
+    caps = driver.capabilities
+    {
+      :platformName => caps.platform,
+      :isMobile => caps.platform.include?(('android' or 'ios'))
+    }
+  end
 end

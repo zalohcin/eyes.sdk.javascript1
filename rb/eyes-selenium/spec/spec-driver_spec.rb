@@ -94,8 +94,13 @@ describe 'spec-driver' do
     result = SpecDriver.getUrl(@driver)
     expect(result).to eq(@url)
   end
-  it('getDriverInfo') do
-    skip
+  it('isMobile') do
+    result = SpecDriver.getDriverInfo(@driver)
+    expect(result[:isMobile]).to eq(false)
+  end
+  it('getPlatformName') do
+    result = SpecDriver.getDriverInfo(@driver)
+    expect(result[:platformName]).to_not be_nil
   end
   it('takeScreenshot') do
     skip
@@ -147,3 +152,20 @@ describe('onscreen desktop') do
     expect(rect.y).to eq(expected[:y]) 
   end
 end
+
+#describe('mobile driver (@mobile)', async () => {
+#  before(async () => {
+#    ;[driver, destroyDriver] = await spec.build({browser: 'chrome', device: 'Pixel 3a XL'})
+#  })
+#
+#  after(async () => {
+#    await destroyDriver()
+#  })
+#
+#  it('isMobile()', isMobile({expected: true}))
+#  it('getDeviceName()', getDeviceName({expected: 'Google Pixel 3a XL GoogleAPI Emulator'}))
+#  it('getPlatformName()', getPlatformName({expected: 'Android'}))
+#  it('isNative()', isNative({expected: false}))
+#  it('getOrientation()', getOrientation({expected: 'portrait'}))
+#  it('getPlatformVersion()', getPlatformVersion({expected: '10'}))
+#})
