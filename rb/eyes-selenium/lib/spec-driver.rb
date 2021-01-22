@@ -58,6 +58,10 @@ module SpecDriver
     }
   end
 
+  def commands
+    self.instance_methods.map {|method_name| method_name.to_s}
+  end
+
   private
 
     def transformSelector(selector)
