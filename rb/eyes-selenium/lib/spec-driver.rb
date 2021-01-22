@@ -1,7 +1,3 @@
-def transformSelector(selector)
-  return {css: selector}
-end
-
 module SpecDriver
   extend self
 
@@ -61,4 +57,11 @@ module SpecDriver
       :isMobile => caps.platform.include?(('android' or 'ios'))
     }
   end
+
+  private
+
+    def transformSelector(selector)
+      return {css: selector}
+    end
+
 end
