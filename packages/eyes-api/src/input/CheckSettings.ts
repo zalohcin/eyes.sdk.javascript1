@@ -58,7 +58,7 @@ export type CheckSettings<TElement, TSelector> = {
   timeout?: number
 }
 
-export type CheckSettingsTarget<TElement, TSelector> = {
+export type Target<TElement, TSelector> = {
   window(): CheckSettingsFluent<TElement, TSelector>
   frame(context: ContextReference<TElement, TSelector>): CheckSettingsFluent<TElement, TSelector>
   frame(
@@ -70,9 +70,7 @@ export type CheckSettingsTarget<TElement, TSelector> = {
 
 export default abstract class CheckSettingsFluent<TElement = unknown, TSelector = unknown> {
   /** @internal */
-  static make<TElement, TSelector>(
-    spec: CheckSettingsSpec<TElement, TSelector>,
-  ): CheckSettingsTarget<TElement, TSelector> {
+  static make<TElement, TSelector>(spec: CheckSettingsSpec<TElement, TSelector>): Target<TElement, TSelector> {
     return class extends CheckSettingsFluent<TElement, TSelector> {
       protected readonly _spec = spec
       static window() {
