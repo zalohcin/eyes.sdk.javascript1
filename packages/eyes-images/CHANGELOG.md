@@ -2,7 +2,11 @@
 
 ## Unreleased
 
+
+## 4.18.1 - 2021/1/24
+
 - chore: add husky
+- updated to @applitools/eyes-sdk-core@12.13.5 (from 12.10.0)
 - updated to @applitools/eyes-sdk-core@12.13.5 (from 12.10.0)
 ## 4.18.0 - 2020/12/18
 
