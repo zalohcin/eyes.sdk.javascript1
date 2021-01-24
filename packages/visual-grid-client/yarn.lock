@@ -33,10 +33,10 @@
     "@applitools/snippets" "2.1.0"
     "@applitools/utils" "1.0.0"
 
-"@applitools/eyes-sdk-core@12.13.5":
-  version "12.13.5"
-  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-12.13.5.tgz#0f6803a3bd65aecbbde0575c3c5a71a2e2052440"
-  integrity sha512-n8VcNYw0GZ7Q4t7rSfbs3zwy8d27LjytF22wcWovVtgDrMBknU4dg+w0fW3J65w1yoWXQgCD29btzNIycUD62g==
+"@applitools/eyes-sdk-core@12.14.0":
+  version "12.14.0"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-12.14.0.tgz#03caba7777b03370cae2e7c5c82ea1e694ddd4bf"
+  integrity sha512-UCMMl0iqlHDHMShfR2nw7p0ki57PyAKOSgNkZAc2BhkZdI2uZl8vZOJq5oHBD+1QfgVLUgaaJFvaULzcZ8oZxA==
   dependencies:
     "@applitools/dom-capture" "11.0.0"
     "@applitools/dom-snapshot" "4.4.8"
@@ -144,10 +144,10 @@
     xml-js "1.6.11"
     yargs "16.0.3"
 
-"@applitools/sdk-release-kit@0.11.1":
-  version "0.11.1"
-  resolved "https://registry.yarnpkg.com/@applitools/sdk-release-kit/-/sdk-release-kit-0.11.1.tgz#9de6c560055c4aa6e57eb911d263601321d4312c"
-  integrity sha512-H0Ah4MuhkmYCtS/km+AgeTSmYbBAU4UY9ZDUGv2BbsdAXGNV3t4RdaDTWDuliY5ChqeSLuYIM0POHOMGR0fxXg==
+"@applitools/sdk-release-kit@0.12.0":
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/@applitools/sdk-release-kit/-/sdk-release-kit-0.12.0.tgz#08a18a0824880136462923128b6125333101164b"
+  integrity sha512-kkmgQnnhRla6qGGaupEtXUzOqXn36Cyu5xRiAGmEt24CYzjPgqpTzzrX1FD8UzGOGK8GnTZSMaIkq1idK+K0Vg==
   dependencies:
     "@applitools/sdk-shared" "0.8.5"
     chalk "3.0.0"
