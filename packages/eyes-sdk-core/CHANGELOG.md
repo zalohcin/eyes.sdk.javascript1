@@ -6,6 +6,7 @@
 ## 12.14.0 - 2021/1/24
 
 - chore: add husky
+- add galaxy s20 to device enum
 
 ## 12.13.5 - 2021/1/18
 
