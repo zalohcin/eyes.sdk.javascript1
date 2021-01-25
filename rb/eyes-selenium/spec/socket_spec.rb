@@ -66,11 +66,20 @@ describe 'socket' do
   end
 
   it 'queues commands when no socket present' do
-    skip
+    socket = ::Applitools::Socket.new
+    socket.emit('Session.init', {:commands => ['a', 'b', 'c']})
+    expect(socket.queue.length).to eq(1)
   end
 
   it 'processes queue on connection' do
-    skip
+    ws = double().as_null_object
+    socket = ::Applitools::Socket.new
+    name = 'Session.init'
+    payload = {:commands => ['a', 'b', 'c']}
+    socket.emit(name, payload)
+    expect(ws).to receive(:send).with(JSON.generate({name: name, payload: payload}))
+    socket.connect('http://blah', ws)
+    expect(socket.queue.length).to eq(0)
   end
 
   it 'can make a request to the server' do

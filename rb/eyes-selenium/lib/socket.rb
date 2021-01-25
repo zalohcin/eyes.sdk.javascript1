@@ -3,14 +3,18 @@ require 'json'
 
 module Applitools
   class Socket
-    attr_reader :listeners
+    attr_reader :listeners, :queue
 
     def initialize
       @listeners = {}
+      @queue = []
     end
 
     def connect(uri, ws)
       @socket = ws ? ws : ::Faye::WebSocket::Client.new(uri)
+
+      queue.each {|command| command.call}
+      queue.clear
 
       ws.on :message do |event|
         message = JSON.parse(event.data).values
@@ -25,7 +29,8 @@ module Applitools
     end
 
     def emit(message, payload)
-      @socket.send(serialize(message, payload))
+      command = ->() {@socket.send(serialize(message, payload))}
+      @socket ? command.call : queue.push(command)
     end
 
     def command(name, fn)
