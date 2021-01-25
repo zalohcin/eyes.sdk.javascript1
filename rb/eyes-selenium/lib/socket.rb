@@ -62,13 +62,6 @@ module Applitools
           listeners[name.to_sym] = fns
         end
         fns.push(fn)
-        # NOTE:
-        # There's no return here like in the JS POC
-        # e.g., https://github.com/applitools/eyes.sdk.javascript1/blob/poc/universal-ruby-sdk/packages/eyes-universal/src/socket.js#L85
-        # The closest thing to returning a function would be something like this:
-        # `->() { off(name, fn)`.
-        # It would need to receive `.call` to run though. It's unclear to me how 
-        # this return function is used, so I've omitted it for now.
       end
 
   end

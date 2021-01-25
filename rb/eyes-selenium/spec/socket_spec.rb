@@ -23,7 +23,8 @@ describe 'socket' do
     @socket.command(name, payload)
     expect(@socket.listeners.length).to eq(1)
     expect(@socket.listeners.first.first[name]).to eq(name)
-    expect(@socket.listeners.first[1].first).to_not eq(payload) # e.g., fn that wraps execution and emits the result
+    listener = @socket.listeners.first[1].first
+    expect(listener).to_not eq(payload) # e.g., fn that wraps execution and emits the result
   end
 
   it 'an executed wrapped command emits the correct payload' do
@@ -33,6 +34,17 @@ describe 'socket' do
     }
     @socket.command(name, payload)
     expect(@ws).to receive(:send).with(JSON.generate({name: name, key: 'key', payload: 'blah'}))
+    listener = @socket.listeners.first[1].first
+    listener.call({blah: 'blah'}, 'key')
+  end
+
+  it 'an executed wrapped command emits the correct payload on error' do
+    name = 'Driver.someCommand'
+    payload = ->(params) {
+      raise 'error'
+    }
+    @socket.command(name, payload)
+    expect(@ws).to receive(:send).with(JSON.generate({name: name, key: 'key', payload: 'error'}))
     listener = @socket.listeners.first[1].first
     listener.call({blah: 'blah'}, 'key')
   end
@@ -58,6 +70,10 @@ describe 'socket' do
   end
 
   it 'processes queue on connection' do
+    skip
+  end
+
+  it 'can make a request to the server' do
     skip
   end
 end
