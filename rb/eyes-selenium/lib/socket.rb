@@ -3,6 +3,8 @@ require 'json'
 
 module Applitools
   class Socket
+    attr_reader :listeners
+
     def initialize
       @listeners = {}
     end
@@ -18,8 +20,8 @@ module Applitools
     def command(name, fn)
       on(name, ->(payload, key) {
         begin
-          puts "[COMMAND] #{name}, #{key}, #{JSON.generate(payload, {indent: 2})}"
-          result = fn(payload).call
+          puts "[COMMAND] #{name}, #{key}, #{JSON.generate(payload)}"
+          result = fn.call(payload)
           emit({name: name, key: key}, result)
         rescue => error
           emit({name: name, key: key}, error.message)
@@ -37,10 +39,10 @@ module Applitools
 
       def on(type, fn)
         name = type.is_a?(String) ? type : "#{type[:name]}/#{type[:key]}"
-        fns = listeners[name]
+        fns = @listeners[name: name]
         if (!fns)
           fns = []
-          listeners[:name] = fns
+          @listeners[name: name] = fns
         end
         fns.push(fn)
         # NOTE:
