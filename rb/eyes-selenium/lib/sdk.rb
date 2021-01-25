@@ -7,6 +7,7 @@ require_relative 'spec-driver'
 # - add ref/unref to commands
 # - implement openEyes w/ check, close, abort
 # - implement takeScreenshot
+# - establish minimal Eyes API in gem namespace
 # - e2e test (classic and VG)
 # - spawn server in unref'd child process
 # - look into `unref` equivalent for socket library (if necessary)

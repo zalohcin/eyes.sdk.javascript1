@@ -7,8 +7,8 @@ module Applitools
       @listeners = {}
     end
 
-    def connect(uri)
-      @socket = ::Faye::WebSocket::Client.new(uri)
+    def connect(uri, ws)
+      @socket = ws ? ws : ::Faye::WebSocket::Client.new(uri)
     end
 
     def emit(message, payload)
