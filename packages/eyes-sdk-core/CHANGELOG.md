@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix bug when dom-capture was taken with incorrect scroll location during `extractText` operation
 
 ## 12.14.0 - 2021/1/24
 

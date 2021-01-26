@@ -4,8 +4,6 @@ const findPattern = require('./findPattern')
 const makeCalculateScaleRatio = require('./calculateScaleRatio')
 const makeImage = require('./image')
 
-// TODO remove all ImageProviders
-
 function makeTakeScreenshot(options) {
   const {driver} = options
   if (driver.isNative) {
@@ -24,25 +22,25 @@ function makeTakeScreenshot(options) {
   return makeTakeDefaultScreenshot(options)
 }
 
-function makeTakeDefaultScreenshot({logger, driver, rotate, crop, scale, debug = {}}) {
+function makeTakeDefaultScreenshot({logger, driver, stabilization = {}, debug = {}}) {
   let calculateScaleRatio
   return async function takeScreenshot({name} = {}) {
     logger.verbose('Taking screenshot...')
     const image = makeImage(await driver.takeScreenshot())
     await saveScreenshot(image, {path: debug.path, name, suffix: 'original', logger})
 
-    if (rotate) {
-      await image.rotate(rotate)
+    if (stabilization.rotate) {
+      await image.rotate(stabilization.rotate)
       await saveScreenshot(image, {path: debug.path, name, suffix: 'rotated', logger})
     }
 
-    if (crop) {
-      await image.crop(crop)
+    if (stabilization.crop) {
+      await image.crop(stabilization.crop)
       await saveScreenshot(image, {path: debug.path, name, suffix: 'cropped', logger})
     }
 
-    if (scale) {
-      await image.scale(scale)
+    if (stabilization.scale) {
+      await image.scale(stabilization.scale)
     } else {
       if (!calculateScaleRatio) {
         const viewportSize = await driver.getViewportSize()
@@ -61,7 +59,7 @@ function makeTakeDefaultScreenshot({logger, driver, rotate, crop, scale, debug =
   }
 }
 
-function makeTakeSafari11Screenshot({logger, driver, rotate, crop, scale, debug = {}}) {
+function makeTakeSafari11Screenshot({logger, driver, stabilization = {}, debug = {}}) {
   let pixelRatio = null
   let viewportSize = null
   let calculateScaleRatio = null
@@ -71,13 +69,13 @@ function makeTakeSafari11Screenshot({logger, driver, rotate, crop, scale, debug 
     const image = makeImage(await driver.takeScreenshot())
     await saveScreenshot(image, {path: debug.path, name, suffix: 'original', logger})
 
-    if (rotate) {
-      await image.rotate(rotate)
+    if (stabilization.rotate) {
+      await image.rotate(stabilization.rotate)
       await saveScreenshot(image, {path: debug.path, name, suffix: 'rotated', logger})
     }
 
-    if (crop) {
-      await image.crop(crop)
+    if (stabilization.crop) {
+      await image.crop(stabilization.crop)
     } else {
       if (!pixelRatio) pixelRatio = await driver.getPixelRatio()
       if (!viewportSize) viewportSize = await driver.getViewportSize()
@@ -86,8 +84,8 @@ function makeTakeSafari11Screenshot({logger, driver, rotate, crop, scale, debug 
     }
     await saveScreenshot(image, {path: debug.path, name, suffix: 'cropped', logger})
 
-    if (scale) {
-      await image.scale(scale)
+    if (stabilization.scale) {
+      await image.scale(stabilization.scale)
     } else {
       if (!calculateScaleRatio) {
         if (!pixelRatio) pixelRatio = await driver.getPixelRatio()
@@ -107,7 +105,7 @@ function makeTakeSafari11Screenshot({logger, driver, rotate, crop, scale, debug 
   }
 }
 
-function makeTakeMarkedScreenshot({logger, driver, rotate, crop, scale, debug = {}}) {
+function makeTakeMarkedScreenshot({logger, driver, stabilization = {}, debug = {}}) {
   let calculateScaleRatio = null
   let viewportRegion = null
 
@@ -116,21 +114,21 @@ function makeTakeMarkedScreenshot({logger, driver, rotate, crop, scale, debug = 
     const image = makeImage(await driver.takeScreenshot())
     await saveScreenshot(image, {path: debug.path, name, suffix: 'original', logger})
 
-    if (rotate) {
-      await image.rotate(rotate)
+    if (stabilization.rotate) {
+      await image.rotate(stabilization.rotate)
       await saveScreenshot(image, {path: debug.path, name, suffix: 'rotated', logger})
     }
 
-    if (crop) {
-      await image.crop(crop)
+    if (stabilization.crop) {
+      await image.crop(stabilization.crop)
     } else {
       if (!viewportRegion) viewportRegion = await getViewportRegion()
       await image.crop(viewportRegion)
     }
     await saveScreenshot(image, {path: debug.path, name, suffix: 'cropped', logger})
 
-    if (scale) {
-      await image.scale(scale)
+    if (stabilization.scale) {
+      await image.scale(stabilization.scale)
     } else {
       if (!calculateScaleRatio) {
         const viewportSize = await driver.getViewportSize()
@@ -152,7 +150,7 @@ function makeTakeMarkedScreenshot({logger, driver, rotate, crop, scale, debug = 
     const marker = await driver.addPageMarker()
     try {
       const image = makeImage(await driver.takeScreenshot())
-      if (rotate) await image.rotate(rotate)
+      if (stabilization.rotate) await image.rotate(stabilization.rotate)
 
       await saveScreenshot(image, 'marker') // TODO fix
 
@@ -170,28 +168,28 @@ function makeTakeMarkedScreenshot({logger, driver, rotate, crop, scale, debug = 
   }
 }
 
-function makeTakeNativeScreenshot({logger, driver, rotate, crop, scale, debug = {}}) {
+function makeTakeNativeScreenshot({logger, driver, stabilization = {}, debug = {}}) {
   return async function takeScreenshot({name} = {}) {
     logger.verbose('Taking native driver screenshot...')
     const image = makeImage(
-      crop || process.env.APPLITOOLS_SKIP_MOBILE_NATIVE_SCREENSHOT_HOOK
+      stabilization.crop || process.env.APPLITOOLS_SKIP_MOBILE_NATIVE_SCREENSHOT_HOOK
         ? await driver.takeScreenshot()
         : await takeViewportScreenshot(),
     )
     await saveScreenshot(image, {path: debug.path, name, suffix: 'original', logger})
 
-    if (rotate) {
-      await image.rotate(rotate)
+    if (stabilization.rotate) {
+      await image.rotate(stabilization.rotate)
       await saveScreenshot(image, {path: debug.path, name, suffix: 'rotated', logger})
     }
 
-    if (crop) {
-      await image.crop(crop)
+    if (stabilization.crop) {
+      await image.crop(stabilization.crop)
       await saveScreenshot(image, {path: debug.path, name, suffix: 'cropped', logger})
     }
 
-    if (scale) {
-      await image.scale(scale)
+    if (stabilization.scale) {
+      await image.scale(stabilization.scale)
       await saveScreenshot(image, {path: debug.path, name, suffix: 'scaled', logger})
     }
 
