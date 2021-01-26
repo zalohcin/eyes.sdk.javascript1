@@ -3,7 +3,6 @@ require_relative 'socket'
 require_relative 'spec-driver'
 
 # TODO:
-# - implement remaining functions in socket wrapper
 # - add ref/unref to commands
 # - implement openEyes w/ check, close, abort
 # - implement takeScreenshot
