@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix bug when dom-capture was taken with incorrect scroll location during `extractText` operation
 - avoid js snippet execution in native context
 
 ## 12.14.0 - 2021/1/24
