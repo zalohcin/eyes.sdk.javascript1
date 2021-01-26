@@ -48,7 +48,9 @@ module Applitools
 
     def request(name, payload, key = SecureRandom.uuid)
       emit({name: name, key: key}, payload)
-      once({name: name, key: key}, ->() {})
+      once({name: name, key: key}, Proc.new {|result|
+        puts "RESULT: #{result.inspect}" if result
+      })
     end
 
     private
@@ -73,7 +75,6 @@ module Applitools
           listeners[name.to_sym] = fns
         end
         fns.push(fn)
-        ->() {off(name)}
       end
 
       def off(name)
@@ -81,10 +82,11 @@ module Applitools
       end
 
       def once(type, fn)
-        off = on(type, ->(*args) {
+        name = type.is_a?(String) ? type : "#{type[:name]}/#{type[:key]}"
+        on(type, ->(*args) {
           fn.call(*args)
+          off(name)
         })
-        off.call
       end
   end
 end
