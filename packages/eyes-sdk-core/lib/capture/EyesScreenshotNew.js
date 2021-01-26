@@ -142,10 +142,7 @@ class EyesScreenshot {
       screenshotType || (await EyesScreenshot.getScreenshotType(this._image, this._eyes))
     this._context = this._eyes._context
 
-    // TODO this throws exception on mobile native apps
-    this._currentFrameScrollPosition = await this._context
-      .getInnerOffset()
-      .catch(() => Location.ZERO)
+    this._currentFrameScrollPosition = await this._context.getInnerOffset()
 
     this._frameLocationInScreenshot = this._context.isMain
       ? Location.ZERO
