@@ -1,4 +1,4 @@
-require_relative('../lib/socket-wrapper')
+require_relative('../../lib/applitools/socket')
 require('json')
 
 describe 'socket' do

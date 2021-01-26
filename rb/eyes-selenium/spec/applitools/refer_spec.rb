@@ -1,4 +1,4 @@
-require_relative('../lib/refer')
+require_relative('../../lib/applitools/refer')
 
 describe 'refer' do
   before(:each) do

@@ -1,6 +1,6 @@
 require('selenium-webdriver')
 require('webdrivers/chromedriver')
-require_relative('../lib/spec-driver')
+require_relative('../../lib/applitools/spec-driver')
 
 describe 'spec-driver' do
   before(:all) do
