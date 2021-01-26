@@ -2,10 +2,9 @@ require('eventmachine')
 require_relative('socket')
 require_relative('spec-driver')
 require_relative('refer')
-@refer = Refer.new
 
 # TODO:
-# - implement openEyes w/ check, close, abort
+# - ref elements in return of executeSript
 # - implement takeScreenshot
 # - e2e test (classic and VG)
 # - spawn server in unref'd child process
@@ -14,16 +13,16 @@ require_relative('refer')
 # - add colorized logging to be consistent w/ JS POC
 # - test concurrency
 EM.run do
+  refer = Refer.new
   socket = ::Applitools::Socket.new
   socket.connect('ws://localhost:2107/eyes')
   socket.emit('Session.init', {:commands => SpecDriver.commands})
   socket.command('Driver.isEqualElements', ->(params) {
-    SpecDriver.isEqualElements(params[:context], @refer.deref(params[:element1]), @refer.deref(params[:element2]))
+    SpecDriver.isEqualElements(params[:context], refer.deref(params[:element1]), refer.deref(params[:element2]))
   })
   socket.command('Driver.executeScript', ->(params) {
-    args = params[:args].map {|arg| @refer.isRef(arg) ? @refer.deref(arg) : arg}
+    args = params[:args].map {|arg| refer.isRef(arg) ? refer.deref(arg) : arg}
     result = SpecDriver.executeScript(params[:context], params[:script], *args)
-    # TODO: ref elements in return
     # e.g., from JS POC
     #async function serialize(result) {
     #  const [_, type] = result.toString().split('@')
@@ -51,15 +50,15 @@ EM.run do
     SpecDriver.parentContext(params[:driver])
   })
   socket.command('Driver.childContext', ->(params) {
-    SpecDriver.mainContext(params[:driver], @refer.deref(params[:element]))
+    SpecDriver.mainContext(params[:driver], refer.deref(params[:element]))
   })
   socket.command('Driver.findElement', ->(params) {
     result = SpecDriver.findElement(params[:driver], params[:selector])
-    @refer.ref(result)
+    refer.ref(result)
   })
   socket.command('Driver.findElements', ->(params) {
     result = SpecDriver.findElements(params[:driver], params[:selector])
-    result.each {|element| @refer.ref(element)}
+    result.each {|element| refer.ref(element)}
   })
   socket.command('Driver.getViewportSize', ->(params) {
     SpecDriver.getViewportSize(params[:driver])
@@ -79,4 +78,37 @@ EM.run do
   #socket.command('Driver.takeScreenshot', ->(params) {
   #  SpecDriver.takeScreenshot(params[:driver])
   #})
+
+  module Applitools
+    module Selenium
+      class Eyes
+        def initialize()
+          @eyes = nil
+          @driverRef = nil
+        end
+
+        def open(driver, config)
+          puts('open.eyes')
+          @driverRef = refer.ref(driver)
+          @eyes = socket.request('Eyes.open', {driver: driverRef, config: config})
+        end
+
+        def check(checkSettings)
+          socket.request('Eyes.check', {eyes: @eyes, checkSettings: checkSettings})
+        end
+
+        def close
+          result = socket.request('Eyes.close', {eyes: @eyes})
+          refer.destroy(@driverRef)
+          result
+        end
+
+        def abort
+          result = socket.request('Eyes.abort', {eyes: @eyes})
+          refer.destroy(@driverRef)
+          result
+        end
+      end
+    end
+  end
 end
