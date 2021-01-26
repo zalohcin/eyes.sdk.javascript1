@@ -1,7 +1,7 @@
-require 'eventmachine'
-require_relative 'socket'
-require_relative 'spec-driver'
-require_relative 'refer'
+require('eventmachine')
+require_relative('socket')
+require_relative('spec-driver')
+require_relative('refer')
 @refer = Refer.new
 
 # TODO:
@@ -14,7 +14,7 @@ require_relative 'refer'
 # - add colorized logging to be consistent w/ JS POC
 # - test concurrency
 EM.run do
-  socket = Applitools::Socket.new
+  socket = ::Applitools::Socket.new
   socket.connect('ws://localhost:2107/eyes')
   socket.emit('Session.init', {:commands => SpecDriver.commands})
   socket.command('Driver.isEqualElements', ->(params) {

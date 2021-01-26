@@ -1,6 +1,6 @@
-require 'faye/websocket'
-require 'json'
-require 'securerandom' 
+require('faye/websocket')
+require('json')
+require('securerandom')
 
 module Applitools
   class Socket

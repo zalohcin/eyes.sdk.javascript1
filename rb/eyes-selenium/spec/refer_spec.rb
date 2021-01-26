@@ -1,8 +1,8 @@
-require_relative '../lib/refer'
+require_relative('../lib/refer')
 
 describe 'refer' do
   before(:each) do
-    @refer = Refer.new
+    @refer = ::Applitools::Refer.new
   end
   it('should store an entry') do
     input = {:blah => 'blah'}
@@ -12,7 +12,7 @@ describe 'refer' do
   it('should return a server compatible element reference') do
     input = {:blah => 'blah'}
     result = @refer.ref(input)
-    expect(result.keys.first).to eq(Refer::REF_ID)
+    expect(result.keys.first).to eq(::Applitools::Refer::REF_ID)
     expect(result.values.first).to_not be_nil
   end
   it('should track element relation') do

@@ -1,5 +1,5 @@
-require_relative '../lib/socket'
-require 'json'
+require_relative('../lib/socket')
+require('json')
 
 describe 'socket' do
   before(:each) do
