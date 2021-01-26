@@ -11,8 +11,8 @@ module Applitools
       @queue = []
     end
 
-    def connect(uri, ws)
-      @socket = ws ? ws : ::Faye::WebSocket::Client.new(uri)
+    def connect(uri, ws = ::Faye::WebSocket::Client.new(uri))
+      @socket = ws
 
       queue.each {|command| command.call}
       queue.clear
