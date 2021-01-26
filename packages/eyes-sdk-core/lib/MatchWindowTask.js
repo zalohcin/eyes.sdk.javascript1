@@ -396,6 +396,7 @@ class MatchWindowTask {
       true,
       checkSettings,
       source,
+      screenshot,
     )
 
     if (this._matchResult.getAsExpected()) {
@@ -425,7 +426,15 @@ class MatchWindowTask {
    * @param {string} source
    * @return {Promise<EyesScreenshot>}
    */
-  async _tryTakeScreenshot(userInputs, region, tag, ignoreMismatch, checkSettings, source) {
+  async _tryTakeScreenshot(
+    userInputs,
+    region,
+    tag,
+    ignoreMismatch,
+    checkSettings,
+    source,
+    previousScreenshot,
+  ) {
     const appOutput = await this._appOutputProvider.getAppOutput(
       region,
       this._lastScreenshot,
@@ -433,6 +442,15 @@ class MatchWindowTask {
     )
     const renderId = checkSettings.getRenderId()
     const screenshot = appOutput.getScreenshot()
+    const screenshotSha = await screenshot.getImage().getImageSha256()
+
+    const previousScreenshotSha = previousScreenshot
+      ? await previousScreenshot.getImage().getImageSha256()
+      : undefined
+    if (screenshotSha === previousScreenshotSha) {
+      return screenshot
+    }
+
     const matchSettings = await this.createImageMatchSettings(checkSettings, screenshot)
     this._matchResult = await this.performMatch(
       userInputs,
