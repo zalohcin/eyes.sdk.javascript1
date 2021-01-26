@@ -83,6 +83,10 @@ describe 'socket' do
   end
 
   it 'can make a request to the server' do
-    skip
+    name = 'blah'
+    key = '12345'
+    payload = {blah: 'blah'}
+    expect(@ws).to receive(:send).with(JSON.generate({name: name, key: key, payload: payload}))
+    @socket.request('blah', {blah: 'blah'}, key)
   end
 end

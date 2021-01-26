@@ -1,5 +1,6 @@
 require 'faye/websocket'
 require 'json'
+require 'securerandom' 
 
 module Applitools
   class Socket
@@ -45,6 +46,11 @@ module Applitools
       })
     end
 
+    def request(name, payload, key = SecureRandom.uuid)
+      emit({name: name, key: key}, payload)
+      once({name: name, key: key}, ->() {})
+    end
+
     private
 
       def find_and_execute_listeners_by_name(name, params = [])
@@ -67,7 +73,18 @@ module Applitools
           listeners[name.to_sym] = fns
         end
         fns.push(fn)
+        ->() {off(name)}
       end
 
+      def off(name)
+        listeners.delete(name.to_sym)
+      end
+
+      def once(type, fn)
+        off = on(type, ->(*args) {
+          fn.call(*args)
+        })
+        off.call
+      end
   end
 end
