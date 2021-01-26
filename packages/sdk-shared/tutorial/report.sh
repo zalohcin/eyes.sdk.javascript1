@@ -1,14 +1,14 @@
 #!/bin/bash
 
 function report() {
-  echo "$@"
+#  echo "$@"
   data=$( dataMain $1 $2 $3 )'"results": [{
           "test_name": "tutorial_basic",
-          "passed": true
+          "passed": '$(exitCodeToBool $4)'
         },
         {
           "test_name": "tutorial_ultrafastgrid",
-          "passed": true
+          "passed": '$(exitCodeToBool $5)'
         }
       ]
 }'
@@ -16,10 +16,10 @@ sendReport $data
 }
 
 function report_ufg() {
-  echo "$@"
+#  echo "$@"
   data=$( dataMain $1 $2 $3 )'"results": [{
           "test_name": "tutorial_ultrafastgrid",
-          "passed": true
+          "passed": '$(exitCodeToBool $4)'
         }
       ]
 }'
@@ -38,5 +38,13 @@ function dataMain() {
 function sendReport() {
     payload=''$@''
     echo $payload
-    curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X POST --data "$payload" "http://sdk-test-results.herokuapp.com/result"
+#    curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X POST --data "$payload" "http://sdk-test-results.herokuapp.com/result"
+}
+
+function exitCodeToBool(){
+  if [[ $1 == 0 ]]; then
+    echo 'true'
+  else
+    echo 'false'
+  fi
 }
