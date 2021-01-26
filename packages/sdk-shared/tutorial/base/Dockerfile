@@ -10,6 +10,7 @@ RUN apt-get update && apt-get clean && apt-get install -y \
     gnupg2 \
     default-jdk \
     unzip \
+    && apt-get install -y g++ build-essential \
     && apt update \
     && apt install -y git
 
@@ -29,6 +30,7 @@ COPY /bootstrap.sh /
 
 RUN  curl -sL https://deb.nodesource.com/setup_current.x | bash - \
      && apt-get update \
-     && apt-get install -y nodejs
+     && apt-get install -y nodejs \
+     && npm install --global yarn
 
 

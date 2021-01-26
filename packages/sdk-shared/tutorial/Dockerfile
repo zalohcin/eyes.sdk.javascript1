@@ -1,9 +1,5 @@
-FROM tutorial_nodejs:latest
-
-COPY / /SDK
-
-RUN cd /SDK \
-    && npm install
+ARG from=tutorial_nodejs:latest
+FROM ${from}
 
 ARG repo=tutorial-selenium-javascript-basic
 RUN mkdir //home/project \
