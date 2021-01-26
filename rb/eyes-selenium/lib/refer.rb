@@ -10,19 +10,19 @@ class Refer
   end
 
   def ref(value, parentRef = nil)
-    _ref = SecureRandom.uuid
-    store[_ref] = value
+    uuid = SecureRandom.uuid
+    store[uuid] = value
     if (parentRef)
       childRefs = relation[parentRef[:REF_ID]]
       if (!childRefs)
         childRefs = []
-        childRefs.push(_ref)
+        childRefs.push(uuid)
         relation[parentRef[REF_ID]] = childRefs
       else
-        childRefs.push(_ref)
+        childRefs.push(uuid)
       end
     end
-    {REF_ID => _ref}
+    {REF_ID => uuid}
   end
 
   def isRef(ref)
