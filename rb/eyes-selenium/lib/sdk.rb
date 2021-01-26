@@ -1,16 +1,16 @@
 require 'eventmachine'
 require_relative 'socket'
 require_relative 'spec-driver'
+require_relative 'refer'
+@refer = Refer.new
 
 # TODO:
-# - add ref/unref to commands
 # - implement openEyes w/ check, close, abort
 # - implement takeScreenshot
-# - establish minimal Eyes API in gem namespace
 # - e2e test (classic and VG)
 # - spawn server in unref'd child process
 # - look into `unref` equivalent for socket library (if necessary)
-# - add queueing to socket wrapper
+# - establish minimal Eyes API in gem namespace
 # - add colorized logging to be consistent w/ JS POC
 # - test concurrency
 EM.run do
@@ -18,25 +18,48 @@ EM.run do
   socket.connect('ws://localhost:2107/eyes')
   socket.emit('Session.init', {:commands => SpecDriver.commands})
   socket.command('Driver.isEqualElements', ->(params) {
-    SpecDriver.isEqualElements(params[:context], params[:element1], params[:element2])
+    SpecDriver.isEqualElements(params[:context], @refer.deref(params[:element1]), @refer.deref(params[:element2]))
   })
   socket.command('Driver.executeScript', ->(params) {
-    SpecDriver.executeScript(params[:context], params[:script], *params[:args])
+    args = params[:args].map {|arg| @refer.isRef(arg) ? @refer.deref(arg) : arg}
+    result = SpecDriver.executeScript(params[:context], params[:script], *args)
+    # TODO: ref elements in return
+    # e.g., from JS POC
+    #async function serialize(result) {
+    #  const [_, type] = result.toString().split('@')
+    #  if (type === 'array') {
+    #    const map = await result.getProperties()
+    #    return Promise.all(Array.from(map.values(), serialize))
+    #  } else if (type === 'object') {
+    #    const map = await result.getProperties()
+    #    const chunks = await Promise.all(
+    #      Array.from(map, async ([key, handle]) => ({[key]: await serialize(handle)})),
+    #    )
+    #    return Object.assign(...chunks)
+    #  } else if (type === 'node') {
+    #    return ref(result.asElement(), frame)
+    #  } else {
+    #    return result.jsonValue()
+    #  }
+    #}
+    result
   })
   socket.command('Driver.mainContext', ->(params) {
-   SpecDriver.mainContext(params[:context])
+    SpecDriver.mainContext(params[:driver])
   })
   socket.command('Driver.parentContext', ->(params) {
-    SpecDriver.parentContext(params[:context])
+    SpecDriver.parentContext(params[:driver])
   })
   socket.command('Driver.childContext', ->(params) {
-    SpecDriver.mainContext(params[:context], params[:element])
+    SpecDriver.mainContext(params[:driver], @refer.deref(params[:element]))
   })
   socket.command('Driver.findElement', ->(params) {
-    SpecDriver.findElement(params[:context], params[:selector])
+    result = SpecDriver.findElement(params[:driver], params[:selector])
+    @refer.ref(result)
   })
   socket.command('Driver.findElements', ->(params) {
-    SpecDriver.findElements(params[:context], params[:selector])
+    result = SpecDriver.findElements(params[:driver], params[:selector])
+    result.each {|element| @refer.ref(element)}
   })
   socket.command('Driver.getViewportSize', ->(params) {
     SpecDriver.getViewportSize(params[:driver])
