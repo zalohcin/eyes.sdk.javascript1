@@ -355,11 +355,9 @@ class EyesContext {
 
   async getInnerOffset() {
     if (this.isCurrent) {
-      this._innerOffset = await EyesUtils.getInnerOffset(
-        this._logger,
-        this,
-        await this.getScrollRootElement(),
-      )
+      this._innerOffset = !this._driver.isNative
+        ? await EyesUtils.getInnerOffset(this._logger, this, await this.getScrollRootElement())
+        : Location.ZERO
     }
     return this._innerOffset
   }

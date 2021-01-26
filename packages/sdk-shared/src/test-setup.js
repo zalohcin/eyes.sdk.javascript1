@@ -90,6 +90,18 @@ const DEVICES = {
       ...SAUCE_CREDENTIALS,
     },
   },
+  'iPhone 11 Pro Max': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
+    capabilities: {
+      appiumVersion: '1.18.3',
+      deviceName: 'iPhone 11 Pro Max Simulator',
+      deviceOrientation: 'portrait',
+      platformVersion: '14.0',
+      platformName: 'iOS',
+      ...SAUCE_CREDENTIALS,
+    },
+  },
   'iPhone XS': {
     type: 'sauce',
     url: SAUCE_SERVER_URL,
