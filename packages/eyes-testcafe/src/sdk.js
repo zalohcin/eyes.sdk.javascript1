@@ -38,11 +38,12 @@ class DecoratedEyesFactory extends sdk.EyesFactory {
     // set api wrapper
     const api = {
       async open(...args) {
+        const driver = args[0]
         let openArgs, config
-        if (args && args.length === 1 && TypeUtils.isObject(args[0]) && !spec.isDriver(args[0])) {
-          const {t, appName, testName} = args[0]
+        if (args && args.length === 1 && TypeUtils.isObject(driver) && !spec.isDriver(driver)) {
+          const {t, appName, testName} = driver
           openArgs = [t, appName, testName]
-          config = translateArgsToConfig({...applitoolsConfigJs, ...args[0]})
+          config = translateArgsToConfig({...applitoolsConfigJs, ...driver})
         } else {
           openArgs = args
           config = translateArgsToConfig(applitoolsConfigJs)
@@ -52,6 +53,14 @@ class DecoratedEyesFactory extends sdk.EyesFactory {
         if (!process.env.APPLITOOLS_USE_PRELOADED_CONFIG) {
           eyesInstance.setConfiguration(config)
           eyesInstance.logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS || config.getShowLogs())
+        }
+        // driver health check, re: https://trello.com/c/xNCZNfPi
+        try {
+          await spec.executeScript(driver, 'return true')
+        } catch (error) {
+          throw new Error(
+            `The browser is in an invalid state due to JS errors on the page that TestCafe is unable to handle. Try running the test with TestCafe's --skip-js-errors option enabled: https://devexpress.github.io/testcafe/documentation/reference/configuration-file.html#skipjserrors`,
+          )
         }
         return await _open(...openArgs)
       },
