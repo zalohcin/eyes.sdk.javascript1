@@ -4,6 +4,9 @@
 
 - fix bug when dom-capture was taken with incorrect scroll location during `extractText` operation
 - avoid js snippet execution in native context
+- updated to @applitools/driver@1.0.4 (from 1.0.2)
+- updated to @applitools/screenshoter@3.0.3 (from 2.1.1)
+- updated to @applitools/snippets@2.1.1 (from 2.1.0)
 
 ## 12.14.0 - 2021/1/24
 
