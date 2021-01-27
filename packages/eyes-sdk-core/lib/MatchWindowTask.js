@@ -40,6 +40,7 @@ class MatchWindowTask {
 
     /** @type {MatchResult} */ this._matchResult = undefined
     /** @type {EyesScreenshot} */ this._lastScreenshot = undefined
+    /** @type {string} */ this._lastScreenshotSha = undefined
     /** @type {Region} */ this._lastScreenshotBounds = undefined
   }
 
@@ -349,7 +350,6 @@ class MatchWindowTask {
       start,
       source,
     )
-
     // if we're here because we haven't found a match yet, try once more
     if (!this._matchResult.getAsExpected()) {
       return this._tryTakeScreenshot(userInputs, region, tag, ignoreMismatch, checkSettings, source)
@@ -396,7 +396,6 @@ class MatchWindowTask {
       true,
       checkSettings,
       source,
-      screenshot,
     )
 
     if (this._matchResult.getAsExpected()) {
@@ -426,15 +425,7 @@ class MatchWindowTask {
    * @param {string} source
    * @return {Promise<EyesScreenshot>}
    */
-  async _tryTakeScreenshot(
-    userInputs,
-    region,
-    tag,
-    ignoreMismatch,
-    checkSettings,
-    source,
-    previousScreenshot,
-  ) {
+  async _tryTakeScreenshot(userInputs, region, tag, ignoreMismatch, checkSettings, source) {
     const appOutput = await this._appOutputProvider.getAppOutput(
       region,
       this._lastScreenshot,
@@ -442,12 +433,8 @@ class MatchWindowTask {
     )
     const renderId = checkSettings.getRenderId()
     const screenshot = appOutput.getScreenshot()
-    const screenshotSha = await screenshot.getImage().getImageSha256()
-
-    const previousScreenshotSha = previousScreenshot
-      ? await previousScreenshot.getImage().getImageSha256()
-      : undefined
-    if (screenshotSha === previousScreenshotSha) {
+    const screenshotSha = screenshot ? await screenshot.getImage().getImageSha256() : null
+    if (screenshotSha === this._lastScreenshotSha) {
       return screenshot
     }
 
@@ -461,6 +448,7 @@ class MatchWindowTask {
       matchSettings,
       source,
     )
+    this._lastScreenshotSha = screenshotSha
     return screenshot
   }
 
