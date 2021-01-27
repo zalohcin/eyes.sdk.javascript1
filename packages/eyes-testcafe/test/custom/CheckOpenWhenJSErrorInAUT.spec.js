@@ -12,7 +12,7 @@ fixture`check open when js error in aut`
     //await server.close()
     eyes.abortIfNotClosed()
   })
-test('repro', async t => {
+test.skip('repro', async t => {
   //await t.navigateTo('https://demo.applitools.com/') // works
   await t.navigateTo('https://www.walmart.com.mx/tu-cuenta/iniciar-sesion') // NOTE: errors with this
   //await t.navigateTo('http://localhost:7999/errors.html') // errors, but not in the right way...?
