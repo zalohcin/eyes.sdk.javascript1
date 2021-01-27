@@ -48,6 +48,7 @@ jobs:
 
           echo "::group::update master from $BRANCH"
           git checkout master
+          git diff
           git pull origin master --rebase
           git merge $BRANCH
           git push origin master
