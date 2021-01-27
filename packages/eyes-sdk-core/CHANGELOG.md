@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 12.14.2 - 2021/1/27
+
 - fix: rename function to avoid naming collision
 
 ## 12.14.1 - 2021/1/27
