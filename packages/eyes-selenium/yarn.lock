@@ -174,10 +174,10 @@
     uuid "3.3.3"
     zlib "1.0.5"
 
-"@applitools/sdk-release-kit@^0.11.1":
-  version "0.11.1"
-  resolved "https://registry.yarnpkg.com/@applitools/sdk-release-kit/-/sdk-release-kit-0.11.1.tgz#9de6c560055c4aa6e57eb911d263601321d4312c"
-  integrity sha512-H0Ah4MuhkmYCtS/km+AgeTSmYbBAU4UY9ZDUGv2BbsdAXGNV3t4RdaDTWDuliY5ChqeSLuYIM0POHOMGR0fxXg==
+"@applitools/sdk-release-kit@0.12.1":
+  version "0.12.1"
+  resolved "https://registry.yarnpkg.com/@applitools/sdk-release-kit/-/sdk-release-kit-0.12.1.tgz#4cd2994ab164b843cfef6a4278074a622fbc87e3"
+  integrity sha512-7yJF5V3ZPwq0lbbW6NO7frQxc2fE2Z+jnhjBWymAlb4oCX6aTcx+QZ0xUTog6iUuCctNseWTH+NAeQwkBStiLg==
   dependencies:
     "@applitools/sdk-shared" "0.8.5"
     chalk "3.0.0"
