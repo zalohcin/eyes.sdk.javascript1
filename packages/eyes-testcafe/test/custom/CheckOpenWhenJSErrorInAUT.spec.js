@@ -1,15 +1,15 @@
 // re: https://trello.com/c/xNCZNfPi
-const path = require('path')
-const {testSetup, testServer} = require('@applitools/sdk-shared')
+const _path = require('path')
+const {testSetup, _testServer} = require('@applitools/sdk-shared')
 const eyes = testSetup.getEyes({vg: true})
-let server
+let _server
 fixture`check open when js error in aut`
   .before(async () => {
-    const staticPath = path.join(__dirname, 'fixtures')
-    server = await testServer({port: 7999, staticPath})
+    //const staticPath = path.join(__dirname, 'fixtures')
+    //server = await testServer({port: 7999, staticPath})
   })
   .after(async () => {
-    await server.close()
+    //await server.close()
     eyes.abortIfNotClosed()
   })
 test('repro', async t => {
