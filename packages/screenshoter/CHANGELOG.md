@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+## 3.0.0 - 2021/1/26
+
 - `crop`, `scale` and `rotate` now should be placed in `stabilization` object
 - rename `context` to `frames`
 - rename `isFully` to `fully`
