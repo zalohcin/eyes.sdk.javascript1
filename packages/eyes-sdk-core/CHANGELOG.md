@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix: don't upload screenshot if it matches the previous one [trello](https://trello.com/c/VAsOZIWA)
 
 ## 12.14.0 - 2021/1/24
 
