@@ -3,6 +3,8 @@
 ## Unreleased
 
 - chore: add husky
+- updated to @applitools/snippets@2.1.1 (from 2.1.0)
+- updated to @applitools/utils@1.0.1 (from 1.0.0)
 
 ## 1.0.2 - 2020/12/29
 
