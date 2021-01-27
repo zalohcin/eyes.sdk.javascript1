@@ -1,0 +1,7 @@
+FROM tutorial_nodejs:latest
+
+COPY / /SDK
+
+RUN cd /SDK \
+    && yarn install
+

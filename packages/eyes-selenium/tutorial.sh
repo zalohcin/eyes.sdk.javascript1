@@ -18,14 +18,14 @@ fi
 set +e
 
 if [[ $APPLITOOLS_SELENIUM_MAJOR_VERSION == 3 ]]; then
-  docker run -e APPLITOOLS_SELENIUM_MAJOR_VERSION -e APPLITOOLS_API_KEY tutorial_selenium3_basic /bin/bash -c '//bootstrap.sh > /dev/null 2>&1 && npm test'
+  docker run -e APPLITOOLS_SELENIUM_MAJOR_VERSION -e APPLITOOLS_API_KEY tutorial_selenium3_basic /bin/bash -c '//bootstrap.sh > /dev/null 2>&1 && find ./test -type f -exec sed -i "s/'\''APPLITOOLS_API_KEY'\''/process.env.APPLITOOLS_API_KEY/g" {} \; && npm test'
   basic=$?
-  docker run -e APPLITOOLS_SELENIUM_MAJOR_VERSION -e APPLITOOLS_API_KEY tutorial_selenium3_ultrafastgrid /bin/bash -c '//bootstrap.sh > /dev/null 2>&1 && npm test'
+  docker run -e APPLITOOLS_SELENIUM_MAJOR_VERSION -e APPLITOOLS_API_KEY tutorial_selenium3_ultrafastgrid /bin/bash -c '//bootstrap.sh > /dev/null 2>&1 && find ./test -type f -exec sed -i "s/'\''APPLITOOLS_API_KEY'\''/process.env.APPLITOOLS_API_KEY/g" {} \; && npm test'
   ultrafastgrid=$?
 else
-  docker run -e APPLITOOLS_API_KEY tutorial_selenium_basic /bin/bash -c '//bootstrap.sh > /dev/null 2>&1 && npm test'
+  docker run -e APPLITOOLS_API_KEY tutorial_selenium_basic /bin/bash -c '//bootstrap.sh > /dev/null 2>&1 && find ./test -type f -exec sed -i "s/'\''APPLITOOLS_API_KEY'\''/process.env.APPLITOOLS_API_KEY/g" {} \; && npm test'
   basic=$?
-  docker run -e APPLITOOLS_API_KEY tutorial_selenium_ultrafastgrid /bin/bash -c '//bootstrap.sh > /dev/null 2>&1 && npm test'
+  docker run -e APPLITOOLS_API_KEY tutorial_selenium_ultrafastgrid /bin/bash -c '//bootstrap.sh > /dev/null 2>&1 && find ./test -type f -exec sed -i "s/'\''APPLITOOLS_API_KEY'\''/process.env.APPLITOOLS_API_KEY/g" {} \; && npm test'
   ultrafastgrid=$?
 fi
 

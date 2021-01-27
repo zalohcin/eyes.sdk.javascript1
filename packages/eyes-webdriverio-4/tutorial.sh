@@ -12,9 +12,9 @@ docker build --build-arg from=tutorial_webdriverio_sdk --build-arg repo=tutorial
 
 set +e
 
-docker run -e APPLITOOLS_API_KEY tutorial_webdriverio_basic /bin/bash -c 'find ./test -type f -exec sed -i "s/desiredCapabilities: {/host: '\''host.docker.internal'\'',\ndesiredCapabilities: {/g" {} \; && npm test'
+docker run -e APPLITOOLS_API_KEY tutorial_webdriverio_basic /bin/bash -c ' find ./test -type f -exec sed -i "s/'\''APPLITOOLS_API_KEY'\''/process.env.APPLITOOLS_API_KEY/g" {} \; && find ./test -type f -exec sed -i "s/desiredCapabilities: {/host: '\''host.docker.internal'\'',\ndesiredCapabilities: {/g" {} \; && npm test'
 basic=$?
-docker run -e APPLITOOLS_API_KEY tutorial_webdriverio_ultrafastgrid /bin/bash -c 'find ./test -type f -exec sed -i "s/desiredCapabilities: {/host: '\''host.docker.internal'\'',\ndesiredCapabilities: {/g" {} \; && npm test'
+docker run -e APPLITOOLS_API_KEY tutorial_webdriverio_ultrafastgrid /bin/bash -c ' find ./test -type f -exec sed -i "s/'\''APPLITOOLS_API_KEY'\''/process.env.APPLITOOLS_API_KEY/g" {} \; && find ./test -type f -exec sed -i "s/desiredCapabilities: {/host: '\''host.docker.internal'\'',\ndesiredCapabilities: {/g" {} \; && npm test'
 ultrafastgrid=$?
 
 sandbox=${sandbox:-true}
