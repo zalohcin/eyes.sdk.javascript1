@@ -3,6 +3,8 @@
 ## Unreleased
 
 - chore: add husky
+- update peer dependency version of testcafe to include earlier versions (e.g., 1.7.x)
+- fix issue where the browser is in an invalid state but eyes.open tries to proceed ([Trello](https://trello.com/c/xNCZNfPi))
 
 ## 1.12.3 - 2021/1/13
 
