@@ -29,11 +29,11 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/utils": "1.0.0",
+    "@applitools/utils": "1.0.1",
     "png-async": "0.9.4"
   },
   "devDependencies": {
-    "@applitools/driver": "1.0.2",
+    "@applitools/driver": "1.0.4",
     "@applitools/sdk-release-kit": "0.12.0",
     "eslint": "^7.9.0",
     "eslint-plugin-mocha-no-only": "^1.1.1",

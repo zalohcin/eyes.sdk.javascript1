@@ -4,6 +4,7 @@
 ## Unreleased
 
 - no changes
+- updated to @applitools/utils@1.0.1 (from 1.0.0)
 ## 3.0.2 - 2021/1/27
 
 - no changes
