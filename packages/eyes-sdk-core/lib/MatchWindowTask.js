@@ -51,7 +51,7 @@ class MatchWindowTask {
    * @param {AppOutputWithScreenshot} appOutput - The application output to be matched.
    * @param {string} name - Optional tag to be associated with the match (can be {@code null}).
    * @param {string} renderId - Optional render ID to be associated with the match (can be {@code null}).
-   * @param {boolean} ignoreMismatch - Whether to instruct the server to ignore the match attempt in case of a mismatch.
+   * @param {boolean} replaceLast - instruct the server to replace last mismatched image with current one.
    * @param {ImageMatchSettings} imageMatchSettings - The settings to use.
    * @param {string} source
    * @return {Promise<MatchResult>} - The match result.
@@ -62,7 +62,6 @@ class MatchWindowTask {
     name,
     renderId,
     replaceLast,
-    ignoreMismatch,
     imageMatchSettings,
     source,
   ) {
@@ -72,7 +71,7 @@ class MatchWindowTask {
       renderId,
       userInputs,
       replaceLast,
-      ignoreMismatch,
+      ignoreMismatch: false,
       ignoreMatch: false,
       forceMismatch: false,
       forceMatch: false,
@@ -83,7 +82,6 @@ class MatchWindowTask {
       userInputs,
       appOutput: appOutput.getAppOutput(),
       tag: name,
-      ignoreMismatch,
       options,
     })
 
@@ -93,6 +91,7 @@ class MatchWindowTask {
 
       await this._eyes._renderingInfoPromise
       const id = GeneralUtils.guid()
+      console.log(`\nuploading to server\n`)
       const screenshotUrl = await this._serverConnector.uploadScreenshot(id, screenshot)
       data.getAppOutput().setScreenshotUrl(screenshotUrl)
     }
@@ -226,7 +225,6 @@ class MatchWindowTask {
     region,
     tag,
     shouldRunOnceOnTimeout,
-    ignoreMismatch,
     checkSettings,
     retryTimeout,
     source,
@@ -235,7 +233,6 @@ class MatchWindowTask {
     ArgumentGuard.notNull(region, 'region')
     ArgumentGuard.isString(tag, 'tag')
     ArgumentGuard.isBoolean(shouldRunOnceOnTimeout, 'shouldRunOnceOnTimeout')
-    ArgumentGuard.isBoolean(ignoreMismatch, 'ignoreMismatch')
     ArgumentGuard.notNull(checkSettings, 'checkSettings')
     ArgumentGuard.isNumber(retryTimeout, 'retryTimeout', false)
 
@@ -249,14 +246,10 @@ class MatchWindowTask {
       region,
       tag,
       shouldRunOnceOnTimeout,
-      ignoreMismatch,
       checkSettings,
       retryTimeout,
       source,
     )
-    if (ignoreMismatch) {
-      return this._matchResult
-    }
 
     this._updateLastScreenshot(screenshot)
     this._updateBounds(region)
@@ -269,7 +262,6 @@ class MatchWindowTask {
    * @param {Region} region
    * @param {string} tag
    * @param {boolean} shouldRunOnceOnTimeout
-   * @param {boolean} ignoreMismatch
    * @param {CheckSettings} checkSettings
    * @param {number} retryTimeout
    * @param {string} source
@@ -280,7 +272,6 @@ class MatchWindowTask {
     region,
     tag,
     shouldRunOnceOnTimeout,
-    ignoreMismatch,
     checkSettings,
     retryTimeout,
     source,
@@ -294,20 +285,12 @@ class MatchWindowTask {
         await GeneralUtils.sleep(retryTimeout)
       }
 
-      screenshot = await this._tryTakeScreenshot(
-        userInputs,
-        region,
-        tag,
-        ignoreMismatch,
-        checkSettings,
-        source,
-      )
+      screenshot = await this._tryTakeScreenshot(userInputs, region, tag, checkSettings, source)
     } else {
       screenshot = await this._retryTakingScreenshot(
         userInputs,
         region,
         tag,
-        ignoreMismatch,
         checkSettings,
         retryTimeout,
       )
@@ -322,21 +305,12 @@ class MatchWindowTask {
    * @param {Trigger[]} userInputs
    * @param {Region} region
    * @param {string} tag
-   * @param {boolean} ignoreMismatch
    * @param {CheckSettings} checkSettings
    * @param {number} retryTimeout
    * @param {string} source
    * @return {Promise<EyesScreenshot>}
    */
-  async _retryTakingScreenshot(
-    userInputs,
-    region,
-    tag,
-    ignoreMismatch,
-    checkSettings,
-    retryTimeout,
-    source,
-  ) {
+  async _retryTakingScreenshot(userInputs, region, tag, checkSettings, retryTimeout, source) {
     const start = Date.now() // Start the retry timer.
     const retry = Date.now() - start
 
@@ -345,7 +319,6 @@ class MatchWindowTask {
       userInputs,
       region,
       tag,
-      ignoreMismatch,
       checkSettings,
       retryTimeout,
       retry,
@@ -354,7 +327,7 @@ class MatchWindowTask {
     )
     // if we're here because we haven't found a match yet, try once more
     if (!this._matchResult.getAsExpected()) {
-      return this._tryTakeScreenshot(userInputs, region, tag, ignoreMismatch, checkSettings, source)
+      return this._tryTakeScreenshot(userInputs, region, tag, checkSettings, source)
     }
     return screenshot
   }
@@ -364,7 +337,6 @@ class MatchWindowTask {
    * @param {Trigger[]} userInputs
    * @param {Region} region
    * @param {string} tag
-   * @param {boolean} ignoreMismatch
    * @param {CheckSettings} checkSettings
    * @param {number} retryTimeout
    * @param {number} retry
@@ -377,7 +349,6 @@ class MatchWindowTask {
     userInputs,
     region,
     tag,
-    ignoreMismatch,
     checkSettings,
     retryTimeout,
     retry,
@@ -395,7 +366,6 @@ class MatchWindowTask {
       userInputs,
       region,
       tag,
-      true,
       checkSettings,
       source,
     )
@@ -408,7 +378,6 @@ class MatchWindowTask {
       userInputs,
       region,
       tag,
-      ignoreMismatch,
       checkSettings,
       retryTimeout,
       Date.now() - start,
@@ -422,12 +391,11 @@ class MatchWindowTask {
    * @param {Trigger[]} userInputs
    * @param {Region} region
    * @param {string} tag
-   * @param {boolean} ignoreMismatch
    * @param {CheckSettings} checkSettings
    * @param {string} source
    * @return {Promise<EyesScreenshot>}
    */
-  async _tryTakeScreenshot(userInputs, region, tag, ignoreMismatch, checkSettings, source) {
+  async _tryTakeScreenshot(userInputs, region, tag, checkSettings, source) {
     const appOutput = await this._appOutputProvider.getAppOutput(
       region,
       this._lastScreenshot,
@@ -439,7 +407,7 @@ class MatchWindowTask {
     if (screenshotSha === this._lastScreenshotSha) {
       return screenshot
     }
-
+    console.log(`\nreplace last is ${this._lastScreenshotSha !== undefined}\n`)
     const matchSettings = await this.createImageMatchSettings(checkSettings, screenshot)
     this._matchResult = await this.performMatch(
       userInputs,
@@ -447,11 +415,11 @@ class MatchWindowTask {
       tag,
       renderId,
       this._lastScreenshotSha !== undefined,
-      ignoreMismatch,
       matchSettings,
       source,
     )
     this._lastScreenshotSha = screenshotSha
+    console.log(`\nlast sha is ${this._lastScreenshotSha}\n`)
     return screenshot
   }
 
