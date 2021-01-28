@@ -31,7 +31,9 @@
     "prepublish:setup": "echo 'no-op'",
     "preversion": "yarn deps && bongo preversion && yarn test && yarn coverage:prod",
     "version": "bongo version",
-    "postversion": "bongo postversion"
+    "postversion": "bongo postversion",
+    "tutorial:test:sandbox": "./tutorial.sh",
+    "tutorial:test:prod": "./tutorial.sh --sandbox false"
   },
   "keywords": [
     "eyes-testcafe",

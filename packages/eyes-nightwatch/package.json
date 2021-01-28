@@ -91,7 +91,9 @@
     "preversion": "bongo preversion && yarn test && yarn coverage:prod",
     "postversion": "bongo postversion",
     "deps": "bongo deps",
-    "prepublish:setup": "yarn docker:setup"
+    "prepublish:setup": "yarn docker:setup",
+    "tutorial:test:sandbox": "./tutorial.sh",
+    "tutorial:test:prod": "./tutorial.sh --sandbox false"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

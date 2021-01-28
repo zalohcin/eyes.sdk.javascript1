@@ -74,7 +74,9 @@
     "run:docker": "yarn build && docker run -e NODE_AUTH_TOKEN --env APPLITOOLS_API_KEY=$APPLITOOLS_API_KEY_SDK --env APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-puppeteer' --env APPLITOOLS_BATCH_ID=$(uuidgen) --env XUNIT_FILE=coverage-test-report.xml -it --init --rm -v $(pwd):/sandbox applitools/puppeteer-chrome",
     "docker:setup": "echo 'docker:setup is a no-op. Move along, nothing to see here.'",
     "moca": "yarn run:docker yarn mocha --no-timeouts",
-    "prepublish:setup": "yarn docker:setup"
+    "prepublish:setup": "yarn docker:setup",
+    "tutorial:test:sandbox": "./tutorial.sh",
+    "tutorial:test:prod": "./tutorial.sh --sandbox false"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

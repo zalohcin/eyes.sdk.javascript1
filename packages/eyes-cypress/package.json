@@ -20,7 +20,9 @@
     "version": "bongo version",
     "postversion": "bongo postversion --skip-release-notification",
     "deps": "bongo deps",
-    "prepublish:setup": "sudo apt-get install xvfb"
+    "prepublish:setup": "sudo apt-get install xvfb",
+    "tutorial:test:sandbox": "./tutorial.sh",
+    "tutorial:test:prod": "./tutorial.sh --sandbox false"
   },
   "files": [
     "src",
