@@ -18,7 +18,7 @@ module Applitools
       queue.clear
 
       ws.on :message do |event|
-        message = JSON.parse(event.data).values
+        message = JSON.parse(event.data, {:symbolize_names => true})
         params = [message[:payload], message[:key]]
         find_and_execute_listeners_by_name(message[:name], params)
         find_and_execute_listeners_by_name("#{name}/#{key}", params) if (key)
