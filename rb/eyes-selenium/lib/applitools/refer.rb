@@ -27,18 +27,24 @@ module Applitools
     end
 
     def isRef(ref)
-      !!ref[REF_ID]
+      !!destructure_ref(ref)
     end
 
     def deref(ref)
-      isRef(ref) ? store[ref[REF_ID]] : ref
+      isRef(ref) ? store[destructure_ref(ref)] : ref
     end
     
     def destroy(ref)
       return if (!isRef(ref))
-      childRefs = relation[ref[REF_ID]]
-      childRefs.each{|childRef| destroy(childRef)} if childRefs
-      store.delete(ref[REF_ID])
+      childRefs = relation[destructure_ref(ref)]
+      childRefs.each{|childRef| destroy({"#{REF_ID}": childRef})} if childRefs
+      store.delete(destructure_ref(ref))
     end
+
+    private
+
+      def destructure_ref(ref)
+        ref.keys.first.is_a?(Symbol) ? ref[:"#{REF_ID}"] : ref[REF_ID]
+      end
   end
 end
