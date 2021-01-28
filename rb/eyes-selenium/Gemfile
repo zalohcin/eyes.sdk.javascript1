@@ -7,4 +7,5 @@ group :development do
   gem 'rspec'
   gem 'guard-rspec'
   gem 'webdrivers' # pulls in selenium-webdriver & browser driver(s)
+  gem 'pry-byebug'
 end
