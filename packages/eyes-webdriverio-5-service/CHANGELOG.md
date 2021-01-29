@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 1.11.2 - 2021/1/29
+
 - chore: add husky
 - updated to @applitools/eyes-webdriverio@5.29.4 (from 5.29.1)
 
