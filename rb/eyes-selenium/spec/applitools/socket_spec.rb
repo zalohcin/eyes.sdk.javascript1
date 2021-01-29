@@ -33,7 +33,7 @@ describe 'socket' do
       params[:blah]
     }
     @socket.command(name, payload)
-    expect(@ws).to receive(:send).with(JSON.generate({name: name, key: 'key', payload: 'blah'}))
+    expect(@ws).to receive(:send).with(JSON.generate({name: name, key: 'key', payload: {result: 'blah'}}))
     listener = @socket.listeners.first[1].first
     listener.call({blah: 'blah'}, 'key')
   end
@@ -41,10 +41,10 @@ describe 'socket' do
   it 'an executed wrapped command emits the correct payload on error' do
     name = 'Driver.someCommand'
     payload = ->(params) {
-      raise 'error'
+      raise 'there was an error'
     }
     @socket.command(name, payload)
-    expect(@ws).to receive(:send).with(JSON.generate({name: name, key: 'key', payload: 'error'}))
+    expect(@ws).to receive(:send).with(JSON.generate({name: name, key: 'key', payload: 'there was an error'}))
     listener = @socket.listeners.first[1].first
     listener.call({blah: 'blah'}, 'key')
   end
@@ -61,8 +61,8 @@ describe 'socket' do
     @socket.command(name, ->(params) {
       'blah'
     })
-    expect(@ws).to receive(:send).with(JSON.generate({name: name, key: 'key', payload: 'blah'}))
-    @socket.send(:find_and_execute_listeners_by_name, name, [{payload: 'blah'}, 'key'])
+    expect(@ws).to receive(:send).with(JSON.generate({name: name, key: 'key', payload: {result: 'blah'}}))
+    @socket.send(:find_and_execute_listeners, name, 'key', [{payload: 'blah'}, 'key'])
   end
 
   it 'queues commands when no socket present' do
@@ -98,5 +98,17 @@ describe 'socket' do
     listener = @socket.listeners.first[1].first
     listener.call
     expect(@socket.listeners).to be_empty
+  end
+
+  it 'requests support callbacks' do
+    name = 'blah'
+    key = '12345'
+    payload = {blah: 'blah'}
+    result = nil
+    cb = ->(r) {result = r}
+    @socket.request(name, payload, key, cb)
+    listener = @socket.listeners.first[1].first
+    listener.call({result: true})
+    expect(result).to eq(true)
   end
 end

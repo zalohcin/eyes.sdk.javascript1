@@ -20,12 +20,11 @@ module Applitools
       ws.on :message do |event|
         message = JSON.parse(event.data, {:symbolize_names => true})
         params = [message[:payload], message[:key]]
-        find_and_execute_listeners_by_name(message[:name], params)
-        find_and_execute_listeners_by_name("#{name}/#{key}", params) if (key)
+        find_and_execute_listeners(message[:name], message[:key], params)
       end
 
       ws.on :close do |event|
-        find_and_execute_listeners_by_name('close')
+        find_and_execute_listeners('close')
       end
     end
 
@@ -39,24 +38,28 @@ module Applitools
         begin
           puts "[COMMAND] #{name}, #{key}, #{JSON.generate(payload)}"
           result = fn.call(payload)
-          emit({name: name, key: key}, result)
+          emit({name: name, key: key}, {result: result})
         rescue => error
-          emit({name: name, key: key}, error.message)
+          puts "[COMMAND ERROR] #{error}"
+          emit({name: name, key: key}, error.message || error)
         end
       })
     end
 
-    def request(name, payload, key = SecureRandom.uuid)
+    def request(name, payload, key = SecureRandom.uuid, cb = nil)
       emit({name: name, key: key}, payload)
       once({name: name, key: key}, Proc.new {|result|
-        puts "RESULT: #{result.inspect}" if result
+        puts "[#{name}] result: #{result}" if result
+        cb.call(result[:result]) if cb
       })
     end
 
     private
 
-      def find_and_execute_listeners_by_name(name, params = [])
+      def find_and_execute_listeners(name, key = nil, params = [])
+        name_with_key = "#{name}/#{key}"
         fns = listeners[name.to_sym]
+        fns = listeners[name_with_key.to_sym] if (!fns) 
         return if (!fns)
         fns.each {|fn| fn.call(*params)}
       end
