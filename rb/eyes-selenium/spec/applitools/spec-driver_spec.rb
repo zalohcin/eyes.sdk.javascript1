@@ -13,6 +13,10 @@ describe 'spec-driver' do
   after(:all) do
     @driver.quit
   end
+  it('isElement(element)') do
+    el = @driver.find_element(:css, 'div')
+    expect(::Applitools::SpecDriver.isElement(el)).to eq(true)
+  end
   it('isEqualElements(element, element)') do
     el1 = @driver.find_element(:css, 'div')
     expect(::Applitools::SpecDriver.isEqualElements(@driver, el1, el1)).to eq(true)
@@ -74,6 +78,11 @@ describe 'spec-driver' do
     actual = ::Applitools::SpecDriver.findElement(@driver, 'div')
     expect(::Applitools::SpecDriver.isEqualElements(@driver, expected, actual)).to eq(true)
   end
+  it('findElement eyes selector') do
+    expected = @driver.find_element(:css, 'div')
+    actual = ::Applitools::SpecDriver.findElement(@driver, {type: 'css', selector: 'div'})
+    expect(::Applitools::SpecDriver.isEqualElements(@driver, expected, actual)).to eq(true)
+  end
   it('findElement xpath') do
     skip
   end
@@ -103,7 +112,9 @@ describe 'spec-driver' do
     expect(result[:platformName]).to_not be_nil
   end
   it('takeScreenshot') do
-    skip
+    expected = @driver.screenshot_as(:base64)
+    actual = ::Applitools::SpecDriver.takeScreenshot(@driver)
+    expect(actual).to eq(expected)
   end
 end
 

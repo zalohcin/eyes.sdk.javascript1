@@ -2,13 +2,21 @@ module Applitools
   module SpecDriver
     extend self
 
+    def isElement(element)
+      element.is_a? ::Selenium::WebDriver::Element
+    end
+
     def isEqualElements(driver, element1, element2)
       element1.hash == element2.hash
     end
 
     def executeScript(driver, script, *args)
-      _script = script.start_with?('return') ? script : "return (#{script}).apply(null, arguments)"
-      driver.execute_script(_script, *args)
+      begin
+        _script = script.start_with?('return') ? script : "return (#{script}).apply(null, arguments)"
+        driver.execute_script(_script, *args)
+      rescue => error
+        error.message
+      end
     end
 
     def mainContext(driver)
@@ -64,10 +72,14 @@ module Applitools
       self.instance_methods.map {|method_name| method_name.to_s}
     end
 
+    def takeScreenshot(driver)
+      driver.screenshot_as(:base64)
+    end
+
     private
 
       def transformSelector(selector)
-        return {css: selector}
+        selector.is_a?(Hash) ? {selector[:type] => selector[:selector]} : {css: selector}
       end
 
   end
