@@ -4,12 +4,9 @@ require_relative('applitools/spec-driver')
 require_relative('applitools/refer')
 
 # TODO:
-# - ref elements in return of executeSript
-# - implement takeScreenshot
-# - e2e test (classic and VG)
+# - finish ref'ing elements in return of executeSript & resolve JS errors
+# - e2e test (VG)
 # - spawn server in unref'd child process
-# - look into `unref` equivalent for socket library (if necessary)
-# - establish minimal Eyes API in gem namespace
 # - add colorized logging to be consistent w/ JS POC
 # - test concurrency
 module Applitools
@@ -20,116 +17,129 @@ module Applitools
         @driverRef = nil
         @refer = ::Applitools::Refer.new
         @socket = ::Applitools::Socket.new
+        @q = EM::Queue.new
+        prepare_socket()
       end
 
       def open(driver, config)
-        EM.run do
-          prepare_socket()
+        run_async(->() {
           @driverRef = @refer.ref(driver)
           cb = ->(result) {
             @eyes = result
-            EM.stop
           }
           @socket.request('Eyes.open', {driver: @driverRef, config: config}, nil, cb)
-        end
-      end
-
-      def open?
-        !!@eyes
+        })
+        sleep 1 until !!@eyes
       end
 
       def check(checkSettings)
-        puts @eyes
-        @socket.request('Eyes.check', {eyes: @eyes, checkSettings: checkSettings})
+        resolved = false
+        run_async(->() {
+          cb = ->(result) {
+            resolved = result
+          }
+          @socket.request('Eyes.check', {eyes: @eyes, checkSettings: checkSettings}, nil, cb)
+        })
+        sleep 1 until !!resolved
       end
 
       def close
-        result = @socket.request('Eyes.close', {eyes: @eyes})
-        @refer.destroy(@driverRef)
-        result
+        resolved = false
+        run_async(->() {
+          cb = ->(result) {
+            resolved = result
+          }
+          @socket.request('Eyes.close', {eyes: @eyes}, nil, cb)
+          @refer.destroy(@driverRef)
+        })
+        sleep 1 until !!resolved
       end
 
       def abort
-        result = @socket.request('Eyes.abort', {eyes: @eyes})
-        @refer.destroy(@driverRef)
-        result
+        #result = @socket.request('Eyes.abort', {eyes: @eyes})
+        #@refer.destroy(@driverRef)
+        #result
       end
 
       private 
 
+        def run_async(cb)
+          @q.push(cb)
+          @q.pop {|cb| cb.call()}
+        end
+
         def prepare_socket
-          @socket.connect('ws://127.0.0.1:2107/eyes')
-          @socket.emit('Session.init', {:commands => ::Applitools::SpecDriver.commands})
-          @socket.command('Driver.isEqualElements', ->(params) {
-            ::Applitools::SpecDriver.isEqualElements(params[:context], @refer.deref(params[:element1]), @refer.deref(params[:element2]))
-          })
-          @socket.command('Driver.executeScript', ->(params) {
-            puts ''
-            puts '================== Driver.executeScript =================='
-            puts 'params:'
-            puts params
-            args = params[:args].map {|arg| @refer.isRef(arg) ? @refer.deref(arg) : arg}
-            puts 'trying execute script...'
-            result = ::Applitools::SpecDriver.executeScript(@refer.deref(params[:context]), params[:script], *args)
-            puts 'execute script ran, here is the result:'
-            puts result
-            # e.g., from JS POC
-            #async function serialize(result) {
-            #  const [_, type] = result.toString().split('@')
-            #  if (type === 'array') {
-            #    const map = await result.getProperties()
-            #    return Promise.all(Array.from(map.values(), serialize))
-            #  } else if (type === 'object') {
-            #    const map = await result.getProperties()
-            #    const chunks = await Promise.all(
-            #      Array.from(map, async ([key, handle]) => ({[key]: await serialize(handle)})),
-            #    )
-            #    return Object.assign(...chunks)
-            #  } else if (type === 'node') {
-            #    return ref(result.asElement(), frame)
-            #  } else {
-            #    return result.jsonValue()
-            #  }
-            #}
-            puts '=========================================================='
-            puts ''
-            result
-          })
-          @socket.command('Driver.mainContext', ->(params) {
-            ::Applitools::SpecDriver.mainContext(params[:driver])
-          })
-          @socket.command('Driver.parentContext', ->(params) {
-            ::Applitools::SpecDriver.parentContext(params[:driver])
-          })
-          @socket.command('Driver.childContext', ->(params) {
-            ::Applitools::SpecDriver.mainContext(params[:driver], @refer.deref(params[:element]))
-          })
-          @socket.command('Driver.findElement', ->(params) {
-            result = ::Applitools::SpecDriver.findElement(params[:driver], params[:selector])
-            @refer.ref(result)
-          })
-          @socket.command('Driver.findElements', ->(params) {
-            result = ::Applitools::SpecDriver.findElements(params[:driver], params[:selector])
-            result.each {|element| @refer.ref(element)}
-          })
-          @socket.command('Driver.getViewportSize', ->(params) {
-            ::Applitools::SpecDriver.getViewportSize(params[:driver])
-          })
-          @socket.command('Driver.setViewportSize', ->(params) {
-            ::Applitools::SpecDriver.setViewportSize(params[:driver], params[:size])
-          })
-          @socket.command('Driver.getTitle', ->(params) {
-            ::Applitools::SpecDriver.getTitle(params[:driver])
-          })
-          @socket.command('Driver.getUrl', ->(params) {
-            ::Applitools::SpecDriver.getUrl(params[:driver])
-          })
-          @socket.command('Driver.getDriverInfo', ->(params) {
-            ::Applitools::SpecDriver.getDriverInfo(@refer.deref(params[:driver]))
-          })
-          #@socket.command('Driver.takeScreenshot', ->(params) {
-          #  ::Applitools::SpecDriver.takeScreenshot(params[:driver])
-          #})
+          Thread.new do
+            EM.run do
+              @socket.connect('ws://127.0.0.1:2107/eyes')
+              @socket.emit('Session.init', {:commands => ::Applitools::SpecDriver.commands})
+              @socket.command('Driver.isEqualElements', ->(params) {
+                ::Applitools::SpecDriver.isEqualElements(nil, @refer.deref(params[:element1]), @refer.deref(params[:element2]))
+              })
+              @socket.command('Driver.executeScript', ->(params) {
+                args = params[:args].first.map {|arg| @refer.isRef(arg) ? @refer.deref(arg) : arg} if (params[:args].length > 0)
+                puts "[COMMAND] Driver.executeScript args: #{args.inspect}"
+                result = ::Applitools::SpecDriver.executeScript(@refer.deref(params[:context]), params[:script], *args)
+                result = result.map {|r| ::Applitools::SpecDriver.isElement(r) ? @refer.ref(r) : r} if (result.is_a? Array)
+                puts "[COMMAND] Driver.executeScript result: #{result ? result.inspect: 'NO RESULT'}"
+                puts ''
+                result
+                # e.g., from JS POC
+                #async function serialize(result) {
+                #  const [_, type] = result.toString().split('@')
+                #  if (type === 'array') {
+                #    const map = await result.getProperties()
+                #    return Promise.all(Array.from(map.values(), serialize))
+                #  } else if (type === 'object') {
+                #    const map = await result.getProperties()
+                #    const chunks = await Promise.all(
+                #      Array.from(map, async ([key, handle]) => ({[key]: await serialize(handle)})),
+                #    )
+                #    return Object.assign(...chunks)
+                #  } else if (type === 'node') {
+                #    return ref(result.asElement(), frame)
+                #  } else {
+                #    return result.jsonValue()
+                #  }
+                #}
+              })
+              @socket.command('Driver.mainContext', ->(params) {
+                ::Applitools::SpecDriver.mainContext(@refer.deref(params[:context]))
+              })
+              @socket.command('Driver.parentContext', ->(params) {
+                ::Applitools::SpecDriver.parentContext(@refer.deref(params[:context]))
+              })
+              @socket.command('Driver.childContext', ->(params) {
+                ::Applitools::SpecDriver.mainContext(@refer.deref(params[:context]), @refer.deref(params[:element]))
+              })
+              @socket.command('Driver.findElement', ->(params) {
+                result = ::Applitools::SpecDriver.findElement(@refer.deref(params[:context]), params[:selector])
+                @refer.ref(result)
+              })
+              @socket.command('Driver.findElements', ->(params) {
+                result = ::Applitools::SpecDriver.findElements(@refer.deref(params[:context]), params[:selector])
+                result.each {|element| @refer.ref(element)}
+              })
+              @socket.command('Driver.getViewportSize', ->(params) {
+                ::Applitools::SpecDriver.getViewportSize(@refer.deref(params[:driver]))
+              })
+              @socket.command('Driver.setViewportSize', ->(params) {
+                ::Applitools::SpecDriver.setViewportSize(@refer.deref(params[:driver]), params[:size])
+              })
+              @socket.command('Driver.getTitle', ->(params) {
+                ::Applitools::SpecDriver.getTitle(@refer.deref(params[:driver]))
+              })
+              @socket.command('Driver.getUrl', ->(params) {
+                ::Applitools::SpecDriver.getUrl(@refer.deref(params[:driver]))
+              })
+              @socket.command('Driver.getDriverInfo', ->(params) {
+                ::Applitools::SpecDriver.getDriverInfo(@refer.deref(params[:driver]))
+              })
+              @socket.command('Driver.takeScreenshot', ->(params) {
+                ::Applitools::SpecDriver.takeScreenshot(@refer.deref(params[:driver]))
+              })
+            end  # prepare_socket EM.run
+          end # prepare_socket Thread.new
         end # prepare_socket
     end # Eyes
   end # Selenium

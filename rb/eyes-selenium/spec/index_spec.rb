@@ -12,9 +12,10 @@ describe('e2e') do
   after(:all) do
     @driver.quit
   end
-  it('eyes.open works') do
+  it('works') do
     eyes = ::Applitools::Selenium::Eyes.new
     eyes.open(@driver, {appName: 'eyes-selenium.rb', testName: 'hello world', vg: false})
-    expect(eyes.open?).to eq(true)
+    eyes.check({})
+    eyes.close()
   end
 end
