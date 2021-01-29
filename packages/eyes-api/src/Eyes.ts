@@ -8,23 +8,29 @@ import ConfigData, {Config, GeneralConfig, OpenConfig} from './input/Config'
 import BatchInfoData, {BatchInfo} from './input/BatchInfo'
 import RectangleSizeData, {RectangleSize} from './input/RectangleSize'
 import RegionData, {Region} from './input/Region'
-import EyesRunner, {ClassicRunner, VisualGridRunner} from './Runners'
+import MatchResultData, {MatchResult} from './output/MatchResult'
+import TestResultsData, {TestResults} from './output/TestResults'
+import EyesRunner, {RunnerConfig, ClassicRunner} from './Runners'
 
-type EyesCommands<TElement, TSelector> = {
-  check: (settings?: CheckSettings<TElement, TSelector>) => Promise<void>
-  // locate: (blabla: any) => Promise<any>
-  close: () => Promise<void>
-  abort: () => Promise<void>
+/** @internal */
+export type EyesCommands<TElement = unknown, TSelector = unknown> = {
+  locate: <TLocatorName extends string>(settings: {
+    locatorNames: TLocatorName[]
+    firstOnly: boolean
+  }) => Promise<{[key in TLocatorName]: Region[]}>
+  check: (settings?: CheckSettings<TElement, TSelector>) => Promise<MatchResult>
+  close: () => Promise<TestResults>
+  abort: () => Promise<TestResults>
 }
 
 /** @internal */
-export type EyesSpec<TDriver, TElement, TSelector> = {
+export type EyesSpec<TDriver = unknown, TElement = unknown, TSelector = unknown> = {
   isDriver(value: any): value is TDriver
   isElement(value: any): value is TElement
   isSelector(value: any): value is TSelector
-  openEyes(driver: TDriver, config?: Config): EyesCommands<TElement, TSelector>
-  closeBatch(...args: any[]): Promise<any>
+  makeEyes(config?: RunnerConfig): (driver: TDriver, config: Config) => EyesCommands<TElement, TSelector>
   setViewportSize(driver: TDriver, viewportSize: RectangleSize): Promise<void>
+  // closeBatch(...args: any[]): Promise<any>
 }
 
 export default abstract class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
@@ -52,7 +58,7 @@ export default abstract class Eyes<TDriver = unknown, TElement = unknown, TSelec
       this._runner = new ClassicRunner()
       this._config = new ConfigData()
     }
-    this._runner.attach(this)
+    this._runner.attach(this, config => this._spec.makeEyes(config))
   }
 
   get runner() {
@@ -97,11 +103,7 @@ export default abstract class Eyes<TDriver = unknown, TElement = unknown, TSelec
     viewportSize?: RectangleSize,
     sessionType?: SessionType,
   ): Promise<TDriver> {
-    const config = {
-      ...this._config.general,
-      ...this._config.open,
-      vg: utils.types.instanceOf(this._runner, VisualGridRunner),
-    }
+    const config = {...this._config.general, ...this._config.open}
     if (utils.types.instanceOf(configOrAppName, ConfigData)) {
       Object.assign(config, configOrAppName.open)
     } else if (utils.types.isObject(configOrAppName)) {
@@ -114,32 +116,11 @@ export default abstract class Eyes<TDriver = unknown, TElement = unknown, TSelec
     if (utils.types.isString(sessionType)) config.sessionType = sessionType
 
     this._driver = driver
-    this._commands = await this._spec.openEyes(driver, config)
+    this._commands = (await this._runner.open(driver, config)) as EyesCommands<TElement, TSelector>
 
-    return driver
+    return this._driver
   }
 
-  async check(name: string, checkSettings: CheckSettingsFluent<TElement, TSelector>): Promise<void>
-  async check(checkSettings?: CheckSettings<TElement, TSelector>): Promise<void>
-  async check(
-    checkSettingsOrName?: CheckSettings<TElement, TSelector> | CheckSettingsFluent<TElement, TSelector> | string,
-    checkSettings?: CheckSettings<TElement, TSelector> | CheckSettingsFluent<TElement, TSelector>,
-  ): Promise<void> {
-    let settings
-    if (utils.types.isString(checkSettingsOrName)) {
-      utils.guard.notNull(checkSettings, {name: 'checkSettings'})
-      settings = utils.types.instanceOf(checkSettings, CheckSettingsFluent)
-        ? checkSettings.name(checkSettingsOrName).toJSON()
-        : {...checkSettings, name: checkSettingsOrName}
-    } else {
-      settings = utils.types.instanceOf(checkSettingsOrName, CheckSettingsFluent)
-        ? checkSettingsOrName.toJSON()
-        : {...checkSettingsOrName}
-    }
-
-    // TODO wrap/transform response to user output interface
-    return this._commands.check(settings)
-  }
   async checkWindow(name?: string, timeout?: number, isFully = true) {
     return this.check({name, timeout, isFully})
   }
@@ -170,20 +151,38 @@ export default abstract class Eyes<TDriver = unknown, TElement = unknown, TSelec
   ) {
     return this.check({name, region: selector, frames: [frame], timeout, isFully})
   }
+  async check(name: string, checkSettings: CheckSettingsFluent<TElement, TSelector>): Promise<MatchResultData>
+  async check(checkSettings?: CheckSettings<TElement, TSelector>): Promise<MatchResultData>
+  async check(
+    checkSettingsOrName?: CheckSettings<TElement, TSelector> | CheckSettingsFluent<TElement, TSelector> | string,
+    checkSettings?: CheckSettings<TElement, TSelector> | CheckSettingsFluent<TElement, TSelector>,
+  ): Promise<MatchResultData> {
+    let settings
+    if (utils.types.isString(checkSettingsOrName)) {
+      utils.guard.notNull(checkSettings, {name: 'checkSettings'})
+      settings = utils.types.instanceOf(checkSettings, CheckSettingsFluent)
+        ? checkSettings.name(checkSettingsOrName).toJSON()
+        : {...checkSettings, name: checkSettingsOrName}
+    } else {
+      settings = utils.types.instanceOf(checkSettingsOrName, CheckSettingsFluent)
+        ? checkSettingsOrName.toJSON()
+        : {...checkSettingsOrName}
+    }
 
-  async close(throwErr = true) {
-    const results = await this._commands.close()
+    const result = await this._commands.check(settings)
 
-    // TODO wrap/transform response to user output interface
-    // TODO throw error `throwErr` is true and `results` include error response
-    return results
+    return new MatchResultData(result)
   }
 
-  async abort() {
-    const results = await this._commands.abort()
+  async close(throwErr = true): Promise<TestResultsData> {
+    const result = await this._commands.close()
+    // TODO throw error `throwErr` is true and `results` include error response
+    return new TestResultsData(result)
+  }
 
-    // TODO wrap/transform response to user output interface
-    return results
+  async abort(): Promise<TestResultsData> {
+    const result = await this._commands.abort()
+    return new TestResultsData(result)
   }
 
   async closeBatch() {

@@ -1,8 +1,15 @@
-const {TypeUtils} = require('@applitools/eyes-sdk-core')
+import * as utils from '@applitools/utils'
+
+import type {ElementHandle, Frame, JSHandle, LaunchOptions, Page} from 'playwright'
+
+export type Driver = Page
+export type Element = ElementHandle
+export type Context = Frame
+export type Selector = string | {type: 'css' | 'xpath', selector: string}
 
 // #region HELPERS
 
-async function handleToObject(handle) {
+async function handleToObject(handle: JSHandle): Promise<any> {
   const [_, type] = handle.toString().split('@')
   if (type === 'array') {
     const map = await handle.getProperties()
@@ -12,7 +19,7 @@ async function handleToObject(handle) {
     const chunks = await Promise.all(
       Array.from(map, async ([key, handle]) => ({[key]: await handleToObject(handle)})),
     )
-    return Object.assign(...chunks)
+    return chunks.length > 0 ? Object.assign(...chunks as [any]) : {}
   } else if (type === 'node') {
     return handle.asElement()
   } else {
@@ -20,8 +27,8 @@ async function handleToObject(handle) {
   }
 }
 
-function transformSelector(selector) {
-  if (TypeUtils.has(selector, ['type', 'selector'])) {
+function transformSelector(selector: any) {
+  if (utils.types.has(selector, ['type', 'selector'])) {
     if (selector.type === 'css') return `css=${selector.selector}`
     else if (selector.type === 'xpath') return `xpath=${selector.selector}`
   }
@@ -32,23 +39,23 @@ function transformSelector(selector) {
 
 // #region UTILITY
 
-function isDriver(page) {
+export function isDriver(page: any): page is Driver {
   return page.constructor.name === 'Page'
 }
-function isElement(element) {
+export function isElement(element: any): element is Element {
   if (!element) return false
   return element.constructor.name === 'ElementHandle'
 }
-function isSelector(selector) {
-  return TypeUtils.has(selector, ['type', 'selector']) || TypeUtils.isString(selector)
+export function isSelector(selector: any): selector is Selector {
+  return utils.types.isString(selector) || utils.types.has(selector, ['type', 'selector'])
 }
-function extractContext(page) {
-  return page.constructor.name === 'Page' ? page.mainFrame() : page
+export function extractContext(page: Page | Context): Context {
+  return isDriver(page) ? page.mainFrame() : page
 }
-function isStaleElementError(err) {
+export function isStaleElementError(err: any): boolean {
   return err && err.message && err.message.includes('Protocol error (DOM.describeNode)')
 }
-async function isEqualElements(frame, element1, element2) {
+export async function isEqualElements(frame: Context, element1: Element, element2: Element): Promise<boolean> {
   return frame
     .evaluate(([element1, element2]) => element1 === element2, [element1, element2])
     .catch(() => false)
@@ -58,12 +65,12 @@ async function isEqualElements(frame, element1, element2) {
 
 // #region COMMANDS
 
-async function executeScript(frame, script, arg) {
-  script = TypeUtils.isString(script) ? new Function(script) : script
+export async function executeScript(frame: Context, script: ((...args: any) => any) | string, arg: any): Promise<any> {
+  script = utils.types.isString(script) ? new Function(script) as ((...args: any) => any) : script
   const result = await frame.evaluateHandle(script, arg)
   return handleToObject(result)
 }
-async function mainContext(frame) {
+export async function mainContext(frame: Context): Promise<Context> {
   frame = extractContext(frame)
   let mainFrame = frame
   while (mainFrame.parentFrame()) {
@@ -71,62 +78,63 @@ async function mainContext(frame) {
   }
   return mainFrame
 }
-async function parentContext(frame) {
+export async function parentContext(frame: Context): Promise<Context> {
   frame = extractContext(frame)
   return frame.parentFrame()
 }
-async function childContext(_frame, element) {
+export async function childContext(_frame: Context, element: Element): Promise<Context> {
   return element.contentFrame()
 }
-async function findElement(frame, selector) {
+export async function findElement(frame: Context, selector: Element): Promise<Element> {
   return frame.$(transformSelector(selector))
 }
-async function findElements(frame, selector) {
+export async function findElements(frame: Context, selector: Element): Promise<Element[]> {
   return frame.$$(transformSelector(selector))
 }
-async function getElementRect(_frame, element) {
+export async function getElementRect(_frame: Context, element: Element): Promise<{x: number, y: number, width: number, height: number}> {
   const {x, y, width, height} = await element.boundingBox()
   return {x: Math.round(x), y: Math.round(y), width: Math.round(width), height: Math.round(height)}
 }
-async function getViewportSize(page) {
+export async function getViewportSize(page: Driver): Promise<{width: number, height: number}> {
   return page.viewportSize()
 }
-async function setViewportSize(page, size = {}) {
+export async function setViewportSize(page: Driver, size?: {width: number, height: number}): Promise<void> {
   return page.setViewportSize(size)
 }
-async function getTitle(page) {
+export async function getTitle(page: Driver): Promise<string> {
   return page.title()
 }
-async function getUrl(page) {
+export async function getUrl(page: Driver): Promise<string> {
   return page.url()
 }
-async function getDriverInfo(_page) {
+export async function getDriverInfo(_page: Driver): Promise<any> {
   return {
     // isStateless: true,
   }
 }
-async function visit(page, url) {
-  return page.goto(url)
+export async function visit(page: Driver, url: string): Promise<void> {
+  await page.goto(url)
 }
-async function takeScreenshot(page) {
+export async function takeScreenshot(page: Driver): Promise<Buffer> {
   return page.screenshot()
 }
-async function click(frame, selector) {
+export async function click(frame: Context, selector: Selector): Promise<void> {
   await frame.click(transformSelector(selector))
 }
-async function type(_frame, element, keys) {
-  return element.type(keys)
+export async function type(_frame: Context, element: Element, keys: string): Promise<void> {
+  await element.type(keys)
 }
-async function waitUntilDisplayed(frame, selector) {
-  return frame.waitForSelector(transformSelector(selector))
+export async function waitUntilDisplayed(frame: Context, selector: Selector): Promise<void> {
+  await frame.waitForSelector(transformSelector(selector))
 }
-async function scrollIntoView(frame, element, align = false) {
+export async function scrollIntoView(frame: Context, element: Element, align = false): Promise<void> {
   if (isSelector(element)) {
     element = await findElement(frame, element)
   }
+  // @ts-ignore
   await frame.evaluate(([element, align]) => element.scrollIntoView(align), [element, align])
 }
-async function hover(frame, element, {x = 0, y = 0} = {}) {
+export async function hover(frame: Context, element: Element, {x = 0, y = 0} = {}): Promise<void> {
   if (isSelector(element)) {
     element = await findElement(frame, element)
   }
@@ -137,19 +145,19 @@ async function hover(frame, element, {x = 0, y = 0} = {}) {
 
 // #region BUILD
 
-const browserNames = {
+const browserNames: Record<string, unknown> = {
   chrome: 'chromium',
   safari: 'webkit',
   firefox: 'firefox',
 }
-async function build(env) {
+export async function build(env: any): Promise<[Driver, () => Promise<void>]> {
   const playwright = require('playwright')
   const {testSetup} = require('@applitools/sdk-shared')
   const {browser, device, url, attach, proxy, args = [], headless} = testSetup.Env(env, 'cdp')
   const launcher = playwright[browserNames[browser] || browser]
   if (!launcher) throw new Error(`Browser "${browser}" is not supported.`)
   if (attach) throw new Error(`Attaching to the existed browser doesn't supported by playwright`)
-  const options = {
+  const options: LaunchOptions = {
     args,
     headless,
     ignoreDefaultArgs: ['--hide-scrollbars'],
@@ -160,9 +168,11 @@ async function build(env) {
       bypass: proxy.bypass.join(','),
     }
   }
-  let driver
+  let driver: any
   if (url) {
-    url.searchParams.set('ignoreDefaultArgs', options.ignoreDefaultArgs.join(','))
+    if (utils.types.isArray(options.ignoreDefaultArgs)) {
+      url.searchParams.set('ignoreDefaultArgs', options.ignoreDefaultArgs.join(','))
+    }
     url.searchParams.set('headless', options.headless)
     options.args.forEach(arg => url.searchParams.set(...arg.split('=')))
     driver = await launcher.connect({wsEndpoint: url.href})
@@ -175,33 +185,3 @@ async function build(env) {
 }
 
 // #endregion
-
-// exports.isStateless = isStateless
-exports.isDriver = isDriver
-exports.isElement = isElement
-exports.isSelector = isSelector
-exports.extractContext = extractContext
-exports.isStaleElementError = isStaleElementError
-exports.isEqualElements = isEqualElements
-
-exports.executeScript = executeScript
-exports.mainContext = mainContext
-exports.parentContext = parentContext
-exports.childContext = childContext
-exports.findElement = findElement
-exports.findElements = findElements
-exports.getElementRect = getElementRect
-exports.getViewportSize = getViewportSize
-exports.setViewportSize = setViewportSize
-exports.getTitle = getTitle
-exports.getUrl = getUrl
-exports.getDriverInfo = getDriverInfo
-exports.visit = visit
-exports.takeScreenshot = takeScreenshot
-exports.click = click
-exports.type = type
-exports.waitUntilDisplayed = waitUntilDisplayed
-exports.scrollIntoView = scrollIntoView
-exports.hover = hover
-
-exports.build = build

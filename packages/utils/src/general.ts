@@ -21,6 +21,13 @@ export function guid(): string {
   })
 }
 
+export function jwtDecode(token: string): Record<string, any> {
+  let payloadSeg = token.split('.')[1]
+  payloadSeg += new Array(5 - (payloadSeg.length % 4)).join('=')
+  payloadSeg = payloadSeg.replace(/-/g, '+').replace(/_/g, '/')
+  return JSON.parse(Buffer.from(payloadSeg, 'base64').toString())
+}
+
 export function toJSON<TObject extends Record<PropertyKey, any>, TKey extends string, TProps extends Readonly<TKey[]>>(
   object: TObject,
   props: TProps,

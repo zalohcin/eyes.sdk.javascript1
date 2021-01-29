@@ -6,25 +6,35 @@ const closeBatch = require('../close/closeBatch')
 function makeSDK({name, version, spec, VisualGridClient}) {
   const sdk = EyesSDK({name, version, spec, VisualGridClient})
 
-  return {openEyes, setViewportSize, closeBatch}
+  return {makeEyes, setViewportSize, closeBatch}
 
-  async function openEyes(driver, config) {
-    const runner = config.vg ? new VisualGridRunner(/* concurrency */) : new ClassicRunner()
-    const eyes = new sdk.EyesFactory(runner)
-    await eyes.open(driver, config.appName, config.testName, config.viewportSize)
+  function makeEyes({type = 'classic', concurrency, legacy} = {}) {
+    const runner =
+      type === 'vg'
+        ? new VisualGridRunner(legacy ? concurrency : {testConcurrency: concurrency})
+        : new ClassicRunner()
 
-    return {check, close, abort}
+    return async function open(driver, config) {
+      const eyes = new sdk.EyesFactory(runner)
+      eyes.setConfiguration(config)
+      await eyes.open(driver, config.appName, config.testName, config.viewportSize)
 
-    async function check(settings) {
-      return eyes.check(settings)
-    }
+      return {check, close, abort}
 
-    async function close() {
-      return eyes.close(false)
-    }
+      async function check(settings) {
+        const result = await eyes.check(settings)
+        return result.toJSON()
+      }
 
-    async function abort() {
-      return eyes.abort()
+      async function close() {
+        const result = await eyes.close(false)
+        return result.toJSON()
+      }
+
+      async function abort() {
+        const result = await eyes.abort()
+        return result.toJSON()
+      }
     }
   }
 

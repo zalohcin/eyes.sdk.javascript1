@@ -1,23 +1,13 @@
-const VisualGridClient = require('@applitools/visual-grid-client')
-const spec = require('./spec-driver')
-const {version} = require('../package.json')
-import {makeSDK} from '@applitools/eyes-sdk-core'
-import * as API from '@applitools/eyes-api'
-import type {Page, ElementHandle} from 'playwright'
+import {
+  Eyes as AbstractEyes,
+  CheckSettings as AbstractCheckSettings
+} from '@applitools/eyes-api'
+import sdk from './sdk'
+import * as spec from './spec-driver'
 
-const sdk = makeSDK({
-  name: 'eyes.playwright',
-  version,
-  spec,
-  VisualGridClient,
-})
+import type {Driver, Element, Selector} from './spec-driver'
 
 export * from '@applitools/eyes-api'
 
-export class Eyes extends API.Eyes<Page, ElementHandle, string> {
-  protected readonly _spec = {...sdk, ...spec}
-}
-
-export class CheckSettings extends API.CheckSettings<ElementHandle, string> {
-  protected readonly _spec = spec
-}
+export const Eyes = AbstractEyes.make<Driver, Element, Selector>({...sdk, ...spec})
+export const CheckSettings = AbstractCheckSettings.make<Element, Selector>(spec)
