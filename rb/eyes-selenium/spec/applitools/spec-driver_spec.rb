@@ -78,15 +78,12 @@ describe 'spec-driver' do
     actual = ::Applitools::SpecDriver.findElement(@driver, 'div')
     expect(::Applitools::SpecDriver.isEqualElements(@driver, expected, actual)).to eq(true)
   end
-  it('findElement eyes selector') do
+  it('findElement eyes-selectors') do
     expected = @driver.find_element(:css, 'div')
     actual = ::Applitools::SpecDriver.findElement(@driver, {type: 'css', selector: 'div'})
     expect(::Applitools::SpecDriver.isEqualElements(@driver, expected, actual)).to eq(true)
   end
   it('findElement xpath') do
-    skip
-  end
-  it('findElement eyes-selectors') do
     skip
   end
   it('findElements') do
