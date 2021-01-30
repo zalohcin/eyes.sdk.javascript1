@@ -228,6 +228,21 @@ const BROWSERS = {
       ...SAUCE_CREDENTIALS,
     },
   },
+  'firefox-48': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
+    capabilities: {
+      legacy: {
+        browserName: 'firefox',
+        platform: 'Windows 10',
+        version: '48.0',
+      },
+    },
+    options: {
+      name: 'Firefox 48',
+      ...SAUCE_CREDENTIALS,
+    },
+  },
   firefox: {
     url: 'http://localhost:4445/wd/hub',
     capabilities: {
