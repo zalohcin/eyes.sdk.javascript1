@@ -3,6 +3,7 @@
 ## Unreleased
 
 - fix stale SRE exception in mobile browsers
+- updated to @applitools/dom-capture@11.0.1 (from 11.0.0)
 
 ## 12.14.2 - 2021/1/27
 
