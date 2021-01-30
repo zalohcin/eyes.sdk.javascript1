@@ -22,37 +22,23 @@ module Applitools
       end
 
       def open(driver, config)
-        run_async(->() {
+        @eyes = await(->(cb) {
           @driverRef = @refer.ref(driver)
-          cb = ->(result) {
-            @eyes = result
-          }
           @socket.request('Eyes.open', {driver: @driverRef, config: config}, nil, cb)
         })
-        sleep 1 until !!@eyes
       end
 
       def check(checkSettings)
-        resolved = false
-        run_async(->() {
-          cb = ->(result) {
-            resolved = result
-          }
+        await(->(cb) {
           @socket.request('Eyes.check', {eyes: @eyes, checkSettings: checkSettings}, nil, cb)
         })
-        sleep 1 until !!resolved
       end
 
       def close
-        resolved = false
-        run_async(->() {
-          cb = ->(result) {
-            resolved = result
-          }
+        await(->(cb) {
           @socket.request('Eyes.close', {eyes: @eyes}, nil, cb)
           @refer.destroy(@driverRef)
         })
-        sleep 1 until !!resolved
       end
 
       def abort
@@ -63,9 +49,15 @@ module Applitools
 
       private 
 
-        def run_async(cb)
-          @q.push(cb)
-          @q.pop {|cb| cb.call()}
+        def await(function)
+          resolved = false
+          cb = ->(result) {
+            resolved = result
+          }
+          @q.push(function)
+          @q.pop {|fn| fn.call(cb)}
+          sleep 1 until !!resolved
+          resolved
         end
 
         def prepare_socket
