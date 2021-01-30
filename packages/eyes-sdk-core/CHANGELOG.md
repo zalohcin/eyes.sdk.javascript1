@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix stale SRE exception in mobile browsers
 
 ## 12.14.2 - 2021/1/27
 
