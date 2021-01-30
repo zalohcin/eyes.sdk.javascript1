@@ -86,7 +86,6 @@ async function testsLoader({
     test.config = test.config || {}
     test.skip = test.skip && !ignoreSkip
     test.skipEmit = test.skipEmit && !ignoreSkipEmit
-    test.isSkipped = test.skip || test.skipEmit
     test.page = test.page && testsConfig.pages[test.page]
     return test
   }
