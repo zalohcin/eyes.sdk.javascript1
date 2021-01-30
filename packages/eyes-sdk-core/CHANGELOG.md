@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 12.14.4 - 2021/1/30
+
 - handle firefox buggy versions
 
 ## 12.14.3 - 2021/1/30
