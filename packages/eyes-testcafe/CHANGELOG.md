@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix default checkWindow behavior- take full page when no target is specified
 
 ## 1.12.4 - 2021/1/27
 
