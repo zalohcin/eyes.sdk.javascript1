@@ -25,11 +25,13 @@ const metadata = {
     isGeneric: true,
     executionMode: 'visualgrid',
     name: 'TestCheckWindow',
+    skip: true,
   },
   TestCheckWindow_Scroll: {
     isGeneric: true,
     executionMode: 'scroll',
     name: 'TestCheckWindow',
+    skipEmit: true,
   },
 }
 describe('Report', () => {
@@ -108,6 +110,7 @@ describe('Report', () => {
           mode: 'visualgrid',
         },
         passed: false,
+        isSkipped: true,
         isGeneric: true,
       },
       {
@@ -117,6 +120,7 @@ describe('Report', () => {
           mode: 'css',
         },
         passed: true,
+        isSkipped: false,
         isGeneric: true,
       },
       {
@@ -126,6 +130,7 @@ describe('Report', () => {
           mode: 'scroll',
         },
         passed: true,
+        isSkipped: true,
         isGeneric: true,
       },
     ])
@@ -144,6 +149,7 @@ describe('Report', () => {
             browser: 'chrome',
             mode: 'visualgrid',
           },
+          isSkipped: true,
           passed: false,
         },
         {
@@ -153,6 +159,7 @@ describe('Report', () => {
             browser: 'chrome',
             mode: 'css',
           },
+          isSkipped: false,
           passed: true,
         },
         {
@@ -162,6 +169,7 @@ describe('Report', () => {
             browser: 'chrome',
             mode: 'scroll',
           },
+          isSkipped: true,
           passed: true,
         },
       ],
@@ -184,6 +192,7 @@ describe('Report', () => {
               browser: 'chrome',
               mode: 'visualgrid',
             },
+            isSkipped: true,
             passed: false,
           },
           {
@@ -193,6 +202,7 @@ describe('Report', () => {
               browser: 'chrome',
               mode: 'css',
             },
+            isSkipped: false,
             passed: true,
           },
           {
@@ -202,6 +212,7 @@ describe('Report', () => {
               browser: 'chrome',
               mode: 'scroll',
             },
+            isSkipped: true,
             passed: true,
           },
         ],
