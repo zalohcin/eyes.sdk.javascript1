@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 15.5.17 - 2021/1/31
+
 - updated to @applitools/dom-snapshot@4.4.9 (from 4.4.8)
 
 ## 15.5.16 - 2021/1/30
