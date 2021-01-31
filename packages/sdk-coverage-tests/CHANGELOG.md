@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 2.3.6 - 2021/1/31
+
 - chore: add husky
 - add `isPassed` to test metadata
 
