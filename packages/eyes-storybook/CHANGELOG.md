@@ -3,6 +3,10 @@
 ## Unreleased
 
 - chore: add husky
+- updated to @applitools/dom-snapshot@4.4.9 (from 4.4.7)
+- updated to @applitools/eyes-puppeteer@1.4.3 (from 1.4.2)
+- updated to @applitools/eyes-sdk-core@12.14.5 (from 12.13.4)
+- updated to @applitools/visual-grid-client@15.5.17 (from 15.5.10)
 
 ## 3.16.3 - 2021/1/15
 
