@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- add support for custom batch properties
 
 ## 12.14.6 - 2021/1/31
 
