@@ -8,6 +8,7 @@ const DateTimeUtils = require('../utils/DateTimeUtils')
  * @typedef BatchInfoObject
  * @prop {string} [id]
  * @prop {string} [name]
+ * @prop {object} [properties]
  * @prop {Date|string} [startedAt]
  * @prop {string} [sequenceName]
  * @prop {boolean} [notifyOnCompletion]
@@ -47,6 +48,7 @@ class BatchInfo {
         startedAt: varArg1.getStartedAt(),
         sequenceName: varArg1.getSequenceName(),
         notifyOnCompletion: varArg1.getNotifyOnCompletion(),
+        properties: varArg1.getProperties(),
         isCompleted: varArg1.getIsCompleted(),
         isGeneratedId: varArg1.getIsGeneratedId(),
       })
@@ -56,11 +58,20 @@ class BatchInfo {
       return new BatchInfo({id: varArg3, name: varArg1, startedAt: varArg2})
     }
 
-    let {id, name, startedAt, sequenceName, notifyOnCompletion, isCompleted, isGeneratedId} =
-      varArg1 || {}
+    let {
+      id,
+      name,
+      properties,
+      startedAt,
+      sequenceName,
+      notifyOnCompletion,
+      isCompleted,
+      isGeneratedId,
+    } = varArg1 || {}
     ArgumentGuard.isString(id, 'batchId', false)
     ArgumentGuard.isString(name, 'batchName', false)
     ArgumentGuard.isString(sequenceName, 'sequenceName', false)
+    ArgumentGuard.isArray(properties, 'properties', false)
     ArgumentGuard.isBoolean(notifyOnCompletion, 'notifyOnCompletion', false)
     ArgumentGuard.isBoolean(isCompleted, 'isCompleted', false)
     ArgumentGuard.isBoolean(isGeneratedId, 'isGeneratedId', false)
@@ -76,6 +87,7 @@ class BatchInfo {
       this._generateAndSetId()
     }
     this._name = name || GeneralUtils.getEnvValue('BATCH_NAME')
+    this._properties = properties
     this._startedAt = startedAt || new Date()
     this._sequenceName = sequenceName || GeneralUtils.getEnvValue('BATCH_SEQUENCE')
     this._notifyOnCompletion =
@@ -124,6 +136,22 @@ class BatchInfo {
    */
   setName(name) {
     this._name = name
+    return this
+  }
+
+  /**
+   * @return {object} - custom batch properties
+   */
+  getProperties() {
+    return this._properties
+  }
+
+  /**
+   * @param {object} properties - The custom batch properties to set
+   * @return {this}
+   */
+  setProperties(props) {
+    this._properties = props
     return this
   }
 
