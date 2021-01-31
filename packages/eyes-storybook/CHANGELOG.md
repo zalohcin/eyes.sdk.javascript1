@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 3.16.4 - 2021/1/31
+
 - chore: add husky
 - updated to @applitools/dom-snapshot@4.4.9 (from 4.4.7)
 - updated to @applitools/eyes-puppeteer@1.4.3 (from 1.4.2)
