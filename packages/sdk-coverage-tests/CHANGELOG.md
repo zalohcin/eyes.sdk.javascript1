@@ -6,7 +6,7 @@
 ## 2.3.6 - 2021/1/31
 
 - chore: add husky
-- add `isPassed` to test metadata
+- add `isSkipped` to test metadata
 
 ## 2.3.5 - 2021/1/15
 
