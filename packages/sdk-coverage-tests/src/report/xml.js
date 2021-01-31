@@ -15,6 +15,7 @@ function convertJunitXmlToResultSchema({junit, browser, metadata}) {
       },
       passed: !test.failure,
       isGeneric: meta.isGeneric,
+      isSkipped: meta.skip || meta.skipEmit || false, // we explicitly set false to preserve backwards compatibility
     }
   })
 }
