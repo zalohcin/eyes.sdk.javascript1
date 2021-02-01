@@ -4,9 +4,9 @@ require_relative('applitools/spec-driver')
 require_relative('applitools/refer')
 
 # TODO:
-# - finish ref'ing elements in return of executeSript & resolve JS errors
-# - e2e test (VG)
 # - spawn server in unref'd child process
+# - implement abort
+# - add Eyes config support
 # - test concurrency
 module Applitools
   module Selenium
