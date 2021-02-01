@@ -68,10 +68,6 @@ module Applitools
                 ::Applitools::SpecDriver.isEqualElements(nil, @refer.deref(params[:element1]), @refer.deref(params[:element2]))
               })
               @socket.command('Driver.executeScript', ->(params) {
-                #if (params[:script].include? '@applitools/dom-snapshot')
-                #  require('pry')
-                #  binding.pry
-                #end
                 result = ::Applitools::SpecDriver.executeScript(@refer.deref(params[:context]), params[:script], @refer.deref_all(params[:args]))
                 qualifier = ->(input) {::Applitools::SpecDriver.isElement(input)}
                 @refer.ref_all(result, qualifier)
