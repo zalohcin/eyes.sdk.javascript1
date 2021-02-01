@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'faye-websocket'
 gem 'eventmachine'
+gem 'colorize'
 
 group :development do
   gem 'rspec'

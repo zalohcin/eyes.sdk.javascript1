@@ -7,7 +7,6 @@ require_relative('applitools/refer')
 # - finish ref'ing elements in return of executeSript & resolve JS errors
 # - e2e test (VG)
 # - spawn server in unref'd child process
-# - add colorized logging to be consistent w/ JS POC
 # - test concurrency
 module Applitools
   module Selenium
@@ -70,11 +69,11 @@ module Applitools
               })
               @socket.command('Driver.executeScript', ->(params) {
                 args = params[:args].first.map {|arg| @refer.isRef(arg) ? @refer.deref(arg) : arg} if (params[:args].length > 0)
-                puts "[COMMAND] Driver.executeScript args: #{args.inspect}"
+                #puts "[COMMAND] Driver.executeScript args: #{args.inspect}"
                 result = ::Applitools::SpecDriver.executeScript(@refer.deref(params[:context]), params[:script], *args)
                 result = result.map {|r| ::Applitools::SpecDriver.isElement(r) ? @refer.ref(r) : r} if (result.is_a? Array)
-                puts "[COMMAND] Driver.executeScript result: #{result ? result.inspect: 'NO RESULT'}"
-                puts ''
+                #puts "[COMMAND] Driver.executeScript result: #{result ? result.inspect: 'NO RESULT'}"
+                #puts ''
                 result
                 # e.g., from JS POC
                 #async function serialize(result) {

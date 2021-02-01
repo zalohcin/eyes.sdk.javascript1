@@ -1,6 +1,7 @@
 require('faye/websocket')
 require('json')
 require('securerandom')
+require('colorize')
 
 module Applitools
   class Socket
@@ -36,20 +37,22 @@ module Applitools
     def command(name, fn)
       on(name, ->(payload, key) {
         begin
-          puts "[COMMAND] #{name}, #{key}, #{JSON.generate(payload)}"
+          puts "[#{'COMMAND'.yellow}] #{name}, #{key}, #{JSON.pretty_generate(payload)}"
           result = fn.call(payload)
+          puts "[#{'COMMAND RESULT'.green}] #{name}, #{key}, #{JSON.pretty_generate(result)}"
           emit({name: name, key: key}, {result: result})
         rescue => error
-          puts "[COMMAND ERROR] #{error}"
+          puts "[#{'COMMAND ERROR'.red}] #{error}"
           emit({name: name, key: key}, error.message || error)
         end
       })
     end
 
     def request(name, payload, key = SecureRandom.uuid, cb = nil)
+      puts "[#{'REQUEST'.blue}] #{name}, #{key}, #{JSON.pretty_generate(payload)}"
       emit({name: name, key: key}, payload)
       once({name: name, key: key}, Proc.new {|result|
-        puts "[#{name}] result: #{result}" if result
+        puts "[#{'REQUEST RESULT'.green}] name: #{name}, result: #{result}" if result
         cb.call(result[:result]) if cb
       })
     end
