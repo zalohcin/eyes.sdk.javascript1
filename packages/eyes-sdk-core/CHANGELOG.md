@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 12.14.7 - 2021/2/1
+
 - fix stale SRE fix from version 12.14.3 when running mobile native apps
 
 ## 12.14.6 - 2021/1/31
