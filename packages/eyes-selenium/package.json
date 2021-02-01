@@ -43,7 +43,7 @@
     "@applitools/sdk-coverage-tests": "2.3.6",
     "@applitools/sdk-fake-eyes-server": "2.1.1",
     "@applitools/sdk-release-kit": "0.12.1",
-    "@applitools/sdk-shared": "0.8.5",
+    "@applitools/sdk-shared": "0.8.6",
     "assert-rejects": "^1.0.0",
     "axios": "^0.21.1",
     "chai": "^4.2.0",
