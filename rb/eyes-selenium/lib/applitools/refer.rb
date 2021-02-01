@@ -27,7 +27,7 @@ module Applitools
     end
 
     def isRef(ref)
-      !!destructure_ref(ref)
+      !ref.nil? && ref.respond_to?(:keys) && !!destructure_ref(ref)
     end
 
     def deref(ref)

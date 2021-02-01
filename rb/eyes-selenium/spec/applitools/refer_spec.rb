@@ -24,6 +24,10 @@ describe 'refer' do
     ref = @refer.ref({:a => 'a'})
     expect(@refer.isRef(ref)).to eq(true)
     expect(@refer.isRef({})).to eq(false)
+    badRef = nil
+    expect(@refer.isRef(badRef)).to eq(false)
+    anotherBadRef = [:chunkByteLength, 26214400]
+    expect(@refer.isRef(anotherBadRef)).to eq(false)
   end
   it('should return the original value') do
     input = {:a => 'a'}
@@ -51,4 +55,7 @@ describe 'refer' do
     @refer.destroy(modifiedParentRef)
     expect(@refer.store.keys.include?(modifiedParentRef.values.first)).to eq(false)
   end
+  #it('should store an array') do
+  #  @refer.ref([end
+  #end
 end
