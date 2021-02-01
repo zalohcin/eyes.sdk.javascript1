@@ -1,4 +1,5 @@
 require_relative('../../lib/applitools/refer')
+require_relative('../spec_helper')
 
 describe 'refer' do
   before(:each) do
@@ -55,7 +56,35 @@ describe 'refer' do
     @refer.destroy(modifiedParentRef)
     expect(@refer.store.keys.include?(modifiedParentRef.values.first)).to eq(false)
   end
-  #it('should store an array') do
-  #  @refer.ref([end
-  #end
+  it('should deref all relevant parts of a given collection') do
+    input = [{:chunkByteLength=>262144000, :serializeResources=>true, :compressResources=>false, :skipResources=>[], :removeReverseProxyURLPrefixes=>false}]
+    expect(@refer.deref_all(input)).to eq(input)
+    input = [@refer.ref({:a => 'a'})]
+    result = @refer.deref_all(input)
+    expect(result.first.values.first).to eq(input.first.values.first)
+  end
+  it('should ref all relevant parts of a given collection') do
+    input = [{:a => 'a'}, {:b => 'b'}]
+    isA = ->(input) {input.values.first === 'a'}
+    result = @refer.ref_all(input, isA)
+    expect(result.first.keys.first).to eq(::Applitools::Refer::REF_ID)
+  end
+  # e.g., from JS POC
+  #async function serialize(result) {
+  #  const [_, type] = result.toString().split('@')
+  #  if (type === 'array') {
+  #    const map = await result.getProperties()
+  #    return Promise.all(Array.from(map.values(), serialize))
+  #  } else if (type === 'object') {
+  #    const map = await result.getProperties()
+  #    const chunks = await Promise.all(
+  #      Array.from(map, async ([key, handle]) => ({[key]: await serialize(handle)})),
+  #    )
+  #    return Object.assign(...chunks)
+  #  } else if (type === 'node') {
+  #    return ref(result.asElement(), frame)
+  #  } else {
+  #    return result.jsonValue()
+  #  }
+  #}
 end

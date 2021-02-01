@@ -37,8 +37,29 @@ module Applitools
     def destroy(ref)
       return if (!isRef(ref))
       childRefs = relation[destructure_ref(ref)]
-      childRefs.each{|childRef| destroy({"#{REF_ID}": childRef})} if childRefs
+      childRefs.each{|childRef| destroy({REF_ID => childRef})} if childRefs
       store.delete(destructure_ref(ref))
+    end
+
+    def deref_all(input)
+      args = input.first
+      if (args.is_a?(Array))
+        args.map {|arg| isRef(arg) ? deref(arg) : arg}
+      elsif (args.is_a?(Hash))
+        r = {}
+        args.each_pair {|k,v| r[k] = isRef(v) ? deref(v) : v}
+        [r]
+      else
+        input
+      end
+    end
+
+    def ref_all(input, qualifier = ->(i) {})
+      if (input.is_a? Array)
+        input.map {|i| qualifier.call(i) ? ref(i) : i} 
+      else
+        input
+      end
     end
 
     private

@@ -68,31 +68,13 @@ module Applitools
                 ::Applitools::SpecDriver.isEqualElements(nil, @refer.deref(params[:element1]), @refer.deref(params[:element2]))
               })
               @socket.command('Driver.executeScript', ->(params) {
-                args = params[:args].first.map {|arg| @refer.isRef(arg) ? @refer.deref(arg) : arg} if (params[:args].length > 0)
-                #puts "[COMMAND] Driver.executeScript args: #{args.inspect}"
-                result = ::Applitools::SpecDriver.executeScript(@refer.deref(params[:context]), params[:script], *args)
-                result = result.map {|r| ::Applitools::SpecDriver.isElement(r) ? @refer.ref(r) : r} if (result.is_a? Array)
-                #puts "[COMMAND] Driver.executeScript result: #{result ? result.inspect: 'NO RESULT'}"
-                #puts ''
-                result
-                # e.g., from JS POC
-                #async function serialize(result) {
-                #  const [_, type] = result.toString().split('@')
-                #  if (type === 'array') {
-                #    const map = await result.getProperties()
-                #    return Promise.all(Array.from(map.values(), serialize))
-                #  } else if (type === 'object') {
-                #    const map = await result.getProperties()
-                #    const chunks = await Promise.all(
-                #      Array.from(map, async ([key, handle]) => ({[key]: await serialize(handle)})),
-                #    )
-                #    return Object.assign(...chunks)
-                #  } else if (type === 'node') {
-                #    return ref(result.asElement(), frame)
-                #  } else {
-                #    return result.jsonValue()
-                #  }
-                #}
+                #if (params[:script].include? '@applitools/dom-snapshot')
+                #  require('pry')
+                #  binding.pry
+                #end
+                result = ::Applitools::SpecDriver.executeScript(@refer.deref(params[:context]), params[:script], @refer.deref_all(params[:args]))
+                qualifier = ->(input) {::Applitools::SpecDriver.isElement(input)}
+                @refer.ref_all(result, qualifier)
               })
               @socket.command('Driver.mainContext', ->(params) {
                 ::Applitools::SpecDriver.mainContext(@refer.deref(params[:context]))

@@ -1,4 +1,5 @@
 require_relative('../../lib/applitools/socket')
+require_relative('../spec_helper')
 require('json')
 
 describe 'socket' do
