@@ -39,7 +39,7 @@ module Applitools
         begin
           puts "[#{'COMMAND'.yellow}] #{name}, #{key}, #{JSON.pretty_generate(payload)}"
           result = fn.call(payload)
-          puts "[#{'COMMAND RESULT'.green}] #{name}, #{key}, #{JSON.pretty_generate(result)}"
+          #puts "[#{'COMMAND RESULT'.green}] #{name}, #{key}, #{JSON.pretty_generate(result)}"
           emit({name: name, key: key}, {result: result})
         rescue => error
           puts "[#{'COMMAND ERROR'.red}] #{error}"
@@ -52,7 +52,7 @@ module Applitools
       puts "[#{'REQUEST'.blue}] #{name}, #{key}, #{JSON.pretty_generate(payload)}"
       emit({name: name, key: key}, payload)
       once({name: name, key: key}, Proc.new {|result|
-        puts "[#{'REQUEST RESULT'.green}] name: #{name}, result: #{result}" if result
+        #puts "[#{'REQUEST RESULT'.green}] name: #{name}, result: #{result}" if result
         cb.call(result[:result]) if cb
       })
     end
