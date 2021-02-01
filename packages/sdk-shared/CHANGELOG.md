@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- add support for custom batch properties
+- add support for getting batch info
 - chore: add husky
 
 ## 0.8.5 - 2021/1/11

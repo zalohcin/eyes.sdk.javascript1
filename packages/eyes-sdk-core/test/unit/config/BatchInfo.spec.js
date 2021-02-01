@@ -64,8 +64,8 @@ describe('BatchInfo', () => {
       sequenceName: 'bla',
     })
     const anotherBatch = new BatchInfo().setProperties(properties)
-    assert.strictEqual(batch.getProperties(), properties)
-    assert.strictEqual(anotherBatch.getProperties(), properties)
+    assert.deepStrictEqual(batch.getProperties(), properties)
+    assert.deepStrictEqual(anotherBatch.getProperties(), properties)
   })
 
   it('should use APPLITOOLS_BATCH_NOTIFY env variable', async function() {

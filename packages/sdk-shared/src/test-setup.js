@@ -295,11 +295,11 @@ function Env(
 }
 
 const batchName = process.env.APPLITOOLS_BATCH_NAME || 'JS Coverage Tests'
-const customBatch = typeof BatchInfo === 'undefined';
-const batch =  customBatch ? batchName : new BatchInfo(batchName)
+const isBatchInfoDefined = typeof BatchInfo === 'undefined';
+const batch =  isBatchInfoDefined ? batchName : new BatchInfo(batchName)
 
 function getEyes({vg, showLogs, saveLogs, saveDebugScreenshots, runner, batch: batchInfo, ...config} = {}) {
-  if (customBatch && batchInfo) batch.setProperties(batchInfo.properties);
+  if (isBatchInfoDefined && batchInfo) batch.setProperties(batchInfo.properties);
   runner = runner || (vg ? new VisualGridRunner({testConcurrency: 500}) : undefined)
   const eyes = new Eyes(runner)
   const conf = {
