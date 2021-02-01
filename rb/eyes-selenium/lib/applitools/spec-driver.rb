@@ -13,7 +13,7 @@ module Applitools
     def executeScript(driver, script, args)
       begin
         _script = script.start_with?('return') ? script : "return (#{script}).apply(null, arguments)"
-        driver.execute_script(_script, args)
+        driver.execute_script(_script, *args)
       rescue => error
         error.message
       end
