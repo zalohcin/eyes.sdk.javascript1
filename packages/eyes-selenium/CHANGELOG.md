@@ -1,7 +1,9 @@
 # Change Log
 
 ## Unreleased
-
+- adding support for custom batch properties
+- updated to @applitools/eyes-sdk-core@12.14.6 (from 12.14.1)
+- updated to @applitools/visual-grid-client@15.5.19 (from 15.5.13)
 
 ## 4.52.4 - 2021/1/27
 

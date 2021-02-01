@@ -8,7 +8,7 @@ const DateTimeUtils = require('../utils/DateTimeUtils')
  * @typedef BatchInfoObject
  * @prop {string} [id]
  * @prop {string} [name]
- * @prop {object} [properties]
+ * @prop {array} [properties]
  * @prop {Date|string} [startedAt]
  * @prop {string} [sequenceName]
  * @prop {boolean} [notifyOnCompletion]
@@ -140,14 +140,14 @@ class BatchInfo {
   }
 
   /**
-   * @return {object} - custom batch properties
+   * @return {array} - custom batch properties
    */
   getProperties() {
     return this._properties
   }
 
   /**
-   * @param {object} properties - The custom batch properties to set
+   * @param {array} properties - The custom batch properties to set
    * @return {this}
    */
   setProperties(props) {

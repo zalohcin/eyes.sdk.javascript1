@@ -1,4 +1,4 @@
-const fetch = require('fetch');
+const fetch = require('node-fetch')
 const {URL} = require('url');
 
 async function getBatchInfo(
@@ -7,10 +7,10 @@ async function getBatchInfo(
   ) {
     const sessionUrl = new URL(testResults.getAppUrls().getSession())
     const accountId = sessionUrl.searchParams.get('accountId')
-    const url = `${sessionUrl.origin}/api/sessions/batches/${testResults.getBatchId()}&apiKey=${apiKey}?accountId=${accountId}`
+    const url = `${sessionUrl.origin}/api/sessions/batches/${testResults.getBatchId()}/batch?accountId=${accountId}&apiKey=${apiKey}`
     
     const response = await fetch(url)
-    return response.json()
+    return await response.json();
 }
 
 module.exports = {getBatchInfo}
