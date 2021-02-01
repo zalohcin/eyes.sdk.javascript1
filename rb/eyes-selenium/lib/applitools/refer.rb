@@ -44,7 +44,7 @@ module Applitools
     def deref_all(input)
       args = input.first
       if (args.is_a?(Array))
-        args.map {|arg| isRef(arg) ? deref(arg) : arg}
+        [args.map {|arg| isRef(arg) ? deref(arg) : arg}]
       elsif (args.is_a?(Hash))
         r = {}
         args.each_pair {|k,v| r[k] = isRef(v) ? deref(v) : v}

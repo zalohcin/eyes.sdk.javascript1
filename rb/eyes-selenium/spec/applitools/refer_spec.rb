@@ -1,8 +1,7 @@
 require_relative('../../lib/applitools/refer')
 require_relative('../spec_helper')
 
-describe 'refer' do
-  before(:each) do
+describe 'refer' do before(:each) do
     @refer = ::Applitools::Refer.new
   end
   it('should store an entry') do
@@ -62,6 +61,8 @@ describe 'refer' do
     input = [@refer.ref({:a => 'a'})]
     result = @refer.deref_all(input)
     expect(result.first.values.first).to eq(input.first.values.first)
+    input = [[[],[]]]
+    expect(@refer.deref_all(input)).to eq(input)
   end
   it('should ref all relevant parts of a given collection') do
     input = [{:a => 'a'}, {:b => 'b'}]
