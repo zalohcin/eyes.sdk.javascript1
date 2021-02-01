@@ -294,17 +294,14 @@ function Env(
   return env
 }
 
-const batchName = process.env.APPLITOOLS_BATCH_NAME || 'JS Coverage Tests'
-const isBatchInfoDefined = typeof BatchInfo === 'undefined';
-const batch =  isBatchInfoDefined ? batchName : new BatchInfo(batchName)
-
-function getEyes({vg, showLogs, saveLogs, saveDebugScreenshots, runner, batch: batchInfo, ...config} = {}) {
-  if (isBatchInfoDefined && batchInfo) batch.setProperties(batchInfo.properties);
+function getEyes({vg, showLogs, saveLogs, saveDebugScreenshots, runner, batch, ...config} = {}) {
+  const batchName = process.env.APPLITOOLS_BATCH_NAME || 'JS Coverage Tests'
+  const batchInfo =  batch ? new BatchInfo({ name: batchName, ...batch }) : batchName; 
   runner = runner || (vg ? new VisualGridRunner({testConcurrency: 500}) : undefined)
   const eyes = new Eyes(runner)
   const conf = {
     apiKey: process.env.APPLITOOLS_API_KEY_SDK,
-    batch,
+    batch: batchInfo,
     parentBranchName: 'master',
     branchName: 'master',
     dontCloseBatches: true,
@@ -343,7 +340,6 @@ function getEyes({vg, showLogs, saveLogs, saveDebugScreenshots, runner, batch: b
 module.exports = {
   Env,
   getEyes,
-  batch,
   BROWSERS,
   DEVICES,
 }
