@@ -29,7 +29,7 @@ describe('e2e') do
     end
   end
   describe('vg') do
-    it('check window viewport', :only) do
+    it('check window viewport') do
       eyes = ::Applitools::Selenium::Eyes.new
       eyes.open(@driver, {appName: 'eyes-selenium.rb', testName: 'vg, check window viewport', vg: true})
       eyes.check({})
