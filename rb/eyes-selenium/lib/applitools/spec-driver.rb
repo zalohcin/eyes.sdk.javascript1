@@ -10,7 +10,7 @@ module Applitools
       element1.hash == element2.hash
     end
 
-    def executeScript(driver, script, *args)
+    def executeScript(driver, script, args)
       begin
         _script = script.start_with?('return') ? script : "return (#{script}).apply(null, arguments)"
         driver.execute_script(_script, args)

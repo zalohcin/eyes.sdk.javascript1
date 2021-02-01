@@ -1,6 +1,8 @@
 require('selenium-webdriver')
 require('webdrivers/chromedriver')
 require_relative('../../lib/applitools/spec-driver')
+require_relative('../../lib/applitools/refer')
+require_relative('../spec_helper')
 
 describe 'spec-driver' do
   before(:all) do
@@ -28,8 +30,8 @@ describe 'spec-driver' do
   end
   it('executeScript') do
     args = [0, 'string', {key: 'value'}, [0, 1, 2, 3]]
-    expected = @driver.execute_script('return arguments', *args)
-    result = ::Applitools::SpecDriver.executeScript(@driver, 'return arguments', *args)
+    expected = @driver.execute_script('return arguments', args)
+    result = ::Applitools::SpecDriver.executeScript(@driver, 'return arguments', args)
     expect(result).to eq(expected)
   end
   it('mainContext') do
