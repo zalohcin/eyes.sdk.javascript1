@@ -53,7 +53,7 @@ module Applitools
       emit({name: name, key: key}, payload)
       once({name: name, key: key}, Proc.new {|result|
         #puts "[#{'REQUEST RESULT'.green}] name: #{name}, result: #{result}" if result
-        cb.call(result[:result]) if cb
+        cb.call(result[:result].nil? ? true : result[:result]) if cb
       })
     end
 
