@@ -21,6 +21,7 @@ module Applitools
       end
 
       def open(driver, config)
+        config[:agentId] = 'eyes-universal/rb'
         @eyes = await(->(cb) {
           @driverRef = @refer.ref(driver)
           @socket.request('Eyes.open', {driver: @driverRef, config: config}, nil, cb)
