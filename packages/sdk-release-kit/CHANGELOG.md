@@ -3,6 +3,7 @@
 ## Unreleased
 
 - add logging to postversion
+- updated to @applitools/sdk-shared@0.8.6 (from 0.8.5)
 
 ## 0.12.1 - 2021/1/27
 
