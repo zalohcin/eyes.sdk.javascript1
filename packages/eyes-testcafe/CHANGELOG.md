@@ -4,6 +4,8 @@
 
 - fix default checkWindow behavior- take full page when no target is specified
 - set minimum supported Node version to be consistent with other SDKs (8.9)
+- updated to @applitools/eyes-sdk-core@12.14.7 (from 12.14.2)
+- updated to @applitools/visual-grid-client@15.5.20 (from 15.5.13)
 
 ## 1.12.4 - 2021/1/27
 
