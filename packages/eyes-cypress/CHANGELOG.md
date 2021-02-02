@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 3.18.7 - 2021/2/2
+
 - fix documentation about setup of Applitools configuration
 - updated to @applitools/dom-snapshot@4.4.11 (from 4.4.8)
 - updated to @applitools/visual-grid-client@15.5.20 (from 15.5.11)
