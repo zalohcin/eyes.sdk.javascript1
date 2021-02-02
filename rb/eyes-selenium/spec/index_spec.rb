@@ -18,13 +18,13 @@ describe('e2e') do
       eyes = ::Applitools::Selenium::Eyes.new
       eyes.open(@driver, {appName: 'eyes-selenium.rb', testName: 'classic, check window viewport', vg: false})
       eyes.check({})
-      eyes.close()
+      eyes.close(true)
     end
     it('check window fully') do
       eyes = ::Applitools::Selenium::Eyes.new
       eyes.open(@driver, {appName: 'eyes-selenium.rb', testName: 'classic, check window fully', vg: false})
       eyes.check({isFully: true})
-      eyes.close()
+      eyes.close(true)
     end
   end
   describe('vg') do
@@ -32,13 +32,13 @@ describe('e2e') do
       eyes = ::Applitools::Selenium::Eyes.new
       eyes.open(@driver, {appName: 'eyes-selenium.rb', testName: 'vg, check window viewport', vg: true})
       eyes.check({})
-      eyes.close()
+      eyes.close(true)
     end
     it('check window fully') do
       eyes = ::Applitools::Selenium::Eyes.new
       eyes.open(@driver, {appName: 'eyes-selenium.rb', testName: 'vg, check window fully', vg: true})
       eyes.check({isFully: true})
-      eyes.close()
+      eyes.close(true)
     end
   end
 end

@@ -4,10 +4,11 @@ require_relative('applitools/spec-driver')
 require_relative('applitools/refer')
 
 # TODO:
+# - run e2e tests in a batch
 # - spawn server in unref'd child process
-# - implement abort
-# - add Eyes config support
+# - bundling
 # - test concurrency
+# - coverage tests
 module Applitools
   module Selenium
     class Eyes
@@ -34,17 +35,23 @@ module Applitools
         })
       end
 
-      def close
-        await(->(cb) {
+      def close(throw_exception = false)
+        result = await(->(cb) {
           @socket.request('Eyes.close', {eyes: @eyes}, nil, cb)
           @refer.destroy(@driverRef)
         })
+        if (throw_exception and result[:status] != "Passed")
+          raise JSON.pretty_generate(result)
+        else
+          puts JSON.pretty_generate(result)
+        end
       end
 
       def abort
-        #result = @socket.request('Eyes.abort', {eyes: @eyes})
-        #@refer.destroy(@driverRef)
-        #result
+        await(->(cb) {
+          @socket.request('Eyes.abort', {eyes: @eyes}, nil, cb)
+          @refer.destroy(@driverRef)
+        })
       end
 
       private 
