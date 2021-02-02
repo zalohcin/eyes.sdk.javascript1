@@ -71,9 +71,19 @@ yargs
       skipReleaseNotification: {alias: 'sr', type: 'boolean'},
     },
     async args => {
-      await gitPushWithTags()
-      if (!args.skipReleaseNotification) {
-        await sendReleaseNotification(args.cwd, args.recipient)
+      try {
+        console.log('[bongo postversion] pushing with tags')
+        await gitPushWithTags()
+        if (args.skipReleaseNotification) {
+          console.log('[bongo postversion] skipping release notification')
+        } else if (!args.skipReleaseNotification) {
+          console.log('[bongo postversion] sending release notification')
+          await sendReleaseNotification(args.cwd, args.recipient)
+          console.log('[bongo postversion] release notification sent')
+        }
+        console.log('[bongo postversion] done!')
+      } catch (err) {
+        console.log(chalk.yellow(err.message))
       }
     },
   )

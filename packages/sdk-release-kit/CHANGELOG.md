@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- add logging to postversion
 
 ## 0.12.1 - 2021/1/27
 
