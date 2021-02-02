@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 1.12.5 - 2021/2/2
+
 - fix default checkWindow behavior- take full page when no target is specified
 - set minimum supported Node version to be consistent with other SDKs (8.9)
 - updated to @applitools/eyes-sdk-core@12.14.7 (from 12.14.2)
