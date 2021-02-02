@@ -67,7 +67,7 @@ function makeSpecDriver(ws) {
   }
   async function takeScreenshot(driver) {
     const buffer = await ws.request('Driver.takeScreenshot', {driver})
-    return Buffer.from(buffer.data)
+    return typeof buffer === 'string' ? Buffer.from(buffer, 'base64') : Buffer.from(buffer.data)
   }
   // #endregion
 
