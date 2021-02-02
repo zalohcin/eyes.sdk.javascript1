@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix for WDIO 5 service that prevented grid runs without a testConcurrency specified from running ([Trello](https://trello.com/c/ijY0syDH))
 
 ## 5.29.5 - 2021/2/1
 
