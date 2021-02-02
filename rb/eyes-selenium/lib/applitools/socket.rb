@@ -2,10 +2,12 @@ require('faye/websocket')
 require('json')
 require('securerandom')
 require('colorize')
+require_relative('./logger')
 
 module Applitools
   class Socket
     attr_reader :listeners, :queue
+    include ::Applitools::Logger
 
     def initialize
       @listeners = {}
@@ -37,23 +39,21 @@ module Applitools
     def command(name, fn)
       on(name, ->(payload, key) {
         begin
-          puts "[#{'COMMAND'.yellow}] #{name}, #{key}, #{JSON.pretty_generate(payload)}"
+          log("[#{'COMMAND'.yellow}] #{name}, #{key}, #{JSON.pretty_generate(payload)}")
           result = fn.call(payload)
-          #puts "[#{'COMMAND RESULT'.green}] #{name}, #{key}, #{JSON.pretty_generate(result)}"
           emit({name: name, key: key}, {result: result})
         rescue => error
-          puts "[#{'COMMAND ERROR'.red}] #{error}"
+          log("[#{'COMMAND ERROR'.red}] #{error}")
           emit({name: name, key: key}, error.message || error)
         end
       })
     end
 
     def request(name, payload, key = SecureRandom.uuid, cb = nil)
-      puts "[#{'REQUEST'.blue}] #{name}, #{key}, #{JSON.pretty_generate(payload)}"
+      log("[#{'REQUEST'.blue}] #{name}, #{key}, #{JSON.pretty_generate(payload)}")
       emit({name: name, key: key}, payload)
       once({name: name, key: key}, Proc.new {|result|
-        #puts "[#{'REQUEST RESULT'.green}] name: #{name}, result: #{result}" if result
-        cb.call(result[:result].nil? ? true : result[:result]) if cb
+        cb.call(result[:result] || result[:error] || true) if cb
       })
     end
 
@@ -73,8 +73,12 @@ module Applitools
         JSON.generate(message)
       end
 
+      def get_name_from_type(type)
+        type.is_a?(String) ? type : "#{type[:name]}/#{type[:key]}"
+      end
+
       def on(type, fn)
-        name = type.is_a?(String) ? type : "#{type[:name]}/#{type[:key]}"
+        name = get_name_from_type(type)
         fns = listeners[name.to_sym]
         if (!fns)
           fns = []
@@ -83,15 +87,15 @@ module Applitools
         fns.push(fn)
       end
 
-      def off(name)
+      def off(type)
+        name = get_name_from_type(type)
         listeners.delete(name.to_sym)
       end
 
       def once(type, fn)
-        name = type.is_a?(String) ? type : "#{type[:name]}/#{type[:key]}"
         on(type, ->(*args) {
           fn.call(*args)
-          off(name)
+          off(type)
         })
       end
   end
