@@ -25,19 +25,19 @@ module Applitools
         config[:agentId] = 'eyes-universal/rb'
         @eyes = await(->(cb) {
           @driverRef = @refer.ref(driver)
-          @socket.request('Eyes.open', {driver: @driverRef, config: config}, nil, cb)
+          @socket.request('Eyes.open', {driver: @driverRef, config: config}, cb)
         })
       end
 
       def check(checkSettings)
         await(->(cb) {
-          @socket.request('Eyes.check', {eyes: @eyes, checkSettings: checkSettings}, nil, cb)
+          @socket.request('Eyes.check', {eyes: @eyes, checkSettings: checkSettings}, cb)
         })
       end
 
       def close(throw_exception = false)
         result = await(->(cb) {
-          @socket.request('Eyes.close', {eyes: @eyes}, nil, cb)
+          @socket.request('Eyes.close', {eyes: @eyes}, cb)
           @refer.destroy(@driverRef)
         })
         if (throw_exception and result[:status] != "Passed")
@@ -49,7 +49,7 @@ module Applitools
 
       def abort
         await(->(cb) {
-          @socket.request('Eyes.abort', {eyes: @eyes}, nil, cb)
+          @socket.request('Eyes.abort', {eyes: @eyes}, cb)
           @refer.destroy(@driverRef)
         })
       end

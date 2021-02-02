@@ -88,14 +88,14 @@ describe 'socket' do
     key = '12345'
     payload = {blah: 'blah'}
     expect(@ws).to receive(:send).with(JSON.generate({name: name, key: key, payload: payload}))
-    @socket.request(name, payload, key)
+    @socket.request(name, payload, nil, key)
   end
 
   it 'requests clean up after receiving a response' do
     name = 'blah'
     key = '12345'
     payload = {blah: 'blah'}
-    @socket.request(name, payload, key)
+    @socket.request(name, payload, nil, key)
     listener = @socket.listeners.first[1].first
     listener.call
     expect(@socket.listeners).to be_empty
@@ -107,7 +107,7 @@ describe 'socket' do
     payload = {blah: 'blah'}
     result = nil
     cb = ->(r) {result = r}
-    @socket.request(name, payload, key, cb)
+    @socket.request(name, payload, cb, key)
     listener = @socket.listeners.first[1].first
     listener.call({result: true})
     expect(result).to eq(true)

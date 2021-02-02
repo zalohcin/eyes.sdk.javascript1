@@ -49,7 +49,7 @@ module Applitools
       })
     end
 
-    def request(name, payload, key = SecureRandom.uuid, cb = nil)
+    def request(name, payload, cb = nil, key = SecureRandom.uuid)
       log("[#{'REQUEST'.blue}] #{name}, #{key}, #{JSON.pretty_generate(payload)}")
       emit({name: name, key: key}, payload)
       once({name: name, key: key}, Proc.new {|result|
