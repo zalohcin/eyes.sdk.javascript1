@@ -14,7 +14,6 @@ describe('e2e') do
     @driver.quit
   end
   describe('classic') do
-    skip
     it('check window viewport') do
       eyes = ::Applitools::Selenium::Eyes.new
       eyes.open(@driver, {appName: 'eyes-selenium.rb', testName: 'classic, check window viewport', vg: false})
