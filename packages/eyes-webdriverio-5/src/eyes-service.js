@@ -12,7 +12,7 @@ const DEFAULT_VIEWPORT = {
 class EyesService {
   constructor(config) {
     this._eyesConfig = getServiceConfig(config) || {}
-    const runnerOptions = new RunnerOptions().testConcurrency(this._eyesConfig.concurrency || 1)
+    const runnerOptions = new RunnerOptions().testConcurrency(this._eyesConfig.concurrency)
     const runner = this._eyesConfig.useVisualGrid ? new VisualGridRunner(runnerOptions) : undefined
     this._eyes = new Eyes(runner)
     this._eyes.getBaseAgentId = () =>
