@@ -1,4 +1,5 @@
 require('eventmachine')
+require('socket')
 require_relative('applitools/socket')
 require_relative('applitools/spec-driver')
 require_relative('applitools/refer')
@@ -65,17 +66,30 @@ module Applitools
         end
 
         def prepare_socket
-          port = spawn_socket
-          configure_socket(port)
+          socket_ip = '127.0.0.1'
+          socket_port = 2107
+          socket_uri = "ws://#{socket_ip}:#{socket_port}/eyes"
+          spawn_server
+          confirm_server_is_up(socket_ip, socket_port)
+          connect_and_configure_socket(socket_uri)
         end
 
-        def spawn_socket
-          pid = spawn(get_socket_script, [:out, :err] => [File::NULL, 'w'])
+        def spawn_server
+          pid = spawn(get_server_script, [:out, :err] => [File::NULL, 'w'])
           Process.detach(pid)
-          2107
         end
 
-        def get_socket_script
+        def confirm_server_is_up(ip, port, attempt = 1)
+          raise 'Universal server unavailable' if (attempt === 16)
+          begin
+            TCPSocket.new(ip, port)
+          rescue Errno::ECONNREFUSED
+            sleep 1
+            confirm_server_is_up(ip, port, attempt + 1)
+          end
+        end
+
+        def get_server_script
           case RUBY_PLATFORM
           when /mswin|windows/i
             File.expand_path('bin/app-win.exe')
@@ -83,13 +97,15 @@ module Applitools
             File.expand_path('bin/app-linux')
           when /darwin/i
             File.expand_path('bin/app-macos')
+          else
+            raise 'Unsupported platform'
           end
         end
 
-        def configure_socket(port)
+        def connect_and_configure_socket(uri)
           Thread.new do
             EM.run do
-              @socket.connect("ws://127.0.0.1:#{port}/eyes")
+              @socket.connect(uri)
               @socket.emit('Session.init', {:commands => ::Applitools::SpecDriver.commands, :name => 'rb', :version => '0.0.1'})
               @socket.command('Driver.isEqualElements', ->(params) {
                 ::Applitools::SpecDriver.isEqualElements(nil, @refer.deref(params[:element1]), @refer.deref(params[:element2]))
@@ -134,9 +150,9 @@ module Applitools
               @socket.command('Driver.takeScreenshot', ->(params) {
                 ::Applitools::SpecDriver.takeScreenshot(@refer.deref(params[:driver]))
               })
-            end  # prepare_socket EM.run
-          end # prepare_socket Thread.new
-        end # prepare_socket
+            end # connect_and_configure_socket EM.run
+          end # connect_and_configure_socket Thread.new
+        end # connect_and_configure_socket
     end # Eyes
   end # Selenium
 end # Applitools
