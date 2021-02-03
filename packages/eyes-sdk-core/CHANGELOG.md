@@ -4,6 +4,10 @@
 
 - add support for custom batch properties
 
+## 12.14.7 - 2021/2/1
+
+- fix stale SRE fix from version 12.14.3 when running mobile native apps
+
 ## 12.14.6 - 2021/1/31
 
 - updated to @applitools/dom-snapshot@4.4.10 (from 4.4.9)

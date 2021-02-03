@@ -70,11 +70,16 @@ class DecoratedEyesFactory extends sdk.EyesFactory {
       async checkWindow(args) {
         let preparedArgs
         if (TypeUtils.isObject(args)) {
-          if (args.tag && Object.keys(args).length === 1)
-            preparedArgs = {tag: args.tag, target: 'window', fully: true}
-          else if (args.window && !args.fully) preparedArgs = {...args, fully: true}
-          else preparedArgs = {...args}
-        } else preparedArgs = {tag: args, target: 'window', fully: true}
+          preparedArgs = {...args}
+          if (!args.hasOwnProperty('target')) {
+            preparedArgs.target = 'window'
+          }
+          if (preparedArgs.target === 'window' && !args.hasOwnProperty('fully')) {
+            preparedArgs.fully = true
+          }
+        } else {
+          preparedArgs = {tag: args, target: 'window', fully: true}
+        }
 
         await _check(translateArgsToCheckSettings(preparedArgs))
       },

@@ -355,12 +355,14 @@ class EyesContext {
 
   async getInnerOffset() {
     if (this.isCurrent) {
-      const scrollRootElement = await this.getScrollRootElement()
-      this._innerOffset = !this._driver.isNative
-        ? await scrollRootElement.withRefresh(() =>
-            EyesUtils.getInnerOffset(this._logger, this, scrollRootElement),
-          )
-        : Location.ZERO
+      if (this._driver.isNative) {
+        this._innerOffset = Location.ZERO
+      } else {
+        const scrollRootElement = await this.getScrollRootElement()
+        this._innerOffset = await scrollRootElement.withRefresh(() =>
+          EyesUtils.getInnerOffset(this._logger, this, scrollRootElement),
+        )
+      }
     }
     return this._innerOffset
   }
