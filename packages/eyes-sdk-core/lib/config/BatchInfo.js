@@ -87,7 +87,7 @@ class BatchInfo {
       this._generateAndSetId()
     }
     this._name = name || GeneralUtils.getEnvValue('BATCH_NAME')
-    this._properties = properties
+    this._properties = properties || []
     this._startedAt = startedAt || new Date()
     this._sequenceName = sequenceName || GeneralUtils.getEnvValue('BATCH_SEQUENCE')
     this._notifyOnCompletion =
