@@ -4,7 +4,6 @@ require_relative('applitools/spec-driver')
 require_relative('applitools/refer')
 
 # TODO:
-# - run e2e tests in a batch
 # - spawn server in unref'd child process
 # - bundling
 # - test concurrency
