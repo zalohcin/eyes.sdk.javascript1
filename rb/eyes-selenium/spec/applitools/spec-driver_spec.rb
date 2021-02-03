@@ -32,7 +32,7 @@ describe 'spec-driver' do
     args = [0, 'string', {key: 'value'}, [0, 1, 2, 3]]
     expected = @driver.execute_script('return arguments', args)
     result = ::Applitools::SpecDriver.executeScript(@driver, 'return arguments', args)
-    expect(result).to eq(expected)
+    expect(result).to eq(expected.first)
   end
   it('mainContext') do
     begin
