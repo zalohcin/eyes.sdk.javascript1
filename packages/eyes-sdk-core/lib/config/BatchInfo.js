@@ -156,6 +156,16 @@ class BatchInfo {
   }
 
   /**
+   * @param {string} name - The custom batch property name
+   * @param {string} value - The custom batch property value
+   * @return {this}
+   */
+  addProperty(name, value) {
+    this._properties.push({name, value})
+    return this
+  }
+
+  /**
    * @return {Date} - The batch start date
    */
   getStartedAt() {
