@@ -4,7 +4,6 @@ require_relative('applitools/spec-driver')
 require_relative('applitools/refer')
 
 # TODO:
-# - spawn server in unref'd child process
 # - bundling
 # - test concurrency
 # - coverage tests
@@ -17,7 +16,7 @@ module Applitools
         @refer = ::Applitools::Refer.new
         @socket = ::Applitools::Socket.new
         @q = EM::Queue.new
-        prepare_socket()
+        prepare_socket
       end
 
       def open(driver, config)
@@ -66,9 +65,31 @@ module Applitools
         end
 
         def prepare_socket
+          port = spawn_socket
+          configure_socket(port)
+        end
+
+        def spawn_socket
+          pid = spawn(get_socket_script, [:out, :err] => [File::NULL, 'w'])
+          Process.detach(pid)
+          2107
+        end
+
+        def get_socket_script
+          case RUBY_PLATFORM
+          when /mswin|windows/i
+            File.expand_path('bin/app-win.exe')
+          when /linux|arch/i
+            File.expand_path('bin/app-linux')
+          when /darwin/i
+            File.expand_path('bin/app-macos')
+          end
+        end
+
+        def configure_socket(port)
           Thread.new do
             EM.run do
-              @socket.connect('ws://127.0.0.1:2107/eyes')
+              @socket.connect("ws://127.0.0.1:#{port}/eyes")
               @socket.emit('Session.init', {:commands => ::Applitools::SpecDriver.commands, :name => 'rb', :version => '0.0.1'})
               @socket.command('Driver.isEqualElements', ->(params) {
                 ::Applitools::SpecDriver.isEqualElements(nil, @refer.deref(params[:element1]), @refer.deref(params[:element2]))
