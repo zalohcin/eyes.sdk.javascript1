@@ -35,8 +35,8 @@
     "eyes-universal-windows": "./bin/app-win.exe"
   },
   "dependencies": {
-    "@applitools/eyes-sdk-core": "12.13.5",
-    "@applitools/visual-grid-client": "15.5.11",
+    "@applitools/eyes-sdk-core": "12.14.7",
+    "@applitools/visual-grid-client": "15.5.20",
     "chalk": "^4.1.0",
     "uuid": "^8.3.1",
     "ws": "^7.3.1",
