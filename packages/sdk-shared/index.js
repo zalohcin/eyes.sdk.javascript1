@@ -1,9 +1,7 @@
 const {getTestInfo, getDom} = require('./src/get-test-info')
-const {getBatchInfo} = require('./src/get-batch-info')
 const coverageTestsConfig = require('./coverage-tests/generic')
 
 module.exports = {
-  getBatchInfo,
   getTestInfo,
   getDom,
   testSetup: require('./src/test-setup'),
