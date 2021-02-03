@@ -3,6 +3,43 @@
 ## Unreleased
 
 
+## 15.5.20 - 2021/2/1
+
+- updated to @applitools/eyes-sdk-core@12.14.7 (from 12.14.6)
+
+## 15.5.19 - 2021/1/31
+
+- updated to @applitools/eyes-sdk-core@12.14.6 (from 12.14.5)
+
+## 15.5.18 - 2021/1/31
+
+- updated to @applitools/eyes-sdk-core@12.14.5 (from 12.14.4)
+
+## 15.5.17 - 2021/1/31
+
+- updated to @applitools/dom-snapshot@4.4.9 (from 4.4.8)
+
+## 15.5.16 - 2021/1/30
+
+- updated to @applitools/eyes-sdk-core@12.14.4 (from 12.14.3)
+
+## 15.5.15 - 2021/1/30
+
+- updated to @applitools/eyes-sdk-core@12.14.3 (from 12.14.2)
+
+## 15.5.14 - 2021/1/29
+
+- updated to @applitools/eyes-sdk-core@12.14.2 (from 12.14.1)
+
+## 15.5.13 - 2021/1/27
+
+- updated to @applitools/eyes-sdk-core@12.14.1 (from 12.14.0)
+
+## 15.5.12 - 2021/1/24
+
+- chore: add husky
+- updated to @applitools/eyes-sdk-core@12.14.0 (from 12.13.5)
+
 ## 15.5.11 - 2021/1/18
 
 - updated to @applitools/eyes-sdk-core@12.13.5 (from 12.13.4)

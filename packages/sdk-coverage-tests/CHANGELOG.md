@@ -3,6 +3,11 @@
 ## Unreleased
 
 
+## 2.3.6 - 2021/1/31
+
+- chore: add husky
+- add `isSkipped` to test metadata
+
 ## 2.3.5 - 2021/1/15
 
 - fix resultDir property

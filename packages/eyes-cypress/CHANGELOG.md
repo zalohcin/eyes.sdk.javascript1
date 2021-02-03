@@ -3,8 +3,20 @@
 ## Unreleased
 
 
+## 3.18.7 - 2021/2/2
+
+- fix documentation about setup of Applitools configuration
+- updated to @applitools/dom-snapshot@4.4.11 (from 4.4.8)
+- updated to @applitools/visual-grid-client@15.5.20 (from 15.5.11)
+
+## 3.18.6 - 2021/1/24
+
+- chore: add husky
+
 ## 3.18.5 - 2021/1/20
 
+- fix: don't format output when running in interactive mode
+- fix: add device conflict error 
 - updated to @applitools/dom-snapshot@4.4.8 (from 4.4.7)
 - updated to @applitools/visual-grid-client@15.5.11 (from 15.5.6)
 

@@ -1,8 +1,8 @@
 import * as types from './types'
 import * as guard from './guard'
 
-type Location = {x: number, y: number}
-type RectangleSize = {width: number, height: number}
+type Location = {x: number; y: number}
+type RectangleSize = {width: number; height: number}
 type Region = Location & RectangleSize
 
 export function location(region: Region): Location {
@@ -83,8 +83,10 @@ export function contains(region: Region, innerRegion: Region): boolean
 export function contains(region: Region, locationOrRegion: Location | Region): boolean {
   if (region.x <= locationOrRegion.x && region.y <= locationOrRegion.y) {
     if (types.has(locationOrRegion, ['width', 'height'])) {
-      return region.x + region.width >= locationOrRegion.x + locationOrRegion.width &&
-      region.y + region.height >= locationOrRegion.y + locationOrRegion.height
+      return (
+        region.x + region.width >= locationOrRegion.x + locationOrRegion.width &&
+        region.y + region.height >= locationOrRegion.y + locationOrRegion.height
+      )
     }
     return true
   }
@@ -96,28 +98,34 @@ export function equals(size1: RectangleSize, size2: RectangleSize): boolean
 export function equals(region1: Region, region2: Region): boolean
 export function equals(
   locationOrSizeOrRegion1: Location | RectangleSize | Region,
-  locationOrSizeOrRegion2: Location | RectangleSize | Region
+  locationOrSizeOrRegion2: Location | RectangleSize | Region,
 ): boolean {
   if (types.has(locationOrSizeOrRegion1, ['x', 'y', 'width', 'height'])) {
     if (types.has(locationOrSizeOrRegion2, ['x', 'y', 'width', 'height'])) {
-      return locationOrSizeOrRegion1.x === locationOrSizeOrRegion2.x &&
+      return (
+        locationOrSizeOrRegion1.x === locationOrSizeOrRegion2.x &&
         locationOrSizeOrRegion1.y === locationOrSizeOrRegion2.y &&
         locationOrSizeOrRegion1.width === locationOrSizeOrRegion2.width &&
         locationOrSizeOrRegion1.height === locationOrSizeOrRegion2.height
+      )
     }
     return false
   }
   if (types.has(locationOrSizeOrRegion1, ['x', 'y'])) {
     if (types.has(locationOrSizeOrRegion2, ['x', 'y'])) {
-      return locationOrSizeOrRegion1.x === locationOrSizeOrRegion2.x &&
+      return (
+        locationOrSizeOrRegion1.x === locationOrSizeOrRegion2.x &&
         locationOrSizeOrRegion1.y === locationOrSizeOrRegion2.y
+      )
     }
     return false
   }
   if (types.has(locationOrSizeOrRegion1, ['width', 'height'])) {
     if (types.has(locationOrSizeOrRegion2, ['width', 'height'])) {
-      return locationOrSizeOrRegion1.width === locationOrSizeOrRegion2.width &&
+      return (
+        locationOrSizeOrRegion1.width === locationOrSizeOrRegion2.width &&
         locationOrSizeOrRegion1.height === locationOrSizeOrRegion2.height
+      )
     }
     return false
   }
@@ -133,7 +141,7 @@ export function divide(region: Region, size: RectangleSize): Region[] {
 
   const maxX = region.x + region.width
   const maxY = region.y + region.height
-  
+
   let currentY = region.y
   while (currentY < maxY) {
     const nextY = Math.min(currentY + size.height, maxY)

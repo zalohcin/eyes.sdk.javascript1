@@ -3,6 +3,44 @@
 ## Unreleased
 
 
+## 12.14.7 - 2021/2/1
+
+- fix stale SRE fix from version 12.14.3 when running mobile native apps
+
+## 12.14.6 - 2021/1/31
+
+- updated to @applitools/dom-snapshot@4.4.10 (from 4.4.9)
+
+## 12.14.5 - 2021/1/31
+
+- updated to @applitools/dom-snapshot@4.4.9 (from 4.4.8)
+
+## 12.14.4 - 2021/1/30
+
+- handle firefox buggy versions
+
+## 12.14.3 - 2021/1/30
+
+- fix stale SRE exception in mobile browsers
+- updated to @applitools/dom-capture@11.0.1 (from 11.0.0)
+
+## 12.14.2 - 2021/1/27
+
+- fix: rename function to avoid naming collision
+
+## 12.14.1 - 2021/1/27
+
+- fix bug when dom-capture was taken with incorrect scroll location during `extractText` operation
+- avoid js snippet execution in native context
+- updated to @applitools/driver@1.0.4 (from 1.0.2)
+- updated to @applitools/screenshoter@3.0.3 (from 2.1.1)
+- updated to @applitools/snippets@2.1.1 (from 2.1.0)
+
+## 12.14.0 - 2021/1/24
+
+- chore: add husky
+- add galaxy s20 to device enum
+
 ## 12.13.5 - 2021/1/18
 
 - fix bug when screenshots on iPad were taken with Safari navigation bar and iOS status bar
