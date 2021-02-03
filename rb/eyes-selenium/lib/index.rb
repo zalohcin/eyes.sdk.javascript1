@@ -21,7 +21,6 @@ module Applitools
       end
 
       def open(driver, config)
-        config[:agentId] = 'eyes-universal/rb'
         @eyes = await(->(cb) {
           @driverRef = @refer.ref(driver)
           @socket.request('Eyes.open', {driver: @driverRef, config: config}, cb)
@@ -70,7 +69,7 @@ module Applitools
           Thread.new do
             EM.run do
               @socket.connect('ws://127.0.0.1:2107/eyes')
-              @socket.emit('Session.init', {:commands => ::Applitools::SpecDriver.commands})
+              @socket.emit('Session.init', {:commands => ::Applitools::SpecDriver.commands, :name => 'rb', :version => '0.0.1'})
               @socket.command('Driver.isEqualElements', ->(params) {
                 ::Applitools::SpecDriver.isEqualElements(nil, @refer.deref(params[:element1]), @refer.deref(params[:element2]))
               })
