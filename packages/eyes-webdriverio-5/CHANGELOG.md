@@ -3,6 +3,8 @@
 ## Unreleased
 
 - fix for WDIO 5 service that prevented grid runs without a testConcurrency specified from running ([Trello](https://trello.com/c/ijY0syDH))
+- updated to @applitools/eyes-sdk-core@12.14.8 (from 12.14.7)
+- updated to @applitools/visual-grid-client@15.5.21 (from 15.5.20)
 
 ## 5.29.5 - 2021/2/1
 
