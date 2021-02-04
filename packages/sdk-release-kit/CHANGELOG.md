@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 0.13.0 - 2021/2/4
+
 - make postversion command just "postversion" (instead of having two command names) - fixes logging for postversion
 
 ## 0.12.2 - 2021/2/2
