@@ -1,7 +1,7 @@
 # Change Log
 
 ## Unreleased
-
+- adding support for custom batch properties
 
 ## 4.52.5 - 2021/2/1
 
