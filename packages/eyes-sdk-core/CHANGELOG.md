@@ -3,6 +3,7 @@
 ## Unreleased
 
 - add support for custom batch properties
+- updated to @applitools/dom-snapshot@4.4.11 (from 4.4.10)
 
 ## 12.14.7 - 2021/2/1
 
