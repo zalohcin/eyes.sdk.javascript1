@@ -1,8 +1,9 @@
 require('eventmachine')
 require('socket')
 require_relative('applitools/socket')
-require_relative('applitools/spec-driver')
 require_relative('applitools/refer')
+require_relative('applitools/selenium/spec-driver')
+require 'applitools/version'
 
 # TODO:
 # - bundling
@@ -106,49 +107,49 @@ module Applitools
           Thread.new do
             EM.run do
               @socket.connect(uri)
-              @socket.emit('Session.init', {:commands => ::Applitools::SpecDriver.commands, :name => 'rb', :version => '0.0.1'})
+              @socket.emit('Session.init', {:commands => ::Applitools::Selenium::SpecDriver.commands, :name => 'rb', :version => ::Applitools::Selenium::VERSION})
               @socket.command('Driver.isEqualElements', ->(params) {
-                ::Applitools::SpecDriver.isEqualElements(nil, @refer.deref(params[:element1]), @refer.deref(params[:element2]))
+                ::Applitools::Selenium::SpecDriver.isEqualElements(nil, @refer.deref(params[:element1]), @refer.deref(params[:element2]))
               })
               @socket.command('Driver.executeScript', ->(params) {
-                result = ::Applitools::SpecDriver.executeScript(@refer.deref(params[:context]), params[:script], @refer.deref_all(params[:args]))
-                qualifier = ->(input) {::Applitools::SpecDriver.isElement(input)}
+                result = ::Applitools::Selenium::SpecDriver.executeScript(@refer.deref(params[:context]), params[:script], @refer.deref_all(params[:args]))
+                qualifier = ->(input) {::Applitools::Selenium::SpecDriver.isElement(input)}
                 @refer.ref_all(result, qualifier)
               })
               @socket.command('Driver.mainContext', ->(params) {
-                ::Applitools::SpecDriver.mainContext(@refer.deref(params[:context]))
+                ::Applitools::Selenium::SpecDriver.mainContext(@refer.deref(params[:context]))
               })
               @socket.command('Driver.parentContext', ->(params) {
-                ::Applitools::SpecDriver.parentContext(@refer.deref(params[:context]))
+                ::Applitools::Selenium::SpecDriver.parentContext(@refer.deref(params[:context]))
               })
               @socket.command('Driver.childContext', ->(params) {
-                ::Applitools::SpecDriver.mainContext(@refer.deref(params[:context]), @refer.deref(params[:element]))
+                ::Applitools::Selenium::SpecDriver.mainContext(@refer.deref(params[:context]), @refer.deref(params[:element]))
               })
               @socket.command('Driver.findElement', ->(params) {
-                result = ::Applitools::SpecDriver.findElement(@refer.deref(params[:context]), params[:selector])
+                result = ::Applitools::Selenium::SpecDriver.findElement(@refer.deref(params[:context]), params[:selector])
                 @refer.ref(result)
               })
               @socket.command('Driver.findElements', ->(params) {
-                result = ::Applitools::SpecDriver.findElements(@refer.deref(params[:context]), params[:selector])
+                result = ::Applitools::Selenium::SpecDriver.findElements(@refer.deref(params[:context]), params[:selector])
                 result.each {|element| @refer.ref(element)}
               })
               @socket.command('Driver.getViewportSize', ->(params) {
-                ::Applitools::SpecDriver.getViewportSize(@refer.deref(params[:driver]))
+                ::Applitools::Selenium::SpecDriver.getViewportSize(@refer.deref(params[:driver]))
               })
               @socket.command('Driver.setViewportSize', ->(params) {
-                ::Applitools::SpecDriver.setViewportSize(@refer.deref(params[:driver]), params[:size])
+                ::Applitools::Selenium::SpecDriver.setViewportSize(@refer.deref(params[:driver]), params[:size])
               })
               @socket.command('Driver.getTitle', ->(params) {
-                ::Applitools::SpecDriver.getTitle(@refer.deref(params[:driver]))
+                ::Applitools::Selenium::SpecDriver.getTitle(@refer.deref(params[:driver]))
               })
               @socket.command('Driver.getUrl', ->(params) {
-                ::Applitools::SpecDriver.getUrl(@refer.deref(params[:driver]))
+                ::Applitools::Selenium::SpecDriver.getUrl(@refer.deref(params[:driver]))
               })
               @socket.command('Driver.getDriverInfo', ->(params) {
-                ::Applitools::SpecDriver.getDriverInfo(@refer.deref(params[:driver]))
+                ::Applitools::Selenium::SpecDriver.getDriverInfo(@refer.deref(params[:driver]))
               })
               @socket.command('Driver.takeScreenshot', ->(params) {
-                ::Applitools::SpecDriver.takeScreenshot(@refer.deref(params[:driver]))
+                ::Applitools::Selenium::SpecDriver.takeScreenshot(@refer.deref(params[:driver]))
               })
             end # connect_and_configure_socket EM.run
           end # connect_and_configure_socket Thread.new

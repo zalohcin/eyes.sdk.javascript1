@@ -1,5 +1,5 @@
 require('webdrivers/chromedriver')
-require_relative('../lib/index')
+require_relative('../lib/eyes-selenium')
 require_relative('./spec_helper')
 require('securerandom')
 
