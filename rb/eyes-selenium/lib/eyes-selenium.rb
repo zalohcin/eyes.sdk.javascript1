@@ -1,13 +1,10 @@
 require('eventmachine')
-require_relative('applitools/socket')
-require_relative('applitools/refer')
-require_relative('applitools/selenium/spec-driver')
-require_relative('applitools/universal-server')
-require 'applitools/version'
+require('applitools/socket')
+require('applitools/refer')
+require('applitools/selenium/spec-driver')
+require('applitools/universal-server')
+require('applitools/version')
 
-# TODO:
-# - test concurrency
-# - coverage tests
 module Applitools
   module Selenium
     class Eyes
