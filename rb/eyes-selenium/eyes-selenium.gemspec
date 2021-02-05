@@ -1,4 +1,9 @@
 require_relative 'lib/applitools/version'
+require_relative 'lib/applitools/utils'
+
+Gem.post_install do
+  ::Applitools::Utils.download_universal_server
+end
 
 Gem::Specification.new do |spec|
   spec.name          = 'eyes-selenium'

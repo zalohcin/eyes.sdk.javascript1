@@ -93,11 +93,11 @@ module Applitools
         def get_server_script
           case RUBY_PLATFORM
           when /mswin|windows/i
-            File.expand_path('bin/app-win.exe')
+            File.expand_path('.bin/app-win.exe')
           when /linux|arch/i
-            File.expand_path('bin/app-linux')
+            File.expand_path('.bin/app-linux')
           when /darwin/i
-            File.expand_path('bin/app-macos')
+            File.expand_path('.bin/app-macos')
           else
             raise 'Unsupported platform'
           end

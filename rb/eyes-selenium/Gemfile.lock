@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    eyes-selenium (0.1.0)
+    eyes-selenium (0.0.1)
       colorize
       eventmachine
       faye-websocket
