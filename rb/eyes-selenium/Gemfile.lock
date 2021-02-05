@@ -1,3 +1,11 @@
+PATH
+  remote: .
+  specs:
+    eyes-selenium (0.1.0)
+      colorize
+      eventmachine
+      faye-websocket
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -78,9 +86,7 @@ PLATFORMS
   x86_64-darwin-20
 
 DEPENDENCIES
-  colorize
-  eventmachine
-  faye-websocket
+  eyes-selenium!
   guard-rspec
   pry-byebug
   rspec
