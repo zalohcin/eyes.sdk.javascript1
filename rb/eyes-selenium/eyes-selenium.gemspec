@@ -1,8 +1,8 @@
 require_relative 'lib/applitools/version'
-require_relative 'lib/applitools/utils'
+require_relative 'lib/applitools/universal-server'
 
 Gem.post_install do
-  ::Applitools::Utils.download_universal_server
+  ::Applitools::UniversalServer.download
 end
 
 Gem::Specification.new do |spec|

@@ -1,12 +1,11 @@
 require('eventmachine')
-require('socket')
 require_relative('applitools/socket')
 require_relative('applitools/refer')
 require_relative('applitools/selenium/spec-driver')
+require_relative('applitools/universal-server')
 require 'applitools/version'
 
 # TODO:
-# - bundling
 # - test concurrency
 # - coverage tests
 module Applitools
@@ -70,37 +69,9 @@ module Applitools
           socket_ip = '127.0.0.1'
           socket_port = 2107
           socket_uri = "ws://#{socket_ip}:#{socket_port}/eyes"
-          spawn_server
-          confirm_server_is_up(socket_ip, socket_port)
+          ::Applitools::UniversalServer.run
+          ::Applitools::UniversalServer.confirm_is_up(socket_ip, socket_port)
           connect_and_configure_socket(socket_uri)
-        end
-
-        def spawn_server
-          pid = spawn(get_server_script, [:out, :err] => [File::NULL, 'w'])
-          Process.detach(pid)
-        end
-
-        def confirm_server_is_up(ip, port, attempt = 1)
-          raise 'Universal server unavailable' if (attempt === 16)
-          begin
-            TCPSocket.new(ip, port)
-          rescue Errno::ECONNREFUSED
-            sleep 1
-            confirm_server_is_up(ip, port, attempt + 1)
-          end
-        end
-
-        def get_server_script
-          case RUBY_PLATFORM
-          when /mswin|windows/i
-            File.expand_path('.bin/app-win.exe')
-          when /linux|arch/i
-            File.expand_path('.bin/app-linux')
-          when /darwin/i
-            File.expand_path('.bin/app-macos')
-          else
-            raise 'Unsupported platform'
-          end
         end
 
         def connect_and_configure_socket(uri)

@@ -1,23 +1,35 @@
-#require 'net/http'
-require 'open-uri'
-require 'fileutils'
+require('open-uri')
+require('socket')
 
 module Applitools
-  module Utils
+  module UniversalServer
+    FOLDER_PATH = '.bin'
     extend self
 
-    def download_universal_server
-      # local
+    def download
       filename = get_filename
-      folder_name = create_server_directory
-      filepath = File.expand_path(filename, folder_name)
-      # remote
+      filepath = get_filepath
       base_url = 'https://github.com/applitools/eyes.sdk.javascript1/releases/download/test_eyes-universal%400.0.1'
       uri = URI.parse(base_url + "/#{filename}")
+      create_server_directory
       puts "[eyes-selenium] Downloading Eyes universal server from #{uri}"
       File.write(filepath, URI.open(uri).read)
-      make_file_executable(filepath)
       puts "[eyes-selenium] Download complete. Server placed in #{filepath}"
+    end
+
+    def run
+      pid = spawn(get_filepath, [:out, :err] => [File::NULL, 'w'])
+      Process.detach(pid)
+    end
+
+    def confirm_is_up(ip, port, attempt = 1)
+      raise 'Universal server unavailable' if (attempt === 16)
+      begin
+        TCPSocket.new(ip, port)
+      rescue Errno::ECONNREFUSED
+        sleep 1
+        confirm_is_up(ip, port, attempt + 1)
+      end
     end
 
     private
@@ -35,14 +47,12 @@ module Applitools
         end
       end
 
-      def create_server_directory
-        folder_name = '.bin'
-        Dir.mkdir(folder_name) if (!File.directory?(folder_name))
-        folder_name
+      def get_filepath
+        File.expand_path(get_filename, FOLDER_PATH)
       end
 
-      def make_file_executable(path_to_file)
-        FileUtils.chmod('+x', path_to_file)
+      def create_server_directory
+        Dir.mkdir(FOLDER_PATH) if (!File.directory?(FOLDER_PATH))
       end
   end
 end
