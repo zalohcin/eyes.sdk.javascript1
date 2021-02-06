@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Include non-emitted tests in the report
 
 ## 2.3.6 - 2021/1/31
 

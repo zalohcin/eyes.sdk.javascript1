@@ -2,20 +2,20 @@ const convert = require('xml-js')
 const {logDebug} = require('../log')
 
 function convertJunitXmlToResultSchema({junit, browser, metadata}) {
-  const tests = parseJunitXmlForTests(junit).filter(test => !test.skipped && !test.ignored)
+  const tests = parseJunitXmlForTests(junit)
   logDebug(tests)
-  return tests.map(test => {
-    const testName = parseBareTestName(test._attributes.name)
-    const meta = metadata[testName] || {}
+  return Object.entries(metadata).map(([testName, testMeta]) => {
+    const testResult = tests.find(t => testName === parseBareTestName(t._attributes.name))
+    const isSkipped = testMeta.skip || testMeta.skipEmit || false // we explicitly set false to preserve backwards compatibility
     return {
-      test_name: meta.name || testName,
+      test_name: testMeta.name || testName,
       parameters: {
         browser: browser || 'chrome',
-        mode: meta.executionMode,
+        mode: testMeta.executionMode,
       },
-      passed: !test.failure,
-      isGeneric: meta.isGeneric,
-      isSkipped: meta.skip || meta.skipEmit || false, // we explicitly set false to preserve backwards compatibility
+      passed: testResult && !isSkipped ? !testResult.failure : undefined,
+      isGeneric: testMeta.isGeneric,
+      isSkipped,
     }
   })
 }
