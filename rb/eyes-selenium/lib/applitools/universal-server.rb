@@ -4,14 +4,11 @@ require('digest')
 
 module Applitools
   module UniversalServer
-    FOLDER_PATH = '.bin'
-    EXPECTED_BINARY_SHA = '9cc2ec97397050a71e628e2e8972eb408e025bb77b088e12316ce15c9d488ecc'
     extend self
 
     def download
-      filename = get_filename
-      filepath = get_filepath
-      return if File.exist?(filepath) && Digest::SHA256.file(filepath).to_s == EXPECTED_BINARY_SHA
+      return if File.exist?(filepath) && Digest::SHA256.file(filepath).to_s == expected_binary_sha
+
       base_url = 'https://github.com/applitools/eyes.sdk.javascript1/releases/download/test_eyes-universal%400.0.1'
       uri = URI.parse(base_url + "/#{filename}")
       create_server_directory
@@ -21,7 +18,7 @@ module Applitools
     end
 
     def run
-      pid = spawn(get_filepath, [:out, :err] => [File::NULL, 'w'])
+      pid = spawn(filepath, [:out, :err] => [File::NULL, 'w'])
       Process.detach(pid)
     end
 
@@ -37,7 +34,20 @@ module Applitools
 
     private
 
-      def get_filename
+      def expected_binary_sha
+        case RUBY_PLATFORM
+        when /mswin|windows/i
+          '732619e99c8bd4926e11fb44f4eee1744ced3cd0274876c0cbe17b5fb5fbaa8a'
+        when /linux|arch/i
+          '85c2ed760a6f0084dcda631d6c20801465a640f5a9e1c0589762cc536a069791'
+        when /darwin/i
+          '9cc2ec97397050a71e628e2e8972eb408e025bb77b088e12316ce15c9d488ecc'
+        else
+          raise 'Unsupported platform'
+        end
+      end
+
+      def filename
         case RUBY_PLATFORM
         when /mswin|windows/i
           'app-win.exe'
@@ -50,12 +60,12 @@ module Applitools
         end
       end
 
-      def get_filepath
-        File.expand_path(get_filename, FOLDER_PATH)
+      def filepath
+        File.expand_path(filename, '.bin')
       end
 
       def create_server_directory
-        Dir.mkdir(FOLDER_PATH) if (!File.directory?(FOLDER_PATH))
+        Dir.mkdir('.bin') if (!File.directory?('.bin'))
       end
   end
 end
