@@ -1,8 +1,17 @@
-require_relative 'lib/applitools/version'
-require_relative 'lib/applitools/universal-server'
+require_relative('lib/applitools/version')
+require_relative('lib/applitools/universal-server')
 
-Gem.post_install do
+def download_server_once
+  singleton_class.send(:undef_method, __method__)
   ::Applitools::UniversalServer.download
+end
+
+Gem.post_install do |gem|
+  begin
+    download_server_once
+  rescue
+    # no-op
+  end
 end
 
 Gem::Specification.new do |spec|
