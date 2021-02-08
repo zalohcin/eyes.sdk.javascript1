@@ -1,14 +1,17 @@
 require('open-uri')
 require('socket')
+require('digest')
 
 module Applitools
   module UniversalServer
     FOLDER_PATH = '.bin'
+    EXPECTED_BINARY_SHA = '9cc2ec97397050a71e628e2e8972eb408e025bb77b088e12316ce15c9d488ecc'
     extend self
 
     def download
       filename = get_filename
       filepath = get_filepath
+      return if File.exist?(filepath) && Digest::SHA256.file(filepath).to_s == EXPECTED_BINARY_SHA
       base_url = 'https://github.com/applitools/eyes.sdk.javascript1/releases/download/test_eyes-universal%400.0.1'
       uri = URI.parse(base_url + "/#{filename}")
       create_server_directory
