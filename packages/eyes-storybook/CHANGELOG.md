@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix: concurrency message condition
 
 ## 3.16.5 - 2021/1/31
 
