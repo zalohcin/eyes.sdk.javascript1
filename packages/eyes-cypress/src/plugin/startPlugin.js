@@ -24,7 +24,6 @@ const config = Object.assign(
       ...configParams,
       'failCypressOnDiff',
       'tapDirPath',
-      'eyesTimeout',
       'disableBrowserFetching',
     ],
   }),
