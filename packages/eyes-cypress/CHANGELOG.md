@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix device emulation condition
 
 ## 3.18.7 - 2021/2/2
 
