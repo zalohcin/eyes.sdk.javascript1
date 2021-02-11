@@ -20,12 +20,7 @@ const agentId = `eyes-cypress/${packageVersion}`;
 const config = Object.assign(
   {agentId},
   ConfigUtils.getConfig({
-    configParams: [
-      ...configParams,
-      'failCypressOnDiff',
-      'tapDirPath',
-      'disableBrowserFetching',
-    ],
+    configParams: [...configParams, 'failCypressOnDiff', 'tapDirPath', 'disableBrowserFetching'],
   }),
 );
 if (config.failCypressOnDiff === '0') {

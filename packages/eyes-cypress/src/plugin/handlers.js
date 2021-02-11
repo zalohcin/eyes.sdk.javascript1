@@ -78,16 +78,14 @@ function makeHandlers({
         isInteractive: GeneralUtils.getPropertyByPath(data, 'isInteractive'),
         handleBatchResultsFile: makeHandleBatchResultsFile(config),
       });
-      pollBatchEnd = pollingHandler(
-        waitForBatch.bind(null, runningTests, client.closeBatch)
-      );
+      pollBatchEnd = pollingHandler(waitForBatch.bind(null, runningTests, client.closeBatch));
       return client;
     },
     getIosDevicesSizes: () => getIosDevicesSizes(),
     getEmulatedDevicesSizes: () => getEmulatedDevicesSizes(),
-    batchEnd: async ({timeout} = {}) => {
-      logger.log(`[handlers] batchEnd, timeout=${timeout}`);
-      return await pollBatchEnd({timeout});
+    batchEnd: async () => {
+      logger.log(`[handlers] batchEnd`);
+      return await pollBatchEnd();
     },
 
     putResource: (id, buffer) => {

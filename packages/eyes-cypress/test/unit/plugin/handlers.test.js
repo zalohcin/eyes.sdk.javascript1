@@ -498,7 +498,7 @@ describe('handlers', () => {
       x => x,
       err => err,
     );
-    
+
     // IDLE ==> DONE
     resolveClose([]);
     await psetTimeout(0);
