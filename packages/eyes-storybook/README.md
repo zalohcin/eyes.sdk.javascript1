@@ -334,6 +334,24 @@ _Specifying a value locally in the story takes precedence over the global config
 
 ### `include`
 
+#### global
+
+when provided globally, `include` is a function that receives the story kind and name. kind being the directory and name being the story name.
+return a `boolean` from this function to filter stories. For example: 
+```js
+// applitools.config.js
+{
+  ...
+  // visually test only the 'Button' stories directory
+  include: ({kind, name}) => {
+    return /(Button\/*)/.test(`${kind}/${name}`);
+  }
+  ...
+}
+```
+
+#### component
+
 When `false`, the component will not be visually tested. For example:
 
 ```js
