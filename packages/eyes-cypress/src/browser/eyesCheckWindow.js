@@ -92,7 +92,7 @@ function makeEyesCheckWindow({sendRequest, processPage, domSnapshotOptions, cypr
     }
 
     function getBrowserInfo(browser) {
-      if (browser.name) {
+      if (!browser.deviceName) {
         const {name, width} = browser;
         return Promise.resolve({name, width});
       } else {
