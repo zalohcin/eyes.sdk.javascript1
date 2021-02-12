@@ -91,10 +91,12 @@ const IosDeviceNames = {
 
 function makeDeviceList() {
   const emulators = Object.values(DeviceName).map(entry => {
-    return { name: entry, type: 'emulator' }
+    const id = Object.keys(DeviceName).find(key => DeviceName[key] === entry)
+    return { name: entry, type: 'emulator', id }
   })
   const simulators = Object.values(IosDeviceNames).map(entry => {
-    return { name: entry, type: 'simulator' }
+    const id = Object.keys(DeviceName).find(key => DeviceName[key] === entry)
+    return { name: entry, type: 'simulator', id }
   })
   return [...emulators, ...simulators]
 }
