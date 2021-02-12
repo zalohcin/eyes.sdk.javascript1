@@ -12,7 +12,10 @@ import VisualGrid from '../../components/VisualGrid'
 import VisualGridEula from '../../components/VisualGridEula'
 import { isExperimentalBrowser } from '../../../background/utils/parsers'
 import './style.css'
-import { updateBrowserNamesForBackwardsCompatibility } from '../../components/VisualGrid/options'
+import {
+  updateBrowserNamesForBackwardsCompatibility,
+  transformLegacySelectedDeviceOptions,
+} from '../../components/VisualGrid/options'
 
 export default class Normal extends React.Component {
   static propTypes = {
@@ -62,7 +65,6 @@ export default class Normal extends React.Component {
         })
     })
   }
-  // TODO: transform selectedDevices of strings to objects
   setProjectSettings() {
     return storage
       .get(['eyesServer', 'eulaSignDate', 'isFree', 'projectSettings', 'experimentalEnabled', 'accountInfo'])
@@ -99,6 +101,7 @@ export default class Normal extends React.Component {
         }
         if (projectSettings && projectSettings[this.props.projectId]) {
           settings.selectedBrowsers = updateBrowserNamesForBackwardsCompatibility(settings.selectedBrowsers)
+          settings.selectedDevices = transformLegacySelectedDeviceOptions(settings.selectedDevices)
           storage.set({
             ['projectSettings']: {
               ...projectSettings,
