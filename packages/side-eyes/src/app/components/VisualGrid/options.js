@@ -5,8 +5,9 @@ export const viewportSizes = ['2560x1440', '2048x1536', '1920x1080', '750x1334',
 export const orientations = ['Portrait', 'Landscape']
 
 // Copied from @applitools/eyes-sdk-core/lib/config/DeviceName.js
+// and @applitools/eyes-sdk-core/lib/config/IosDeviceName.js
 // since it can't easily be loaded into the browser (yet).
-export const DeviceName = {
+const DeviceName = {
   Blackberry_PlayBook: 'Blackberry PlayBook',
   BlackBerry_Z30: 'BlackBerry Z30',
   Galaxy_A5: 'Galaxy A5',
@@ -70,6 +71,36 @@ export const DeviceName = {
   Pixel_4: 'Pixel 4',
   Pixel_4_XL: 'Pixel 4 XL',
 }
+
+const IosDeviceNames = {
+  iPhone_11_Pro: 'iPhone 11 Pro',
+  iPhone_11_Pro_Max: 'iPhone 11 Pro Max',
+  iPhone_11: 'iPhone 11',
+  iPhone_XR: 'iPhone XR',
+  iPhone_XS: 'iPhone Xs',
+  iPhone_X: 'iPhone X',
+  iPhone_8: 'iPhone 8',
+  iPhone_7: 'iPhone 7',
+  iPad_Pro_3: 'iPad Pro (12.9-inch) (3rd generation)',
+  iPad_7: 'iPad (7th generation)',
+  iPad_Air_2: 'iPad Air (2nd generation)',
+  iPhone_12_Pro_Max: 'iPhone 12 Pro Max',
+  iPhone_12_Pro: 'iPhone 12 Pro',
+  iPhone_12: 'iPhone 12',
+  iPhone_12_mini: 'iPhone 12 mini',
+}
+
+function makeDeviceList() {
+  const emulators = Object.values(DeviceName).map(entry => {
+    return { name: entry, type: 'emulator' }
+  })
+  const simulators = Object.values(IosDeviceNames).map(entry => {
+    return { name: entry, type: 'simulator' }
+  })
+  return [...emulators, ...simulators]
+}
+
+export const DeviceList = makeDeviceList()
 
 export function updateBrowserNamesForBackwardsCompatibility(browsers) {
   return browsers.map(browserName => {

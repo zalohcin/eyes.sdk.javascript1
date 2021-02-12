@@ -62,6 +62,7 @@ export default class Normal extends React.Component {
         })
     })
   }
+  // TODO: transform selectedDevices of strings to objects
   setProjectSettings() {
     return storage
       .get(['eyesServer', 'eulaSignDate', 'isFree', 'projectSettings', 'experimentalEnabled', 'accountInfo'])
