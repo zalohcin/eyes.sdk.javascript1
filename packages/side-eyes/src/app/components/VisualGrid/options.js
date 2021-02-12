@@ -114,7 +114,6 @@ export function updateBrowserNamesForBackwardsCompatibility(browsers) {
 }
 
 export function transformLegacySelectedDeviceOptions(options) {
-  console.log(options)
   return options.map(entry => {
     return typeof entry === 'string' ? { name: entry, type: 'emulator' } : entry
   })
