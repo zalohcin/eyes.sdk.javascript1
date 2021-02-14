@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- docs: add `include` documentation
 
 ## 3.16.5 - 2021/1/31
 
