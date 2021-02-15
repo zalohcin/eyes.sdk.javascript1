@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- fix scaling issue
 - handle firefox buggy versions
 
 ## 3.0.3 - 2021/1/27

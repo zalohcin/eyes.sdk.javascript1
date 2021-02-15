@@ -55,6 +55,9 @@ function makeImage(data) {
     async toPng() {
       return toPng(await image)
     },
+    async toFile(path) {
+      return toFile(await image, path)
+    },
   }
 }
 
@@ -92,6 +95,13 @@ async function toPng(image) {
   })
 }
 
+async function toFile(image, path) {
+  const buffer = await toPng(image)
+  return new Promise((resolve, reject) => {
+    fs.writeFile(path, buffer, err => (err ? reject(err) : resolve()))
+  })
+}
+
 function extractPngSize(buffer) {
   return buffer.slice(12, 16).toString('ascii') === 'IHDR'
     ? {width: buffer.readUInt32BE(16), height: buffer.readUInt32BE(20)}
@@ -110,8 +120,8 @@ async function scale(image, scaleRatio) {
 async function resize(image, size) {
   const dst = {
     data: Buffer.alloc(size.height * size.width * 4),
-    width: size.height,
-    height: size.width,
+    width: size.width,
+    height: size.height,
   }
 
   if (dst.width > image.width || dst.height > image.height) {
