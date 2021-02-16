@@ -1,4 +1,4 @@
-import { experimentalBrowsers, browserIds, DeviceList } from '../../app/components/VisualGrid/options'
+import { experimentalBrowsers, browserIds } from '../../app/components/VisualGrid/options'
 import UAParser from 'ua-parser-js'
 const parser = new UAParser()
 
@@ -38,7 +38,7 @@ export function parseBrowsers(
         matrix.push({
           screenOrientation: orientation,
           deviceName: device.name,
-          deviceId: DeviceList.find(entry => entry.name === device.name).id,
+          deviceId: devices.find(entry => entry.name === device.name).id,
         })
       } else if (device.type === 'simulator') {
         matrix.push({
