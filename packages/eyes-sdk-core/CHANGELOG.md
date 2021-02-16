@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- handle contexts with no elements
 
 ## 12.14.8 - 2021/2/4
 
