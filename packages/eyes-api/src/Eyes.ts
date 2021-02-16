@@ -186,7 +186,7 @@ export default abstract class Eyes<TDriver = unknown, TElement = unknown, TSelec
   }
 
   async closeBatch() {
-    await this._spec.closeBatch()
+    // await this._spec.closeBatch()
   }
 
   // async locate(visualLocatorSettings: any) {

@@ -73,7 +73,7 @@ export default class RenderingInfoData {
   }
 
   getDecodedAccessToken(): {sub: string; exp: number; iss: string} {
-    return utils.general.jwtDecode(this._accessToken)
+    return utils.general.jwtDecode(this._accessToken) as {sub: string; exp: number; iss: string}
   }
 
   toJSON(): RenderingInfo {
