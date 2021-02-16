@@ -3,6 +3,7 @@
 ## Unreleased
 
 - handle contexts with no elements
+- updated to @applitools/screenshoter@3.0.4 (from 3.0.3)
 
 ## 12.14.8 - 2021/2/4
 
