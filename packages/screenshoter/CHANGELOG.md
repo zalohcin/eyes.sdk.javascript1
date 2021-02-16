@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- fix bug with wrong stitching due to fractional offset 
 
 ## 3.0.4 - 2021/2/15
 
