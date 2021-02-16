@@ -71,7 +71,7 @@ const DeviceName = {
   Pixel_4_XL: 'Pixel 4 XL',
 }
 
-const IosDeviceNames = {
+const IosDeviceName = {
   iPhone_11_Pro: 'iPhone 11 Pro',
   iPhone_11_Pro_Max: 'iPhone 11 Pro Max',
   iPhone_11: 'iPhone 11',
@@ -94,8 +94,8 @@ function makeDeviceList() {
     const id = Object.keys(DeviceName).find(key => DeviceName[key] === entry)
     return { name: entry, type: 'emulator', id }
   })
-  const simulators = Object.values(IosDeviceNames).map(entry => {
-    const id = Object.keys(DeviceName).find(key => DeviceName[key] === entry)
+  const simulators = Object.values(IosDeviceName).map(entry => {
+    const id = Object.keys(IosDeviceName).find(key => DeviceName[key] === entry)
     return { name: entry, type: 'simulator', id }
   })
   return [...emulators, ...simulators]
