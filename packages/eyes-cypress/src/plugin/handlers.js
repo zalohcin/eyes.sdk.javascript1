@@ -4,28 +4,21 @@ const pollingHandler = require('./pollingHandler');
 const makeWaitForBatch = require('./waitForBatch');
 const makeHandleBatchResultsFile = require('./makeHandleBatchResultsFile');
 const {GeneralUtils} = require('@applitools/visual-grid-client');
+const runningTests = require('./runningTests');
 
 const TIMEOUT_MSG = timeout =>
   `Eyes-Cypress timed out after ${timeout}ms. The default timeout is 2 minutes. It's possible to increase this timeout by setting a the value of 'eyesTimeout' in Cypress configuration, e.g. for 3 minutes: Cypress.config('eyesTimeout', 180000)`;
 
 function makeHandlers({
-  makeVisualGridClient,
   config = {},
+  visualGridClient,
   logger = console,
   processCloseAndAbort,
   getErrorsAndDiffs,
   errorDigest,
 }) {
   logger.log('[handlers] creating handlers with the following config:', config);
-  let openEyes,
-    pollBatchEnd,
-    checkWindow,
-    close,
-    resources,
-    openErr,
-    getEmulatedDevicesSizes,
-    getIosDevicesSizes;
-  let runningTests = [];
+  let pollBatchEnd, checkWindow, close, resources, openErr;
 
   return {
     open: async args => {
@@ -33,7 +26,7 @@ function makeHandlers({
         logger.log(`[handlers] open: close=${typeof close}, args=`, args);
         args.accessibilitySettings = args.accessibilityValidation;
         delete args.accessibilityValidation;
-        const eyes = await openEyes(args);
+        const eyes = await visualGridClient.openEyes(args);
         const runningTest = {
           abort: eyes.abort,
           closePromise: undefined,
@@ -41,7 +34,7 @@ function makeHandlers({
         checkWindow = eyes.checkWindow;
         close = makeClose(eyes.close, runningTest);
         resources = {};
-        runningTests.push(runningTest);
+        runningTests.add(runningTest);
         logger.log('[handlers] open finished');
         return eyes;
       } catch (err) {
@@ -52,26 +45,7 @@ function makeHandlers({
     },
     batchStart: data => {
       logger.log('[handlers] batchStart with data', data);
-      runningTests = [];
-      const extraConfig = {};
-      if (
-        GeneralUtils.getPropertyByPath(data, 'viewport.height') &&
-        GeneralUtils.getPropertyByPath(data, 'viewport.width')
-      ) {
-        extraConfig.browser = data.viewport;
-      }
-      if (GeneralUtils.getPropertyByPath(data, 'userAgent')) {
-        extraConfig.userAgent = data.userAgent;
-      }
-
-      const client = makeVisualGridClient(
-        Object.assign(extraConfig, config, {
-          logger: (logger.extend && logger.extend('vgc')) || logger,
-        }),
-      );
-      openEyes = client.openEyes;
-      getEmulatedDevicesSizes = client.getEmulatedDevicesSizes;
-      getIosDevicesSizes = client.getIosDevicesSizes;
+      runningTests.reset();
       const waitForBatch = makeWaitForBatch({
         logger: (logger.extend && logger.extend('waitForBatch')) || logger,
         concurrency: config.concurrency,
@@ -82,13 +56,13 @@ function makeHandlers({
         handleBatchResultsFile: makeHandleBatchResultsFile(config),
       });
       pollBatchEnd = pollingHandler(
-        waitForBatch.bind(null, runningTests, client.closeBatch),
+        waitForBatch.bind(null, runningTests.tests, visualGridClient.closeBatch),
         TIMEOUT_MSG,
       );
-      return client;
+      return visualGridClient;
     },
-    getIosDevicesSizes: () => getIosDevicesSizes(),
-    getEmulatedDevicesSizes: () => getEmulatedDevicesSizes(),
+    getIosDevicesSizes: () => visualGridClient.getIosDevicesSizes(),
+    getEmulatedDevicesSizes: () => visualGridClient.getEmulatedDevicesSizes(),
     batchEnd: async ({timeout} = {}) => {
       logger.log(`[handlers] batchEnd, timeout=${timeout}`);
       return await pollBatchEnd({timeout});
