@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- add `extractText` and `extractTextRegions` support
 
 ## 4.18.1 - 2021/1/24
 
