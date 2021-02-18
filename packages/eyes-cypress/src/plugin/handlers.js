@@ -11,7 +11,6 @@ const TIMEOUT_MSG = timeout =>
 
 function makeHandlers({
   config = {},
-  sharedConfig,
   visualGridClient,
   logger = console,
   processCloseAndAbort,
