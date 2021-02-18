@@ -37,7 +37,7 @@
     "@applitools/dom-snapshot": "4.4.11",
     "@applitools/driver": "1.0.4",
     "@applitools/isomorphic-fetch": "3.0.0",
-    "@applitools/screenshoter": "3.0.4",
+    "@applitools/screenshoter": "3.0.5",
     "@applitools/snippets": "2.1.1",
     "axios": "0.21.1",
     "chalk": "3.0.0",

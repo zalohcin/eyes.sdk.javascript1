@@ -126,10 +126,10 @@
     "@applitools/utils" "1.0.1"
     png-async "0.9.4"
 
-"@applitools/screenshoter@3.0.4":
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/@applitools/screenshoter/-/screenshoter-3.0.4.tgz#c6c2c6fff7c2ae3dc9248a3fd0a8391cfd3763c8"
-  integrity sha512-j+yy2ArHVkqzH1NGpP///Zbel9q2qtgfIUZHSUuJsewGqPUMQCF9nVb9W4KNTrW3F2UMreRFFljgrUrsdu5I+w==
+"@applitools/screenshoter@3.0.5":
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/@applitools/screenshoter/-/screenshoter-3.0.5.tgz#e9b688678b31ed35b18208bff7f2fc6267afa44f"
+  integrity sha512-2OE4Ty6QEPg+jVaYTVFDezOXLaPBPSlTcV/fNVL7WlQlHoWbSswqVU5EOGmSDS5IrcM4jwkV0F3yd3hX5HCDJw==
   dependencies:
     "@applitools/utils" "1.0.1"
     png-async "0.9.4"
