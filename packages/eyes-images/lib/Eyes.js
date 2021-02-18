@@ -228,11 +228,19 @@ class Eyes extends EyesBase {
       const screenshot = await this._normalizeImage(region.image)
 
       if (!region.target) {
-        region.target = {left: 0, top: 0, width: screenshot.getWidth(), height: screenshot.getHeight()}
+        region.target = {
+          left: 0,
+          top: 0,
+          width: screenshot.getWidth(),
+          height: screenshot.getHeight(),
+        }
       }
 
       await this.getAndSaveRenderingInfo()
-      const screenshotUrl = await this._serverConnector.uploadScreenshot(GeneralUtils.guid(), await screenshot.getImageBuffer())
+      const screenshotUrl = await this._serverConnector.uploadScreenshot(
+        GeneralUtils.guid(),
+        await screenshot.getImageBuffer(),
+      )
       extractTextInputs.push({
         screenshotUrl,
         region: {...region.target, expected: region.hint},
@@ -254,7 +262,10 @@ class Eyes extends EyesBase {
     const screenshot = await this._normalizeImage(config.image)
 
     await this.getAndSaveRenderingInfo()
-    const screenshotUrl = await this._serverConnector.uploadScreenshot(GeneralUtils.guid(), await screenshot.getImageBuffer())
+    const screenshotUrl = await this._serverConnector.uploadScreenshot(
+      GeneralUtils.guid(),
+      await screenshot.getImageBuffer(),
+    )
 
     return this._serverConnector.extractTextRegions({
       screenshotUrl,

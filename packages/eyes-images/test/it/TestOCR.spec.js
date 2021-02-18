@@ -23,7 +23,11 @@ describe('EyesImages.OCR', function() {
     const texts = await eyes.extractText([
       {image: image1, target: {left: 138, top: 0, width: 100, height: 40}},
       {image: image2, target: {left: 366, top: 0, width: 100, height: 40}, hint: 'features'},
-      {image: image2.toString('base64'), target: {left: 455, top: 0, width: 100, height: 40}, hint: '\\l+'},
+      {
+        image: image2.toString('base64'),
+        target: {left: 455, top: 0, width: 100, height: 40},
+        hint: '\\l+',
+      },
     ])
     await eyes.close(false)
 
@@ -45,9 +49,9 @@ describe('EyesImages.OCR', function() {
     })
     await eyes.close(false)
 
-    assert.strictEqual(regions['applitools'][0].text, '\'Applitools transformed on')
-    assert.strictEqual(regions['applitools'][1].text, '\'Applitools took us trom 30 hours')
-    assert.strictEqual(regions['applitools'][2].text, 'they\'ve been singing Applitools\'')
+    assert.strictEqual(regions['applitools'][0].text, "'Applitools transformed on")
+    assert.strictEqual(regions['applitools'][1].text, "'Applitools took us trom 30 hours")
+    assert.strictEqual(regions['applitools'][2].text, "they've been singing Applitools'")
 
     assert.strictEqual(regions['customers'][0].text, 'CUSTOMERS')
   })
