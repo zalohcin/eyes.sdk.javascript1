@@ -79,7 +79,7 @@ function processResults({results = [], totalTime, testConcurrency}) {
     outputStr += `\n${seeDetailsStr}\nTotal time: ${Math.round(totalTime / 1000)} seconds\n`;
   }
 
-  if (testConcurrency === defaultConfig.testConcurrency) {
+  if (Number(testConcurrency) === defaultConfig.testConcurrency) {
     outputStr += `\n${concurrencyMsg}\n`;
   }
 
