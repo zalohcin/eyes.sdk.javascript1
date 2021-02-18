@@ -1,8 +1,11 @@
 # Change Log
 
 ## Unreleased
-- updated to @applitools/screenshoter@3.0.5 (from 3.0.4)
 
+
+## 12.14.10 - 2021/2/18
+
+- updated to @applitools/screenshoter@3.0.5 (from 3.0.4)
 
 ## 12.14.9 - 2021/2/16
 
