@@ -11,6 +11,7 @@ const TIMEOUT_MSG = timeout =>
 
 function makeHandlers({
   config = {},
+  sharedConfig,
   visualGridClient,
   logger = console,
   processCloseAndAbort,
@@ -48,7 +49,7 @@ function makeHandlers({
       runningTests.reset();
       const waitForBatch = makeWaitForBatch({
         logger: (logger.extend && logger.extend('waitForBatch')) || logger,
-        concurrency: config.concurrency,
+        concurrency: config.testConcurrency,
         processCloseAndAbort,
         getErrorsAndDiffs,
         errorDigest,
@@ -153,8 +154,12 @@ function makeHandlers({
         throw new Error('Please call cy.eyesOpen() before calling cy.eyesClose()');
       }
 
-      // not returning this promise because we don't to wait on it before responding to the client
-      await close();
+      // only await it if we are in non-interactive mode
+      if (config.shared.isTextTerminal) {
+        await close();
+      } else {
+        close();
+      }
 
       resources = null;
       close = null;
