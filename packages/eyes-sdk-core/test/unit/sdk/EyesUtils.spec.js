@@ -36,9 +36,6 @@ describe('EyesUtils', () => {
       assert.deepStrictEqual(counters.setWindowRect, 1)
     })
     it('throws the correct error when unable to set the viewport size', () => {
-      const counters = {
-        setWindowRect: 0,
-      }
       const logger = {
         verbose: () => {},
       }
@@ -47,9 +44,7 @@ describe('EyesUtils', () => {
           return {width: 1280, height: 800}
         },
         driver: {
-          setWindowRect: async () => {
-            counters.setWindowRect++
-          },
+          setWindowRect: async () => {},
           getWindowRect: () => {
             return new RectangleSize({width: 1280, height: 800})
           },
