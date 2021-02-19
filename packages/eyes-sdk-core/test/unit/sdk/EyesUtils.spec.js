@@ -35,7 +35,10 @@ describe('EyesUtils', () => {
       await setViewportSize(logger, context, requiredViewportSize)
       assert.deepStrictEqual(counters.setWindowRect, 1)
     })
-    it('throws the correct error when unable to set the viewport size', () => {
+    it('throws the correct error when unable to set the viewport size', async () => {
+      const counters = {
+        setWindowRect: 0,
+      }
       const logger = {
         verbose: () => {},
       }
@@ -44,7 +47,9 @@ describe('EyesUtils', () => {
           return {width: 1280, height: 800}
         },
         driver: {
-          setWindowRect: async () => {},
+          setWindowRect: async input => {
+            if (input && input._width && input._height) counters.setWindowRect++
+          },
           getWindowRect: () => {
             return new RectangleSize({width: 1280, height: 800})
           },
@@ -52,7 +57,8 @@ describe('EyesUtils', () => {
       }
       const requiredViewportSize = new RectangleSize({width: 800, height: 600})
       // eslint-disable-next-line
-      return assert.rejects(async () => {await setViewportSize(logger, context, requiredViewportSize)}, /Failed to set viewport size!/)
+      await assert.rejects(async () => {await setViewportSize(logger, context, requiredViewportSize)}, /Failed to set viewport size!/)
+      assert.deepStrictEqual(counters.setWindowRect, 3)
     })
   })
 })
