@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- feat: use global cypress hooks with `experimentalRunEvents` flag
 
 ## 3.18.7 - 2021/2/2
 
